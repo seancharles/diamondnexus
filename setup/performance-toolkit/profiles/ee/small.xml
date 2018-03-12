@@ -7,6 +7,7 @@
 -->
 <config xmlns:xi="http://www.w3.org/2001/XInclude">
     <profile>
+        <admin_users>50</admin_users><!-- Number of admin users to generate -->
         <websites>1</websites> <!-- Number of websites to generate -->
         <store_groups>1</store_groups> <!--Number of stores-->
         <store_views>1</store_views> <!-- Number of store views -->
@@ -59,7 +60,7 @@
         <order_quotes_enable>true</order_quotes_enable>
         <order_simple_product_count_from>2</order_simple_product_count_from>
         <order_simple_product_count_to>2</order_simple_product_count_to>
-        <orders>80</orders> <!-- Orders count -->
+        <orders>200</orders> <!-- Orders count -->
 
         <tax_rates_file>tax_rates_small.csv</tax_rates_file> <!-- Tax rates file in fixtures directory-->
 
