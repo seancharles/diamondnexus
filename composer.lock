@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "813ddc2c67245281e27e34aa4493ea08",
-    "content-hash": "2df870ba2692f329ecc55b751cabe02c",
+    "hash": "b6b4257e62c96aaba4a11ee8d3ac4712",
+    "content-hash": "5de6480d75a35f705d48e0bf4f554989",
     "packages": [
         {
             "name": "affirm/magento2",
@@ -994,6 +994,35 @@
                 "AFL-3.0"
             ],
             "description": "Magento composer library helps to instantiate Composer application and run composer commands."
+        },
+        {
+            "name": "magento/data-migration-tool",
+            "version": "2.2.3",
+            "dist": {
+                "type": "zip",
+                "url": "https://repo.magento.com/archives/magento/data-migration-tool/magento-data-migration-tool-2.2.3.0.zip",
+                "reference": null,
+                "shasum": "800000dacf5b3956d78aadad60844a0751fbfa23"
+            },
+            "require": {
+                "magento/framework": "~101.0.0",
+                "monolog/monolog": "^1.17",
+                "symfony/console": "~2.3, !=2.7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Migration\\": [
+                        "src/Migration",
+                        "tests/unit/testsuite/Migration"
+                    ]
+                },
+                "files": [
+                    "src/Migration/cli_commands.php",
+                    "registration.php"
+                ]
+            },
+            "description": "Migration Tool"
         },
         {
             "name": "magento/framework",
