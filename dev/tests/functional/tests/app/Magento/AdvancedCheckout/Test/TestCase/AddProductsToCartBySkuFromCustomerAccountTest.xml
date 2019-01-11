@@ -78,6 +78,7 @@
             <constraint name="Magento\Checkout\Test\Constraint\AssertProductIsNotEditable" />
         </variation>
         <variation name="AddProductsToCartBySkuFromCustomerAccountTestVariation7">
+            <data name="issue" xsi:type="string">https://github.com/magento-engcom/msi/issues/1624</data>
             <data name="tag" xsi:type="string">severity:S1</data>
             <data name="description" xsi:type="string">Product, for which Qty is less than minimum allowed in cart</data>
             <data name="products/0" xsi:type="string">catalogProductSimple::simple_with_cart_limits</data>
@@ -90,6 +91,7 @@
             <constraint name="Magento\Checkout\Test\Constraint\AssertCartIsEmpty" />
         </variation>
         <variation name="AddProductsToCartBySkuFromCustomerAccountTestVariation8">
+            <data name="issue" xsi:type="string">https://github.com/magento-engcom/msi/issues/1624</data>
             <data name="tag" xsi:type="string">severity:S1</data>
             <data name="description" xsi:type="string">Product, for which Qty exceeds maximum allowed in cart</data>
             <data name="products/0" xsi:type="string">catalogProductSimple::simple_with_cart_limits</data>
@@ -162,6 +164,7 @@
             <constraint name="Magento\Checkout\Test\Constraint\AssertProductPresentInShoppingCart" />
         </variation>
         <variation name="AddProductsToCartBySkuFromCustomerAccountTestVariation14">
+            <data name="issue" xsi:type="string">https://github.com/magento-engcom/msi/issues/1624</data>
             <data name="tag" xsi:type="string">severity:S2</data>
             <data name="description" xsi:type="string">Simple product with qty increments</data>
             <data name="products/0" xsi:type="string">catalogProductSimple::simple_with_qty_increments</data>

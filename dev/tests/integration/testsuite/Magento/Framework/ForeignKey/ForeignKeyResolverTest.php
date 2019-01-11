@@ -73,7 +73,8 @@ class ForeignKeyResolverTest extends \PHPUnit\Framework\TestCase
             $this->fail('Expected Foreign Key exception.');
         } catch (LocalizedException $exception) {
             $this->assertEquals(
-                'Cannot add or update a child row: a foreign key constraint fails',
+                "The row couldn't be updated because a foreign key constraint failed. "
+                . "Verify the constraint and try again.",
                 $exception->getMessage()
             );
 
@@ -228,7 +229,6 @@ class ForeignKeyResolverTest extends \PHPUnit\Framework\TestCase
     /**
      * @magentoAppIsolation enabled
      * @expectedException \Magento\Framework\Exception\LocalizedException
-     * @expectedExceptionMessage Cannot update row: a foreign key constraint fails
      */
     public function testSaveForeignKeyValidationThrowException()
     {
@@ -236,6 +236,10 @@ class ForeignKeyResolverTest extends \PHPUnit\Framework\TestCase
         //invalid reference id
         $referenceFieldId = 1000;
         $this->invokeValidation($referenceFieldId);
+
+        $this->expectExceptionMessage(
+            "The row couldn't be updated because a foreign key constraint failed. Verify the constraint and try again."
+        );
     }
 
     /**

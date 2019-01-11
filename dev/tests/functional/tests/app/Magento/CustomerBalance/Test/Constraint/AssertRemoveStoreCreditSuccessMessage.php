@@ -28,7 +28,7 @@ class AssertRemoveStoreCreditSuccessMessage extends AbstractConstraint
      */
     public function processAssert(CheckoutCart $checkoutCart)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::SUCCESS_REMOVE_MESSAGE,
             $checkoutCart->getMessagesBlock()->getSuccessMessage(),
             'Wrong success message is displayed.'

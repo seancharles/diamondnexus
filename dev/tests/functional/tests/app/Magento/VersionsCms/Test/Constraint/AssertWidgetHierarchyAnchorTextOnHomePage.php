@@ -38,13 +38,13 @@ class AssertWidgetHierarchyAnchorTextOnHomePage extends AbstractConstraint
 
         $cmsIndex->open();
         $widgetAnchorText = $widget->getParameters()['anchor_text'];
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $cmsIndex->getWidgetView()->isWidgetVisible($widget, $widgetAnchorText),
             'Widget hierarchy anchor text is absent on Home page.'
         );
 
         $cmsIndex->getWidgetView()->clickToWidget($widget, $widgetAnchorText);
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $cmsIndex->getCmsHierarchyNodeBlock()->cmsMenuIsVisible(),
             'Cms menu is absent on frontend page.'
         );

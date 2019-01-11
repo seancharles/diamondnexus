@@ -31,7 +31,7 @@ class AssertMultipleWishlistIsPublic extends AbstractAssertMultipleWishlistState
      */
     protected function assert(SearchResult $searchResult, MultipleWishlist $multipleWishlist)
     {
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $searchResult->getWishlistSearchResultBlock()->isWishlistVisibleInGrid($multipleWishlist->getName()),
             'Multiple wish list is not public.'
         );

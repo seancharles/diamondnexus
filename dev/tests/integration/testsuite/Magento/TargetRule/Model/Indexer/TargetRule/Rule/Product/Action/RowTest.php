@@ -6,8 +6,6 @@
  * See COPYING.txt for license details.
  */
 
-// @codingStandardsIgnoreFile
-
 namespace Magento\TargetRule\Model\Indexer\TargetRule\Rule\Product\Action;
 
 class RowTest extends \Magento\TestFramework\Indexer\TestCase
@@ -100,7 +98,8 @@ class RowTest extends \Magento\TestFramework\Indexer\TestCase
             $rule->getResource()->getTable('magento_targetrule_product'),
             'product_id'
         )->where(
-            'rule_id = ?', $rule->getId()
+            'rule_id = ?',
+            $rule->getId()
         );
 
         $productIds = [$productRepository->getIdBySku('simple-3'), $productRepository->getIdBySku('simple-4')];
@@ -135,7 +134,8 @@ class RowTest extends \Magento\TestFramework\Indexer\TestCase
             $rule->getResource()->getTable('magento_targetrule_product'),
             'product_id'
         )->where(
-            'rule_id = ?', $rule->getId()
+            'rule_id = ?',
+            $rule->getId()
         );
 
         $productId = $productRepository->getIdBySku('12345');

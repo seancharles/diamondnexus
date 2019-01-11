@@ -3,6 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Magento\CheckoutStaging\Api;
 
 use Magento\Framework\Webapi\Rest\Request;
@@ -34,7 +35,7 @@ class PaymentInformationManagementTest extends WebapiAbstract
     /**
      * @magentoApiDataFixture Magento/CheckoutStaging/_files/quote_with_check_payment.php
      * @expectedException \Exception
-     * @expectedExceptionMessage Preview mode doesn't allow submitting the order.
+     * @expectedExceptionMessage The order can't be submitted in preview mode.
      */
     public function testSavePaymentInformationAndPlaceOrderWithException()
     {

@@ -39,7 +39,7 @@ class AssertGiftWrappingNotOnOrderCreationPage extends AbstractConstraint
         if ($orderCreateIndex->getStoreBlock()->isVisible()) {
             $orderCreateIndex->getStoreBlock()->selectStoreView();
         }
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $orderCreateIndex->getGiftOptionsBlock()->isGiftWrappingAvailable($giftWrapping->getDesign()),
             'Gift Wrapping \'' . $giftWrapping->getDesign() . '\' is present on order creation page.'
         );

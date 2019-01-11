@@ -39,7 +39,7 @@ class AssertGiftCardDuplicatedInGrid extends AbstractConstraint
 
         $productGrid->open()->getProductGrid()->search($filter);
 
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $productGrid->getProductGrid()->isRowVisible($filter, false),
             'Duplicated gift card is absent in Products grid.'
         );

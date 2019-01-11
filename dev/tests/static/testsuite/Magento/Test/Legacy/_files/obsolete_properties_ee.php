@@ -8,7 +8,6 @@
 return [
     ['_eventData', 'Magento\Logging\Block\Adminhtml\Container'],
     ['_customerSegments', 'Magento\CustomerSegment\Model\Customer'],
-    ['_limit', 'Magento\Solr\Model\ResourceModel\Index'],
     ['_amountCache', 'Magento\GiftCard\Block\Catalog\Product\Price'],
     ['_minMaxCache', 'Magento\GiftCard\Block\Catalog\Product\Price'],
     ['_skipFields', 'Magento\Logging\Model\Processor'],
@@ -49,14 +48,6 @@ return [
     ['_rmaConfig', 'Magento\Rma\Model\Rma'],
     ['_historyFactory', 'Magento\Rma\Model\Rma'],
     ['_inlineTranslation', 'Magento\Rma\Model\Rma'],
-    [
-        '_searchedEntityIds',
-        'Magento\Solr\Model\ResourceModel\Collection',
-        'Magento\Solr\Model\ResourceModel\Collection::foundEntityIds'
-    ],
-    ['indexerFactory', 'Magento\Solr\Model\Observer'],
-    ['_coreRegistry', 'Magento\Solr\Model\Observer'],
-    ['_engineProvider', 'Magento\Solr\Model\Observer'],
     ['_hierarchyLock', 'Magento\VersionsCms\Block\Adminhtml\Cms\Hierarchy\Edit\Form'],
     ['_websiteTable', 'Magento\Reminder\Model\ResourceModel\Rule'],
 ];

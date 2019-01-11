@@ -27,7 +27,6 @@
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeInCustomerSegment" />
         </variation>
         <variation name="CreateCustomerCustomAttributesEntityTestVariation2">
-            <data name="tag" xsi:type="string">stable:no</data>
             <data name="customerAttribute/data/frontend_label" xsi:type="string">TextArea_Customer_%isolation%</data>
             <data name="customerAttribute/data/attribute_code" xsi:type="string">text_area_%isolation%</data>
             <data name="customerAttribute/data/frontend_input" xsi:type="string">Text Area</data>
@@ -67,7 +66,6 @@
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeDefaultValueOnCustomerEditPage" />
         </variation>
         <variation name="CreateCustomerCustomAttributesEntityTestVariation4">
-            <data name="tag" xsi:type="string">to_maintain:yes</data>
             <data name="customerAttribute/data/frontend_label" xsi:type="string">Date_Customer_%isolation%</data>
             <data name="customerAttribute/data/attribute_code" xsi:type="string">date_%isolation%</data>
             <data name="customerAttribute/data/frontend_input" xsi:type="string">Date</data>

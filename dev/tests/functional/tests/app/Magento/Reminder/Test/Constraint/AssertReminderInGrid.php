@@ -44,7 +44,7 @@ class AssertReminderInGrid extends AbstractConstraint
 
         $reminderIndex->open();
         $reminderIndex->getRemindersGrid()->search($filter);
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $reminderIndex->getRemindersGrid()->isRowVisible($filter, false, false),
             'Reminder with name "' . $filter['name'] . '", is absent in grid.'
         );

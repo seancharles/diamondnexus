@@ -40,13 +40,13 @@ class AssertGiftWrappingTaxTotalsForOrder extends AbstractConstraint
         $totals = $orderCreateIndex->getTotalsBlock()->getOrderTotals();
         $keys = array_keys($totals);
 
-        \PHPUnit_Framework_Assert::assertContains(
+        \PHPUnit\Framework\Assert::assertContains(
             $giftWrappingExclTaxDisplayText,
             $keys,
             'There is no Gift Wrapping (Excl. Tax) in Order Totals block.'
         );
 
-        \PHPUnit_Framework_Assert::assertContains(
+        \PHPUnit\Framework\Assert::assertContains(
             $giftWrappingInclTaxDisplayText,
             $keys,
             'There is no Gift Wrapping (Incl. Tax) in Order Totals block.'
@@ -67,13 +67,13 @@ class AssertGiftWrappingTaxTotalsForOrder extends AbstractConstraint
         $totals = $orderCreateIndex->getTotalsBlock()->getOrderTotals();
         $keys = array_keys($totals);
 
-        \PHPUnit_Framework_Assert::assertNotContains(
+        \PHPUnit\Framework\Assert::assertNotContains(
             $giftWrappingExclTaxDisplayText,
             $keys,
             'Gift Wrapping (Excl. Tax) still appears in Order Totals block when none selected.'
         );
 
-        \PHPUnit_Framework_Assert::assertNotContains(
+        \PHPUnit\Framework\Assert::assertNotContains(
             $giftWrappingInclTaxDisplayText,
             $keys,
             'Gift Wrapping (Incl. Tax) still appears in Order Totals block when none selected.'

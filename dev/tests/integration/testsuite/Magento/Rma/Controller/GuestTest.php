@@ -29,6 +29,7 @@ class GuestTest extends \Magento\TestFramework\TestCase\AbstractController
             $this->getRequest()->setPostValue('oar_email', $billingAddress->getEmail());
         }
         $this->getRequest()->setPostValue('oar_zip', '');
+        $this->getRequest()->setMethod('POST');
 
         $this->dispatch($uri);
         $this->assertContains($content, $this->getResponse()->getBody());

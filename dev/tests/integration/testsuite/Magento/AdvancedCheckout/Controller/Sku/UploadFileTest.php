@@ -29,6 +29,7 @@ class UploadFileTest extends AbstractController
      * @magentoDataFixture Magento/Customer/_files/customer.php
      * @magentoDataFixture Magento/Catalog/_files/categories.php
      * @magentoDataFixture Magento/CatalogPermissions/_files/permission.php
+     * @magentoDbIsolation disabled
      */
     public function testOrderBySkuProductDeniedByCatalogPermissions()
     {

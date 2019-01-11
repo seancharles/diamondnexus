@@ -31,7 +31,7 @@ class AssertUpdateSavedForProductWithCustomOptions extends AbstractConstraint
         $catalogProductEdit->open(['id' => $product->getId()]);
 
         foreach ($updates as $update) {
-            \PHPUnit_Framework_Assert::assertTrue(
+            \PHPUnit\Framework\Assert::assertTrue(
                 $catalogProductEdit->getProductScheduleBlock()->updateCampaignExists($update->getName()),
                 $update->getName() . ' should be visible.'
             );

@@ -27,7 +27,7 @@ class AssertArchiveOrderWarningMessage extends AbstractConstraint
      */
     public function processAssert(OrderIndex $orderIndex)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             sprintf(self::WARNING_MESSAGE),
             $orderIndex->getMessagesBlock()->getWarningMessage(),
             'Wrong warning message is displayed.'

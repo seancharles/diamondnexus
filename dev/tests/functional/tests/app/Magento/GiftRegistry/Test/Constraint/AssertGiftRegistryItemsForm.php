@@ -46,7 +46,7 @@ class AssertGiftRegistryItemsForm extends AbstractAssertForm
         $giftRegistryIndex->getGiftRegistryGrid()->eventAction($giftRegistry->getTitle(), 'Manage Items');
         $formData = $giftRegistryItems->getGiftRegistryItemsBlock()->getItemData($product);
         $errors = $this->verifyData($updateOptions, $formData);
-        \PHPUnit_Framework_Assert::assertEmpty($errors, $errors);
+        \PHPUnit\Framework\Assert::assertEmpty($errors, $errors);
     }
 
     /**

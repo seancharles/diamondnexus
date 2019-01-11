@@ -47,8 +47,8 @@ class BannerSegmentLinkTest extends \PHPUnit\Framework\TestCase
     {
         $bannerForSegment = 'Get 40% Off on Graphic Editors';
         return [
-            'initial add single' => ['Test Banner', ['Designers']],
-            'initial add multiple' => ['Test Banner', ['Developers', 'Designers']],
+            'initial add single' => ['Test Dynamic Block', ['Designers']],
+            'initial add multiple' => ['Test Dynamic Block', ['Developers', 'Designers']],
             'override all' => [$bannerForSegment, ['Developers']],
             'add missing' => [$bannerForSegment, ['Designers', 'Developers']],
             'remove all - empty array' => [$bannerForSegment, []],

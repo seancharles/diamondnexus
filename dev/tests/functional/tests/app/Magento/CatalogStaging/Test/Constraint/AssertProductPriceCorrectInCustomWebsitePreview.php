@@ -48,7 +48,7 @@ class AssertProductPriceCorrectInCustomWebsitePreview extends AbstractConstraint
         $browser->selectWindow();
         $actualPrice = $stagingUpdatePreview->getProductInfoBlock()->getPrice();
         $browser->closeWindow();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $storeViewPrice,
             $actualPrice,
             $anotherWebsitePreview->getName() . ' expected update price is not correct.'

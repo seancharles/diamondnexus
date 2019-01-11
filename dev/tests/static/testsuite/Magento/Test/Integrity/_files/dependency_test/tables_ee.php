@@ -77,7 +77,6 @@ return [
     'magento_sales_invoice_grid_archive'                        => 'Magento\SalesArchive',
     'magento_sales_order_grid_archive'                          => 'Magento\SalesArchive',
     'magento_sales_shipment_grid_archive'                       => 'Magento\SalesArchive',
-    'catalogsearch_recommendations'                             => 'Magento\AdvancedSearch',
     'magento_targetrule_customersegment'                        => 'Magento\TargetRule',
     'magento_targetrule_index'                                  => 'Magento\TargetRule',
     'magento_targetrule_index_crosssell'                        => 'Magento\TargetRule',
@@ -85,5 +84,4 @@ return [
     'magento_targetrule_index_upsell'                           => 'Magento\TargetRule',
     'magento_targetrule_product'                                => 'Magento\TargetRule',
     'magento_targetrule'                                        => 'Magento\TargetRule',
-    'job_queue'                                                 => 'Magento\Queue'
 ];

@@ -65,7 +65,7 @@ class AssertGtmJsPresentOnProduct extends AbstractAssertForm
         foreach ($gtmVariations as $gtmType => $gtmProduct) {
             $tagManagerData = $this->getTagManagerData($gtmProduct);
             $regex = "|(?s)(?<=" . $gtmType . ").+" . implode('.+', $tagManagerData) . "[^}]+|";
-            \PHPUnit_Framework_Assert::assertRegExp($regex, $html);
+            \PHPUnit\Framework\Assert::assertRegExp($regex, $html);
         }
     }
 

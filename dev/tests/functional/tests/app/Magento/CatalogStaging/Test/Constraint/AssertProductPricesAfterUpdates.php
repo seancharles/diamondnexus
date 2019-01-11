@@ -46,7 +46,7 @@ class AssertProductPricesAfterUpdates extends AbstractConstraint
                         ->getName();
                     $stagingUpdatePreview->getNavigationBlock()->openCategory($categoryName);
                     $stagingUpdatePreview->getProductsListBlock()->openProduct($product->getName());
-                    \PHPUnit_Framework_Assert::assertEquals(
+                    \PHPUnit\Framework\Assert::assertEquals(
                         $stagingUpdatePreview->getProductInfoBlock()->getPrice(),
                         $prices[$productKey][$stageStep],
                         'Expected in preview price of ' . $product->getName()

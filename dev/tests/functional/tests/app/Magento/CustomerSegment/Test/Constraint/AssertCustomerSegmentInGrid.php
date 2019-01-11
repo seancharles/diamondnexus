@@ -32,7 +32,7 @@ class AssertCustomerSegmentInGrid extends AbstractConstraint
             'grid_segment_is_active' => $customerSegment->getIsActive(),
             'grid_segment_website' => reset($website),
         ];
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $customerSegmentIndex->getGrid()->isRowVisible($filter),
             'Customer Segments is absent in grid.'
         );

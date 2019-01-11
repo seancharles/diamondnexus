@@ -59,7 +59,7 @@ class AssertGiftWrappingNotOnFrontendCheckoutCart extends AbstractConstraint
         }
         $this->objectManager->create(\Magento\Customer\Test\TestStep\LogoutCustomerOnFrontendStep::class)->run();
 
-        \PHPUnit_Framework_Assert::assertEmpty(
+        \PHPUnit\Framework\Assert::assertEmpty(
             $matches,
             'Gift Wrapping is present in shopping cart on frontend.'
             . "\nLog:\n" . implode(";\n", $matches)

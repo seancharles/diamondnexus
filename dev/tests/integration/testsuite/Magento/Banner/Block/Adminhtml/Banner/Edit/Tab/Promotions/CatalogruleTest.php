@@ -8,6 +8,7 @@ namespace Magento\Banner\Block\Adminhtml\Banner\Edit\Tab\Promotions;
 /**
  * @magentoDataFixture Magento/CatalogRule/_files/catalog_rule_10_off_not_logged.php
  * @magentoAppArea adminhtml
+ * @magentoDbIsolation disabled
  */
 class CatalogruleTest extends \PHPUnit\Framework\TestCase
 {

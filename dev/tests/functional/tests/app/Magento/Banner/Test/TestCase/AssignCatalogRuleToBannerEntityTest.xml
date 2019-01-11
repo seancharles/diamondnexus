@@ -14,12 +14,7 @@
             <data name="widget" xsi:type="string">banner_rotator</data>
             <data name="banner/dataset" xsi:type="string">default</data>
             <data name="customer/dataset" xsi:type="string">customer_US</data>
-            <data name="catalogPriceRule/data/name" xsi:type="string">rule_name%isolation%</data>
-            <data name="catalogPriceRule/data/website_ids" xsi:type="string">Main Website</data>
-            <data name="catalogPriceRule/data/customer_group_ids" xsi:type="string">General</data>
-            <data name="catalogPriceRule/data/conditions" xsi:type="string">[Category|is|%category_1%]</data>
-            <data name="catalogPriceRule/data/simple_action" xsi:type="string">Adjust final price to this percentage</data>
-            <data name="catalogPriceRule/data/discount_amount" xsi:type="number">50</data>
+            <data name="catalogPriceRule" xsi:type="string">active_catalog_price_rule_with_category_conditions</data>
             <data name="productPrice/0/regular" xsi:type="number">10</data>
             <data name="productPrice/0/special" xsi:type="number">5</data>
             <data name="productPrice/0/sub_total" xsi:type="number">5</data>

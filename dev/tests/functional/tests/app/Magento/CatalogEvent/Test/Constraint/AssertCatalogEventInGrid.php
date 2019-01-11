@@ -91,7 +91,7 @@ class AssertCatalogEventInGrid extends AbstractConstraint
         ];
         $catalogEventIndex->open();
         $catalogEventIndex->getEventGrid()->search(['category_name' => $filter['category_name']]);
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $catalogEventIndex->getEventGrid()->isRowVisible($filter, false, false),
             "Event on category '$categoryName' with $dateStart - $dateEnd is absent in Events grid."
         );

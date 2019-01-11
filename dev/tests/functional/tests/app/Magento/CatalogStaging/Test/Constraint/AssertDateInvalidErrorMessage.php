@@ -17,7 +17,8 @@ class AssertDateInvalidErrorMessage extends AbstractConstraint
     /**
      * Text value to be checked.
      */
-    const INVALID_DATE_ERROR_MESSAGE = 'error: : Future Update End Time cannot be equal or earlier than Start Time.';
+    const INVALID_DATE_ERROR_MESSAGE = "error: : The Future Update End Time is invalid. "
+    . "It can't be the same time or earlier than the current time.";
 
     /**
      * Assert that the message is displayed upon saving the product with an invalid date range.
@@ -28,7 +29,7 @@ class AssertDateInvalidErrorMessage extends AbstractConstraint
     public function processAssert(CatalogProductEdit $productPage)
     {
         $actualMessage = $productPage->getProductScheduleForm()->getErrorMessage();
-        \PHPUnit_Framework_Assert::assertContains(
+        \PHPUnit\Framework\Assert::assertContains(
             self::INVALID_DATE_ERROR_MESSAGE,
             $actualMessage,
             'Wrong error message is displayed.'

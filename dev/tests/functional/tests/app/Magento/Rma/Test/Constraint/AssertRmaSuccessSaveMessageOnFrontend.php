@@ -28,7 +28,7 @@ class AssertRmaSuccessSaveMessageOnFrontend extends AbstractConstraint
     public function processAssert(CmsIndex $cmsIndex)
     {
         $pageMessage = $cmsIndex->getMessagesBlock()->getSuccessMessage();
-        \PHPUnit_Framework_Assert::assertContains(
+        \PHPUnit\Framework\Assert::assertContains(
             self::SUCCESS_SAVE_MESSAGE,
             $pageMessage,
             'Wrong success message is displayed.'

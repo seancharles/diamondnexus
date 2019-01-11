@@ -51,7 +51,7 @@ class ReturnsTest extends \Magento\TestFramework\TestCase\AbstractController
         $rma->load(1, 'increment_id');
         $rma->setCustomerId($this->_customerSession->getCustomerId());
         $rma->save();
-
+        $this->getRequest()->setMethod('POST');
         $this->getRequest()->setParam('entity_id', $rma->getEntityId());
 
         $this->dispatch($uri);

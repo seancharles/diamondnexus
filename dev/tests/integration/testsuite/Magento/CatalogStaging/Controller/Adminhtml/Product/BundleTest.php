@@ -8,6 +8,7 @@ namespace Magento\CatalogStaging\Controller\Adminhtml\Product;
 /**
  * @magentoAppArea adminhtml
  * @SuppressWarnings(PHPMD.numberOfChildren)
+ * @magentoDbIsolation disabled
  */
 class BundleTest extends \Magento\TestFramework\TestCase\AbstractController
 {
@@ -80,6 +81,9 @@ class BundleTest extends \Magento\TestFramework\TestCase\AbstractController
         ];
     }
 
+    /**
+     * Tear down after class
+     */
     public static function tearDownAfterClass()
     {
         $db = \Magento\TestFramework\Helper\Bootstrap::getInstance()->getBootstrap()
@@ -113,7 +117,6 @@ class BundleTest extends \Magento\TestFramework\TestCase\AbstractController
      * @param string $updateName
      * @param string $updateCreatedIn
      *
-     * @magentoDbIsolation enabled
      * @magentoDataFixture Magento/CatalogStaging/_files/bundle_product.php
      * @magentoConfigFixture current_store catalog/frontend/flat_catalog_product 1
      * @dataProvider saveActionDataProvider

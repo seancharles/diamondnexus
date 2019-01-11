@@ -28,7 +28,7 @@ class AssertGiftRegistryItemsUpdatedFrontendSuccessMessage extends AbstractConst
      */
     public function processAssert(GiftRegistryItems $giftRegistryItems)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::SUCCESS_MESSAGE,
             $giftRegistryItems->getMessagesBlock()->getSuccessMessage(),
             'Wrong success message is displayed.'

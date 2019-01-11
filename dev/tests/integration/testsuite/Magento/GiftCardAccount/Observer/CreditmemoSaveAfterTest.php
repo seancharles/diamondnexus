@@ -3,24 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
+
 namespace Magento\GiftCardAccount\Observer;
 
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\DataObject;
 use Magento\Framework\Event\Observer;
-use Magento\GiftCardAccount\Model\Giftcardaccount;
+use Magento\Framework\ObjectManagerInterface;
+use Magento\GiftCardAccount\Api\Data\GiftCardAccountInterface;
+use Magento\GiftCardAccount\Api\GiftCardAccountRepositoryInterface;
+use Magento\Sales\Api\CreditmemoRepositoryInterface;
+use Magento\Sales\Api\Data\CreditmemoInterface;
+use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Block\Adminhtml\Creditmemo;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\GiftCardAccount\Observer\CreditmemoSaveAfter;
-use Magento\Framework\DataObject;
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Api\FilterBuilder;
-use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Model\Order\CreditmemoFactory;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\GiftCardAccount\Helper\Data as GiftCardAccountDataHelper;
-use Magento\Sales\Model\Order\Status\HistoryFactory;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -34,7 +32,7 @@ class CreditmemoSaveAfterTest extends \PHPUnit\Framework\TestCase
     private static $giftCard2AmountInOrder = 15;
 
     // Order increment Id from fixture Magento/GiftCardAccount/_files/order_with_gift_card_account.php
-    private static $orderIncrementId = 100000001;
+    private static $orderIncrementId = '100000001';
 
     /**
      * @var CreditmemoSaveAfter
@@ -56,45 +54,46 @@ class CreditmemoSaveAfterTest extends \PHPUnit\Framework\TestCase
      * Refund to exist GiftCardAccount.
      * Refund amount sum up with balance from db.
      *
-     * @covers \Magento\GiftCardAccount\Observer\CreditmemoSaveAfter::execute
      * @magentoDataFixture Magento/GiftCardAccount/_files/creditmemo_with_gift_card_account.php
      */
     public function testRefundToGiftCardAccountWithExistingAccounts()
     {
-        $giftcardAccount = $this->objectManager->create(Giftcardaccount::class);
-        $giftCardAccount1Balance = $giftcardAccount->loadByCode('TESTCODE1')->getBalance();
-        $giftCardAccount2Balance = $giftcardAccount->loadByCode('TESTCODE2')->getBalance();
+        $fBalance = $this->getGiftCardAccount('TESTCODE1')
+            ->getBalance();
+        $sBalance = $this->getGiftCardAccount('TESTCODE2')
+            ->getBalance();
         $observer = $this->getObserver();
+        /** @var Creditmemo $creditMemo */
+        $creditMemo = $observer->getEvent()
+            ->getCreditmemo();
+        $creditMemo->setBaseGiftCardsAmount(20);
+
         $this->creditmemoSaveAfter->execute($observer);
 
-        // e.g. To the account with balance 10 was refunded 20, total 30
-        $giftcardAccount->loadByCode('TESTCODE1');
-        $this->assertEquals($giftcardAccount->getBalance(), (self::$giftCard1AmountInOrder + $giftCardAccount1Balance));
+        $giftCardAccount = $this->getGiftCardAccount('TESTCODE1');
+        self::assertEquals($fBalance + 10, $giftCardAccount->getBalance());
 
-        // e.g. To the account with balance 25 was refunded 15, total 40
-        $giftcardAccount->loadByCode('TESTCODE2');
-        $this->assertEquals($giftcardAccount->getBalance(), (self::$giftCard2AmountInOrder + $giftCardAccount2Balance));
+        // second Gift Card should refunded partially
+        $giftCardAccount = $this->getGiftCardAccount('TESTCODE2');
+        self::assertEquals($sBalance + 10, $giftCardAccount->getBalance());
     }
 
     /**
      * Refund if the GiftCardAccounts were deleted.
      * In this case are creating new accounts with the same code and balance from the order.
      *
-     * @covers \Magento\GiftCardAccount\Observer\CreditmemoSaveAfter::execute
      * @magentoDataFixture  Magento/GiftCardAccount/_files/creditmemo_with_deleted_gift_card_account.php
      */
     public function testRefundToGiftCardAccountWithDeletedAccounts()
     {
-        $giftcardAccount = $this->objectManager->create(Giftcardaccount::class);
-
         $observer = $this->getObserver();
         $this->creditmemoSaveAfter->execute($observer);
 
-        $giftcardAccount->loadByCode('TESTCODE1');
-        $this->assertEquals($giftcardAccount->getBalance(), self::$giftCard1AmountInOrder);
+        $giftcardAccount = $this->getGiftCardAccount('TESTCODE1');
+        self::assertEquals($giftcardAccount->getBalance(), self::$giftCard1AmountInOrder);
 
-        $giftcardAccount->loadByCode('TESTCODE2');
-        $this->assertEquals($giftcardAccount->getBalance(), self::$giftCard2AmountInOrder);
+        $giftcardAccount = $this->getGiftCardAccount('TESTCODE2');
+        self::assertNull($giftcardAccount);
     }
 
     /**
@@ -105,6 +104,12 @@ class CreditmemoSaveAfterTest extends \PHPUnit\Framework\TestCase
     public function testComments()
     {
         $observer = $this->getObserver();
+        /** @var Creditmemo $creditmemo */
+        $creditmemo = $observer->getEvent()
+            ->getCreditmemo();
+        $refundedAmount = self::$giftCard1AmountInOrder + self::$giftCard2AmountInOrder;
+        $creditmemo->setBaseGiftCardsAmount($refundedAmount);
+
         $this->creditmemoSaveAfter->execute($observer);
 
         $order = $this->getOrder();
@@ -114,53 +119,110 @@ class CreditmemoSaveAfterTest extends \PHPUnit\Framework\TestCase
             $realHistoryComments[] = $comment->getComment();
         }
 
-        $this->assertContains('We refunded $10.00 to Gift Card (TESTCODE1)', $realHistoryComments);
-        $this->assertContains('We refunded $15.00 to Gift Card (TESTCODE2)', $realHistoryComments);
+        self::assertContains('We refunded $10.00 to Gift Card (TESTCODE1)', $realHistoryComments);
+        self::assertContains('We refunded $15.00 to Gift Card (TESTCODE2)', $realHistoryComments);
     }
 
     /**
-     * Tests messages added to the order after returns amount to Story Credit.
+     * Tests messages added to the order after returns amount to Store Credit.
      *
-     * @magentoDataFixture  Magento/GiftCardAccount/_files/creditmemo_with_gift_card_account.php
+     * @param float $refundedAmount
+     * @param float $customerBalanceRefunded
+     * @param int $expectedMessages
+     * @param array $expectedAmount
+     * @magentoDataFixture Magento/GiftCardAccount/_files/creditmemo_with_gift_card_account.php
+     * @magentoConfigFixture customer/magento_customerbalance/is_enabled 1
+     * @dataProvider giftCardDataProvider
      */
-    public function testRefundToStoryCreditComments()
-    {
+    public function testRefundToStoreCreditComments(
+        float $refundedAmount,
+        float $customerBalanceRefunded,
+        int $expectedMessages,
+        array $expectedAmount
+    ) {
         /** @var Observer $observer*/
         $observer = $this->getObserver();
         /** @var Creditmemo $creditmemo */
-        $creditmemo = $observer->getEvent()->getCreditmemo();
-        $creditmemo->setCustomerBalanceRefundFlag(true);
+        $creditmemo = $observer->getEvent()
+            ->getCreditmemo();
+        $creditmemo->setCustomerBalanceRefundFlag(true)
+            ->setBaseGiftCardsAmount($refundedAmount)
+            ->setBsCustomerBalTotalRefunded($customerBalanceRefunded);
         $order = $creditmemo->getOrder();
         $order->setData(OrderInterface::CUSTOMER_IS_GUEST, false);
 
-        $scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['isSetFlag', 'getValue'])
-            ->getMock();
-        $scopeConfigMock->method('isSetFlag')
-            ->willReturn(true);
-
-        $objectManagerHelper = new ObjectManager($this);
-        $creditmemoSaveAfter = $objectManagerHelper->getObject(
-            CreditmemoSaveAfter::class,
-            [
-                'scopeConfig' => $scopeConfigMock,
-                'giftCardAccountHelper' => $this->objectManager->create(GiftCardAccountDataHelper::class),
-                'historyFactory' => $this->objectManager->create(HistoryFactory::class)
-            ]
-        );
-
-        $creditmemoSaveAfter->execute($observer);
+        $this->creditmemoSaveAfter->execute($observer);
 
         $order = $this->getOrder();
+        $historyComments = $this->getStoreCreditHistoryComments($order);
+        self::assertEquals($expectedMessages, count($historyComments));
+
+        foreach ($historyComments as $i => $comment) {
+            self::assertContains(
+                'We refunded $' . $expectedAmount[$i] . ' to Store Credit from Gift Card',
+                $comment
+            );
+        }
+    }
+
+    /**
+     * Gets variations for different refund amount from Gift Card.
+     *
+     * @return array
+     */
+    public function giftCardDataProvider(): array
+    {
+        return [
+            [
+                'refundedAmount' => 7.00,
+                'customerBalanceRefunded' => 7.00,
+                'expectedMessages' => 1,
+                'expectedAmount' => ['7.00']
+            ],
+            [
+                'refundedAmount' => 10.00,
+                'customerBalanceRefunded' => 10.00,
+                'expectedMessages' => 1,
+                'expectedAmount' => ['10.00']
+            ],
+            [
+                'refundedAmount' => 10.00,
+                'customerBalanceRefunded' => 7.00,
+                'expectedMessages' => 1,
+                'expectedAmount' => ['7.00']
+            ],
+            [
+                'refundedAmount' => 17.00,
+                'customerBalanceRefunded' => 17.00,
+                'expectedMessages' => 2,
+                'expectedAmount' => ['7.00', '10.00']
+            ],
+            [
+                'refundedAmount' => 25.00,
+                'customerBalanceRefunded' => 13.00,
+                'expectedMessages' => 2,
+                'expectedAmount' => ['3.00', '10.00']
+            ],
+        ];
+    }
+
+    /**
+     * Gets history comments related to refunding Gift Cards to Store Credit from the order.
+     *
+     * @param OrderInterface $order
+     * @return array
+     */
+    private function getStoreCreditHistoryComments(OrderInterface $order): array
+    {
         $comments = $order->getAllStatusHistory();
-        $realHistoryComments = [];
+        $historyComments = [];
         foreach ($comments as $comment) {
-            $realHistoryComments[] = $comment->getComment();
+            if (strpos($comment->getComment(), 'Store Credit from Gift Card') !== false) {
+                $historyComments[] = $comment->getComment();
+            }
         }
 
-        $this->assertContains('We refunded $10.00 to Store Credit from Gift Card (TESTCODE1)', $realHistoryComments);
-        $this->assertContains('We refunded $15.00 to Store Credit from Gift Card (TESTCODE2)', $realHistoryComments);
+        return $historyComments;
     }
 
     /**
@@ -168,10 +230,9 @@ class CreditmemoSaveAfterTest extends \PHPUnit\Framework\TestCase
      *
      * @return Observer
      */
-    private function getObserver()
+    private function getObserver(): Observer
     {
-        /** @var Creditmemo $creditmemo */
-        $creditmemo = $this->objectManager->get(CreditmemoFactory::class)->createByOrder($this->getOrder());
+        $creditmemo = $this->getCreditMemo(self::$orderIncrementId);
 
         /** @var DataObject $event */
         $event = $this->objectManager->create(DataObject::class);
@@ -187,26 +248,61 @@ class CreditmemoSaveAfterTest extends \PHPUnit\Framework\TestCase
     /**
      * Gets order for test
      *
-     * @return OrderInterface|mixed
+     * @return OrderInterface
      */
-    private function getOrder()
+    private function getOrder(): OrderInterface
     {
-        /** @var FilterBuilder $filterBuilder */
-        $filterBuilder = $this->objectManager->get(FilterBuilder::class);
-        $filters = [
-            $filterBuilder->setField(OrderInterface::INCREMENT_ID)
-                ->setValue(self::$orderIncrementId)
-                ->create()
-        ];
-
         /** @var SearchCriteriaBuilder $searchCriteriaBuilder */
         $searchCriteriaBuilder = $this->objectManager->get(SearchCriteriaBuilder::class);
-        $searchCriteria = $searchCriteriaBuilder->addFilters($filters)->create();
+        $searchCriteria = $searchCriteriaBuilder->addFilter(OrderInterface::INCREMENT_ID, self::$orderIncrementId)
+            ->create();
 
         /** @var  OrderRepositoryInterface $orderRepository */
         $orderRepository = $this->objectManager->get(OrderRepositoryInterface::class);
         $orders = $orderRepository->getList($searchCriteria)->getItems();
 
         return array_pop($orders);
+    }
+
+    /**
+     * Gets credit memo.
+     *
+     * @param string $incrementId
+     * @return CreditmemoInterface
+     */
+    private function getCreditMemo(string $incrementId): CreditmemoInterface
+    {
+        /** @var SearchCriteriaBuilder $searchCriteriaBuilder */
+        $searchCriteriaBuilder = $this->objectManager->get(SearchCriteriaBuilder::class);
+        $searchCriteria = $searchCriteriaBuilder->addFilter(CreditmemoInterface::INCREMENT_ID, $incrementId)
+            ->create();
+
+        /** @var CreditmemoRepositoryInterface $creditMemoRepository */
+        $creditMemoRepository = $this->objectManager->get(CreditmemoRepositoryInterface::class);
+        $creditMemoList = $creditMemoRepository->getList($searchCriteria)
+            ->getItems();
+
+        return array_pop($creditMemoList);
+    }
+
+    /**
+     * Gets Gift Card by code.
+     *
+     * @param string $code
+     * @return GiftCardAccountInterface|null
+     */
+    private function getGiftCardAccount(string $code)
+    {
+        /** @var SearchCriteriaBuilder $searchCriteriaBuilder */
+        $searchCriteriaBuilder = $this->objectManager->get(SearchCriteriaBuilder::class);
+        $searchCriteria = $searchCriteriaBuilder->addFilter('code', $code)
+            ->create();
+
+        /** @var GiftCardAccountRepositoryInterface $repository */
+        $repository = $this->objectManager->get(GiftCardAccountRepositoryInterface::class);
+        $items = $repository->getList($searchCriteria)
+            ->getItems();
+
+        return array_pop($items);
     }
 }

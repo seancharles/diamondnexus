@@ -36,12 +36,12 @@ class AssertMinRequestedQtyFailMessage extends AbstractConstraint
     {
         foreach ($requiredAttentionProducts as $product) {
             $currentMessage = $checkoutCart->getAdvancedCheckoutCart()->getFailedItemErrorMessage($product);
-            \PHPUnit_Framework_Assert::assertContains(
+            \PHPUnit\Framework\Assert::assertContains(
                 self::ERROR_QUANTITY_MESSAGE,
                 $currentMessage,
                 'Wrong error message is displayed.'
             );
-            \PHPUnit_Framework_Assert::assertContains(
+            \PHPUnit\Framework\Assert::assertContains(
                 sprintf(self::ERROR_MINIMUM_QUANTITY_MESSAGE, $product->getData('stock_data')['min_sale_qty']),
                 $currentMessage,
                 'Wrong error message is displayed.'

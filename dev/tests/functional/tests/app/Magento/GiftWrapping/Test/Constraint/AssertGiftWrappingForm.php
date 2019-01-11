@@ -52,7 +52,7 @@ class AssertGiftWrappingForm extends AbstractAssertForm
         $giftWrappingIndexPage->getGiftWrappingGrid()->searchAndOpen($filter);
         $formData = $giftWrappingNewPage->getGiftWrappingForm()->getData();
         $errors = $this->verifyData($data, $formData);
-        \PHPUnit_Framework_Assert::assertEmpty($errors, $errors);
+        \PHPUnit\Framework\Assert::assertEmpty($errors, $errors);
     }
 
     /**

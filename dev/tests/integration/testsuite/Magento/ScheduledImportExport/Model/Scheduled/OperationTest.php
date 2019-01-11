@@ -5,12 +5,27 @@
  */
 namespace Magento\ScheduledImportExport\Model\Scheduled;
 
-class OperationTest extends \PHPUnit\Framework\TestCase
+use Magento\TestFramework\Helper\Bootstrap;
+
+class OperationTest extends \Magento\TestFramework\Indexer\TestCase
 {
     /**
      * @var \Magento\ScheduledImportExport\Model\Scheduled\Operation
      */
     protected $model;
+
+    public static function setUpBeforeClass()
+    {
+        $db = Bootstrap::getInstance()->getBootstrap()
+            ->getApplication()
+            ->getDbInstance();
+        if (!$db->isDbDumpExists()) {
+            throw new \LogicException('DB dump does not exist.');
+        }
+        $db->restoreFromDbDump();
+
+        parent::setUpBeforeClass();
+    }
 
     /**
      * Set up before test
@@ -60,6 +75,7 @@ class OperationTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @magentoDataFixture Magento/ScheduledImportExport/_files/operation.php
+     * @magentoDbIsolation disabled
      */
     public function testSave()
     {
@@ -79,6 +95,7 @@ class OperationTest extends \PHPUnit\Framework\TestCase
     /**
      * @magentoDataFixture Magento/ScheduledImportExport/_files/operation.php
      * @magentoDataFixture Magento/Catalog/_files/products_new.php
+     * @magentoDbIsolation disabled
      */
     public function testRunAction()
     {
@@ -115,5 +132,13 @@ class OperationTest extends \PHPUnit\Framework\TestCase
 
         // Restore current working directory
         chdir($cwd);
+    }
+
+    /**
+     * teardown
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
     }
 }

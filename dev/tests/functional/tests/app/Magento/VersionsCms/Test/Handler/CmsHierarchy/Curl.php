@@ -71,7 +71,7 @@ class Curl extends AbstractCurl implements CmsHierarchyInterface
         $curl->write($url, $data);
         $response = $curl->read();
         $curl->close();
-        if (!strpos($response, 'data-ui-id="messages-message-success"')) {
+        if (strpos($response, 'data-ui-id="messages-message-success"') === false) {
             throw new \Exception("Cms Hierarchy creation was not successful! Response: $response");
         }
         preg_match(

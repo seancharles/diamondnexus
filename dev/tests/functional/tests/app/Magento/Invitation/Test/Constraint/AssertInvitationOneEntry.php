@@ -41,7 +41,7 @@ class AssertInvitationOneEntry extends AbstractConstraint
         )->run();
         $customerAccountIndex->getAccountMenuBlock()->openMenuItem('My Invitations');
         $email = $invitation->getEmail()['email_1'];
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             1,
             $invitationIndex->getInvitationsBlock()->countInvitations($email, $status),
             "The number of invitation with email: {$email[1]} and status: {$status} is not equal to 1."

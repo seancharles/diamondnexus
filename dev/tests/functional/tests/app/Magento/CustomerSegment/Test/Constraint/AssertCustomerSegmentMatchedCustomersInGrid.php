@@ -67,7 +67,7 @@ class AssertCustomerSegmentMatchedCustomersInGrid extends AbstractConstraint
             $customerFilter['region_id'] = $address['region_id'];
         }
 
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $customerSegmentNew->getCustomerSegmentGrid()->isRowVisible($customerFilter),
             'Customer with '
             . 'name \'' . $customerFilter['name'] . '\', '

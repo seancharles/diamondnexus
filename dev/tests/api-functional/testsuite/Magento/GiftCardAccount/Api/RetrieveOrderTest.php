@@ -120,25 +120,38 @@ class RetrieveOrderTest extends WebapiAbstract
 
         $giftCards = [
             [
-                "id" => 1,
                 "code" => 'TESTCODE1',
                 "amount" => 10,
                 "base_amount" => 10,
             ],
             [
-                "id" => 2,
                 "code" => 'TESTCODE2',
                 "amount" => 15,
                 "base_amount" => 15,
             ],
         ];
 
-        $this->assertEquals($giftCards, $orderData['extension_attributes']['gift_cards']);
+        $this->assertGiftCards($giftCards, $orderData['extension_attributes']['gift_cards']);
         $this->assertEquals(20, $orderData['extension_attributes']['base_gift_cards_amount']);
         $this->assertEquals(20, $orderData['extension_attributes']['gift_cards_amount']);
         $this->assertEquals(10, $orderData['extension_attributes']['base_gift_cards_invoiced']);
         $this->assertEquals(10, $orderData['extension_attributes']['gift_cards_invoiced']);
         $this->assertEquals(5, $orderData['extension_attributes']['base_gift_cards_refunded']);
         $this->assertEquals(5, $orderData['extension_attributes']['gift_cards_refunded']);
+    }
+
+    /**
+     * Performs assertions for Gift Cards accounts.
+     *
+     * @param array $expected
+     * @param array $actual
+     */
+    private function assertGiftCards(array $expected, array $actual)
+    {
+        foreach ($expected as $index => $card) {
+            foreach ($card as $key => $value) {
+                self::assertEquals($value, $actual[$index][$key]);
+            }
+        }
     }
 }

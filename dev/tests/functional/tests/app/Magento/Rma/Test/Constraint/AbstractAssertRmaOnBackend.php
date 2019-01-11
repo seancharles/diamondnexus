@@ -69,7 +69,7 @@ abstract class AbstractAssertRmaOnBackend extends AbstractAssertForm
         foreach ($pageItems as $key => $pageItem) {
             $pageItems[$key] = array_intersect_key($pageItem, $fixtureItems[$key]);
         }
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $fixtureItems,
             $pageItems,
             'Displayed rma items on edit page does not equals initial data.'

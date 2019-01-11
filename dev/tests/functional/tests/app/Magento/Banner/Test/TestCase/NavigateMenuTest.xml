@@ -9,8 +9,8 @@
     <testCase name="Magento\Backend\Test\TestCase\NavigateMenuTest">
         <variation name="NavigateMenuTest8">
             <data name="tag" xsi:type="string">severity:S2</data>
-            <data name="menuItem" xsi:type="string">Content > Banners</data>
-            <data name="pageTitle" xsi:type="string">Banners</data>
+            <data name="menuItem" xsi:type="string">Content > Dynamic Blocks</data>
+            <data name="pageTitle" xsi:type="string">Dynamic Blocks</data>
             <constraint name="Magento\Backend\Test\Constraint\AssertBackendPageIsAvailable"/>
         </variation>
     </testCase>

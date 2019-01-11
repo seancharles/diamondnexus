@@ -61,7 +61,7 @@ class AssertInvitationForm extends AbstractAssertForm
             ];
             $formData = $invitationsIndexView->getInvitationForm()->getData();
             $error = $this->verifyData($fixtureData, $formData);
-            \PHPUnit_Framework_Assert::assertEmpty($error, $error);
+            \PHPUnit\Framework\Assert::assertEmpty($error, $error);
             $invitationsIndexView->getFormPageActions()->back();
         }
     }

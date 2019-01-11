@@ -33,7 +33,7 @@ class AssertCustomerAttributesDisabled extends AbstractConstraint
             $customerAttributeIndex
                 ->getCustomerCustomAttributesGrid()
                 ->searchAndOpen(['attribute_code' => $code]);
-            \PHPUnit_Framework_Assert::assertSame(
+            \PHPUnit\Framework\Assert::assertSame(
                 $value,
                 $customerAttributeEdit->getCustomerCustomAttributesForm()->getFieldsStatus($value),
                 'Customer attribute with code ' . $code . ' fields statuses are not correct.'

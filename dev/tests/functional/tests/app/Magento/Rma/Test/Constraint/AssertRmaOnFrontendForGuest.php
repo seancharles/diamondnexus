@@ -44,7 +44,7 @@ class AssertRmaOnFrontendForGuest extends AbstractAssertRmaOnFrontend
         $salesGuestView->getViewBlock()->openLinkByName('Returns');
         $fixtureRmaStatus = $rma->getStatus();
         $pageRmaData = $rmaGuestIndex->getReturnsBlock()->getRmaRow($rma)->getData();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $fixtureRmaStatus,
             $pageRmaData['status'],
             "\nWrong display status of rma."
@@ -77,7 +77,7 @@ class AssertRmaOnFrontendForGuest extends AbstractAssertRmaOnFrontend
         foreach ($pageItems as $productName => $pageItem) {
             $pageItems[$productName] = array_intersect_key($pageItem, $fixtureItems[$productName]);
         }
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $fixtureItems,
             $pageItems,
             'Displayed rma items on edit page does not equals passed from fixture.'

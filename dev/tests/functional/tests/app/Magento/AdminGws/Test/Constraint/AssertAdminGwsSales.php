@@ -157,7 +157,7 @@ class AssertAdminGwsSales extends AbstractConstraint
         foreach ($orders as $order) {
             $this->orderIndex->open();
             if ($order['visible']) {
-                \PHPUnit_Framework_Assert::assertTrue(
+                \PHPUnit\Framework\Assert::assertTrue(
                     $this->orderIndex->getSalesOrderGrid()->isRowVisible(['id' => $order['order']->getId()]),
                     'Order with following id ' . $order['order']->getId() . ' is absent in orders grid.'
                 );
@@ -177,7 +177,7 @@ class AssertAdminGwsSales extends AbstractConstraint
                     $this->shipmentIds[$order['order']->getId()]
                 );
             } else {
-                \PHPUnit_Framework_Assert::assertFalse(
+                \PHPUnit\Framework\Assert::assertFalse(
                     $this->orderIndex->getSalesOrderGrid()->isRowVisible(['id' => $order['order']->getId()]),
                     'Order with following id ' . $order['order']->getId() . ' is present in orders grid.'
                 );

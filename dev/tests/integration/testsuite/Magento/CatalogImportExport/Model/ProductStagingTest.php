@@ -20,6 +20,7 @@ class ProductStagingTest extends ProductTest
 
     /**
      * @param \Magento\Catalog\Model\Product $product
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function prepareProduct($product)
     {

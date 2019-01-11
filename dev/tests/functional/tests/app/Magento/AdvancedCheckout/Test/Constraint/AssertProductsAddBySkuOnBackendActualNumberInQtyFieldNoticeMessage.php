@@ -31,7 +31,7 @@ class AssertProductsAddBySkuOnBackendActualNumberInQtyFieldNoticeMessage extends
     {
         $noticeMessages = $orderCreateIndex->getOrderErrorMessagesBlock()->getNoticeMessages();
         foreach ($noticeMessages as $message) {
-            \PHPUnit_Framework_Assert::assertEquals(
+            \PHPUnit\Framework\Assert::assertEquals(
                 $message,
                 self::NOTICE_MESSAGE,
                 'Wrong error message is displayed.'

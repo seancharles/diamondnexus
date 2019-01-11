@@ -27,7 +27,7 @@ class AssertReportSuccessSaveMessage extends AbstractConstraint
     public function processAssert(SupportReportIndex $reportIndex)
     {
         $actualMessage = $reportIndex->getMessagesBlock()->getSuccessMessage();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::SUCCESS_MESSAGE,
             $actualMessage,
             'Wrong success message is displayed.'

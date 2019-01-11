@@ -113,7 +113,7 @@ class PreviewOptions extends Block
         $pieces = explode('/', $websiteName);
 
         if (1 == count($pieces)) {
-            $optionLocator = './/option[contains(text(),"' . $pieces[0] . '")]';
+            $optionLocator = './/option[contains(.,"' . $pieces[0] . '")]';
         } else {
             $optionLocator = './/optgroup[contains(@label,"'
                 . $pieces[0] . '")]/following-sibling::optgroup[contains(@label,"'
@@ -126,7 +126,8 @@ class PreviewOptions extends Block
         if (!$option->isVisible()) {
             throw new \Exception('[' . implode('/', $pieces) . '] option is not visible in store switcher.');
         }
-        $option->doubleClick();
+        $option->click();
+        $option->click();
     }
 
     /**

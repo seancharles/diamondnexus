@@ -34,7 +34,7 @@ class AssertProductsAddBySkuOnBackendQtyIncrementsFailMessage extends AbstractCo
         foreach ($products as $key => $product) {
             $qtyIncrements = $product->getStockData()['qty_increments'];
             if ($orderOptions[$key]['qty'] > $qtyIncrements) {
-                \PHPUnit_Framework_Assert::assertEquals(
+                \PHPUnit\Framework\Assert::assertEquals(
                     $orderCreateIndex->getItemsOrderedMessagesBlock()->getErrorMessage(),
                     sprintf(self::ERROR_MESSAGE, $qtyIncrements),
                     'Wrong error message is displayed.'

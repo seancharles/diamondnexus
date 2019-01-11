@@ -28,7 +28,7 @@ class AssertGiftRegistrySuccessDeleteMessageOnBackend extends AbstractConstraint
      */
     public function processAssert(CustomerIndexEdit $customerIndexEdit)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::SUCCESS_DELETE_MESSAGE,
             $customerIndexEdit->getMessagesBlock()->getSuccessMessage(),
             'Wrong success delete message is displayed.'

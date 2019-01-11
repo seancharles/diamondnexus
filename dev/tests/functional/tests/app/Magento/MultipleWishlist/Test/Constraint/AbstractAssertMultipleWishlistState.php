@@ -74,7 +74,7 @@ abstract class AbstractAssertMultipleWishlistState extends AbstractConstraint
         $cmsIndex->open()->getLinksBlock()->openLink('My Account');
         $customerAccountIndex->getAccountMenuBlock()->openMenuItem('My Wish List');
         $wishlistIndex->getManagementBlock()->selectedWishlistByName($multipleWishlist->getName());
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $wishlistIndex->getManagementBlock()->isNoticeTypeVisible($this->noticeType),
             'Notice type is not correct.'
         );

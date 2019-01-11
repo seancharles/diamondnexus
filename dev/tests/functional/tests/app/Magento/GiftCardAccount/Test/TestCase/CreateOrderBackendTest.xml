@@ -23,7 +23,6 @@
             <data name="payment/method" xsi:type="string">free</data>
             <data name="status" xsi:type="string">Pending</data>
             <data name="configData" xsi:type="string">cashondelivery_specificcountry_gb</data>
-            <constraint name="Magento\Sales\Test\Constraint\AssertOrderSuccessCreateMessage" />
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderGrandTotal" />
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderInOrdersGridOnFrontend" />
         </variation>
@@ -45,9 +44,9 @@
             </data>
             <data name="payment/method" xsi:type="string">checkmo</data>
             <data name="payment/use_customer_balance" xsi:type="string">Yes</data>
-            <data name="status" xsi:type="string">Pending</data>
+            <data name="status" xsi:type="string">Processing</data>
             <data name="configData" xsi:type="string">checkmo</data>
-            <constraint name="Magento\Sales\Test\Constraint\AssertOrderSuccessCreateMessage" />
+            <constraint name="Magento\Shipping\Test\Constraint\AssertShipmentSuccessCreateMessage" />
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderGrandTotal" />
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderInOrdersGridOnFrontend" />
         </variation>
@@ -66,7 +65,6 @@
             <data name="payment/method" xsi:type="string">free</data>
             <data name="status" xsi:type="string">Pending</data>
             <data name="configData" xsi:type="string">banktransfer_specificcountry_gb</data>
-            <constraint name="Magento\Sales\Test\Constraint\AssertOrderSuccessCreateMessage" />
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderGrandTotal" />
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderInOrdersGridOnFrontend" />
         </variation>
@@ -86,7 +84,6 @@
             <data name="payment/method" xsi:type="string">free</data>
             <data name="status" xsi:type="string">Pending</data>
             <data name="configData" xsi:type="string">purchaseorder_specificcountry_gb</data>
-            <constraint name="Magento\Sales\Test\Constraint\AssertOrderSuccessCreateMessage" />
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderGrandTotal" />
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderInOrdersGridOnFrontend" />
         </variation>

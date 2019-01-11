@@ -38,7 +38,7 @@ class AssertOrderGiftCardGenerated extends AbstractConstraint
             $generated = !empty($productOptions['Gift Card Accounts:'])
                 && $productOptions['Gift Card Accounts:'] != 'N/A';
         }
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $generated
         );
     }

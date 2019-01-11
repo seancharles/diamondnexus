@@ -40,7 +40,7 @@ class AssertRewardSubscriptionOnBackend extends AbstractAssertForm
         $formData = $customerIndexEdit->getCustomerForm()->getData();
         $fixtureData = $reward->getData();
         $error = $this->verifyData($fixtureData, $formData);
-        \PHPUnit_Framework_Assert::assertEmpty(
+        \PHPUnit\Framework\Assert::assertEmpty(
             $error,
             "Reward Points Subscription form was filled incorrectly.\nError:\n" . $error
         );

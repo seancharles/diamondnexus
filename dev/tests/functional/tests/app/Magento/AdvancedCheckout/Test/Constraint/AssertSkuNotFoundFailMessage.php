@@ -30,7 +30,7 @@ class AssertSkuNotFoundFailMessage extends AbstractConstraint
     public function processAssert(CheckoutCart $checkoutCart, array $requiredAttentionProducts)
     {
         foreach ($requiredAttentionProducts as $product) {
-            \PHPUnit_Framework_Assert::assertEquals(
+            \PHPUnit\Framework\Assert::assertEquals(
                 self::ERROR_MESSAGE,
                 $checkoutCart->getAdvancedCheckoutCart()->getFailedItemErrorMessage($product),
                 'Wrong error message is displayed.'

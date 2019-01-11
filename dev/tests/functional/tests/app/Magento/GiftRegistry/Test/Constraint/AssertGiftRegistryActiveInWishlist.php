@@ -50,13 +50,13 @@ class AssertGiftRegistryActiveInWishlist extends AbstractConstraint
         $browser->open($_ENV['app_frontend_url'] . $product->getUrlKey() . '.html');
         $catalogProductView->getViewBlock()->clickAddToWishlist();
         $wishlistIndex->getGiftRegistryWishlistBlock()->addToGiftRegistry($giftRegistry->getTitle());
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::SUCCESS_MESSAGE,
             $wishlistIndex->getMessagesBlock()->getSuccessMessage(),
             'Wrong success message is displayed.'
         );
         $giftRegistryIndex->open()->getGiftRegistryGrid()->eventAction($giftRegistry->getTitle(), 'Manage Items');
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $giftRegistryItems->getGiftRegistryItemsBlock()->isProductInGrid($product),
             'Product can not be added to active gift registry \'' . $giftRegistry->getTitle() . '\' from Wishlist.'
         );

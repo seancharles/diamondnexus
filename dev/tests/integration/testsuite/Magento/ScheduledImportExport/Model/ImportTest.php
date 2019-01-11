@@ -7,12 +7,26 @@ namespace Magento\ScheduledImportExport\Model;
 
 use Magento\ImportExport\Model\Import;
 use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorAggregatorInterface;
+use Magento\TestFramework\Helper\Bootstrap;
 
-class ImportTest extends \PHPUnit\Framework\TestCase
+/**
+ * @magentoDbIsolation disabled
+ */
+class ImportTest extends \Magento\TestFramework\Indexer\TestCase
 {
-    /**
-     * @magentoDbIsolation enabled
-     */
+    public static function setUpBeforeClass()
+    {
+        $db = Bootstrap::getInstance()->getBootstrap()
+            ->getApplication()
+            ->getDbInstance();
+        if (!$db->isDbDumpExists()) {
+            throw new \LogicException('DB dump does not exist.');
+        }
+        $db->restoreFromDbDump();
+
+        parent::setUpBeforeClass();
+    }
+
     public function testRunSchedule()
     {
         /** @var \Magento\TestFramework\ObjectManager $objectManager */
@@ -45,5 +59,13 @@ class ImportTest extends \PHPUnit\Framework\TestCase
 
         $product = $productModel->loadByAttribute('sku', 'product_100500');
         $this->assertNotEmpty($product);
+    }
+
+    /**
+     * teardown
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
     }
 }

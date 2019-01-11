@@ -47,7 +47,7 @@ class AssertGiftRegistryManageItemsTab extends AbstractConstraint
         $giftRegistryIndex->getGiftRegistryGrid()->eventAction($giftRegistry->getTitle(), 'Manage Items');
         foreach ($products as $key => $product) {
             $productName = $product->getName();
-            \PHPUnit_Framework_Assert::assertTrue(
+            \PHPUnit\Framework\Assert::assertTrue(
                 $giftRegistryItems->getGiftRegistryItemsBlock()->isProductInGrid($product, $qty[$key]),
                 'Product with name ' . $productName . ' and ' . $qty[$key] . ' quantity is absent in grid.'
             );

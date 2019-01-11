@@ -54,7 +54,7 @@ class AssertGiftWrappingForOrderOnFrontendCheckout extends AbstractConstraint
             ['shipping' => $shipping]
         )->run();
 
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $giftWrappingTotal,
             $checkoutOnepage->getGiftWrappingTotalsBlock()->getGiftWrappingAmount(),
             'There is no Order Wrapping on Onepage checkout Totals.'

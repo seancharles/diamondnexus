@@ -34,7 +34,7 @@ class AssertProductsAddBySkuOnBackendMaxRequestedQtyFailMessage extends Abstract
         foreach ($products as $key => $product) {
             $maxSaleQty = $product->getStockData()['max_sale_qty'];
             if ($orderOptions[$key]['qty'] > $maxSaleQty) {
-                \PHPUnit_Framework_Assert::assertEquals(
+                \PHPUnit\Framework\Assert::assertEquals(
                     $orderCreateIndex->getItemsOrderedMessagesBlock()->getErrorMessage(),
                     sprintf(self::ERROR_MESSAGE, $maxSaleQty),
                     'Wrong error message is displayed.'

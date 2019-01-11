@@ -25,7 +25,7 @@ class AssertUpdateScheduledChangesErrorMessage extends AbstractConstraint
         CatalogProductEdit $catalogProductEdit,
         $errorMessage
     ) {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $errorMessage,
             $catalogProductEdit->getProductScheduleForm()->getErrorMessage(),
             'Update campaign can not be created error message is incorrect.'

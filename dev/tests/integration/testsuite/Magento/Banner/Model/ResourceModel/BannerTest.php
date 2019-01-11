@@ -38,6 +38,7 @@ class BannerTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture Magento/CatalogRule/_files/catalog_rule_10_off_not_logged.php
      * @magentoDataFixture Magento/Banner/_files/banner.php
+     * @magentoDbIsolation disabled
      */
     public function testGetCatalogRuleRelatedBannerIdsNoBannerConnected()
     {
@@ -49,13 +50,14 @@ class BannerTest extends \PHPUnit\Framework\TestCase
     /**
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture Magento/Banner/_files/banner_catalog_rule.php
+     * @magentoDbIsolation disabled
      */
     public function testGetCatalogRuleRelatedBannerIds()
     {
         $banner = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\Banner\Model\Banner::class
         );
-        $banner->load('Test Banner', 'name');
+        $banner->load('Test Dynamic Block', 'name');
 
         $this->assertSame(
             [$banner->getId()],
@@ -67,6 +69,7 @@ class BannerTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture Magento/Banner/_files/banner_catalog_rule.php
      * @dataProvider getCatalogRuleRelatedBannerIdsWrongDataDataProvider
+     * @magentoDbIsolation disabled
      */
     public function testGetCatalogRuleRelatedBannerIdsWrongData($websiteId, $customerGroupId)
     {
@@ -87,6 +90,7 @@ class BannerTest extends \PHPUnit\Framework\TestCase
     /**
      * @magentoDataFixture Magento/Banner/_files/banner_disabled_40_percent_off.php
      * @magentoDataFixture Magento/Banner/_files/banner_enabled_40_to_50_percent_off.php
+     * @magentoDbIsolation disabled
      */
     public function testGetSalesRuleRelatedBannerIds()
     {
@@ -109,6 +113,7 @@ class BannerTest extends \PHPUnit\Framework\TestCase
     /**
      * @magentoDataFixture Magento/Banner/_files/banner_enabled_40_to_50_percent_off.php
      * @magentoDataFixture Magento/Banner/_files/banner_disabled_40_percent_off.php
+     * @magentoDbIsolation disabled
      */
     public function testGetSalesRuleRelatedBannerIdsNoRules()
     {

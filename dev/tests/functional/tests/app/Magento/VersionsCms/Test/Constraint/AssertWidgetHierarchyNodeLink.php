@@ -45,7 +45,7 @@ class AssertWidgetHierarchyNodeLink extends AbstractConstraint
         $cmsIndex->getTopmenu()->selectCategoryByName($nodesData[0]['identifier']);
 
         foreach ($nodesData as $nodeData) {
-            \PHPUnit_Framework_Assert::assertContains(
+            \PHPUnit\Framework\Assert::assertContains(
                 $nodeData['identifier'],
                 $frontCmsPage->getCmsPageBlock()->getPageContent(),
                 'Wrong content is displayed.'

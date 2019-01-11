@@ -29,7 +29,7 @@ class AssertCustomerAddressAttributeErrorRequireMessage extends AbstractConstrai
     public function processAssert(CustomerAddressAttribute $customAttribute, CheckoutOnepage $checkoutOnepage)
     {
         $errorMessages = $checkoutOnepage->getShippingBlock()->getAddressModalBlock()->getErrorMessages();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::ERROR_REQUIRE_MESSAGE,
             $errorMessages[$customAttribute->getFrontendLabel()]
         );

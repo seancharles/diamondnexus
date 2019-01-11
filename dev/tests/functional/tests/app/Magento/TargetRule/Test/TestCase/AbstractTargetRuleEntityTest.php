@@ -7,15 +7,14 @@
 namespace Magento\TargetRule\Test\TestCase;
 
 use Magento\Catalog\Test\Fixture\CatalogProductSimple;
+use Magento\Catalog\Test\Page\Adminhtml\CatalogProductAttributeIndex;
+use Magento\Catalog\Test\Page\Adminhtml\CatalogProductAttributeNew;
 use Magento\CustomerSegment\Test\Fixture\CustomerSegment;
+use Magento\Mtf\TestCase\Injectable;
 use Magento\TargetRule\Test\Fixture\TargetRule;
 use Magento\TargetRule\Test\Page\Adminhtml\TargetRuleEdit;
 use Magento\TargetRule\Test\Page\Adminhtml\TargetRuleIndex;
 use Magento\TargetRule\Test\Page\Adminhtml\TargetRuleNew;
-use Magento\Mtf\TestCase\Injectable;
-use Magento\Catalog\Test\Fixture\CatalogProductAttribute;
-use Magento\Catalog\Test\Page\Adminhtml\CatalogProductAttributeIndex;
-use Magento\Catalog\Test\Page\Adminhtml\CatalogProductAttributeNew;
 
 /**
  * Parent class for TargetRule tests.
@@ -37,11 +36,6 @@ abstract class AbstractTargetRuleEntityTest extends Injectable
     protected $targetRuleNew;
 
     /**
-     * @var  CatalogProductAttribute
-     */
-    protected $productAttribute;
-
-    /**
      * Target rule edit page.
      *
      * @var TargetRuleEdit
@@ -56,26 +50,27 @@ abstract class AbstractTargetRuleEntityTest extends Injectable
     protected $targetRuleName;
 
     /**
-     *  Attribute grid page
+     *  Attribute grid page.
      *
      * @var CatalogProductAttributeIndex
      */
     protected $attributeIndex;
 
     /**
+     * Attribute create page.
+     *
      * @var CatalogProductAttributeNew
      */
     protected $attributeNew;
 
     /**
-     * Injection data
+     * Injection data.
      *
      * @param TargetRuleIndex $targetRuleIndex
      * @param TargetRuleNew $targetRuleNew
      * @param TargetRuleEdit $targetRuleEdit
      * @param CatalogProductAttributeIndex $attributeIndex
      * @param CatalogProductAttributeNew $attributeNew
-     * @param CatalogProductAttribute $productAttribute
      * @return void
      */
     public function __inject(
@@ -83,15 +78,13 @@ abstract class AbstractTargetRuleEntityTest extends Injectable
         TargetRuleNew $targetRuleNew,
         TargetRuleEdit $targetRuleEdit,
         CatalogProductAttributeIndex $attributeIndex,
-        CatalogProductAttributeNew $attributeNew,
-        CatalogProductAttribute $productAttribute
+        CatalogProductAttributeNew $attributeNew
     ) {
         $this->targetRuleIndex = $targetRuleIndex;
         $this->targetRuleNew = $targetRuleNew;
         $this->targetRuleEdit = $targetRuleEdit;
         $this->attributeIndex = $attributeIndex;
         $this->attributeNew = $attributeNew;
-        $this->productAttribute = $productAttribute;
     }
 
     /**

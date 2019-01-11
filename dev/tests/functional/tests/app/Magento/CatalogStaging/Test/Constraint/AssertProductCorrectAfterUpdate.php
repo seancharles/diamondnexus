@@ -52,13 +52,13 @@ class AssertProductCorrectAfterUpdate extends AbstractConstraint
         $websiteCode = $customWebsite ? 'websites/' . $customWebsite->getCode() . '/' : '';
         $browser->open($_ENV['app_frontend_url'] . $websiteCode . $product->getUrlKey() . '.html');
 
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $expectedPrice ? $expectedPrice : $productUpdate->getPrice(),
             $catalogProductView->getViewBlock()->getPriceBlock()->getPrice(),
             $update->getName() . ' expected price is not correct.'
         );
 
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $expectedName,
             $catalogProductView->getViewBlock()->getProductName(),
             $expectedName . ' expected name is not correct.'

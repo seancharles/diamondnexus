@@ -27,8 +27,8 @@ class CreateBanner extends Curl
     public function persist(FixtureInterface $fixture = null)
     {
         $response = $this->postRequest($fixture);
-        if (!strpos($response, 'data-ui-id="messages-message-success"')) {
-            throw new \Exception('Banner creation by curl handler was not successful! Response: ' . $response);
+        if (strpos($response, 'data-ui-id="messages-message-success"') === false) {
+            throw new \Exception('Dynamic Block creation by curl handler was not successful! Response: ' . $response);
         }
         $bannerId = null;
         if (preg_match('/\/banner\/edit\/id\/(\d+)/', $response, $matches)) {

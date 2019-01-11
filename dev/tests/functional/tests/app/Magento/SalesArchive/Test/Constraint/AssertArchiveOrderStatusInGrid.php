@@ -40,7 +40,7 @@ class AssertArchiveOrderStatusInGrid extends AbstractConstraint
         /** @var \Magento\Sales\Test\Block\Adminhtml\Order\View\Tab\Info $infoTab */
         $infoTab = $salesOrderView->getOrderForm()->openTab('info')->getTab('info');
         $actualOrderStatus = $infoTab->getOrderStatus();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $orderStatus,
             $actualOrderStatus,
             "Order status is not correct on archived order's page."

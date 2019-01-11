@@ -24,7 +24,7 @@
             <constraint name="Magento\Reward\Test\Constraint\AssertRewardPointsBalance" />
         </variation>
         <variation name="CreateExchangeRateForRewardPointsEntityTestVariation2">
-            <data name="tag" xsi:type="string">stable:no, severity:S2</data>
+            <data name="tag" xsi:type="string">severity:S2</data>
             <data name="config/dataset" xsi:type="string">reward_purchase</data>
             <data name="configRollback/dataset" xsi:type="string">reward_purchase_rollback</data>
             <data name="customer/dataset" xsi:type="string">register_customer</data>

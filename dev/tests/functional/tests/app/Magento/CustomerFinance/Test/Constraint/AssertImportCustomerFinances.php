@@ -57,7 +57,7 @@ class AssertImportCustomerFinances extends AbstractConstraint
         $this->import = $import;
         $this->customerIndexEdit = $customerIndexEdit;
 
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $this->getResultCustomerFinance(),
             $this->getResultCsv(),
             'Customers finances from page and csv are not match.'

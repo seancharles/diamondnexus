@@ -52,5 +52,3 @@ Magento/TargetRule/Setup
 Magento/AdvancedCheckout/Model
 Magento/GiftCard/Model/ResourceModel/Attribute/Backend/Giftcard
 Magento/TargetRule/Model/Actions/Condition/Product
-Magento/MessageQueue/Setup
-Magento/Elasticsearch/Elasticsearch5

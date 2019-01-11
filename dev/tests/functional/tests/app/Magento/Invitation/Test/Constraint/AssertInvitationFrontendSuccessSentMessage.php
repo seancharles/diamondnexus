@@ -34,7 +34,7 @@ class AssertInvitationFrontendSuccessSentMessage extends AbstractConstraint
         foreach ($invitation->getEmail() as $email) {
             $expectedMessages[] = sprintf(self::SUCCESS_MESSAGE, $email);
         }
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $expectedMessages,
             $invitationIndex->getMessagesBlock()->getSuccessMessages(),
             "Expected success messages doesn't match actual."

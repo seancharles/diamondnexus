@@ -56,11 +56,11 @@ class AssertAdminGwsCustomers extends AbstractConstraint
             ['user' => $customAdmin]
         )->run();
         $customerIndexPage->open();
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $customerIndexPage->getCustomerGridBlock()->isRowVisible(['email' => $customer->getEmail()]),
             'Customer with email ' . $customer->getEmail() . ' is present in customers grid.'
         );
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $customerIndexPage->getCustomerGridBlock()->isRowVisible(['email' => $visibleCustomer->getEmail()]),
             'Customer with email ' . $visibleCustomer->getEmail() . ' is absent in customers grid.'
         );

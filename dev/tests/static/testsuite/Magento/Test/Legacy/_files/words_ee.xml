@@ -13,7 +13,7 @@
     <whitelist>
         <item>
             <component type="module" name="Magento_Enterprise" />
-            <path>Setup/InstallData.php</path>
+            <path>Setup/Patch/Data/AddEnterpriseConfigurations.php</path>
             <word>Enterprise_Staging</word>
         </item>
     </whitelist>

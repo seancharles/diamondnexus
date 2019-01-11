@@ -27,9 +27,9 @@ class AssertBannerNotInGrid extends AbstractConstraint
     {
         $bannerIndex->open();
 
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $bannerIndex->getGrid()->isRowVisible(['banner' => $banner->getName()]),
-            'Banner is present in banner grid.'
+            'Dynamic Block is present in dynamic blocks grid.'
         );
     }
 
@@ -40,6 +40,6 @@ class AssertBannerNotInGrid extends AbstractConstraint
      */
     public function toString()
     {
-        return 'Banner is absent in Banners grid.';
+        return 'Dynamic Block is absent in Dynamic Blocks grid.';
     }
 }

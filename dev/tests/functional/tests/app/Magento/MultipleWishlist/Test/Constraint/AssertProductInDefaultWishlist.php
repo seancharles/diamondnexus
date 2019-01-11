@@ -46,7 +46,7 @@ class AssertProductInDefaultWishlist extends AbstractConstraint
         $actualQuantity = ($qty == '-') ? '-' : $formData['qty'];
         $expectedQuantity = ($typeAction == 'move') ? $qty - $qtyToAction : $qty;
 
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $expectedQuantity,
             $actualQuantity,
             'Actual quantity of ' . $product->getName() . ' in default wishlist doesn\'t match to expected.'

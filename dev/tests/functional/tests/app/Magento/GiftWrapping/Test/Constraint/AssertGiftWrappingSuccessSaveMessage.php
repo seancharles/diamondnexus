@@ -25,7 +25,7 @@ class AssertGiftWrappingSuccessSaveMessage extends AbstractConstraint
     public function processAssert(GiftWrappingIndex $giftWrappingIndexPage)
     {
         $actualMessage = $giftWrappingIndexPage->getMessagesBlock()->getSuccessMessage();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::SUCCESS_SAVE_MESSAGE,
             $actualMessage,
             'Wrong success message is displayed.'

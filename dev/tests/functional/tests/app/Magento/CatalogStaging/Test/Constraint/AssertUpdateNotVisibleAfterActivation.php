@@ -45,7 +45,7 @@ class AssertUpdateNotVisibleAfterActivation extends AbstractConstraint
         $catalogProductEdit->open(['id' => $product->getId()]);
 
         foreach ($updates as $update) {
-            \PHPUnit_Framework_Assert::assertFalse(
+            \PHPUnit\Framework\Assert::assertFalse(
                 $catalogProductEdit->getProductScheduleBlock()->updateCampaignExists($update->getName()),
                 $update->getName() . ' should not be visible.'
             );

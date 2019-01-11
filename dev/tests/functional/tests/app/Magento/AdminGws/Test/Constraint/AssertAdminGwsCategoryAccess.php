@@ -62,21 +62,21 @@ class AssertAdminGwsCategoryAccess extends AbstractConstraint
         )->run();
 
         $categoryIndex->open();
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $categoryIndex->getTreeCategories()->isCategoryVisible($rootCategory),
             'Custom root category is missing in backend catalog category tree.'
         );
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $categoryIndex->getTreeCategories()->isCategoryVisible($category),
             'Custom subcategory is missing in backend catalog category tree.'
         );
         $defaultCategory = $fixtureFactory->createByCode('category', ['dataset' => 'default_category']);
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $categoryIndex->getTreeCategories()->isCategoryVisible($defaultCategory),
             'Default root category is displayed in backend catalog category tree.'
         );
         $categoryEdit->open(['id' => $defaultCategory->getId()]);
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $rootCategory->getName(),
             $categoryEdit->getEditForm()->getData($defaultCategory)['name'],
             'Default root category is available by direct link.'

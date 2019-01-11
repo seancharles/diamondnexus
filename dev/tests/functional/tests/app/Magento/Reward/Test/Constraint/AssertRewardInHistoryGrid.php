@@ -46,7 +46,7 @@ class AssertRewardInHistoryGrid extends AbstractConstraint
             $data['store_id'] = explode('/', $data['store_id'])[0];
         }
 
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $rewardPointsTab->getHistoryGrid()->isRowVisible($data, false),
             "Record in Reward Points History Grid was not found."
         );

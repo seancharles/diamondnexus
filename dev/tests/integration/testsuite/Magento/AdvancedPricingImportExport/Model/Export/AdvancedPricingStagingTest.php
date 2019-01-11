@@ -9,7 +9,7 @@ class AdvancedPricingStagingTest extends AdvancedPricingTest
 {
     /**
      * @magentoAppArea adminhtml
-     * @magentoDbIsolation enabled
+     * @magentoDbIsolation disabled
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      */

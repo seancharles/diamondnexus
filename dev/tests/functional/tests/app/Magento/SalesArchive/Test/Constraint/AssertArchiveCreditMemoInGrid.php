@@ -39,7 +39,7 @@ class AssertArchiveCreditMemoInGrid extends AbstractConstraint
             ];
 
             $errorMessage = implode(', ', $filter);
-            \PHPUnit_Framework_Assert::assertTrue(
+            \PHPUnit\Framework\Assert::assertTrue(
                 $archiveCreditMemos->getCreditMemosGrid()->isRowVisible($filter),
                 'Credit memo with following data \'' . $errorMessage . '\' is absent in archive credit memos grid.'
             );

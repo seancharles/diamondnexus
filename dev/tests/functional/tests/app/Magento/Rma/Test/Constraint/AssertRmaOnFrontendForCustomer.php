@@ -49,7 +49,7 @@ class AssertRmaOnFrontendForCustomer extends AbstractAssertRmaOnFrontend
 
         $fixtureRmaStatus = $rma->getStatus();
         $pageRmaData = $customerAccountRmaIndex->getRmaHistory()->getRmaRow($rma)->getData();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $fixtureRmaStatus,
             $pageRmaData['status'],
             "\nWrong display status of rma."
@@ -69,7 +69,7 @@ class AssertRmaOnFrontendForCustomer extends AbstractAssertRmaOnFrontend
         foreach ($pageItemsData as $key => $pageItem) {
             $pageItemsData[$key] = array_intersect_key($pageItem, $fixtureItemsData[$key]);
         }
-        \PHPUnit_Framework_Assert::assertEquals($fixtureItemsData, $pageItemsData);
+        \PHPUnit\Framework\Assert::assertEquals($fixtureItemsData, $pageItemsData);
     }
 
     /**

@@ -31,7 +31,7 @@ class AssertProductsAddBySkuOnBackendSpecifyProductOptionsLink extends AbstractC
     {
         $noticeMessages = $orderCreateIndex->getOrderErrorMessagesBlock()->getNoticeMessages();
         foreach ($noticeMessages as $message) {
-            \PHPUnit_Framework_Assert::assertEquals(
+            \PHPUnit\Framework\Assert::assertEquals(
                 $message,
                 self::ERROR_MESSAGE,
                 'Message is not present after adding products to order.'

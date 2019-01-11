@@ -28,7 +28,7 @@ class AssertGiftWrappingForOrderInCart extends AbstractConstraint
         $checkoutCart->open();
         $checkoutCart->getGiftOptionsOrderBlock()->selectGiftWrapping($giftWrapping);
 
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $giftWrappingTotal,
             $checkoutCart->getGiftWrappingTotalsBlock()->getGiftWrappingAmount(),
             'There is no Order Wrapping in Cart Totals block.'

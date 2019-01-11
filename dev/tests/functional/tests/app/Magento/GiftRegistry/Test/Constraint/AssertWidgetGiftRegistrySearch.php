@@ -45,7 +45,7 @@ class AssertWidgetGiftRegistrySearch extends AbstractConstraint
         $cmsIndex->open();
         $categoryName = $widget->getWidgetInstance()[0]['entities']->getName();
         $cmsIndex->getTopmenu()->selectCategoryByName($categoryName);
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $catalogCategoryView->getWidgetView()->isWidgetVisible($widget, self::WIDGET_TEXT),
             'Gift Registry Search widget is absent on Category page.'
         );

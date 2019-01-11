@@ -35,7 +35,7 @@ class AssertGiftCardAccountInGrid extends AbstractConstraint
             'balance' => $balance,
             'date_expires' => $dateExpires,
         ];
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $index->getGiftCardAccount()->isRowVisible($filter, false, false),
             "Gift card with balance = '$balance' and expiration date = '$dateExpires' is absent in "
             . "gift card account grid."

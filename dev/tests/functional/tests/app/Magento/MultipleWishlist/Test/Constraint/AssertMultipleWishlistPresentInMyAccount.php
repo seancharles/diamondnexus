@@ -24,7 +24,7 @@ class AssertMultipleWishlistPresentInMyAccount extends AbstractAssertMultipleWis
      */
     protected function assert($isPresent)
     {
-        \PHPUnit_Framework_Assert::assertTrue($isPresent, 'Multiple wish list is not exist on "My Account" page.');
+        \PHPUnit\Framework\Assert::assertTrue($isPresent, 'Multiple wish list is not exist on "My Account" page.');
     }
 
     /**

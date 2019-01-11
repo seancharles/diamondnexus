@@ -36,13 +36,13 @@ class AssertQtyIsNotEnoughFailMessage extends AbstractConstraint
     {
         foreach ($requiredAttentionProducts as $product) {
             $currentMessage = $checkoutCart->getAdvancedCheckoutCart()->getFailedItemErrorMessage($product);
-            \PHPUnit_Framework_Assert::assertContains(
+            \PHPUnit\Framework\Assert::assertContains(
                 self::ERROR_QUANTITY_MESSAGE,
                 $currentMessage,
                 'Wrong error message is displayed.'
             );
             $productQty = $product->getQuantityAndStockStatus()['qty'];
-            \PHPUnit_Framework_Assert::assertContains(
+            \PHPUnit\Framework\Assert::assertContains(
                 sprintf(self::LEFT_IN_STOCK_ERROR_MESSAGE, $productQty),
                 $currentMessage,
                 'Wrong error message is displayed.'

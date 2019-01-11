@@ -25,7 +25,7 @@ class AssertProductsAbsentInRequiringAttention extends AbstractConstraint
     {
         $checkoutCart->open();
         foreach ($products as $product) {
-            \PHPUnit_Framework_Assert::assertFalse(
+            \PHPUnit\Framework\Assert::assertFalse(
                 $checkoutCart->getAdvancedCheckoutCart()->isFailedItemBlockVisible($product),
                 'Product ' . $product->getName() . ' is present in requiring attention block.'
             );

@@ -18,7 +18,7 @@ class AssertProductsAddBySkuOnBackendProductQtyIsNotEnough extends AbstractConst
     /**
      * Error message pattern.
      */
-    const ERROR_MESSAGE = 'We don\'t have as many "%s" as you requested.';
+    const ERROR_MESSAGE = 'The requested qty is not available';
 
     /**
      * Assert that after adding products by sku to order on backend,
@@ -33,7 +33,7 @@ class AssertProductsAddBySkuOnBackendProductQtyIsNotEnough extends AbstractConst
     {
         foreach ($products as $key => $product) {
             if ($orderOptions[$key]['qty'] > $products[$key]->getQuantityAndStockStatus()['qty']) {
-                \PHPUnit_Framework_Assert::assertEquals(
+                \PHPUnit\Framework\Assert::assertEquals(
                     $orderCreateIndex->getItemsOrderedMessagesBlock()->getNoticeMessage(),
                     sprintf(self::ERROR_MESSAGE, $product->getName()),
                     'Wrong error message is displayed.'

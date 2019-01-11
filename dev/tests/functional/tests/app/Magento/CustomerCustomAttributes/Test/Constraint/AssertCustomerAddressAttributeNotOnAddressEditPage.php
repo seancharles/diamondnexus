@@ -29,7 +29,7 @@ class AssertCustomerAddressAttributeNotOnAddressEditPage extends AbstractConstra
         $attributeCode = $customAttribute->getAttributeCode();
         $isVisible = $customerAddressEdit->getEditForm()->isAddressSimpleAttributeVisible($attributeCode);
 
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $isVisible,
             'Customer Address Attribute with attribute code: \'' . $attributeCode . '\' '
             . 'is present during editing address in customer account on frontend.'

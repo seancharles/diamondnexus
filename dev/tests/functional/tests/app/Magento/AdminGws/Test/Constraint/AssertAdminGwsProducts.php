@@ -60,11 +60,11 @@ class AssertAdminGwsProducts extends AbstractConstraint
             ['user' => $customAdmin]
         )->run();
         $catalogProductIndex->open();
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $catalogProductIndex->getProductGrid()->isRowVisible(['sku' => $product->getSku()]),
             'Product ' . $product->getName() . ' is present in products grid.'
         );
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $catalogProductIndex->getProductGrid()->isRowVisible(['sku' => $visibleProduct->getSku()]),
             'Product ' . $visibleProduct->getName() . ' is absent in products grid.'
         );

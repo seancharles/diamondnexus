@@ -48,7 +48,7 @@ class AssertTargetRuleIsNotPresentedInGrid extends AbstractConstraint
         if ($fromDate) {
             $filter['start_on_from'] = date('M j, Y', $fromDate);
         }
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $targetRuleIndex->getTargetRuleGrid()->isRowVisible($filter, false),
             'Target rule with '
             . 'name \'' . $filter['name'] . '\', '

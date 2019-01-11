@@ -32,7 +32,7 @@ class AssertArchiveOrderNotInGrid extends AbstractConstraint
         ];
         $archiveOrders->open();
         $errorMessage = implode(', ', $filter);
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $archiveOrders->getSalesArchiveOrderGrid()->isRowVisible($filter),
             'Order with following data \'' . $errorMessage . '\' is present in archive orders grid.'
         );

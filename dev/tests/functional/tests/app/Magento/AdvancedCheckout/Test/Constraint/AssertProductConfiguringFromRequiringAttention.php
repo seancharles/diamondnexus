@@ -37,7 +37,7 @@ class AssertProductConfiguringFromRequiringAttention extends AbstractConstraint
         foreach ($requiredAttentionProducts as $product) {
             $checkoutCart->open()->getAdvancedCheckoutCart()->clickSpecifyProductOptionsLink($product);
             $catalogProductView->getViewBlock()->addToCart($product);
-            \PHPUnit_Framework_Assert::assertEquals(
+            \PHPUnit\Framework\Assert::assertEquals(
                 sprintf(self::SUCCESS_MESSAGE, $product->getName()),
                 $checkoutCart->getMessagesBlock()->getSuccessMessage()
             );

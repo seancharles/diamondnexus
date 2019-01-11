@@ -29,7 +29,7 @@ class AssertGiftRegistryIsEmptyMessage extends AbstractConstraint
     public function processAssert(GiftRegistryItems $giftRegistryItems)
     {
         $giftRegistryItems->open();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::INFO_MESSAGE,
             $giftRegistryItems->getGiftRegistryItemsBlock()->getInfoMessage(),
             'Wrong notice message is displayed.'

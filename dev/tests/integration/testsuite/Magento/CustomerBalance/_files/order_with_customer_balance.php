@@ -3,65 +3,64 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
 
-// @codingStandardsIgnoreFile
+use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\TestFramework\Helper\Bootstrap;
+use Magento\Sales\Model\Order\Address;
+use Magento\Sales\Model\Order\Payment;
+use Magento\Sales\Model\Order\Item;
+use Magento\Sales\Model\Order;
+use Magento\Store\Model\StoreManagerInterface;
+
+/**
+ * @var \Magento\Catalog\Model\Product $product
+ * @var \Magento\Customer\Model\Customer $customer
+ */
 
 require __DIR__ . '/../../../Magento/Sales/_files/default_rollback.php';
 require __DIR__ . '/../../../Magento/Catalog/_files/product_simple.php';
-/** @var \Magento\Catalog\Model\Product $product */
+require __DIR__ . '/../../../Magento/Customer/_files/customer.php';
 
 $addressData = include __DIR__ . '/../../../Magento/Sales/_files/address_data.php';
 
-$objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
+$objectManager = Bootstrap::getObjectManager();
 
-$billingAddress = $objectManager->create(\Magento\Sales\Model\Order\Address::class, ['data' => $addressData]);
+$billingAddress = $objectManager->create(Address::class, ['data' => $addressData]);
 $billingAddress->setAddressType('billing');
 
 $shippingAddress = clone $billingAddress;
-$shippingAddress->setId(null)->setAddressType('shipping');
+$shippingAddress->setId(null)
+    ->setAddressType('shipping');
 
-$payment = $objectManager->create(\Magento\Sales\Model\Order\Payment::class);
+$payment = $objectManager->create(Payment::class);
 $payment->setMethod('checkmo');
 
-/** @var \Magento\Sales\Model\Order\Item $orderItem */
-$orderItem = $objectManager->create(\Magento\Sales\Model\Order\Item::class);
+/** @var Item $orderItem */
+$orderItem = $objectManager->create(Item::class);
 $orderItem->setProductId($product->getId())->setQtyOrdered(2);
 $orderItem->setBasePrice($product->getPrice());
 $orderItem->setPrice($product->getPrice());
 $orderItem->setRowTotal($product->getPrice());
 $orderItem->setProductType('simple');
 
-/** @var \Magento\Sales\Model\Order $order */
-$order = $objectManager->create(\Magento\Sales\Model\Order::class);
-$order->setIncrementId(
-    '100000001'
-)->setState(
-    \Magento\Sales\Model\Order::STATE_PROCESSING
-)->setStatus(
-    $order->getConfig()->getStateDefaultStatus(\Magento\Sales\Model\Order::STATE_PROCESSING)
-)->setSubtotal(
-    16
-)->setGrandTotal(
-    16
-)->setBaseSubtotal(
-    16
-)->setBaseGrandTotal(
-    16
-)->setCustomerIsGuest(
-    true
-)->setCustomerEmail(
-    'customer@null.com'
-)->setBillingAddress(
-    $billingAddress
-)->setShippingAddress(
-    $shippingAddress
-)->setStoreId(
-    $objectManager->get(\Magento\Store\Model\StoreManagerInterface::class)->getStore()->getId()
-)->addItem(
-    $orderItem
-)->setPayment(
-    $payment
-);
+/** @var Order $order */
+$order = $objectManager->create(Order::class);
+$order->setIncrementId('100000001')
+    ->setState(Order::STATE_PROCESSING)
+    ->setStatus($order->getConfig()->getStateDefaultStatus(Order::STATE_PROCESSING))
+    ->setSubtotal(16)
+    ->setGrandTotal(16)
+    ->setBaseSubtotal(16)
+    ->setBaseGrandTotal(16)
+    ->setCustomerIsGuest(false)
+    ->setCustomerEmail($customer->getEmail())
+    ->setCustomerId($customer->getId())
+    ->setBillingAddress($billingAddress)
+    ->setShippingAddress($shippingAddress)
+    ->setStoreId($objectManager->get(StoreManagerInterface::class)->getStore()->getId())
+    ->addItem($orderItem)
+    ->setPayment($payment);
 $order->setBaseCustomerBalanceAmount(16);
 $order->setCustomerBalanceAmount(16);
 $order->setBaseCustomerBalanceInvoiced(8);
@@ -70,4 +69,8 @@ $order->setBaseCustomerBalanceRefunded(0);
 $order->setCustomerBalanceRefunded(0);
 $order->setBsCustomerBalTotalRefunded(0);
 $order->setCustomerBalTotalRefunded(0);
-$order->save();
+$order->setBaseToOrderRate(1);
+
+/** @var OrderRepositoryInterface $orderRepository */
+$orderRepository = $objectManager->get(OrderRepositoryInterface::class);
+$orderRepository->save($order);

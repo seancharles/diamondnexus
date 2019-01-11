@@ -24,7 +24,7 @@ class AssertGiftCardAccountOnPrintOrder extends AbstractConstraint
      */
     public function processAssert(SalesGuestPrint $salesGuestPrint, GiftCardAccount $giftCardAccount)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             number_format($giftCardAccount->getBalance(), 2),
             $salesGuestPrint->getViewGiftCard()->getItemBlock()->getGiftCardDiscount()
         );

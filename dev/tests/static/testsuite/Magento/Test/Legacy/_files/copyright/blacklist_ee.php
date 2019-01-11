@@ -4,5 +4,4 @@
  * See COPYING.txt for license details.
  */
 return [
-    '/Solr\/conf\/.*\.xml/'
 ];

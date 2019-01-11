@@ -25,6 +25,8 @@ class ProductTest extends \Magento\TestFramework\TestCase\AbstractController
      * Covers Magento/TargetRule/view/frontend/catalog/product/list/related.html
      * Checks if related products are displayed
      *
+     * @magentoDbIsolation disabled
+     *
      * @magentoDataFixture Magento/Catalog/controllers/_files/products.php
      * @magentoDataFixture Magento/TargetRule/_files/related.php
      */
@@ -47,6 +49,8 @@ class ProductTest extends \Magento\TestFramework\TestCase\AbstractController
      * 3. View related products for first product and confirm that:
      *      a. product 2 (out of stock) is not contained
      *      b. product 3 (in stock) is contained
+     *
+     * @magentoDbIsolation disabled
      *
      * @magentoDataFixture Magento/TargetRule/_files/products.php
      * @magentoDataFixture Magento/TargetRule/_files/related.php
@@ -73,6 +77,8 @@ class ProductTest extends \Magento\TestFramework\TestCase\AbstractController
     /**
      * Covers Magento/TargetRule/view/frontend/catalog/product/list/upsell.html
      * Checks if up-sell products are displayed
+     *
+     * @magentoDbIsolation disabled
      *
      * @magentoDataFixture Magento/Catalog/controllers/_files/products.php
      * @magentoDataFixture Magento/TargetRule/_files/upsell.php

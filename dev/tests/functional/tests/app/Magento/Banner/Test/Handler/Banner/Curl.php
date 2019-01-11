@@ -31,8 +31,8 @@ class Curl extends AbstractCurl implements BannerInterface
             'No' => 0,
         ],
         'type' => [
-            'Any Banner Type' => 0,
-            'Specified Banner Types' => 1,
+            'Any Dynamic Block Type' => 0,
+            'Specified Dynamic Block Types' => 1,
         ],
         'use_customer_segment' => [
             'All' => 0,
@@ -48,20 +48,6 @@ class Curl extends AbstractCurl implements BannerInterface
     protected $url = 'admin/banner/save/back/edit/active_tab/content_section/';
 
     /**
-     * Catalog rules.
-     *
-     * @var string
-     */
-    protected $catalogRules = '';
-
-    /**
-     * Sales rules.
-     *
-     * @var string
-     */
-    protected $salesRules = '';
-
-    /**
      * Post request for creating banner.
      *
      * @param FixtureInterface|null $fixture [optional]
@@ -73,28 +59,24 @@ class Curl extends AbstractCurl implements BannerInterface
         $url = $_ENV['app_backend_url'] . $this->url;
         $data = $this->replaceMappingData($fixture->getData());
         if (isset($data['banner_catalog_rules'])) {
+            $catalogRules = [];
             foreach ($data['banner_catalog_rules'] as $key => $catalogRule) {
-                $this->catalogRules = $catalogRule;
-                if ($key > 0) {
-                    $this->catalogRules .= '&';
-                }
+                $catalogRules[] = ['rule_id' => $catalogRule];
             }
-            $data['banner_catalog_rules'] = $this->catalogRules;
+            $data['banner_catalog_rules'] = $catalogRules;
         } elseif (isset($data['banner_sales_rules'])) {
+            $salesRules = [];
             foreach ($data['banner_sales_rules'] as $key => $salesRule) {
-                $this->salesRules = $salesRule;
-                if ($key > 0) {
-                    $this->salesRules .= '&';
-                }
+                $salesRules[] = ['rule_id' => $salesRule];
             }
-            $data['banner_sales_rules'] = $this->salesRules;
+            $data['banner_sales_rules'] = $salesRules;
         }
         $curl = new BackendDecorator(new CurlTransport(), $this->_configuration);
         $curl->write($url, $data);
         $response = $curl->read();
 
-        if (!strpos($response, 'data-ui-id="messages-message-success"')) {
-            throw new \Exception("Banner creation by curl handler was not successful! Response: $response");
+        if (strpos($response, 'data-ui-id="messages-message-success"') === false) {
+            throw new \Exception("Dynamic Block creation by curl handler was not successful! Response: $response");
         }
         $curl->close();
         preg_match("~\/id\/(\d*?)\/~", $response, $matches);

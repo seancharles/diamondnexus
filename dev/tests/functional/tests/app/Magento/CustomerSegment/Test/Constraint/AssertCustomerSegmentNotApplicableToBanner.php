@@ -28,9 +28,9 @@ class AssertCustomerSegmentNotApplicableToBanner extends AbstractConstraint
         CustomerSegment $customerSegment
     ) {
         $bannerNew->open();
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $bannerNew->getSegmentBannerForm()->isCustomerSegmentVisible($customerSegment->getName()),
-            'Customer segment is available on Banner edit page.'
+            'Customer segment is available on Dynamic Block edit page.'
         );
     }
 
@@ -41,6 +41,6 @@ class AssertCustomerSegmentNotApplicableToBanner extends AbstractConstraint
      */
     public function toString()
     {
-        return 'Customer segment is not available on Banner edit page.';
+        return 'Customer segment is not available on Dynamic Block edit page.';
     }
 }

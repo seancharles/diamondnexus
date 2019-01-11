@@ -50,7 +50,7 @@ class AssertGtmJsPresentOnHome extends AbstractAssertForm
             $containerId . ".+(?!.*<!-- END GOOGLE TAG MANAGER -->).*$|";
         $cmsIndex->open();
         $html = $browser->getHtmlSource();
-        \PHPUnit_Framework_Assert::assertRegExp($regex, $html);
+        \PHPUnit\Framework\Assert::assertRegExp($regex, $html);
     }
 
     /**

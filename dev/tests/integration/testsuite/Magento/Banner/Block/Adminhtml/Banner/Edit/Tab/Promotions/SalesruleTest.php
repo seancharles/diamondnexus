@@ -8,6 +8,7 @@ namespace Magento\Banner\Block\Adminhtml\Banner\Edit\Tab\Promotions;
 /**
  * @magentoDataFixture Magento/SalesRule/_files/cart_rule_40_percent_off.php
  * @magentoDataFixture Magento/SalesRule/_files/cart_rule_50_percent_off.php
+ * @magentoDbIsolation disabled
  */
 class SalesruleTest extends \PHPUnit\Framework\TestCase
 {

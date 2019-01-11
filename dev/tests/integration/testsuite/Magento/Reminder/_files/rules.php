@@ -4,8 +4,6 @@
  * See COPYING.txt for license details.
  */
 
-// @codingStandardsIgnoreFile
-
 $conditions = json_encode([]);
 
 /** @var $rule \Magento\Reminder\Model\Rule */
@@ -46,4 +44,5 @@ $rule->setData(
          * Also make sure that dates will be properly formatted through \Magento\Framework\DB\Adapter\*::formatDate()
          */
         'to_date' => date('Y-m-d', time() + 172800),
-    ])->save();
+    ]
+)->save();

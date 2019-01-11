@@ -46,7 +46,7 @@ class AssertProductInCustomWishlist extends AbstractConstraint
         $formData = $wishlistIndex->getMultipleItemsBlock()->getItemProduct($product)->getWishlistData($qtyToAction);
         $actualQuantity = ($qtyToAction == '-') ? '-' : $formData['qty'];
 
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $qtyToAction,
             $actualQuantity,
             'Actual quantity of ' . $product->getName() . ' in custom wishlist doesn\'t match to expected.'

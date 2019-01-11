@@ -26,7 +26,7 @@
             </data>
             <data name="order/dataset" xsi:type="string">default</data>
             <data name="customerBalance/dataset" xsi:type="string">customerBalance_10</data>
-            <data name="order/data/price/dataset" xsi:type="string">full_refund</data>
+            <data name="order/data/price/dataset" xsi:type="string">full_refund_with_zero_shipping_refund</data>
             <data name="configData" xsi:type="string">checkmo</data>
             <constraint name="Magento\Sales\Test\Constraint\AssertRefundSuccessCreateMessage" />
             <constraint name="Magento\Sales\Test\Constraint\AssertNoCreditMemoButton" />

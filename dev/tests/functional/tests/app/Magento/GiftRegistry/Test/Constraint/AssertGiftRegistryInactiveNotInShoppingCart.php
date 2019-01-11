@@ -38,7 +38,7 @@ class AssertGiftRegistryInactiveNotInShoppingCart extends AbstractConstraint
     ) {
         $browser->open($_ENV['app_frontend_url'] . $product->getUrlKey() . '.html');
         $catalogProductView->getViewBlock()->clickAddToCart();
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $checkoutCart->getGiftRegistryCart()->isGiftRegistryAvailable($giftRegistry),
             'Product can be added to inactive gift registry \'' . $giftRegistry->getTitle() . '\' from Shopping Cart.'
         );

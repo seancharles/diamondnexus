@@ -3,82 +3,101 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
 
-// @codingStandardsIgnoreFile
+use Magento\GiftCardAccount\Api\Data\GiftCardAccountInterface;
+use Magento\GiftCardAccount\Api\GiftCardAccountRepositoryInterface;
+use Magento\GiftCardAccount\Helper\Data;
+use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Address;
+use Magento\Sales\Model\Order\Item;
+use Magento\Sales\Model\Order\Payment;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\TestFramework\Helper\Bootstrap;
 
 require __DIR__ . '/../../../Magento/Sales/_files/default_rollback.php';
 require __DIR__ . '/../../../Magento/Catalog/_files/product_simple.php';
 /** @var \Magento\Catalog\Model\Product $product */
-
 $addressData = include __DIR__ . '/../../../Magento/Sales/_files/address_data.php';
 
-$objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
+$objectManager = Bootstrap::getObjectManager();
 
-$billingAddress = $objectManager->create(\Magento\Sales\Model\Order\Address::class, ['data' => $addressData]);
+$billingAddress = $objectManager->create(Address::class, ['data' => $addressData]);
 $billingAddress->setAddressType('billing');
 
 $shippingAddress = clone $billingAddress;
-$shippingAddress->setId(null)->setAddressType('shipping');
+$shippingAddress->setId(null)
+    ->setAddressType('shipping');
 
-$payment = $objectManager->create(\Magento\Sales\Model\Order\Payment::class);
+$payment = $objectManager->create(Payment::class);
 $payment->setMethod('checkmo');
 
-/** @var \Magento\Sales\Model\Order\Item $orderItem */
-$orderItem = $objectManager->create(\Magento\Sales\Model\Order\Item::class);
-$orderItem->setProductId($product->getId())->setQtyOrdered(2);
+/** @var Item $orderItem */
+$orderItem = $objectManager->create(Item::class);
+$orderItem->setProductId($product->getId())
+    ->setQtyOrdered(2);
 $orderItem->setBasePrice($product->getPrice());
 $orderItem->setPrice($product->getPrice());
 $orderItem->setRowTotal($product->getPrice());
 $orderItem->setProductType('simple');
 
-/** @var \Magento\Sales\Model\Order $order */
-$order = $objectManager->create(\Magento\Sales\Model\Order::class);
-$order->setIncrementId(
-   '100000001'
-)->setState(
-   \Magento\Sales\Model\Order::STATE_PROCESSING
-)->setStatus(
-   $order->getConfig()->getStateDefaultStatus(\Magento\Sales\Model\Order::STATE_PROCESSING)
-)->setSubtotal(
-   100
-)->setGrandTotal(
-   100
-)->setBaseSubtotal(
-   100
-)->setBaseGrandTotal(
-   100
-)->setCustomerIsGuest(
-   true
-)->setCustomerEmail(
-   'customer@null.com'
-)->setBillingAddress(
-   $billingAddress
-)->setShippingAddress(
-   $shippingAddress
-)->setStoreId(
-   $objectManager->get(\Magento\Store\Model\StoreManagerInterface::class)->getStore()->getId()
-)->addItem(
-   $orderItem
-)->setPayment(
-   $payment
-);
+$storeId = $objectManager->get(StoreManagerInterface::class)
+    ->getStore()
+    ->getId();
+/** @var Order $order */
+$order = $objectManager->create(Order::class);
+$order->setIncrementId('100000001')
+    ->setState(Order::STATE_PROCESSING)
+    ->setStatus(Order::STATE_PROCESSING)
+    ->setSubtotal(100)
+    ->setGrandTotal(100)
+    ->setBaseSubtotal(100)
+    ->setBaseGrandTotal(100)
+    ->setCustomerIsGuest(true)
+    ->setCustomerEmail('customer@null.com')
+    ->setBillingAddress($billingAddress)
+    ->setShippingAddress($shippingAddress)
+    ->setStoreId($storeId)
+    ->addItem($orderItem)
+    ->setPayment($payment);
+
+/** @var GiftCardAccountRepositoryInterface $giftCardRepository */
+$giftCardRepository = $objectManager->get(GiftCardAccountRepositoryInterface::class);
+
+/** @var GiftCardAccountInterface $giftCard1 */
+$giftCard1 = $objectManager->create(GiftCardAccountInterface::class);
+$giftCard1->setBaseGiftCardsAmount(10)
+    ->setGiftCardsAmount(10)
+    ->setBalance(10)
+    ->setCode('TESTCODE1')
+    ->setStatus(1);
+$giftCardRepository->save($giftCard1);
+
+/** @var GiftCardAccountInterface $giftCard2 */
+$giftCard2 = $objectManager->create(GiftCardAccountInterface::class);
+$giftCard2->setBaseGiftCardsAmount(15)
+    ->setGiftCardsAmount(15)
+    ->setBalance(15)
+    ->setCode('TESTCODE2')
+    ->setStatus(1);
+$giftCardRepository->save($giftCard2);
 
 $giftCards = [
     [
-        "i" => 1,
-        "c" => 'TESTCODE1',
-        "a" => 10,
-        "ba" => 10,
+        "i" => $giftCard1->getGiftcardaccountId(),
+        "c" => $giftCard1->getCode(),
+        "a" => $giftCard1->getGiftCardsAmount(),
+        "ba" => $giftCard1->getBaseGiftCardsAmount(),
     ],
     [
-        "i" => 2,
-        "c" => 'TESTCODE2',
-        "a" => 15,
-        "ba" => 15,
+        "i" => $giftCard2->getGiftcardaccountId(),
+        "c" => $giftCard2->getCode(),
+        "a" => $giftCard2->getGiftCardsAmount(),
+        "ba" => $giftCard2->getBaseGiftCardsAmount(),
     ],
 ];
-
-$objectManager->create(\Magento\GiftCardAccount\Helper\Data::class)
+$objectManager->create(Data::class)
     ->setCards($order, $giftCards);
 
 $order->setBaseGiftCardsAmount(20);
@@ -87,5 +106,5 @@ $order->setBaseGiftCardsInvoiced(10);
 $order->setGiftCardsInvoiced(10);
 $order->setBaseGiftCardsRefunded(5);
 $order->setGiftCardsRefunded(5);
-
-$order->save();
+$orderRepository = $objectManager->get(OrderRepositoryInterface::class);
+$orderRepository->save($order);

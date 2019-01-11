@@ -58,7 +58,7 @@ class AssertGiftWrappingOnFrontendCheckoutCart extends AbstractConstraint
             }
         }
         $customerAccountLogout->open();
-        \PHPUnit_Framework_Assert::assertNotEmpty(
+        \PHPUnit\Framework\Assert::assertNotEmpty(
             $matches,
             'Gift Wrapping is not present in shopping cart on frontend.'
             . "\nLog:\n" . implode(";\n", $matches)

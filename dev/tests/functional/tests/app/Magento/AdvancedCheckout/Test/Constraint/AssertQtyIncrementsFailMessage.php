@@ -31,7 +31,7 @@ class AssertQtyIncrementsFailMessage extends AbstractConstraint
     {
         foreach ($requiredAttentionProducts as $product) {
             $currentMessage = $checkoutCart->getAdvancedCheckoutCart()->getFailedItemErrorMessage($product);
-            \PHPUnit_Framework_Assert::assertEquals(
+            \PHPUnit\Framework\Assert::assertEquals(
                 sprintf(self::QTY_INCREMENTS_ERROR_MESSAGE, $product->getData('stock_data')['qty_increments']),
                 $currentMessage,
                 'Wrong error message is displayed.'

@@ -6,12 +6,9 @@
  * See COPYING.txt for license details.
  */
 return [
-    ['_filterIndexData', 'Magento\Solr\Model\Adapter\AbstractAdapter'],
-    ['getSearchTextFields', 'Magento\Solr\Model\Adapter\AbstractAdapter'],
     ['addAppliedRuleFilter', 'Magento\Banner\Model\ResourceModel\Catalogrule\Collection'],
     ['addBannersFilter', 'Magento\Banner\Model\ResourceModel\Catalogrule\Collection'],
     ['addBannersFilter', 'Magento\Banner\Model\ResourceModel\Salesrule\Collection'],
-    ['addCategoryFilter', 'Magento\Solr\Model\Catalog\Layer\Filter\Category'],
     ['addCustomerSegmentFilter', 'Magento\Banner\Model\ResourceModel\Catalogrule\Collection'],
     ['addCustomerSegmentFilter', 'Magento\Banner\Model\ResourceModel\Salesrule\Collection'],
     ['addDashboardLink', 'Magento\Rma\Block\Link'],
@@ -37,11 +34,6 @@ return [
     ['updateStatus', 'Magento\CatalogEvent\Model\Event'],
     ['getStateText', 'Magento\GiftCardAccount\Model\Giftcardaccount'],
     ['getStoreContent', 'Magento\Banner\Model\Banner'],
-    ['_searchSuggestions', 'Magento\Solr\Model\Adapter\HttpStream'],
-    ['_searchSuggestions', 'Magento\Solr\Model\Adapter\PhpExtension'],
-    ['updateCategoryIndexData', 'Magento\Solr\Model\ResourceModel\Index'],
-    ['updatePriceIndexData', 'Magento\Solr\Model\ResourceModel\Index'],
-    ['_changeIndexesStatus', 'Magento\Solr\Model\Indexer\Indexer'],
     ['cmsPageBlockLoadAfter', 'Magento\AdminGws\Model\Models'],
     ['increaseOrderInvoicedAmount', 'Magento\GiftCardAccount\Model\Observer'],
     ['initRewardType', 'Magento\Reward\Block\Tooltip'],
@@ -51,7 +43,6 @@ return [
     ['invoiceSaveAfter', 'Magento\Reward\Model\Observer'],
     ['_calcMinMax', 'Magento\GiftCard\Block\Catalog\Product\Price'],
     ['_getAmounts', 'Magento\GiftCard\Block\Catalog\Product\Price'],
-    ['searchSuggestions', 'Magento\Solr\Model\Client\Solr'],
     ['_registerProductsView', 'Magento\FullPageCache\Model\Container\Viewedproducts'],
     ['_getForeignKeyName', 'Magento\Framework\DB\Adapter\Oracle'],
     ['getCacheInstance', 'Magento\FullPageCache\Model\Cache'],
@@ -129,8 +120,6 @@ return [
         'Magento\SalesArchive\Model\Archive',
         'Magento_SalesArchive_Model_ArchivalList::getEntityByObject'
     ],
-    ['applyIndexChanges', 'Magento\Solr\Model\Observer'],
-    ['holdCommit', 'Magento\Solr\Model\Observer'],
     ['getDefaultMenuLayoutCode', 'Magento\VersionsCms\Model\Hierarchy\Config'],
     ['coreBlockAbstractToHtmlBefore', 'Magento\PricePermissions\Model\Observer', 'viewBlockAbstractToHtmlBefore'],
     [
@@ -216,27 +205,10 @@ return [
     ['sendAuthorizeEmail', 'Magento\Rma\Model\Rma', 'Magento\Rma\Model\Rma\Status\History::sendAuthorizeEmail'],
     ['_sendRmaEmailWithItems', 'Magento\Rma\Model\Rma', 'Magento\Rma\Model\Rma\Status\History::_sendRmaEmailWithItems'],
     [
-        'beforeRebuildIndex',
-        'Magento\Solr\Model\Plugin\FulltextIndexRebuild',
-        'Magento\Solr\Model\Plugin\FulltextIndexRebuild::beforeExecuteFull'
-    ],
-    [
-        'afterRebuildIndex',
-        'Magento\Solr\Model\Plugin\FulltextIndexRebuild',
-        'Magento\Solr\Model\Plugin\FulltextIndexRebuild::afterExecuteFull'
-    ],
-    [
         'reindexAll',
         'Magento\ScheduledImportExport\Model\Import',
         'Magento\ImportExport\Model\Import::invalidateIndex'
     ],
-    ['_beforeLoad', 'Magento\Solr\Model\ResourceModel\Collection'],
-    ['_afterLoad', 'Magento\Solr\Model\ResourceModel\Collection'],
-    ['setEngine', 'Magento\Solr\Model\ResourceModel\Collection'],
-    ['customerGroupSaveAfter', 'Magento\Solr\Model\Observer'],
-    ['saveStoreIdsBeforeScopeDelete', 'Magento\Solr\Model\Observer'],
-    ['clearIndexForStores', 'Magento\Solr\Model\Observer'],
-    ['runFulltextReindexAfterPriceReindex', 'Magento\Solr\Model\Observer'],
     ['_beforeLoad', 'Magento\Search\Model\ResourceModel\Collection'],
     ['_afterLoad', 'Magento\Search\Model\ResourceModel\Collection'],
     ['setEngine', 'Magento\Search\Model\ResourceModel\Collection'],
@@ -247,13 +219,6 @@ return [
     ['getDateModel', '\Magento\ScheduledImportExport\Model\Export'],
     ['getDateModel', '\Magento\ScheduledImportExport\Model\Scheduled\Operation'],
     ['modifyExpiredQuotesCleanup', 'Magento\PersistentHistory\Model\Observer'],
-    ['Magento\Solr\Model\Price\Interval::load'],
-    [
-        'Magento\Solr\Model\Price\Interval::loadPrevious'
-    ],
-    [
-        'Magento\Solr\Model\Price\Interval::loadNext'
-    ],
     ['getIndexer', 'Magento\CatalogPermissions\Model\Indexer\Plugin\AbstractProduct'],
     ['getIndexer', 'Magento\CatalogPermissions\Model\Indexer\Plugin\Category'],
     ['getIndexer', 'Magento\CatalogPermissions\Model\Indexer\Plugin\ConfigData'],
@@ -274,16 +239,6 @@ return [
     ['_saveWebsiteIds', 'Magento\Reminder\Model\ResourceModel\Rule'],
     ['_matchProductIds', 'Magento\TargetRule\Model\ResourceModel\Index'],
     ['getLockAlertMessage', 'Magento\VersionsCms\Block\Adminhtml\Cms\Hierarchy\Edit\Form'],
-    ['setAdvancedIndexFieldPrefix', 'Magento\Solr\Model\AdapterInterface'],
-    ['getFieldsPrefix', 'Magento\Solr\Model\ResourceModel\Engine'],
-    ['addAllowedAdvancedIndexField', 'Magento\Solr\Model\ResourceModel\Engine'],
-    ['_isDynamicField', 'Magento\Solr\Model\ResourceModel\Engine'],
-    ['prepareDocs', 'Magento\Solr\Model\Adapter\AbstractAdapter'],
-    ['_getIndexableAttributeParams', 'Magento\Solr\Model\Adapter\AbstractAdapter'],
-    ['_prepareIndexData', 'Magento\Solr\Model\Adapter\AbstractAdapter'],
-    ['_prepareIndexData', 'Magento\Solr\Model\Adapter\Solr\AbstractSolr'],
-    ['getAttributeSolrFieldName', 'Magento\Solr\Model\Adapter\Solr\AbstractSolr'],
-    ['getAttributeSolrFieldName', 'Magento\Solr\Helper\Data'],
     ['getTreeHtml', 'Magento\VersionsCms\Block\Adminhtml\Cms\Hierarchy\Widget\Chooser'],
     ['getEntityTypeId', 'Magento\Rma\Model\Rma'],
     ['getRandomString', 'Magento\AdvancedCheckout\Block\Sku\AbstractSku'],
@@ -725,44 +680,6 @@ return [
     ],
     ['postDispatchCmsRevisionPublish', 'Magento\VersionsCms\Model\Logging'],
     ['postDispatchCmsRevisionPreview', 'Magento\VersionsCms\Model\Logging'],
-    ['configure', 'Magento\Framework\MessageQueue\BatchConsumer'],
-    [
-        'getExchangeByTopic',
-        'Magento\Framework\MessageQueue\Config\Data',
-        '\Magento\Framework\MessageQueue\ConfigInterface::getExchangeByTopic'
-    ],
-    [
-        'getQueuesByTopic',
-        'Magento\Framework\MessageQueue\Config\Data',
-        '\Magento\Framework\MessageQueue\ConfigInterface::getQueuesByTopic'
-    ],
-    [
-        'getConnectionByTopic',
-        'Magento\Framework\MessageQueue\Config\Data',
-        '\Magento\Framework\MessageQueue\ConfigInterface::getConnectionByTopic'
-    ],
-    [
-        'getConnectionByConsumer',
-        'Magento\Framework\MessageQueue\Config\Data',
-        '\Magento\Framework\MessageQueue\ConfigInterface::getConnectionByConsumer'
-    ],
-    [
-        'getMessageSchemaType',
-        'Magento\Framework\MessageQueue\Config\Data',
-        '\Magento\Framework\MessageQueue\ConfigInterface::getMessageSchemaType'
-    ],
-    [
-        'getCallback',
-        'Magento\Framework\MessageQueue\ConsumerConfiguration'
-    ],
-    [
-        'getCallback',
-        'Magento\Framework\MessageQueue\ConsumerConfigurationInterface'
-    ],
-    [
-        'configure',
-        'Magento\Framework\MessageQueue\ConsumerInterface'
-    ],
     [
         'widgetCatalogEventCategoryEditButtons',
         'Magento\AdminGws\Model\Blocks'

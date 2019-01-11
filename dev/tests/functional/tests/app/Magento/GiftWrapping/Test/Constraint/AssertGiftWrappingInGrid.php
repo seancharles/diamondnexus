@@ -42,7 +42,7 @@ class AssertGiftWrappingInGrid extends AbstractConstraint
         ];
 
         $giftWrappingIndexPage->open();
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $giftWrappingIndexPage->getGiftWrappingGrid()->isRowVisible($filter, true, false),
             'Gift Wrapping \'' . $filter['design'] . '\' is absent in Gift Wrapping grid.'
         );

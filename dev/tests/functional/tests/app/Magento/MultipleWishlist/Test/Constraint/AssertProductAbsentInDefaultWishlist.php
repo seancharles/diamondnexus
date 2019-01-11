@@ -35,7 +35,7 @@ class AssertProductAbsentInDefaultWishlist extends AbstractConstraint
     ) {
         $cmsIndex->getLinksBlock()->openLink('My Account');
         $customerAccountIndex->getAccountMenuBlock()->openMenuItem('My Wish List');
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $wishlistIndex->getMultipleItemsBlock()->getItemProduct($product)->isVisible(),
             "Product is present in default wishlist"
         );

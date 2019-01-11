@@ -58,9 +58,9 @@ class AssertBannerInShoppingCart extends AbstractConstraint
         $pageCatalogProductView->getViewBlock()->clickAddToCartButton();
         $pageCatalogProductView->getMessagesBlock()->waitSuccessMessage();
         $pageCheckoutCart->open();
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $pageCheckoutCart->getBannerCartBlock()->checkWidgetBanners($banner, $customer),
-            'Banner is absent on Shopping Cart.'
+            'Dynamic Block is absent on Shopping Cart.'
         );
     }
 
@@ -71,6 +71,6 @@ class AssertBannerInShoppingCart extends AbstractConstraint
      */
     public function toString()
     {
-        return "Banner is present on Shopping Cart.";
+        return "Dynamic Block is present on Shopping Cart.";
     }
 }

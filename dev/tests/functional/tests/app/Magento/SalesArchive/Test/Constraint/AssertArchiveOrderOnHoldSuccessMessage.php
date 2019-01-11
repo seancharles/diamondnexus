@@ -28,7 +28,7 @@ class AssertArchiveOrderOnHoldSuccessMessage extends AbstractConstraint
      */
     public function processAssert(ArchiveOrders $archiveOrder, $successMassActions)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             sprintf(self::SUCCESS_MESSAGE, $successMassActions),
             $archiveOrder->getMessagesBlock()->getSuccessMessage()
         );

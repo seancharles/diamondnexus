@@ -58,7 +58,7 @@ class AssertGiftRegistryForm extends AbstractAssertForm
         $giftRegistryIndex->getGiftRegistryGrid()->eventAction($giftRegistry->getTitle(), 'Edit');
         $formData = $giftRegistryEdit->getCustomerEditForm()->getData($giftRegistry);
         $errors = $this->verifyData($giftRegistry->getData(), $formData);
-        \PHPUnit_Framework_Assert::assertEmpty($errors, $errors);
+        \PHPUnit\Framework\Assert::assertEmpty($errors, $errors);
     }
 
     /**

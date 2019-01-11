@@ -34,7 +34,7 @@ class AssertProductsAddBySkuOnBackendMinRequestedQtyFailMessage extends Abstract
         foreach ($products as $key => $product) {
             $minSaleQty = $product->getStockData()['min_sale_qty'];
             if ($orderOptions[$key]['qty'] < $minSaleQty) {
-                \PHPUnit_Framework_Assert::assertEquals(
+                \PHPUnit\Framework\Assert::assertEquals(
                     $orderCreateIndex->getItemsOrderedMessagesBlock()->getErrorMessage(),
                     sprintf(self::ERROR_MESSAGE, $minSaleQty),
                     'Wrong error message is displayed.'

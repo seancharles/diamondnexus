@@ -32,7 +32,7 @@ class AssertCampaignsBlocked extends AbstractConstraint
         $catalogProductEdit->getProductScheduleBlock()->clickScheduleNewUpdate();
         $catalogProductEdit->getStagingGrid()->clickAssignToExistingCampaign();
         foreach ($updates as $update) {
-            \PHPUnit_Framework_Assert::assertTrue(
+            \PHPUnit\Framework\Assert::assertTrue(
                 $catalogProductEdit->getStagingGrid()->campaignIsBlocked($update->getName()),
                 $update->getName() . ' is expected to be blocked.'
             );

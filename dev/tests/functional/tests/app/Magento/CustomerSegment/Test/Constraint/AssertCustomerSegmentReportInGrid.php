@@ -59,7 +59,7 @@ class AssertCustomerSegmentReportInGrid extends AbstractConstraint
             }
         }
 
-        \PHPUnit_Framework_Assert::assertEmpty(
+        \PHPUnit\Framework\Assert::assertEmpty(
             $errors,
             'When checking the grid, the following errors were found:' . PHP_EOL . implode(PHP_EOL, $errors)
         );

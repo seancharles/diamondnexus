@@ -8,6 +8,7 @@ namespace Magento\Banner\Model\ResourceModel\Catalogrule;
 /**
  * @magentoDataFixture Magento/Catalog/_files/product_simple.php
  * @magentoDataFixture Magento/Banner/_files/banner_catalog_rule.php
+ * @magentoDbIsolation disabled
  */
 class CollectionTest extends \PHPUnit\Framework\TestCase
 {
@@ -39,7 +40,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->_banner = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\Banner\Model\Banner::class
         );
-        $this->_banner->load('Test Banner', 'name');
+        $this->_banner->load('Test Dynamic Block', 'name');
     }
 
     protected function tearDown()

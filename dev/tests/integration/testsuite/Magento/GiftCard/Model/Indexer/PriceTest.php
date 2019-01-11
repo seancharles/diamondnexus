@@ -34,6 +34,7 @@ class PriceTest extends \PHPUnit\Framework\TestCase
     /**
      * @magentoDataFixture Magento/GiftCard/_files/gift_card_with_amount.php
      * @magentoAppIsolation enabled
+     * @magentoDbIsolation disabled
      */
     public function testPriceForGiftCardWithTwoAmounts()
     {
@@ -52,6 +53,7 @@ class PriceTest extends \PHPUnit\Framework\TestCase
     /**
      * @magentoDataFixture Magento/GiftCard/_files/gift_card_with_open_amount.php
      * @magentoAppIsolation enabled
+     * @magentoDbIsolation disabled
      */
     public function testPriceForGiftCardWithOpenAmounts()
     {

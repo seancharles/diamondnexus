@@ -115,7 +115,7 @@ class AssertCatalogEventBlockVisibility extends AbstractConstraint
     {
         $this->cmsIndex->open();
         $this->cmsIndex->getTopmenu()->selectCategoryByName($this->categoryName);
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $this->catalogCategoryView->getEventBlock()->isVisible(),
             "EventBlock is absent on Category page."
         );
@@ -130,7 +130,7 @@ class AssertCatalogEventBlockVisibility extends AbstractConstraint
     {
         $this->cmsIndex->open();
         $this->cmsIndex->getTopmenu()->selectCategoryByName($this->categoryName);
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $this->catalogCategoryView->getEventBlock()->isVisible(),
             "EventBlock is present on Category page."
         );
@@ -146,7 +146,7 @@ class AssertCatalogEventBlockVisibility extends AbstractConstraint
         $this->cmsIndex->open();
         $this->cmsIndex->getTopmenu()->selectCategoryByName($this->categoryName);
         $this->catalogCategoryView->getListProductBlock()->getProductItem($this->product)->open();
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $this->catalogProductView->getEventBlock()->isVisible(),
             "EventBlock is absent on Product page."
         );
@@ -162,7 +162,7 @@ class AssertCatalogEventBlockVisibility extends AbstractConstraint
         $this->cmsIndex->open();
         $this->cmsIndex->getTopmenu()->selectCategoryByName($this->categoryName);
         $this->catalogCategoryView->getListProductBlock()->getProductItem($this->product)->open();
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $this->catalogProductView->getEventBlock()->isVisible(),
             "EventBlock is present on Product page."
         );

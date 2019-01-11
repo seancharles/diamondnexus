@@ -43,7 +43,7 @@ class AssertCustomerBalanceHistory extends AbstractConstraint
         $customerForm = $customerIndexEdit->getCustomerBalanceForm();
         $customerForm->openTab('store_credit');
 
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $customerIndexEdit->getBalanceHistoryGrid()->verifyCustomerBalanceGrid($customerBalance),
             '"Balance History" grid not contains correct information.'
         );

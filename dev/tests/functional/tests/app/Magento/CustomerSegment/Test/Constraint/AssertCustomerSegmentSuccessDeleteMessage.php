@@ -28,7 +28,7 @@ class AssertCustomerSegmentSuccessDeleteMessage extends AbstractConstraint
      */
     public function processAssert(CustomerSegmentIndex $customerSegmentIndex)
     {
-        \PHPUnit_Framework_Assert::assertContains(
+        \PHPUnit\Framework\Assert::assertContains(
             self::SUCCESS_DELETE_MESSAGE,
             $customerSegmentIndex->getMessagesBlock()->getSuccessMessage(),
             'Wrong success delete message is displayed.'

@@ -40,9 +40,9 @@ class AssertBannerNotInWidgetOptions extends AbstractConstraint
         $widgetInstanceNew->getWidgetForm()->fill($widget);
         $widgetInstanceEdit->getWidgetForm()->openTab('widget_options');
 
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $widgetInstanceEdit->getBannerGrid()->isRowVisible(['banner' => $banner->getName()]),
-            'Banner is present on Widget Options tab in Banner grid.'
+            'Dynamic Block is present on Widget Options tab in Dynamic Blocks grid.'
         );
     }
 
@@ -53,6 +53,6 @@ class AssertBannerNotInWidgetOptions extends AbstractConstraint
      */
     public function toString()
     {
-        return 'Banner is absent on Widget Options tab in Banner grid.';
+        return 'Dynamic Block is absent on Widget Options tab in Dynamic Blocks grid.';
     }
 }

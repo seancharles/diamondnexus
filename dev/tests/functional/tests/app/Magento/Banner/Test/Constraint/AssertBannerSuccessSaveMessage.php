@@ -20,7 +20,7 @@ class AssertBannerSuccessSaveMessage extends AbstractConstraint
     const SEVERITY = 'low';
     /* end tags */
 
-    const SUCCESS_SAVE_MESSAGE = 'You saved the banner.';
+    const SUCCESS_SAVE_MESSAGE = 'You saved the dynamic block.';
 
     /**
      * Assert that after banner save "You saved the banner." successful message appears
@@ -32,7 +32,7 @@ class AssertBannerSuccessSaveMessage extends AbstractConstraint
     public function processAssert(BannerIndex $bannerIndex, AdminCache $adminCache)
     {
         $actualMessage = $bannerIndex->getMessagesBlock()->getSuccessMessage();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::SUCCESS_SAVE_MESSAGE,
             $actualMessage,
             'Wrong success message is displayed.'

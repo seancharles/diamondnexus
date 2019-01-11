@@ -72,7 +72,7 @@ class AssertProductCrossSellsForCustomerSegment extends AbstractConstraint
         );
         $logoutCustomerOnFrontendStep->run();
 
-        \PHPUnit_Framework_Assert::assertEmpty($errors, implode(" ", $errors));
+        \PHPUnit\Framework\Assert::assertEmpty($errors, implode(" ", $errors));
     }
 
     /**

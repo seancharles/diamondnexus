@@ -26,7 +26,7 @@ class AssertCatalogEventSuccessDeleteMessage extends AbstractConstraint
     public function processAssert(CatalogEventIndex $catalogEventIndex)
     {
         $actualMessage = $catalogEventIndex->getMessagesBlock()->getSuccessMessage();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::DELETE_MESSAGE,
             $actualMessage,
             'Wrong message is displayed.'

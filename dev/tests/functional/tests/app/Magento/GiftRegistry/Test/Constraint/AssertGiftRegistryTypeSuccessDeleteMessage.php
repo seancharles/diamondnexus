@@ -28,7 +28,7 @@ class AssertGiftRegistryTypeSuccessDeleteMessage extends AbstractConstraint
      */
     public function processAssert(GiftRegistryIndex $giftRegistryIndex)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::DELETE_MESSAGE,
             $giftRegistryIndex->getMessagesBlock()->getSuccessMessage(),
             'Wrong delete message is displayed.'

@@ -15,7 +15,7 @@ use Magento\Mtf\Constraint\AbstractConstraint;
  */
 class AssertBannerDeleteMessage extends AbstractConstraint
 {
-    const SUCCESS_DELETE_MESSAGE = 'You deleted the banner.';
+    const SUCCESS_DELETE_MESSAGE = 'You deleted the dynamic block.';
 
     /**
      * Assert that success delete message is appeared after banner has been deleted
@@ -26,7 +26,7 @@ class AssertBannerDeleteMessage extends AbstractConstraint
     public function processAssert(BannerIndex $bannerIndex)
     {
         $actualMessage = $bannerIndex->getMessagesBlock()->getSuccessMessage();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::SUCCESS_DELETE_MESSAGE,
             $actualMessage,
             'Wrong delete message is displayed.'

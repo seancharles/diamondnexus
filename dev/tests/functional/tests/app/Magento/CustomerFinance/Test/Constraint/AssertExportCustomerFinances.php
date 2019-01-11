@@ -32,7 +32,7 @@ class AssertExportCustomerFinances extends AbstractConstraint
         $exportData = $export->getLatest();
 
         foreach ($customersData['customers'] as $key => $customer) {
-            \PHPUnit_Framework_Assert::assertTrue(
+            \PHPUnit\Framework\Assert::assertTrue(
                 $this->isFinanceDataInFile(
                     $customer,
                     $customersData['customersRewardPoints'][$key],

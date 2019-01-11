@@ -39,7 +39,7 @@ class AssertCustomerAddressCorrectOnCheckoutPage extends AbstractConstraint
             \Magento\Checkout\Test\TestStep\ProceedToCheckoutStep::class
         )->run();
 
-        \PHPUnit_Framework_Assert::assertContains(
+        \PHPUnit\Framework\Assert::assertContains(
             $address->getCustomAttribute()['value'],
             $checkoutOnepage->getShippingBlock()->getSelectedAddress()
         );
@@ -50,7 +50,7 @@ class AssertCustomerAddressCorrectOnCheckoutPage extends AbstractConstraint
             ['checkoutOnepage' => $checkoutOnepage, 'address' => $address]
         )->run();
 
-        \PHPUnit_Framework_Assert::assertContains(
+        \PHPUnit\Framework\Assert::assertContains(
             $address->getCustomAttribute()['value'],
             $checkoutOnepage->getShippingBlock()->getSelectedAddress()
         );

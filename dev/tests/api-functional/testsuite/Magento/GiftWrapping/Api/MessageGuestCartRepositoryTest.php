@@ -5,8 +5,6 @@
  */
 namespace Magento\GiftWrapping\Api;
 
-// @codingStandardsIgnoreFile
-
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\TestCase\WebapiAbstract;
 

@@ -44,7 +44,7 @@ class AssertCustomerCustomAttributeInGrid extends AbstractConstraint
             'is_visible' => isset($data['scope_is_visible']) ? $data['scope_is_visible'] : null,
         ];
 
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $customerAttributeIndex->getCustomerCustomAttributesGrid()->isRowVisible($filter, true, false),
             "Customer Attribute with label '" . $filter['frontend_label'] . "' is absent in Customer Attributes grid."
         );

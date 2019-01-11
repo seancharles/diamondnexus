@@ -87,7 +87,7 @@ class AssertRmaForm extends AbstractAssertRmaOnBackend
         $pageDetails = array_diff_key($pageData, array_flip($this->skippedFields));
 
         $errors = $this->verifyData($fixtureDetails, $pageDetails, false, false);
-        \PHPUnit_Framework_Assert::assertEmpty(
+        \PHPUnit\Framework\Assert::assertEmpty(
             $errors,
             'Displayed rma details on edit page does not equals initial data.'
             . "\nLog:\n" . implode(";\n", $errors)
@@ -110,7 +110,7 @@ class AssertRmaForm extends AbstractAssertRmaOnBackend
             }
         }
 
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $isVisibleComment,
             'Displayed rma comment on edit page does not equals initial data.'
         );

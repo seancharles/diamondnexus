@@ -38,7 +38,7 @@ class AssertProductTierPriceMessage extends AbstractConstraint
                 }
             }
             $productPrice = max($productPrices);
-            \PHPUnit_Framework_Assert::assertTrue(
+            \PHPUnit\Framework\Assert::assertTrue(
                 count($messages) === count($applicableTierPrices),
                 'Wrong qty messages is displayed.'
             );
@@ -46,7 +46,7 @@ class AssertProductTierPriceMessage extends AbstractConstraint
                 $price = (bool)strpos($messages[$key], (string)$tierPrice['price']);
                 $priceQty = (bool)strpos($messages[$key], (string)$tierPrice['price_qty']);
                 $savePercent = (bool)strpos($messages[$key], $this->getSavePercent($productPrice, $tierPrice));
-                \PHPUnit_Framework_Assert::assertTrue(
+                \PHPUnit\Framework\Assert::assertTrue(
                     $price and $priceQty and $savePercent,
                     'Wrong message is displayed.'
                 );

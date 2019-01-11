@@ -6,7 +6,7 @@
  */
  -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
-    <testCase name="Magento\Banner\Test\TestCase\AssignRelatedPromotionsToBannerEntityWithCustomerSegmentTest" summary="Assign Related Promotions to Banner" ticketId="MAGETWO-27159">
+    <testCase name="Magento\Banner\Test\TestCase\AssignRelatedPromotionsToBannerEntityWithCustomerSegmentTest" summary="Assign Related Promotions to Dynamic Block" ticketId="MAGETWO-27159">
         <variation name="AssignRelatedPromotionsToBannerEntityWithCustomerSegmentTestVariation1">
             <data name="tag" xsi:type="string">severity:S2</data>
             <data name="widget" xsi:type="string">banner_rotator_non_anchor_categories</data>

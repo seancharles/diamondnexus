@@ -5,10 +5,6 @@
  */
 namespace Magento\Banner\Model\ResourceModel\Salesrule;
 
-/**
- * @magentoDataFixture Magento/Banner/_files/banner_disabled_40_percent_off.php
- * @magentoDataFixture Magento/Banner/_files/banner_enabled_40_to_50_percent_off.php
- */
 class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -28,6 +24,11 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->_collection = null;
     }
 
+    /**
+     * @magentoDataFixture Magento/Banner/_files/banner_disabled_40_percent_off.php
+     * @magentoDataFixture Magento/Banner/_files/banner_enabled_40_to_50_percent_off.php
+     * @magentoDbIsolation disabled
+     */
     public function testGetItems()
     {
         /** @var \Magento\Banner\Model\Banner $banner */
@@ -39,6 +40,11 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($banner->getId(), $this->_collection->getFirstItem()->getData('banner_id'));
     }
 
+    /**
+     * @magentoDataFixture Magento/Banner/_files/banner_disabled_40_percent_off.php
+     * @magentoDataFixture Magento/Banner/_files/banner_enabled_40_to_50_percent_off.php
+     * @magentoDbIsolation disabled
+     */
     public function testAddRuleIdsFilter()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
@@ -54,6 +60,11 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->testGetItems();
     }
 
+    /**
+     * @magentoDataFixture Magento/Banner/_files/banner_disabled_40_percent_off.php
+     * @magentoDataFixture Magento/Banner/_files/banner_enabled_40_to_50_percent_off.php
+     * @magentoDbIsolation disabled
+     */
     public function testAddRuleIdsFilterNoRules()
     {
         $this->_collection->addRuleIdsFilter([]);

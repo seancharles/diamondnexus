@@ -28,7 +28,7 @@ class AssertGiftRegistryItemsUpdatedSuccessMessage extends AbstractConstraint
      */
     public function processAssert(GiftRegistryCustomerEdit $giftRegistryCustomerEdit)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::SUCCESS_MESSAGE,
             $giftRegistryCustomerEdit->getMessagesBlock()->getSuccessMessage(),
             'Wrong success update message is displayed.'

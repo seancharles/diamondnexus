@@ -33,7 +33,7 @@ class AssertGiftCardDiscount extends AbstractConstraint
         $checkoutCart->open();
         $checkoutCart->getTotalsBlock()->waitForUpdatedTotals();
         $actualDiscount = $checkoutCart->getGiftCardDiscountBlock()->getGiftCardDiscount();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $discount,
             $actualDiscount,
             'Gift card discount price is not equal to the price from fixture.'

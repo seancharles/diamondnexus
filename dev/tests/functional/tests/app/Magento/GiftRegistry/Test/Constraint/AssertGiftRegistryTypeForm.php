@@ -34,7 +34,7 @@ class AssertGiftRegistryTypeForm extends AbstractAssertForm
         $formData = $giftRegistryNew->getGiftRegistryForm()->getData($giftRegistryType);
         $fixtureData = $giftRegistryType->getData();
         $errors = $this->verifyData($fixtureData, $formData);
-        \PHPUnit_Framework_Assert::assertEmpty($errors, $errors);
+        \PHPUnit\Framework\Assert::assertEmpty($errors, $errors);
     }
 
     /**

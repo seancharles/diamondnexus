@@ -48,7 +48,7 @@ class AssertRmaInGrid extends AbstractConstraint
         ];
 
         $rmaIndex->open();
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $rmaIndex->getRmaGrid()->isRowVisible($filter),
             'Rma for order ' . $orderId . ' is absent in grid.'
         );

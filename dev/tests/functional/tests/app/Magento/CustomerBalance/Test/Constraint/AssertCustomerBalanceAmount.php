@@ -39,7 +39,7 @@ class AssertCustomerBalanceAmount extends AbstractConstraint
         $customerForm = $customerIndexEdit->getCustomerBalanceForm();
         $customerForm->openTab('store_credit');
 
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $customerForm->getStoreCreditTab()->isStoreCreditBalance($customerBalance->getBalanceDelta()),
             '"Store Credit Balance" grid not displays total amount of store credit balance.'
         );

@@ -27,7 +27,7 @@ class AssertInvitationFrontendNoticeSendDuplicateMessage extends AbstractConstra
      */
     public function processAssert(InvitationIndex $invitationIndex)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::NOTICE_MESSAGE,
             $invitationIndex->getMessagesBlock()->getNoticeMessage(),
             "Expected notice message doesn't match actual."

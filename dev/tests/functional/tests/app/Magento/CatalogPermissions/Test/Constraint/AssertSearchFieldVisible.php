@@ -24,7 +24,7 @@ class AssertSearchFieldVisible extends AbstractConstraint
         CmsIndex $cmsIndex
     ) {
         $cmsIndex->open();
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $cmsIndex->getSearchBlock()->isVisible(),
             'Search field is not visible on the storefront.'
         );

@@ -47,7 +47,7 @@ class AssertNewCustomerHasCustomFileAttribute extends AbstractConstraint
         $customerIndexEdit->getCustomerForm()->fillCustomer($customer);
         $customerIndexEdit->getPageActionsBlock()->saveAndContinue();
 
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             basename($customer->getCustomAttribute()['value']),
             $customerIndexEdit->getCustomerForm()->getDataCustomer($customer)['customer']['custom_attribute'],
             'Uploaded file name wasn\'t saved.'

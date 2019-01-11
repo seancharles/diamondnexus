@@ -121,7 +121,7 @@ class CustomAddressTest extends \PHPUnit\Framework\TestCase
                     $address->getData('test_select_code')
                 );
             }
-        }  finally {
+        } finally {
             $directoryWrite->delete($tempFile);
         }
     }

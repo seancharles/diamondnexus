@@ -29,7 +29,7 @@ class AssertGiftWrappingMassActionSuccessDeleteMessage extends AbstractConstrain
      */
     public function processAssert(GiftWrappingIndex $giftWrappingIndex, $number)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             sprintf(self::SUCCESS_DELETE_MESSAGE, $number),
             $giftWrappingIndex->getMessagesBlock()->getSuccessMessage(),
             'Wrong success message is displayed.'

@@ -81,7 +81,7 @@ class Curl extends Conditions implements TargetRuleInterface
         $curl->write($url, $data);
         $response = $curl->read();
         $curl->close();
-        if (!strpos($response, 'data-ui-id="messages-message-success"')) {
+        if (strpos($response, 'data-ui-id="messages-message-success"') === false) {
             $this->_eventManager->dispatchEvent(['curl_failed'], [$response]);
             throw new \Exception("Target rule was not created! See curl response in the logs.");
         }

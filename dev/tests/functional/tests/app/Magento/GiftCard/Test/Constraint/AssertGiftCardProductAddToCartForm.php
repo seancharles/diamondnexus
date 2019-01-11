@@ -53,7 +53,7 @@ class AssertGiftCardProductAddToCartForm extends AbstractAssertForm
             && $product->hasData('allow_open_amount')
             && 'Yes' == $product->getAllowOpenAmount()
         ) {
-            \PHPUnit_Framework_Assert::assertContains(
+            \PHPUnit\Framework\Assert::assertContains(
                 self::CUSTOM_OPTION,
                 $amountForm,
                 'Amount data on product page(frontend) not equals to passed from fixture.'
@@ -64,13 +64,13 @@ class AssertGiftCardProductAddToCartForm extends AbstractAssertForm
         }
 
         $errors = $this->verifyData($amountFixture, $amountForm, true, false);
-        \PHPUnit_Framework_Assert::assertEmpty(
+        \PHPUnit\Framework\Assert::assertEmpty(
             $errors,
             $this->prepareErrors($errors, "Amount data on product page(frontend) not equals to passed from fixture:\n")
         );
 
         $errors = $this->verifyFields($catalogProductView, $product, $amountFixture);
-        \PHPUnit_Framework_Assert::assertEmpty(
+        \PHPUnit\Framework\Assert::assertEmpty(
             $errors,
             "\nErrors fields: \n" . implode("\n", $errors)
         );

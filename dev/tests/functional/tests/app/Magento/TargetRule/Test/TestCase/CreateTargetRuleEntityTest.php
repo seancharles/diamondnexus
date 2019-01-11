@@ -6,11 +6,11 @@
 
 namespace Magento\TargetRule\Test\TestCase;
 
+use Magento\Catalog\Test\Fixture\CatalogProductAttribute;
 use Magento\Catalog\Test\Fixture\CatalogProductSimple;
 use Magento\CustomerSegment\Test\Fixture\CustomerSegment;
-use Magento\TargetRule\Test\Fixture\TargetRule;
 use Magento\Mtf\Fixture\FixtureFactory;
-use Magento\Catalog\Test\Fixture\CatalogProductAttribute;
+use Magento\TargetRule\Test\Fixture\TargetRule;
 
 /**
  * Preconditions:
@@ -61,7 +61,7 @@ class CreateTargetRuleEntityTest extends AbstractTargetRuleEntityTest
      * @param CatalogProductAttribute $productAttribute
      * @param CatalogProductSimple $product
      * @param CatalogProductSimple|null $promotedProduct
-     * @param null $conditionEntity
+     * @param string|null $conditionEntity
      * @param CustomerSegment|null $customerSegment
      * @param bool $promotedProductWithSameCategory
      * @return array

@@ -4,8 +4,6 @@
  * See COPYING.txt for license details.
  */
 
-// @codingStandardsIgnoreFile
-
 namespace Magento\Rma\Service\V1;
 
 use Magento\Rma\Model\Rma;
@@ -108,6 +106,7 @@ class RmaWriteTest extends WebapiAbstract
         $request[Rma::ORDER_ID] = $order->getId();
         $request[Rma::STORE_ID] = $order->getStoreId();
         $request[Rma::ITEMS] = [];
+        $request[Rma::DATE_REQUESTED] = $request[Rma::DATE_REQUESTED] ?? 'now';
 
         /** @var \Magento\Sales\Model\Order\Item $item */
         foreach ($items as $item) {
@@ -159,6 +158,7 @@ class RmaWriteTest extends WebapiAbstract
         $request[Rma::ORDER_ID] = $rma->getOrderId();
         $request[Rma::STORE_ID] = $rma->getStoreId();
         $request[Rma::ITEMS] = [];
+        $request[Rma::DATE_REQUESTED] = $request[Rma::DATE_REQUESTED] ?? 'now';
 
         /** @var \Magento\Rma\Model\Item $item */
         foreach ($rma->getItemsForDisplay() as $item) {

@@ -4,8 +4,6 @@
  * See COPYING.txt for license details.
  */
 
-// @codingStandardsIgnoreFile
-
 namespace Magento\CustomerFinance\Model\ResourceModel\Customer;
 
 use Magento\CustomerFinance\Model\ResourceModel\Customer\Attribute\Finance\Collection as FinanceAttributeCollection;
@@ -94,8 +92,8 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             $customerBalance = $customer->getData($key);
             $this->assertNotEmpty($customerBalance);
             $this->assertEquals(
-                $objectManager->get(
-                    \Magento\Framework\Registry::class)->registry('customer_balance_' . $website->getCode()),
+                $objectManager->get(\Magento\Framework\Registry::class)
+                    ->registry('customer_balance_' . $website->getCode()),
                 $customerBalance
             );
         }

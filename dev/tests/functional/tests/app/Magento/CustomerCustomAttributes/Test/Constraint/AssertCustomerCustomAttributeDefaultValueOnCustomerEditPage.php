@@ -43,7 +43,7 @@ class AssertCustomerCustomAttributeDefaultValueOnCustomerEditPage extends Abstra
         $customerAccountIndex->open();
         $customerAccountIndex->getAccountMenuBlock()->openMenuItem('Account Information');
         $key = current(preg_grep('/^default_value_/', array_keys($customerAttribute->getData())));
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $customerAccountEdit->getAccountInfoForm()->getCustomerAttributeValue($customerAttribute),
             $customerAttribute->getData()[$key],
             'Customer Custom Attribute with attribute code: \'' . $customerAttribute->getAttributeCode() . '\' '

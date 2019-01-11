@@ -31,7 +31,7 @@ class AssertProductsAddBySkuSuccessMessage extends AbstractConstraint
     {
         $productsQty = count($products);
         $qtyString = ($productsQty > 1) ? 'products' : 'product';
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             sprintf(self::SUCCESS_MESSAGE, $productsQty, $qtyString),
             $checkoutCart->getMessagesBlock()->getSuccessMessage()
         );

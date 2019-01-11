@@ -27,7 +27,7 @@ class AssertBackupSuccessSaveMessage extends AbstractConstraint
     public function processAssert(SupportBackupIndex $backupIndex)
     {
         $actualMessage = $backupIndex->getMessagesBlock()->getSuccessMessage();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::SUCCESS_MESSAGE,
             $actualMessage,
             'Wrong success message is displayed.'

@@ -28,7 +28,7 @@ class AssertArchiveOrderSuccessMessage extends AbstractConstraint
      */
     public function processAssert(OrderIndex $orderIndex, $number)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             sprintf(self::SUCCESS_MESSAGE, $number),
             $orderIndex->getMessagesBlock()->getSuccessMessage(),
             'Wrong success message is displayed.'

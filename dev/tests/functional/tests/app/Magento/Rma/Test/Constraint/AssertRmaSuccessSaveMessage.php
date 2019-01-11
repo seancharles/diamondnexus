@@ -32,7 +32,7 @@ class AssertRmaSuccessSaveMessage extends AbstractConstraint
     public function processAssert(RmaIndex $rmaIndex)
     {
         $pageMessage = $rmaIndex->getMessagesBlock()->getSuccessMessage();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::SUCCESS_CREATE_MESSAGE,
             $pageMessage,
             'Wrong success message is displayed.'

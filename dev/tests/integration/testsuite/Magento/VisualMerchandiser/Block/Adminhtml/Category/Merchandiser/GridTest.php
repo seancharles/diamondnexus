@@ -7,8 +7,9 @@ namespace Magento\VisualMerchandiser\Block\Adminhtml\Category\Merchandiser;
 
 /**
  * @magentoAppArea adminhtml
+ * @magentoDbIsolation disabled
  */
-class GridTest extends \PHPUnit\Framework\TestCase
+class GridTest extends \Magento\TestFramework\Indexer\TestCase
 {
     const CATEGORY_ID = 333;
     const FIRST_WEBSITE_STORE = 1;
@@ -24,6 +25,19 @@ class GridTest extends \PHPUnit\Framework\TestCase
      * @var \Magento\TestFramework\ObjectManager
      */
     private $objectManager;
+
+    public static function setUpBeforeClass()
+    {
+        $db = \Magento\TestFramework\Helper\Bootstrap::getInstance()->getBootstrap()
+            ->getApplication()
+            ->getDbInstance();
+        if (!$db->isDbDumpExists()) {
+            throw new \LogicException('DB dump does not exist.');
+        }
+        $db->restoreFromDbDump();
+
+        parent::setUpBeforeClass();
+    }
 
     protected function setUp()
     {

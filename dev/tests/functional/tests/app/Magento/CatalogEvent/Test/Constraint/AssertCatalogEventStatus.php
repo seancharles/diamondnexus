@@ -94,7 +94,7 @@ abstract class AssertCatalogEventStatus extends AbstractConstraint
         $categoryName = $this->product->getCategoryIds()[0];
         $this->cmsIndex->open();
         $this->cmsIndex->getTopmenu()->selectCategoryByName($categoryName);
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $this->eventStatus,
             $this->catalogCategoryView->getEventBlock()->getEventStatus(),
             'Wrong event status is displayed.'
@@ -114,7 +114,7 @@ abstract class AssertCatalogEventStatus extends AbstractConstraint
         $this->cmsIndex->open();
         $this->cmsIndex->getTopmenu()->selectCategoryByName($categoryName);
         $this->catalogCategoryView->getListProductBlock()->getProductItem($this->product)->open();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $this->eventStatus,
             $this->catalogProductView->getEventBlock()->getEventStatus(),
             'Wrong event status is displayed.'

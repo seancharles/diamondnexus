@@ -46,7 +46,6 @@ class RowsTest extends \Magento\TestFramework\Indexer\TestCase
      */
     public function testReindexRows()
     {
-        $this->markTestSkipped('Fix in scope of MAGETWO-81145');
         $this->_processor->getIndexer()->setScheduled(false);
         $this->assertFalse($this->_processor->getIndexer()->isScheduled());
 

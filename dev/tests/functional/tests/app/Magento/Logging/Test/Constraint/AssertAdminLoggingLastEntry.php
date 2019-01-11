@@ -41,7 +41,7 @@ class AssertAdminLoggingLastEntry extends AbstractAssertForm
         if (!$pageDetails->getDetailsBlock()->isLoggingDetailsGridVisible()) {
             $diff .= "\nLogging Details Grid is not present on page.";
         }
-        \PHPUnit_Framework_Assert::assertEmpty($diff, $diff);
+        \PHPUnit\Framework\Assert::assertEmpty($diff, $diff);
     }
 
     /**

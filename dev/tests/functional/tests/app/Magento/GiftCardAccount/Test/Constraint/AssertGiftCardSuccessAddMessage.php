@@ -30,7 +30,7 @@ class AssertGiftCardSuccessAddMessage extends AbstractConstraint
      */
     public function processAssert(CheckoutCart $checkoutCart, GiftCardAccount $giftCardAccount)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             sprintf(self::SUCCESS_APPLY_MESSAGE, $giftCardAccount->getCode()),
             $checkoutCart->getMessagesBlock()->getSuccessMessage(),
             'Wrong success message is displayed.'

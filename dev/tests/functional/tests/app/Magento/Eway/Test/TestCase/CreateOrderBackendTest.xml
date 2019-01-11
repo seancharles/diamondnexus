@@ -38,7 +38,7 @@
             <data name="creditCard/data/payment_code" xsi:type="string">eway</data>
             <data name="configData" xsi:type="string">config_base_currency_aud, eway, eway_direct</data>
             <data name="status" xsi:type="string">Processing</data>
-            <constraint name="Magento\Sales\Test\Constraint\AssertOrderSuccessCreateMessage" />
+            <constraint name="Magento\Shipping\Test\Constraint\AssertShipmentSuccessCreateMessage" />
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderGrandTotal" />
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderStatusIsCorrect" />
             <constraint name="Magento\Sales\Test\Constraint\AssertAuthorizationInCommentsHistory" />

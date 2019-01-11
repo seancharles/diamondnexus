@@ -25,7 +25,7 @@ class AssertTargetRuleSuccessDeleteMessage extends AbstractConstraint
     public function processAssert(TargetRuleIndex $targetRuleIndex)
     {
         $actualMessage = $targetRuleIndex->getMessagesBlock()->getSuccessMessage();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::SUCCESS_DELETE_MESSAGE,
             $actualMessage,
             'Wrong success message is displayed.'

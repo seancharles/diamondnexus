@@ -42,7 +42,7 @@ class AssertRmaApprove extends AbstractAssertRmaOnBackend
         $rmaView->getPageActions()->saveAndContinue();
 
         $pageMessage = $rmaIndex->getMessagesBlock()->getSuccessMessage();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::SUCCESS_SAVE_MESSAGE,
             $pageMessage,
             'Wrong success message is displayed.'

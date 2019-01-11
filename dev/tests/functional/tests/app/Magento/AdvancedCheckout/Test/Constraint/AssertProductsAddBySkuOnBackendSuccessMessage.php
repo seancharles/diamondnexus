@@ -25,7 +25,7 @@ class AssertProductsAddBySkuOnBackendSuccessMessage extends AbstractConstraint
     {
         $createBlock = $orderCreateIndex->getCreateBlock();
         foreach ($products as $product) {
-            \PHPUnit_Framework_Assert::assertTrue(
+            \PHPUnit\Framework\Assert::assertTrue(
                 !empty($createBlock->getItemsBlock()->getProductsDataByFields(['name' => $product->getName()])),
                 'Adding products by sku to order on backend is not successful.'
             );

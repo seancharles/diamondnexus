@@ -42,7 +42,7 @@ class AssertArchiveOrdersCancelMassActionsMessages extends AbstractConstraint
             $archiveOrders->getMessagesBlock()->getSuccessMessage(),
             $archiveOrders->getMessagesBlock()->getErrorMessage(),
         ];
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $expectedMessages,
             $actualMessages,
             'Wrong messages are displayed.'

@@ -40,7 +40,7 @@ class AssertAdminLoggingGrid extends AbstractConstraint
         $adminLoggingPage->open();
         foreach ($actionLogs as $actionLog) {
             $actionLog['username'] = $user->getUsername();
-            \PHPUnit_Framework_Assert::assertTrue(
+            \PHPUnit\Framework\Assert::assertTrue(
                 $adminLoggingPage->getLogGridBlock()->isRowVisible($actionLog),
                 "There is no entry in Logging Report with data: \n" . print_r($actionLog, true)
             );

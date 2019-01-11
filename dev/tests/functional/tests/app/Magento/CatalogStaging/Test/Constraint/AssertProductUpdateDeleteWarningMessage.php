@@ -30,7 +30,7 @@ class AssertProductUpdateDeleteWarningMessage extends AbstractConstraint
     public function processAssert(
         CatalogProductEdit $catalogProductEdit
     ) {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::EXPECTED_MESSAGE,
             $catalogProductEdit->getUpdateDeleteBlock()->getWarningMessage(),
             'Product update deleted message is not correct.'

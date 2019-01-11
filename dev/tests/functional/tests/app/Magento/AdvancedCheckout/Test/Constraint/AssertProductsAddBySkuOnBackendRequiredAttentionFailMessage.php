@@ -28,7 +28,7 @@ class AssertProductsAddBySkuOnBackendRequiredAttentionFailMessage extends Abstra
      */
     public function processAssert(OrderCreateIndex $orderCreateIndex, array $products)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $orderCreateIndex->getOrderErrorMessagesBlock()->getErrorMessage(),
             sprintf(self::ERROR_MESSAGE, count($products)),
             'Product requires attention notice message is not displayed.'

@@ -45,13 +45,13 @@ class AssertGiftCardAccountRedeemableOnFrontend extends AbstractAssertGiftCardAc
         $customerAccountIndex->getRedeemBlock()->redeemGiftCard($code);
         $message = $customerAccountIndex->getMessages()->getSuccessMessage();
         $expectMessage = sprintf(self::SUCCESS_MESSAGE, $code);
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $expectMessage,
             $message,
             'Wrong success message is displayed.'
         );
         $customerAccountIndex->getAccountMenuBlock()->openMenuItem('Store Credit');
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $customerAccountIndex->getStoreCreditBlock()->isBalanceChangeVisible($giftCardAccount->getBalance()),
             'Store credit is not change.'
         );

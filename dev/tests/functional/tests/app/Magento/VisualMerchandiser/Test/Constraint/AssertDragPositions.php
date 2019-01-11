@@ -40,7 +40,7 @@ class AssertDragPositions extends AbstractConstraint
         $grid->dragAndDrop(1, 3);
         $skuActual = $grid->getSkuByIndex(3);
 
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $skuExpected,
             $skuActual,
             "Re-positioned SKU was wrong. Expected: $skuExpected; Actual: $skuActual"
@@ -54,7 +54,7 @@ class AssertDragPositions extends AbstractConstraint
         $tab = $merchandiser->getMerchandiserApp()->getTab('mode_grid');
         $skuActual = $tab->getProductGrid()->getSkuByIndex(3);
 
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $skuExpected,
             $skuActual,
             "Saving the positions did not work. Expected: $skuExpected; Actual: $skuActual"

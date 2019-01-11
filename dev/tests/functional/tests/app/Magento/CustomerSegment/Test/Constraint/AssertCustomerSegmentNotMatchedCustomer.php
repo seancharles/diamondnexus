@@ -38,7 +38,7 @@ class AssertCustomerSegmentNotMatchedCustomer extends AbstractConstraint
         $customerSegmentGrid = $formTabs->getMatchedCustomers()->getCustomersGrid();
         $customerSegmentNew->getPageMainActions()->refreshSegmentData();
         $formTabs->openTab('matched_customers');
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $customerSegmentGrid->isRowVisible(['grid_email' => $customer->getEmail()]),
             'Customer is present in grid when it should not.'
         );

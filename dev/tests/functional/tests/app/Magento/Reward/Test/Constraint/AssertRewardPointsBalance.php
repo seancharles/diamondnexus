@@ -64,7 +64,7 @@ class AssertRewardPointsBalance extends AbstractConstraint
             $rate->getEqualValue()
         );
 
-        \PHPUnit_Framework_Assert::assertEquals($expected, $actual, 'Wrong success messages are displayed.');
+        \PHPUnit\Framework\Assert::assertEquals($expected, $actual, 'Wrong success messages are displayed.');
     }
 
     /**

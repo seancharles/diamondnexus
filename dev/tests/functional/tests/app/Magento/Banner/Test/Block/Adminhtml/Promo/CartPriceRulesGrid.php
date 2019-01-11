@@ -6,13 +6,13 @@
 
 namespace Magento\Banner\Test\Block\Adminhtml\Promo;
 
-use Magento\Banner\Test\Block\Adminhtml\Grid;
+use Magento\Ui\Test\Block\Adminhtml\DataGrid;
 
 /**
  * Class CartPriceRulesGrid
  * Cart Price Rules Grid block on Banner new page
  */
-class CartPriceRulesGrid extends Grid
+class CartPriceRulesGrid extends DataGrid
 {
     /**
      * Initialize block elements
@@ -21,10 +21,10 @@ class CartPriceRulesGrid extends Grid
      */
     protected $filters = [
         'name' => [
-            'selector' => 'input[name="salesrule_name"]',
+            'selector' => 'input[name="name"]',
         ],
         'id' => [
-            'selector' => 'input[name="salesrule_rule_id"]',
+            'selector' => 'input[name="rule_id[from]"]',
         ],
     ];
 }

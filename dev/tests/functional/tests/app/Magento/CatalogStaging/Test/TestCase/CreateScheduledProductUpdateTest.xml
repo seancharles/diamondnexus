@@ -15,7 +15,7 @@
         <variation name="CreateScheduledProductUpdateTestVariation2" summary="Create product update campaign with start date in the past" ticketId="MAGETWO-49851">
             <data name="product/dataset" xsi:type="string">product_with_category</data>
             <data name="update/dataset" xsi:type="string">update_with_start_date_in_past</data>
-            <data name="errorMessage" xsi:type="string">error: : Future Update Start Time cannot be earlier than current time.</data>
+            <data name="errorMessage" xsi:type="string">error: : The Future Update Start Time is invalid. It can't be earlier than the current time.</data>
             <constraint name="Magento\Staging\Test\Constraint\AssertUpdateScheduledChangesErrorMessage" />
         </variation>
         <variation name="CreateScheduledProductUpdateTestVariation3" summary="Create temporary product update campaign and verify it in grid" ticketId="MAGETWO-49852">
@@ -26,7 +26,7 @@
         <variation name="CreateScheduledProductUpdateTestVariation4" summary="Create product update campaign with end date before start date" ticketId="MAGETWO-49852">
             <data name="product/dataset" xsi:type="string">product_with_category</data>
             <data name="update/dataset" xsi:type="string">update_with_end_date_before_start_date</data>
-            <data name="errorMessage" xsi:type="string">error: : Future Update End Time cannot be equal or earlier than Start Time.</data>
+            <data name="errorMessage" xsi:type="string">error: : The Future Update End Time is invalid. It can't be the same time or earlier than the current time.</data>
             <constraint name="Magento\Staging\Test\Constraint\AssertUpdateScheduledChangesErrorMessage" />
         </variation>
         <variation name="CreateScheduledProductUpdateTestVariation5" summary="Create permanent product update and verify it in grid after activation" ticketId="MAGETWO-63244">

@@ -28,7 +28,7 @@ class AssertTargetRuleSuccessSaveMessage extends AbstractConstraint
         if (!is_array($actualMessages)) {
             $actualMessages = [$actualMessages];
         }
-        \PHPUnit_Framework_Assert::assertContains(
+        \PHPUnit\Framework\Assert::assertContains(
             self::SUCCESS_MESSAGE,
             $actualMessages,
             'Wrong success message is displayed.'

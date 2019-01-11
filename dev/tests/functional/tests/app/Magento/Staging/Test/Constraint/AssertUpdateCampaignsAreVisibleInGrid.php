@@ -28,7 +28,7 @@ class AssertUpdateCampaignsAreVisibleInGrid extends AbstractConstraint
         $stagingDashboardPage->open();
 
         foreach ($updates as $update) {
-            \PHPUnit_Framework_Assert::assertTrue(
+            \PHPUnit\Framework\Assert::assertTrue(
                 $stagingDashboardPage->getTimelineContent()->hasStaging($update->getName()),
                 'The update campaign ' . $update->getName() . ' is not visible in grid.'
             );

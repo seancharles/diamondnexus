@@ -68,7 +68,7 @@ class ReindexAllTest extends \PHPUnit\Framework\TestCase
     /**
      * Test search of all products after full reindex
      *
-     * @magentoConfigFixture current_store catalog/search/engine elasticsearch
+     * @magentoConfigFixture default/catalog/search/engine elasticsearch
      * @magentoConfigFixture current_store catalog/search/elasticsearch_index_prefix indexerhandlertest_configurable
      * @magentoDataFixture Magento/ConfigurableProduct/_files/configurable_products.php
      */
@@ -82,7 +82,7 @@ class ReindexAllTest extends \PHPUnit\Framework\TestCase
     /**
      * Test search of specific product after full reindex
      *
-     * @magentoConfigFixture current_store catalog/search/engine elasticsearch
+     * @magentoConfigFixture default/catalog/search/engine elasticsearch
      * @magentoConfigFixture current_store catalog/search/elasticsearch_index_prefix indexerhandlertest_configurable
      * @magentoDataFixture Magento/ConfigurableProduct/_files/configurable_products.php
      */
@@ -94,22 +94,6 @@ class ReindexAllTest extends \PHPUnit\Framework\TestCase
 
         $specificProduct = $this->productRepository->get('configurable_12345');
         self::assertEquals($specificProduct->getId(), $result[0]['_id']);
-    }
-
-    /**
-     * Test search of grouped product after full reindex
-     *
-     * @magentoDataFixture Magento/GroupedProduct/_files/product_grouped_with_simple.php
-     * @magentoConfigFixture current_store catalog/search/engine elasticsearch
-     * @magentoConfigFixture current_store catalog/search/elasticsearch_index_prefix indexerhandlertest_grouped
-     */
-    public function testSearchGroupedProduct()
-    {
-        $expectedProductName = 'Grouped Product Simple 11 Simple 22';
-        $this->reindexAll();
-        $result = $this->searchByName('Grouped Product');
-        self::assertCount(1, $result);
-        self::assertEquals($expectedProductName, $result[0]['_source']['name']);
     }
 
     /**

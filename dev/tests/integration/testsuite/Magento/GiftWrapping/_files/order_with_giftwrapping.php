@@ -4,7 +4,6 @@
  * See COPYING.txt for license details.
  */
 
-// @codingStandardsIgnoreFile //
 require __DIR__ . '/../../../Magento/Sales/_files/default_rollback.php';
 require __DIR__ . '/../../../Magento/Catalog/_files/product_simple.php';
 /** @var \Magento\Catalog\Model\Product $product */
@@ -12,8 +11,10 @@ $addressData = include __DIR__ . '/../../../Magento/Sales/_files/address_data.ph
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 $billingAddress = $objectManager->create(\Magento\Sales\Model\Order\Address::class, ['data' => $addressData]);
 $billingAddress->setAddressType('billing');
-$shippingAddress = clone $billingAddress;$shippingAddress->setId(null)->setAddressType('shipping');
-$payment = $objectManager->create(\Magento\Sales\Model\Order\Payment::class);$payment->setMethod('checkmo');
+$shippingAddress = clone $billingAddress;
+$shippingAddress->setId(null)->setAddressType('shipping');
+$payment = $objectManager->create(\Magento\Sales\Model\Order\Payment::class);
+$payment->setMethod('checkmo');
 /** @var \Magento\Sales\Model\Order\Item $orderItem */
 $orderItem = $objectManager->create(\Magento\Sales\Model\Order\Item::class);
 $orderItem->setProductId($product->getId())->setQtyOrdered(2);
@@ -111,7 +112,8 @@ $creditmemo->setGwItemsTaxAmount(10);
 $creditmemo->setGwCardBaseTaxAmount(10);
 $creditmemo->setGwCardTaxAmount(10);
 $creditmemo->save();
-$orderService = \Magento\TestFramework\ObjectManager::getInstance()->create(\Magento\Sales\Api\InvoiceManagementInterface::class
+$orderService = \Magento\TestFramework\ObjectManager::getInstance()->create(
+    \Magento\Sales\Api\InvoiceManagementInterface::class
 );
 $invoice = $orderService->prepareInvoice($order);
 $invoice->setGwBasePrice(10);
@@ -131,6 +133,7 @@ $order = $invoice->getOrder();
 $order->setIsInProcess(
     true
 );
-$transactionSave = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\Framework\DB\Transaction::class
+$transactionSave = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
+    \Magento\Framework\DB\Transaction::class
 );
 $transactionSave->addObject($invoice)->addObject($order)->save();

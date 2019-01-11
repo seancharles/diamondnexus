@@ -4,8 +4,6 @@
  * See COPYING.txt for license details.
  */
 
-// @codingStandardsIgnoreFile
-
 namespace Magento\VersionsCms\Block\Adminhtml\Cms\Hierarchy\Edit;
 
 /**
@@ -26,8 +24,8 @@ class FormTest extends \PHPUnit\Framework\TestCase
             \Magento\Framework\View\LayoutInterface::class
         );
         $this->_block = $this->_layout->createBlock(
-             \Magento\VersionsCms\Block\Adminhtml\Cms\Hierarchy\Edit\Form::class
-         );
+            \Magento\VersionsCms\Block\Adminhtml\Cms\Hierarchy\Edit\Form::class
+        );
     }
 
     public function testGetGridJsObject()
@@ -80,7 +78,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $prepareFormMethod->setAccessible(true);
         $prepareFormMethod->invoke($block);
         $form = $block->getForm();
-        $this->assertEquals($result, is_null($form->getElement('top_menu_fieldset')));
+        $this->assertEquals($result, ($form->getElement('top_menu_fieldset') === null));
     }
 
     /**

@@ -27,9 +27,9 @@ class AssertProductsAddBySkuOnBackendIsDisabledFailMessage extends AbstractConst
      */
     public function processAssert(OrderCreateIndex $orderCreateIndex)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
-            $orderCreateIndex->getItemsOrderedMessagesBlock()->getErrorMessage(),
+        \PHPUnit\Framework\Assert::assertEquals(
             self::ERROR_MESSAGE,
+            $orderCreateIndex->getItemsOrderedMessagesBlock()->getErrorMessage(),
             'Wrong error message is displayed.'
         );
     }

@@ -38,7 +38,7 @@ class AssertRewardNoExchangeMessageForCurrencyToPoints extends AbstractConstrain
             $rate->getEqualValue()
         );
 
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             strpos($actualInformation, $expectedMessage),
             $expectedMessage . ' is displayed on the RewardCustomerInfo page.'
         );

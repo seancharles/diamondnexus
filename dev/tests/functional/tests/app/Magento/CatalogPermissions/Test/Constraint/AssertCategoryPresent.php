@@ -35,12 +35,12 @@ class AssertCategoryPresent extends AbstractConstraint
             $category->getCategoryPermissions();
             $categoryVisible = $cmsIndex->getTopmenu()->isCategoryVisible($categoryName);
             if ($categoryPermissions[$key]['browsing_category']) {
-                \PHPUnit_Framework_Assert::assertTrue(
+                \PHPUnit\Framework\Assert::assertTrue(
                     $categoryVisible,
                     'Category is absent on the storefront while it must not.'
                 );
             } else {
-                \PHPUnit_Framework_Assert::assertFalse(
+                \PHPUnit\Framework\Assert::assertFalse(
                     $categoryVisible,
                     'Category is present on the storefront while it must not.'
                 );

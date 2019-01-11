@@ -44,7 +44,7 @@ class AssertWidgetBannerRotator extends AbstractConstraint
 
         $cmsIndex->open();
         $widgetText = $widget->getParameters()['entities'][0]->getStoreContents()['value_0'];
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $browser->waitUntil(
                 function () use ($cmsIndex, $widget, $widgetText) {
                     return $cmsIndex->getWidgetView()->isWidgetVisible($widget, $widgetText) ? true : null;
@@ -55,7 +55,7 @@ class AssertWidgetBannerRotator extends AbstractConstraint
         $cmsIndex->getFooterBlock()->openAdvancedSearch();
         $cmsIndex->getLinksBlock()->waitWelcomeMessage();
         $cmsIndex->getCmsPageBlock()->waitPageInit();
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $advancedSearch->getWidgetView()->isWidgetVisible($widget, $widgetText),
             'Widget with type ' . $widget->getCode() . ' is absent on Advanced Search page.'
         );

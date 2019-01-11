@@ -41,7 +41,7 @@ class AssertAdminGwsSalesGrid extends AbstractConstraint
         $this->objectManager->create(\Magento\User\Test\TestStep\LoginUserOnBackendStep::class, ['user' => $user])
             ->run();
         $orderIndex->open();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $storeGroupNames,
             $orderIndex->getSalesOrderGrid()->getPurchasePointStoreGroups()
         );

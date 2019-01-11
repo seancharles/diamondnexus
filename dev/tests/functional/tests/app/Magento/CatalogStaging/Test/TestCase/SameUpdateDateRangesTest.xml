@@ -10,7 +10,7 @@
         <variation name="SameUpdateDateRangesTestVariation1" summary="Create 2 product update campaigns with the same date range" ticketId="MAGETWO-55018">
             <data name="update/dataset" xsi:type="string">update_with_simple_product_plus_9_months</data>
             <data name="sameUpdateCampaign/dataset" xsi:type="string">update_with_date_plus_9_months</data>
-            <data name="errorMessage" xsi:type="string">error: : Future Update in this time range already exists. Select a different range to add a new Future Update.</data>
+            <data name="errorMessage" xsi:type="string">error: : Future Update already exists in this time range. Set a different range and try again.</data>
             <constraint name="Magento\Staging\Test\Constraint\AssertUpdateScheduledChangesErrorMessage" />
         </variation>
     </testCase>

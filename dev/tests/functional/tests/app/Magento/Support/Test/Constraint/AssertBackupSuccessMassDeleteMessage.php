@@ -27,7 +27,7 @@ class AssertBackupSuccessMassDeleteMessage extends AbstractConstraint
     public function processAssert(SupportBackupIndex $backupIndex)
     {
         $actualMessage = $backupIndex->getMessagesBlock()->getSuccessMessage();
-        \PHPUnit_Framework_Assert::assertContains(
+        \PHPUnit\Framework\Assert::assertContains(
             self::SUCCESS_MESSAGE,
             $actualMessage,
             'Wrong success message is displayed.'

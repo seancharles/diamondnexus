@@ -35,7 +35,7 @@ class AssertArchiveInvoiceInGrid extends AbstractConstraint
             ];
 
             $errorMessage = implode(', ', $filter);
-            \PHPUnit_Framework_Assert::assertTrue(
+            \PHPUnit\Framework\Assert::assertTrue(
                 $archiveInvoices->getInvoicesGrid()->isRowVisible($filter),
                 'Invoice with following data \'' . $errorMessage . '\' is absent in archive invoices grid.'
             );

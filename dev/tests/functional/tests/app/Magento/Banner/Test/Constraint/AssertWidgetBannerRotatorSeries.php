@@ -51,7 +51,7 @@ class AssertWidgetBannerRotatorSeries extends AbstractConstraint
         while ($widgetText) {
             $cmsIndex->open();
 
-            \PHPUnit_Framework_Assert::assertTrue(
+            \PHPUnit\Framework\Assert::assertTrue(
                 $browser->waitUntil(
                     function () use ($cmsIndex, $widget, &$widgetText) {
                         $result = null;

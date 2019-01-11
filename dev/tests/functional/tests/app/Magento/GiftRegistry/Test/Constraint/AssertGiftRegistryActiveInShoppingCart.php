@@ -43,7 +43,7 @@ class AssertGiftRegistryActiveInShoppingCart extends AbstractConstraint
         $catalogProductView->getMessagesBlock()->waitSuccessMessage();
         $checkoutCart->open();
         $checkoutCart->getGiftRegistryCart()->addToGiftRegistry($giftRegistry->getTitle());
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $giftRegistryItems->getGiftRegistryItemsBlock()->isProductInGrid($product),
             'Product can not be added to active gift registry \'' . $giftRegistry->getTitle() . '\' from Shopping Cart.'
         );

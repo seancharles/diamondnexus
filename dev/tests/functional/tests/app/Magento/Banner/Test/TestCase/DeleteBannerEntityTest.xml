@@ -6,7 +6,7 @@
  */
  -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
-    <testCase name="Magento\Banner\Test\TestCase\DeleteBannerEntityTest" summary="Delete Banner" ticketId="MAGETWO-25644">
+    <testCase name="Magento\Banner\Test\TestCase\DeleteBannerEntityTest" summary="Delete Dynamic Block" ticketId="MAGETWO-25644">
         <variation name="DeleteBannerEntityTestVariation1">
             <data name="tag" xsi:type="string">severity:S1</data>
             <data name="banner/dataset" xsi:type="string">default</data>

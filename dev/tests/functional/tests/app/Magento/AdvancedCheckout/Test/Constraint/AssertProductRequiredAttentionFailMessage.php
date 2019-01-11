@@ -31,7 +31,7 @@ class AssertProductRequiredAttentionFailMessage extends AbstractConstraint
     {
         $productsQty = count($requiredAttentionProducts);
         $qtyString = ($productsQty > 1) ? 'products' : 'product';
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             sprintf(self::ERROR_MESSAGE, $productsQty, $qtyString),
             $checkoutCart->getMessagesBlock()->getErrorMessage()
         );

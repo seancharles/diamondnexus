@@ -21,7 +21,7 @@ class AssertItemInGrid extends AbstractConstraint
      */
     public function processAssert($existing, $actual)
     {
-        \PHPUnit_Framework_Assert::assertGreaterThan(
+        \PHPUnit\Framework\Assert::assertGreaterThan(
             $existing,
             $actual,
             'The new item created is not present on the grid.'

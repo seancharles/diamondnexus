@@ -42,7 +42,6 @@ return [
     ['Magento\Logging\Model\Resource', 'Magento\Logging\Model\ResourceModel'],
     ['Magento\MultipleWishlist\Model\Resource', 'Magento\MultipleWishlist\Model\ResourceModel'],
     ['Magento\MultipleWishlist\Test\Unit\Model\Resource', 'Magento\MultipleWishlist\Test\Unit\Model\ResourceModel'],
-    ['Magento\MysqlMq\Model\Resource', 'Magento\MysqlMq\Model\ResourceModel'],
     ['Magento\Reminder\Model\Resource', 'Magento\Reminder\Model\ResourceModel'],
     ['Magento\Reward\Model\Resource', 'Magento\Reward\Model\ResourceModel'],
     ['Magento\Rma\Model\Resource', 'Magento\Rma\Model\ResourceModel'],
@@ -52,7 +51,7 @@ return [
     ['Magento\ScalableInventory\Model\Resource', 'Magento\ScalableInventory\Model\ResourceModel'],
     ['Magento\ScalableInventory\Test\Unit\Model\Resource', 'Magento\ScalableInventory\Test\Unit\Model\ResourceModel'],
     ['Magento\ScheduledImportExport\Model\Resource', 'Magento\ScheduledImportExport\Model\ResourceModel'],
-    ['Magento\Solr\Model\Resource', 'Magento\Solr\Model\ResourceModel'],
+    ['Magento\Solr'],
     ['Magento\Support\Model\Resource', 'Magento\Support\Model\ResourceModel'],
     ['Magento\Support\Test\Unit\Model\Resource', 'Magento\Support\Test\Unit\Model\ResourceModel'],
     ['Magento\TargetRule\Model\Resource', 'Magento\TargetRule\Model\ResourceModel'],
@@ -62,5 +61,4 @@ return [
         'Magento\PricePermissions\Test\Unit\Block\Adminhtml\ConfigurableProduct\Edit\Tab\Super',
         'Magento\PricePermissions\Test\Unit\Block\Adminhtml\ConfigurableProduct\Edit\Tab\Variations'
     ],
-    ['Magento\BulkOperations', 'Magento\AsynchronousOperations']
 ];

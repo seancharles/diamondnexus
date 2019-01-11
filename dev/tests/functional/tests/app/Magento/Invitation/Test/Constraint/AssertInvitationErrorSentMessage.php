@@ -30,7 +30,7 @@ class AssertInvitationErrorSentMessage extends AbstractConstraint
      */
     public function processAssert(InvitationsIndex $invitationsIndex, Invitation $invitation, $countNotSent)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             sprintf(self::ERROR_MESSAGE, $countNotSent, count($invitation->getEmail())),
             $invitationsIndex->getMessagesBlock()->getErrorMessage(),
             "Expected error message doesn't match actual."

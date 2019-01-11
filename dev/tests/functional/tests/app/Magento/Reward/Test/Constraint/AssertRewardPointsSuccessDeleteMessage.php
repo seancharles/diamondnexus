@@ -29,7 +29,7 @@ class AssertRewardPointsSuccessDeleteMessage extends AbstractConstraint
     public function processAssert(RewardRateIndex $rewardRateIndex)
     {
         $actualMessage = $rewardRateIndex->getMessagesBlock()->getSuccessMessage();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::SUCCESS_DELETE_MESSAGE,
             $actualMessage,
             'Wrong delete message is displayed.'

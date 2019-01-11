@@ -25,7 +25,7 @@ class AssertSpecifyProductOptionsLink extends AbstractConstraint
     public function processAssert(CheckoutCart $checkoutCart, array $requiredAttentionProducts)
     {
         foreach ($requiredAttentionProducts as $product) {
-            \PHPUnit_Framework_Assert::assertTrue(
+            \PHPUnit\Framework\Assert::assertTrue(
                 $checkoutCart->getAdvancedCheckoutCart()->specifyProductOptionsLinkIsVisible($product),
                 "Specify the product's options link is not visible"
             );

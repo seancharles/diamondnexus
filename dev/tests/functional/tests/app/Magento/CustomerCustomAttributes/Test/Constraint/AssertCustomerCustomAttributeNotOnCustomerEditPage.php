@@ -47,7 +47,7 @@ class AssertCustomerCustomAttributeNotOnCustomerEditPage extends AbstractConstra
         $isCustomerAttributeVisible = $customerAccountEdit->getAccountInfoForm()
             ->isCustomerAttributeVisible($customerAttribute);
         $objectManager->create(\Magento\Customer\Test\TestStep\LogoutCustomerOnFrontendStep::class)->run();
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $isCustomerAttributeVisible,
             'Customer Custom Attribute with attribute code: \'' . $customerAttribute->getAttributeCode() . '\' '
             . 'is present during register customer on frontend.'

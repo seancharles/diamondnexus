@@ -71,7 +71,7 @@ class AssertProductsCorrectInStagingGrid extends AbstractConstraint
             }
         }
 
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $result,
             'Hover content is not correct.'
         );
@@ -97,7 +97,7 @@ class AssertProductsCorrectInStagingGrid extends AbstractConstraint
             }
         }
 
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $result,
             'Product ' . $productName . ' is not visible in products grid on update campaign edit page.'
         );

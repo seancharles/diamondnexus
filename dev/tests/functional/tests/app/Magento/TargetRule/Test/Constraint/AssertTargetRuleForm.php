@@ -61,7 +61,7 @@ class AssertTargetRuleForm extends AbstractConstraint
         $targetRuleIndex->getTargetRuleGrid()->searchAndOpen(['name' => $targetRuleData['name']]);
         $formData = $targetRuleEdit->getTargetRuleForm()->getData();
         $dataDiff = $this->verify($targetRuleData, $formData);
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             empty($dataDiff),
             'TargetRule data on edit page(backend) not equals to passed from fixture.'
             . "\nFailed values: " . implode(', ', $dataDiff)

@@ -84,6 +84,21 @@ class HistoryTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    public function testSetAction()
+    {
+        $this->_giftcardAccount->setHistoryAction(\Magento\GiftCardAccount\Model\History::ACTION_CREATED);
+        $this->_model->save();
+        $this->assertEquals(\Magento\GiftCardAccount\Model\History::ACTION_CREATED, $this->_model->getAction());
+
+        $this->_giftcardAccount->setHistoryAction(\Magento\GiftCardAccount\Model\History::ACTION_SENT);
+        $this->_model->save();
+        $this->assertEquals(\Magento\GiftCardAccount\Model\History::ACTION_SENT, $this->_model->getAction());
+
+        $this->_giftcardAccount->setHistoryAction(\Magento\GiftCardAccount\Model\History::ACTION_USED);
+        $this->_model->save();
+        $this->assertEquals(\Magento\GiftCardAccount\Model\History::ACTION_USED, $this->_model->getAction());
+    }
+
     public function recipientDataProvider()
     {
         return [[null], ['recipient']];

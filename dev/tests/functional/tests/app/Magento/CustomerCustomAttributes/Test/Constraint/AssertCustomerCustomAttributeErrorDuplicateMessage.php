@@ -27,7 +27,7 @@ class AssertCustomerCustomAttributeErrorDuplicateMessage extends AbstractConstra
      */
     public function processAssert(CustomerAttributeNew $customerAttributeNew)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::ERROR_DUPLICATE_MESSAGE,
             $customerAttributeNew->getMessagesBlock()->getErrorMessage()
         );

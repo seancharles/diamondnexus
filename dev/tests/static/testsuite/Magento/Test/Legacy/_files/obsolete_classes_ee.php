@@ -6,7 +6,7 @@
  * See COPYING.txt for license details.
  */
 
-// @codingStandardsIgnoreFile
+// @codingStandardsIgnoreStart
 
 return [
     ['Magento\CatalogEvent\Block\Adminhtml\Event\Grid'],
@@ -66,8 +66,6 @@ return [
     ['Magento\Reward\Block\Adminhtml\Reward\Rate\Grid'],
     ['Magento\Reward\Block\Customer\Account', 'Magento\Reward\Block\Customer\AccountLink'],
     ['Magento\Reward\Model\Reward\Balance\Exception'],
-    ['Magento\Solr\Model\Indexer\Price'],
-    ['Magento\Solr\Model\ResourceModel\Suggestions'],
     ['Magento\TargetRule\Block\Adminhtml\Targetrule\Grid'],
     ['Magento\GiftWrapping\Block\Adminhtml\Giftwrapping\Grid'],
     ['Magento\CustomerSegment\Model\ResourceModel\Helper\Mssql'],
@@ -78,30 +76,6 @@ return [
     ['Magento\Logging\Model\ResourceModel\Helper\Oracle'],
     ['Magento\Reminder\Model\ResourceModel\Helper\Oracle'],
     ['Magento\SalesArchive\Model\ResourceModel\Helper\Oracle'],
-    [
-        'Magento\Solr\Controller\Adminhtml\Search\System\Config\TestConnection\Ping',
-        'Magento\AdvancedSearch\Controller\Adminhtml\Search\System\Config\TestConnection'
-    ],
-    ['Magento\Solr\Helper\ClientOptionsInterface', 'Magento\AdvancedSearch\Model\Client\ClientOptionsInterface'],
-    ['Magento\Solr\Model\Client\FactoryInterface', 'Magento\AdvancedSearch\Model\Client\ClientFactoryInterface'],
-    ['Magento\Solr\Model\ObjectManager\Configurator'],
-    ['Magento\Solr\Test\Unit\Controller\Adminhtml\Search\System\Config\TestConnection\PingTest'],
-    [
-        'Magento\Elasticsearch\Test\Unit\Model\SearchAdapter\ConnectionManagerTest',
-        'Magento\Elasticsearch\Test\Unit\SearchAdapter\ConnectionManagerTest'
-    ],
-    [
-        'Magento\Solr\Model\ResourceModel\Index',
-        'Magento\AdvancedSearch\Model\ResourceModel\Index'
-    ],
-    [
-        'Magento\Solr\Test\Unit\Model\Indexer\Fulltext\Plugin\CustomerGroupTest',
-        'Magento\AdvancedSearch\Test\Unit\Model\Indexer\Fulltext\Plugin\CustomerGroupTest'
-    ],
-    [
-        'Magento\Solr\Model\Indexer\Fulltext\Plugin\CustomerGroup',
-        'Magento\AdvancedSearch\Model\Indexer\Fulltext\Plugin\CustomerGroup'
-    ],
     ['Varien_Db_Statement_Pdo_Mssql'],
     ['Varien_Db_Adapter_Pdo_Mssql'],
     ['Magento\GiftCard\CustomerData\GiftCardItem'],
@@ -146,8 +120,6 @@ return [
     ['Magento\FullPageCache\Model\Http\Handler'],
     ['Magento\CustomerSegment\Model\ResourceModel\Helper\Mysql4', 'Magento\CustomerSegment\Model\ResourceModel\Helper'],
     ['Magento\SalesArchive\Model\ResourceModel\Helper\Mysql4', 'Magento\SalesArchive\Model\ResourceModel\Helper'],
-    ['Magento\Solr\Model\Client\Solr\Factory'],
-    ['Magento\Solr\Model\Client\SolrClient\Factory'],
     ['Magento\License', 'Magento_License'],
     [
         'Magento\PricePermissions\Controller\Adminhtml\Product\Initialization\Helper\Plugin\HandlerInterface',
@@ -188,21 +160,6 @@ return [
         'Magento\CustomerSegment\Block\Adminhtml\Widget\Chooser\Daterange'
     ],
     ['Magento\Pci\Model\Encryption', 'Magento\Framework\Encryption\Encryptor'],
-    ['Magento\Search\Block\SearchData', 'Magento\AdvancedSearch\Block\SearchData'],
-    ['Magento\Search\Block\Recommendations', 'Magento\AdvancedSearch\Block\Recommendations'],
-    ['Magento\Search\Block\SearchDataInterface', 'Magento\AdvancedSearch\Block\SearchDataInterface'],
-    ['Magento\Search\Block\Suggestions', 'Magento\AdvancedSearch\Block\Suggestions'],
-    ['Magento\Search\Model\SearchDataProvider', 'Magento\AdvancedSearch\Model\SearchDataProvider'],
-    ['Magento\Search\Model\SearchDataProviderInterface', 'Magento\AdvancedSearch\Model\SearchDataProviderInterface'],
-    ['Apache_Solr_Document'],
-    ['Apache_Solr_Response'],
-    ['Apache_Solr_Service'],
-    ['Apache_Solr_Service_Balancer'],
-    [
-        'Magento\Solr\Model\Layer\AdvancedSearch\Context',
-        'Magento\Solr\Model\Layer\Category\Context',
-        'Magento\Solr\Model\Layer\Search\Context'
-    ],
     ['Magento\SalesArchive\Model\ResourceModel\Setup', 'Magento\SalesArchive\Setup\InstallData'],
     ['Magento\WebsiteRestriction\Model\Resource\Setup', 'Magento\WebsiteRestriction\Setup\InstallData'],
     ['Magento\VersionsCms\Model\ResourceModel\Setup', 'Magento\VersionsCms\Setup\InstallData'],
@@ -321,15 +278,10 @@ return [
     ['Magento\VersionsCms\Model\ResourceModel\Page\Version\Collection'],
     ['Magento\VersionsCms\Model\Source\Versioning'],
     ['Magento\VersionsCms\Observer\Backend\AdminUserDeleteAfterObserver'],
-    ['Magento\Framework\MessageQueue\Config\Reader\Xml\Converter\DeprecatedFormat'],
     ['Magento\VersionsCms\Observer\Backend\PrepareFormObserver'],
     ['Magento\VersionsCms\Observer\Backend\RemoveVersionCallback'],
     ['Magento\VersionsCms\Setup\InstallData'],
     ['Magento\VersionsCms\Block\Adminhtml\Cms\Page\Preview\Buttons'],
-    ['Magento\Framework\MessageQueue\Config\Converter', 'Magento\Framework\MessageQueue\Config\Reader\Xml\CompositeConverter'],
-    ['Magento\Framework\MessageQueue\Config\Reader', 'Magento\Framework\MessageQueue\Config\Reader\Xml'],
-    ['Magento\Framework\MessageQueue\PublisherFactory'],
-    ['Magento\Framework\MessageQueue\PublisherProxy'],
     ['Magento\CatalogEvent\Block\Adminhtml\Catalog\Category\Edit\Buttons'],
     ['Magento\CatalogPermissions\Model\Adminhtml\AddPermissionTabOnCategoryEditPageObserver'],
     ['Magento\Banner\Block\Adminhtml\Permission\Monitor'],
@@ -339,5 +291,8 @@ return [
     ],
     ['Magento\Staging\Controller\Adminhtml\Entity\DeleteAbstract'],
     ['Magento\Staging\Controller\Adminhtml\Entity\SaveAbstract'],
-    ['Magento\SalesArchive\Observer\SalesUpdateGridRecordsObserver']
+    ['Magento\SalesArchive\Observer\SalesUpdateGridRecordsObserver'],
+    ['Magento\Banner\Block\Adminhtml\Banner\Edit\Form'],
+    ['Magento\Banner\Controller\Adminhtml\Banner\CatalogRuleGrid'],
+    ['Magento\Banner\Controller\Adminhtml\Banner\SalesRuleGrid']
 ];

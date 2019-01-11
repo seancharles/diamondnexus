@@ -28,7 +28,7 @@ class AssertGiftCardAccountSuccessDeleteMessage extends AbstractConstraint
      */
     public function processAssert(Index $index)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::SUCCESS_DELETE_MESSAGE,
             $index->getMessagesBlock()->getSuccessMessage(),
             'Wrong success delete message is displayed.'

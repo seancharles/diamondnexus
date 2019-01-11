@@ -48,9 +48,9 @@ class AssertBannerOnCategoryPage extends AbstractConstraint
         $cmsIndex->getTopmenu()->selectCategoryByName($category->getName());
         $cmsIndex->getLinksBlock()->waitWelcomeMessage();
         $cmsIndex->getCmsPageBlock()->waitPageInit();
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $catalogCategoryView->getBannerViewBlock()->checkWidgetBanners($banner, $customer),
-            'Banner is absent on Category page.'
+            'Dynamic Block is absent on Category page.'
         );
     }
 
@@ -61,6 +61,6 @@ class AssertBannerOnCategoryPage extends AbstractConstraint
      */
     public function toString()
     {
-        return "Banner is presents on Category page.";
+        return "Dynamic Block is presents on Category page.";
     }
 }

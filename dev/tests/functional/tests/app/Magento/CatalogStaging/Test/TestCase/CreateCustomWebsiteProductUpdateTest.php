@@ -29,6 +29,8 @@ class CreateCustomWebsiteProductUpdateTest extends Injectable
 {
     /* tags */
     const MVP = 'no';
+
+    const TEST_TYPE = 'acceptance_test, extended_acceptance_test';
     /* end tags */
 
     /**

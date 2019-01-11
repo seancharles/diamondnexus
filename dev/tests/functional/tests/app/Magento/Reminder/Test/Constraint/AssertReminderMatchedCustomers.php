@@ -112,7 +112,7 @@ class AssertReminderMatchedCustomers extends AbstractConstraint
 
             $tabCustomers->getCusromersGrid()->search($filter);
             $filter['coupon'] = $filter['coupon'] ? $filter['coupon'] : 'N/A';
-            \PHPUnit_Framework_Assert::assertTrue(
+            \PHPUnit\Framework\Assert::assertTrue(
                 $customer['is_matched'] == $tabCustomers->getCusromersGrid()->isRowVisible($filter, false, false),
                 'Wrong matched customer'
             );

@@ -45,7 +45,7 @@ class AssertProductPricesCorrectInBackendPreview extends AbstractConstraint
             $stagingUpdatePreview->getPreviewOptionsBlock()->clickPreviewInCalendar();
             $actualPrice = $stagingUpdatePreview->getProductInfoBlock()->getPrice();
             $browser->closeWindow();
-            \PHPUnit_Framework_Assert::assertEquals(
+            \PHPUnit\Framework\Assert::assertEquals(
                 $prices[$i],
                 $actualPrice,
                 $updates[$i]->getName() . ' expected update price is not correct.'

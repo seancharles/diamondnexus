@@ -32,7 +32,7 @@ abstract class AbstractAssertMultipleWishlistSuccessMessage extends AbstractCons
      */
     public function processAssert(WishlistIndex $wishlistIndex, MultipleWishlist $multipleWishlist)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             sprintf($this->message, $multipleWishlist->getName()),
             $wishlistIndex->getMessagesBlock()->getSuccessMessage(),
             'Wrong success message is displayed.'

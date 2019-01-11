@@ -55,7 +55,7 @@ class AssertCustomerCanUploadFileOnRegistration extends AbstractConstraint
         $customerIndexPage->open();
         $customerIndexPage->getCustomerGridBlock()->searchAndOpen(['email' => $customer->getEmail()]);
 
-        \PHPUnit_Framework_Assert::assertContains(
+        \PHPUnit\Framework\Assert::assertContains(
             pathinfo($customer->getCustomAttribute()['value'])['filename'],
             $customerIndexEdit->getCustomerForm()->getDataCustomer($customer)['customer']['custom_attribute'],
             'Uploaded file name wasn\'t saved.'

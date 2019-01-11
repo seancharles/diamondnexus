@@ -43,7 +43,7 @@ class AssertCustomerSegmentReportMessage extends AbstractConstraint
             /** @var CustomerSegment $customerSegment */
             $names[] = $customerSegment->getName();
         }
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             sprintf(self::REPORT_MESSAGES, reset($reportActions['massaction']), implode(', ', $names)),
             $reportPage->getMessagesBlock()->getNoticeMessage(),
             'Wrong customer segment report message is displayed.'

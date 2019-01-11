@@ -29,7 +29,7 @@ class AssertGiftRegistrySuccessShareMessageOnBackend extends AbstractConstraint
      */
     public function processAssert(GiftRegistryCustomerEdit $giftRegistryCustomerEdit, $sharingInfo)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             sprintf(self::SUCCESS_MESSAGE, count(explode(",", $sharingInfo['emails']))),
             $giftRegistryCustomerEdit->getMessagesBlock()->getSuccessMessage(),
             'Wrong success message is displayed.'

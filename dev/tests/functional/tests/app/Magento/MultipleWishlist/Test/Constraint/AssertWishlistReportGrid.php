@@ -45,7 +45,7 @@ class AssertWishlistReportGrid extends AbstractConstraint
                 'item_comment' => $wishlist[$key]['description'],
             ];
             $errorMessage = implode(', ', $filter);
-            \PHPUnit_Framework_Assert::assertTrue(
+            \PHPUnit\Framework\Assert::assertTrue(
                 $customerWishlistReport->getWishlistReportGrid()->isRowVisible($filter, false, false),
                 'Wish List with following data: \'' . $errorMessage . '\' '
                 . 'is absent in Customer Wish List Report grid.'

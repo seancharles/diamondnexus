@@ -11,7 +11,7 @@
             <field name="0" xsi:type="array">
                 <item name="page_group" xsi:type="string">Generic Pages/All Pages</item>
                 <item name="block" xsi:type="string">Main Content Area</item>
-                <item name="template" xsi:type="string">Banner Block Template</item>
+                <item name="template" xsi:type="string">Dynamic Block Template</item>
             </field>
         </dataset>
 
@@ -21,7 +21,7 @@
                 <item name="for" xsi:type="string">Yes</item>
                 <item name="entities" xsi:type="string">catalogProductVirtual::default</item>
                 <item name="block" xsi:type="string">Main Content Area</item>
-                <item name="template" xsi:type="string">Banner Block Template</item>
+                <item name="template" xsi:type="string">Dynamic Block Template</item>
             </field>
         </dataset>
     </repository>

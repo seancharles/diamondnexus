@@ -107,7 +107,7 @@ class AssertCustomerSegmentPriceRule extends AbstractConstraint
         $checkoutCart->getShippingBlock()->waitForUpdatedShippingMethods();
         $checkoutCart->getTotalsBlock()->waitForUpdatedTotals();
 
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $prices['grandTotal'],
             $checkoutCart->getTotalsBlock()->getGrandTotal(),
             'Grand total in shopping cart is not corresponded to Cart Price Rule configuration.'

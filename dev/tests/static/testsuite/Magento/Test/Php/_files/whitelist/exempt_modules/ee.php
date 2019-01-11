@@ -7,7 +7,6 @@
 return [
     'Magento_AdminGws',
     'Magento_AdvancedCheckout',
-    'Magento_AdvancedSearch',
     'Magento_CatalogEvent',
     'Magento_CatalogPermissions',
     'Magento_CatalogStaging',

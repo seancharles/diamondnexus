@@ -35,7 +35,7 @@ class AssertArchiveShipmentInGrid extends AbstractConstraint
             ];
 
             $errorMessage = implode(', ', $filter);
-            \PHPUnit_Framework_Assert::assertTrue(
+            \PHPUnit\Framework\Assert::assertTrue(
                 $archiveShipments->getShipmentsGrid()->isRowVisible($filter),
                 'Shipment with following data \'' . $errorMessage . '\' is absent in archive shipments grid.'
             );

@@ -93,7 +93,7 @@ class CreateAutomatedEmailReminderRuleTest extends Injectable
      * Run create automated email reminder rule test.
      *
      * @param Reminder $reminder
-     * @reutrn void
+     * @return void
      */
     public function test(Reminder $reminder)
     {

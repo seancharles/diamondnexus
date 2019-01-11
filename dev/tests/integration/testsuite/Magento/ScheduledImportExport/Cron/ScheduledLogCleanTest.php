@@ -4,19 +4,32 @@
  * See COPYING.txt for license details.
  */
 
-// @codingStandardsIgnoreFile
-
 namespace Magento\ScheduledImportExport\Cron;
 
-class ScheduledLogCleanTest extends \PHPUnit\Framework\TestCase
+use Magento\TestFramework\Helper\Bootstrap;
+
+class ScheduledLogCleanTest extends \Magento\TestFramework\Indexer\TestCase
 {
+    public static function setUpBeforeClass()
+    {
+        $db = Bootstrap::getInstance()->getBootstrap()
+            ->getApplication()
+            ->getDbInstance();
+        if (!$db->isDbDumpExists()) {
+            throw new \LogicException('DB dump does not exist.');
+        }
+        $db->restoreFromDbDump();
+
+        parent::setUpBeforeClass();
+    }
+
     /**
      * @codingStandardsIgnoreStart
      * @magentoConfigFixture current_store crontab/default/jobs/magento_scheduled_import_export_log_clean/schedule/cron_expr 1
      * @codingStandardsIgnoreEnd
      * @magentoDataFixture Magento/ScheduledImportExport/_files/operation.php
      * @magentoDataFixture Magento/Catalog/_files/products_new.php
-     *
+     * @magentoDbIsolation disabled
      */
     public function testScheduledLogClean()
     {
@@ -33,7 +46,8 @@ class ScheduledLogCleanTest extends \PHPUnit\Framework\TestCase
 
         // Create export directory if not exist
         /** @var \Magento\Framework\Filesystem\Directory\Write $varDir */
-        $varDir = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(\Magento\Framework\Filesystem::class
+        $varDir = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
+            \Magento\Framework\Filesystem::class
         )->getDirectoryWrite(
             'var'
         );
@@ -56,5 +70,13 @@ class ScheduledLogCleanTest extends \PHPUnit\Framework\TestCase
 
         // Verify
         $this->assertFileNotExists($historyPath);
+    }
+
+    /**
+     * teardown
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
     }
 }

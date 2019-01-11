@@ -31,7 +31,7 @@ class AssertRequiringAttentionProductSuccessDeleteMessage extends AbstractConstr
      */
     public function processAssert(CheckoutCart $checkoutCart)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::SUCCESS_MESSAGE,
             $checkoutCart->getMessagesBlock()->getSuccessMessage()
         );

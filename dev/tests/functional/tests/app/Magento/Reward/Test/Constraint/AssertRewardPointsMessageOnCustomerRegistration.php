@@ -37,7 +37,7 @@ class AssertRewardPointsMessageOnCustomerRegistration extends AbstractConstraint
         $cmsIndex->open();
         $cmsIndex->getLinksBlock()->openLink('Create an Account');
 
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             sprintf(self::REGISTRATION_REWARD_MESSAGE, $registrationReward),
             trim($customerAccountCreate->getTooltipBlock()->getRewardMessage()),
             'Wrong message about registration reward is displayed.'

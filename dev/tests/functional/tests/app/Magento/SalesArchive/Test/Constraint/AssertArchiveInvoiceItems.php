@@ -46,7 +46,7 @@ class AssertArchiveInvoiceItems extends AbstractAssertItems
             $archiveInvoices->getInvoicesGrid()->searchAndOpen($filter);
             $itemsData = $this->preparePageItems($orderInvoiceView->getItemsBlock()->getData());
             $error = $this->verifyData($productsData, $itemsData);
-            \PHPUnit_Framework_Assert::assertEmpty($error, $error);
+            \PHPUnit\Framework\Assert::assertEmpty($error, $error);
         }
     }
 

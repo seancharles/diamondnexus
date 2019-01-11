@@ -31,7 +31,7 @@ class AssertArchiveOrderReleaseErrorMessage extends AbstractConstraint
      */
     public function processAssert(ArchiveOrders $archiveOrder)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::ERROR_MESSAGE,
             $archiveOrder->getMessagesBlock()->getErrorMessage()
         );

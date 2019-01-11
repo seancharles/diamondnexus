@@ -5,17 +5,22 @@
  */
 namespace Magento\GiftCard\Observer;
 
-use Magento\Authorizenet\Model\Directpost;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ObjectManager;
+use Magento\GiftCard\Model\Giftcard;
 use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Item;
+use Magento\Store\Model\ScopeInterface;
 use Magento\TestFramework\Helper\Bootstrap;
+use Magento\GiftCard\Model\Catalog\Product\Type\Giftcard as ProductGiftCard;
 
 /**
- * Class GenerateGiftCardAccountsTest
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class GenerateGiftCardAccountsTest extends \PHPUnit\Framework\TestCase
 {
@@ -40,21 +45,25 @@ class GenerateGiftCardAccountsTest extends \PHPUnit\Framework\TestCase
     public function testGiftcardGeneratorOnOrderAfterSaveSetting()
     {
         $order = $this->getOrder();
-        /** @var \Magento\Framework\App\Config\ScopeConfigInterface $config */
-        $config = $this->objectManager->get(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        /** @var ScopeConfigInterface $config */
+        $config = $this->objectManager->get(ScopeConfigInterface::class);
         $giftcardSetting = $config->getValue(
-            \Magento\GiftCard\Model\Giftcard::XML_PATH_ORDER_ITEM_STATUS,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            Giftcard::XML_PATH_ORDER_ITEM_STATUS,
+            ScopeInterface::SCOPE_STORE,
             $order->getStore()
         );
-        $this->assertEquals(\Magento\Sales\Model\Order\Item::STATUS_PENDING, $giftcardSetting);
-        /** @var \Magento\Sales\Model\Order\Item $orderItem */
-        $orderItem = current($order->getItems());
+        $this->assertEquals(Item::STATUS_PENDING, $giftcardSetting);
+        /** @var Item $orderItem */
+        $orderItem = $this->getGiftcardItem($order);
         $productOptions = $orderItem->getProductOptions();
+
         $this->assertArrayHasKey('email_sent', $productOptions);
         $this->assertArrayHasKey('giftcard_created_codes', $productOptions);
         $this->assertEquals('1', $productOptions['email_sent']);
-        $this->assertEquals(['fixture_code_2'], $productOptions['giftcard_created_codes']);
+        $this->assertEquals(
+            ['fixture_code_2', 'fixture_code_3'],
+            $productOptions['giftcard_created_codes']
+        );
     }
 
     /**
@@ -68,23 +77,24 @@ class GenerateGiftCardAccountsTest extends \PHPUnit\Framework\TestCase
     public function testGiftcardGeneratorOnInvoiceAfterSaveSettingNoGenerate()
     {
         $order = $this->getOrder();
-        /** @var \Magento\Framework\App\Config\ScopeConfigInterface $config */
-        $config = $this->objectManager->get(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        /** @var ScopeConfigInterface $config */
+        $config = $this->objectManager->get(ScopeConfigInterface::class);
         $giftcardSetting = $config->getValue(
-            \Magento\GiftCard\Model\Giftcard::XML_PATH_ORDER_ITEM_STATUS,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            Giftcard::XML_PATH_ORDER_ITEM_STATUS,
+            ScopeInterface::SCOPE_STORE,
             $order->getStore()
         );
-        $this->assertEquals(\Magento\Sales\Model\Order\Item::STATUS_INVOICED, $giftcardSetting);
-        /** @var \Magento\Sales\Model\Order\Item $orderItem */
-        $orderItem = current($order->getItems());
+        $this->assertEquals(Item::STATUS_INVOICED, $giftcardSetting);
+        /** @var Item $orderItem */
+        $orderItem = $this->getGiftcardItem($order);
         $productOptions = $orderItem->getProductOptions();
+
         $this->assertArrayNotHasKey('email_sent', $productOptions);
         $this->assertArrayNotHasKey('giftcard_created_codes', $productOptions);
     }
 
     /**
-     * Tests the controller for declines
+     * Tests that giftcard account codes are generated after invoice creation.
      *
      * @magentoDataFixture Magento/GiftCardAccount/_files/codes_pool.php
      * @magentoDataFixture Magento/GiftCard/_files/gift_card.php
@@ -93,21 +103,39 @@ class GenerateGiftCardAccountsTest extends \PHPUnit\Framework\TestCase
     public function testGiftcardGeneratorOnInvoiceAfterSaveSettingGenerate()
     {
         $order = $this->getOrder();
-        /** @var \Magento\Framework\App\Config\ScopeConfigInterface $config */
-        $config = $this->objectManager->get(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        /** @var ScopeConfigInterface $config */
+        $config = $this->objectManager->get(ScopeConfigInterface::class);
         $giftcardSetting = $config->getValue(
-            \Magento\GiftCard\Model\Giftcard::XML_PATH_ORDER_ITEM_STATUS,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            Giftcard::XML_PATH_ORDER_ITEM_STATUS,
+            ScopeInterface::SCOPE_STORE,
             $order->getStore()
         );
-        $this->assertEquals(\Magento\Sales\Model\Order\Item::STATUS_INVOICED, $giftcardSetting);
-        /** @var \Magento\Sales\Model\Order\Item $orderItem */
-        $orderItem = current($order->getItems());
+        $this->assertEquals(Item::STATUS_INVOICED, $giftcardSetting);
+        /** @var Item $orderItem */
+        $orderItem = $this->getGiftcardItem($order);
         $productOptions = $orderItem->getProductOptions();
-        $this->assertArrayHasKey('email_sent', $productOptions, 'a');
-        $this->assertArrayHasKey('giftcard_created_codes', $productOptions, 'b');
-        $this->assertEquals('1', $productOptions['email_sent'], 'c');
-        $this->assertEquals(1, count($productOptions['giftcard_created_codes']), 'd');
+
+        $this->assertArrayHasKey('email_sent', $productOptions);
+        $this->assertArrayHasKey('giftcard_created_codes', $productOptions);
+        $this->assertEquals('1', $productOptions['email_sent']);
+        $this->assertEquals(2, count($productOptions['giftcard_created_codes']));
+    }
+
+    /**
+     * Returns giftcard item from order.
+     *
+     * @param Order $order
+     * @return OrderItemInterface|null
+     */
+    private function getGiftcardItem(Order $order)
+    {
+        foreach ($order->getItems() as $item) {
+            if ($item->getProductType() === ProductGiftCard::TYPE_GIFTCARD) {
+                return $item;
+            }
+        }
+
+        return null;
     }
 
     /**

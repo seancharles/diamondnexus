@@ -22,7 +22,7 @@ class AssertNoReportItemInGrid extends AbstractConstraint
     public function processAssert(SupportReportIndex $supportReportIndex)
     {
         $actual = count($supportReportIndex->getReportsGridBlock()->getAllIds());
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             0,
             $actual,
             'Mass delete did not delete all report elements.'

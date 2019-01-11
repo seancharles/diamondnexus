@@ -16,6 +16,7 @@ use Magento\Banner\Test\Page\Adminhtml\BannerNew;
 use Magento\Banner\Test\Page\Adminhtml\BannerIndex;
 use Magento\CatalogRule\Test\Page\Adminhtml\CatalogRuleNew;
 use Magento\CatalogRule\Test\Page\Adminhtml\CatalogRuleIndex;
+use Magento\Mtf\Util\Command\Cli\Indexer;
 
 /**
  * Preconditions:
@@ -79,6 +80,13 @@ class AssignCatalogRuleToBannerEntityTest extends Injectable
     protected $bannerNew;
 
     /**
+     * Indexer.
+     *
+     * @var Indexer
+     */
+    private $indexer;
+
+    /**
      * Injecting data.
      *
      * @param FixtureFactory $fixtureFactory
@@ -86,6 +94,7 @@ class AssignCatalogRuleToBannerEntityTest extends Injectable
      * @param CatalogRuleIndex $catalogRuleIndex
      * @param BannerIndex $bannerIndex
      * @param BannerNew $bannerNew
+     * @param Indexer $indexer
      * @return void
      */
     public function __inject(
@@ -93,28 +102,31 @@ class AssignCatalogRuleToBannerEntityTest extends Injectable
         CatalogRuleNew $catalogRuleNew,
         CatalogRuleIndex $catalogRuleIndex,
         BannerIndex $bannerIndex,
-        BannerNew $bannerNew
+        BannerNew $bannerNew,
+        Indexer $indexer
     ) {
         $this->catalogRuleNew = $catalogRuleNew;
         $this->catalogRuleIndex = $catalogRuleIndex;
         $this->fixtureFactory = $fixtureFactory;
         $this->bannerIndex = $bannerIndex;
         $this->bannerNew = $bannerNew;
+        $this->indexer = $indexer;
     }
 
     /**
      * Create Catalog Price Rule.
      *
-     * @param CatalogRule $catalogPriceRule
+     * @param string $catalogPriceRule
      * @param Category $category
      * @param Customer $customer
      * @param Banner $banner
      * @param string $products
      * @param string $widget
      * @return array
+     * @throws \Exception
      */
     public function test(
-        CatalogRule $catalogPriceRule,
+        $catalogPriceRule,
         Category $category,
         Customer $customer,
         Banner $banner,
@@ -122,26 +134,35 @@ class AssignCatalogRuleToBannerEntityTest extends Injectable
         $widget
     ) {
         $this->markTestSkipped('MAGETWO-50165');
-
         $customer->persist();
         $category->persist();
         $banner->persist();
         $widget = $this->createWidget($widget, $banner);
-        $replace = ['conditions' => ['conditions' => ['%category_1%' => $category->getId()]]];
-        $this->catalogRuleNew->open();
-        $this->catalogRuleNew->getEditForm()->fill($catalogPriceRule, null, $replace);
-        $this->catalogRuleNew->getFormPageActions()->save();
-        $this->catalogRuleIndex->getGridPageActions()->applyRules();
+        $categoryId = $category->getId();
+        $replace = sprintf('[Category|is|%s]', $categoryId);
+        $catalogPriceRule = $this->fixtureFactory->createByCode(
+            'catalogRule',
+            [
+                'dataset' => $catalogPriceRule,
+                'data' => [
+                    'rule' => $replace
+                ]
+            ]
+        );
+        $catalogPriceRule->persist();
+        $this->indexer->reindex(['catalogrule_product', 'catalog_product_price']);
         $this->bannerIndex->open();
         $this->bannerIndex->getGrid()->searchAndOpen(['banner' => $banner->getName()]);
         $this->bannerNew->getBannerForm()->openTab('related_promotions');
         /** @var \Magento\Banner\Test\Block\Adminhtml\Banner\Edit\Tab\RelatedPromotions $tab */
         $tab = $this->bannerNew->getBannerForm()->getTab('related_promotions');
-        $tab->getCatalogPriceRulesGrid()->searchAndSelect(['name' => $catalogPriceRule->getName()]);
+        //choose catalog price rule
+        $filter = ['name' => $catalogPriceRule->getName()];
+        $tab->selectRelatedCatalogPriceRule($filter);
         $this->bannerNew->getPageMainActions()->save();
 
         $data = [];
-        for ($i = 0; $i < count(explode(',', $products)); $i++) {
+        for ($i = 0; $i < count($products); $i++) {
             $data[] = ['category_ids' => ['category' => $category]];
         }
         $products = $this->objectManager->create(
@@ -171,7 +192,7 @@ class AssignCatalogRuleToBannerEntityTest extends Injectable
                 'dataset' => $widget,
                 'data' => [
                     'parameters' => [
-                        'display_mode' => 'Specified Banners',
+                        'display_mode' => 'Specified Dynamic Blocks',
                         'entities' => [$banner]
                     ]
                 ]

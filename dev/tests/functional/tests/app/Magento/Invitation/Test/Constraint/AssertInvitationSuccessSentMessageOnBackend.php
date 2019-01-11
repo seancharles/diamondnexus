@@ -28,7 +28,7 @@ class AssertInvitationSuccessSentMessageOnBackend extends AbstractConstraint
      */
     public function processAssert(InvitationsIndex $invitationsIndex, $countSent)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             sprintf(self::SUCCESS_MESSAGE, $countSent),
             $invitationsIndex->getMessagesBlock()->getSuccessMessage(),
             "Expected success message doesn't match actual."

@@ -41,7 +41,7 @@ class AssertReminderForm extends AbstractAssertForm
 
         $fixtureData = $reminder->getData();
         $pageData = $reminderView->getReminderForm()->getData($reminder);
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $this->prepareData($fixtureData),
             $this->prepareData($pageData),
             'Reminder data on edit page does not equals passed from fixture.'

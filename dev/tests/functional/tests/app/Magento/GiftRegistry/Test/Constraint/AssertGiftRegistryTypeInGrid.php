@@ -26,7 +26,7 @@ class AssertGiftRegistryTypeInGrid extends AbstractConstraint
     {
         $giftRegistryIndex->open();
         $filter = ['label' => $giftRegistryType->getLabel()];
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $giftRegistryIndex->getGiftRegistryGrid()->isRowVisible($filter),
             'Gift registry \'' . $giftRegistryType->getLabel() . '\' is not present in grid.'
         );

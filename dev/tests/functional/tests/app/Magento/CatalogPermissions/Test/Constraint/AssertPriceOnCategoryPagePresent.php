@@ -40,9 +40,9 @@ class AssertPriceOnCategoryPagePresent extends AbstractConstraint
         while (!$isProductVisible && $catalogCategoryView->getBottomToolbar()->nextPage()) {
             $isProductVisible = $catalogCategoryView->getListProductBlock()->getProductItem($product)->isVisible();
         }
-        \PHPUnit_Framework_Assert::assertTrue($isProductVisible, 'Product is absent on category page.');
+        \PHPUnit\Framework\Assert::assertTrue($isProductVisible, 'Product is absent on category page.');
 
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $catalogCategoryView
                 ->getListProductBlock()
                 ->getProductItem($product)

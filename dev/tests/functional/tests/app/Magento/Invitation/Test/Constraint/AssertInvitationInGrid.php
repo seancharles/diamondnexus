@@ -60,7 +60,7 @@ class AssertInvitationInGrid extends AbstractConstraint
         foreach ($result as $key => $value) {
             $result[$key] = $value['email'];
         }
-        \PHPUnit_Framework_Assert::assertEquals(array_values($uniqueEmails), $result);
+        \PHPUnit\Framework\Assert::assertEquals(array_values($uniqueEmails), $result);
     }
 
     /**

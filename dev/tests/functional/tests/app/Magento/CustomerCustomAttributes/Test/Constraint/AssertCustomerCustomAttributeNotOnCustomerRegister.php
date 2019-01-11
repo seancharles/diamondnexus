@@ -32,7 +32,7 @@ class AssertCustomerCustomAttributeNotOnCustomerRegister extends AbstractConstra
     ) {
         $cmsIndex->open();
         $cmsIndex->getLinksBlock()->openLink('Create an Account');
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $customerAccountCreate->getCustomerAttributesRegisterForm()->isCustomerAttributeVisible($customerAttribute),
             'Customer Custom Attribute with attribute code: \'' . $customerAttribute->getAttributeCode() . '\' '
             . 'is present during register customer on frontend.'

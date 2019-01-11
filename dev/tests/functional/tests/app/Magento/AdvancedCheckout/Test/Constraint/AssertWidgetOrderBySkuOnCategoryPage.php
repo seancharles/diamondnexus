@@ -44,7 +44,7 @@ class AssertWidgetOrderBySkuOnCategoryPage extends AbstractConstraint
 
         $cmsIndex->open();
         $cmsIndex->getTopmenu()->selectCategoryByName($category->getName());
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $catalogCategoryView->getWidgetView()->isWidgetVisible($widget, "Order by SKU"),
             'Widget is absent on Category page.'
         );

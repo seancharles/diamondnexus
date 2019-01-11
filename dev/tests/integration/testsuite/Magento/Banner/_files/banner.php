@@ -14,9 +14,9 @@ $banner = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\M
 $banner->setIsEnabled(
     \Magento\Banner\Model\Banner::STATUS_ENABLED
 )->setName(
-    'Test Banner'
+    'Test Dynamic Block'
 )->setTypes(
     ''
 )->setStoreContents(
-    [0 => 'Banner Content']
+    [0 => 'Dynamic Block Content']
 )->save();

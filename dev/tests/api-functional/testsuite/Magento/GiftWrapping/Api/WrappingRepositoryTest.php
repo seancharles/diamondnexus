@@ -3,6 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Magento\GiftWrapping\Api;
 
 use Magento\Framework\Api\FilterBuilder;
@@ -262,7 +263,7 @@ class WrappingRepositoryTest extends WebapiAbstract
 
     /**
      * @expectedException \Exception
-     * @expectedExceptionMessage Gift Wrapping with specified ID
+     * @expectedExceptionMessage Gift wrapping with the %1 ID wasn't found. Verify the ID and try again.
      */
     public function testUpdateNoSuchEntity()
     {
@@ -302,7 +303,10 @@ class WrappingRepositoryTest extends WebapiAbstract
             $this->wrappingRepository->get($wrapping->getId());
             $this->fail("Gift Wrapping was not expected to be returned after being deleted.");
         } catch (NoSuchEntityException $e) {
-            $this->assertStringStartsWith('Gift Wrapping with specified ID', $e->getMessage());
+            $this->assertEquals(
+                'Gift wrapping with the ' . $wrapping->getId() . ' ID wasn\'t found. Verify the ID and try again.',
+                $e->getMessage()
+            );
         }
     }
 

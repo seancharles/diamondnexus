@@ -7,8 +7,9 @@ namespace Magento\VisualMerchandiser\Block\Adminhtml\Category\Merchandiser;
 
 /**
  * @magentoAppArea adminhtml
+ * @magentoDbIsolation disabled
  */
-class TileTest extends \PHPUnit\Framework\TestCase
+class TileTest extends \Magento\TestFramework\Indexer\TestCase
 {
     const CATEGORY_ID = 333;
     const FIRST_WEBSITE_STORE = 1;
@@ -34,6 +35,19 @@ class TileTest extends \PHPUnit\Framework\TestCase
      * @var \Magento\VisualMerchandiser\Model\Position\Cache
      */
     private $positionCache;
+
+    public static function setUpBeforeClass()
+    {
+        $db = \Magento\TestFramework\Helper\Bootstrap::getInstance()->getBootstrap()
+            ->getApplication()
+            ->getDbInstance();
+        if (!$db->isDbDumpExists()) {
+            throw new \LogicException('DB dump does not exist.');
+        }
+        $db->restoreFromDbDump();
+
+        parent::setUpBeforeClass();
+    }
 
     protected function setUp()
     {

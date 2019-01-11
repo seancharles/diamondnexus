@@ -5,9 +5,6 @@
  */
 namespace Magento\ScheduledImportExport\Controller\Adminhtml\Scheduled;
 
-/**
- * @magentoAppArea adminhtml
- */
 class OperationTest extends \Magento\TestFramework\TestCase\AbstractBackendController
 {
     /**
@@ -77,6 +74,9 @@ class OperationTest extends \Magento\TestFramework\TestCase\AbstractBackendContr
     /**
      * Test edit action
      *
+     * @magentoAppArea adminhtml
+     * @magentoDbIsolation disabled
+     *
      * @magentoDataFixture Magento/ScheduledImportExport/_files/operation.php
      * @dataProvider getEditActionDataProvider
      *
@@ -100,6 +100,9 @@ class OperationTest extends \Magento\TestFramework\TestCase\AbstractBackendContr
 
     /**
      * Test cron action
+     *
+     * @magentoAppArea adminhtml
+     * @magentoDbIsolation disabled
      *
      * @magentoDataFixture Magento/ScheduledImportExport/_files/operation.php
      * @magentoDataFixture Magento/Catalog/_files/products_new.php

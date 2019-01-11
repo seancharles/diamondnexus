@@ -27,7 +27,7 @@ class AssertCustomerAddressAttributesVisibilityOnFrontend extends AbstractConstr
         foreach ($addressAttributes as $code => $value) {
             $isVisible = $customerAddressEdit->getEditForm()->isAddressSimpleAttributeVisible($code);
 
-            \PHPUnit_Framework_Assert::assertEquals(
+            \PHPUnit\Framework\Assert::assertEquals(
                 $value['is_visible'],
                 $isVisible,
                 'Customer Address Attribute with attribute code: \'' . $code . '\' '

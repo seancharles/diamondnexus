@@ -29,7 +29,7 @@ class AssertGiftRegistryNotInGrid extends AbstractConstraint
      */
     public function processAssert(GiftRegistryIndex $giftRegistryIndex, GiftRegistry $giftRegistry)
     {
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $giftRegistryIndex->open()->getGiftRegistryGrid()->isGiftRegistryInGrid($giftRegistry),
             'Gift registry \'' . $giftRegistry->getTitle() . '\' is present in grid.'
         );

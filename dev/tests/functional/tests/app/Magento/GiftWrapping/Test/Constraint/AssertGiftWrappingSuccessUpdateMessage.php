@@ -29,7 +29,7 @@ class AssertGiftWrappingSuccessUpdateMessage extends AbstractConstraint
      */
     public function processAssert(GiftWrappingIndex $giftWrappingIndex, $number)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             sprintf(self::SUCCESS_UPDATE_MESSAGE, $number),
             $giftWrappingIndex->getMessagesBlock()->getSuccessMessage(),
             'Wrong success message is displayed.'

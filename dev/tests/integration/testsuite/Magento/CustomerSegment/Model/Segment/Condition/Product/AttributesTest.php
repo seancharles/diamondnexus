@@ -71,8 +71,8 @@ class AttributesTest extends \PHPUnit\Framework\TestCase
                 "item.product_id IN (SELECT `main`.`entity_id` FROM `{$productEntityTable}` AS `main`\n"
                 . " INNER JOIN `{$productEntityIntTable}` AS `eav_attribute` ON eav_attribute.row_id=main.row_id\n"
                 . " INNER JOIN {$storeTable} ON eav_attribute.store_id=store.store_id"
-                . " WHERE (eav_attribute.attribute_id = '93') AND (store.website_id IN (0, :website_id))"
-                . " AND (eav_attribute.value = '58') AND (main.created_in <= 1) AND (main.updated_in > 1))"
+                . " WHERE ((eav_attribute.attribute_id = '93') AND (store.website_id IN (0, :website_id))"
+                . " AND (eav_attribute.value = '58')) AND (main.created_in <= 1) AND (main.updated_in > 1))"
             ],
             'Category attribute' => [
                 false,          // $requireValid
@@ -81,8 +81,8 @@ class AttributesTest extends \PHPUnit\Framework\TestCase
                 [],             // $productIds
                 false,          // $combineProductCondition
                 "item.product_id NOT IN (SELECT `main`.`entity_id` FROM `{$productEntityTable}` AS `main`"
-                . " WHERE (main.entity_id IN (SELECT `cat`.`product_id` FROM `{$categoryProductTable}` AS `cat`"
-                . " WHERE (cat.category_id = '11'))) AND (main.created_in <= 1) AND (main.updated_in > 1))"
+                . " WHERE ((main.entity_id IN (SELECT `cat`.`product_id` FROM `{$categoryProductTable}` AS `cat`"
+                . " WHERE (cat.category_id = '11')))) AND (main.created_in <= 1) AND (main.updated_in > 1))"
             ],
             'Static attribute; Inverted condition' => [
                 true,           // $requireValid
@@ -91,7 +91,7 @@ class AttributesTest extends \PHPUnit\Framework\TestCase
                 [],             // $productIds
                 false,          // $combineProductCondition
                 "item.product_id IN (SELECT `main`.`entity_id` FROM `{$productEntityTable}` AS `main` "
-                . "WHERE (main.sku = 'test-sku') AND (main.created_in <= 1) AND (main.updated_in > 1))"
+                . "WHERE ((main.sku = 'test-sku')) AND (main.created_in <= 1) AND (main.updated_in > 1))"
             ],
             'Specified product ids; combine product condition' => [
                 false,          // $requireValid
@@ -100,7 +100,7 @@ class AttributesTest extends \PHPUnit\Framework\TestCase
                 [12, 24],       // $productIds
                 true,           // $combineProductCondition
                 "item.product_id IN (SELECT `main`.`entity_id` FROM `{$productEntityTable}` AS `main` "
-                . "WHERE (main.sku = 'test-sku') AND (main.entity_id IN (12, 24)) AND (main.created_in <= 1) "
+                . "WHERE ((main.sku = 'test-sku') AND (main.entity_id IN (12, 24))) AND (main.created_in <= 1) "
                 . "AND (main.updated_in > 1))"
             ],
         ];

@@ -76,7 +76,7 @@ class Curl extends AbstractCurl implements UpdateInterface
             $response = $curl->read();
             $curl->close();
 
-            if (!strpos($response, '"error":false')) {
+            if (strpos($response, '"error":false') === false) {
                 $this->_eventManager->dispatchEvent(['curl_failed'], [$response]);
             }
             $this->updateId = $this->getUpdateId($data['name']);

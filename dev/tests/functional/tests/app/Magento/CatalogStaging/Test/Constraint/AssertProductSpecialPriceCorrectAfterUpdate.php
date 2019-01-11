@@ -34,7 +34,7 @@ class AssertProductSpecialPriceCorrectAfterUpdate extends AbstractConstraint
 
         $browser->open($_ENV['app_frontend_url'] . $firstProduct->getUrlKey() . '.html');
 
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $firstProduct->getSpecialPrice(),
             $catalogProductView->getViewBlock()->getPriceBlock()->getSpecialPrice(),
             'First Product special price NOT equal to the special price passed in from fixture.'

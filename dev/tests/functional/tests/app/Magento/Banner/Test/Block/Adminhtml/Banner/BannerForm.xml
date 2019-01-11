@@ -8,18 +8,18 @@
 <tabs>
     <banner_properties>
         <class>\Magento\Backend\Test\Block\Widget\Tab</class>
-        <selector>#banner_info_tabs_properties_section_content</selector>
+        <selector>[@data-index='properties'</selector>
         <strategy>css selector</strategy>
         <fields>
             <is_enabled>
-                <input>select</input>
+                <input>checkbox</input>
             </is_enabled>
             <type>
-                <selector>[data-ui-id="banner-edit-content-form-fieldset-element-select"]</selector>
+                <selector>[data-index='types']</selector>
                 <input>select</input>
             </type>
             <use_customer_segment>
-                <input>select</input>
+                <selector>[data-index='customer_segment_ids']</selector>
             </use_customer_segment>
             <customer_segment>
                 <selector>[name="customer_segment_ids[]"]</selector>
@@ -29,12 +29,22 @@
     </banner_properties>
     <content>
         <class>\Magento\Banner\Test\Block\Adminhtml\Banner\Edit\Tab\Content</class>
-        <selector>#banner_info_tabs_content_section</selector>
+        <selector>[@data-index='content']</selector>
         <strategy>css selector</strategy>
     </content>
     <related_promotions>
         <class>Magento\Banner\Test\Block\Adminhtml\Banner\Edit\Tab\RelatedPromotions</class>
-        <selector>#banner_info_tabs_promotions_section</selector>
-        <strategy>css selector</strategy>
+        <selector>//div[@data-index='promotions']</selector>
+        <strategy>xpath</strategy>
+        <fields>
+            <add_catalog_rule>
+                <selector>//button/span[contains(text(), "Add Catalog Price Rules")]</selector>
+                <strategy>xpath</strategy>
+            </add_catalog_rule>
+            <add_sales_rule>
+                <selector>//button/span[contains(text(), "Add Cart Price Rules")]</selector>
+                <strategy>xpath</strategy>
+            </add_sales_rule>
+        </fields>
     </related_promotions>
 </tabs>

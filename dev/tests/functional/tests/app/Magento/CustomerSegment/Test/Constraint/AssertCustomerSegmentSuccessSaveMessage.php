@@ -27,7 +27,7 @@ class AssertCustomerSegmentSuccessSaveMessage extends AbstractConstraint
     {
         $actualMessage = $customerSegmentIndex->getMessagesBlock()->getSuccessMessage();
 
-        \PHPUnit_Framework_Assert::assertContains(
+        \PHPUnit\Framework\Assert::assertContains(
             self::SUCCESS_MESSAGE,
             $actualMessage,
             'Wrong success message is displayed.'

@@ -28,7 +28,7 @@ class AssertGiftCardAccountSaveMessage extends AbstractConstraint
      */
     public function processAssert(Index $index)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             self::SUCCESS_MESSAGE,
             $index->getMessagesBlock()->getSuccessMessage(),
             'Wrong success message is displayed.'

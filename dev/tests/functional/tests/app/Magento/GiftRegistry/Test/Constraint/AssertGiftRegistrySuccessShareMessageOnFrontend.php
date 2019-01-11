@@ -29,7 +29,7 @@ class AssertGiftRegistrySuccessShareMessageOnFrontend extends AbstractConstraint
      */
     public function processAssert(GiftRegistryIndex $giftRegistryIndex, $recipients)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             sprintf(self::SUCCESS_MESSAGE, count($recipients)),
             $giftRegistryIndex->getMessagesBlock()->getSuccessMessage(),
             'Wrong success message is displayed.'

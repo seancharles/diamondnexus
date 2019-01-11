@@ -40,14 +40,14 @@ class AssertCustomerSegmentMatchedCustomer extends AbstractConstraint
         $customerSegmentGrid = $formTabs->getMatchedCustomers()->getCustomersGrid();
         $customerSegmentNew->getPageMainActions()->refreshSegmentData();
         $formTabs->openTab('matched_customers');
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $customerSegmentGrid->isRowVisible(['grid_email' => $customer->getEmail()]),
             'Customer is absent in grid.'
         );
         $customerSegmentGrid->resetFilter();
         $totalOnTab = $formTabs->getNumberOfCustomersOnTabs();
         $totalInGrid = $customerSegmentGrid->getTotalRecords();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $totalInGrid,
             $totalOnTab,
             'Wrong count of records is displayed.'

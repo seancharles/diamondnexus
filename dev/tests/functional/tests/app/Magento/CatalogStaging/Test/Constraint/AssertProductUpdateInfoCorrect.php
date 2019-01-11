@@ -55,7 +55,7 @@ class AssertProductUpdateInfoCorrect extends AbstractConstraint
         if (!$stage->getDataFieldConfig('start_time')['source']->isTimezoneApplied()) {
             $date->setTimezone(new \DateTimeZone($_ENV['magento_timezone']));
         }
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $date->format('M j, Y g:i A'),
             $actualStartTime,
             'Product update campaign start date is incorrect.'
@@ -77,7 +77,7 @@ class AssertProductUpdateInfoCorrect extends AbstractConstraint
         if (!$stage->getDataFieldConfig('end_time')['source']->isTimezoneApplied()) {
             $date->setTimezone(new \DateTimeZone($_ENV['magento_timezone']));
         }
-        \PHPUnit_Framework_Assert::assertSame(
+        \PHPUnit\Framework\Assert::assertSame(
             $date->format('M j, Y g:i A'),
             $actualEndTime,
             'Product update campaign end date is incorrect.'
@@ -93,7 +93,7 @@ class AssertProductUpdateInfoCorrect extends AbstractConstraint
      */
     private function verifyUpdateExists(Update $stage, CatalogProductEdit $catalogProductEdit)
     {
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $catalogProductEdit->getProductScheduleBlock()->updateCampaignExists($stage->getName()),
             'Product update campaign does not exist or has an incorrect name.'
         );

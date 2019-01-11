@@ -10,7 +10,6 @@
         <giftcard_amount>
             <input>select</input>
         </giftcard_amount>
-        <qty />
         <giftcard_sender_name />
         <giftcard_sender_email />
         <giftcard_recipient_name />

@@ -55,7 +55,7 @@ class AssertProductsNotInCategory extends AbstractConstraint
 
         /* @var FixtureInterface $productFixture */
         foreach ($this->products as $productFixture) {
-            \PHPUnit_Framework_Assert::assertEquals(
+            \PHPUnit\Framework\Assert::assertEquals(
                 $grid->isProductVisible($productFixture),
                 false,
                 "Product was not deleted from view ".get_class($view)

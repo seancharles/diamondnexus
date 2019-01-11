@@ -181,7 +181,7 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
 
         $storeMock = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getWebsite', 'getCode'])
+            ->setMethods(['getWebsite', 'getCode', 'getId'])
             ->getMock();
         $storeMock->expects($this->any())
             ->method('getWebsite')
@@ -189,6 +189,9 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
         $storeMock->expects($this->any())
             ->method('getCode')
             ->will($this->returnValue('base'));
+        $storeMock->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue(1));
 
         $this->storeManagerMock->expects($this->any())
             ->method('getDefaultStoreView')
@@ -198,8 +201,64 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
             ->method('getWebsiteIds')
             ->will($this->returnValue(false));
 
+        $this->roleMock->expects($this->any())
+            ->method('hasStoreAccess')
+            ->with(1)
+            ->will($this->returnValue(true));
+
         $this->model->validateSystemConfig();
         $this->assertRedirect();
+    }
+
+    /**
+     * User role has no access to any store view scope or website. Redirect to access denied page.
+     */
+    public function testValidateSystemConfigRedirectToDenied()
+    {
+        $this->requestMock->expects($this->any())->method('getParam')->will(
+            $this->returnValue(null)
+        );
+
+        $websiteMock = $this->getMockBuilder(\Magento\Store\Model\Website::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getCode'])
+            ->getMock();
+        $websiteMock->expects($this->any())
+            ->method('getCode')
+            ->will($this->returnValue('default'));
+
+        $storeMock = $this->getMockBuilder(\Magento\Store\Model\Store::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getWebsite', 'getCode', 'getId'])
+            ->getMock();
+        $storeMock->expects($this->any())
+            ->method('getWebsite')
+            ->will($this->returnValue($websiteMock));
+        $storeMock->expects($this->any())
+            ->method('getCode')
+            ->will($this->returnValue('base'));
+        $storeMock->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue(1));
+
+        $this->storeManagerMock->expects($this->any())
+            ->method('getDefaultStoreView')
+            ->will($this->returnValue($storeMock));
+        $this->storeManagerMock->expects($this->any())
+            ->method('getStores')
+            ->willReturn([$storeMock]);
+
+        $this->roleMock->expects($this->any())
+            ->method('getWebsiteIds')
+            ->will($this->returnValue(false));
+
+        $this->roleMock->expects($this->any())
+            ->method('hasStoreAccess')
+            ->with(1)
+            ->will($this->returnValue(false));
+
+        $this->model->validateSystemConfig();
+        $this->assertRedirect($this->stringContains('admin/noroute'));
     }
 
     /**

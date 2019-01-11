@@ -17,4 +17,4 @@ $catalogRule = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->crea
 $ruleId = $catalogRule->getCollection()->getFirstItem()->getId();
 
 $banner = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\Banner\Model\Banner::class);
-$banner->load('Test Banner', 'name')->setBannerCatalogRules([$ruleId])->save();
+$banner->load('Test Dynamic Block', 'name')->setBannerCatalogRules([$ruleId])->save();

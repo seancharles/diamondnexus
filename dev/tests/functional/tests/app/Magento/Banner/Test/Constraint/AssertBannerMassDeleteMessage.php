@@ -32,7 +32,7 @@ class AssertBannerMassDeleteMessage extends AbstractConstraint
     {
         $banners = is_array($banner) ? $banner : [$banner];
         $deleteMessage = sprintf(self::SUCCESS_DELETE_MESSAGE, count($banners));
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $deleteMessage,
             $bannerIndex->getMessagesBlock()->getSuccessMessage(),
             'Wrong delete message is displayed.'
@@ -46,6 +46,6 @@ class AssertBannerMassDeleteMessage extends AbstractConstraint
      */
     public function toString()
     {
-        return 'Mass delete banner message is displayed.';
+        return 'Mass delete dynamic block message is displayed.';
     }
 }

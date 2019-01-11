@@ -27,7 +27,7 @@ class AssertReportSuccessMassDeleteMessage extends AbstractConstraint
     public function processAssert(SupportReportIndex $reportIndex)
     {
         $actualMessage = $reportIndex->getMessagesBlock()->getSuccessMessage();
-        \PHPUnit_Framework_Assert::assertContains(
+        \PHPUnit\Framework\Assert::assertContains(
             self::SUCCESS_MESSAGE,
             $actualMessage,
             'Wrong success message is displayed.'

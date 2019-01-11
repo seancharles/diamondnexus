@@ -16,7 +16,7 @@ class IndexTest extends \Magento\TestFramework\TestCase\AbstractBackendControlle
         $this->getRequest()->setParam('json', 1);
         $this->dispatch('backend/checkout/index/loadBlock');
         $this->assertStringMatchesFormat(
-            '{"message":"%AWe can\'t find this customer.%A"}',
+            '{"message":"%AThis customer couldn\'t be found. Verify the customer and try again.%A"}',
             $this->getResponse()->getBody()
         );
     }

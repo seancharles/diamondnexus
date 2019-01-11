@@ -122,7 +122,7 @@ class SaveTest extends \Magento\TestFramework\TestCase\AbstractController
 
     /**
      * Covers MAGETWO-70922
-     * @magentoDbIsolation enabled
+     * @magentoDbIsolation disabled
      * @magentoDataFixture Magento/CatalogStaging/_files/simple_product.php
      */
     public function testExecute()

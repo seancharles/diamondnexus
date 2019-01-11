@@ -32,7 +32,7 @@ class AssertArchiveOrderCancelMassActionSuccessMessage extends AbstractConstrain
      */
     public function processAssert(ArchiveOrders $archiveOrders, $successMassActions)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             sprintf(self::SUCCESS_MESSAGE, $successMassActions),
             $archiveOrders->getMessagesBlock()->getSuccessMessage(),
             'Wrong success message is displayed.'

@@ -48,14 +48,14 @@ class AssertWidgetCatalogEventsCarousel extends AbstractConstraint
         $event2->persist();
         $cmsIndex->open();
         $categoryName = $event2->getCategoryId();
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $catalogCategoryView->getWidgetView()->isWidgetVisible($widget, $categoryName),
             'Widget is absent on Category page.'
         );
 
         $cmsIndex->getCatalogEventWidgetView()->openInterestedEvent($categoryName);
         $pageTitle = $cmsIndex->getCmsPageBlock()->getPageTitle();
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $categoryName,
             $pageTitle,
             'Wrong page title on Category page.'

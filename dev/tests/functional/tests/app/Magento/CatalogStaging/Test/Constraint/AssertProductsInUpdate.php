@@ -42,7 +42,7 @@ class AssertProductsInUpdate extends AbstractConstraint
             ->getColumnValues('SKU');
         sort($productSkus);
         sort($actualProducts);
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $productSkus,
             $actualProducts,
             'Products in update campaign ' . $update->getName() . 'are not correct.'

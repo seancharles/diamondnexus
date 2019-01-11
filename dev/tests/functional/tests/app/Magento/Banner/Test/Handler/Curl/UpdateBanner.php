@@ -24,8 +24,8 @@ class UpdateBanner extends CreateBanner
     public function persist(FixtureInterface $fixture = null)
     {
         $response = $this->postRequest($fixture);
-        if (!strpos($response, 'data-ui-id="messages-message-success"')) {
-            throw new \Exception('Banner update by curl handler was not successful! Response: ' . $response);
+        if (strpos($response, 'data-ui-id="messages-message-success"') === false) {
+            throw new \Exception('Dynamic Block update by curl handler was not successful! Response: ' . $response);
         }
     }
 }

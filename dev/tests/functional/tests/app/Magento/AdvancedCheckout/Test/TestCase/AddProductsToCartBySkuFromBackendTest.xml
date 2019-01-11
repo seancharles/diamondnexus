@@ -23,19 +23,22 @@
             <constraint name="Magento\AdvancedCheckout\Test\Constraint\AssertProductsAddBySkuOnBackendSuccessMessage" />
         </variation>
         <variation name="AddProductsToCartBySkuFromBackendTestVariation3" summary="Add one simple out of stock product to order by sku on backend">
+            <data name="issue" xsi:type="string">https://github.com/magento-engcom/msi/issues/1624</data>
             <data name="products/0" xsi:type="string">catalogProductSimple::out_of_stock</data>
             <data name="orderOptions/qty" xsi:type="string">1</data>
             <constraint name="Magento\AdvancedCheckout\Test\Constraint\AssertProductsAddBySkuOnBackendIsOutOfStockFailMessage" />
         </variation>
         <variation name="AddProductsToCartBySkuFromBackendTestVariation4" summary="Add one simple product with qty more than available to order by sku on backend">
+            <data name="issue" xsi:type="string">https://github.com/magento-engcom/msi/issues/1624</data>
             <data name="products/0" xsi:type="string">catalogProductSimple::default</data>
             <data name="orderOptions/qty" xsi:type="string">26</data>
             <constraint name="Magento\AdvancedCheckout\Test\Constraint\AssertProductsAddBySkuOnBackendProductQtyIsNotEnough" />
         </variation>
         <variation name="AddProductsToCartBySkuFromBackendTestVariation5" summary="Add one simple offline product to order by sku on backend">
+            <data name="issue" xsi:type="string">https://github.com/magento-engcom/msi/issues/1624</data>
             <data name="products/0" xsi:type="string">catalogProductSimple::offline</data>
             <data name="orderOptions/qty" xsi:type="string">1</data>
-            <constraint name="Magento\AdvancedCheckout\Test\Constraint\AssertProductsAddBySkuOnBackendIsDisabledFailMessage" />
+            <constraint name="Magento\AdvancedCheckout\Test\Constraint\AssertProductsAddBySkuOnBackendIsOutOfStockFailMessage" />
         </variation>
         <variation name="AddProductsToCartBySkuFromBackendTestVariation6" summary="Add one simple not visible product to order by sku on backend">
             <data name="products/0" xsi:type="string">catalogProductSimple::not_visible_individually</data>
@@ -43,12 +46,14 @@
             <constraint name="Magento\AdvancedCheckout\Test\Constraint\AssertProductsAddBySkuOnBackendSuccessMessage" />
         </variation>
         <variation name="AddProductsToCartBySkuFromBackendTestVariation7" summary="Add one simple product with cart limits to order by sku on backend">
+            <data name="issue" xsi:type="string">https://github.com/magento-engcom/msi/issues/1624</data>
             <data name="products/0" xsi:type="string">catalogProductSimple::simple_with_cart_limits</data>
             <data name="cartBlock" xsi:type="string">required_attention</data>
             <data name="orderOptions/qty" xsi:type="string">1</data>
             <constraint name="Magento\AdvancedCheckout\Test\Constraint\AssertProductsAddBySkuOnBackendMinRequestedQtyFailMessage" />
         </variation>
         <variation name="AddProductsToCartBySkuFromBackendTestVariation8" summary="Add one simple product with maximum allowed Qty to order by sku on backend">
+            <data name="issue" xsi:type="string">https://github.com/magento-engcom/msi/issues/1624</data>
             <data name="products/0" xsi:type="string">catalogProductSimple::simple_with_cart_limits</data>
             <data name="orderOptions/qty" xsi:type="string">6</data>
             <constraint name="Magento\AdvancedCheckout\Test\Constraint\AssertProductsAddBySkuOnBackendMaxRequestedQtyFailMessage" />
@@ -89,17 +94,20 @@
             <constraint name="Magento\AdvancedCheckout\Test\Constraint\AssertProductsAddBySkuOnBackendQtyIncrementsFailMessage" />
         </variation>
         <variation name="AddProductsToCartBySkuFromBackendTestVariation15" summary="Add configurable product where all sub-items are disabled to order by sku on backend">
+            <data name="issue" xsi:type="string">https://github.com/magento-engcom/msi/issues/1624</data>
             <data name="products/0" xsi:type="string">configurableProduct::with_out_of_stock_item</data>
             <data name="orderOptions/qty" xsi:type="string">1</data>
             <constraint name="Magento\AdvancedCheckout\Test\Constraint\AssertProductsAddBySkuOnBackendRequiredAttentionFailMessage" />
             <constraint name="Magento\AdvancedCheckout\Test\Constraint\AssertProductsAddBySkuOnBackendIsOutOfStockFailMessage" />
         </variation>
         <variation name="AddProductsToCartBySkuFromBackendTestVariation16" summary="Add simple product with tier price and qty to order by sku on backend">
+            <data name="issue" xsi:type="string">https://github.com/magento-engcom/msi/issues/1624</data>
             <data name="products/0" xsi:type="string">catalogProductSimple::simple_with_tier_price_and_qty</data>
             <data name="orderOptions/qty" xsi:type="string">26</data>
             <constraint name="Magento\AdvancedCheckout\Test\Constraint\AssertProductsAddBySkuOnBackendProductQtyIsNotEnough" />
         </variation>
         <variation name="AddProductsToCartBySkuFromBackendTestVariation17" summary="Add simple product with displaying prices considering MAP settings to order by sku on backend">
+            <data name="issue" xsi:type="string">https://github.com/magento-engcom/msi/issues/1624</data>
             <data name="products/0" xsi:type="string">catalogProductSimple::msrp_before_order_confirmation</data>
             <data name="orderOptions/qty" xsi:type="string">26</data>
             <data name="config" xsi:type="string">msrp_before_order_confirmation</data>

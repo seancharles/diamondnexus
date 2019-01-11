@@ -43,7 +43,7 @@ class AssertInvitationInGridOnFrontend extends AbstractConstraint
         $customerAccountIndex->getAccountMenuBlock()->openMenuItem('My Invitations');
         $expectedData = $invitation->getEmail();
         $actualData = $invitationIndex->getInvitationsBlock()->getAvailableEmails($expectedData, $status);
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $expectedData,
             $actualData,
             "Expected and actual emails are not equal."

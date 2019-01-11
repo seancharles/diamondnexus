@@ -26,7 +26,7 @@ class AssertCustomerSegmentNotInGrid extends AbstractConstraint
     public function processAssert(CustomerSegment $customerSegment, CustomerSegmentIndex $customerSegmentIndex)
     {
         $customerSegmentIndex->open();
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $customerSegmentIndex->getGrid()->isRowVisible(['grid_segment_name' => $customerSegment->getName()]),
             'Customer Segments is present in grid.'
         );

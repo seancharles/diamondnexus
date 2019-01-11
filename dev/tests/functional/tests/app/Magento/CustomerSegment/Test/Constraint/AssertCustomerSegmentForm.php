@@ -45,7 +45,7 @@ class AssertCustomerSegmentForm extends AbstractAssertForm
 
         $formData = $customerSegmentNew->getCustomerSegmentForm()->getData();
         $dataDiff = $this->verifyData($customerSegment->getData(), $formData, false, false);
-        \PHPUnit_Framework_Assert::assertEmpty(
+        \PHPUnit\Framework\Assert::assertEmpty(
             $dataDiff,
             'Customer Segments data not equals to passed from fixture.'
             . "\nLog:\n" . implode(";\n", $dataDiff)

@@ -41,7 +41,7 @@ class AssertGiftCardAccountStatusInCustomerAccount extends AbstractAssertGiftCar
         $data['code'] = $code;
         $customerAccountIndex->getRedeemBlock()->checkStatusAndBalance($data['code']);
         $result = $this->prepareData($data, $customerAccountIndex);
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $result['fixtureData'],
             $result['pageData'],
             'Wrong success message is displayed.'

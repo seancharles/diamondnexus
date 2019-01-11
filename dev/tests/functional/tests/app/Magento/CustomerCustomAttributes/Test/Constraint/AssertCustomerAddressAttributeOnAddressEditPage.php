@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Magento\CustomerCustomAttributes\Test\Constraint;
 
 use Magento\Customer\Test\Page\CustomerAddressEdit;
@@ -30,7 +29,7 @@ class AssertCustomerAddressAttributeOnAddressEditPage extends AbstractConstraint
         $attributeCode = $customAttribute->getAttributeCode();
         $isVisible = $customerAddressEdit->getEditForm()->isAddressSimpleAttributeVisible($attributeCode);
 
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $isVisible,
             'Customer Address Attribute with attribute code: \'' . $attributeCode . '\' '
             . 'is not present during editing address in customer account on frontend.'

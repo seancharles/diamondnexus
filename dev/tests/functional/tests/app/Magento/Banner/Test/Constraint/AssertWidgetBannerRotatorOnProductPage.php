@@ -45,7 +45,7 @@ class AssertWidgetBannerRotatorOnProductPage extends AbstractConstraint
         $widgetText = $widget->getParameters()['entities'][0]->getStoreContents()['value_0'];
         $cmsIndex->getLinksBlock()->waitWelcomeMessage();
         $cmsIndex->getCmsPageBlock()->waitPageInit();
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $productView->getWidgetView()->isWidgetVisible($widget, $widgetText),
             'Widget is absent on Product page.'
         );

@@ -43,7 +43,7 @@ class AssertGiftRegistryTypeNotOnFrontend extends AbstractConstraint
         $customerAccountIndex->getAccountMenuBlock()->openMenuItem('Gift Registry');
         $giftRegistryIndex->getActionsToolbar()->addNew();
 
-        \PHPUnit_Framework_Assert::assertFalse(
+        \PHPUnit\Framework\Assert::assertFalse(
             $giftRegistryAddSelect->getGiftRegistryTypeBlock()->isGiftRegistryVisible($giftRegistryType->getLabel()),
             'Gift registry \'' . $giftRegistryType->getLabel() . '\' is present in dropdown.'
         );

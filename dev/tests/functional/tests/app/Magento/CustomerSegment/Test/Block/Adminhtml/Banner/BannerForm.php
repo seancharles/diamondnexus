@@ -19,14 +19,14 @@ class BannerForm extends \Magento\Banner\Test\Block\Adminhtml\Banner\BannerForm
      *
      * @var string
      */
-    protected $useSegment = '[name="use_customer_segment"]';
+    protected $useSegment = '//div[@data-index="customer_segment_ids"]/div/div';
 
     /**
      * Locator for apply banner to the Selected Customer Segments
      *
      * @var string
      */
-    protected $customerSegmentOptions = '[name="customer_segment_ids[]"] option';
+    protected $customerSegmentOptions = '//div[@data-index="customer_segment_ids"]//li/div';
 
     /**
      * Check whether customer segment is available on Banner form
@@ -36,8 +36,8 @@ class BannerForm extends \Magento\Banner\Test\Block\Adminhtml\Banner\BannerForm
      */
     public function isCustomerSegmentVisible($customerSegment)
     {
-        $this->_rootElement->find($this->useSegment, Locator::SELECTOR_CSS, 'select')->setValue('Specified');
-        $segments = $this->_rootElement->getElements($this->customerSegmentOptions, Locator::SELECTOR_CSS);
+        $this->_rootElement->find($this->useSegment, Locator::SELECTOR_XPATH)->click();
+        $segments = $this->_rootElement->getElements($this->customerSegmentOptions, Locator::SELECTOR_XPATH);
         foreach ($segments as $segment) {
             if ($customerSegment == $segment->getText()) {
                 return true;

@@ -41,7 +41,7 @@ class AssertAssignedExistingCampaignPreviewCorrect extends AbstractConstraint
         $stagingDashboardPage->getTooltipContent()->previewEvent();
         $stagingUpdatePreview->getNavigationBlock()->openCategory($categoryName);
         $stagingUpdatePreview->getProductsListBlock()->openProduct($product->getName());
-        \PHPUnit_Framework_Assert::assertEquals(
+        \PHPUnit\Framework\Assert::assertEquals(
             $stagingUpdatePreview->getProductInfoBlock()->getPrice(),
             $expectedPrice,
             'Expected in preview price is not correct.'

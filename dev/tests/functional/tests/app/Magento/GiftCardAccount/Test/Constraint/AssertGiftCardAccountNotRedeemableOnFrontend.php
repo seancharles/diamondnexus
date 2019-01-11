@@ -36,7 +36,7 @@ class AssertGiftCardAccountNotRedeemableOnFrontend extends AbstractAssertGiftCar
         $customerAccountIndex->getAccountMenuBlock()->openMenuItem('Gift Card');
         $customerAccountIndex->getRedeemBlock()->redeemGiftCard($code);
 
-        \PHPUnit_Framework_Assert::assertTrue(
+        \PHPUnit\Framework\Assert::assertTrue(
             $customerAccountIndex->getMessages()->assertErrorMessage(),
             'Gift card is redeemable on frontend'
         );
