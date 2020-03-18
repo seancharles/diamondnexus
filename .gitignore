@@ -66,3 +66,4 @@ atlassian*
 /generated/*
 !/generated/.htaccess
 .DS_Store
+conf.sh
