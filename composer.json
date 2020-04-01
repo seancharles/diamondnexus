@@ -30,7 +30,7 @@
         "ext-xsl": "*",
         "ext-zip": "*",
         "lib-libxml": "*",
-        "braintree/braintree_php": "3.35.0",
+        "paypal/module-braintree": "3.4.1",
         "colinmollenhour/cache-backend-file": "~1.4.1",
         "colinmollenhour/cache-backend-redis": "1.10.5",
         "colinmollenhour/credis": "1.10.0",
