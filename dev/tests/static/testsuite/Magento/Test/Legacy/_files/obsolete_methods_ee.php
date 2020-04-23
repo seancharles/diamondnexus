@@ -387,11 +387,6 @@ return [
         'Magento\CustomerCustomAttributes\Observer\SalesOrderAddressAfterLoad::invoke'
     ],
     [
-        'salesOrderAddressAfterSave',
-        'Magento\CustomerCustomAttributes\Model\Observer',
-        'Magento\CustomerCustomAttributes\Observer\SalesOrderAddressAfterSave::invoke'
-    ],
-    [
         'salesOrderAddressCollectionAfterLoad',
         'Magento\CustomerCustomAttributes\Model\Observer',
         'Magento\CustomerCustomAttributes\Observer\SalesOrderAddressCollectionAfterLoad::invoke'

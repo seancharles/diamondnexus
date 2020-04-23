@@ -27,10 +27,9 @@ class AssertProductCorrectAfterUpdate extends AbstractConstraint
      * @param CatalogProductView $catalogProductView
      * @param Cron $cron
      * @param BrowserInterface $browser
-     * @param string $expectedName
      * @param Website|null $customWebsite [optional]
-     * @param float|null $expectedPrice [optional]
      * @param CatalogProductSimple|null $productUpdate [optional]
+     * @param CatalogProductSimple|null $productUpdateForCustomWebsite [optional]
      * @return void
      */
     public function processAssert(
@@ -39,30 +38,55 @@ class AssertProductCorrectAfterUpdate extends AbstractConstraint
         CatalogProductView $catalogProductView,
         Cron $cron,
         BrowserInterface $browser,
-        $expectedName,
         Website $customWebsite = null,
-        $expectedPrice = null,
-        CatalogProductSimple $productUpdate = null
+        CatalogProductSimple $productUpdate = null,
+        CatalogProductSimple $productUpdateForCustomWebsite = null
     ) {
-        // Wait for product update time comes
-        sleep(60);
+        $timeToSleep = strtotime($update->getStartTime()) - time();
+
+        if ($timeToSleep > 0) {
+            // Wait for product update time comes
+            sleep($timeToSleep);
+        }
+
         // Run cron twice to force the update
         $cron->run();
         $cron->run();
-        $websiteCode = $customWebsite ? 'websites/' . $customWebsite->getCode() . '/' : '';
-        $browser->open($_ENV['app_frontend_url'] . $websiteCode . $product->getUrlKey() . '.html');
+        $browser->open($_ENV['app_frontend_url'] . $product->getUrlKey() . '.html');
 
+        $expectedPrice = $productUpdate->getPrice() ?? $product->getPrice();
         \PHPUnit\Framework\Assert::assertEquals(
-            $expectedPrice ? $expectedPrice : $productUpdate->getPrice(),
+            $expectedPrice,
             $catalogProductView->getViewBlock()->getPriceBlock()->getPrice(),
             $update->getName() . ' expected price is not correct.'
         );
 
+        $expectedName = $productUpdate->getName() ?? $product->getName();
         \PHPUnit\Framework\Assert::assertEquals(
             $expectedName,
             $catalogProductView->getViewBlock()->getProductName(),
             $expectedName . ' expected name is not correct.'
         );
+
+        if ($customWebsite && $productUpdateForCustomWebsite) {
+            $websiteCode = 'websites/' . $customWebsite->getCode() . '/';
+            $browser->open($_ENV['app_frontend_url'] . $websiteCode . $product->getUrlKey() . '.html');
+
+            $expectedPrice = $productUpdateForCustomWebsite->getPrice() ?? $product->getPrice();
+
+            \PHPUnit\Framework\Assert::assertEquals(
+                $expectedPrice,
+                $catalogProductView->getViewBlock()->getPriceBlock()->getPrice(),
+                $update->getName() . ' expected price is not correct for website ' . $websiteCode . '.'
+            );
+
+            $expectedName = $productUpdateForCustomWebsite->getName() ?? $product->getName();
+            \PHPUnit\Framework\Assert::assertEquals(
+                $expectedName,
+                $catalogProductView->getViewBlock()->getProductName(),
+                $expectedName . ' expected name is not correct for website ' . $websiteCode . '.'
+            );
+        }
     }
 
     /**

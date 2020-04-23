@@ -138,7 +138,8 @@ class ValidateProductAfterUpdateTest extends Injectable
                 $productUpdateForCustomWebsite != null ? $productUpdateForCustomWebsite->getPrice() : null,
             'expectedName' => $productUpdate->getName(),
             'productUpdate' => $productUpdate,
-            'update' => $update
+            'update' => $update,
+            'productUpdateForCustomWebsite' => $productUpdateForCustomWebsite,
         ];
     }
 

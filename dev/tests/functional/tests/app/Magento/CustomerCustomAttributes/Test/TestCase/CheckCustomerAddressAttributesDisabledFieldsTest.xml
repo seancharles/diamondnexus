@@ -8,6 +8,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
     <testCase name="Magento\CustomerCustomAttributes\Test\TestCase\CheckCustomerAddressAttributesDisabledFieldsTest" summary="Check disabled fields for system customer address attributes" ticketId="MAGETWO-61062">
         <variation name="CheckCustomerAddressAttributesDisabledFieldsTestVariation1">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="addressAttributes" xsi:type="array">
                 <item name="prefix" xsi:type="array">
                     <item name="is_visible" xsi:type="boolean">false</item>

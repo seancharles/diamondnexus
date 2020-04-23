@@ -8,6 +8,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
     <testCase name="Magento\Sales\Test\TestCase\CreateCreditMemoEntityTest">
         <variation name="CreateCreditMemoEntityTestVariation3" summary="Assert money return to StoreCredit">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="order/data/refund" xsi:type="array">
                 <item name="0" xsi:type="array">
                     <item name="invoiceId" xsi:type="string">0</item>
@@ -26,7 +27,7 @@
             </data>
             <data name="order/dataset" xsi:type="string">default</data>
             <data name="customerBalance/dataset" xsi:type="string">customerBalance_10</data>
-            <data name="order/data/price/dataset" xsi:type="string">full_refund_with_zero_shipping_refund</data>
+            <data name="order/data/price/dataset" xsi:type="string">full_refund</data>
             <data name="configData" xsi:type="string">checkmo</data>
             <constraint name="Magento\Sales\Test\Constraint\AssertRefundSuccessCreateMessage" />
             <constraint name="Magento\Sales\Test\Constraint\AssertNoCreditMemoButton" />

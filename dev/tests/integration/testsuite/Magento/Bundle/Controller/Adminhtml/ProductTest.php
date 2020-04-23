@@ -10,6 +10,7 @@ use Magento\Bundle\Api\Data\OptionInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Type;
+use Magento\Framework\App\Request\Http as HttpRequest;
 use Magento\Framework\Data\Form\FormKey;
 use Magento\Framework\Message\MessageInterface;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -30,6 +31,7 @@ class ProductTest extends AbstractBackendController
     public function testDuplicateProduct()
     {
         $params = $this->getRequestParamsForDuplicate();
+        $this->getRequest()->setMethod(HttpRequest::METHOD_POST);
         $this->getRequest()->setParams(['type' => Type::TYPE_BUNDLE]);
         $this->getRequest()->setPostValue($params);
         $this->dispatch('backend/catalog/product/save');

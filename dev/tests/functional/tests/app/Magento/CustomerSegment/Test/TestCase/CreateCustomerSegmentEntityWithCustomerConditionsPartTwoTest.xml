@@ -8,6 +8,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
     <testCase name="Magento\CustomerSegment\Test\TestCase\CreateCustomerSegmentEntityWithCustomerConditionsPartTwoTest" summary="Create Customer Segment" ticketId="MAGETWO-25691">
         <variation name="CreateCustomerSegmentEntityTestGender" summary="Create customer segment with condition based on 'Gender'">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="product/dataset" xsi:type="string">simple_10_dollar</data>
             <data name="customers/0" xsi:type="string">johndoe</data>
             <data name="customerIndex" xsi:type="number">0</data>
@@ -36,6 +37,7 @@
             <constraint name="Magento\Checkout\Test\Constraint\AssertDiscountInShoppingCart" />
         </variation>
         <variation name="CreateCustomerSegmentEntityTestGroup" summary="Create customer segment with condition based on 'Group'">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="product/dataset" xsi:type="string">simple_10_dollar</data>
             <data name="customers/0" xsi:type="string">johndoe_retailer</data>
             <data name="customerIndex" xsi:type="number">0</data>
@@ -64,6 +66,7 @@
             <constraint name="Magento\Checkout\Test\Constraint\AssertDiscountInShoppingCart" />
         </variation>
         <variation name="CreateCustomerSegmentEntityTestSpecificGroup" summary="Creation New Customer Segment for Specific Customer Group" ticketId="MAGETWO-12393">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="customers/0" xsi:type="string">backend_retailer_customer</data>
             <data name="customerIndex" xsi:type="number">0</data>
             <data name="customerSegment/data/name" xsi:type="string">All Retail Customers %isolation%</data>
@@ -76,7 +79,7 @@
             <constraint name="Magento\CustomerSegment\Test\Constraint\AssertCustomerSegmentMatchedCustomer" />
         </variation>
         <variation name="CreateCustomerSegmentEntityTestGroupRetailer" summary="Use Customer Segmentation to Apply Shopping Cart Promotion" ticketId="MAGETWO-12397">
-            <data name="tag" xsi:type="string">test_type:acceptance_test, test_type:extended_acceptance_test</data>
+            <data name="tag" xsi:type="string">test_type:acceptance_test, test_type:extended_acceptance_test, mftf_migrated:yes</data>
             <data name="product/dataset" xsi:type="string">simple_10_dollar</data>
             <data name="customers/0" xsi:type="string">backend_retailer_customer</data>
             <data name="customerIndex" xsi:type="number">0</data>

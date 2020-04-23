@@ -5,6 +5,8 @@
  */
 namespace Magento\CustomerBalance\Model\Adminhtml\Balance;
 
+use Magento\TestFramework\Helper\Bootstrap;
+
 /**
  * Test class for \Magento\CustomerBalance\Model\Adminhtml\Balance\History.
  * @magentoAppArea adminhtml
@@ -24,27 +26,27 @@ class HistoryTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp()
     {
-        \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
+        Bootstrap::getObjectManager()->get(
             \Magento\Backend\Model\Auth\Session::class
         )->setUser(
             new \Magento\Framework\DataObject(['id' => 1, 'username' => 'Admin user'])
         );
-        $websiteId = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
+        $websiteId = Bootstrap::getObjectManager()->get(
             \Magento\Store\Model\StoreManagerInterface::class
         )->getStore()->getWebsiteId();
-        $customer = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
+        $customer = Bootstrap::getObjectManager()->create(
             \Magento\Customer\Model\Customer::class
         )->setWebsiteId(
             $websiteId
         )->loadByEmail(
             'customer@example.com'
         );
-        $this->_balance = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
+        $this->_balance = Bootstrap::getObjectManager()->create(
             \Magento\CustomerBalance\Model\Balance::class
         )->setCustomer(
             $customer
         )->loadByCustomer();
-        $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
+        $this->_model = Bootstrap::getObjectManager()->create(
             \Magento\CustomerBalance\Model\Balance\History::class
         )->setCustomerId(
             $customer->getId()

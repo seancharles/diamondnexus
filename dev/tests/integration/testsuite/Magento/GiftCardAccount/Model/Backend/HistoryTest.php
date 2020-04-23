@@ -3,7 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Magento\GiftCardAccount\Model\Backend;
+
+use Magento\TestFramework\Helper\Bootstrap;
 
 /**
  * Test class for \Magento\GiftCardAccount\Model\Backend\History.
@@ -24,16 +27,16 @@ class HistoryTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp()
     {
-        \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
+        Bootstrap::getObjectManager()->get(
             \Magento\Backend\Model\Auth\Session::class
         )->setUser(
             new \Magento\Framework\DataObject(['id' => 1, 'username' => 'Admin user'])
         );
-        $this->_giftcardAccount = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
+        $this->_giftcardAccount = Bootstrap::getObjectManager()->create(
             \Magento\GiftCardAccount\Model\Giftcardaccount::class
         );
         $this->_giftcardAccount->loadByCode('giftcardaccount_fixture');
-        $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
+        $this->_model = Bootstrap::getObjectManager()->create(
             \Magento\GiftCardAccount\Model\History::class
         );
         $this->_model->setGiftcardaccount($this->_giftcardAccount);

@@ -36,6 +36,7 @@ class SearchResultTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @magentoDataFixture Magento/Staging/_files/staging_entity_two_campaigns.php
      * @magentoDataFixture Magento/Staging/_files/search_staging_update.php
      */
     public function testStatusColumn()

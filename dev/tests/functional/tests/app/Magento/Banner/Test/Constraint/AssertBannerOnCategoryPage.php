@@ -45,6 +45,10 @@ class AssertBannerOnCategoryPage extends AbstractConstraint
         } else {
             $cmsIndex->open();
         }
+        $cmsIndex->open();
+        //we have 30 sec cache for banners
+        sleep(30);
+        $cmsIndex->open();
         $cmsIndex->getTopmenu()->selectCategoryByName($category->getName());
         $cmsIndex->getLinksBlock()->waitWelcomeMessage();
         $cmsIndex->getCmsPageBlock()->waitPageInit();

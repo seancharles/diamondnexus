@@ -47,7 +47,6 @@ class AssignRelatedPromotionsToBannerEntityWithCustomerSegmentTest extends Injec
     const MVP = 'no';
     const TEST_TYPE = 'extended_acceptance_test';
     const SEVERITY = 'S1';
-    const STABLE = 'no';
     /* end tags */
 
     /**

@@ -28,7 +28,7 @@ $extensionAttributes->setGiftcardAmounts([$amount1, $amount2]);
 $product->setTypeId(\Magento\GiftCard\Model\Catalog\Product\Type\Giftcard::TYPE_GIFTCARD)
     ->setAttributeSetId(4)
     ->setWebsiteIds([1])
-    ->setName('Simple Gift Card')
+    ->setName('Simple Gift Card With Amount')
     ->setSku('gift-card-with-amount')
     ->setDescription('Gift Card Description')
     ->setMetaTitle('Gift Card Meta Title')

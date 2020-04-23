@@ -9,7 +9,10 @@ use Magento\CatalogImportExport\Model\AbstractProductExportImportTestCase;
 
 class GiftCardTest extends AbstractProductExportImportTestCase
 {
-    public function exportImportDataProvider()
+    /**
+     * @return array
+     */
+    public function exportImportDataProvider(): array
     {
         return [
             'gift-card' => [
@@ -31,77 +34,40 @@ class GiftCardTest extends AbstractProductExportImportTestCase
         ];
     }
 
-    public function importReplaceDataProvider()
-    {
-        return $this->exportImportDataProvider();
-    }
-
     /**
-     * @param array $skus
+     * @inheritdoc
      */
-    protected function modifyData($skus)
+    protected function modifyData(array $skus): void
     {
         $this->objectManager->get(\Magento\CatalogImportExport\Model\Version::class)->create($skus, $this);
     }
 
     /**
+     * Run import/export tests.
+     *
+     * @magentoAppArea adminhtml
+     * @magentoDbIsolation disabled
+     * @magentoAppIsolation enabled
+     *
      * @param array $fixtures
      * @param string[] $skus
      * @param string[] $skippedAttributes
+     * @return void
      * @dataProvider exportImportDataProvider
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     *
-     * @todo remove after MAGETWO-38240 resolved
      */
-    public function testExport($fixtures, $skus, $skippedAttributes = [], $rollbackFixtures = [])
+    public function testImportExport(array $fixtures, array $skus, array $skippedAttributes = []): void
     {
         $this->markTestSkipped('Uncomment after MAGETWO-38240 resolved');
     }
 
     /**
-     * @param array $fixtures
-     * @param string[] $skus
-     * @dataProvider exportImportDataProvider
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     *
-     * @todo remove after MAGETWO-38240 resolved
+     * @inheritdoc
      */
-    public function testImportDelete($fixtures, $skus, $skippedAttributes = [], $rollbackFixtures = [])
-    {
-        $this->markTestSkipped('Uncomment after MAGETWO-38240 resolved');
-    }
-
-    /**
-     * @param array $fixtures
-     * @param string[] $skus
-     * @param string[] $skippedAttributes
-     * @dataProvider importReplaceDataProvider
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function testImportReplace($fixtures, $skus, $skippedAttributes = [], $rollbackFixtures = [])
-    {
-        $this->markTestSkipped('Uncomment after MAGETWO-38240 resolved');
-    }
-
-    /**
-     * @param array $fixtures
-     * @param string[] $skus
-     * @param string[] $skippedAttributes
-     * @dataProvider importReplaceDataProvider
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function testImportReplaceWithPagination($fixtures, $skus, $skippedAttributes = [])
-    {
-        $this->markTestSkipped('Uncomment after MAGETWO-38240 resolved');
-    }
-
-    /**
-     * @param \Magento\Catalog\Model\Product $expectedProduct
-     * @param \Magento\Catalog\Model\Product $actualProduct
-     */
-    protected function assertEqualsSpecificAttributes($expectedProduct, $actualProduct)
-    {
+    protected function assertEqualsSpecificAttributes(
+        \Magento\Catalog\Model\Product $expectedProduct,
+        \Magento\Catalog\Model\Product $actualProduct
+    ): void {
         foreach ($this->getFieldsToCompare() as $fieldKey => $fieldValue) {
             if (is_array($fieldValue)) {
                 if (count($expectedProduct->getData($fieldKey)) > 0) {
@@ -131,7 +97,7 @@ class GiftCardTest extends AbstractProductExportImportTestCase
      *
      * @return array
      */
-    private function getFieldsToCompare()
+    private function getFieldsToCompare(): array
     {
         return [
             'sku' => false,
@@ -139,7 +105,7 @@ class GiftCardTest extends AbstractProductExportImportTestCase
             'is_redeemable' => false,
             'lifetime' => false,
             'allow_message' => false,
-            'giftcard_amounts' => ['value']
+            'giftcard_amounts' => ['value'],
          ];
     }
 }

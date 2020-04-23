@@ -47,6 +47,26 @@ $permission->setWebsiteId(
     \Magento\CatalogPermissions\Model\Permission::PERMISSION_DENY
 )->save();
 
+$permission = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
+    \Magento\CatalogPermissions\Model\Permission::class
+);
+$permission->setWebsiteId(
+    \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
+        \Magento\Store\Model\StoreManagerInterface::class
+    )->getWebsite()->getId()
+)->setCategoryId(
+    6
+)->setCustomerGroupId(
+    2
+)->setGrantCatalogCategoryView(
+    \Magento\CatalogPermissions\Model\Permission::PERMISSION_DENY
+)->setGrantCatalogProductPrice(
+    \Magento\CatalogPermissions\Model\Permission::PERMISSION_DENY
+)->setGrantCheckoutItems(
+    \Magento\CatalogPermissions\Model\Permission::PERMISSION_DENY
+)->save();
+
+
 /** @var $permissionAllow \Magento\CatalogPermissions\Model\Permission */
 $permissionAllow = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
     \Magento\CatalogPermissions\Model\Permission::class

@@ -5,118 +5,171 @@
  */
 namespace Magento\Banner\Model\ResourceModel;
 
-class BannerTest extends \PHPUnit\Framework\TestCase
+use Magento\SalesRule\Api\RuleRepositoryInterface;
+use Magento\SalesRule\Api\Data\RuleInterface;
+use Magento\Banner\Model\BannerFactory;
+use Magento\TestFramework\Helper\Bootstrap;
+use Magento\Framework\ObjectManagerInterface;
+use Magento\Customer\Model\GroupManagement;
+use Magento\Framework\Registry;
+use PHPUnit\Framework\TestCase;
+
+class BannerTest extends TestCase
 {
     /**
-     * @var \Magento\Banner\Model\ResourceModel\Banner
+     * @var ObjectManagerInterface
      */
-    private $_resourceModel;
+    private $objectManager;
+
+    /**
+     * @var Banner
+     */
+    private $resourceModel;
 
     /**
      * @var int
      */
-    protected $_websiteId = 1;
+    private $websiteId = 1;
+
+    /**
+     * @var BannerFactory
+     */
+    private $bannerFactory;
+
+    /**
+     * @var Registry
+     */
+    private $registry;
+
+    /**
+     * @var RuleRepositoryInterface
+     */
+    private $ruleRepository;
 
     /**
      * @var int
      */
-    protected $_customerGroupId = \Magento\Customer\Model\GroupManagement::NOT_LOGGED_IN_ID;
+    private $customerGroupId = GroupManagement::NOT_LOGGED_IN_ID;
 
+    /**
+     * @inheritdoc
+     */
     protected function setUp()
     {
-        $this->_resourceModel = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            \Magento\Banner\Model\ResourceModel\Banner::class
-        );
-    }
-
-    protected function tearDown()
-    {
-        $this->_resourceModel = null;
+        $this->objectManager = Bootstrap::getObjectManager();
+        $this->resourceModel = $this->objectManager->get(Banner::class);
+        $this->bannerFactory = $this->objectManager->get(BannerFactory::class);
+        $this->registry = $this->objectManager->get(Registry::class);
+        $this->ruleRepository = $this->objectManager->get(RuleRepositoryInterface::class);
     }
 
     /**
+     * @inheritdoc
+     */
+    protected function tearDown()
+    {
+        $this->resourceModel = null;
+    }
+
+    /**
+     * @return void
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture Magento/CatalogRule/_files/catalog_rule_10_off_not_logged.php
      * @magentoDataFixture Magento/Banner/_files/banner.php
      * @magentoDbIsolation disabled
      */
-    public function testGetCatalogRuleRelatedBannerIdsNoBannerConnected()
+    public function testGetCatalogRuleRelatedBannerIdsNoBannerConnected(): void
     {
         $this->assertEmpty(
-            $this->_resourceModel->getCatalogRuleRelatedBannerIds($this->_websiteId, $this->_customerGroupId)
+            $this->resourceModel->getCatalogRuleRelatedBannerIds($this->websiteId, $this->customerGroupId)
         );
     }
 
     /**
+     * @return void
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture Magento/Banner/_files/banner_catalog_rule.php
      * @magentoDbIsolation disabled
      */
-    public function testGetCatalogRuleRelatedBannerIds()
+    public function testGetCatalogRuleRelatedBannerIds(): void
     {
-        $banner = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            \Magento\Banner\Model\Banner::class
-        );
-        $banner->load('Test Dynamic Block', 'name');
+        $banner = $this->bannerFactory->create();
+        $this->resourceModel->load($banner, 'Test Dynamic Block', 'name');
 
         $this->assertSame(
             [$banner->getId()],
-            $this->_resourceModel->getCatalogRuleRelatedBannerIds($this->_websiteId, $this->_customerGroupId)
+            $this->resourceModel->getCatalogRuleRelatedBannerIds($this->websiteId, $this->customerGroupId)
         );
     }
 
     /**
+     * @return void
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture Magento/Banner/_files/banner_catalog_rule.php
      * @dataProvider getCatalogRuleRelatedBannerIdsWrongDataDataProvider
      * @magentoDbIsolation disabled
      */
-    public function testGetCatalogRuleRelatedBannerIdsWrongData($websiteId, $customerGroupId)
+    public function testGetCatalogRuleRelatedBannerIdsWrongData($websiteId, $customerGroupId): void
     {
-        $this->assertEmpty($this->_resourceModel->getCatalogRuleRelatedBannerIds($websiteId, $customerGroupId));
+        $this->assertEmpty($this->resourceModel->getCatalogRuleRelatedBannerIds($websiteId, $customerGroupId));
     }
 
     /**
      * @return array
      */
-    public function getCatalogRuleRelatedBannerIdsWrongDataDataProvider()
+    public function getCatalogRuleRelatedBannerIdsWrongDataDataProvider(): array
     {
         return [
-            'wrong website' => [$this->_websiteId + 1, $this->_customerGroupId],
-            'wrong customer group' => [$this->_websiteId, $this->_customerGroupId + 1]
+            'wrong website' => [$this->websiteId + 1, $this->customerGroupId],
+            'wrong customer group' => [$this->websiteId, $this->customerGroupId + 1]
         ];
     }
 
     /**
+     * @return void
      * @magentoDataFixture Magento/Banner/_files/banner_disabled_40_percent_off.php
      * @magentoDataFixture Magento/Banner/_files/banner_enabled_40_to_50_percent_off.php
      * @magentoDbIsolation disabled
      */
-    public function testGetSalesRuleRelatedBannerIds()
+    public function testGetSalesRuleRelatedBannerIds(): void
     {
-        $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-        $registry = $objectManager->get(\Magento\Framework\Registry::class);
-        $ruleId = $registry->registry('Magento/SalesRule/_files/cart_rule_40_percent_off');
-
+        $ruleId = $this->registry->registry('Magento/SalesRule/_files/cart_rule_40_percent_off');
         /** @var \Magento\Banner\Model\Banner $banner */
-        $banner = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            \Magento\Banner\Model\Banner::class
-        );
-        $banner->load('Get from 40% to 50% Off on Large Orders', 'name');
+        $banner = $this->bannerFactory->create();
+        $this->resourceModel->load($banner, 'Get from 40% to 50% Off on Large Orders', 'name');
 
         $this->assertEquals(
             [$banner->getId()],
-            $this->_resourceModel->getSalesRuleRelatedBannerIds([$ruleId])
+            $this->resourceModel->getSalesRuleRelatedBannerIds([$ruleId])
         );
     }
 
     /**
+     * Get sales rule related banner ids with non active sales rule
+     *
+     * @return void
+     * @magentoDataFixture Magento/Banner/_files/banner_enabled_40_to_50_percent_off.php
+     * @magentoDbIsolation disabled
+     */
+    public function testGetSalesRuleRelatedBannerIdsWithNonActiveRule(): void
+    {
+        $ruleId = $this->registry->registry('Magento/SalesRule/_files/cart_rule_40_percent_off');
+        /** @var RuleInterface $rule */
+        $rule = $this->ruleRepository->getById($ruleId);
+        $rule->setIsActive(0);
+        $this->ruleRepository->save($rule);
+
+        $this->assertEmpty($this->resourceModel->getSalesRuleRelatedBannerIds([$ruleId]));
+    }
+
+    /**
+     * @return void
      * @magentoDataFixture Magento/Banner/_files/banner_enabled_40_to_50_percent_off.php
      * @magentoDataFixture Magento/Banner/_files/banner_disabled_40_percent_off.php
      * @magentoDbIsolation disabled
      */
-    public function testGetSalesRuleRelatedBannerIdsNoRules()
+    public function testGetSalesRuleRelatedBannerIdsNoRules(): void
     {
-        $this->assertEmpty($this->_resourceModel->getSalesRuleRelatedBannerIds([]));
+        $this->assertEmpty($this->resourceModel->getSalesRuleRelatedBannerIds([]));
     }
 }

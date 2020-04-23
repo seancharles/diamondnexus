@@ -12,6 +12,7 @@ use Magento\Customer\Test\Fixture\Customer;
 use Magento\Mtf\Fixture\FixtureFactory;
 use Magento\Mtf\TestCase\Injectable;
 use Magento\Reward\Test\Fixture\Reward;
+use Magento\Mtf\Util\Command\Cli\Cron;
 
 /**
  * Preconditions:
@@ -45,18 +46,28 @@ class ExportCustomerFinancesTest extends Injectable
     private $adminExportIndex;
 
     /**
+     * Cron manager
+     *
+     * @var Cron
+     */
+    private $cron;
+
+    /**
      * Inject data.
      *
      * @param FixtureFactory $fixtureFactory
      * @param AdminExportIndex $adminExportIndex
+     * @param Cron $cron
      * @return void
      */
     public function __inject(
         FixtureFactory $fixtureFactory,
-        AdminExportIndex $adminExportIndex
+        AdminExportIndex $adminExportIndex,
+        Cron $cron
     ) {
         $this->fixtureFactory = $fixtureFactory;
         $this->adminExportIndex = $adminExportIndex;
+        $this->cron = $cron;
     }
 
     /**
@@ -70,7 +81,11 @@ class ExportCustomerFinancesTest extends Injectable
         ExportData $exportData,
         array $customers
     ) {
+        $this->cron->run();
+        $this->cron->run();
         $customersData = $this->prepareCustomers($customers);
+        $this->adminExportIndex->open();
+        $this->adminExportIndex->getExportedGrid()->deleteAllExportedFiles();
         $exportData->persist();
 
         $this->adminExportIndex->open();

@@ -88,6 +88,7 @@
             <field name="frontend_label" xsi:type="string">File_Customer_%isolation%</field>
             <field name="attribute_code" xsi:type="string">file_%isolation%</field>
             <field name="frontend_input" xsi:type="string">File (attachment)</field>
+            <field name="file_extensions" xsi:type="string">txt</field>
             <field name="sort_order" xsi:type="string">80</field>
         </dataset>
 
@@ -95,6 +96,7 @@
             <field name="frontend_label" xsi:type="string">Image_Customer_%isolation%</field>
             <field name="attribute_code" xsi:type="string">image_%isolation%</field>
             <field name="frontend_input" xsi:type="string">Image File</field>
+            <field name="file_extensions" xsi:type="string">jpg</field>
             <field name="sort_order" xsi:type="string">90</field>
         </dataset>
     </repository>

@@ -8,6 +8,8 @@ declare(strict_types=1);
 namespace Magento\CustomerBalance\Model;
 
 use Magento\Sales\Model\Order;
+use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Model\Order\Payment;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\ObjectManager;
 use PHPUnit\Framework\TestCase;
@@ -26,6 +28,11 @@ class CreditMemoResolverTest extends TestCase
     {
         /** @var ObjectManager $objectManager */
         $objectManager = Bootstrap::getObjectManager();
+        /** @var $payment Payment */
+        $payment = $objectManager->create(
+            Payment::class
+        );
+        $payment->setMethod('checkmo');
         $this->order = $objectManager->create(
             Order::class,
             [
@@ -33,7 +40,8 @@ class CreditMemoResolverTest extends TestCase
                     'state' => Order::STATE_PROCESSING,
                     'total_paid' => 20,
                     'base_total_paid' => 20,
-                    'total_refunded' => 0
+                    'total_refunded' => 0,
+                    OrderInterface::PAYMENT => $payment,
                 ]
             ]
         );
