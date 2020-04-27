@@ -88,14 +88,14 @@ class CreditmemoDataImportObserverTest extends TestCase
             [
                 'total' => 16.47,
                 'refundBalance' => 16.47,
-                'expTotal' => 0.00,
+                'expTotal' => 16.47,
                 'expBalance' => 16.47,
-                'expAllowZeroTotal' => true,
+                'expAllowZeroTotal' => false,
             ],
             [
                 'total' => 16.47,
                 'refundBalance' => 15.12,
-                'expTotal' => 1.35,
+                'expTotal' => 16.47,
                 'expBalance' => 15.12,
                 'expAllowZeroTotal' => false,
             ]

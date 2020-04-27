@@ -3,12 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Magento\CatalogImportExport\Model;
 
 use Magento\Framework\ObjectManagerInterface;
-use Magento\CatalogImportExport\Model\AbstractProductExportImportTestCase;
 
 /**
+ * Class responsible for creating schedule update for products.
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Version
@@ -31,53 +33,55 @@ class Version
      *
      * @param array $skus
      * @param AbstractProductExportImportTestCase $testInstance
+     * @return void
      * @throws \Exception
      */
-    public function create($skus, AbstractProductExportImportTestCase $testInstance = null)
+    public function create(array $skus, AbstractProductExportImportTestCase $testInstance = null): void
     {
         $date = new \DateTime();
+        /** @var \Magento\Staging\Model\UpdateFactory $updateFactory */
+        $updateFactory = $this->objectManager->get(\Magento\Staging\Model\UpdateFactory::class);
+        /** @var \Magento\Framework\EntityManager\MetadataPool $metadataPool */
+        $metadataPool = $this->objectManager->get(\Magento\Framework\EntityManager\MetadataPool::class);
+        /** @var \Magento\Catalog\Model\ResourceModel\Product $productResource */
+        $productResource = $this->objectManager->get(\Magento\Catalog\Model\ResourceModel\Product::class);
+        /** @var \Magento\Catalog\Model\Product $product */
+        $product = $this->objectManager->create(\Magento\Catalog\Model\Product::class);
+        /** @var \Magento\Staging\Model\ResourceModel\Update $resourceUpdate */
+        $resourceUpdate = $this->objectManager->get(\Magento\Staging\Model\ResourceModel\Update::class);
+        /** @var \Magento\Framework\EntityManager\EntityManager $entityManager */
+        $entityManager = $this->objectManager->get(\Magento\Framework\EntityManager\EntityManager::class);
+        /** @var \Magento\Staging\Model\VersionManager $versionManager */
+        $versionManager = $this->objectManager->get(\Magento\Staging\Model\VersionManager::class);
+        /** @var \Magento\Framework\EntityManager\HydratorInterface $hydrator */
+        $hydrator = $metadataPool->getHydrator(\Magento\Staging\Api\Data\UpdateInterface::class);
 
         $i = 2;
         foreach ($skus as $sku) {
             $startDate = $date->add(new \DateInterval('P' . $i . 'D'))->format('Y-m-d H:i:s');
 
-            /** @var \Magento\Catalog\Model\ResourceModel\Product $productResource */
-            $productResource = $this->objectManager->create(\Magento\Catalog\Model\ResourceModel\Product::class);
-            /** @var \Magento\Catalog\Model\Product $product */
-            $product = $this->objectManager->create(\Magento\Catalog\Model\Product::class);
             $productId = $productResource->getIdBySku($sku);
-            $product->load($productId);
+            $product->clearInstance()->load($productId);
 
             $stagingData = [
-                'mode' => 'save',
-                'update_id' => null,
-                'name' => 'New update ' . $startDate,
+                'mode'        => 'save',
+                'update_id'   => null,
+                'name'        => 'New update ' . $startDate,
                 'description' => 'New update',
-                'start_time' => $startDate,
-                'end_time' => null,
-                'select_id' => null
+                'start_time'  => $startDate,
+                'end_time'    => null,
+                'select_id'   => null,
             ];
-
-            /** @var \Magento\Staging\Model\UpdateFactory $updateFactory */
-            $updateFactory = $this->objectManager->get(\Magento\Staging\Model\UpdateFactory::class);
-            /** @var \Magento\Framework\EntityManager\MetadataPool $metadataPool */
-            $metadataPool = $this->objectManager->get(\Magento\Framework\EntityManager\MetadataPool::class);
 
             /** @var \Magento\Staging\Model\Update $update */
             $update = $updateFactory->create();
-            /** @var \Magento\Framework\Model\Entity\Hydrator $hydrator */
-            $hydrator = $metadataPool->getHydrator(\Magento\Staging\Api\Data\UpdateInterface::class);
             $hydrator->hydrate($update, $stagingData);
             $update->setIsCampaign(false);
             $update->setId(strtotime($update->getStartTime()));
             $update->isObjectNew(true);
 
-            /** @var \Magento\Staging\Model\ResourceModel\Update $resourceUpdate */
-            $resourceUpdate = $this->objectManager->get(\Magento\Staging\Model\ResourceModel\Update::class);
             $resourceUpdate->save($update);
 
-            /** @var \Magento\Staging\Model\VersionManager $versionManager */
-            $versionManager = $this->objectManager->get(\Magento\Staging\Model\VersionManager::class);
             $oldVersion = $versionManager->getCurrentVersion();
             $versionManager->setCurrentVersionId($update->getId());
 
@@ -88,11 +92,7 @@ class Version
 
             $product->unsRowId();
             $product->setName('My Product ' . $startDate);
-
-            /** @var \Magento\Framework\EntityManager\EntityManager $entityManager */
-            $entityManager = $this->objectManager->get(\Magento\Framework\EntityManager\EntityManager::class);
             $entityManager->save($product, ['created_in' => $update->getId()]);
-
             $versionManager->setCurrentVersionId($oldVersion->getId());
 
             $i++;
@@ -112,7 +112,7 @@ class Version
 
         if ($product->getOptions()) {
             /** @var \Magento\Catalog\Api\Data\ProductCustomOptionInterfaceFactory $customOptionFactory */
-            $customOptionFactory = $this->objectManager->create(
+            $customOptionFactory = $this->objectManager->get(
                 \Magento\Catalog\Api\Data\ProductCustomOptionInterfaceFactory::class
             );
 

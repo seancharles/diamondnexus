@@ -8,6 +8,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
     <testCase name="Magento\Checkout\Test\TestCase\DeleteProductsFromShoppingCartTest" summary="Delete Products from Shopping Cart" ticketId="MAGETWO-25218">
         <variation name="DeleteGiftCardFromShoppingCartTestVariation1">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="productsData/0" xsi:type="string">giftCardProduct::default</data>
             <constraint name="Magento\Checkout\Test\Constraint\AssertCartIsEmpty" />
         </variation>

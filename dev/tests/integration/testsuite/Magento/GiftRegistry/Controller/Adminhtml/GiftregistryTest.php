@@ -5,11 +5,35 @@
  */
 namespace Magento\GiftRegistry\Controller\Adminhtml;
 
+use Magento\Framework\Escaper;
+use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\TestCase\AbstractBackendController;
+
 /**
+ * Testing registry controllers.
+ *
  * @magentoAppArea adminhtml
  */
-class GiftregistryTest extends \Magento\TestFramework\TestCase\AbstractBackendController
+class GiftregistryTest extends AbstractBackendController
 {
+    /**
+     * @var Escaper
+     */
+    private $escaper;
+
+    /**
+     * @inheritDoc
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->escaper = Bootstrap::getObjectManager()->get(Escaper::class);
+    }
+
+    /**
+     * Rendering new registry page.
+     */
     public function testNewAction()
     {
         $this->dispatch('backend/admin/giftregistry/new');
@@ -20,7 +44,7 @@ class GiftregistryTest extends \Magento\TestFramework\TestCase\AbstractBackendCo
         $this->assertContains(
             '<a href="#magento_giftregistry_tabs_general_section_content"' .
             ' id="magento_giftregistry_tabs_general_section" name="general_section"' .
-            ' title="General Information"',
+            ' title="' .$this->escaper->escapeHtmlAttr('General Information') .'"',
             $this->getResponse()->getBody()
         );
         $this->assertContains(
@@ -32,6 +56,8 @@ class GiftregistryTest extends \Magento\TestFramework\TestCase\AbstractBackendCo
     }
 
     /**
+     * Testing creating a new registry via the save controller.
+     *
      * @magentoDbIsolation enabled
      */
     public function testSaveAction()

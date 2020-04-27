@@ -8,6 +8,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../vendor/magento/mtf/etc/variations.xsd">
     <testCase name="Magento\CatalogStaging\Test\TestCase\ReSavingProductAfterInitialSaveFailsTest" summary="save product after failed attempt" ticketId="MAGETWO-71666">
         <variation name="ReSavingProductAfterInitialSaveTestVariation1">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="description" xsi:type="string">Verify if product is saved successfully after initial save fails</data>
             <data name="product/dataset" xsi:type="string">product_with_category</data>
             <data name="update1/dataset" xsi:type="string">temporary_update_with_invalid_dates</data>

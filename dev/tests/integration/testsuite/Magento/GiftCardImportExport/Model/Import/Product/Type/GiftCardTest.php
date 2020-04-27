@@ -81,11 +81,11 @@ class GiftCardTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Return expected data
+     * Return expected data.
      *
      * @return array
      */
-    protected function getExpectedData()
+    protected function getExpectedData(): array
     {
         return [
             [
@@ -94,11 +94,12 @@ class GiftCardTest extends \PHPUnit\Framework\TestCase
                 'is_redeemable' => 1,
                 'lifetime' => 7,
                 'allow_message' => 1,
+                'email_template' => 'giftcard_email_template',
                 'giftcard_amounts' => [
                     5,
                     10,
-                    15
-                ]
+                    15,
+                ],
             ],
             [
                 'sku' => 'Physical Gift Card',
@@ -106,11 +107,12 @@ class GiftCardTest extends \PHPUnit\Framework\TestCase
                 'is_redeemable' => 1,
                 'lifetime' => 14,
                 'allow_message' => 1,
+                'email_template' => 'giftcard_email_template',
                 'giftcard_amounts' => [
                     10,
                     15,
-                    20
-                ]
+                    20,
+                ],
             ],
             [
                 'sku' => 'Combined Gift Card',
@@ -118,12 +120,13 @@ class GiftCardTest extends \PHPUnit\Framework\TestCase
                 'is_redeemable' => 1,
                 'lifetime' => 7,
                 'allow_message' => 1,
+                'email_template' => 'giftcard_email_template',
                 'giftcard_amounts' => [
                     15,
                     20,
-                    25
-                ]
-            ]
+                    25,
+                ],
+            ],
         ];
     }
 }

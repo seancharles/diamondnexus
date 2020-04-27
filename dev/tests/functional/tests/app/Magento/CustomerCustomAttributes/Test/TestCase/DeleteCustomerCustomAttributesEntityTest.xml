@@ -9,12 +9,14 @@
     <testCase name="Magento\CustomerCustomAttributes\Test\TestCase\DeleteCustomerCustomAttributesEntityTest" summary="Delete Customer Custom Attributes" ticketId="MAGETWO-26619">
         <variation name="DeleteCustomerCustomAttributesEntityTestVariation1">
             <data name="customerAttribute/dataset" xsi:type="string">text_field</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeSuccessDeleteMessage" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeNotInGrid" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeNotInCustomerSegment" />
         </variation>
         <variation name="DeleteCustomerCustomAttributesEntityTestVariation2">
             <data name="customerAttribute/dataset" xsi:type="string">text_area</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeSuccessDeleteMessage" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeNotInGrid" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeNotInCustomerSegment" />
@@ -22,6 +24,7 @@
         </variation>
         <variation name="DeleteCustomerCustomAttributesEntityTestVariation3">
             <data name="customerAttribute/dataset" xsi:type="string">multiple_line</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeSuccessDeleteMessage" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeNotInGrid" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeNotInCustomerSegment" />
@@ -29,6 +32,7 @@
         </variation>
         <variation name="DeleteCustomerCustomAttributesEntityTestVariation4">
             <data name="customerAttribute/dataset" xsi:type="string">date</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeSuccessDeleteMessage" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeNotInGrid" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeNotInCustomerSegment" />
@@ -36,27 +40,32 @@
         </variation>
         <variation name="DeleteCustomerCustomAttributesEntityTestVariation5">
             <data name="customerAttribute/dataset" xsi:type="string">dropdown</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeSuccessDeleteMessage" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeNotInGrid" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeNotInCustomerSegment" />
         </variation>
         <variation name="DeleteCustomerCustomAttributesEntityTestVariation6">
             <data name="customerAttribute/dataset" xsi:type="string">multiple_select</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeSuccessDeleteMessage" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeNotInGrid" />
         </variation>
         <variation name="DeleteCustomerCustomAttributesEntityTestVariation7">
             <data name="customerAttribute/dataset" xsi:type="string">yes_no</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeSuccessDeleteMessage" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeNotInGrid" />
         </variation>
         <variation name="DeleteCustomerCustomAttributesEntityTestVariation8">
             <data name="customerAttribute/dataset" xsi:type="string">file</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeSuccessDeleteMessage" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeNotInGrid" />
         </variation>
         <variation name="DeleteCustomerCustomAttributesEntityTestVariation9">
             <data name="customerAttribute/dataset" xsi:type="string">image</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeSuccessDeleteMessage" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeNotInGrid" />
         </variation>

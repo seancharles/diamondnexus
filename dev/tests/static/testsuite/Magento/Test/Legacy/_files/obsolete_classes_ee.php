@@ -294,5 +294,6 @@ return [
     ['Magento\SalesArchive\Observer\SalesUpdateGridRecordsObserver'],
     ['Magento\Banner\Block\Adminhtml\Banner\Edit\Form'],
     ['Magento\Banner\Controller\Adminhtml\Banner\CatalogRuleGrid'],
-    ['Magento\Banner\Controller\Adminhtml\Banner\SalesRuleGrid']
+    ['Magento\Banner\Controller\Adminhtml\Banner\SalesRuleGrid'],
+    ['Magento\CatalogStaging\Setup\Patch\Schema\AddWishlistConstraint'],
 ];

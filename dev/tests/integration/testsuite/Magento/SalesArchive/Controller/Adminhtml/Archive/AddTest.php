@@ -3,10 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Magento\SalesArchive\Controller\Adminhtml\Archive;
 
+/**
+ * Testing adding to archive.
+ *
+ * @magentoAppArea adminhtml
+ */
 class AddTest extends \Magento\TestFramework\TestCase\AbstractBackendController
 {
+    /**
+     * @inheritdoc
+     */
     public function setUp()
     {
         $this->resource = 'Magento_SalesArchive::add';

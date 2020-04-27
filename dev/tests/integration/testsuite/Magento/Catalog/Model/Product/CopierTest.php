@@ -3,88 +3,45 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Magento\Catalog\Model\Product;
 
 use Magento\Catalog\Model\ProductRepository;
+use Magento\Store\Model\Store;
+use Magento\TestFramework\Helper\Bootstrap;
+use PHPUnit\Framework\TestCase;
 
-class CopierTest extends \PHPUnit\Framework\TestCase
+/**
+ * Tests product copier.
+ */
+class CopierTest extends TestCase
 {
     /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    private $objectManager;
-
-    /**
-     * @var \Magento\Catalog\Model\Product\Copier
-     */
-    private $copier;
-
-    /**
-     * @var \Magento\Catalog\Model\ProductRepository
-     */
-    private $productRepository;
-
-    /**
-     * Tests multiple duplication of the same product.
+     * Tests copying of product.
      *
-     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
+     * Case when url_key is set for store view and has equal value to default store.
+     *
+     * @magentoDataFixture Magento/Catalog/_files/product_simple_multistore_with_url_key.php
      * @magentoAppArea adminhtml
-     * @magentoDbIsolation disabled
-     * @magentoAppIsolation enabled
      */
-    public function testDoubleCopy()
+    public function testProductCopyWithExistingUrlKey()
     {
-        $product = $this->productRepository->get('simple');
+        $productSKU = 'simple_100';
+        /** @var ProductRepository $productRepository */
+        $productRepository = Bootstrap::getObjectManager()->get(ProductRepository::class);
+        $copier = Bootstrap::getObjectManager()->get(Copier::class);
 
-        $product1 = $this->copier->copy($product);
-        $this->assertEquals(
-            'simple-1',
-            $product1->getSku()
-        );
-        $this->assertEquals(
-            'simple-product-1',
-            $product1->getUrlKey()
-        );
+        $product = $productRepository->get($productSKU);
+        $duplicate = $copier->copy($product);
 
-        $product2 = $this->copier->copy($product);
-        $this->assertEquals(
-            'simple-2',
-            $product2->getSku()
-        );
-        $this->assertEquals(
-            'simple-product-2',
-            $product2->getUrlKey()
-        );
-    }
+        $duplicateStoreView = $productRepository->getById($duplicate->getId(), false, Store::DISTRO_STORE_ID);
+        $productStoreView = $productRepository->get($productSKU, false, Store::DISTRO_STORE_ID);
 
-    /**
-     * @inheritdoc
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-        $this->copier = $this->objectManager->get(Copier::class);
-        $this->productRepository = $this->objectManager->get(ProductRepository::class);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function tearDown()
-    {
-        $skus = [
-            'simple-1',
-            'simple-2'
-        ];
-        foreach ($skus as $sku) {
-            try {
-                $product = $this->productRepository->get($sku, false, null, true);
-                $this->productRepository->delete($product);
-            } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
-            }
-        }
-        parent::tearDown();
+        $this->assertNotEquals(
+            $duplicateStoreView->getUrlKey(),
+            $productStoreView->getUrlKey(),
+            'url_key of product duplicate should be different then url_key of the product for the same store view'
+        );
     }
 }

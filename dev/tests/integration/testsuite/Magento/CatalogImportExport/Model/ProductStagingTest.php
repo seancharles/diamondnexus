@@ -11,18 +11,17 @@ namespace Magento\CatalogImportExport\Model;
 class ProductStagingTest extends ProductTest
 {
     /**
-     * @param array $skus
+     * @inheritdoc
      */
-    protected function modifyData($skus)
+    protected function modifyData(array $skus): void
     {
         $this->objectManager->get(\Magento\CatalogImportExport\Model\Version::class)->create($skus, $this);
     }
 
     /**
-     * @param \Magento\Catalog\Model\Product $product
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @inheritdoc
      */
-    public function prepareProduct($product)
+    public function prepareProduct(\Magento\Catalog\Model\Product $product): void
     {
     }
 }

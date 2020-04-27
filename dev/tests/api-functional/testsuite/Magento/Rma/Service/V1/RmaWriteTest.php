@@ -3,6 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Magento\Rma\Service\V1;
 
@@ -21,6 +22,26 @@ class RmaWriteTest extends WebapiAbstract
     const SERVICE_VERSION = 'V1';
     const SERVICE_NAME = 'rmaRmaManagementV1';
     /**#@-*/
+
+    /**
+     * @var array
+     */
+    private $rmaComment = [
+        'comment' => 'Item is approved',
+        'customer_notified' => true,
+        'visible_on_front' => true,
+        'status' => 'Approved',
+        'admin' => true
+    ];
+
+    /**
+     * @var array
+     */
+    private $rmaTrack = [
+        'track_number' => '324324324768',
+        'carrier_title' => 'Custom',
+        'carrier_code' => 'Fetcher'
+    ];
 
     /**
      * @magentoApiDataFixture Magento/Sales/_files/shipment.php
@@ -44,6 +65,27 @@ class RmaWriteTest extends WebapiAbstract
         ];
         $result = $this->_webApiCall($serviceInfo, $requestData);
         $this->assertNotNull($result[Rma::ENTITY_ID]);
+        $this->assertNotEmpty($result[Rma::COMMENTS]);
+        foreach ($result[Rma::COMMENTS] as $comment) {
+            $this->assertNotNull($comment['rma_entity_id']);
+            $this->assertNotNull($comment['created_at']);
+            $this->assertNotNull($comment['entity_id']);
+            $this->assertNotNull($comment['comment']);
+            $this->assertEquals($comment['comment'], $this->rmaComment['comment']);
+            $this->assertEquals($comment['customer_notified'], $this->rmaComment['customer_notified']);
+            $this->assertEquals($comment['visible_on_front'], $this->rmaComment['visible_on_front']);
+            $this->assertEquals($comment['status'], $this->rmaComment['status']);
+            $this->assertEquals($comment['admin'], $this->rmaComment['admin']);
+        }
+        $this->assertNotEmpty($result[Rma::TRACKS]);
+        foreach ($result[Rma::TRACKS] as $track) {
+            $this->assertNotNull($track['entity_id']);
+            $this->assertNotNull($track['rma_entity_id']);
+            $this->assertNotNull($track['track_number']);
+            $this->assertEquals($track['track_number'], $this->rmaTrack['track_number']);
+            $this->assertEquals($track['carrier_title'], $this->rmaTrack['carrier_title']);
+            $this->assertEquals($track['carrier_code'], $this->rmaTrack['carrier_code']);
+        }
         $this->assertNotNull($result[Rma::ITEMS][0][Item::ENTITY_ID]);
         $this->assertNotEmpty($result);
     }
@@ -53,6 +95,7 @@ class RmaWriteTest extends WebapiAbstract
      */
     public function testUpdate()
     {
+        $this->_markTestAsRestOnly('Fix inconsistencies in WSDL and Data interfaces');
         $rmaData = $this->getNewRmaData();
 
         $requestData = ['rmaDataObject' => $rmaData];
@@ -107,6 +150,8 @@ class RmaWriteTest extends WebapiAbstract
         $request[Rma::STORE_ID] = $order->getStoreId();
         $request[Rma::ITEMS] = [];
         $request[Rma::DATE_REQUESTED] = $request[Rma::DATE_REQUESTED] ?? 'now';
+        $request[Rma::COMMENTS] = [0 => $this->rmaComment];
+        $request[Rma::TRACKS] = [0 => $this->rmaTrack];
 
         /** @var \Magento\Sales\Model\Order\Item $item */
         foreach ($items as $item) {

@@ -6,6 +6,7 @@
 
 namespace Magento\MultipleWishlist\Test\TestCase;
 
+use Magento\Mtf\Util\Command\Cli\EnvWhitelist;
 use Magento\MultipleWishlist\Test\Fixture\MultipleWishlist;
 use Magento\Mtf\TestCase\Injectable;
 use Magento\MultipleWishlist\Test\TestStep\CreateOrderForCustomerMultipleWishlistStep;
@@ -37,12 +38,21 @@ class MoveProductFromCustomerActivityToOrderTest extends Injectable
     /* end tags */
 
     /**
+     * DomainWhitelist CLI
+     *
+     * @var EnvWhitelist
+     */
+    private $envWhitelist;
+
+    /**
      * Injection data.
      *
+     * @param EnvWhitelist $envWhitelist
      * @return void
      */
-    public function __inject()
+    public function __inject(EnvWhitelist $envWhitelist)
     {
+        $this->envWhitelist = $envWhitelist;
         // TODO: Move set up configuration to "__prepare" method after fix bug MAGETWO-29331
         $this->objectManager->create(
             \Magento\Config\Test\TestStep\SetupConfigurationStep::class,
@@ -62,6 +72,7 @@ class MoveProductFromCustomerActivityToOrderTest extends Injectable
     public function test(MultipleWishlist $multipleWishlist, $products, $duplicate, $qtyToMove)
     {
         // Preconditions
+        $this->envWhitelist->addHost('example.com');
         $multipleWishlist->persist();
         $customer = $multipleWishlist->getDataFieldConfig('customer_id')['source']->getCustomer();
         $createProductsStep = $this->objectManager->create(
@@ -104,6 +115,7 @@ class MoveProductFromCustomerActivityToOrderTest extends Injectable
      */
     public function tearDown()
     {
+        $this->envWhitelist->removeHost('example.com');
         // TODO: Move set default configuration to "tearDownAfterClass" method after fix bug MAGETWO-29331
         $this->objectManager->create(
             \Magento\Config\Test\TestStep\SetupConfigurationStep::class,

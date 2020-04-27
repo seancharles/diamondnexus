@@ -8,6 +8,7 @@ namespace Magento\Banner\Test\TestCase;
 
 use Magento\Banner\Test\Fixture\BannerWidget;
 use Magento\Widget\Test\TestCase\AbstractCreateWidgetEntityTest;
+use Magento\Banner\Test\TestStep\DeleteBannersStep;
 
 /**
  * Steps:
@@ -61,6 +62,18 @@ class CreateWidgetBannerTest extends AbstractCreateWidgetEntityTest
     {
         if ($this->widget !== null) {
             $this->objectManager->create(\Magento\Widget\Test\TestStep\DeleteAllWidgetsStep::class)->run();
+            $banners = [];
+            if (!empty($this->widget->getParameters()['entities'])) {
+                $entities = $this->widget->getParameters()['entities'];
+                foreach ($entities as $entity) {
+                    if ($entity->hasData('banner_id')) {
+                        $banners[] = $entity->getData('name');
+                    }
+                }
+            }
+            if ($banners) {
+                $this->objectManager->create(DeleteBannersStep::class, ['banners' => $banners])->run();
+            }
             if ($this->widget->getParameters()['entities'][0]->hasData('banner_catalog_rules')) {
                 $this->objectManager->create(\Magento\CatalogRule\Test\TestStep\DeleteAllCatalogRulesStep::class)
                     ->run();

@@ -8,9 +8,9 @@ namespace Magento\GroupedImportExport\Model;
 class GroupedStagingTest extends GroupedTest
 {
     /**
-     * @param array $skus
+     * @inheritdoc
      */
-    protected function modifyData($skus)
+    protected function modifyData(array $skus): void
     {
         $this->objectManager->get(\Magento\CatalogImportExport\Model\Version::class)->create($skus, $this);
     }

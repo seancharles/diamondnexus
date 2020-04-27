@@ -16,7 +16,7 @@ $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', true);
 
 try {
-    $banner->load('Test Banner', 'name');
+    $banner->load('Test Dynamic Block', 'name');
     $banner->delete();
 } catch (\Exception $ex) {
     //Nothing to remove

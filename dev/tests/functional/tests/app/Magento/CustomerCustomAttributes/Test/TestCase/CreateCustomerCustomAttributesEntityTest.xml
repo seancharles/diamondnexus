@@ -8,8 +8,6 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
     <testCase name="Magento\CustomerCustomAttributes\Test\TestCase\CreateCustomerCustomAttributesEntityTest" summary="Create Customer Custom Attributes" ticketId="MAGETWO-25963">
         <variation name="CreateCustomerCustomAttributesEntityTestVariation1">
-            <data name="tag" xsi:type="string">to_maintain:yes</data>
-            <data name="issue" xsi:type="string">MAGETWO-80750: [FT] Remove skipped once MAGETWO-80353 resolved</data>
             <data name="customerAttribute/data/frontend_label" xsi:type="string">TextField_Customer_%isolation%</data>
             <data name="customerAttribute/data/attribute_code" xsi:type="string">text_field_%isolation%</data>
             <data name="customerAttribute/data/frontend_input" xsi:type="string">Text Field</data>
@@ -37,6 +35,7 @@
             <data name="customerAttribute/data/is_visible" xsi:type="string">Yes</data>
             <data name="customerAttribute/data/used_in_forms/option_0" xsi:type="string">Customer Registration</data>
             <data name="customerAttribute/data/sort_order" xsi:type="string">20</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeSuccessSaveMessage" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeInGrid" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeInCustomerSegment" />
@@ -78,14 +77,13 @@
             <data name="customerAttribute/data/is_visible" xsi:type="string">No</data>
             <data name="customerAttribute/data/used_in_forms/option_0" xsi:type="string">Admin Checkout</data>
             <data name="customerAttribute/data/sort_order" xsi:type="string">40</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeSuccessSaveMessage" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeInGrid" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeInCustomerSegment" />
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeOnCreateOrderBackend" />
         </variation>
         <variation name="CreateCustomerCustomAttributesEntityTestVariation5">
-            <data name="tag" xsi:type="string">to_maintain:yes</data>
-            <data name="issue" xsi:type="string">MAGETWO-80750: [FT] Remove skipped once MAGETWO-80353 resolved</data>
             <data name="customerAttribute/data/frontend_label" xsi:type="string">Dropdown_Customer_%isolation%</data>
             <data name="customerAttribute/data/attribute_code" xsi:type="string">dropdown_%isolation%</data>
             <data name="customerAttribute/data/frontend_input" xsi:type="string">Dropdown</data>
@@ -99,8 +97,6 @@
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeInCustomerSegment" />
         </variation>
         <variation name="CreateCustomerCustomAttributesEntityTestVariation6">
-            <data name="tag" xsi:type="string">to_maintain:yes</data>
-            <data name="issue" xsi:type="string">MAGETWO-80750: [FT] Remove skipped once MAGETWO-80353 resolved</data>
             <data name="customerAttribute/data/frontend_label" xsi:type="string">MultipleSelect_Customer_%isolation%</data>
             <data name="customerAttribute/data/attribute_code" xsi:type="string">multi_%isolation%</data>
             <data name="customerAttribute/data/frontend_input" xsi:type="string">Multiple Select</data>
@@ -113,8 +109,6 @@
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeInGrid" />
         </variation>
         <variation name="CreateCustomerCustomAttributesEntityTestVariation7">
-            <data name="tag" xsi:type="string">to_maintain:yes</data>
-            <data name="issue" xsi:type="string">MAGETWO-80750: [FT] Remove skipped once MAGETWO-80353 resolved</data>
             <data name="customerAttribute/data/frontend_label" xsi:type="string">Yes/No_Customer_%isolation%</data>
             <data name="customerAttribute/data/attribute_code" xsi:type="string">yesno_%isolation%</data>
             <data name="customerAttribute/data/frontend_input" xsi:type="string">Yes/No</data>
@@ -146,8 +140,6 @@
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCanUploadFileOnRegistration" />
         </variation>
         <variation name="CreateCustomerCustomAttributesEntityTestVariation9">
-            <data name="tag" xsi:type="string">to_maintain:yes</data>
-            <data name="issue" xsi:type="string">MAGETWO-80750: [FT] Remove skipped once MAGETWO-80353 resolved</data>
             <data name="customerAttribute/data/frontend_label" xsi:type="string">Image_Customer_%isolation%</data>
             <data name="customerAttribute/data/attribute_code" xsi:type="string">image_%isolation%</data>
             <data name="customerAttribute/data/frontend_input" xsi:type="string">Image File</data>
@@ -167,6 +159,7 @@
             <data name="customerAttribute/data/is_required" xsi:type="string">Yes</data>
             <data name="customerAttribute/data/is_visible" xsi:type="string">Yes</data>
             <data name="customerAttribute/data/sort_order" xsi:type="string">99</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="customerAttribute/data/used_in_forms/option_0" xsi:type="string">Customer Account Edit</data>
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeSavesWithCustomerOnBackend" />
         </variation>

@@ -51,4 +51,76 @@ class ValidateTest extends AbstractBackendController
             'form_key' => $this->_objectManager->get(FormKey::class)->getFormKey(),
         ];
     }
+
+    /**
+     * Tests that controller validate unique option values for attribute.
+     *
+     * @return void
+     */
+    public function testUniqueOption()
+    {
+        $params = $this->getRequestNewAttributeDataWithNotUniqueOptions();
+        $request = $this->getRequest();
+        $request->setMethod('POST');
+        $request->setPostValue($params);
+
+        $this->dispatch('backend/admin/customer_attribute/validate');
+
+        $this->assertEquals(
+            '{"error":true,"message":"The value of Admin must be unique."}',
+            $this->getResponse()->getBody()
+        );
+    }
+
+    /**
+     * @return array
+     */
+    private function getRequestNewAttributeDataWithNotUniqueOptions(): array
+    {
+        return [
+            'attribute_code' => 'test_dropdown',
+            'frontend_label' => ['test_dropdown'],
+            'frontend_input' => 'select',
+            //@codingStandardsIgnoreStart
+            'serialized_options' => '["option%5Border%5D%5Boption_0%5D=1&option%5Bvalue%5D%5Boption_0%5D%5B0%5D=1&option%5Bvalue%5D%5Boption_0%5D%5B1%5D=1&option%5Bdelete%5D%5Boption_0%5D=","option%5Border%5D%5Boption_1%5D=2&option%5Bvalue%5D%5Boption_1%5D%5B0%5D=1&option%5Bvalue%5D%5Boption_1%5D%5B1%5D=1&option%5Bdelete%5D%5Boption_1%5D="]',
+            //@codingStandardsIgnoreEnd
+            'sort_order' => 1,
+        ];
+    }
+
+    /**
+     * Tests that controller validate empty option values for attribute.
+     *
+     * @return void
+     */
+    public function testEmptyOption()
+    {
+        $params = $this->getRequestNewAttributeDataWithEmptyOption();
+        $request = $this->getRequest();
+        $request->setMethod('POST');
+        $request->setPostValue($params);
+
+        $this->dispatch('backend/admin/customer_attribute/validate');
+
+        $this->assertEquals(
+            '{"error":true,"message":"The value of Admin scope can\'t be empty."}',
+            $this->getResponse()->getBody()
+        );
+    }
+
+    /**
+     * @return array
+     */
+    private function getRequestNewAttributeDataWithEmptyOption(): array
+    {
+        return [
+            'attribute_code' => 'test_dropdown',
+            'frontend_label' => ['test_dropdown'],
+            'frontend_input' => 'select',
+            //@codingStandardsIgnoreStart
+            'serialized_options' => '["option%5Border%5D%5Boption_0%5D=1&option%5Bvalue%5D%5Boption_0%5D%5B0%5D=&option%5Bvalue%5D%5Boption_0%5D%5B1%5D=&option%5Bdelete%5D%5Boption_0%5D="]',
+            //@codingStandardsIgnoreEnd
+            'sort_order' => 1,
+        ];
+    }
 }

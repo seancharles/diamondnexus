@@ -18,7 +18,7 @@
             <data name="widget/data/widget_instance/dataset" xsi:type="string">banner_on_all_pages</data>
             <data name="widget/data/parameters/dataset" xsi:type="string">dynamicBlocksRotatorShoppingCartRules</data>
             <constraint name="Magento\Widget\Test\Constraint\AssertWidgetSuccessSaveMessage"/>
-            <constraint name="Magento\Banner\Test\Constraint\AssertWidgetBannerRotator"/>
+            <constraint name="Magento\Banner\Test\Constraint\AssertWidgetBannerRotatorNotVisible"/>
         </variation>
         <variation name="CreateWidgetBannerTestVariation2">
             <data name="widget/data/code" xsi:type="string">Dynamic Blocks Rotator</data>

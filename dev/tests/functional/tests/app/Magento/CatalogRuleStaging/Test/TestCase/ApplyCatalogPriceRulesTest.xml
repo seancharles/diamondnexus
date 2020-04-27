@@ -99,7 +99,7 @@
             <constraint name="Magento\CatalogRule\Test\Constraint\AssertCatalogPriceRuleAppliedShoppingCart" />
         </variation>
         <variation name="ApplyCatalogRuleStaging_ForNewCustomerGroup" replace="ApplyCatalogRule_ForNewCustomerGroup" summary="Apply Catalog Price Rules to Specific Customer Group" ticketId="MAGETWO-12908">
-            <data name="tag" xsi:type="string">test_type:acceptance_test, test_type:extended_acceptance_test</data>
+            <data name="tag" xsi:type="string">test_type:acceptance_test, test_type:extended_acceptance_test, mftf_migrated:yes</data>
             <data name="customer/dataset" xsi:type="string">customer_with_new_customer_group</data>
             <data name="products/0" xsi:type="string">catalogProductSimple::simple_10_dollar</data>
             <data name="catalogRules/0/data/name" xsi:type="string">rule_name%isolation%</data>

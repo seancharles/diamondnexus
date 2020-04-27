@@ -8,6 +8,7 @@ namespace Magento\Rma\Model;
 class RmaTest extends \PHPUnit\Framework\TestCase
 {
     /**
+     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture Magento/Rma/_files/order.php
      */
     public function testSaveRma()

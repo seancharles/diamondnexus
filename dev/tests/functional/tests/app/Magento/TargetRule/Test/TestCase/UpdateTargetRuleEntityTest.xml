@@ -8,6 +8,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
     <testCase name="Magento\TargetRule\Test\TestCase\UpdateTargetRuleEntityTest" summary="Update Target Rule" ticketId="MAGETWO-24807">
         <variation name="TargetRule_Update_1">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="initialTargetRule/dataset" xsi:type="string">target_rule_related_products</data>
             <data name="product/dataset" xsi:type="string">product_with_category</data>
             <data name="promotedProduct/dataset" xsi:type="string">product_with_special_price_and_category</data>
@@ -29,6 +30,7 @@
             <constraint name="Magento\Catalog\Test\Constraint\AssertProductCrossSells" />
         </variation>
         <variation name="TargetRule_Update_2">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="initialTargetRule/dataset" xsi:type="string">target_rule_up_sells</data>
             <data name="product/dataset" xsi:type="string">product_with_category</data>
             <data name="promotedProduct/dataset" xsi:type="string">product_with_special_price_and_category</data>
@@ -50,6 +52,7 @@
             <constraint name="Magento\Catalog\Test\Constraint\AssertProductRelatedProducts" />
         </variation>
         <variation name="TargetRule_Update_3">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="initialTargetRule/dataset" xsi:type="string">target_rule_cross_sells</data>
             <data name="product/dataset" xsi:type="string">product_with_category</data>
             <data name="promotedProduct/dataset" xsi:type="string">product_with_special_price_and_category</data>
@@ -71,6 +74,7 @@
             <constraint name="Magento\Catalog\Test\Constraint\AssertProductAbsentCrossSells" />
         </variation>
         <variation name="TargetRule_Update_4">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="initialTargetRule/dataset" xsi:type="string">target_rule_cross_sells</data>
             <data name="product/dataset" xsi:type="string">product_with_category</data>
             <data name="promotedProduct/dataset" xsi:type="string">product_with_special_price_and_category</data>
@@ -91,6 +95,7 @@
             <constraint name="Magento\Catalog\Test\Constraint\AssertProductAbsentCrossSells" />
         </variation>
         <variation name="TargetRule_Update_5" summary="Update Up-sells Target Rule to Inactive Up-sells Target Rule">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="initialTargetRule/dataset" xsi:type="string">target_rule_up_sells</data>
             <data name="conditionEntity" xsi:type="string">category</data>
             <data name="product/dataset" xsi:type="string">product_with_category</data>

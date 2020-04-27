@@ -24,6 +24,7 @@
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeInCustomerSegment" />
         </variation>
         <variation name="UpdateCustomerCustomAttributesEntityTestVariation2">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="initialCustomerAttribute/dataset" xsi:type="string">text_area</data>
             <data name="customerAttribute/data/frontend_label" xsi:type="string">TextArea_CustomerUpd%isolation%</data>
             <data name="customerAttribute/data/is_required" xsi:type="string">Yes</data>
@@ -38,6 +39,7 @@
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeOnCustomerRegister" />
         </variation>
         <variation name="UpdateCustomerCustomAttributesEntityTestVariation3">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="initialCustomerAttribute/dataset" xsi:type="string">multiple_line</data>
             <data name="customerAttribute/data/frontend_label" xsi:type="string">MultipleLine_CustomerUpd%isolation%</data>
             <data name="customerAttribute/data/is_required" xsi:type="string">No</data>
@@ -85,6 +87,7 @@
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeInCustomerSegment" />
         </variation>
         <variation name="UpdateCustomerCustomAttributesEntityTestVariation6">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="initialCustomerAttribute/dataset" xsi:type="string">multiple_select</data>
             <data name="customerAttribute/data/frontend_label" xsi:type="string">MultipleSelect_CustomerUpd%isolation%</data>
             <data name="customerAttribute/data/option/dataset" xsi:type="string">default</data>
@@ -96,6 +99,7 @@
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeInGrid" />
         </variation>
         <variation name="UpdateCustomerCustomAttributesEntityTestVariation7">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="initialCustomerAttribute/dataset" xsi:type="string">yes_no</data>
             <data name="customerAttribute/data/frontend_label" xsi:type="string">Yes/No_CustomerUpd%isolation%</data>
             <data name="customerAttribute/data/is_required" xsi:type="string">Yes</data>
@@ -106,6 +110,7 @@
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeInGrid" />
         </variation>
         <variation name="UpdateCustomerCustomAttributesEntityTestVariation8">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="initialCustomerAttribute/dataset" xsi:type="string">file</data>
             <data name="customerAttribute/data/frontend_label" xsi:type="string">File_CustomerUpd%isolation%</data>
             <data name="customerAttribute/data/is_required" xsi:type="string">No</data>
@@ -118,6 +123,7 @@
             <constraint name="Magento\CustomerCustomAttributes\Test\Constraint\AssertCustomerCustomAttributeInGrid" />
         </variation>
         <variation name="UpdateCustomerCustomAttributesEntityTestVariation9">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="initialCustomerAttribute/dataset" xsi:type="string">image</data>
             <data name="customerAttribute/data/frontend_label" xsi:type="string">Image_CustomerUpd%isolation%</data>
             <data name="customerAttribute/data/is_required" xsi:type="string">No</data>
