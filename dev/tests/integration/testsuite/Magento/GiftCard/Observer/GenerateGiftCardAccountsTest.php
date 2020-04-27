@@ -122,6 +122,35 @@ class GenerateGiftCardAccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests that giftcard account codes are generated if payments action is "authorize_capture".
+     *
+     * @magentoDataFixture Magento/GiftCardAccount/_files/codes_pool.php
+     * @magentoConfigFixture current_store payment/braintree/active 1
+     * @magentoConfigFixture current_store payment/braintree/payment_action authorize_capture
+     * @magentoDataFixture Magento/GiftCard/Fixtures/order_invoice_braintree_with_gift_card.php
+     */
+    public function testGiftcardGeneratorForAuthorizeCapture()
+    {
+        $order = $this->getOrder('100000002');
+        /** @var ScopeConfigInterface $config */
+        $config = $this->objectManager->get(ScopeConfigInterface::class);
+        $giftcardSetting = $config->getValue(
+            Giftcard::XML_PATH_ORDER_ITEM_STATUS,
+            ScopeInterface::SCOPE_STORE,
+            $order->getStore()
+        );
+        $this->assertEquals(Item::STATUS_INVOICED, $giftcardSetting);
+        /** @var Item $orderItem */
+        $orderItem = $this->getGiftcardItem($order);
+        $productOptions = $orderItem->getProductOptions();
+
+        $this->assertArrayHasKey('email_sent', $productOptions);
+        $this->assertArrayHasKey('giftcard_created_codes', $productOptions);
+        $this->assertEquals('1', $productOptions['email_sent']);
+        $this->assertEquals(2, count($productOptions['giftcard_created_codes']));
+    }
+
+    /**
      * Returns giftcard item from order.
      *
      * @param Order $order
@@ -140,15 +169,18 @@ class GenerateGiftCardAccountsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Get stored order
+     *
+     * @param string $incrementId
+     *
      * @return \Magento\Sales\Model\Order
      */
-    private function getOrder()
+    private function getOrder(string $incrementId = '100000001')
     {
         /** @var FilterBuilder $filterBuilder */
         $filterBuilder = $this->objectManager->get(FilterBuilder::class);
         $filters = [
             $filterBuilder->setField(OrderInterface::INCREMENT_ID)
-                ->setValue('100000001')
+                ->setValue($incrementId)
                 ->create()
         ];
 

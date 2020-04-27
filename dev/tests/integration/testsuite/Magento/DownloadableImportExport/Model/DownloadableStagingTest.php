@@ -8,17 +8,17 @@ namespace Magento\DownloadableImportExport\Model;
 class DownloadableStagingTest extends DownloadableTest
 {
     /**
-     * @param array $skus
+     * @inheritdoc
      */
-    protected function modifyData($skus)
+    protected function modifyData(array $skus): void
     {
         $this->objectManager->get(\Magento\CatalogImportExport\Model\Version::class)->create($skus, $this);
     }
 
     /**
-     * @param \Magento\Catalog\Model\Product $product
+     * @inheritdoc
      */
-    public function prepareProduct($product)
+    public function prepareProduct(\Magento\Catalog\Model\Product $product): void
     {
         $extensionAttributes = $product->getExtensionAttributes();
         $downloadableProductLinks = $extensionAttributes->getDownloadableProductLinks();

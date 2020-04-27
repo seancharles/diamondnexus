@@ -5,34 +5,50 @@
  */
 namespace Magento\CatalogPermissions\Model\Indexer;
 
+use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\Product\Attribute\Source\Status;
+use Magento\Catalog\Model\Product\Visibility;
+use Magento\CatalogPermissions\Model\Indexer\Product as IndexerProduct;
+use Magento\CatalogPermissions\Model\ResourceModel\Permission\Index;
+use Magento\Indexer\Model\Indexer;
+use Magento\TestFramework\Helper\Bootstrap;
+use PHPUnit\Framework\TestCase;
+
 /**
+ * Product test
+ *
  * @magentoDbIsolation disabled
  * @magentoAppIsolation enabled
  */
-class ProductTest extends \PHPUnit\Framework\TestCase
+class ProductTest extends TestCase
 {
     /**
-     * @var \Magento\CatalogPermissions\Model\ResourceModel\Permission\Index
+     * @var Index
      */
     protected $indexTable;
 
     /**
-     * @var \Magento\Catalog\Model\Product
+     * @var Product
      */
     protected $product;
 
+    /**
+     * @var \Magento\Framework\ObjectManagerInterface
+     */
+    private $objectManager;
+
+    /**
+     * @inheritdoc
+     */
     public function setUp()
     {
-        $this->indexTable = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            \Magento\CatalogPermissions\Model\ResourceModel\Permission\Index::class
-        );
-        $this->product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            \Magento\Catalog\Model\Product::class
-        );
+        $this->objectManager = Bootstrap::getObjectManager();
+        $this->indexTable = $this->objectManager->create(Index::class);
+        $this->product = $this->objectManager->create(Product::class);
     }
 
     /**
-     * @test
+     * Reindex all test
      *
      * @magentoConfigFixture current_store catalog/magento_catalogpermissions/enabled 1
      * @magentoDataFixture Magento/Catalog/_files/categories.php
@@ -43,21 +59,25 @@ class ProductTest extends \PHPUnit\Framework\TestCase
     {
         $product = $this->getProduct();
         /** @var  $indexer \Magento\Framework\Indexer\IndexerInterface */
-        $indexer = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            \Magento\Indexer\Model\Indexer::class
-        );
-        $indexer->load(\Magento\CatalogPermissions\Model\Indexer\Product::INDEXER_ID);
+        $indexer = $this->objectManager->create(Indexer::class);
+        $indexer->load(IndexerProduct::INDEXER_ID);
         $indexer->reindexAll();
 
         $productData = array_merge(['product_id' => $product->getId()], $this->getProductData());
         $this->assertContains($productData, $this->indexTable->getIndexForProduct($product->getId(), 1, 1));
 
-        $product->setStatus(\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED);
+        $product->setVisibility(Visibility::VISIBILITY_NOT_VISIBLE);
+        $product->save();
+        $this->assertNotEmpty($this->indexTable->getIndexForProduct($product->getId(), 1, 1));
+
+        $product->setStatus(Status::STATUS_DISABLED);
         $product->save();
         $this->assertEmpty($this->indexTable->getIndexForProduct($product->getId(), 1, 1));
     }
 
     /**
+     * Get product data
+     *
      * @return array
      */
     protected function getProductData()
@@ -65,12 +85,15 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         return [
             'grant_catalog_category_view' => '-2',
             'grant_catalog_product_price' => '-2',
-            'grant_checkout_items' => '-2'
+            'grant_checkout_items' => '-2',
+            'customer_group_id' => 1
         ];
     }
 
     /**
-     * @return \Magento\Catalog\Model\Product
+     * Get product
+     *
+     * @return Product
      */
     protected function getProduct()
     {

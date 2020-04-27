@@ -8,6 +8,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
     <testCase name="Magento\CatalogStaging\Test\TestCase\CreateCustomWebsiteProductUpdateTest" summary="Create product update and validate update preview" ticketId="MAGETWO-49851">
         <variation name="CreateCustomWebsiteProductUpdateTestVariation1">
+            <data name="issue" xsi:type="string">MC-13836: CreateCustomWebsiteProductUpdateTest is flaky</data>
             <data name="tag" xsi:type="string">test_type:acceptance_test, test_type:extended_acceptance_test</data>
             <data name="product/dataset" xsi:type="string">product_with_additional_website</data>
             <data name="staging/0/dataset" xsi:type="string">update_with_date_plus_9_months</data>

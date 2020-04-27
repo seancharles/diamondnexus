@@ -8,6 +8,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
     <testCase name="Magento\CustomerCustomAttributes\Test\TestCase\CreateCustomAddressAttributeTest" summary="Create Customer Address Attribute Entity">
         <variation name="CreateCustomAddressAttributeTestVariation1" summary="Create Customer Address Attribute Entity" ticketId="MAGETWO-60974">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="customer/dataset" xsi:type="string">default</data>
             <data name="address/data/firstname" xsi:type="string">John</data>
             <data name="address/data/lastname" xsi:type="string">Doe</data>

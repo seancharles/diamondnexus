@@ -35,17 +35,11 @@ class AssertBannerInGrid extends AbstractConstraint
             'active' => $banner->getIsEnabled(),
         ];
 
-        $storeContent = $banner->getStoreContentsNotUse();
-        if (isset($storeContent['value_1']) && $storeContent['value_1'] === 'No') {
-            $filter['visibility'] = 'Main Website/Main Website Store/Default Store View';
-        }
-
         $bannerIndex->getGrid()->search($filter);
         if ($banner->hasData('types')) {
             $types = implode(', ', $banner->getTypes());
             $filter['types'] = $types;
         }
-        unset($filter['visibility']);
 
         \PHPUnit\Framework\Assert::assertTrue(
             $bannerIndex->getGrid()->isRowVisible($filter, false),

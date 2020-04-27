@@ -28,6 +28,13 @@ define(['squire'], function (Squire) {
                                 'product_sku': 'simple02',
                                 'product_id': '2',
                                 'price': 200
+                            },
+                            {
+                                'name': 'simple04',
+                                'product_sku': 'simple04',
+                                'product_id': '4',
+                                'price': 400,
+                                'qty': 0
                             }
                         ]
                     });
@@ -76,6 +83,20 @@ define(['squire'], function (Squire) {
                 expect(typeof product).toBe('object');
                 expect(product.price).not.toBeDefined();
                 expect(product.name).not.toBeDefined();
+            });
+        });
+        describe('"_executeEvents" method', function () {
+            it('Check execute events "ajax:addToCart" for product with quantity 0', function () {
+                gtm.options.actions['ajax:addToCart'] = jasmine.createSpy();
+                gtm.options.temporaryEventStorage = [
+                    {
+                        'type': 'ajax:addToCart',
+                        'productIds': ['4']
+                    }
+                ];
+                gtm._executeEvents();
+
+                expect(gtm.options.actions['ajax:addToCart']).not.toHaveBeenCalled();
             });
         });
     });

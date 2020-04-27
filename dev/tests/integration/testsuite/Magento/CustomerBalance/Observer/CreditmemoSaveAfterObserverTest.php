@@ -18,6 +18,7 @@ use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * @magentoDataFixture Magento/Reward/_files/rate.php
  * @magentoDataFixture  Magento/CustomerBalance/_files/creditmemo_with_customer_balance.php
  */
 class CreditmemoSaveAfterObserverTest extends TestCase
@@ -49,10 +50,12 @@ class CreditmemoSaveAfterObserverTest extends TestCase
      * @param int $rewardPoints
      * @return void
      * @throws \Magento\Framework\Exception\LocalizedException
-     * @dataProvider totalsDataProvider
      */
-    public function testExecute(float $maxAllowedBalance, float $customerBalance, int $rewardPoints): void
+    public function testExecute(): void
     {
+        $maxAllowedBalance = 66.48;
+        $customerBalance = 28.53;
+        $rewardPoints = 0;
         $creditMemo = $this->getCreditMemo('100000001');
         $creditMemo->setBaseCustomerBalanceReturnMax($maxAllowedBalance)
             ->setBsCustomerBalTotalRefunded($customerBalance)
@@ -76,34 +79,13 @@ class CreditmemoSaveAfterObserverTest extends TestCase
     {
         $maxAllowedBalance = 66.48;
         $customerBalance = 28.53;
-        $rewardPoints = 39;
+        $rewardPoints = 10000;
         $creditMemo = $this->getCreditMemo('100000001');
         $creditMemo->setBaseCustomerBalanceReturnMax($maxAllowedBalance)
             ->setBsCustomerBalTotalRefunded($customerBalance)
             ->setRewardPointsBalanceRefund($rewardPoints);
         $observer = $this->getObserver($creditMemo);
         $this->observer->execute($observer);
-    }
-
-    /**
-     * Gets list of totals variations.
-     *
-     * @return array
-     */
-    public function totalsDataProvider(): array
-    {
-        return [
-            [
-                'maxAllowedBalance' => 66.48,
-                'customerBalance' => 28.53,
-                'rewardPoints' => 38,
-            ],
-            [
-                'maxAllowedBalance' => 66.02,
-                'customerBalance' => 28.53,
-                'rewardPoints' => 37,
-            ]
-        ];
     }
 
     /**

@@ -8,6 +8,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
     <testCase name="Magento\CustomerSegment\Test\TestCase\CreateCustomerSegmentEntityWithCustomerConditionsTest" summary="Create Customer Segment" ticketId="MAGETWO-25691">
         <variation name="CreateCustomerSegmentEntityTestNewsletterSubscription" summary="Create customer segment with condition based on 'Newsletter Subscription' and customer is not subscribed to newsletter" ticketId="MAGETWO-35448">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="product/dataset" xsi:type="string">simple_10_dollar</data>
             <data name="customers/0" xsi:type="string">johndoe</data>
             <data name="customerIndex" xsi:type="number">0</data>
@@ -36,6 +37,7 @@
             <constraint name="Magento\Checkout\Test\Constraint\AssertDiscountInShoppingCart" />
         </variation>
         <variation name="CreateCustomerSegmentEntityTestStoreCredit" summary="Create customer segment with condition based on 'Store Credit'">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="product/dataset" xsi:type="string">simple_10_dollar</data>
             <data name="customers/0" xsi:type="string">johndoe</data>
             <data name="customerIndex" xsi:type="number">0</data>
@@ -65,6 +67,7 @@
             <constraint name="Magento\Checkout\Test\Constraint\AssertDiscountInShoppingCart" />
         </variation>
         <variation name="CreateCustomerSegmentEntityTestVariationWithSeveralWebsites" summary="Create two customers in different websites and create customer segment with condition based on 'Newsletter Subscription'">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="customers/0" xsi:type="string">johndoe</data>
             <data name="customers/1" xsi:type="string">default_in_custom_website</data>
             <data name="customerIndex" xsi:type="number">1</data>
@@ -77,6 +80,7 @@
             <constraint name="Magento\CustomerSegment\Test\Constraint\AssertCustomerSegmentMatchedCustomer" />
         </variation>
         <variation name="CreateCustomerSegmentEntityTestConditionsCombination" summary="Verify Customer Segment with several conditions combination" ticketId="MAGETWO-35423">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="product/dataset" xsi:type="string">simple_10_dollar</data>
             <data name="product/data/stock_data/use_config_min_sale_qty" xsi:type="string">No</data>
             <data name="product/data/stock_data/min_sale_qty" xsi:type="string">2</data>
@@ -107,6 +111,7 @@
             <constraint name="Magento\CustomerSegment\Test\Constraint\AssertCustomerSegmentMatchedCustomer" />
         </variation>
         <variation name="CreateCustomerSegmentEntityWithCustomerConditionsCustomAttribute" ticketId="MAGETWO-67623">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="customers/0" xsi:type="string">backend_retailer_customer</data>
             <data name="customerCustomAttribute/dataset" xsi:type="string">multiple_select</data>
             <data name="customerCustomAttribute/data/is_used_for_customer_segment" xsi:type="string">Yes</data>

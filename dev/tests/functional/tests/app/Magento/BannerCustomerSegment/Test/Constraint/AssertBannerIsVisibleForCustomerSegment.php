@@ -40,15 +40,38 @@ class AssertBannerIsVisibleForCustomerSegment extends AbstractConstraint
         )->run();
 
         $cmsIndex->open();
+        $cmsIndex->getCmsPageBlock()->waitPageInit();
         $widgetText = $widget->getParameters()['entities'][1]->getStoreContents()['value_0'];
-        \PHPUnit\Framework\Assert::assertTrue(
-            $browser->waitUntil(
-                function () use ($cmsIndex, $widget, $widgetText) {
-                    return $cmsIndex->getWidgetView()->isWidgetVisible($widget, $widgetText) ? true : null;
-                }
-            ),
-            'Registered Customers only dynamic block is absent on Home page.'
-        );
+        //Number of tries
+        //Banners are cached using local storage
+        //Because visitor banners may be cached, reloading page to get the new ones to load.
+        $refreshCount = 3;
+        $refreshNo = 1;
+        $isVisible = false;
+        while (!$isVisible && $refreshNo <= $refreshCount) {
+            $browser->refresh();
+            try {
+                $isVisible = $browser->waitUntil(
+                    function () use ($cmsIndex, $widget, $widgetText, $browser) {
+                        return $cmsIndex->getWidgetView()->isWidgetVisible($widget, $widgetText) ? true : null;
+                    }
+                );
+            } catch (\Throwable $exception) {
+                $isVisible = false;
+            }
+            $refreshNo++;
+        }
+        try {
+            \PHPUnit\Framework\Assert::assertTrue(
+                $isVisible,
+                'Registered Customers only dynamic block is absent on Home page.'
+            );
+        } catch (\Throwable $exception) {
+            $this->objectManager->create(
+                \Magento\Customer\Test\TestStep\LogoutCustomerOnFrontendStep::class
+            )->run();
+            throw $exception;
+        }
 
         $this->objectManager->create(
             \Magento\Customer\Test\TestStep\LogoutCustomerOnFrontendStep::class

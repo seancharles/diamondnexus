@@ -102,7 +102,7 @@ class SplitDbTest extends SetupTestCase
         self::assertCount(1, $default);
         self::assertCount(1, $sales);
         self::assertCount(1, $checkout);
-        self::assertEquals(array_replace($default, $sales, $checkout), $this->getData());
+        self::assertEquals($this->getData(), array_replace($default, $sales, $checkout));
     }
 
     /**

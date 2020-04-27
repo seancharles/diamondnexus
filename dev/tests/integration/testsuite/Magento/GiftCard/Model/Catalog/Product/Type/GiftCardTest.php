@@ -51,4 +51,33 @@ class GiftCardTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(60, $quote->getGrandTotal());
         $this->assertEquals(60, $quote->getBaseGrandTotal());
     }
+
+    /**
+     * @magentoDataFixture Magento/GiftCard/_files/gift_card_physical_with_fixed_amount_50.php
+     * @magentoDataFixture Magento/GiftCard/_files/quote.php
+     */
+    public function testFixedGiftCardAmountAddedToBuyRequest()
+    {
+        $buyRequest = new \Magento\Framework\DataObject(
+            [
+                'giftcard_sender_name' => 'Sender Name',
+                'giftcard_sender_email' => 'sender@example.com',
+                'giftcard_recipient_name' => 'Recipient Name',
+                'giftcard_recipient_email' => 'recipient@example.com',
+                'giftcard_message' => 'Message',
+                'qty' => 1,
+            ]
+        );
+        /** @var \Magento\Quote\Model\Quote $quote */
+        $quote = Bootstrap::getObjectManager()->create(\Magento\Quote\Model\Quote::class);
+        $quote->load('test01', 'reserved_order_id');
+
+        $productRepository = Bootstrap::getObjectManager()->create(
+            \Magento\Catalog\Api\ProductRepositoryInterface::class
+        );
+        $giftCardProduct = $productRepository->get('gift-card-with-fixed-amount-50', false, null, true);
+        $quoteItem = $quote->addProduct($giftCardProduct, $buyRequest);
+        $quoteItemBuyRequest = $quoteItem->getOptionByCode('info_buyRequest');
+        $this->assertContains('"giftcard_amount":50', $quoteItemBuyRequest->getValue());
+    }
 }

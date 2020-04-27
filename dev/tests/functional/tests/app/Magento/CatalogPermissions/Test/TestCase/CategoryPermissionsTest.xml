@@ -169,7 +169,7 @@
                 <item name="add_to_cart" xsi:type="array">
                     <item name="0" xsi:type="array">
                         <item name="0" xsi:type="boolean">false</item>
-                        <item name="1" xsi:type="boolean">true</item>
+                        <item name="1" xsi:type="boolean">false</item>
                     </item>
                     <item name="1" xsi:type="array">
                         <item name="0" xsi:type="boolean">true</item>

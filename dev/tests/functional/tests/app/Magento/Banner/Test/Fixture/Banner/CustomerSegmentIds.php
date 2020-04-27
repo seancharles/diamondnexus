@@ -31,7 +31,7 @@ class CustomerSegmentIds extends DataSource
     public function __construct(FixtureFactory $fixtureFactory, array $params, array $data = [])
     {
         $this->params = $params;
-        if ($data['dataset'] && $data['dataset'] != "-") {
+        if (isset($data['dataset']) && $data['dataset'] != "-") {
             $dataset = explode(',', $data['dataset']);
             foreach ($dataset as $customerSegment) {
                 /** @var CustomerSegmentFixture $segment */
@@ -42,6 +42,8 @@ class CustomerSegmentIds extends DataSource
                 $this->customerSegment[] = $segment;
                 $this->data[] = $segment->getSegmentId();
             }
+        } elseif (!empty($data)) {
+            $this->data[] = $data;
         } else {
             $this->data[] = null;
         }

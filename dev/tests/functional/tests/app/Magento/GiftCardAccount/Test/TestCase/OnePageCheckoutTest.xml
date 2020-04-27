@@ -8,7 +8,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
     <testCase name="Magento\Checkout\Test\TestCase\OnePageCheckoutTest" summary="OnePageCheckout within Offline Payment Methods" ticketId="MAGETWO-27485">
         <variation name="OnePageCheckoutGiftCardAccountTestVariation1" summary="Checkout as a registered US customer using store credit and gift card">
-            <data name="tag" xsi:type="string">severity:S1, stable:no</data>
+            <data name="tag" xsi:type="string">severity:S1, mftf_migrated:yes</data>
             <data name="products/0" xsi:type="string">catalogProductSimple::default</data>
             <data name="products/1" xsi:type="string">catalogProductVirtual::default</data>
             <data name="giftCardAccount" xsi:type="string">gift_card_account_amount_100</data>
@@ -31,7 +31,7 @@
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderGrandTotal" />
         </variation>
         <variation name="OnePageCheckoutGiftCardAccountTestVariation2" summary="US customer during checkout using gift card and coupon for all customer groups">
-            <data name="tag" xsi:type="string">severity:S1</data>
+            <data name="tag" xsi:type="string">severity:S1, mftf_migrated:yes</data>
             <data name="products/0" xsi:type="string">catalogProductSimple::default</data>
             <data name="giftCardAccount" xsi:type="string">gift_card_account_amount_100</data>
             <data name="salesRule" xsi:type="string">active_sales_rule_for_all_groups</data>
@@ -52,8 +52,7 @@
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderGrandTotal" />
         </variation>
         <variation name="OnePageCheckoutGiftCardAccountTestVariation3" summary="Checkout as UK guest with virtual product using gift card account">
-            <data name="issue" xsi:type="string">MAGETWO-64874: Eternal loader in shipping and tax block</data>
-            <data name="tag" xsi:type="string">severity:S1</data>
+            <data name="tag" xsi:type="string">severity:S1, mftf_migrated:yes</data>
             <data name="products/0" xsi:type="string">catalogProductVirtual::default</data>
             <data name="giftCardAccount" xsi:type="string">gift_card_account_amount_100</data>
             <data name="customer/dataset" xsi:type="string">default</data>
@@ -70,8 +69,7 @@
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderGrandTotal" />
         </variation>
         <variation name="OnePageCheckoutGiftCardAccountTestVariation4" summary="Checkout as UK guest with virtual product using coupon for not logged in customers and gift card">
-            <data name="issue" xsi:type="string">MAGETWO-64874: Eternal loader in shipping and tax block</data>
-            <data name="tag" xsi:type="string">test_type:extended_acceptance_test, severity:S1</data>
+            <data name="tag" xsi:type="string">test_type:extended_acceptance_test, severity:S1, mftf_migrated:yes</data>
             <data name="products/0" xsi:type="string">catalogProductVirtual::default</data>
             <data name="giftCardAccount" xsi:type="string">gift_card_account_amount_100</data>
             <data name="salesRule" xsi:type="string">active_sales_rule_with_percent_price_discount_coupon</data>

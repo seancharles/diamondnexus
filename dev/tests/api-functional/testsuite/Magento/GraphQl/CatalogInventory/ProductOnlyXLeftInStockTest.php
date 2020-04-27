@@ -9,6 +9,9 @@ namespace Magento\GraphQl\CatalogInventory;
 
 use Magento\TestFramework\TestCase\GraphQlAbstract;
 
+/**
+ * Test for the product only x left in stock
+ */
 class ProductOnlyXLeftInStockTest extends GraphQlAbstract
 {
     /**
@@ -16,7 +19,6 @@ class ProductOnlyXLeftInStockTest extends GraphQlAbstract
      */
     public function testQueryProductOnlyXLeftInStockDisabled()
     {
-        $this->cleanCache();
         $productSku = 'simple';
 
         $query = <<<QUERY
@@ -43,7 +45,6 @@ QUERY;
      */
     public function testQueryProductOnlyXLeftInStockEnabled()
     {
-        $this->markTestIncomplete('https://github.com/magento/graphql-ce/issues/167');
         $productSku = 'simple';
 
         $query = <<<QUERY

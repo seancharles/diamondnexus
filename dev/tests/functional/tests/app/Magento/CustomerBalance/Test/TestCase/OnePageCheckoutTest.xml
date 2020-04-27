@@ -8,7 +8,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
     <testCase name="Magento\Checkout\Test\TestCase\OnePageCheckoutTest" summary="OnePageCheckout within Offline Payment Methods" ticketId="MAGETWO-27485">
         <variation name="OnePageCheckoutCustomerBalanceTestVariation1" summary="Checkout as a registered US customer using store credit">
-            <data name="issue" xsi:type="string">MAGETWO-94168</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="products/0" xsi:type="string">catalogProductSimple::default</data>
             <data name="products/1" xsi:type="string">catalogProductVirtual::default</data>
             <data name="customer/dataset" xsi:type="string">default</data>
@@ -32,7 +32,7 @@
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderGrandTotal" />
         </variation>
         <variation name="OnePageCheckoutCustomerBalanceTestVariation2" summary="Checkout as a registered US customer using store credit and coupon for all customer groups">
-            <data name="issue" xsi:type="string">MQE-1160: Fix MTF skipped tests</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="products/0" xsi:type="string">catalogProductSimple::default</data>
             <data name="products/1" xsi:type="string">catalogProductVirtual::default</data>
             <data name="salesRule" xsi:type="string">active_sales_rule_for_all_groups</data>
@@ -56,18 +56,6 @@
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderStatusIsCorrect" />
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderButtonsAvailable" />
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderGrandTotal" />
-        </variation>
-        <variation name="OnePageCheckoutUsingSingInLink">
-            <data name="issue" xsi:type="string">MQE-1160: Fix MTF skipped tests</data>
-        </variation>
-        <variation name="OnePageCheckoutUsingNewAddress">
-            <data name="issue" xsi:type="string">MQE-1160: Fix MTF skipped tests</data>
-        </variation>
-        <variation name="OnePageCheckoutTestVariation11">
-            <data name="issue" xsi:type="string">MQE-1160: Fix MTF skipped tests</data>
-        </variation>
-        <variation name="OnePageCheckoutTestVariation4">
-            <data name="issue" xsi:type="string">MQE-1160: Fix MTF skipped tests</data>
         </variation>
     </testCase>
 </config>

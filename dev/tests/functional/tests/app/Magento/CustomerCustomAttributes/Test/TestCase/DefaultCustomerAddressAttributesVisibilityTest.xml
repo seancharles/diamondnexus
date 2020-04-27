@@ -10,6 +10,7 @@
               summary="Customer default address attribute visibility in customer account on frontend"
               ticketId="MAGETWO-70076">
         <variation name="DefaultCustomerAddressAttributesVisibilityTestVariation1">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="addressAttributes" xsi:type="array">
                 <item name="prefix" xsi:type="array">
                     <item name="is_visible" xsi:type="boolean">false</item>

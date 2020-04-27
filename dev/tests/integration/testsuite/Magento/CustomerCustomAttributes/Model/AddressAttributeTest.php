@@ -13,6 +13,7 @@ use Magento\Customer\Model\Context as CustomerContext;
 use Magento\Framework\App\Http\Context as HttpContext;
 use Magento\Customer\Model\Session;
 use Magento\TestFramework\ObjectManager;
+use Magento\Customer\Model\ResourceModel\Grid\Collection as GridCollection;
 
 /**
  * @magentoAppArea frontend
@@ -65,6 +66,22 @@ class AddressAttributeTest extends \PHPUnit\Framework\TestCase
         $data = $this->checkoutConfigProvider->getConfig();
 
         $this->performAssertions($data['customerData']['addresses']);
+    }
+
+    /**
+     * Tests that Custom Customer Address Attribute will appear in Customer Grid.
+     *
+     * @magentoAppArea adminhtml
+     * @magentoDataFixture Magento/CustomerCustomAttributes/_files/customer_with_address_custom_attribute_in_grid.php
+     * @magentoDbIsolation disabled
+     */
+    public function testVisibilityOnGrid()
+    {
+        /** @var GridCollection $gridCustomerCollection */
+        $gridCustomerCollection = $this->objectManager->create(GridCollection::class);
+        /** @var \Magento\Customer\Ui\Component\DataProvider\Document $item */
+        $item = $gridCustomerCollection->getItemByColumnValue('email', 'addressattribute@visibilityongrid.com');
+        $this->assertEquals('123q', $item->getData('billing_customer_code'));
     }
 
     /**

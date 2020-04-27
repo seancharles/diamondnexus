@@ -79,6 +79,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $prepareFormMethod->invoke($block);
         $form = $block->getForm();
         $this->assertEquals($result, ($form->getElement('top_menu_fieldset') === null));
+        $this->assertEquals('validate-no-html-tags', $form->getElement('node_label')->getClass());
     }
 
     /**

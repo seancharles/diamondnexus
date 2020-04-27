@@ -19,6 +19,9 @@
                 <item name="sequenceTableIterator" xsi:type="object">EmptyOmsTableNameArrayIterator</item>
                 <item name="arrayTableNameIterator" xsi:type="object">EmptyOmsTableNameArrayIterator</item>
             </argument>
+            <argument name="tables" xsi:type="array">
+                <item name="reference_table" xsi:type="string">reference_table</item>
+            </argument>
         </arguments>
     </type>
     <type name="Magento\ScalableCheckout\Console\Command\SplitSales">

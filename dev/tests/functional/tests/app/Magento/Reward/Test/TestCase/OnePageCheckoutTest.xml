@@ -8,7 +8,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
     <testCase name="Magento\Checkout\Test\TestCase\OnePageCheckoutTest" summary="OnePageCheckout within Offline Payment Methods" ticketId="MAGETWO-27485">
         <variation name="OnePageCheckoutRewardTestVariation1" summary="Checkout as a registered US customer using reward points and coupon for all customer groups">
-            <data name="tag" xsi:type="string">stable:no, severity:S1</data>
+            <data name="tag" xsi:type="string">severity:S1, mftf_migrated:yes</data>
             <data name="products/0" xsi:type="string">catalogProductSimple::default</data>
             <data name="products/1" xsi:type="string">catalogProductVirtual::default</data>
             <data name="salesRule" xsi:type="string">active_sales_rule_for_all_groups</data>
@@ -35,7 +35,7 @@
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderGrandTotal" />
         </variation>
         <variation name="OnePageCheckoutRewardTestVariation2" summary="Checkout as a registered US customer using reward points, gift card coupon for all customer groups">
-            <data name="tag" xsi:type="string">stable:no, severity:S1</data>
+            <data name="tag" xsi:type="string">severity:S1, mftf_migrated:yes</data>
             <data name="products/0" xsi:type="string">catalogProductSimple::default</data>
             <data name="products/1" xsi:type="string">catalogProductVirtual::default</data>
             <data name="giftCardAccount" xsi:type="string">gift_card_account_amount_100</data>
@@ -63,7 +63,7 @@
             <constraint name="Magento\Sales\Test\Constraint\AssertOrderGrandTotal" />
         </variation>
         <variation name="OnePageCheckoutRewardTestVariation3" summary="Checkout as a registered US customer using sales rule with reward points">
-            <data name="tag" xsi:type="string">test_type:extended_acceptance_test, stable:no, severity:S1</data>
+            <data name="tag" xsi:type="string">test_type:extended_acceptance_test, severity:S1, mftf_migrated:yes</data>
             <data name="products/0" xsi:type="string">catalogProductSimple::default</data>
             <data name="salesRule" xsi:type="string">sales_rule_with_reward_points</data>
             <data name="customer/dataset" xsi:type="string">default</data>

@@ -68,6 +68,8 @@ class ModelsTest extends TestCase
      */
     public function testCustomerSave()
     {
+        $customer = $this->customerRepository->get('customer@example.com');
+
         /** @var Role $role */
         $role = $this->roleFactory->create();
         $role = $role->load(Bootstrap::ADMIN_ROLE_NAME, 'role_name');
@@ -79,7 +81,6 @@ class ModelsTest extends TestCase
         $this->role->setAdminRole($role);
 
         //Saving customer from restricted website.
-        $customer = $this->customerRepository->get('customer@example.com');
         $customer->setWebsiteId($testWebsite->getId());
         $this->customerRepository->save($customer);
     }

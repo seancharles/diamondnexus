@@ -8,6 +8,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
     <testCase name="Magento\CustomerSegment\Test\TestCase\CreateCustomerSegmentEntityWithCustomerAddressConditionsTest" summary="Create Customer Segment" ticketId="MAGETWO-25691">
         <variation name="CreateCustomerSegmentEntityTestWithCustomerAddressConditionsVariation1">
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="product/dataset" xsi:type="string">simple_10_dollar</data>
             <data name="customers/0" xsi:type="string">johndoe</data>
             <data name="customerIndex" xsi:type="number">0</data>
@@ -34,7 +35,7 @@
             <constraint name="Magento\CustomerSegment\Test\Constraint\AssertCustomerSegmentPriceRule" />
         </variation>
         <variation name="CreateCustomerSegmentEntityTestWithCustomerAddressConditionsVariation2">
-            <data name="tag" xsi:type="string">stable:no</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="product/dataset" xsi:type="string">simple_10_dollar</data>
             <data name="customers/0" xsi:type="string">johndoe</data>
             <data name="customerIndex" xsi:type="number">0</data>
@@ -63,7 +64,7 @@
             <constraint name="Magento\Checkout\Test\Constraint\AssertDiscountInShoppingCart" />
         </variation>
         <variation name="CreateCustomerSegmentEntityTestWithCustomerAddressConditionsVariation3">
-            <data name="tag" xsi:type="string">stable:no</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="product/dataset" xsi:type="string">simple_10_dollar</data>
             <data name="customers/0" xsi:type="string">johndoe</data>
             <data name="customerIndex" xsi:type="number">0</data>
@@ -89,7 +90,7 @@
             <constraint name="Magento\CustomerSegment\Test\Constraint\AssertCustomerSegmentPriceRule" />
         </variation>
         <variation name="CreateCustomerSegmentEntityTestWithCustomerAddressConditionsVariation4">
-            <data name="tag" xsi:type="string">stable:no</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
             <data name="product/dataset" xsi:type="string">simple_10_dollar</data>
             <data name="customers/0" xsi:type="string">johndoe</data>
             <data name="customerIndex" xsi:type="number">0</data>

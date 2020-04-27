@@ -18,7 +18,7 @@ class AttributesTest extends \PHPUnit\Framework\TestCase
     /**
      * @var ProductAttributesCondition
      */
-    protected $productAttributesCondition;
+    private $productAttributesCondition;
 
     /**
      * @inheritdoc
@@ -29,6 +29,9 @@ class AttributesTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests subfilter.
+     *
+     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @dataProvider getSubfilterSqlDataProvider
      */
     public function testGetSubfilterSql(
@@ -51,13 +54,19 @@ class AttributesTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedResult, $result);
     }
 
+    /**
+     * @return array
+     */
     public function getSubfilterSqlDataProvider()
     {
+        $productId = 1;
+        $categoryWithProductsId = 2;
+        $categoryEmptyId = 100500;
+
         /** @var ResourceModel $resource */
         $resource = Bootstrap::getObjectManager()->create(ResourceModel::class);
         $productEntityTable = $resource->getTable('catalog_product_entity');
         $productEntityIntTable = $resource->getTable('catalog_product_entity_int');
-        $categoryProductTable = $resource->getTable('catalog_category_product');
         $storeTable = $resource->getTable('store') == 'store'
             ? '`store`'
             : "`{$resource->getTable('store')}` AS `store`";
@@ -74,15 +83,23 @@ class AttributesTest extends \PHPUnit\Framework\TestCase
                 . " WHERE ((eav_attribute.attribute_id = '93') AND (store.website_id IN (0, :website_id))"
                 . " AND (eav_attribute.value = '58')) AND (main.created_in <= 1) AND (main.updated_in > 1))"
             ],
-            'Category attribute' => [
+            'Category attribute if category contains product' => [
                 false,          // $requireValid
                 'category_ids', // $attributeName
-                '11',           // $attributeValue
+                $categoryWithProductsId, // $attributeValue
                 [],             // $productIds
                 false,          // $combineProductCondition
                 "item.product_id NOT IN (SELECT `main`.`entity_id` FROM `{$productEntityTable}` AS `main`"
-                . " WHERE ((main.entity_id IN (SELECT `cat`.`product_id` FROM `{$categoryProductTable}` AS `cat`"
-                . " WHERE (cat.category_id = '11')))) AND (main.created_in <= 1) AND (main.updated_in > 1))"
+                . " WHERE ((main.entity_id IN ({$productId}))) AND (main.created_in <= 1) AND (main.updated_in > 1))"
+            ],
+            'Category attribute if category is empty' => [
+                false,          // $requireValid
+                'category_ids', // $attributeName
+                $categoryEmptyId, // $attributeValue
+                [],             // $productIds
+                false,          // $combineProductCondition
+                "item.product_id NOT IN (SELECT `main`.`entity_id` FROM `{$productEntityTable}` AS `main`"
+                . " WHERE ((FALSE)) AND (main.created_in <= 1) AND (main.updated_in > 1))"
             ],
             'Static attribute; Inverted condition' => [
                 true,           // $requireValid
@@ -128,6 +145,8 @@ class AttributesTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests IsSatisfiedBy method.
+     *
      * @magentoDataFixture Magento/Sales/_files/quote_with_customer.php
      */
     public function testIsSatisfiedBy()
