@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<sections>
+    <rule_information>
+        <class>\Magento\SharedCatalog\Test\Block\Adminhtml\Promo\Quote\Edit\Section\RuleInformation</class>
+        <fields>
+            <customer_group_ids>
+                <selector>[name='customer_group_ids']</selector>
+                <class>Magento\SharedCatalog\Test\Element\MultipleElement</class>
+            </customer_group_ids>
+        </fields>
+    </rule_information>
+</sections>

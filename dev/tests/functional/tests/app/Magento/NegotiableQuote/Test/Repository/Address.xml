@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+    <repository class="Magento\Customer\Test\Repository\Address">
+        <dataset name="US_address_2_without_email">
+            <field name="firstname" xsi:type="string">John</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="company" xsi:type="string">Magento %isolation%</field>
+            <field name="street" xsi:type="string">3222 Cliffside Drive</field>
+            <field name="city" xsi:type="string">Binghamton</field>
+            <field name="region_id" xsi:type="string">New York</field>
+            <field name="postcode" xsi:type="string">13901</field>
+            <field name="country_id" xsi:type="string">United States</field>
+            <field name="telephone" xsi:type="string">607-481-7802</field>
+        </dataset>
+    </repository>
+</config>

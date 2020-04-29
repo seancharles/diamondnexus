@@ -1,0 +1,118 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<sections>
+    <general>
+        <class>\Magento\Ui\Test\Block\Adminhtml\Section</class>
+        <selector>[data-index="general"]</selector>
+        <strategy>css selector</strategy>
+        <fields>
+            <company_name>
+                <selector>[name="general[company_name]"]</selector>
+            </company_name>
+            <status>
+                <selector>[name="general[status]"]</selector>
+            </status>
+            <company_email>
+                <selector>[name="general[company_email]"]</selector>
+            </company_email>
+            <sales_representative_id>
+                <selector>[name="general[sales_representative_id]"]</selector>
+                <input>select</input>
+            </sales_representative_id>
+        </fields>
+    </general>
+    <information>
+        <class>\Magento\Ui\Test\Block\Adminhtml\Section</class>
+        <selector>[data-index="information"]</selector>
+        <strategy>css selector</strategy>
+        <fields>
+            <legal_name>
+                <selector>[name="information[legal_name]"]</selector>
+            </legal_name>
+            <vat_tax_id>
+                <selector>[name="information[vat_tax_id]"]</selector>
+            </vat_tax_id>
+            <reseller_id>
+                <selector>[name="information[reseller_id]"]</selector>
+            </reseller_id>
+            <comment>
+                <selector>[name="information[comment]"]</selector>
+            </comment>
+        </fields>
+    </information>
+    <address>
+        <class>\Magento\Ui\Test\Block\Adminhtml\Section</class>
+        <selector>[data-index="address"]</selector>
+        <strategy>css selector</strategy>
+        <fields>
+            <street>
+                <selector>[name="address[street][0]"]</selector>
+            </street>
+            <city>
+                <selector>[name="address[city]"]</selector>
+            </city>
+            <country_id>
+                <selector>[name="address[country_id]"]</selector>
+                <input>select</input>
+            </country_id>
+            <region>
+                <selector>[name="address[region]"]</selector>
+            </region>
+            <postcode>
+                <selector>[name="address[postcode]"]</selector>
+            </postcode>
+            <telephone>
+                <selector>[name="address[telephone]"]</selector>
+            </telephone>
+        </fields>
+    </address>
+    <company_admin>
+        <class>\Magento\Ui\Test\Block\Adminhtml\Section</class>
+        <selector>[data-index="company_admin"]</selector>
+        <strategy>css selector</strategy>
+        <fields>
+            <website_id>
+                <selector>[name="company_admin[website_id]"]</selector>
+                <input>select</input>
+            </website_id>
+            <job_title>
+                <selector>[name="company_admin[job_title]"]</selector>
+            </job_title>
+            <prefix>
+                <selector>[name="company_admin[prefix]"]</selector>
+            </prefix>
+            <firstname>
+                <selector>[name="company_admin[firstname]"]</selector>
+            </firstname>
+            <middlename>
+                <selector>[name="company_admin[middlename]"]</selector>
+            </middlename>
+            <lastname>
+                <selector>[name="company_admin[lastname]"]</selector>
+            </lastname>
+            <suffix>
+                <selector>[name="company_admin[suffix]"]</selector>
+            </suffix>
+            <email>
+                <selector>[name="company_admin[email]"]</selector>
+            </email>
+        </fields>
+    </company_admin>
+    <settings>
+        <class>\Magento\Ui\Test\Block\Adminhtml\Section</class>
+        <selector>[data-index="settings"]</selector>
+        <strategy>css selector</strategy>
+        <fields>
+            <customer_group_id>
+                <selector>[name="settings[customer_group_id]"]</selector>
+                <strategy>css selector</strategy>
+                <class>Magento\Company\Test\Block\Adminhtml\CustomerGroup</class>
+            </customer_group_id>
+        </fields>
+    </settings>
+</sections>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\Catalog\Test\TestCase\Product\UpdateSimpleProductEntityTest" summary="Update Simple Product" ticketId="MAGETWO-23544">
+        <variation name="UpdateSimpleProductEntityTestVariationB2B1" summary="Change base product price after configured percentage tier price to product" ticketId="MAGETWO-55737">
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+            <data name="description" xsi:type="string">MAGETWO-55737: Change base product price after configured percentage tier price to product</data>
+            <data name="initialProduct/dataset" xsi:type="string">simple_with_percentage_tier_price</data>
+            <data name="product/data/price/value" xsi:type="string">7</data>
+            <data name="expectedTierPriceData" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="percentage_value" xsi:type="string">10</item>
+                    <item name="price_qty" xsi:type="string">1</item>
+                </item>
+            </data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\Product\AssertPercentageTierPriceInPriceBlockOnProductPage"/>
+        </variation>
+    </testCase>
+</config>

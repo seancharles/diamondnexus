@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\ChangeCustomerGroupTest" summary="Actions with Customers in Customer Group" ticketId="MAGETWO-68312">
+        <variation name="ChangeCustomerGroupTestVariation1" summary="Change customer group for company">
+            <data name="customers/0/dataset" xsi:type="string">default</data>
+            <data name="customers/1/dataset" xsi:type="string">default</data>
+            <data name="userWithoutCompany/dataset" xsi:type="string">default</data>
+            <data name="company/dataset" xsi:type="string">company_with_required_fields_and_status</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="newSharedCatalog" xsi:type="number">0</data>
+            <data name="configData" xsi:type="string">company_enable</data>
+            <data name="columnName" xsi:type="string">Group/Shared Catalog</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertUsersCompanyIsCorrect" />
+            <constraint name="Magento\Company\Test\Constraint\AssertCustomerGroupIsCorrect" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCustomerGroupIsDisabled" />
+            <constraint name="Magento\Company\Test\Constraint\AssertCompanyCustomerGroupCorrect" />
+        </variation>
+        <variation name="ChangeCustomerGroupTestVariation2_WithNewSharedCatalog" summary="Change customer group for company and assign new shared catalog to the company">
+            <data name="customers/0/dataset" xsi:type="string">default</data>
+            <data name="customers/1/dataset" xsi:type="string">default</data>
+            <data name="company/dataset" xsi:type="string">company_with_required_fields_and_status</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="secondSharedCatalog/dataset" xsi:type="string">shared_catalog_form</data>
+            <data name="newSharedCatalog" xsi:type="number">1</data>
+            <data name="configData" xsi:type="string">company_enable</data>
+            <data name="columnName" xsi:type="string">Group/Shared Catalog</data>
+            <data name="tag" xsi:type="string">mftf_migrated:yes</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertUsersCompanyIsCorrect" />
+            <constraint name="Magento\Company\Test\Constraint\AssertCustomerGroupIsCorrect" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCustomerGroupIsDisabled" />
+            <constraint name="Magento\Company\Test\Constraint\AssertCompanyCustomerGroupCorrect" />
+        </variation>
+    </testCase>
+</config>

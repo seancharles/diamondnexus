@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/pages.xsd">
+    <page name="Company" mca="company" module="Magento_Company">
+        <block name="treeControl" class="Magento\Company\Test\Block\TreeControl" locator=".box-actions" strategy="css selector"/>
+        <block name="tree" class="Magento\Company\Test\Block\Tree" locator="#company-tree" strategy="css selector"/>
+        <block name="teamPopup" class="Magento\Company\Test\Block\TeamPopup" locator=".modal-popup._show" strategy="css selector"/>
+        <block name="deletePopup" class="Magento\Company\Test\Block\DeletePopup" locator=".modal-popup._show" strategy="css selector"/>
+        <block name="customerPopup" class="Magento\Company\Test\Block\CustomerPopup" locator=".modal-popup._show" strategy="css selector"/>
+        <block name="manageCompany" class="Magento\Company\Test\Block\ManageCompany" locator=".manage-company-accounts" strategy="css selector"/>
+    </page>
+</config>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\SetCustomPricesMultipleWebsitesTest" summary="Set custom prices for multiple websites" ticketId="MAGETWO-68571">
+        <variation name="SetCustomPricesMultipleWebsitesTestVariation1" summary="Set custom prices for all websites. Check new price value and custom price controls availability per website">
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="category/dataset" xsi:type="string">default</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="productsList/1" xsi:type="string">catalogProductSimple::product_100_dollar</data>
+            <data name="customPrices" xsi:type="array">
+                <item name="simple" xsi:type="array">
+                    <item name="0" xsi:type="array">
+                        <item name="type" xsi:type="string">Fixed</item>
+                        <item name="value" xsi:type="string">9</item>
+                        <item name="new_price" xsi:type="string">$9.00</item>
+                    </item>
+                    <item name="1" xsi:type="array">
+                        <item name="type" xsi:type="string">Discount</item>
+                        <item name="value" xsi:type="string">10</item>
+                        <item name="new_price" xsi:type="string">$90.00</item>
+                    </item>
+                </item>
+            </data>
+            <data name="saveSharedCatalog" xsi:type="boolean">false</data>
+            <data name="createSecondWebsite" xsi:type="boolean">false</data>
+            <data name="configData" xsi:type="string">shared_catalog_enable,category_permissions_on,catalog_price_scope_website</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCustomPriceInputsDisabled" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertNewPrice" />
+        </variation>
+        <variation name="SetCustomPricesMultipleWebsitesTestVariation2" summary="Set custom prices per website and globally, save shared catalog, check product prices on storefront">
+            <data name="tag" xsi:type="string">stable:no</data>
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="category/dataset" xsi:type="string">default</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="productsList/1" xsi:type="string">catalogProductSimple::product_100_dollar</data>
+            <data name="productsList/2" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="customPrices" xsi:type="array">
+                <item name="simple" xsi:type="array">
+                    <item name="0" xsi:type="array">
+                        <item name="type" xsi:type="string">Fixed</item>
+                        <item name="value" xsi:type="string">9</item>
+                        <item name="new_price" xsi:type="string">$9.00</item>
+                    </item>
+                    <item name="1" xsi:type="array">
+                        <item name="type" xsi:type="string">Discount</item>
+                        <item name="value" xsi:type="string">10</item>
+                        <item name="new_price" xsi:type="string">$90.00</item>
+                    </item>
+                </item>
+                <item name="mass_action" xsi:type="array">
+                    <item name="2" xsi:type="array">
+                        <item name="type" xsi:type="string">Fixed</item>
+                        <item name="value" xsi:type="string">20</item>
+                        <item name="new_price" xsi:type="string">$8.00</item>
+                    </item>
+                </item>
+            </data>
+            <data name="saveSharedCatalog" xsi:type="boolean">true</data>
+            <data name="createSecondWebsite" xsi:type="boolean">true</data>
+            <data name="configData" xsi:type="string">company_enable, shared_catalog_enable, category_permissions_on, catalog_price_scope_website, customer_account_share_on</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertProductPricesOnCustomWebsiteOnStorefront" />
+        </variation>
+    </testCase>
+</config>

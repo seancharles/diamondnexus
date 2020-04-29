@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\DraftSharedCatalogTest" summary="Edit Draft Shared Catalog" ticketId="MAGETWO-68573">
+        <variation name="DraftSharedCatalogTestVariation1">
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="websiteName" xsi:type="string">All Websites</data>
+            <data name="catalogProduct" xsi:type="string">catalogProductSimple::product_with_category</data>
+            <data name="catalogProductsCount" xsi:type="string">10</data>
+            <data name="data/firstApply" xsi:type="array">
+                <item name="0" xsi:type="string">5</item>
+                <item name="1" xsi:type="string">6</item>
+                <item name="2" xsi:type="string">7</item>
+                <item name="3" xsi:type="string">8</item>
+                <item name="4" xsi:type="string">9</item>
+            </data>
+            <data name="data/secondApply" xsi:type="array">
+                <item name="0" xsi:type="string">0</item>
+                <item name="1" xsi:type="string">1</item>
+                <item name="2" xsi:type="string">2</item>
+                <item name="3" xsi:type="string">3</item>
+                <item name="4" xsi:type="string">4</item>
+            </data>
+            <data name="data/unsetProduct" xsi:type="array">
+                <item name="0" xsi:type="string">5</item>
+            </data>
+            <data name="data/prices" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="id" xsi:type="string">6</item>
+                    <item name="price" xsi:type="string">95</item>
+                </item>
+                <item name="1" xsi:type="array">
+                    <item name="id" xsi:type="string">7</item>
+                    <item name="price" xsi:type="string">85</item>
+                </item>
+                <item name="2" xsi:type="array">
+                    <item name="id" xsi:type="string">0</item>
+                    <item name="price" xsi:type="string">75</item>
+                </item>
+                <item name="3" xsi:type="array">
+                    <item name="id" xsi:type="string">1</item>
+                    <item name="price" xsi:type="string">65</item>
+                </item>
+                <item name="4" xsi:type="array">
+                    <item name="id" xsi:type="string">2</item>
+                    <item name="price" xsi:type="string">98</item>
+                </item>
+                <item name="5" xsi:type="array">
+                    <item name="id" xsi:type="string">3</item>
+                    <item name="price" xsi:type="string">97</item>
+                </item>
+                <item name="6" xsi:type="array">
+                    <item name="id" xsi:type="string">4</item>
+                    <item name="price" xsi:type="string">83</item>
+                </item>
+                <item name="7" xsi:type="array">
+                    <item name="id" xsi:type="string">8</item>
+                    <item name="price" xsi:type="string">80</item>
+                </item>
+                <item name="8" xsi:type="array">
+                    <item name="id" xsi:type="string">9</item>
+                    <item name="price" xsi:type="string">80</item>
+                </item>
+            </data>
+            <data name="data/beforeMassAction" xsi:type="array">
+                <item name="0" xsi:type="string">0</item>
+            </data>
+            <data name="data/beforeBack" xsi:type="array">
+                <item name="0" xsi:type="string">1</item>
+            </data>
+            <data name="data/discount" xsi:type="array">
+                <item name="products" xsi:type="array">
+                    <item name="0" xsi:type="string">8</item>
+                    <item name="1" xsi:type="string">9</item>
+                </item>
+                <item name="price" xsi:type="string">20</item>
+            </data>
+            <data name="data/beforeCategorySwitch" xsi:type="array">
+                <item name="0" xsi:type="string">2</item>
+                <item name="1" xsi:type="string">3</item>
+            </data>
+            <data name="data/beforeConfigure" xsi:type="array">
+                <item name="0" xsi:type="string">4</item>
+                <item name="1" xsi:type="string">5</item>
+                <item name="2" xsi:type="string">6</item>
+            </data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertProductsChecked" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertNewPrice" />
+        </variation>
+    </testCase>
+</config>

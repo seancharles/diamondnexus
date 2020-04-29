@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\Company\Test\TestCase\DeleteCompanyEntityTest" summary="Delete Company from Company Page" ticketId="MAGETWO-67957">
+        <variation name="DeleteCompanyEntityTestVariation1">
+            <data name="description" xsi:type="string">Delete company with required fields</data>
+            <data name="company/dataset" xsi:type="string">company_with_required_fields_and_status</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertCompanyNotInGrid" />
+        </variation>
+    </testCase>
+</config>

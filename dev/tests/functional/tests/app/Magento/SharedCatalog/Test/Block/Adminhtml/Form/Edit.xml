@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<tabs>
+    <catalog_details>
+        <class>\Magento\Backend\Test\Block\Widget\Tab</class>
+        <selector>#tab_catalog_details</selector>
+        <strategy>css selector</strategy>
+        <wrapper>catalog</wrapper>
+        <fields>
+            <name>
+                <selector>[name="catalog_details[name]"]</selector>
+                <strategy>css selector</strategy>
+            </name>
+            <type>
+                <selector>[name="catalog_details[type]"]</selector>
+                <strategy>css selector</strategy>
+                <input>select</input>
+            </type>
+            <tax_class_id>
+                <selector>[name="catalog_details[tax_class_id]"]</selector>
+                <strategy>css selector</strategy>
+                <input>select</input>
+            </tax_class_id>
+            <description>
+                <selector>[name="catalog_details[description]"]</selector>
+                <strategy>css selector</strategy>
+            </description>
+        </fields>
+    </catalog_details>
+</tabs>

@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<mapping strict="0">
+    <fields>
+        <company_name>
+            <selector>[name="company[company_name]"]</selector>
+        </company_name>
+        <legal_name>
+            <selector>[name="company[legal_name]"]</selector>
+        </legal_name>
+        <company_email>
+            <selector>[name="company[company_email]"]</selector>
+        </company_email>
+        <vat_tax_id>
+            <selector>[name="company[vat_tax_id]"]</selector>
+        </vat_tax_id>
+        <reseller_id>
+            <selector>[name="company[reseller_id]"]</selector>
+        </reseller_id>
+        <street>
+            <selector>[name="company[street][0]"]</selector>
+        </street>
+        <city>
+            <selector>[name="company[city]"]</selector>
+        </city>
+        <country_id>
+            <selector>[name="company[country_id]"]</selector>
+            <input>select</input>
+        </country_id>
+        <region_id>
+            <selector>[name="company[region_id]"]</selector>
+            <input>select</input>
+        </region_id>
+        <postcode>
+            <selector>[name="company[postcode]"]</selector>
+        </postcode>
+        <telephone>
+            <selector>[name="company[telephone]"]</selector>
+        </telephone>
+        <job_title>
+            <selector>[name="job_title"]</selector>
+        </job_title>
+        <email>
+            <selector>[name="email"]</selector>
+        </email>
+        <firstname>
+            <selector>[name="firstname"]</selector>
+        </firstname>
+        <lastname>
+            <selector>[name="lastname"]</selector>
+        </lastname>
+    </fields>
+</mapping>

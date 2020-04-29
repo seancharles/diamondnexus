@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\Company\Test\TestCase\AddNewCompanyAdminTest" summary="Add new company admin in the AP" ticketId="MAGETWO-68249">
+        <variation name="AddNewCompanyAdminTestVariation1">
+            <data name="companyAdmin/dataset" xsi:type="string">johndoe_with_addresses</data>
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="configData" xsi:type="string">company_enable</data>
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertCompanyAdmin" />
+            <constraint name="Magento\Customer\Test\Constraint\AssertCustomerInGrid" />
+        </variation>
+    </testCase>
+</config>

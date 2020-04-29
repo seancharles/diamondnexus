@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\SharedCatalogAssignProductsTest" summary="Assign products to shared catalog and test their visibility" ticketId="MAGETWO-68554">
+        <variation name="SharedCatalogAssignProductsTestVariation1">
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_with_company</data>
+            <data name="categories" xsi:type="array">
+                <item name="A" xsi:type="array">
+                    <item name="dataset" xsi:type="string">default</item>
+                    <item name="product_count" xsi:type="string">2 of 2</item>
+                    <item name="children" xsi:type="array">
+                        <item name="A1" xsi:type="array">
+                            <item name="dataset" xsi:type="string">default</item>
+                            <item name="product_count" xsi:type="string">0 of 0</item>
+                        </item>
+                        <item name="A2" xsi:type="array">
+                            <item name="dataset" xsi:type="string">default</item>
+                            <item name="product_count" xsi:type="string">0 of 1</item>
+                        </item>
+                    </item>
+                </item>
+                <item name="B" xsi:type="array">
+                    <item name="dataset" xsi:type="string">default</item>
+                    <item name="product_count" xsi:type="string">1 of 1</item>
+                    <item name="children" xsi:type="array">
+                        <item name="B1" xsi:type="array">
+                            <item name="dataset" xsi:type="string">default</item>
+                            <item name="product_count" xsi:type="string">1 of 1</item>
+                            <item name="children" xsi:type="array">
+                                <item name="B11" xsi:type="array">
+                                    <item name="dataset" xsi:type="string">default</item>
+                                    <item name="product_count" xsi:type="string">1 of 1</item>
+                                </item>
+                            </item>
+                        </item>
+                    </item>
+                </item>
+                <item name="C" xsi:type="array">
+                    <item name="dataset" xsi:type="string">default</item>
+                    <item name="product_count" xsi:type="string">0 of 0</item>
+                    <item name="children" xsi:type="array">
+                        <item name="C1" xsi:type="array">
+                            <item name="dataset" xsi:type="string">default</item>
+                            <item name="product_count" xsi:type="string">2 of 3</item>
+                        </item>
+                        <item name="C2" xsi:type="array">
+                            <item name="dataset" xsi:type="string">default</item>
+                            <item name="product_count" xsi:type="string">0 of 0</item>
+                            <item name="children" xsi:type="array">
+                                <item name="C21" xsi:type="array">
+                                    <item name="dataset" xsi:type="string">default</item>
+                                    <item name="product_count" xsi:type="string">0 of 0</item>
+                                </item>
+                                <item name="C22" xsi:type="array">
+                                    <item name="dataset" xsi:type="string">default</item>
+                                    <item name="product_count" xsi:type="string">1 of 1</item>
+                                </item>
+                            </item>
+                        </item>
+                    </item>
+                </item>
+            </data>
+            <data name="products" xsi:type="array">
+                <item name="A" xsi:type="array">
+                    <item name="dataset" xsi:type="string">catalogProductSimple::default</item>
+                    <item name="assign_to_catalog" xsi:type="boolean">true</item>
+                </item>
+                <item name="A,C1" xsi:type="array">
+                    <item name="dataset" xsi:type="string">catalogProductSimple::default</item>
+                    <item name="assign_to_catalog" xsi:type="boolean">true</item>
+                </item>
+                <item name="B1,C1" xsi:type="array">
+                    <item name="dataset" xsi:type="string">catalogProductSimple::default</item>
+                    <item name="assign_to_catalog" xsi:type="boolean">true</item>
+                </item>
+                <item name="B11,B" xsi:type="array">
+                    <item name="dataset" xsi:type="string">catalogProductSimple::default</item>
+                    <item name="assign_to_catalog" xsi:type="boolean">true</item>
+                </item>
+                <item name="C22" xsi:type="array">
+                    <item name="dataset" xsi:type="string">catalogProductSimple::default</item>
+                    <item name="assign_to_catalog" xsi:type="boolean">true</item>
+                </item>
+                <item name="A2,C1" xsi:type="array">
+                    <item name="dataset" xsi:type="string">catalogProductSimple::default</item>
+                    <item name="assign_to_catalog" xsi:type="boolean">false</item>
+                </item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable,shared_catalog_enable,category_permissions_on</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertProductsInCategory" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertSharedCatalogProductsCount" />
+        </variation>
+    </testCase>
+</config>

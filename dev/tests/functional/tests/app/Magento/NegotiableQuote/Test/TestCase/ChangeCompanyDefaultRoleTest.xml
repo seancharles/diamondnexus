@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\ChangeCompanyDefaultRoleTest" summary="Company Admin restricts access to checkout" ticketId="MAGETWO-68351, MAGETWO-68737">
+        <variation name="ChangeCompanyDefaultRoleTestVariation1">
+            <data name="productsData/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="quote/quote-message" xsi:type="string">comment</data>
+            <data name="quote/quote-name" xsi:type="string">name</data>
+            <data name="companyAdmin/dataset" xsi:type="string">default</data>
+            <data name="companyCredit" xsi:type="string">company_credit_100_dollar</data>
+            <data name="companyUser/dataset" xsi:type="string">default</data>
+            <data name="role/dataset" xsi:type="string">role_1</data>
+            <data name="permissionsToUnCheck/0" xsi:type="string">All/Sales/Checkout (place order)</data>
+            <data name="permissionsToUnCheck/1" xsi:type="string">All/Quotes/View/Checkout with quote</data>
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable</data>
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertCheckoutLinkNotVisibleInQuote" />
+            <constraint name="Magento\Company\Test\Constraint\AssertCheckoutLinksAreNotVisible" />
+        </variation>
+    </testCase>
+</config>

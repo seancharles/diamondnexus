@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/fixture.xsd">
+    <fixture name="shared_catalog"
+             module="Magento_SharedCatalog"
+             type="flat"
+             collection="Magento\SharedCatalog\Model\ResourceModel\SharedCatalog\Collection"
+             repository_class="Magento\SharedCatalog\Test\Repository\SharedCatalog"
+             handler_interface="Magento\SharedCatalog\Test\Handler\SharedCatalog\SharedCatalogInterface"
+             class="Magento\SharedCatalog\Test\Fixture\SharedCatalog"
+             entity_type="shared_catalog">
+        <field name="id" group="null" />
+        <field name="name" is_required="1" group="catalog_details" />
+        <field name="description" is_required="0" group="catalog_details" />
+        <field name="type" is_required="1" group="catalog_details" />
+        <field name="tax_class_id" group="catalog_details" is_required="1" source="Magento\SharedCatalog\Test\Fixture\SharedCatalog\TaxClass" />
+        <field name="companies" is_required="0" source="Magento\SharedCatalog\Test\Fixture\SharedCatalog\Companies" />
+    </fixture>
+</config>

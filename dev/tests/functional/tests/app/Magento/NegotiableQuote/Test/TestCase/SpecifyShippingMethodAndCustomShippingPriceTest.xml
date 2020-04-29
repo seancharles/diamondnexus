@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\SpecifyShippingMethodAndCustomShippingPriceTest" summary="Specifying shipping method and custom shipping price on the quote" ticketId="MAGETWO-68267">
+        <variation name="SpecifyShippingMethodAndCustomShippingPriceTestVariation1" summary="">
+            <data name="customer/dataset" xsi:type="string">johndoe_with_addresses</data>
+            <data name="simpleProduct/dataset" xsi:type="string">product_100_dollar</data>
+            <data name="quote/quote-message" xsi:type="string">comment</data>
+            <data name="quote/quote-name" xsi:type="string">name</data>
+            <data name="address/dataset" xsi:type="string">US_address_1_without_email</data>
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable</data>
+            <data name="steps" xsi:type="array">
+                <item name="0" xsi:type="string">select_default_shipping_address</item>
+            </data>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteShippingInfoInAdmin"/>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteShippingInfoOnStorefront"/>
+        </variation>
+    </testCase>
+</config>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\CreateCategoryFromProductPageTest" summary="[Shared Catalog] Category creation from the product page" ticketId="MAGETWO-80322">
+        <variation name="CreateCategoryFromProductPageTestVariation1">
+            <data name="customerLogIn" xsi:type="boolean">true</data>
+            <data name="configData" xsi:type="string">company_enable, shared_catalog_enable</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_with_company</data>
+            <data name="category/data/parent_id/dataset" xsi:type="string">default_category</data>
+            <data name="category/data/name" xsi:type="string">Name%isolation%</data>
+            <data name="product/data/name" xsi:type="string">Simple Product %isolation%</data>
+            <data name="product/data/sku" xsi:type="string">simple_sku_%isolation%</data>
+            <data name="product/data/price/value" xsi:type="string">50</data>
+            <data name="product/data/quantity_and_stock_status/qty" xsi:type="string">100</data>
+            <data name="product/data/url_key" xsi:type="string">test-simple-product-%isolation%</data>
+            <data name="categoryPermissions" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="browsing_category" xsi:type="boolean">false</item>
+                    <item name="display_product_prices" xsi:type="boolean">false</item>
+                    <item name="add_to_cart" xsi:type="boolean">false</item>
+                </item>
+            </data>
+            <data name="productPermissions" xsi:type="array">
+                <item name="add_to_cart" xsi:type="array">
+                    <item name="0" xsi:type="array">
+                        <item name="0" xsi:type="boolean">false</item>
+                    </item>
+                </item>
+            </data>
+            <constraint name="Magento\CatalogPermissions\Test\Constraint\AssertCategoryBrowsingPermissions" />
+            <constraint name="Magento\CatalogPermissions\Test\Constraint\AssertDisplayProductPricesPermissions" />
+            <constraint name="Magento\CatalogPermissions\Test\Constraint\AssertAddToCartPermissions" />
+        </variation>
+        <variation name="CreateCategoryFromProductPageTestVariation2">
+            <data name="customerLogIn" xsi:type="boolean">false</data>
+            <data name="configData" xsi:type="string">company_enable, shared_catalog_enable</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_with_company</data>
+            <data name="category/data/parent_id/dataset" xsi:type="string">default_category</data>
+            <data name="category/data/name" xsi:type="string">Name%isolation%</data>
+            <data name="product/data/name" xsi:type="string">Simple Product %isolation%</data>
+            <data name="product/data/sku" xsi:type="string">simple_sku_%isolation%</data>
+            <data name="product/data/price/value" xsi:type="string">50</data>
+            <data name="product/data/quantity_and_stock_status/qty" xsi:type="string">100</data>
+            <data name="product/data/url_key" xsi:type="string">test-simple-product-%isolation%</data>
+            <data name="categoryPermissions" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="browsing_category" xsi:type="boolean">false</item>
+                    <item name="display_product_prices" xsi:type="boolean">false</item>
+                    <item name="add_to_cart" xsi:type="boolean">false</item>
+                </item>
+            </data>
+            <data name="productPermissions" xsi:type="array">
+                <item name="add_to_cart" xsi:type="array">
+                    <item name="0" xsi:type="array">
+                        <item name="0" xsi:type="boolean">false</item>
+                    </item>
+                </item>
+            </data>
+            <constraint name="Magento\CatalogPermissions\Test\Constraint\AssertCategoryBrowsingPermissions" />
+            <constraint name="Magento\CatalogPermissions\Test\Constraint\AssertDisplayProductPricesPermissions" />
+            <constraint name="Magento\CatalogPermissions\Test\Constraint\AssertAddToCartPermissions" />
+        </variation>
+        <variation name="CreateCategoryFromProductPageTestVariation3">
+            <data name="customerLogIn" xsi:type="boolean">true</data>
+            <data name="configData" xsi:type="string">company_enable, shared_catalog_disable</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_with_company</data>
+            <data name="category/data/parent_id/dataset" xsi:type="string">default_category</data>
+            <data name="category/data/name" xsi:type="string">Name%isolation%</data>
+            <data name="product/data/name" xsi:type="string">Simple Product %isolation%</data>
+            <data name="product/data/sku" xsi:type="string">simple_sku_%isolation%</data>
+            <data name="product/data/price/value" xsi:type="string">50</data>
+            <data name="product/data/quantity_and_stock_status/qty" xsi:type="string">100</data>
+            <data name="product/data/url_key" xsi:type="string">test-simple-product-%isolation%</data>
+            <data name="categoryPermissions" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="browsing_category" xsi:type="boolean">true</item>
+                    <item name="display_product_prices" xsi:type="boolean">true</item>
+                    <item name="add_to_cart" xsi:type="boolean">true</item>
+                </item>
+            </data>
+            <data name="productPermissions" xsi:type="array">
+                <item name="add_to_cart" xsi:type="array">
+                    <item name="0" xsi:type="array">
+                        <item name="0" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </data>
+            <constraint name="Magento\CatalogPermissions\Test\Constraint\AssertCategoryBrowsingPermissions" />
+            <constraint name="Magento\CatalogPermissions\Test\Constraint\AssertDisplayProductPricesPermissions" />
+            <constraint name="Magento\CatalogPermissions\Test\Constraint\AssertAddToCartPermissions" />
+        </variation>
+        <variation name="CreateCategoryFromProductPageTestVariation4">
+            <data name="customerLogIn" xsi:type="boolean">false</data>
+            <data name="configData" xsi:type="string">company_enable, shared_catalog_disable</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_with_company</data>
+            <data name="category/data/parent_id/dataset" xsi:type="string">default_category</data>
+            <data name="category/data/name" xsi:type="string">Name%isolation%</data>
+            <data name="product/data/name" xsi:type="string">Simple Product %isolation%</data>
+            <data name="product/data/sku" xsi:type="string">simple_sku_%isolation%</data>
+            <data name="product/data/price/value" xsi:type="string">50</data>
+            <data name="product/data/quantity_and_stock_status/qty" xsi:type="string">100</data>
+            <data name="product/data/url_key" xsi:type="string">test-simple-product-%isolation%</data>
+            <data name="categoryPermissions" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="browsing_category" xsi:type="boolean">true</item>
+                    <item name="display_product_prices" xsi:type="boolean">true</item>
+                    <item name="add_to_cart" xsi:type="boolean">true</item>
+                </item>
+            </data>
+            <data name="productPermissions" xsi:type="array">
+                <item name="add_to_cart" xsi:type="array">
+                    <item name="0" xsi:type="array">
+                        <item name="0" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </data>
+            <constraint name="Magento\CatalogPermissions\Test\Constraint\AssertCategoryBrowsingPermissions" />
+            <constraint name="Magento\CatalogPermissions\Test\Constraint\AssertDisplayProductPricesPermissions" />
+            <constraint name="Magento\CatalogPermissions\Test\Constraint\AssertAddToCartPermissions" />
+        </variation>
+    </testCase>
+</config>

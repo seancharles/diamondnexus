@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/pages.xsd">
+    <page name="CheckoutOnepage" mca="checkout">
+        <block name="quoteShippingBlock" class="Magento\NegotiableQuote\Test\Block\Onepage\Shipping" locator=".shipping-information" strategy="css selector" />
+        <block name="quoteShippingMethodBlock" class="Magento\NegotiableQuote\Test\Block\Onepage\Shipping\Method" locator=".ship-via" strategy="css selector" />
+        <block name="quotePaymentBlock" class="Magento\NegotiableQuote\Test\Block\Onepage\Payment" locator="#checkout-step-payment" strategy="css selector" />
+        <block name="quoteDiscountBlock" class="Magento\NegotiableQuote\Test\Block\Onepage\Discount" locator="div.payment-option:nth-child(5)" strategy="css selector" />
+        <block name="quoteGiftCardBlock" class="Magento\NegotiableQuote\Test\Block\Onepage\GiftCard" locator="#giftcardaccount-placer" strategy="css selector" />
+        <block name="shippingAddressBlock" class="Magento\NegotiableQuote\Test\Block\Onepage\ShippingAddress" locator="#shipping" strategy="css selector" />
+        <block name="billingBlock" class="Magento\Checkout\Test\Block\Onepage\Payment\Method\Billing" locator="#checkout-step-payment" strategy="css selector" />
+    </page>
+</config>

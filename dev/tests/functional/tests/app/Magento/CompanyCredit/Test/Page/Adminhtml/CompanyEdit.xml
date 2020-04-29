@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../vendor/magento/mtf/etc/pages.xsd">
+    <page name="CompanyEdit" area="Adminhtml" mca="company/index/edit">
+        <block name="companyCreditFormActions" class="Magento\CompanyCredit\Test\Block\Adminhtml\FormPageActions" locator=".page-main-actions" strategy="css selector"/>
+        <block name="modalReimburseBalance" class="Magento\CompanyCredit\Test\Block\Adminhtml\ModalReimburseBalance" locator="._show[data-role=modal]" strategy="css selector"/>
+        <block name="companyCreditForm" class="Magento\CompanyCredit\Test\Block\Adminhtml\CompanyCreditForm" locator="[id='page:main-container']" strategy="css selector"/>
+        <block name="currencyRatePopup" class="Magento\CompanyCredit\Test\Block\Adminhtml\CurrencyRatePopup" locator="._show[data-role=modal]" strategy="css selector"/>
+        <block name="creditHistoryGrid" class="Magento\CompanyCredit\Test\Block\Adminhtml\CreditHistoryGrid" locator="//div[contains(@data-bind, 'history_listing')]" strategy="xpath"/>
+        <block name="creditBalanceInformation" class="Magento\CompanyCredit\Test\Block\Adminhtml\CreditBalanceInformation" locator=".credit-balance-list" strategy="css selector"/>
+    </page>
+</config>

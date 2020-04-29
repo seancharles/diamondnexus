@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\UpdateNegotiableQuoteTest" summary="Update negotiated quote test">
+        <variation name="UpdateNegotiableQuoteTestVariation1" summary="Update a quote on storefront and in Admin Panel" ticketId="B2B-774, B2B-662, B2B-896, B2B-1178, MAGETWO-68699">
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable, default_tax_configuration</data>
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="company" xsi:type="string">company_with_required_fields_and_sales_rep</data>
+            <data name="products/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="products/1" xsi:type="string">catalogProductSimple::product_20_dollar</data>
+            <data name="taxRule" xsi:type="string">us_full_tax_rule</data>
+            <data name="tax" xsi:type="string">10</data>
+            <data name="address/dataset" xsi:type="string">US_address_1_without_email</data>
+            <data name="qtys/0" xsi:type="number">10</data>
+            <data name="qtys/1" xsi:type="number">10</data>
+            <data name="messages/0" xsi:type="string">message</data>
+            <data name="updateData/proposedShippingPrice" xsi:type="string">50</data>
+            <data name="updateData/discountType" xsi:type="string">percentage</data>
+            <data name="updateData/discountValue" xsi:type="string">10</data>
+            <data name="updateData/adminQtys/0" xsi:type="number">5</data>
+            <data name="updateData/adminQtys/1" xsi:type="number">5</data>
+            <data name="updateData/frontQtys/0" xsi:type="number">10</data>
+            <data name="updateData/frontQtys/1" xsi:type="number">10</data>
+            <data name="updateData/historyLog/0" xsi:type="string">Comment</data>
+            <data name="frontDiscountApplied" xsi:type="null"/>
+            <data name="method" xsi:type="string">Flat Rate</data>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteCorrectOnStorefront" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuotePrintCorrectOnStorefront" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteCorrectInAdmin" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuotePrintCorrectInAdmin" />
+        </variation>
+    </testCase>
+</config>

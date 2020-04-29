@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\CompanyPermissionsRestrictionTest" summary="Company Admin restricts access to quote view and legal address view" ticketId="MAGETWO-68428, MAGETWO-68429">
+        <variation name="CompanyPermissionsRestrictionTestVariation1">
+            <data name="productsData/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="quote/quote-message" xsi:type="string">comment</data>
+            <data name="quote/quote-name" xsi:type="string">name</data>
+            <data name="companyAdmin/dataset" xsi:type="string">default</data>
+            <data name="companyUser/dataset" xsi:type="string">default</data>
+            <data name="deniedPage/dataset" xsi:type="string">company_access_denied</data>
+            <data name="role/dataset" xsi:type="string">role_1</data>
+            <data name="permissionsToUnCheck/0" xsi:type="string">All/Company Profile/Legal Address (View)</data>
+            <data name="permissionsToUnCheck/1" xsi:type="string">All/Quotes/View</data>
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable</data>
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteViewIsRestricted" />
+            <constraint name="Magento\Company\Test\Constraint\AssertLegalAddressNotVisible" />
+            <constraint name="Magento\Company\Test\Constraint\AssertRolePermissionCheckboxState" />
+        </variation>
+    </testCase>
+</config>

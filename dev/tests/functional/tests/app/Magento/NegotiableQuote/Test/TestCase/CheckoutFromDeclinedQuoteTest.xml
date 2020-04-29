@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\CheckoutFromDeclinedQuoteTest" summary="Quote negotiation">
+        <variation name="CheckoutFromDeclinedQuoteTestVariation1" summary="Checkout from declined quote" ticketId="MAGETWO-68127">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::product_20_dollar</data>
+            <data name="productsList/1" xsi:type="string">catalogProductSimple::product_100_dollar</data>
+            <data name="quote/quote-message" xsi:type="string">comment</data>
+            <data name="quote/quote-name" xsi:type="string">name</data>
+            <data name="additionalQuote/quote-message" xsi:type="string">additional_comment</data>
+            <data name="additionalQuote/quote-name" xsi:type="string">additional_name</data>
+            <data name="address/dataset" xsi:type="string">US_address_1_without_email</data>
+            <data name="taxRule" xsi:type="string">us_full_tax_rule</data>
+            <data name="tax" xsi:type="string">10</data>
+            <data name="marketing/giftCard" xsi:type="string">active_redeemable_account</data>
+            <data name="marketing/salesRule" xsi:type="string">negotiable_quote_active_sales_rule_with_complex_conditions</data>
+            <data name="messages/decline-comment" xsi:type="string">Decline reason</data>
+            <data name="steps" xsi:type="array">
+                <item name="0" xsi:type="string">admin_decline</item>
+                <item name="1" xsi:type="string">front_place_order_with_discount</item>
+                <item name="2" xsi:type="string">create_invoice</item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable, display_including_tax</data>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertInvoiceCorrectInAdmin" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertAdditionalQuoteCorrectOnStorefront" />
+        </variation>
+    </testCase>
+</config>

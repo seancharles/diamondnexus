@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\RequisitionList\Test\TestCase\AddProductsToRequisitionListTest" summary="Enable requisition list">
+        <variation name="AddProductsToRequisitionListTestVariation1_ComplexProducts" summary="Add complex products to requisition list" ticketId="MAGETWO-68197">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="productsList/0" xsi:type="string">bundleProduct::default</data>
+            <data name="productsList/1" xsi:type="string">configurableProduct::product_with_size</data>
+            <data name="productsList/2" xsi:type="string">groupedProduct::default</data>
+            <data name="requisitionList/name" xsi:type="string">name</data>
+            <data name="requisitionList/description" xsi:type="string">description</data>
+            <data name="productToUpdate" xsi:type="string">configurable</data>
+            <data name="updateData" xsi:type="array">
+                <item name="options" xsi:type="array">
+                    <item name="size" xsi:type="array">
+                        <item name="initial_label" xsi:type="string">xl</item>
+                        <item name="label" xsi:type="string">xxl</item>
+                    </item>
+                </item>
+                <item name="qty" xsi:type="number">6</item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable, requisition_list_enable</data>
+            <constraint name="Magento\RequisitionList\Test\Constraint\AssertRequisitionListUpdateSuccessMessage" />
+            <constraint name="Magento\RequisitionList\Test\Constraint\AssertProductIsCorrectAfterUpdate" />
+        </variation>
+        <variation name="AddProductsToRequisitionListTestVariation2" ticketId="MAGETWO-68139, MAGETWO-68187, MAGETWO-68210">
+            <data name="issue" xsi:type="string">MAGETWO-81744: [Jenkins] Random fail of Requisition List Test</data>
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="productsList/1" xsi:type="string">catalogProductSimple::rl_default_2</data>
+            <data name="requisitionList/name" xsi:type="string">name</data>
+            <data name="requisitionList/description" xsi:type="string">description</data>
+            <data name="taxRule" xsi:type="string">us_full_tax_rule</data>
+            <data name="configData" xsi:type="string">company_enable, requisition_list_enable, display_excluding_including_tax</data>
+            <constraint name="Magento\RequisitionList\Test\Constraint\AssertRequisitionListInGridOnStorefront" />
+            <constraint name="Magento\RequisitionList\Test\Constraint\AssertProductsInRequisitionList" />
+            <constraint name="Magento\RequisitionList\Test\Constraint\AssertProductPricesAreVisible" />
+            <constraint name="Magento\RequisitionList\Test\Constraint\AssertRequisitionListPrintCorrect" />
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+        </variation>
+        <variation name="AddProductsToRequisitionListTestVariation3_GiftCard" summary="Add giftcard product to requisition list" ticketId="MAGETWO-68197">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="productsList/0" xsi:type="string">giftCardProduct::default</data>
+            <data name="requisitionList/name" xsi:type="string">name</data>
+            <data name="requisitionList/description" xsi:type="string">description</data>
+            <data name="configData" xsi:type="string">company_enable, requisition_list_enable</data>
+            <constraint name="Magento\RequisitionList\Test\Constraint\AssertEditLinkIsNotVisibleInRequisitionList" />
+        </variation>
+    </testCase>
+</config>

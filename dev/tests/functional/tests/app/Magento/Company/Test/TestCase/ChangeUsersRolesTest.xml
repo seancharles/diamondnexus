@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\Company\Test\TestCase\ChangeUsersRolesTest" summary="Change roles and permissions">
+        <variation name="ChangeUsersRolesTestVariation1_DefaultSettings" summary="Change company user role. Check permissions" ticketId="MAGETWO-68320">
+            <data name="companyAdmin/dataset" xsi:type="string">default</data>
+            <data name="companyUser/dataset" xsi:type="string">default</data>
+            <data name="role/dataset" xsi:type="string">role_1</data>
+            <data name="companyAdminRole" xsi:type="string">Company Administrator</data>
+            <data name="linkPresenceInMenu" xsi:type="boolean">false</data>
+            <data name="rolesAndPermissionsLinkText" xsi:type="string">Roles and Permissions</data>
+            <data name="configData" xsi:type="string">company_enable</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertCustomerUpdatedMessage"/>
+            <constraint name="Magento\Company\Test\Constraint\AssertCompanyUserRole"/>
+            <constraint name="Magento\Company\Test\Constraint\AssertCompanyAdminRoleIsDisabled"/>
+            <constraint name="Magento\Company\Test\Constraint\AssertAccountMenuLinkPresence"/>
+        </variation>
+        <variation name="ChangeUsersRolesTestVariation2_AddPermissions" summary="Change company user role. Check permissions after adding additional permissions to company user" ticketId="MAGETWO-68358">
+            <data name="companyAdmin/dataset" xsi:type="string">default</data>
+            <data name="companyUser/dataset" xsi:type="string">default</data>
+            <data name="role/dataset" xsi:type="string">role_1</data>
+            <data name="companyAdminRole" xsi:type="string">Company Administrator</data>
+            <data name="linkPresenceInMenu" xsi:type="boolean">true</data>
+            <data name="rolesAndPermissionsLinkText" xsi:type="string">Roles and Permissions</data>
+            <data name="roleEditViewRolesAndPermissionsLinkText" xsi:type="string">All/Company User Management/View roles and permissions</data>
+            <data name="steps" xsi:type="array">
+                <item name="0" xsi:type="string">update_role_permissions</item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertAccountMenuLinkPresence"/>
+        </variation>
+    </testCase>
+</config>

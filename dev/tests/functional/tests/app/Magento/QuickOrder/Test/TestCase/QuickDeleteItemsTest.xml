@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\QuickOrder\Test\TestCase\QuickDeleteItemsTest" summary="Delete product from quick order page" ticketId="MAGETWO-67963">
+        <variation name="QuickDeleteItemsTestVariation1_DeleteOneOfProducts" summary="Delete product from quick order page with multi products">
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="productsList/1" xsi:type="string">catalogProductVirtual::default</data>
+            <data name="configData" xsi:type="string">quick_order_enable</data>
+            <constraint name="Magento\QuickOrder\Test\Constraint\AssertQuickOrderItemsAfterRemove" />
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+        </variation>
+        <variation name="QuickDeleteItemsTestVariation2_DeleteSingleProduct" summary="Delete product from quick order page with one product">
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="configData" xsi:type="string">quick_order_enable</data>
+            <constraint name="Magento\QuickOrder\Test\Constraint\AssertQuickOrderItemsAfterRemove" />
+        </variation>
+    </testCase>
+</config>

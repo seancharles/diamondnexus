@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\CompanyCredit\Test\TestCase\PaymentOnAccountRevertTest" summary="Test revert functionality for Payment on Account method">
+        <variation name="PaymentOnAccountRevertTestVariation1_RevertConfirmationForPendingCompany" ticketId="MAGETWO-68426" summary="Check confirmation message by order cancel for company with Pending Approval status">
+            <data name="companyDataset" xsi:type="string">company_with_credit_in_usd</data>
+            <data name="companyStatus" xsi:type="string">Pending Approval</data>
+            <data name="customer/dataset" xsi:type="string">customer_US</data>
+            <data name="orderInjectable" xsi:type="string">default_payment_on_account</data>
+            <data name="confirmationMessage" xsi:type="string">CONFIRMATION_MESSAGE_PENDING</data>
+            <data name="configData" xsi:type="string">company_enable,companycredit,companycredit_order_status_pending</data>
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertOrderCancelConfirmation" />
+        </variation>
+        <variation name="PaymentOnAccountRevertTestVariation2_RevertToPendingCompany" ticketId="MAGETWO-68426" summary="Revert an order placed via Payment on Account method to a company with Pending Approval status">
+            <data name="companyDataset" xsi:type="string">company_with_credit_in_usd</data>
+            <data name="companyStatus" xsi:type="string">Pending Approval</data>
+            <data name="customer/dataset" xsi:type="string">customer_US</data>
+            <data name="orderInjectable" xsi:type="string">default_payment_on_account</data>
+            <data name="cancelOrder" xsi:type="boolean">true</data>
+            <data name="status" xsi:type="string">Canceled</data>
+            <data name="amounts" xsi:type="array">
+                <item name="creditLimit" xsi:type="string">5000</item>
+                <item name="availableCredit" xsi:type="string">4435</item>
+                <item name="outstandingBalance" xsi:type="string">-565</item>
+            </data>
+            <data name="missingOperations" xsi:type="array">
+                <item name="0" xsi:type="string">Reverted</item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable,companycredit,companycredit_order_status_pending</data>
+            <constraint name="Magento\Sales\Test\Constraint\AssertOrderStatusIsCorrect" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditBalance" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditBalanceHistoryMissingOperations" />
+        </variation>
+        <variation name="PaymentOnAccountRevertTestVariation3_RevertConfirmationForDeletedCompany" ticketId="MAGETWO-68426" summary="Check confirmation message by order cancel for deleted company">
+            <data name="companyDataset" xsi:type="string">company_with_credit_in_usd</data>
+            <data name="customer/dataset" xsi:type="string">customer_US</data>
+            <data name="orderInjectable" xsi:type="string">default_payment_on_account</data>
+            <data name="deleteCompany" xsi:type="boolean">true</data>
+            <data name="confirmationMessage" xsi:type="string">CONFIRMATION_MESSAGE_DELETED</data>
+            <data name="configData" xsi:type="string">company_enable,companycredit,companycredit_order_status_pending</data>
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertOrderCancelConfirmation" />
+        </variation>
+        <variation name="PaymentOnAccountRevertTestVariation4_RevertToDeletedCompany" ticketId="MAGETWO-68426" summary="Revert an order placed via Payment on Account method to a deleted company">
+            <data name="companyDataset" xsi:type="string">company_with_credit_in_usd</data>
+            <data name="customer/dataset" xsi:type="string">customer_US</data>
+            <data name="orderInjectable" xsi:type="string">default_payment_on_account</data>
+            <data name="deleteCompany" xsi:type="boolean">true</data>
+            <data name="cancelOrder" xsi:type="boolean">true</data>
+            <data name="status" xsi:type="string">Canceled</data>
+            <data name="configData" xsi:type="string">company_enable,companycredit,companycredit_order_status_pending</data>
+            <constraint name="Magento\Sales\Test\Constraint\AssertOrderStatusIsCorrect" />
+        </variation>
+    </testCase>
+</config>

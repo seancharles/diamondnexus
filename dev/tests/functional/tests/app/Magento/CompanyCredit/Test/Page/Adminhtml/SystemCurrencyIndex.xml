@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../vendor/magento/mtf/etc/pages.xsd">
+    <page name="SystemCurrencyIndex" area="Adminhtml" mca="admin/system_currency/index">
+        <block name="formPageActions" class="Magento\CurrencySymbol\Test\Block\Adminhtml\System\Currency\Rate\FormPageActions" locator=".page-main-actions" strategy="css selector"/>
+        <block name="systemCurrencyRates" class="Magento\CompanyCredit\Test\Block\Adminhtml\SystemCurrencyRates" locator="[id='page:main-container']" strategy="css selector"/>
+    </page>
+</config>

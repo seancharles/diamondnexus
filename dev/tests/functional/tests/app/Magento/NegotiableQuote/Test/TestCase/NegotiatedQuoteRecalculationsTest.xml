@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\NegotiatedQuoteRecalculationsTest" summary="Quote negotiation" ticketId="MAGETWO-68180">
+        <variation name="NegotiatedQuoteRecalculationsTestVariation1" summary="Negotiable process test">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::negotiable_product_100_dollar</data>
+            <data name="productsList/1" xsi:type="string">catalogProductSimple::negotiable_product_200_dollar</data>
+            <data name="quote/quote-name" xsi:type="string">name</data>
+            <data name="quote/quote-message" xsi:type="string">comment</data>
+            <data name="address/dataset" xsi:type="string">US_address_1_without_email</data>
+            <data name="addressToUpdate/dataset" xsi:type="string">US_address_2_without_email</data>
+            <data name="taxRule" xsi:type="string">us_full_tax_rule</data>
+            <data name="discount" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="discountType" xsi:type="string">amount</item>
+                    <item name="discountValue" xsi:type="string">30</item>
+                </item>
+            </data>
+            <data name="qtys" xsi:type="array">
+                <item name="0" xsi:type="number">1</item>
+                <item name="1" xsi:type="number">2</item>
+            </data>
+            <data name="shippingPrice" xsi:type="string">10</data>
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable, display_including_tax</data>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteReSubmitMessage" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteAddressIsCorrect" />
+        </variation>
+    </testCase>
+</config>

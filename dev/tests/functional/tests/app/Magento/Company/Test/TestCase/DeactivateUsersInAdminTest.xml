@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\Company\Test\TestCase\DeactivateUsersInAdminTest"
+              summary="Inactive status for customers after delete a company in Admin Panel" ticketId="MAGETWO-68271">
+        <variation name="DeactivateUsersInAdminTestVariation1">
+            <data name="firstCustomer/dataset" xsi:type="string">default</data>
+            <data name="secondCustomer/dataset" xsi:type="string">default</data>
+            <data name="company/dataset" xsi:type="string">company_with_required_fields_and_status</data>
+            <data name="hasCompany" xsi:type="number">1</data>
+            <data name="configData" xsi:type="string">company_enable</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertCompanyNotInGrid"/>
+            <constraint name="Magento\Company\Test\Constraint\AssertUsersCompanyIsCorrect"/>
+        </variation>
+    </testCase>
+</config>

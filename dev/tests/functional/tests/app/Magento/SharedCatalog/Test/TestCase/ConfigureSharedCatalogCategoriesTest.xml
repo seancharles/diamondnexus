@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\ConfigureSharedCatalogCategoriesTest" summary="Configure the Shared Catalog with selected categories and products" ticketId="MAGETWO-68543, MAGETWO-68543">
+        <variation name="ConfigureSharedCatalogCategoriesTestVariation1" summary="Verify empty Shared Catalog on the Storefront and configuration wizard in Admin">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="configureCatalog" xsi:type="boolean">false</data>
+            <data name="catalogData" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="dataset" xsi:type="string">default</item>
+                    <item name="products" xsi:type="string">catalogProductSimple::default</item>
+                    <item name="isCategorySelected" xsi:type="boolean">false</item>
+                    <item name="isProductsSelected" xsi:type="boolean">false</item>
+                    <item name="children" xsi:type="array">
+                        <item name="0" xsi:type="array">
+                            <item name="dataset" xsi:type="string">default</item>
+                            <item name="products" xsi:type="string">catalogProductSimple::default,catalogProductSimple::default</item>
+                            <item name="isCategorySelected" xsi:type="boolean">false</item>
+                            <item name="isProductsSelected" xsi:type="boolean">false</item>
+                        </item>
+                    </item>
+                </item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable,shared_catalog_enable,category_permissions_on</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertNoCategoriesOnStorefront" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertSharedCatalogConfigurationWizard" />
+        </variation>
+        <variation name="ConfigureSharedCatalogCategoriesTestVariation2" summary="Configure Shared Catalog and verify it on the Storefront">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="catalogData" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="dataset" xsi:type="string">default</item>
+                    <item name="products" xsi:type="string">catalogProductSimple::default,catalogProductSimple::default</item>
+                    <item name="isCategorySelected" xsi:type="boolean">false</item>
+                    <item name="isProductsSelected" xsi:type="boolean">true</item>
+                    <item name="children" xsi:type="array">
+                        <item name="0" xsi:type="array">
+                            <item name="dataset" xsi:type="string">default</item>
+                            <item name="products" xsi:type="string">catalogProductSimple::default</item>
+                            <item name="isCategorySelected" xsi:type="boolean">false</item>
+                            <item name="isProductsSelected" xsi:type="boolean">false</item>
+                            <item name="children" xsi:type="array">
+                                <item name="0" xsi:type="array">
+                                    <item name="dataset" xsi:type="string">default</item>
+                                    <item name="products" xsi:type="string">catalogProductSimple::default</item>
+                                    <item name="isCategorySelected" xsi:type="boolean">false</item>
+                                    <item name="isProductsSelected" xsi:type="boolean">true</item>
+                                </item>
+                            </item>
+                        </item>
+                    </item>
+                </item>
+                <item name="1" xsi:type="array">
+                    <item name="dataset" xsi:type="string">default</item>
+                    <item name="products" xsi:type="string">catalogProductSimple::default</item>
+                    <item name="isCategorySelected" xsi:type="boolean">true</item>
+                    <item name="isProductsSelected" xsi:type="boolean">true</item>
+                    <item name="isLast" xsi:type="boolean">true</item>
+                    <item name="children" xsi:type="array">
+                        <item name="0" xsi:type="array">
+                            <item name="dataset" xsi:type="string">default</item>
+                            <item name="products" xsi:type="string">catalogProductSimple::default,catalogProductSimple::default</item>
+                            <item name="isCategorySelected" xsi:type="boolean">false</item>
+                            <item name="isProductsSelected" xsi:type="boolean">true</item>
+                            <item name="children" xsi:type="array">
+                                <item name="0" xsi:type="array">
+                                    <item name="dataset" xsi:type="string">default</item>
+                                    <item name="products" xsi:type="string">catalogProductSimple::default,catalogProductSimple::default</item>
+                                    <item name="isCategorySelected" xsi:type="boolean">true</item>
+                                    <item name="isProductsSelected" xsi:type="boolean">true</item>
+                                </item>
+                            </item>
+                        </item>
+                    </item>
+                </item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable,shared_catalog_enable,category_permissions_on</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCategoriesAvailability" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCategoryLevelInMenu" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertLastCategoryInMenu" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertProductsInCategory" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertProductsAvailability" />
+        </variation>
+    </testCase>
+</config>

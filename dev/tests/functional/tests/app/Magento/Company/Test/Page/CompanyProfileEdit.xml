@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/pages.xsd">
+    <page name="CompanyProfileEdit" mca="company/profile/edit" module="Magento_Company">
+        <block name="companyProfileForm" class="Magento\Company\Test\Block\CompanyProfileForm" locator=".form-edit-company" strategy="css selector"/>
+    </page>
+</config>

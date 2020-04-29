@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\RequestQuoteWithAddressAndTaxRuleTest" summary="Update negotiated quote test">
+        <variation name="RequestQuoteWithAddressAndTaxRuleTestVariation1" summary="Test quote create with address and taxrule, admin sets a percentage discount" ticketId="MAGETWO-68116">
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable, default_tax_configuration</data>
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="address/dataset" xsi:type="string">US_address_1_without_email</data>
+            <data name="company" xsi:type="string">company_with_required_fields_and_sales_rep</data>
+            <data name="products/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="products/1" xsi:type="string">catalogProductSimple::product_20_dollar</data>
+            <data name="qtys/0" xsi:type="string">1</data>
+            <data name="qtys/1" xsi:type="string">1</data>
+            <data name="messages/0" xsi:type="string">message</data>
+            <data name="updateData/proposedShippingPrice" xsi:type="string">10</data>
+            <data name="updateData/discountType" xsi:type="string">percentage</data>
+            <data name="updateData/discountValue" xsi:type="string">15</data>
+            <data name="taxRule" xsi:type="string">us_full_tax_rule</data>
+            <data name="tax" xsi:type="string">10</data>
+            <data name="updateData/historyLog/0" xsi:type="string">Comment</data>
+            <data name="method" xsi:type="string">Flat Rate</data>
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable</data>
+            <data name="frontDiscountApplied" xsi:type="null"/>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteCorrectOnStorefront" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuotePrintCorrectOnStorefront" />
+            <constraint name="Magento\Customer\Test\Constraint\AssertCustomerDefaultAddresses" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteCorrectInAdmin" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuotePrintCorrectInAdmin" />
+        </variation>
+    </testCase>
+</config>
