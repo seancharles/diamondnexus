@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/pages.xsd">
+    <page name="RequisitionListView" mca="requisition_list/requisition/view" module="Magento_RequisitionList">
+        <block name="messagesBlock" class="Magento\Backend\Test\Block\Messages" locator=".messages" strategy="css selector" />
+        <block name="requisitionListContent" class="Magento\RequisitionList\Test\Block\RequisitionListContent" locator=".column.main" strategy="css selector"/>
+        <block name="requisitionListPopup" class="Magento\RequisitionList\Test\Block\RequisitionListPopup" locator=".modal-popup.requisition-popup._show" strategy="css selector"/>
+        <block name="requisitionListMessages" class="Magento\RequisitionList\Test\Block\Messages" locator="#maincontent .page.messages" strategy="css selector" />
+    </page>
+</config>

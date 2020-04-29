@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\QuickOrder\Test\TestCase\QuickOrderTest" summary="Quick add simple invisible products to cart" ticketId="MAGETWO-68605">
+        <variation name="QuickOrderTest1" summary="Search product by product name on quick order page.">
+            <data name="products/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="products/1" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="configData" xsi:type="string">quick_order_enable</data>
+            <constraint name="Magento\QuickOrder\Test\Constraint\AssertQuickOrderAutocomplete" />
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+        </variation>
+    </testCase>
+</config>

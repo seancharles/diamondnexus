@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<sections>
+    <company_credit>
+        <class>\Magento\Ui\Test\Block\Adminhtml\Section</class>
+        <selector>[data-index="company_credit"]</selector>
+        <strategy>css selector</strategy>
+        <fields>
+            <exceed_limit>
+                <selector>[name="company_credit[exceed_limit]"]</selector>
+                <input>switcher</input>
+            </exceed_limit>
+            <currency_code>
+                <selector>[name="company_credit[currency_code]"]</selector>
+                <input>select</input>
+            </currency_code>
+            <credit_limit>
+                <selector>[name="company_credit[credit_limit]"]</selector>
+            </credit_limit>
+        </fields>
+    </company_credit>
+</sections>

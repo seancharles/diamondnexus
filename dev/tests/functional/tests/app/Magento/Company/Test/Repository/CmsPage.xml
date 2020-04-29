@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+    <repository class="Magento\Cms\Test\Repository\CmsPage">
+        <dataset name="company_access_denied">
+            <field name="title" xsi:type="string">Note: Access denied</field>
+            <field name="identifier" xsi:type="string">access-denied-page</field>
+            <field name="store_id" xsi:type="string">All Store Views</field>
+            <field name="is_active" xsi:type="string">Yes</field>
+            <field name="content" xsi:type="array">
+                <item name="content" xsi:type="string">Some access denied content</item>
+            </field>
+            <field name="content_heading" xsi:type="string">Note: Access denied</field>
+            <field name="page_layout" xsi:type="string">2 columns with right bar</field>
+        </dataset>
+    </repository>
+</config>

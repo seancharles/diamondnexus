@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+    <repository class="Magento\Customer\Test\Repository\CustomerGroup">
+        <dataset name="shared_catalog_general">
+            <field name="customer_group_id" xsi:type="string">%id%</field>
+            <field name="customer_group_code" xsi:type="string">Default (General)</field>
+            <field name="tax_class_id" xsi:type="array">
+                <item name="dataset" xsi:type="string">retail_customer</item>
+            </field>
+        </dataset>
+    </repository>
+</config>

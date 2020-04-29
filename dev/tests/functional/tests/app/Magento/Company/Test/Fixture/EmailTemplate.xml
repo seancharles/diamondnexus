@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/fixture.xsd">
+    <fixture name="email_template"
+             module="Magento_Company"
+             type="flat"
+             entity_type="email_template"
+             collection="Magento\Email\Model\ResourceModel\Template\Collection"
+             identifier="template_id"
+             repository_class="Magento\Email\Test\Repository\Template"
+             handler_interface="Magento\Email\Test\Handler\Template\TemplateInterface"
+             class="Magento\Company\Test\Fixture\EmailTemplate">
+        <field name="id" is_required="1" />
+        <field name="template_select" is_required="" />
+        <field name="template_code" is_required="1" />
+        <field name="template_subject" is_required="1" />
+        <field name="template_text" is_required="1" />
+        <field name="template_styles" is_required="" />
+        <field name="modified_at" is_required="" />
+    </fixture>
+</config>

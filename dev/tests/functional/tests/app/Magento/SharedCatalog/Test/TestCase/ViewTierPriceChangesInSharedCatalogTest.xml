@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\ViewTierPriceChangesInSharedCatalogTest" summary="View shared catalog pricing changes after updating product advanced pricing tier price" ticketId="MAGETWO-68472">
+        <variation name="ViewTierPriceChangesInSharedCatalogTestVariation1">
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="qty" xsi:type="string">1</data>
+            <data name="price" xsi:type="string">5.00</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\Product\AssertTierPriceRemoved" />
+        </variation>
+    </testCase>
+</config>

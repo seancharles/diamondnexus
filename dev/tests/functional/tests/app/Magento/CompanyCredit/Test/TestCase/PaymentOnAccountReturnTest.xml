@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\CompanyCredit\Test\TestCase\PaymentOnAccountReturnTest" summary="Test return for order placed with Payment on Account method">
+        <variation name="PaymentOnAccountReturnTestVariation1_CheckStoreCreditOptionAvailability" ticketId="MAGETWO-68425" summary="Test that Store Credit option is not available for return operation">
+            <data name="companyDataset" xsi:type="string">company_with_credit_in_usd</data>
+            <data name="customer/dataset" xsi:type="string">customer_US</data>
+            <data name="orderInjectable" xsi:type="string">default_payment_on_account</data>
+            <data name="rma/data/items/0/qty_requested" xsi:type="string">1</data>
+            <data name="configData" xsi:type="string">company_enable,companycredit,companycredit_order_status_pending</data>
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertStoreCreditOptionNotDisplayed" />
+        </variation>
+        <variation name="PaymentOnAccountReturnTestVariation1_ReturnOrder" ticketId="MAGETWO-68425" summary="Test that company credit is not reverted after return operation">
+            <data name="companyDataset" xsi:type="string">company_with_credit_in_usd</data>
+            <data name="customer/dataset" xsi:type="string">customer_US</data>
+            <data name="orderInjectable" xsi:type="string">default_payment_on_account</data>
+            <data name="rma/data/items/0/qty_requested" xsi:type="string">1</data>
+            <data name="rma/data/items/0/reason" xsi:type="string">Wrong Size</data>
+            <data name="rma/data/items/0/condition" xsi:type="string">Damaged</data>
+            <data name="rma/data/items/0/resolution" xsi:type="string">Exchange</data>
+            <data name="createReturn" xsi:type="string">true</data>
+            <data name="status" xsi:type="string">Processing</data>
+            <data name="expectedCreditState" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="amounts" xsi:type="array">
+                        <item name="creditLimit" xsi:type="string">5000</item>
+                        <item name="availableCredit" xsi:type="string">4435</item>
+                        <item name="outstandingBalance" xsi:type="string">-565</item>
+                    </item>
+                    <item name="operations" xsi:type="array">
+                        <item name="0" xsi:type="string">Allocated</item>
+                        <item name="1" xsi:type="string">Purchased</item>
+                    </item>
+                    <item name="missingOperations" xsi:type="array">
+                        <item name="0" xsi:type="string">Reverted</item>
+                    </item>
+                </item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable,companycredit,companycredit_order_status_pending</data>
+            <constraint name="Magento\Sales\Test\Constraint\AssertOrderStatusIsCorrect" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditState" />
+        </variation>
+    </testCase>
+</config>

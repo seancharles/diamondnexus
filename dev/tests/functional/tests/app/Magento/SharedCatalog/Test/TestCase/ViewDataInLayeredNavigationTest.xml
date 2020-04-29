@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\ViewDataInLayeredNavigationTest" summary="View categories and products in the layered navigation block " ticketId="MAGETWO-68047">
+        <variation name="ViewDataInLayeredNavigationTestVariation1">
+            <data name="tag" xsi:type="string">test_type:mysql_search</data>
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="description" xsi:type="string">shared catalog configuration</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="category/dataset" xsi:type="string">default_anchor_subcategory</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="productsList/1" xsi:type="string">catalogProductSimple::product_100_dollar</data>
+            <data name="productsList/2" xsi:type="string">catalogProductSimple::product_500_dollar</data>
+            <data name="configData" xsi:type="string">company_enable, category_permissions_on, shared_catalog_enable</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertLayeredNavigationContent" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertLayeredNavigationContentAfterDisablingProduct" />
+        </variation>
+    </testCase>
+</config>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\ManageCategoryPermissionsTest" summary="Change customer group for tier price" ticketId="MAGETWO-68650">
+        <variation name="ManageCategoryPermissionsTestVariation1" summary="Check that notification message is displaying on shared catalog page">
+            <data name="sharedCatalogFeatureDisabledMessage" xsi:type="string">You must enable the shared catalog feature in Stores -> Configuration -> B2B Features to use the shared catalogs in the storefront. Otherwise, the categories and products you're configuring in shared catalogs will not be restricted to customers.</data>
+            <data name="configData" xsi:type="string">company_enable,shared_catalog_disable,category_permissions_off</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertSharedCatalogDisabledMessage" />
+        </variation>
+        <variation name="ManageCategoryPermissionsTestVariation2" summary="Check that system config B2B features section description and Shared Catalog Enable control comment are correct">
+            <data name="sectionDescription" xsi:type="string">Enabling or disabling the features listed below affects their visibility and/or behavior in the storefront only. In Admin, they are always available for management and configuration.</data>
+            <data name="sharedCatalogItemComment" xsi:type="string">Enabling the shared catalog feature enables the category permissions for all stores. Disabling the shared catalog feature does not disable custom prices (tier prices) for companies.</data>
+            <data name="steps" xsi:type="array">
+                <item name="0" xsi:type="string">openConfigurationFeaturesPage</item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable,shared_catalog_disable,category_permissions_off</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertSystemConfigBtobSectionDescription" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertSystemConfigBtobSectionSharedCatalogItemComment" />
+        </variation>
+        <variation name="ManageCategoryPermissionsTestVariation3" summary="Check that category permissions are enabled after enabling Shared Catalog B2B feature">
+            <data name="steps" xsi:type="array">
+                <item name="0" xsi:type="string">enableSharedCatalogFeature</item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable,shared_catalog_disable,category_permissions_off</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCategoryPermissionsState" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertSharedCatalogDisabledMessageIsNotDisplaying" />
+        </variation>
+    </testCase>
+</config>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\Company\Test\TestCase\AddUserToCompanyOnStorefrontTest" summary="Add user to company on Storefront" ticketId="MAGETWO-68219">
+        <variation name="AddUserToCompanyOnStorefrontTestVariation1_UserWithCompany" summary="Add existing user with company">
+            <data name="firstCompanyAdmin/dataset" xsi:type="string">default</data>
+            <data name="secondCompanyAdmin/dataset" xsi:type="string">default</data>
+            <data name="userWithoutCompany/dataset" xsi:type="string">default</data>
+            <data name="hasCompany" xsi:type="number">1</data>
+            <data name="configData" xsi:type="string">company_enable</data>
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertUserExistsErrorMessage" />
+        </variation>
+        <variation name="AddUserToCompanyOnStorefrontTestVariation2_UserWithoutCompany" summary="Add existing user without company">
+            <data name="firstCompanyAdmin/dataset" xsi:type="string">default</data>
+            <data name="secondCompanyAdmin/dataset" xsi:type="string">default</data>
+            <data name="userWithoutCompany/dataset" xsi:type="string">default</data>
+            <data name="hasCompany" xsi:type="number">0</data>
+            <data name="configData" xsi:type="string">company_enable</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertCustomerCreatedMessage" />
+            <constraint name="Magento\Customer\Test\Constraint\AssertCustomerInGrid" />
+            <constraint name="Magento\Company\Test\Constraint\AssertUsersCompanyIsCorrect" />
+        </variation>
+    </testCase>
+</config>

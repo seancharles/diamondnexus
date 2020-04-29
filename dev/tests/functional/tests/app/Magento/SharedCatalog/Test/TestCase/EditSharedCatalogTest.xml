@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\EditSharedCatalogTest" summary="Edit Shared Catalog" ticketId="MAGETWO-68027">
+        <variation name="EditSharedCatalogTestVariation1">
+            <data name="description" xsi:type="string">shared catalog configuration</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="catalogProduct/dataset" xsi:type="string">product_with_category</data>
+            <data name="data/discount" xsi:type="string">20</data>
+            <data name="data/type" xsi:type="string">discount</data>
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertTreeState" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCategoryExist" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertProductsChecked" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertDiscountPrice" />
+        </variation>
+    </testCase>
+</config>

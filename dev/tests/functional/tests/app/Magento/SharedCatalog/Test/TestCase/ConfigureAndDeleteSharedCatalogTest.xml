@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\ConfigureAndDeleteSharedCatalogTest" summary="Add products into the shared catalog and delete the shared catalog" ticketId="MAGETWO-71457">
+        <variation name="ConfigureAndDeleteSharedCatalogTestVariation1">
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="products" xsi:type="array">
+                <item name="0" xsi:type="string">catalogProductSimple::product_10_dollar</item>
+                <item name="1" xsi:type="string">catalogProductSimple::product_10_dollar</item>
+                <item name="2" xsi:type="string">catalogProductSimple::product_10_dollar</item>
+                <item name="3" xsi:type="string">catalogProductSimple::product_10_dollar</item>
+            </data>
+            <data name="productType" xsi:type="string">Simple Product</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertSortingProductsInGrid" />
+        </variation>
+    </testCase>
+</config>

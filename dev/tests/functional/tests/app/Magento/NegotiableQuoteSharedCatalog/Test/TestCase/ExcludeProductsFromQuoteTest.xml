@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuoteSharedCatalog\Test\TestCase\ExcludeProductsFromQuoteTest" summary="Exclude Products From Negotiable Quote" ticketId="MAGETWO-72355">
+        <variation name="ExcludeProductsFromQuoteTextVariation1" summary="Exclude Products From Negotiable Quote" ticketId="MAGETWO-72355">
+            <data name="configData" xsi:type="string">company_enable, shared_catalog_enable, negotiable_quote_enable</data>
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="company" xsi:type="string">company_with_required_fields_and_sales_rep</data>
+            <data name="products" xsi:type="array">
+                <item name="0" xsi:type="string">catalogProductSimple::product_10_dollar</item>
+                <item name="1" xsi:type="string">configurableProduct::with_one_option</item>
+            </data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <constraint name="Magento\NegotiableQuoteSharedCatalog\Test\Constraint\AssertSharedCatalogConfigured" />
+        </variation>
+    </testCase>
+</config>

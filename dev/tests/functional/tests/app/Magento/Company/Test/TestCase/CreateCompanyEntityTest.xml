@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\Company\Test\TestCase\CreateCompanyEntityTest" summary="Create Company from Company Page" ticketId="MAGETWO-67907, MAGETWO-67926">
+        <variation name="CreateCompanyEntityTestVariation1_RequiredFields">
+            <data name="description" xsi:type="string">Create company with required fields</data>
+            <data name="company/dataset" xsi:type="string">company_with_required_fields</data>
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertCompanyForm" />
+            <constraint name="Magento\Customer\Test\Constraint\AssertCustomerInGrid" />
+        </variation>
+        <variation name="CreateCompanyEntityTestVariation2_AllFields">
+            <data name="description" xsi:type="string">Create company with all fields</data>
+            <data name="company/dataset" xsi:type="string">company_with_all_fields</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertCompanyForm" />
+            <constraint name="Magento\Customer\Test\Constraint\AssertCustomerInGrid" />
+        </variation>
+    </testCase>
+</config>

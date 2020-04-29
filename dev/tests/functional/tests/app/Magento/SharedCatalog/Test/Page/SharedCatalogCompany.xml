@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/pages.xsd">
+    <page name="SharedCatalogCompany" area="Adminhtml" mca="shared_catalog/sharedCatalog/companies" module="Magento_SharedCatalog">
+        <block name="companyGrid" class="Magento\SharedCatalog\Test\Block\Adminhtml\CompanyGrid" locator="//div[contains(@data-bind, 'shared_catalog_company_listing')]" strategy="xpath"/>
+        <block name="pageActions" class="Magento\Backend\Test\Block\FormPageActions" locator=".page-main-actions" strategy="css selector"/>
+        <block name="modalBlock" class="Magento\SharedCatalog\Test\Block\Adminhtml\Popup" locator="._show[data-role=modal]" strategy="css selector"/>
+    </page>
+</config>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\QuickOrder\Test\TestCase\QuickAddToCartTest" summary="Quick add products to cart" ticketId="MAGETWO-67940">
+        <variation name="QuickAddToCartVariation1" summary="Quick add non complex products to cart">
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="productsList/1" xsi:type="string">downloadableProduct::one_dollar_product_with_no_separated_link</data>
+            <data name="productsList/2" xsi:type="string">catalogProductVirtual::default</data>
+            <data name="configData" xsi:type="string">quick_order_enable</data>
+            <constraint name="Magento\QuickOrder\Test\Constraint\AssertProductsInCart" />
+        </variation>
+    </testCase>
+</config>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\CompanyPayment\Test\TestCase\ConfigureCompanyPaymentMethodsTest" summary="Configure payment methods in different Admin Panel places" ticketId="MAGETWO-68323">
+        <variation name="ConfigureCompanyPaymentMethodsTestVariation1" summary="Select 'Bank transfer payment' as company payment method">
+            <data name="productsData/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="companyAdmin/dataset" xsi:type="string">customer_US</data>
+            <data name="configData" xsi:type="string">company_enable,specific_payment_methods,select_specific_payment_methods,cashondelivery,companycredit,banktransfer</data>
+            <data name="expectedMethods" xsi:type="string">Payment on Account,Bank Transfer Payment,Cash On Delivery</data>
+            <data name="companyPayment" xsi:type="string">company_payment_specific</data>
+            <data name="checkout/shipping/shipping_service" xsi:type="string">Flat Rate</data>
+            <data name="checkout/shipping/shipping_method" xsi:type="string">Fixed</data>
+            <constraint name="Magento\CompanyPayment\Test\Constraint\AssertCorrectPaymentMethods" />
+        </variation>
+        <variation name="ConfigureCompanyPaymentMethodsTestVariation2" summary="Select 'B2B Payment methods' as company payment methods">
+            <data name="productsData/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="companyAdmin/dataset" xsi:type="string">customer_US</data>
+            <data name="configData" xsi:type="string">company_enable,specific_payment_methods,select_specific_payment_methods,cashondelivery,companycredit,banktransfer</data>
+            <data name="expectedMethods" xsi:type="string">Payment on Account,Cash On Delivery</data>
+            <data name="companyPayment" xsi:type="string">company_payment_b2b</data>
+            <data name="checkout/shipping/shipping_service" xsi:type="string">Flat Rate</data>
+            <data name="checkout/shipping/shipping_method" xsi:type="string">Fixed</data>
+            <constraint name="Magento\CompanyPayment\Test\Constraint\AssertCorrectPaymentMethods" />
+        </variation>
+    </testCase>
+</config>

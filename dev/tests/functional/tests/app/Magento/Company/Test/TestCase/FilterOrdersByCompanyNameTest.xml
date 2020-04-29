@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\Company\Test\TestCase\FilterOrdersByCompanyNameTest" summary="Filter orders by Company Name." ticketId="MAGETWO-68597">
+        <variation name="FilterOrdersByCompanyNameTest1">
+            <data name="customers/0/dataset" xsi:type="string">default</data>
+            <data name="customers/1/dataset" xsi:type="string">default</data>
+            <data name="fieldData" xsi:type="array">
+                <item name="title" xsi:type="string">Company Name</item>
+                <item name="previous" xsi:type="string">Customer Name</item>
+                <item name="checked" xsi:type="boolean">false</item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable, requisition_list_enable, negotiable_quote_enable, companycredit</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertFieldInColumnsMenuOrderGrid" />
+            <constraint name="Magento\Sales\Test\Constraint\AssertOrdersInOrdersGrid" />
+        </variation>
+        <variation name="FilterOrdersByCompanyNameTest2">
+            <data name="customers/0/dataset" xsi:type="string">default</data>
+            <data name="customers/1/dataset" xsi:type="string">default</data>
+            <data name="fieldData" xsi:type="array">
+                <item name="title" xsi:type="string">Company Name</item>
+                <item name="previous" xsi:type="string">Customer Name</item>
+                <item name="checked" xsi:type="boolean">true</item>
+            </data>
+            <data name="checkedFields">Customer Name, Company Name</data>
+            <data name="configData" xsi:type="string">company_enable, requisition_list_enable, negotiable_quote_enable, companycredit</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertColumnsOrderGrid" />
+            <constraint name="Magento\Company\Test\Constraint\AssertOrdersGridSortOrder" />
+            <constraint name="Magento\Company\Test\Constraint\AssertFieldInColumnsMenuOrderGrid" />
+            <constraint name="Magento\Company\Test\Constraint\AssertFiltersOrderGrid" />
+        </variation>
+    </testCase>
+</config>

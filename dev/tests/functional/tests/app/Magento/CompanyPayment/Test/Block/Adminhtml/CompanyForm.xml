@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<sections>
+    <settings>
+        <class>\Magento\Ui\Test\Block\Adminhtml\Section</class>
+        <selector>[data-index="settings"]</selector>
+        <strategy>css selector</strategy>
+        <fields>
+            <applicable_payment_method>
+                <selector>[name="settings[extension_attributes][applicable_payment_method]"]</selector>
+                <input>select</input>
+            </applicable_payment_method>
+            <available_payment_methods>
+                <selector>[name="settings[extension_attributes][available_payment_methods]"]</selector>
+                <input>multiselect</input>
+            </available_payment_methods>
+            <use_config_settings>
+                <selector>[name="settings[extension_attributes][use_config_settings]"]</selector>
+                <input>checkbox</input>
+            </use_config_settings>
+        </fields>
+    </settings>
+</sections>

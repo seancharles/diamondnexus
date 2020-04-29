@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\Sales\Test\TestCase\FrontendOrderPagerTest" summary="Pager is enabled for orders with more than 20 items" ticketId="MAGETWO-63457">
+        <variation name="FrontendOrderPagerTestVariationB2B1" replace="FrontendOrderPagerTestVariation1" summary="Pager is absent for 20 order items" ticketId="MAGETWO-63457">
+            <data name="issue" xsi:type="string">MAGETWO-63857</data>
+        </variation>
+        <variation name="FrontendOrderPagerTestVariationB2B2" replace="FrontendOrderPagerTestVariation2" summary="Pager is displayed for 21 order items" ticketId="MAGETWO-63459">
+            <data name="issue" xsi:type="string">MAGETWO-63857</data>
+        </variation>
+    </testCase>
+</config>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/pages.xsd">
+    <page name="SharedCatalogCreate" area="Adminhtml" mca="shared_catalog/sharedCatalog/create/" module="Magento_SharedCatalog">
+        <block name="formPageActions" class="Magento\SharedCatalog\Test\Block\Adminhtml\FormPageActions" locator=".page-main-actions" strategy="css selector"/>
+        <block name="sharedCatalogForm" class="Magento\SharedCatalog\Test\Block\Adminhtml\Form\Edit" locator="[id='page:main-container']" strategy="css selector"/>
+        <block name="modalBlock" class="Magento\SharedCatalog\Test\Block\Adminhtml\Popup" locator="._show[data-role=modal]" strategy="css selector"/>
+        <block name="messagesBlock" class="Magento\Backend\Test\Block\Messages" locator="#messages .messages" strategy="css selector"/>
+    </page>
+</config>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/pages.xsd">
+    <page name="NegotiableQuoteView" mca="negotiable_quote/quote/view" module="Magento_NegotiableQuote">
+        <block name="messagesBlock" class="Magento\Backend\Test\Block\Messages" locator="#messages" strategy="css selector" />
+        <block name="quoteDetails" class="Magento\NegotiableQuote\Test\Block\QuoteDetails" locator=".column.main" strategy="css selector"/>
+        <block name="editAddress" class="Magento\NegotiableQuote\Test\Block\EditAddress" locator=".popup-edit-address._show" strategy="css selector"/>
+    </page>
+</config>

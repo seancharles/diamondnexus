@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\CompanyCredit\Test\TestCase\PaymentOnAccountRefundTest" summary="Test refund to blocked company for Payment on Account method">
+        <variation name="PaymentOnAccountRefundTestVariation1_RefundToBlockedCompany" ticketId="MAGETWO-68424" summary="Refund an order placed via Payment on Account method to a company with blocked status">
+            <data name="companyDataset" xsi:type="string">company_with_credit_in_usd</data>
+            <data name="companyStatus" xsi:type="string">Blocked</data>
+            <data name="customer/dataset" xsi:type="string">customer_US</data>
+            <data name="orderInjectable" xsi:type="string">default_payment_on_account</data>
+            <data name="refundData/items_data/0/back_to_stock" xsi:type="string">Yes</data>
+            <data name="refundData/items_data/0/qty" xsi:type="string">1</data>
+            <data name="status" xsi:type="string">Closed</data>
+            <data name="amounts" xsi:type="array">
+                <item name="creditLimit" xsi:type="string">5000</item>
+                <item name="availableCredit" xsi:type="string">5000</item>
+                <item name="outstandingBalance" xsi:type="string">0</item>
+            </data>
+            <data name="historyData" xsi:type="array">
+                <item name="Refunded" xsi:type="array">
+                    <item name="amount" xsi:type="array">
+                        <item name="value" xsi:type="array">
+                            <item name="0" xsi:type="string">$565.00</item>
+                        </item>
+                        <item name="label" xsi:type="string">Amount</item>
+                    </item>
+                    <item name="outstandingBalance" xsi:type="array">
+                        <item name="value" xsi:type="string">$0.00</item>
+                        <item name="label" xsi:type="string">Outstanding Balance</item>
+                    </item>
+                    <item name="availableCredit" xsi:type="array">
+                        <item name="value" xsi:type="string">$5,000.00</item>
+                        <item name="label" xsi:type="string">Available Credit</item>
+                    </item>
+                    <item name="creditLimit" xsi:type="array">
+                        <item name="value" xsi:type="string">$5,000.00</item>
+                        <item name="label" xsi:type="string">Credit Limit</item>
+                    </item>
+                </item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable,companycredit,companycredit_order_status_pending</data>
+            <constraint name="Magento\Sales\Test\Constraint\AssertOrderStatusIsCorrect" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditBalance" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditHistoryInformationInAdmin" />
+        </variation>
+    </testCase>
+</config>

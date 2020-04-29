@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<tabs>
+    <history>
+        <class>Magento\CompanyCredit\Test\Block\Adminhtml\Order\View\Tab\History</class>
+        <selector>#sales_order_view_tabs_order_history</selector>
+        <strategy>css selector</strategy>
+    </history>
+</tabs>

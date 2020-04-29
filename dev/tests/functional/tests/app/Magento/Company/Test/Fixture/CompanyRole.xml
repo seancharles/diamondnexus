@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/fixture.xsd">
+    <fixture name="companyRole" module="Magento_Company" type="flat" collection="Magento\Company\Model\ResourceModel\Role\Collection" repository_class="Magento\Company\Test\Repository\CompanyRole" handler_interface="Magento\Company\Test\Handler\CompanyRole\CompanyRoleInterface" class="Magento\Company\Test\Fixture\CompanyRole" entity_type="company_roles">
+        <field name="role_name" is_required="0"/>
+    </fixture>
+</config>

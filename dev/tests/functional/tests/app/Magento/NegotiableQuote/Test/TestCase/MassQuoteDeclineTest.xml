@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\MassQuoteDeclineTest" summary="Quote negotiation" ticketId="MAGETWO-68144">
+        <variation name="MassQuoteDeclineTestVariation1_New" summary="Test mass decline quotes with status 'New'">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="productsList/1" xsi:type="string">catalogProductSimple::product_20_dollar</data>
+            <data name="quotesToSubmit" xsi:type="number">2</data>
+            <data name="steps" xsi:type="array">
+                <item name="0" xsi:type="string">admin_mass_decline</item>
+            </data>
+            <data name="declinePopupMessage" xsi:type="string">Only the quotes that are currently in status 'Open' can be declined</data>
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable</data>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuotesCannotBeDeclinedMessage" />
+            <data name="tag" xsi:type="string">test_type:b2b_acceptance_test</data>
+        </variation>
+        <variation name="MassQuoteDeclineTestVariation2_NewAndOpen" summary="Test mass decline quotes with status 'New' and 'Open'">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="productsList/1" xsi:type="string">catalogProductSimple::product_20_dollar</data>
+            <data name="quotesToSubmit" xsi:type="number">2</data>
+            <data name="messages/decline-comment" xsi:type="string">Decline reason</data>
+            <data name="steps" xsi:type="array">
+                <item name="0" xsi:type="string">admin_open_quote</item>
+                <item name="1" xsi:type="string">admin_mass_decline</item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable</data>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteStatusIsDeclined" />
+        </variation>
+    </testCase>
+</config>

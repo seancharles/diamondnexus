@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\ViewSubordinateContentsTest" summary="View subordinates contents" ticketId="MAGETWO-68235, MAGETWO-67880">
+        <variation name="ViewSubordinatesContentsVariation1">
+            <data name="companyAdmin/dataset" xsi:type="string">default</data>
+            <data name="userWithoutCompany/dataset" xsi:type="string">johndoe_unique</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::negotiable_product_100_dollar</data>
+            <data name="quote/quote-message" xsi:type="string">comment</data>
+            <data name="quote/quote-name" xsi:type="string">name</data>
+            <data name="shipping/shipping_service" xsi:type="string">Flat Rate</data>
+            <data name="shipping/shipping_method" xsi:type="string">Fixed</data>
+            <data name="payment/method" xsi:type="string">checkmo</data>
+            <data name="steps" xsi:type="array">
+                <item name="0" xsi:type="string">admin_send</item>
+                <item name="1" xsi:type="string">front_place_order_without_address</item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable</data>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertSubUserQuoteInfoIsCorrectOnStorefront" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertAdminQuoteInfoIsCorrectOnStorefront" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertSubUserOrderInfoIsCorrectOnStorefront" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertAdminOrderInfoIsCorrectOnStorefront" />
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+        </variation>
+    </testCase>
+</config>

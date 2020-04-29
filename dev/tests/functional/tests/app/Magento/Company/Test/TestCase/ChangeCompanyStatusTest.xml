@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\Company\Test\TestCase\ChangeCompanyStatusTest" summary="Change company status and verify customer access" ticketId="MAGETWO-68251">
+        <variation name="ChangeCompanyStatusTestVariation1_PendingApproval">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="companyDataset" xsi:type="string">company_status_pending_approval</data>
+            <data name="configData" xsi:type="string">company_enable</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertAccountNotApprovedMessage" />
+        </variation>
+        <variation name="ChangeCompanyStatusTestVariation2_Rejected">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="companyDataset" xsi:type="string">company_status_rejected</data>
+            <data name="configData" xsi:type="string">company_enable</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertAccountLockedMessage" />
+            <constraint name="Magento\Company\Test\Constraint\AssertCompanyRejectReason" />
+        </variation>
+        <variation name="ChangeCompanyStatusTestVariation3_Active">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="companyDataset" xsi:type="string">company_with_required_fields_and_sales_rep</data>
+            <data name="configData" xsi:type="string">company_enable, requisition_list_enable, negotiable_quote_enable, quick_order_enable</data>
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertB2BFeaturesAvailable" />
+        </variation>
+        <variation name="ChangeCompanyStatusTestVariation4_Blocked" ticketId="MAGETWO-68745">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="companyDataset" xsi:type="string">company_status_blocked</data>
+            <data name="addProductsToCart/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="addProductsToCart/1" xsi:type="string">catalogProductSimple::product_20_dollar</data>
+            <data name="configData" xsi:type="string">company_enable</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertStatusBlockedMessageDisplayed" />
+            <constraint name="Magento\Company\Test\Constraint\AssertCheckoutLinksAreNotVisible" />
+        </variation>
+    </testCase>
+</config>

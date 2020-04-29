@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../vendor/magento/mtf/etc/pages.xsd">
+    <page name="CustomerIndexEdit" area="Adminhtml" mca="customer/index/edit">
+        <block name="addressesBlock" class="Magento\NegotiableQuote\Test\Block\Adminhtml\Customer\Addresses" locator="#tab_address" strategy="css selector" />
+        <block name="editAddressesBlock" class="Magento\NegotiableQuote\Test\Block\Adminhtml\Customer\EditAddresses" locator="#container" strategy="css selector" />
+    </page>
+</config>

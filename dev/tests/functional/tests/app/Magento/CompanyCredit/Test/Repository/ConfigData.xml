@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+    <repository class="Magento\Config\Test\Repository\ConfigData">
+        <dataset name="companycredit">
+            <field name="payment/companycredit/active" xsi:type="array">
+                <item name="scope" xsi:type="string">payment</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Yes</item>
+                <item name="value" xsi:type="number">1</item>
+            </field>
+        </dataset>
+        <dataset name="companycredit_rollback">
+            <field name="payment/companycredit/active" xsi:type="array">
+                <item name="scope" xsi:type="string">payment</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">No</item>
+                <item name="value" xsi:type="number">0</item>
+            </field>
+        </dataset>
+        <dataset name="companycredit_disabled">
+            <field name="payment/companycredit/active" xsi:type="array">
+                <item name="scope" xsi:type="string">payment</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">No</item>
+                <item name="value" xsi:type="number">0</item>
+            </field>
+        </dataset>
+        <dataset name="companycredit_order_status_pending">
+            <field name="payment/companycredit/order_status" xsi:type="array">
+                <item name="scope" xsi:type="string">payment</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Pending</item>
+                <item name="value" xsi:type="string">pending</item>
+            </field>
+        </dataset>
+        <dataset name="companycredit_order_status_processing">
+            <field name="payment/companycredit/order_status" xsi:type="array">
+                <item name="scope" xsi:type="string">payment</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Processing</item>
+                <item name="value" xsi:type="string">processing</item>
+            </field>
+        </dataset>
+        <dataset name="catalog_price_scope_website">
+            <field name="catalog/price/scope" xsi:type="array">
+                <item name="scope" xsi:type="string">catalog</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Website</item>
+                <item name="value" xsi:type="string">1</item>
+            </field>
+        </dataset>
+        <dataset name="catalog_price_scope_website_rollback">
+            <field name="catalog/price/scope" xsi:type="array">
+                <item name="scope" xsi:type="string">catalog</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Global</item>
+                <item name="value" xsi:type="string">0</item>
+            </field>
+        </dataset>
+    </repository>
+</config>

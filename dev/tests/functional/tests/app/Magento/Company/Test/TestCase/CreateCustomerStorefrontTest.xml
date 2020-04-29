@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\Company\Test\TestCase\CreateCustomerStorefrontTest" summary="Create customer from Storefront" ticketId="MAGETWO-67932">
+        <variation name="CreateCustomerEntityFrontTestVariation1">
+            <data name="description" xsi:type="string">Create customer from Storefront</data>
+            <data name="entity" xsi:type="string">customer/company_customer_1</data>
+            <data name="customer/dataset" xsi:type="string">company_customer_register</data>
+            <data name="configData" xsi:type="string">company_enable</data>
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertPopupFormOnStorefront" />
+        </variation>
+    </testCase>
+</config>

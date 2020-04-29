@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../vendor/magento/mtf/etc/pages.xsd">
+    <page name="SystemConfigEditSectionCurrency" area="Adminhtml" mca="admin/system_config/edit/section/currency" module="Magento_Backend">
+        <block name="formPageActionsBlock" class="Magento\CompanyCredit\Test\Block\Adminhtml\Config\PageActions" locator=".page-main-actions" strategy="css selector" />
+        <block name="currencyForm" class="Magento\CompanyCredit\Test\Block\Adminhtml\Config\Currencies" locator=".main-col" strategy="css selector" />
+        <block name="messagesBlock" class="Magento\Backend\Test\Block\Messages" locator="#messages" strategy="css selector" />
+    </page>
+</config>

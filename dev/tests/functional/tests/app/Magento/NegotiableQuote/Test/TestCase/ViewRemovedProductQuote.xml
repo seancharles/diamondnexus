@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\ViewRemovedProductQuote" summary="View quote after removing product" ticketId="MAGETWO-76040">
+        <variation name="ViewRemovedProductQuoteTest1">
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable</data>
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="company" xsi:type="string">company_with_required_fields_and_sales_rep</data>
+            <data name="products" xsi:type="array">
+                <item name="0" xsi:type="string">catalogProductSimple::negotiable_product_100_dollar</item>
+                <item name="1" xsi:type="string">catalogProductSimple::negotiable_product_200_dollar</item>
+            </data>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteAfterProductRemovingOnStorefront" />
+        </variation>
+    </testCase>
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\ViewRemovedProductQuote" summary="View quote after removing product" ticketId="MAGETWO-76040">
+        <variation name="ViewRemovedProductQuoteTest2">
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable</data>
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="company" xsi:type="string">company_with_required_fields_and_sales_rep</data>
+            <data name="products" xsi:type="array">
+                <item name="1" xsi:type="string">bundleProduct::bundle_dynamic_product</item>
+                <item name="0" xsi:type="string">bundleProduct::bundle_fixed_100_dollar_product</item>
+            </data>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteAfterProductRemovingOnStorefront" />
+        </variation>
+    </testCase>
+</config>

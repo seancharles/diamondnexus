@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\CompanyCredit\Test\TestCase\PaymentMethodCompanyCreditTest" summary="Manage company credit in admin panel.">
+        <variation name="PaymentMethodCompanyCreditTestVariation1_PlaceOrder" ticketId="MAGETWO-68316" summary="Place order with payment method 'Payment on account'">
+            <data name="products" xsi:type="array">
+                <item name="0" xsi:type="string">catalogProductSimple::product_10_dollar</item>
+            </data>
+            <data name="company/dataset" xsi:type="string">company_with_required_fields_and_status</data>
+            <data name="customer/dataset" xsi:type="string">customer_US</data>
+            <data name="configData" xsi:type="string">company_enable,companycredit_disabled,companycredit_order_status_processing,select_specific_payment_methods</data>
+            <data name="address/dataset" xsi:type="string">default</data>
+            <data name="checkout/shipping/shipping_service" xsi:type="string">Flat Rate</data>
+            <data name="checkout/shipping/shipping_method" xsi:type="string">Fixed</data>
+            <data name="checkout/payment/method" xsi:type="string">companycredit</data>
+            <data name="companyCredit" xsi:type="string">company_credit_100_dollar</data>
+            <data name="companyPayment" xsi:type="string">company_payment_companycredit</data>
+            <data name="expectedOrderStatus" xsi:type="string">Processing</data>
+            <data name="expectedPaymentMethod" xsi:type="string">Payment on Account</data>
+            <data name="amounts" xsi:type="array">
+                <item name="creditLimit" xsi:type="string">100</item>
+                <item name="orderTotal" xsi:type="string">15</item>
+                <item name="availableCredit" xsi:type="string">85</item>
+                <item name="outstandingBalance" xsi:type="string">-15</item>
+            </data>
+            <data name="enableCompanyCredit" xsi:type="number">1</data>
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyOrderLinkIsVisible"/>
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertOrderNoticeMessage"/>
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertSalesOrderPaymentInformation"/>
+            <constraint name="Magento\Sales\Test\Constraint\AssertOrderStatusIsCorrect"/>
+        </variation>
+        <variation name="PaymentMethodCompanyCreditTestVariation2_Reimburse" ticketId="MAGETWO-68317" summary="Place order with payment method 'Payment on account' and reimburse balance">
+            <data name="products" xsi:type="array">
+                <item name="0" xsi:type="string">catalogProductSimple::product_10_dollar</item>
+            </data>
+            <data name="company/dataset" xsi:type="string">company_with_required_fields_and_status</data>
+            <data name="customer/dataset" xsi:type="string">customer_US</data>
+            <data name="configData" xsi:type="string">company_enable,companycredit_disabled,companycredit_order_status_processing,select_specific_payment_methods</data>
+            <data name="address/dataset" xsi:type="string">default</data>
+            <data name="checkout/shipping/shipping_service" xsi:type="string">Flat Rate</data>
+            <data name="checkout/shipping/shipping_method" xsi:type="string">Fixed</data>
+            <data name="checkout/payment/method" xsi:type="string">companycredit</data>
+            <data name="companyPayment" xsi:type="string">company_payment_companycredit</data>
+            <data name="companyCredit" xsi:type="string">company_credit_100_dollar</data>
+            <data name="expectedOrderStatus" xsi:type="string">Processing</data>
+            <data name="expectedPaymentMethod" xsi:type="string">Payment on Account</data>
+            <data name="amounts" xsi:type="array">
+                <item name="creditLimit" xsi:type="string">100</item>
+                <item name="orderTotal" xsi:type="string">15</item>
+                <item name="availableCredit" xsi:type="string">285</item>
+                <item name="outstandingBalance" xsi:type="string">185</item>
+                <item name="reimburse" xsi:type="string">200</item>
+            </data>
+            <data name="enableCompanyCredit" xsi:type="number">1</data>
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyOrderLinkIsVisible" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertOrderNoticeMessage" />
+            <constraint name="Magento\Sales\Test\Constraint\AssertOrderStatusIsCorrect" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertSalesOrderPaymentInformation" />
+        </variation>
+        <variation name="PaymentMethodCompanyCreditTestVariation3_PurchaseOrderNumber" ticketId="MAGETWO-68355" summary="Place pending order with payment method 'Payment on account' and Purchase Order number">
+            <data name="products" xsi:type="array">
+                <item name="0" xsi:type="string">catalogProductSimple::product_over_70_dollar</item>
+            </data>
+            <data name="company/dataset" xsi:type="string">company_with_required_fields_and_status</data>
+            <data name="customer/dataset" xsi:type="string">customer_US</data>
+            <data name="configData" xsi:type="string">company_enable,companycredit,companycredit_order_status_pending,select_specific_payment_methods</data>
+            <data name="address/dataset" xsi:type="string">default</data>
+            <data name="checkout/shipping/shipping_service" xsi:type="string">Flat Rate</data>
+            <data name="checkout/shipping/shipping_method" xsi:type="string">Fixed</data>
+            <data name="checkout/payment/method" xsi:type="string">companycredit</data>
+            <data name="checkout/payment/po_number" xsi:type="string">PO-1</data>
+            <data name="companyPayment" xsi:type="string">company_payment_companycredit</data>
+            <data name="companyCredit" xsi:type="string">company_credit_over_100_dollar</data>
+            <data name="expectedOrderStatus" xsi:type="string">Pending</data>
+            <data name="expectedPaymentMethod" xsi:type="string">Payment on Account</data>
+            <data name="amounts" xsi:type="array">
+                <item name="creditLimit" xsi:type="string">100.00</item>
+                <item name="availableCredit" xsi:type="string">24.99</item>
+                <item name="outstandingBalance" xsi:type="string">-75.01</item>
+            </data>
+            <data name="operations" xsi:type="array">
+                <item name="0" xsi:type="string">Allocated</item>
+                <item name="1" xsi:type="string">Purchased</item>
+            </data>
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertSalesOrderPaymentInformationOnStorefront" />
+            <constraint name="Magento\Sales\Test\Constraint\AssertOrderStatusIsCorrect" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertSalesOrderPaymentInformation" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCaptureNotVisibleOnCreateInvoicePage" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditBalance" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditBalanceHistoryOperations" />
+        </variation>
+        <variation name="PaymentMethodCompanyCreditTestVariation4_CreateInvoiceForPendingOrder" ticketId="MAGETWO-68355, MAGETWO-68430" summary="Place pending order with payment method 'Payment on account' and create invoice">
+            <data name="products" xsi:type="array">
+                <item name="0" xsi:type="string">catalogProductSimple::product_over_70_dollar</item>
+            </data>
+            <data name="company/dataset" xsi:type="string">company_with_required_fields_and_status</data>
+            <data name="customer/dataset" xsi:type="string">customer_US</data>
+            <data name="orderInjectable" xsi:type="string">payment_on_account_with_product_over_70_dollar_and_invoice</data>
+            <data name="configData" xsi:type="string">company_enable,companycredit,companycredit_order_status_pending,select_specific_payment_methods</data>
+            <data name="address/dataset" xsi:type="string">default</data>
+            <data name="checkout/shipping/shipping_service" xsi:type="string">Flat Rate</data>
+            <data name="checkout/shipping/shipping_method" xsi:type="string">Fixed</data>
+            <data name="checkout/payment/method" xsi:type="string">companycredit</data>
+            <data name="checkout/payment/po_number" xsi:type="string">PO-1</data>
+            <data name="checkout/prices/grand_total" xsi:type="string">75.01</data>
+            <data name="companyPayment" xsi:type="string">company_payment_companycredit</data>
+            <data name="companyCredit" xsi:type="string">company_credit_over_100_dollar</data>
+            <data name="createInvoice" xsi:type="boolean">true</data>
+            <data name="expectedOrderStatus" xsi:type="string">Processing</data>
+            <data name="expectedPaymentMethod" xsi:type="string">Payment on Account</data>
+            <data name="commentsHistory" xsi:type="string">Invoice created for $75.01</data>
+            <data name="amounts" xsi:type="array">
+                <item name="creditLimit" xsi:type="string">100.00</item>
+                <item name="availableCredit" xsi:type="string">24.99</item>
+                <item name="outstandingBalance" xsi:type="string">-75.01</item>
+            </data>
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertSalesOrderCommentsHistory" />
+            <constraint name="Magento\Sales\Test\Constraint\AssertOrderStatusIsCorrect" />
+            <constraint name="Magento\Sales\Test\Constraint\AssertInvoiceInInvoicesTab" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditBalance" />
+        </variation>
+        <variation name="PaymentMethodCompanyCreditTestVariation5_CancelPendingOrder" ticketId="MAGETWO-68355, MAGETWO-68430" summary="Place pending order with payment method 'Payment on account' and then cancel it">
+            <data name="products" xsi:type="array">
+                <item name="0" xsi:type="string">catalogProductSimple::product_over_70_dollar</item>
+            </data>
+            <data name="company/dataset" xsi:type="string">company_with_required_fields_and_status</data>
+            <data name="customer/dataset" xsi:type="string">customer_US</data>
+            <data name="configData" xsi:type="string">company_enable,companycredit,companycredit_order_status_pending,select_specific_payment_methods</data>
+            <data name="address/dataset" xsi:type="string">default</data>
+            <data name="checkout/shipping/shipping_service" xsi:type="string">Flat Rate</data>
+            <data name="checkout/shipping/shipping_method" xsi:type="string">Fixed</data>
+            <data name="checkout/payment/method" xsi:type="string">companycredit</data>
+            <data name="checkout/payment/po_number" xsi:type="string">PO-1</data>
+            <data name="companyPayment" xsi:type="string">company_payment_companycredit</data>
+            <data name="companyCredit" xsi:type="string">company_credit_over_100_dollar</data>
+            <data name="cancelOrder" xsi:type="boolean">true</data>
+            <data name="expectedOrderStatus" xsi:type="string">Canceled</data>
+            <data name="expectedPaymentMethod" xsi:type="string">Payment on Account</data>
+            <data name="commentsHistory" xsi:type="string">Order is canceled. We reverted $75.01 to the company credit.</data>
+            <data name="amounts" xsi:type="array">
+                <item name="creditLimit" xsi:type="string">100.00</item>
+                <item name="availableCredit" xsi:type="string">100.00</item>
+                <item name="outstandingBalance" xsi:type="string">0.00</item>
+            </data>
+            <data name="operations" xsi:type="array">
+                <item name="0" xsi:type="string">Allocated</item>
+                <item name="1" xsi:type="string">Purchased</item>
+                <item name="2" xsi:type="string">Reverted</item>
+            </data>
+            <constraint name="Magento\Sales\Test\Constraint\AssertOrderStatusIsCorrect" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertSalesOrderCommentsHistory" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditBalance" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditBalanceHistoryOperations" />
+        </variation>
+        <variation name="PaymentMethodCompanyCreditTestVariation6_ViewPaymentAndCreditInfoOnStorefront" ticketId="MAGETWO-68350" summary="View Payment Information and credit statistics on Storefront">
+            <data name="products" xsi:type="array">
+                <item name="0" xsi:type="string">catalogProductSimple::product_205_dollar</item>
+            </data>
+            <data name="company/dataset" xsi:type="string">company_with_required_fields_and_status</data>
+            <data name="customer/dataset" xsi:type="string">customer_US</data>
+            <data name="configData" xsi:type="string">company_enable,companycredit_disabled,specific_payment_methods,select_specific_payment_methods,cashondelivery,companycredit,banktransfer</data>
+            <data name="address/dataset" xsi:type="string">default</data>
+            <data name="checkout/shipping/shipping_service" xsi:type="string">Flat Rate</data>
+            <data name="checkout/shipping/shipping_method" xsi:type="string">Fixed</data>
+            <data name="checkout/payment/method" xsi:type="string">companycredit</data>
+            <data name="checkout/payment/po_number" xsi:type="string">hkl-878</data>
+            <data name="companyPayment" xsi:type="string">company_payment_companycredit</data>
+            <data name="companyCredit" xsi:type="string">company_credit_500_dollar</data>
+            <data name="expectedOrderStatus" xsi:type="string">Processing</data>
+            <data name="expectedPaymentMethod" xsi:type="string">Payment on Account</data>
+            <data name="expectedMethods" xsi:type="string">Payment on Account,Cash On Delivery</data>
+            <data name="historyDataSet" xsi:type="string">reimburse</data>
+            <data name="amounts" xsi:type="array">
+                <item name="creditLimit" xsi:type="string">500</item>
+                <item name="orderTotal" xsi:type="string">210</item>
+                <item name="availableCredit" xsi:type="string">390</item>
+                <item name="outstandingBalance" xsi:type="string">-110</item>
+                <item name="reimburse" xsi:type="string">100</item>
+            </data>
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertPaymentMethodsAreCorrectOnStorefront" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCreditHistoryIsCorrectOnStorefront" />
+        </variation>
+        <variation name="PaymentMethodCompanyCreditTestVariation7" ticketId="MAGETWO-68379, MAGETWO-68430" summary="Place order with payment method 'Payment on account' and refund one product from the order">
+            <data name="company/dataset" xsi:type="string">company_with_required_fields_and_status</data>
+            <data name="customer/dataset" xsi:type="string">customer_US</data>
+            <data name="products" xsi:type="array">
+                <item name="0" xsi:type="string">catalogProductSimple::product_10_dollar</item>
+                <item name="1" xsi:type="string">catalogProductSimple::product_20_dollar</item>
+            </data>
+            <data name="orderInjectable" xsi:type="string">payment_on_account_with_two_products_and_invoice_refund</data>
+            <data name="configData" xsi:type="string">company_enable,companycredit,companycredit_order_status_pending,select_specific_payment_methods</data>
+            <data name="address/dataset" xsi:type="string">default</data>
+            <data name="checkout/shipping/shipping_service" xsi:type="string">Flat Rate</data>
+            <data name="checkout/shipping/shipping_method" xsi:type="string">Fixed</data>
+            <data name="checkout/payment/method" xsi:type="string">companycredit</data>
+            <data name="checkout/payment/po_number" xsi:type="string">PO-1</data>
+            <data name="companyPayment" xsi:type="string">company_payment_companycredit</data>
+            <data name="companyCredit" xsi:type="string">company_credit_100_dollar</data>
+            <data name="createInvoice" xsi:type="boolean">true</data>
+            <data name="productsToRefund/items_data/0/back_to_stock" xsi:type="string">Yes</data>
+            <data name="productsToRefund/items_data/0/qty" xsi:type="string">1</data>
+            <data name="productsToRefund/items_data/1/back_to_stock" xsi:type="string">No</data>
+            <data name="productsToRefund/items_data/1/qty" xsi:type="string">0</data>
+            <data name="expectedOrderStatus" xsi:type="string">Processing</data>
+            <data name="expectedPaymentMethod" xsi:type="string">Payment on Account</data>
+            <data name="historyDataSet" xsi:type="string">refund</data>
+            <data name="commentsHistory" xsi:type="string">We refunded $20.00 to the company credit.</data>
+            <data name="amounts" xsi:type="array">
+                <item name="creditLimit" xsi:type="string">100</item>
+                <item name="availableCredit" xsi:type="string">80</item>
+                <item name="outstandingBalance" xsi:type="string">-20</item>
+                <item name="refund" xsi:type="string">20</item>
+            </data>
+            <data name="operations" xsi:type="array">
+                <item name="0" xsi:type="string">Allocated</item>
+                <item name="1" xsi:type="string">Purchased</item>
+                <item name="2" xsi:type="string">Refunded</item>
+            </data>
+            <constraint name="Magento\Sales\Test\Constraint\AssertRefundSuccessCreateMessage" />
+            <constraint name="Magento\Sales\Test\Constraint\AssertOrderStatusIsCorrect" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertSalesOrderCommentsHistory" />
+            <constraint name="Magento\Sales\Test\Constraint\AssertRefundedGrandTotalOnFrontend" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditBalance" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditBalanceHistoryOperations" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCreditHistoryIsCorrectOnStorefront" />
+        </variation>
+    </testCase>
+</config>

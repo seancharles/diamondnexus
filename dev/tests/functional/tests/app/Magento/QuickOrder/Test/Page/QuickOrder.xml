@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/pages.xsd">
+    <page name="QuickOrder" mca="quickorder" module="Magento_QuickOrder">
+        <block name="items" class="Magento\QuickOrder\Test\Block\Items" locator=".box-items" strategy="css selector"/>
+        <block name="actions" class="Magento\QuickOrder\Test\Block\Actions" locator=".form-addbysku .actions-toolbar div.primary" strategy="css selector"/>
+    </page>
+</config>

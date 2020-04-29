@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\CreateSharedCatalogTest" summary="Create Shared Catalog" ticketId="MAGETWO-67980, MAGETWO-68489, MAGETWO-68505">
+        <variation name="CreateSharedCatalogTestVariation1">
+            <data name="customerTaxClass/dataset" xsi:type="string">customer_tax_class</data>
+            <data name="description" xsi:type="string">shared catalog creation</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_form</data>
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCatalogCreated" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertSharedCatalogCustomerTaxClass" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCustomerGroupCustomerTaxClass" />
+        </variation>
+    </testCase>
+</config>

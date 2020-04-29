@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\CheckCompaniesColumnsAndFiltersTest" summary="Check 'Assigned' and 'Catalog' columns and filters in the companies shared catalog grid" ticketId="MAGETWO-68637">
+        <variation name="CheckCompaniesColumnsAndFiltersTestVariation1">
+            <data name="description" xsi:type="string">shared catalog companies grid columns and filters</data>
+            <data name="sharedCatalogDataSets" xsi:type="array">
+                <item name="sharedCatalogA/dataset" xsi:type="string">shared_catalog_with_company</item>
+                <item name="sharedCatalogB/dataset" xsi:type="string">shared_catalog_with_company</item>
+                <item name="sharedCatalogC/dataset" xsi:type="string">shared_catalog_with_company</item>
+                <item name="sharedCatalogD/dataset" xsi:type="string">shared_catalog_public</item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable,shared_catalog_enable</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCompanyGridAssignedCompany" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCompanyGridColumns" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCompanyGridAvailableActionsOnLoad" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCompanyGridFilters" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCompanyGridColumnsPanel" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCompanyGridSort" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCompanyGridFilterForAssignedColumn" />
+        </variation>
+    </testCase>
+</config>

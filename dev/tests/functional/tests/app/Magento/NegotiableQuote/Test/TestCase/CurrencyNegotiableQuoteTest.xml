@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\CurrencyNegotiableQuoteTest" summary="Test submit quote with custom display currency">
+        <variation name="CurrencyNegotiableQuoteTestVariation1_VerifyDisplayCurrencyMessage" summary="Test submit quote with custom display currency" ticketId="MAGETWO-68395">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="company" xsi:type="string">company_with_required_fields_and_sales_rep</data>
+            <data name="products/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="products/1" xsi:type="string">catalogProductSimple::product_20_dollar</data>
+            <data name="quote/quote-message" xsi:type="string">comment</data>
+            <data name="quote/quote-name" xsi:type="string">name</data>
+            <data name="currencyInfo" xsi:type="array">
+                <item name="display_currency" xsi:type="string">CHF</item>
+                <item name="base_currency" xsi:type="string">USD</item>
+            </data>
+            <data name="expectedTotals" xsi:type="array">
+                <item name="total" xsi:type="string">CHF27.00</item>
+                <item name="to_be_charged" xsi:type="string">$30.00</item>
+            </data>
+            <data name="currency" xsi:type="string">usd_chf_rate_0_9</data>
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable, config_display_currency_ch</data>
+            <data name="disabledButtonsFront" xsi:type="array">
+                <item name="0" xsi:type="string">checkout</item>
+                <item name="1" xsi:type="string">send</item>
+            </data>
+            <data name="disabledButtonsAdmin" xsi:type="array">
+                <item name="0" xsi:type="string">saveAsDraft</item>
+                <item name="1" xsi:type="string">decline</item>
+                <item name="2" xsi:type="string">send</item>
+            </data>
+            <data name="qtys/0" xsi:type="string">1</data>
+            <data name="qtys/1" xsi:type="string">1</data>
+            <data name="messages/0" xsi:type="string">message</data>
+            <data name="historyLog/0" xsi:type="string">Comment</data>
+            <data name="frontStatus" xsi:type="string">CLOSED</data>
+            <data name="adminStatus" xsi:type="string">Closed</data>
+            <data name="frontLock" xsi:type="boolean">false</data>
+            <data name="adminLock" xsi:type="boolean">false</data>
+            <data name="frontDiscountApplied" xsi:type="boolean">true</data>
+            <data name="tax" xsi:type="number">0</data>
+            <data name="method" xsi:type="null"/>
+            <data name="proposedShippingPrice" xsi:type="null"/>
+            <data name="discountType" xsi:type="null"/>
+            <data name="discountValue" xsi:type="null"/>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteDisplayCurrencyMessage"/>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertTotalsWithCustomDisplayCurrencyOnStorefront"/>
+        </variation>
+    </testCase>
+</config>

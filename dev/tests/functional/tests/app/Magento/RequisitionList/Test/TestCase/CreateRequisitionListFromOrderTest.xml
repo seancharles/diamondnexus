@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\RequisitionList\Test\TestCase\CreateRequisitionListFromOrderTest" summary="Enable requisition list" ticketId="MAGETWO-68195">
+        <variation name="CreateRequisitionListFromOrderTestVariation1">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="requisitionList/name" xsi:type="string">name</data>
+            <data name="requisitionList/description" xsi:type="string">description</data>
+            <data name="configData" xsi:type="string">company_enable,requisition_list_enable</data>
+            <constraint name="Magento\RequisitionList\Test\Constraint\AssertProductsInRequisitionList" />
+        </variation>
+    </testCase>
+</config>
