@@ -1,0 +1,100 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+    <repository class="Magento\Company\Test\Repository\Company">
+        <dataset name="company_credit_100_dollar">
+            <field name="exceed_limit" xsi:type="string">Yes</field>
+            <field name="currency_code" xsi:type="string">US Dollar</field>
+            <field name="credit_limit" xsi:type="string">100</field>
+        </dataset>
+        <dataset name="company_credit_over_100_dollar">
+            <field name="exceed_limit" xsi:type="string">Yes</field>
+            <field name="currency_code" xsi:type="string">US Dollar</field>
+            <field name="credit_limit" xsi:type="string">100.0040</field>
+        </dataset>
+        <dataset name="company_credit_500_dollar">
+            <field name="exceed_limit" xsi:type="string">Yes</field>
+            <field name="currency_code" xsi:type="string">US Dollar</field>
+            <field name="credit_limit" xsi:type="string">500</field>
+        </dataset>
+        <dataset name="company_credit_300_dollar">
+            <field name="exceed_limit" xsi:type="string">Yes</field>
+            <field name="currency_code" xsi:type="string">US Dollar</field>
+            <field name="credit_limit" xsi:type="string">300</field>
+        </dataset>
+        <dataset name="company_credit_11000_dollar">
+            <field name="exceed_limit" xsi:type="string">Yes</field>
+            <field name="currency_code" xsi:type="string">US Dollar</field>
+            <field name="credit_limit" xsi:type="string">11000</field>
+        </dataset>
+        <dataset name="company_credit_1000_euro">
+            <field name="exceed_limit" xsi:type="string">Yes</field>
+            <field name="credit_limit" xsi:type="string">1000</field>
+            <field name="currency_code" xsi:type="string">Euro</field>
+        </dataset>
+        <dataset name="company_credit_10000_rub">
+            <field name="exceed_limit" xsi:type="string">Yes</field>
+            <field name="credit_limit" xsi:type="string">10000</field>
+            <field name="currency_code" xsi:type="string">Russian Ruble</field>
+        </dataset>
+        <dataset name="company_with_credit_in_usd">
+            <field name="company_name" xsi:type="string">Company %isolation%</field>
+            <field name="company_email" xsi:type="string">company.email%isolation%@example.com</field>
+            <field name="country_id" xsi:type="string">Albania</field>
+            <field name="telephone" xsi:type="string">555-55-555-55</field>
+            <field name="postcode" xsi:type="string">90230</field>
+            <field name="city" xsi:type="string">Culver City</field>
+            <field name="street" xsi:type="string">6161 West Centinela Avenue</field>
+            <field name="website_id" xsi:type="string">Main Website</field>
+            <field name="email" xsi:type="string">John.Doe%isolation%@example.com</field>
+            <field name="firstname" xsi:type="string">John</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="status" xsi:type="string">1</field>
+            <field name="customer_group_id" xsi:type="string">General</field>
+            <field name="exceed_limit" xsi:type="string">Yes</field>
+            <field name="credit_limit" xsi:type="string">5000</field>
+            <field name="currency_code" xsi:type="string">USD</field>
+        </dataset>
+        <dataset name="company_with_credit_in_euro">
+            <field name="company_name" xsi:type="string">Company %isolation%</field>
+            <field name="company_email" xsi:type="string">company.email%isolation%@example.com</field>
+            <field name="country_id" xsi:type="string">Albania</field>
+            <field name="telephone" xsi:type="string">555-55-555-55</field>
+            <field name="postcode" xsi:type="string">90230</field>
+            <field name="city" xsi:type="string">Culver City</field>
+            <field name="street" xsi:type="string">6161 West Centinela Avenue</field>
+            <field name="website_id" xsi:type="string">Main Website</field>
+            <field name="email" xsi:type="string">John.Doe%isolation%@example.com</field>
+            <field name="firstname" xsi:type="string">John</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="status" xsi:type="string">1</field>
+            <field name="customer_group_id" xsi:type="string">General</field>
+            <field name="exceed_limit" xsi:type="string">Yes</field>
+            <field name="credit_limit" xsi:type="string">1000</field>
+            <field name="currency_code" xsi:type="string">EUR</field>
+        </dataset>
+        <dataset name="company_with_credit_in_rub">
+            <field name="company_name" xsi:type="string">Company %isolation%</field>
+            <field name="company_email" xsi:type="string">company.email%isolation%@example.com</field>
+            <field name="country_id" xsi:type="string">Albania</field>
+            <field name="telephone" xsi:type="string">555-55-555-55</field>
+            <field name="postcode" xsi:type="string">90230</field>
+            <field name="city" xsi:type="string">Culver City</field>
+            <field name="street" xsi:type="string">6161 West Centinela Avenue</field>
+            <field name="website_id" xsi:type="string">Main Website</field>
+            <field name="email" xsi:type="string">John.Doe%isolation%@example.com</field>
+            <field name="firstname" xsi:type="string">John</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="status" xsi:type="string">1</field>
+            <field name="customer_group_id" xsi:type="string">General</field>
+            <field name="exceed_limit" xsi:type="string">Yes</field>
+            <field name="credit_limit" xsi:type="string">5000</field>
+            <field name="currency_code" xsi:type="string">RUB</field>
+        </dataset>
+    </repository>
+</config>

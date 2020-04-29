@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\RenameCustomerGroupTest" summary="Renaming customer group having related shared catalog" ticketId="MAGETWO-68619">
+        <variation name="RenameCustomerGroupTestVariation1">
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="customerGroup/data/tax_class_id/dataset" xsi:type="string">retail_customer</data>
+            <data name="customerGroup/data/customer_group_code" xsi:type="string">Customer Group %isolation%</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertSharedCatalogIsInGrid" />
+        </variation>
+    </testCase>
+</config>

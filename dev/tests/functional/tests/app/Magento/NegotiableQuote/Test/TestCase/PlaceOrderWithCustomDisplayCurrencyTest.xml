@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\PlaceOrderWithCustomDisplayCurrencyTest" summary="Negotiable quote test">
+        <variation name="PlaceOrderWithCustomDisplayCurrencyTestVariation1" summary="Test place order with custom display currency" ticketId="B2B-3627">
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable, config_display_currency_ch</data>
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="company" xsi:type="string">company_with_required_fields_and_sales_rep</data>
+            <data name="products/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="products/1" xsi:type="string">catalogProductSimple::product_20_dollar</data>
+            <data name="qtys/0" xsi:type="number">1</data>
+            <data name="qtys/1" xsi:type="number">1</data>
+            <data name="shippingAddress/dataset" xsi:type="string">US_address_1_without_email</data>
+            <data name="currency" xsi:type="string">usd_chf_rate_0_9</data>
+            <data name="shipping/shipping_service" xsi:type="string">Flat Rate</data>
+            <data name="shipping/shipping_method" xsi:type="string">Fixed</data>
+            <data name="updateData/historyLog/0" xsi:type="string">Comment</data>
+            <data name="updateData/discountType" xsi:type="string">percentage</data>
+            <data name="updateData/discountValue" xsi:type="string">10</data>
+            <data name="expectedTotals" xsi:type="array">
+                <item name="catalog_total_price" xsi:type="array">
+                    <item name="0" xsi:type="string">$30.00</item>
+                    <item name="1" xsi:type="string">CHF27.00</item>
+                </item>
+                <item name="negotiated_discount" xsi:type="array">
+                    <item name="0" xsi:type="string">-$3.00</item>
+                    <item name="1" xsi:type="string">-CHF2.70</item>
+                </item>
+                <item name="subtotal" xsi:type="array">
+                    <item name="0" xsi:type="string">$27.00</item>
+                    <item name="1" xsi:type="string">CHF24.30</item>
+                </item>
+            </data>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertOrderTotalsWithCustomDisplayCurrencyInAdmin" />
+        </variation>
+    </testCase>
+</config>

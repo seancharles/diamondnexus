@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\AddUserToCompanyInAdminTest" summary="Assign user to company with shared catalog" ticketId="MAGETWO-68220">
+        <variation name="AddUserToCompanyInAdminTestVariation1">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="companyAdmin/dataset" xsi:type="string">default</data>
+            <data name="firstSharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="secondSharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="secondCompany/dataset" xsi:type="string">company_with_required_fields</data>
+            <data name="hasCompany" xsi:type="number">1</data>
+            <data name="configData" xsi:type="string">company_enable</data>
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertCustomerGroupIsCorrect" />
+        </variation>
+    </testCase>
+</config>

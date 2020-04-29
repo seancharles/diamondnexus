@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<mapping strict="0">
+    <fields>
+        <firstname>
+            <selector>[name="firstname"]</selector>
+        </firstname>
+        <lastname>
+            <selector>[name="lastname"]</selector>
+        </lastname>
+        <email>
+            <selector>[name="email"]</selector>
+        </email>
+        <job_title>
+            <selector>[name="extension_attributes[company_attributes][job_title]"]</selector>
+        </job_title>
+        <telephone>
+            <selector>[name="extension_attributes[company_attributes][telephone]"]</selector>
+        </telephone>
+    </fields>
+</mapping>

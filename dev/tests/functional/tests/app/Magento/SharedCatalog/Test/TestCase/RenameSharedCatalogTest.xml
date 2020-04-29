@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\RenameSharedCatalogTest" summary="Renaming shared catalog" ticketId="MAGETWO-68619">
+        <variation name="RenameSharedCatalogTestVariation1">
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="defaultSharedCatalogName" xsi:type="string">Default (General)</data>
+            <data name="errorMessagePattern" xsi:type="string">A catalog named %s already exists. Please select a different name.</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCustomerGroupIsInGrid" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertSharedCatalogAlreadyExistsMessage" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCustomerGroupFilterOptionsAreCorrect" />
+        </variation>
+    </testCase>
+</config>

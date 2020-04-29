@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\NegotiatedQuoteRecalculationsTest" summary="Quote negotiation" ticketId="MAGETWO-68180">
+        <variation name="NegotiatedQuoteRecalculationsTestVariation1" summary="Negotiable process test">
+            <data name="additionalSteps" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="name" xsi:type="string">Magento\SharedCatalog\Test\TestStep\AssignCompanyStep</item>
+                    <item name="arguments" xsi:type="string">sharedCatalog,company</item>
+                </item>
+                <item name="1" xsi:type="array">
+                    <item name="name" xsi:type="string">Magento\SharedCatalog\Test\TestStep\ConfigureSharedCatalogStep</item>
+                    <item name="arguments" xsi:type="string">sharedCatalog,products</item>
+                </item>
+            </data>
+            <data name="dataFixtures" xsi:type="array">
+                <item name="sharedCatalog" xsi:type="array">
+                    <item name="code" xsi:type="string">shared_catalog</item>
+                    <item name="dataset" xsi:type="string">shared_catalog_default</item>
+                </item>
+            </data>
+        </variation>
+    </testCase>
+</config>

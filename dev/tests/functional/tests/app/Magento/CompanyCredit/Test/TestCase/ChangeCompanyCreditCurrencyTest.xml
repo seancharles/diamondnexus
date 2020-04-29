@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\CompanyCredit\Test\TestCase\ChangeCompanyCreditCurrencyTest" summary="Change company credit currency.">
+        <variation name="ChangeCompanyCreditCurrencyTestVariation1" ticketId="MAGETWO-68383" summary="Place order and check company credit history record.">
+            <data name="company/dataset" xsi:type="string">company_with_required_fields_and_status</data>
+            <data name="customer/dataset" xsi:type="string">customer_US</data>
+            <data name="productsData/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="companyCredit" xsi:type="string">company_credit_100_dollar</data>
+            <data name="companyPayment" xsi:type="string">company_payment_companycredit</data>
+            <data name="checkout/shipping/shipping_service" xsi:type="string">Flat Rate</data>
+            <data name="checkout/shipping/shipping_method" xsi:type="string">Fixed</data>
+            <data name="checkout/payment/method" xsi:type="string">companycredit</data>
+            <data name="currenciesData" xsi:type="array">
+                <item name="initialAllowedCurrenciesMainWebsite" xsi:type="array">
+                    <item name="0" xsi:type="string">USD</item>
+                </item>
+                <item name="initialBaseCurrencyMainWebsite" xsi:type="string">USD</item>
+                <item name="initialDisplayCurrencyMainWebsite" xsi:type="string">USD</item>
+                <item name="allowedCurrenciesMainWebsite" xsi:type="array">
+                    <item name="0" xsi:type="string">GBP</item>
+                    <item name="1" xsi:type="string">EUR</item>
+                    <item name="2" xsi:type="string">USD</item>
+                </item>
+                <item name="baseCurrencyMainWebsite" xsi:type="string">USD</item>
+                <item name="displayCurrencyMainWebsite" xsi:type="string">GBP</item>
+                <item name="allowedCurrenciesSecondWebsite" xsi:type="array">
+                    <item name="0" xsi:type="string">GBP</item>
+                    <item name="1" xsi:type="string">EUR</item>
+                    <item name="2" xsi:type="string">USD</item>
+                </item>
+                <item name="baseCurrencySecondWebsite" xsi:type="string">EUR</item>
+                <item name="displayCurrencySecondWebsite" xsi:type="string">GBP</item>
+            </data>
+            <data name="historyData" xsi:type="array">
+                <item name="Purchased" xsi:type="array">
+                    <item name="amount" xsi:type="array">
+                        <item name="value" xsi:type="array">
+                            <item name="0" xsi:type="string">-$15.00 (-£7.50)</item>
+                            <item name="1" xsi:type="string">USD/GBP: 0.5000</item>
+                        </item>
+                        <item name="label" xsi:type="string">Amount</item>
+                    </item>
+                    <item name="outstandingBalance" xsi:type="array">
+                        <item name="value" xsi:type="string">-$15.00</item>
+                        <item name="label" xsi:type="string">Outstanding Balance</item>
+                    </item>
+                    <item name="availableCredit" xsi:type="array">
+                        <item name="value" xsi:type="string">$85.00</item>
+                        <item name="label" xsi:type="string">Available Credit</item>
+                    </item>
+                    <item name="creditLimit" xsi:type="array">
+                        <item name="value" xsi:type="string">$100.00</item>
+                        <item name="label" xsi:type="string">Credit Limit</item>
+                    </item>
+                </item>
+            </data>
+            <data name="changeCreditCurrency" xsi:type="boolean">false</data>
+            <data name="currencySymbol" xsi:type="string">$</data>
+            <data name="creditCurrencyCode" xsi:type="string">USD</data>
+            <data name="creditCurrency" xsi:type="string">Euro</data>
+            <data name="currencyRates" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="currency_from" xsi:type="string">USD</item>
+                    <item name="currency_to" xsi:type="string">EUR</item>
+                    <item name="rate" xsi:type="number">0.8</item>
+                </item>
+                <item name="1" xsi:type="array">
+                    <item name="currency_from" xsi:type="string">USD</item>
+                    <item name="currency_to" xsi:type="string">GBP</item>
+                    <item name="rate" xsi:type="number">0.5</item>
+                </item>
+                <item name="2" xsi:type="array">
+                    <item name="currency_from" xsi:type="string">EUR</item>
+                    <item name="currency_to" xsi:type="string">USD</item>
+                    <item name="rate" xsi:type="number">1.2</item>
+                </item>
+                <item name="3" xsi:type="array">
+                    <item name="currency_from" xsi:type="string">EUR</item>
+                    <item name="currency_to" xsi:type="string">GBP</item>
+                    <item name="rate" xsi:type="number">0.6</item>
+                </item>
+            </data>
+            <data name="amounts" xsi:type="array">
+                <item name="creditLimit" xsi:type="string">100.00</item>
+                <item name="availableCredit" xsi:type="string">85.00</item>
+                <item name="outstandingBalance" xsi:type="string">-15.00</item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable,companycredit,companycredit_order_status_pending,select_specific_payment_methods,catalog_price_scope_website</data>
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCreditCurrencyAfterCancelCurrencyConvertInAdmin" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditHistoryInformationInAdmin" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditBalance" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCreditHistoryIsCorrectOnStorefront" />
+        </variation>
+        <variation name="ChangeCompanyCreditCurrencyTestVariation2" ticketId="MAGETWO-68383" summary="Place order, change credit currency and check company credit history record.">
+            <data name="issue" xsi:type="string">MAGETWO-87530: [FAT] Fix unstable tests</data>
+            <data name="company/dataset" xsi:type="string">company_with_required_fields_and_status</data>
+            <data name="customer/dataset" xsi:type="string">customer_US</data>
+            <data name="productsData/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="companyCredit" xsi:type="string">company_credit_100_dollar</data>
+            <data name="companyPayment" xsi:type="string">company_payment_companycredit</data>
+            <data name="checkout/shipping/shipping_service" xsi:type="string">Flat Rate</data>
+            <data name="checkout/shipping/shipping_method" xsi:type="string">Fixed</data>
+            <data name="checkout/payment/method" xsi:type="string">companycredit</data>
+            <data name="currenciesData" xsi:type="array">
+                <item name="initialAllowedCurrenciesMainWebsite" xsi:type="array">
+                    <item name="0" xsi:type="string">USD</item>
+                </item>
+                <item name="initialBaseCurrencyMainWebsite" xsi:type="string">USD</item>
+                <item name="initialDisplayCurrencyMainWebsite" xsi:type="string">USD</item>
+                <item name="allowedCurrenciesMainWebsite" xsi:type="array">
+                    <item name="0" xsi:type="string">GBP</item>
+                    <item name="1" xsi:type="string">EUR</item>
+                    <item name="2" xsi:type="string">USD</item>
+                </item>
+                <item name="baseCurrencyMainWebsite" xsi:type="string">USD</item>
+                <item name="displayCurrencyMainWebsite" xsi:type="string">GBP</item>
+                <item name="allowedCurrenciesSecondWebsite" xsi:type="array">
+                    <item name="0" xsi:type="string">GBP</item>
+                    <item name="1" xsi:type="string">EUR</item>
+                    <item name="2" xsi:type="string">USD</item>
+                </item>
+                <item name="baseCurrencySecondWebsite" xsi:type="string">EUR</item>
+                <item name="displayCurrencySecondWebsite" xsi:type="string">GBP</item>
+            </data>
+            <data name="historyData" xsi:type="array">
+                <item name="Purchased" xsi:type="array">
+                    <item name="amount" xsi:type="array">
+                        <item name="value" xsi:type="array">
+                            <item name="0" xsi:type="string">-$15.00 (-£7.50)</item>
+                            <item name="1" xsi:type="string">USD/GBP: 0.5000</item>
+                        </item>
+                        <item name="label" xsi:type="string">Amount</item>
+                    </item>
+                    <item name="outstandingBalance" xsi:type="array">
+                        <item name="value" xsi:type="string">-$15.00</item>
+                        <item name="label" xsi:type="string">Outstanding Balance</item>
+                    </item>
+                    <item name="availableCredit" xsi:type="array">
+                        <item name="value" xsi:type="string">$85.00</item>
+                        <item name="label" xsi:type="string">Available Credit</item>
+                    </item>
+                    <item name="creditLimit" xsi:type="array">
+                        <item name="value" xsi:type="string">$100.00</item>
+                        <item name="label" xsi:type="string">Credit Limit</item>
+                    </item>
+                </item>
+                <item name="Updated" xsi:type="array">
+                    <item name="outstandingBalance" xsi:type="array">
+                        <item name="value" xsi:type="string">-€12.00</item>
+                        <item name="label" xsi:type="string">Outstanding Balance</item>
+                    </item>
+                    <item name="availableCredit" xsi:type="array">
+                        <item name="value" xsi:type="string">€68.00</item>
+                        <item name="label" xsi:type="string">Available Credit</item>
+                    </item>
+                    <item name="creditLimit" xsi:type="array">
+                        <item name="value" xsi:type="string">€80.00</item>
+                        <item name="label" xsi:type="string">Credit Limit</item>
+                    </item>
+                </item>
+            </data>
+            <data name="changeCreditCurrency" xsi:type="boolean">true</data>
+            <data name="currencySymbol" xsi:type="string">€</data>
+            <data name="creditCurrencyCode" xsi:type="string">EUR</data>
+            <data name="creditCurrency" xsi:type="string">Euro</data>
+            <data name="currencyRate" xsi:type="string">0.8000</data>
+            <data name="currencyFromCode" xsi:type="string">USD</data>
+            <data name="currencyRates" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="currency_from" xsi:type="string">USD</item>
+                    <item name="currency_to" xsi:type="string">EUR</item>
+                    <item name="rate" xsi:type="number">0.8</item>
+                </item>
+                <item name="1" xsi:type="array">
+                    <item name="currency_from" xsi:type="string">USD</item>
+                    <item name="currency_to" xsi:type="string">GBP</item>
+                    <item name="rate" xsi:type="number">0.5</item>
+                </item>
+                <item name="2" xsi:type="array">
+                    <item name="currency_from" xsi:type="string">EUR</item>
+                    <item name="currency_to" xsi:type="string">USD</item>
+                    <item name="rate" xsi:type="number">1.2</item>
+                </item>
+                <item name="3" xsi:type="array">
+                    <item name="currency_from" xsi:type="string">EUR</item>
+                    <item name="currency_to" xsi:type="string">GBP</item>
+                    <item name="rate" xsi:type="number">0.6</item>
+                </item>
+            </data>
+            <data name="amounts" xsi:type="array">
+                <item name="creditLimit" xsi:type="string">80.00</item>
+                <item name="availableCredit" xsi:type="string">68.00</item>
+                <item name="outstandingBalance" xsi:type="string">-12.00</item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable,companycredit,companycredit_order_status_pending,select_specific_payment_methods,catalog_price_scope_website</data>
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditHistoryInformationInAdmin" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditComment" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertReimburseBalanceCurrencySymbol" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditBalance" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCreditHistoryIsCorrectOnStorefront" />
+        </variation>
+    </testCase>
+</config>

@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+    <repository class="Magento\Company\Test\Repository\Company">
+        <dataset name="company_payment_specific">
+            <field name="use_config_settings" xsi:type="string">No</field>
+            <field name="applicable_payment_method" xsi:type="string">Specific Payment Methods</field>
+            <field name="available_payment_methods" xsi:type="string">Bank Transfer Payment</field>
+        </dataset>
+        <dataset name="company_payment_b2b">
+            <field name="use_config_settings" xsi:type="string">No</field>
+            <field name="applicable_payment_method" xsi:type="string">B2B Payment Methods</field>
+        </dataset>
+        <dataset name="company_payment_companycredit">
+            <field name="use_config_settings" xsi:type="string">No</field>
+            <field name="applicable_payment_method" xsi:type="string">Specific Payment Methods</field>
+            <field name="available_payment_methods" xsi:type="string">Payment on Account</field>
+        </dataset>
+    </repository>
+</config>

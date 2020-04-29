@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\RequisitionList\Test\TestCase\MoveCopyRequisitionListTest" summary="Move and copy products from one requisition list to another" ticketId="MAGETWO-68207">
+        <variation name="MoveCopyRequisitionListTestVariation1_Move">
+            <data name="configData" xsi:type="string">company_enable,requisition_list_enable</data>
+            <data name="orderInjectable" xsi:type="string">rl_with_two_products</data>
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="action" xsi:type="string">move</data>
+            <data name="requisitionList/name" xsi:type="string">name</data>
+            <data name="requisitionList/description" xsi:type="string">description</data>
+            <data name="secondList/name" xsi:type="string">name_second_list</data>
+            <data name="secondList/description" xsi:type="string">name_second_description</data>
+            <constraint name="Magento\RequisitionList\Test\Constraint\AssertProductsInRequisitionList" />
+        </variation>
+        <variation name="MoveCopyRequisitionListTestVariation2_Copy">
+            <data name="configData" xsi:type="string">company_enable,requisition_list_enable</data>
+            <data name="orderInjectable" xsi:type="string">rl_with_three_products</data>
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="action" xsi:type="string">copy</data>
+            <data name="requisitionList/name" xsi:type="string">name</data>
+            <data name="requisitionList/description" xsi:type="string">description</data>
+            <data name="secondList/name" xsi:type="string">name_second_list</data>
+            <data name="secondList/description" xsi:type="string">name_second_description</data>
+            <constraint name="Magento\RequisitionList\Test\Constraint\AssertProductsInRequisitionList" />
+        </variation>
+    </testCase>
+</config>

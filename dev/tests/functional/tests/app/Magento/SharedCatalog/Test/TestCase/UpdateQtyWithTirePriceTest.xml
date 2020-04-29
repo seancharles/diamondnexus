@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\UpdateQtyWithTirePriceTest" summary="Update negotiated quote test">
+        <variation name="UpdateQtyWithTirePriceTestVariation1" summary="Changes in the quote after updating qty of tier price product" ticketId="B2B-1793">
+            <data name="configData" xsi:type="string">company_enable, shared_catalog_enable, category_permissions_on, negotiable_quote_enable</data>
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="company" xsi:type="string">company_with_required_fields_and_sales_rep</data>
+            <data name="products/0" xsi:type="string">catalogProductSimple::negotiable_quote_simple_with_tier_price_and_category</data>
+            <data name="sharedCatalog" xsi:type="string">shared_catalog_default</data>
+            <data name="data/discount" xsi:type="string">20</data>
+            <data name="data/type" xsi:type="string">discount</data>
+            <data name="tax" xsi:type="string">0</data>
+            <data name="qtys/0" xsi:type="number">50</data>
+            <data name="messages/0" xsi:type="string">message</data>
+            <data name="updateData/adminQtys/0" xsi:type="number">10</data>
+            <data name="updateData/frontQtys/0" xsi:type="number">50</data>
+            <data name="updateData/historyLog/0" xsi:type="string">Comment</data>
+            <data name="frontDiscountApplied" xsi:type="null"/>
+            <data name="method" xsi:type="null"/>
+            <data name="discountType" xsi:type="null"/>
+            <data name="discountValue" xsi:type="null"/>
+            <data name="proposedShippingPrice" xsi:type="null"/>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteCorrectOnStorefront" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuotePrintCorrectOnStorefront" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteCorrectInAdmin" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuotePrintCorrectInAdmin" />
+        </variation>
+    </testCase>
+</config>

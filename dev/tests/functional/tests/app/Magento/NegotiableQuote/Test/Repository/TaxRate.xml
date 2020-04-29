@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+    <repository class="Magento\Tax\Test\Repository\TaxRate">
+        <dataset name="product_tax_rate_CA">
+            <field name="code" xsi:type="string">Product Tax Rate %isolation% CA</field>
+            <field name="rate" xsi:type="string">10</field>
+            <field name="tax_country_id" xsi:type="string">United States</field>
+            <field name="tax_postcode" xsi:type="string">*</field>
+            <field name="tax_region_id" xsi:type="string">California</field>
+        </dataset>
+        <dataset name="product_tax_rate_NY">
+            <field name="code" xsi:type="string">Product Tax Rate %isolation% NY</field>
+            <field name="rate" xsi:type="string">7</field>
+            <field name="tax_country_id" xsi:type="string">United States</field>
+            <field name="tax_postcode" xsi:type="string">*</field>
+            <field name="tax_region_id" xsi:type="string">New York</field>
+        </dataset>
+        <dataset name="shipping_tax_rate_CA">
+            <field name="code" xsi:type="string">Shipping Tax Rate %isolation% CA</field>
+            <field name="rate" xsi:type="string">5</field>
+            <field name="tax_country_id" xsi:type="string">United States</field>
+            <field name="tax_postcode" xsi:type="string">*</field>
+            <field name="tax_region_id" xsi:type="string">California</field>
+        </dataset>
+        <dataset name="shipping_tax_rate_NY">
+            <field name="code" xsi:type="string">Shipping Tax Rate %isolation% NY</field>
+            <field name="rate" xsi:type="string">3</field>
+            <field name="tax_country_id" xsi:type="string">United States</field>
+            <field name="tax_postcode" xsi:type="string">*</field>
+            <field name="tax_region_id" xsi:type="string">New York</field>
+        </dataset>
+    </repository>
+</config>

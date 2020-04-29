@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\AddProductsToTheSharedCatalogTest" summary="Add products to the shared catalog, check that categories are checked in the categories tree on the structure Shared Catalog wizard page" ticketId="MAGETWO-68650">
+        <variation name="AddProductsToTheSharedCatalogTestVariation1">
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="category/dataset" xsi:type="string">default</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="configData" xsi:type="string">company_enable,shared_catalog_disable,category_permissions_off</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCategoryCheckedInTree" />
+        </variation>
+    </testCase>
+</config>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\CommentNegotiableQuoteTest" summary="Test quote messages">
+        <variation name="CommentNegotiableQuoteTestVariation1" summary="Test quote messages" ticketId="MAGETWO-68234">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="company" xsi:type="string">company_with_required_fields_and_sales_rep</data>
+            <data name="products/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="products/1" xsi:type="string">catalogProductSimple::product_20_dollar</data>
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable, default_tax_configuration</data>
+            <data name="messages/0" xsi:type="string">message</data>
+            <data name="messages/comment" xsi:type="string">Message from user</data>
+            <data name="messages/comment-admin" xsi:type="string">Message from merchant</data>
+            <data name="qtys/0" xsi:type="string">1</data>
+            <data name="qtys/1" xsi:type="string">1</data>
+            <data name="historyLog/0" xsi:type="string">Comment</data>
+            <data name="frontStatus" xsi:type="string">UPDATED</data>
+            <data name="adminStatus" xsi:type="string">Submitted</data>
+            <data name="frontLock" xsi:type="boolean">false</data>
+            <data name="adminLock" xsi:type="boolean">true</data>
+            <data name="frontDiscountApplied" xsi:type="null"/>
+            <data name="tax" xsi:type="number">0</data>
+            <data name="method" xsi:type="null"/>
+            <data name="proposedShippingPrice" xsi:type="null"/>
+            <data name="discountType" xsi:type="null"/>
+            <data name="discountValue" xsi:type="null"/>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteCorrectOnStorefront"/>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuotePrintCorrectOnStorefront"/>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteCorrectInAdmin"/>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuotePrintCorrectInAdmin"/>
+        </variation>
+    </testCase>
+</config>

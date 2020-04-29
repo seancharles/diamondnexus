@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\ReorderExistingOrderTest" summary="Reorder existing order" ticketId="MAGETWO-68114, MAGETWO-67925">
+        <variation name="ReorderExistingOrderTestVariation1">
+            <data name="customer/dataset" xsi:type="string">johndoe_with_multiple_addresses</data>
+            <data name="shippingMethod/shipping_service" xsi:type="string">Flat Rate</data>
+            <data name="shippingMethod/shipping_method" xsi:type="string">Fixed</data>
+            <data name="payment/method" xsi:type="string">checkmo</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="productsList/1" xsi:type="string">catalogProductSimple::product_20_dollar</data>
+            <data name="shippingAddress" xsi:type="string">US_address</data>
+            <data name="productsForReorder/0" xsi:type="string">catalogProductSimple::default</data>
+            <data name="configData" xsi:type="string">cashondelivery, freeshipping, company_enable, negotiable_quote_enable</data>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteInfoIsCorrect" />
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+        </variation>
+    </testCase>
+</config>

@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<mapping strict="0">
+    <fields>
+        <customer_group>
+            <selector>[name$="[cust_group]"]</selector>
+            <strategy>css selector</strategy>
+            <class>Magento\SharedCatalog\Test\Block\Adminhtml\Product\Edit\Section\AdvancedPricing\CustomerGroup</class>
+        </customer_group>
+        <value_type>
+            <selector>[name$="[value_type]"]</selector>
+            <input>select</input>
+        </value_type>
+        <percentage_value>
+            <selector>[name$="[percentage_value]"]</selector>
+        </percentage_value>
+    </fields>
+</mapping>

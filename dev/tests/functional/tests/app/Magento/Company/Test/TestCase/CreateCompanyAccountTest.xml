@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\Company\Test\TestCase\CreateCompanyAccountTest" summary="Create company from Storefront" ticketId="MAGETWO-68226, MAGETWO-67929">
+        <variation name="CreateCompanyAccountTestVariation1">
+            <data name="description" xsi:type="string">Create company from Storefront</data>
+            <data name="company/dataset" xsi:type="string">company_for_company_account_creation</data>
+            <data name="customerGroup" xsi:type="string">Default (General)</data>
+            <data name="configData" xsi:type="string">company_enable</data>
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertCustomerGroupIsCorrect" />
+            <constraint name="Magento\Company\Test\Constraint\AssertUsersCompanyIsCorrect" />
+        </variation>
+    </testCase>
+</config>

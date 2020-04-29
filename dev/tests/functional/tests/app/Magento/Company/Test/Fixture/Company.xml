@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/fixture.xsd">
+    <fixture name="company" module="Magento_Company" type="flat" collection="Magento\Company\Model\ResourceModel\Company\Collection" repository_class="Magento\Company\Test\Repository\Company" handler_interface="Magento\Company\Test\Handler\Company\CompanyInterface" class="Magento\Company\Test\Fixture\Company" entity_type="company">
+        <field name="id" />
+        <field name="status" is_required="0" group="general"/>
+        <field name="company_name" is_required="1" group="general"/>
+        <field name="legal_name" is_required="0" group="information"/>
+        <field name="company_email" is_required="0" group="general"/>
+        <field name="website_id" is_required="1" group="company_admin"/>
+        <field name="email" is_required="1" group="company_admin"/>
+        <field name="vat_tax_id" is_required="0" group="information"/>
+        <field name="reseller_id" is_required="0" group="information"/>
+        <field name="comment" is_required="0" group="information"/>
+        <field name="street" is_required="1" group="address"/>
+        <field name="city" is_required="1" group="address"/>
+        <field name="country_id" is_required="1" group="address"/>
+        <field name="region" is_required="0" group="address"/>
+        <field name="region_id" is_required="0" group="address"/>
+        <field name="postcode" is_required="1" group="address"/>
+        <field name="telephone" is_required="1" group="address"/>
+        <field name="job_title" is_required="0" group="company_admin"/>
+        <field name="prefix" is_required="0" group="company_admin"/>
+        <field name="firstname" is_required="0" group="company_admin"/>
+        <field name="middlename" is_required="0" group="company_admin"/>
+        <field name="lastname" is_required="0" group="company_admin"/>
+        <field name="suffix" is_required="0" group="company_admin"/>
+        <field name="customer_group_id" is_required="1" group="settings"/>
+        <field name="sales_representative_id" is_required="1" group="general"/>
+        <field name="reject_reason" is_required="0" group="information"/>
+        <field name="customer" is_required="0" source="Magento\Company\Test\Fixture\Company\Customer" />
+    </fixture>
+</config>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\RequisitionList\Test\TestCase\MergeAndReplaceRequisitionListsTest" summary="Create order from requisition list with problem products" ticketId="MAGETWO-68218">
+        <variation name="MergeAndReplaceRequisitionListsTestVariation1">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::default</data>
+            <data name="productsList/1" xsi:type="string">catalogProductSimple::default</data>
+            <data name="productsList/2" xsi:type="string">configurableProduct::product_with_color_and_size</data>
+            <data name="updateProduct/dataset" xsi:type="string">configurableProduct::product_with_color_and_size</data>
+            <data name="requisitionList/name" xsi:type="string">RL_</data>
+            <data name="requisitionList/description" xsi:type="string">RL Description</data>
+            <data name="requisitionListsNumber" xsi:type="number">2</data>
+            <data name="productInCartIndex" xsi:type="number">1</data>
+            <data name="subtotal" xsi:type="number">560</data>
+            <data name="configData" xsi:type="string">company_enable,requisition_list_enable</data>
+            <constraint name="Magento\Checkout\Test\Constraint\AssertProductPresentInShoppingCart" />
+            <constraint name="Magento\RequisitionList\Test\Constraint\AssertSubtotalInShoppingCart" />
+        </variation>
+        <variation name="MergeAndReplaceRequisitionListsTestVariation2">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::default</data>
+            <data name="productsList/1" xsi:type="string">catalogProductSimple::default</data>
+            <data name="productsList/2" xsi:type="string">configurableProduct::product_with_color_and_size</data>
+            <data name="productsList/3" xsi:type="string">catalogProductSimple::product_40_dollar</data>
+            <data name="updateProduct/dataset" xsi:type="string">configurableProduct::product_with_color_and_size</data>
+            <data name="requisitionList/name" xsi:type="string">RL_</data>
+            <data name="requisitionList/description" xsi:type="string">RL Description</data>
+            <data name="requisitionListsNumber" xsi:type="number">3</data>
+            <data name="productInCartIndex" xsi:type="number">3</data>
+            <data name="subtotal" xsi:type="number">40</data>
+            <data name="withReplace" xsi:type="boolean">true</data>
+            <data name="configData" xsi:type="string">company_enable,requisition_list_enable</data>
+            <constraint name="Magento\Checkout\Test\Constraint\AssertProductPresentInShoppingCart" />
+            <constraint name="Magento\RequisitionList\Test\Constraint\AssertSubtotalInShoppingCart" />
+        </variation>
+    </testCase>
+</config>

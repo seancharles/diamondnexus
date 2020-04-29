@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\CheckoutWithDifferentAddressTest" summary="Quote negotiation" ticketId="MAGETWO-68225">
+        <variation name="CheckoutWithDifferentAddressTestVariation1_WithCartPriceRule" summary="Place order with cart price rule">
+            <data name="customer/dataset" xsi:type="string">johndoe_with_addresses</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::negotiable_product_100_dollar</data>
+            <data name="quote/quote-message" xsi:type="string">comment</data>
+            <data name="quote/quote-name" xsi:type="string">name</data>
+            <data name="address/dataset" xsi:type="string">US_address_2_without_email</data>
+            <data name="shipping/shipping_service" xsi:type="string">Flat Rate</data>
+            <data name="shipping/shipping_method" xsi:type="string">Fixed</data>
+            <data name="taxRule" xsi:type="string">custom_product_tax_rule,custom_shipping_tax_rule</data>
+            <data name="steps" xsi:type="array">
+                <item name="0" xsi:type="string">admin_update</item>
+                <item name="1" xsi:type="string">front_place_order_with_different_address</item>
+            </data>
+            <data name="updateData" xsi:type="array">
+                <item name="discountType" xsi:type="string">percentage</item>
+                <item name="discountValue" xsi:type="string">18.18</item>
+            </data>
+            <data name="prices" xsi:type="array">
+                <item name="grandTotal" xsi:type="string">$92.70</item>
+                <item name="quoteGrandTotal" xsi:type="string">$90.00</item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable, display_excluding_including_tax</data>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertOrderGrandTotal" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteGrandTotalOnStorefront" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteGrandTotalInAdmin" />
+        </variation>
+        <variation name="CheckoutWithDifferentAddressTestVariation2_ChangeBillingAddressForVirtualProduct" summary="Change billing address for virtual products" ticketId="MAGETWO-68087">
+            <data name="customer/dataset" xsi:type="string">johndoe_with_addresses</data>
+            <data name="productsList/0" xsi:type="string">catalogProductVirtual::product_50_dollar</data>
+            <data name="updateAddress/dataset" xsi:type="string">US_address_2_without_email</data>
+            <data name="quote/quote-message" xsi:type="string">comment</data>
+            <data name="quote/quote-name" xsi:type="string">name</data>
+            <data name="taxRule" xsi:type="string">custom_product_tax_rule</data>
+            <data name="grandTotal" xsi:type="string">53.50</data>
+            <data name="tax" xsi:type="string">3.50</data>
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable</data>
+            <data name="steps" xsi:type="array">
+                <item name="0" xsi:type="string">select_default_shipping_address</item>
+                <item name="1" xsi:type="string">front_send</item>
+                <item name="2" xsi:type="string">admin_send</item>
+                <item name="3" xsi:type="string">front_change_billing_address</item>
+            </data>
+            <constraint name="Magento\Checkout\Test\Constraint\AssertGrandTotalOrderReview"/>
+            <constraint name="Magento\Checkout\Test\Constraint\AssertTaxTotalOrderReview"/>
+        </variation>
+    </testCase>
+</config>

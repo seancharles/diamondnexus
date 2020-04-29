@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\RequisitionList\Test\TestCase\CreateRequisitionListFromOrderWithSharedCatalogTest" summary="Add products to requisition list from view order page with SC enabled" ticketId="MAGETWO-82450">
+        <variation name="CreateRequisitionListFromOrderWithSharedCatalogVariation1">
+            <data name="product/dataset" xsi:type="string">product_with_category</data>
+            <data name="requisitionList/name" xsi:type="string">name-%isolation%</data>
+            <data name="requisitionList/description" xsi:type="string">description</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_with_company</data>
+            <data name="unassignFromSharedCatalog" xsi:type="boolean">false</data>
+            <data name="configData" xsi:type="string">company_enable,requisition_list_enable,shared_catalog_enable</data>
+            <constraint name="Magento\RequisitionList\Test\Constraint\AssertSuccessMessageAppeared" />
+        </variation>
+        <variation name="CreateRequisitionListFromOrderWithSharedCatalogVariation2">
+            <data name="product/dataset" xsi:type="string">product_with_category</data>
+            <data name="requisitionList/name" xsi:type="string">name-%isolation%</data>
+            <data name="requisitionList/description" xsi:type="string">description</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_with_company</data>
+            <data name="unassignFromSharedCatalog" xsi:type="boolean">true</data>
+            <data name="configData" xsi:type="string">company_enable,requisition_list_enable,shared_catalog_enable</data>
+            <data name="expectedMessage" xsi:type="string">Requested product doesn't exist</data>
+            <constraint name="Magento\RequisitionList\Test\Constraint\AssertErrorMessageAppeared" />
+        </variation>
+    </testCase>
+</config>

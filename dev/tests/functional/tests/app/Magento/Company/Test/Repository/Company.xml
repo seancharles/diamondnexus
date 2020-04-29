@@ -1,0 +1,229 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+    <repository class="Magento\Company\Test\Repository\Company">
+        <dataset name="company_with_required_fields">
+            <field name="company_name" xsi:type="string">Company %isolation%</field>
+            <field name="company_email" xsi:type="string">company%isolation%@example.com</field>
+            <field name="country_id" xsi:type="string">Albania</field>
+            <field name="telephone" xsi:type="string">555-55-555-55</field>
+            <field name="postcode" xsi:type="string">90230</field>
+            <field name="city" xsi:type="string">Culver City</field>
+            <field name="street" xsi:type="string">6161 West Centinela Avenue</field>
+            <field name="website_id" xsi:type="string">Main Website</field>
+            <field name="email" xsi:type="string">John.Doe%isolation%@example.com</field>
+            <field name="firstname" xsi:type="string">John</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="customer_group_id" xsi:type="string">General</field>
+        </dataset>
+
+        <dataset name="company_with_all_fields">
+            <field name="company_name" xsi:type="string">Company %isolation%</field>
+            <field name="country_id" xsi:type="string">Andorra</field>
+            <field name="telephone" xsi:type="string">123-45-67-89</field>
+            <field name="postcode" xsi:type="string">220000</field>
+            <field name="city" xsi:type="string">Unknown City</field>
+            <field name="street" xsi:type="string">Redridge street, 17</field>
+            <field name="website_id" xsi:type="string">Main Website</field>
+            <field name="email" xsi:type="string">Jane.Doe%isolation%@example.com</field>
+            <field name="legal_name" xsi:type="string">Legal Company %isolation%</field>
+            <field name="company_email" xsi:type="string">company%isolation%@example.com</field>
+            <field name="vat_tax_id" xsi:type="string">024586</field>
+            <field name="reseller_id" xsi:type="string">f124</field>
+            <field name="comment" xsi:type="string">some comment</field>
+            <field name="region" xsi:type="string">some region</field>
+            <field name="job_title" xsi:type="string">grand master</field>
+            <field name="prefix" xsi:type="string">ms</field>
+            <field name="firstname" xsi:type="string">Jane</field>
+            <field name="middlename" xsi:type="string">Valery</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="suffix" xsi:type="string">fon</field>
+            <field name="customer_group_id" xsi:type="string">General</field>
+        </dataset>
+
+        <dataset name="company_with_all_fields_except_email">
+            <field name="company_name" xsi:type="string">Company %isolation%</field>
+            <field name="country_id" xsi:type="string">Andorra</field>
+            <field name="telephone" xsi:type="string">123-45-67-89</field>
+            <field name="postcode" xsi:type="string">220000</field>
+            <field name="city" xsi:type="string">Unknown City</field>
+            <field name="street" xsi:type="string">Redridge street, 17</field>
+            <field name="legal_name" xsi:type="string">Legal Company %isolation%</field>
+            <field name="company_email" xsi:type="string">company%isolation%@example.com</field>
+            <field name="vat_tax_id" xsi:type="string">024586</field>
+            <field name="reseller_id" xsi:type="string">f124</field>
+            <field name="comment" xsi:type="string">some comment</field>
+            <field name="region" xsi:type="string">some region</field>
+            <field name="website_id" xsi:type="string">Main Website</field>
+            <field name="job_title" xsi:type="string">grand master</field>
+            <field name="prefix" xsi:type="string">ms</field>
+            <field name="firstname" xsi:type="string">Jane</field>
+            <field name="middlename" xsi:type="string">Valery</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="suffix" xsi:type="string">fon</field>
+            <field name="customer_group_id" xsi:type="string">General</field>
+        </dataset>
+
+        <dataset name="company_with_required_fields_and_sales_rep">
+            <field name="company_name" xsi:type="string">Company %isolation%</field>
+            <field name="company_email" xsi:type="string">company%isolation%@example.com</field>
+            <field name="country_id" xsi:type="string">Albania</field>
+            <field name="telephone" xsi:type="string">555-55-555-55</field>
+            <field name="postcode" xsi:type="string">90230</field>
+            <field name="city" xsi:type="string">Culver City</field>
+            <field name="street" xsi:type="string">6161 West Centinela Avenue</field>
+            <field name="website_id" xsi:type="string">Main Website</field>
+            <field name="email" xsi:type="string">John.Doe%isolation%@example.com</field>
+            <field name="firstname" xsi:type="string">John</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="customer_group_id" xsi:type="string">General</field>
+            <field name="sales_representative_id" xsi:type="string">1</field>
+            <field name="status" xsi:type="string">1</field>
+        </dataset>
+
+        <dataset name="company_with_required_fields_and_status">
+            <field name="company_name" xsi:type="string">Company %isolation%</field>
+            <field name="company_email" xsi:type="string">company%isolation%@example.com</field>
+            <field name="country_id" xsi:type="string">Albania</field>
+            <field name="telephone" xsi:type="string">555-55-555-55</field>
+            <field name="postcode" xsi:type="string">90230</field>
+            <field name="city" xsi:type="string">Culver City</field>
+            <field name="street" xsi:type="string">6161 West Centinela Avenue</field>
+            <field name="website_id" xsi:type="string">Main Website</field>
+            <field name="email" xsi:type="string">John.Doe%isolation%@example.com</field>
+            <field name="firstname" xsi:type="string">John</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="status" xsi:type="string">1</field>
+            <field name="customer_group_id" xsi:type="string">General</field>
+        </dataset>
+
+        <dataset name="company_with_all_fields_and_sales_rep">
+            <field name="company_name" xsi:type="string">Company %isolation%</field>
+            <field name="country_id" xsi:type="string">Andorra</field>
+            <field name="telephone" xsi:type="string">123-45-67-89</field>
+            <field name="postcode" xsi:type="string">220000</field>
+            <field name="city" xsi:type="string">Unknown City</field>
+            <field name="street" xsi:type="string">Redridge street, 17</field>
+            <field name="website_id" xsi:type="string">Main Website</field>
+            <field name="email" xsi:type="string">Jane.Doe%isolation%@example.com</field>
+            <field name="legal_name" xsi:type="string">Legal Company %isolation%</field>
+            <field name="company_email" xsi:type="string">company%isolation%@example.com</field>
+            <field name="vat_tax_id" xsi:type="string">024586</field>
+            <field name="reseller_id" xsi:type="string">f124</field>
+            <field name="comment" xsi:type="string">some comment</field>
+            <field name="region" xsi:type="string">some region</field>
+            <field name="job_title" xsi:type="string">grand master</field>
+            <field name="prefix" xsi:type="string">ms</field>
+            <field name="firstname" xsi:type="string">Jane</field>
+            <field name="middlename" xsi:type="string">Valery</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="suffix" xsi:type="string">fon</field>
+            <field name="customer_group_id" xsi:type="string">General</field>
+            <field name="sales_representative_id" xsi:type="string">1</field>
+            <field name="status" xsi:type="string">1</field>
+        </dataset>
+
+        <dataset name="company_fixture_for_update">
+            <field name="company_name" xsi:type="string">Company updated %isolation%</field>
+            <field name="company_email" xsi:type="string">updated_some_%isolation%@email.com</field>
+            <field name="legal_name" xsi:type="string">Legal Company Updated %isolation%</field>
+            <field name="street" xsi:type="string">6161 West Centinela Avenue</field>
+            <field name="telephone" xsi:type="string">987-65-43-21</field>
+        </dataset>
+
+        <dataset name="company_for_company_account_creation">
+            <field name="company_name" xsi:type="string">Company %isolation%</field>
+            <field name="country_id" xsi:type="string">United States</field>
+            <field name="region_id" xsi:type="string">Texas</field>
+            <field name="telephone" xsi:type="string">123-45-67-89</field>
+            <field name="postcode" xsi:type="string">220000</field>
+            <field name="city" xsi:type="string">Unknown City</field>
+            <field name="street" xsi:type="string">Redridge street, 17</field>
+            <field name="email" xsi:type="string">Jane.Doe%isolation%@example.com</field>
+            <field name="legal_name" xsi:type="string">Legal Company %isolation%</field>
+            <field name="company_email" xsi:type="string">company%isolation%@example.com</field>
+            <field name="vat_tax_id" xsi:type="string">024586</field>
+            <field name="reseller_id" xsi:type="string">f124%isolation%</field>
+            <field name="job_title" xsi:type="string">grand master</field>
+            <field name="firstname" xsi:type="string">Jane</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+        </dataset>
+
+        <dataset name="company_status_pending_approval">
+            <field name="company_name" xsi:type="string">Company %isolation%</field>
+            <field name="company_email" xsi:type="string">company%isolation%@example.com</field>
+            <field name="country_id" xsi:type="string">Albania</field>
+            <field name="telephone" xsi:type="string">555-55-555-55</field>
+            <field name="postcode" xsi:type="string">90230</field>
+            <field name="city" xsi:type="string">Culver City</field>
+            <field name="street" xsi:type="string">6161 West Centinela Avenue</field>
+            <field name="website_id" xsi:type="string">Main Website</field>
+            <field name="email" xsi:type="string">John.Doe%isolation%@example.com</field>
+            <field name="firstname" xsi:type="string">John</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="customer_group_id" xsi:type="string">General</field>
+            <field name="sales_representative_id" xsi:type="string">1</field>
+            <field name="status" xsi:type="string">0</field>
+        </dataset>
+
+        <dataset name="company_status_rejected">
+            <field name="company_name" xsi:type="string">Company %isolation%</field>
+            <field name="company_email" xsi:type="string">company%isolation%@example.com</field>
+            <field name="country_id" xsi:type="string">Albania</field>
+            <field name="telephone" xsi:type="string">555-55-555-55</field>
+            <field name="postcode" xsi:type="string">90230</field>
+            <field name="city" xsi:type="string">Culver City</field>
+            <field name="street" xsi:type="string">6161 West Centinela Avenue</field>
+            <field name="website_id" xsi:type="string">Main Website</field>
+            <field name="email" xsi:type="string">John.Doe%isolation%@example.com</field>
+            <field name="firstname" xsi:type="string">John</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="customer_group_id" xsi:type="string">General</field>
+            <field name="sales_representative_id" xsi:type="string">1</field>
+            <field name="status" xsi:type="string">2</field>
+            <field name="reject_reason" xsi:type="string">Any reject reason.</field>
+        </dataset>
+
+        <dataset name="company_status_blocked">
+            <field name="company_name" xsi:type="string">Company %isolation%</field>
+            <field name="company_email" xsi:type="string">company%isolation%@example.com</field>
+            <field name="country_id" xsi:type="string">Albania</field>
+            <field name="telephone" xsi:type="string">555-55-555-55</field>
+            <field name="postcode" xsi:type="string">90230</field>
+            <field name="city" xsi:type="string">Culver City</field>
+            <field name="street" xsi:type="string">6161 West Centinela Avenue</field>
+            <field name="website_id" xsi:type="string">Main Website</field>
+            <field name="email" xsi:type="string">John.Doe%isolation%@example.com</field>
+            <field name="firstname" xsi:type="string">John</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="customer_group_id" xsi:type="string">General</field>
+            <field name="sales_representative_id" xsi:type="string">1</field>
+            <field name="status" xsi:type="string">3</field>
+        </dataset>
+
+        <dataset name="company_with_company_admin">
+            <field name="company_name" xsi:type="string">Company %isolation%</field>
+            <field name="company_email" xsi:type="string">company%isolation%@example.com</field>
+            <field name="country_id" xsi:type="string">Albania</field>
+            <field name="telephone" xsi:type="string">555-55-555-55</field>
+            <field name="postcode" xsi:type="string">90230</field>
+            <field name="city" xsi:type="string">Culver City</field>
+            <field name="street" xsi:type="string">6161 West Centinela Avenue</field>
+            <field name="website_id" xsi:type="string">Main Website</field>
+            <field name="email" xsi:type="string">John.Doe%isolation%@example.com</field>
+            <field name="firstname" xsi:type="string">John</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="customer_group_id" xsi:type="string">General</field>
+            <field name="sales_representative_id" xsi:type="string">1</field>
+            <field name="status" xsi:type="string">1</field>
+            <field name="customer" xsi:type="array">
+                <item name="dataset" xsi:type="string">johndoe_with_addresses</item>
+            </field>
+        </dataset>
+    </repository>
+</config>

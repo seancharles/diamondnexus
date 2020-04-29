@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+    <repository class="Magento\Config\Test\Repository\ConfigData">
+        <dataset name="admin_account_sharing_enable">
+            <field name="admin/security/admin_account_sharing" xsi:type="array">
+                <item name="scope" xsi:type="string">default</item>
+                <item name="scope_id" xsi:type="number">0</item>
+                <item name="label" xsi:type="string">Yes</item>
+                <item name="value" xsi:type="number">1</item>
+            </field>
+        </dataset>
+        <dataset name="admin_account_sharing_enable_rollback">
+            <field name="admin/security/admin_account_sharing" xsi:type="array">
+                <item name="scope" xsi:type="string">default</item>
+                <item name="scope_id" xsi:type="number">0</item>
+                <item name="label" xsi:type="string">No</item>
+                <item name="value" xsi:type="number">0</item>
+            </field>
+        </dataset>
+        <dataset name="negotiable_quote_enable">
+            <field name="btob/website_configuration/negotiablequote_active" xsi:type="array">
+                <item name="scope" xsi:type="string">b2b</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Yes</item>
+                <item name="value" xsi:type="number">1</item>
+            </field>
+        </dataset>
+        <dataset name="negotiable_quote_enable_rollback">
+            <field name="btob/website_configuration/negotiablequote_active" xsi:type="array">
+                <item name="scope" xsi:type="string">b2b</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">No</item>
+                <item name="value" xsi:type="number">0</item>
+            </field>
+        </dataset>
+        <dataset name="shipping_tax_class_shipping">
+            <field name="tax/classes/shipping_tax_class" xsi:type="array">
+                <item name="scope" xsi:type="string">tax</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">Shipping Tax Class</item>
+                <item name="value" xsi:type="number">4</item>
+            </field>
+        </dataset>
+        <dataset name="shipping_tax_class_rollback">
+            <field name="tax/classes/shipping_tax_class" xsi:type="array">
+                <item name="scope" xsi:type="string">tax</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="label" xsi:type="string">None</item>
+                <item name="value" xsi:type="number">0</item>
+            </field>
+        </dataset>
+        <dataset name="config_display_currency_ch">
+            <field name="currency/options/allow" xsi:type="array">
+                <item name="scope" xsi:type="string">currency</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="value" xsi:type="array">
+                    <item name="Swiss Franc" xsi:type="string">CHF</item>
+                    <item name="US Dollar" xsi:type="string">USD</item>
+                </item>
+            </field>
+            <field name="currency/options/base" xsi:type="array">
+                <item name="scope" xsi:type="string">currency</item>
+                <item name="label" xsi:type="string">US Dollar</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="value" xsi:type="string">USD</item>
+            </field>
+            <field name="currency/options/default" xsi:type="array">
+                <item name="scope" xsi:type="string">currency</item>
+                <item name="label" xsi:type="string">Swiss Franc</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="value" xsi:type="string">CHF</item>
+            </field>
+        </dataset>
+        <dataset name="config_display_currency_ch_rollback">
+            <field name="currency/options/allow" xsi:type="array">
+                <item name="scope" xsi:type="string">currency</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="value" xsi:type="array">
+                    <item name="US Dollar" xsi:type="string">USD</item>
+                </item>
+            </field>
+            <field name="currency/options/base" xsi:type="array">
+                <item name="scope" xsi:type="string">currency</item>
+                <item name="label" xsi:type="string">US Dollar</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="value" xsi:type="string">USD</item>
+            </field>
+            <field name="currency/options/default" xsi:type="array">
+                <item name="scope" xsi:type="string">currency</item>
+                <item name="label" xsi:type="string">US Dollar</item>
+                <item name="scope_id" xsi:type="number">1</item>
+                <item name="value" xsi:type="string">USD</item>
+            </field>
+        </dataset>
+    </repository>
+</config>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\DuplicateSharedCatalogTest" summary="Creating duplicate shared catalog" ticketId="MAGETWO-68544">
+        <variation name="DuplicateSharedCatalogTestVariation1">
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_with_company</data>
+            <data name="category" xsi:type="array">
+                <item name="dataset" xsi:type="string">default</item>
+            </data>
+            <data name="products" xsi:type="array">
+                <item name="productSimpleFirst" xsi:type="array">
+                    <item name="dataset" xsi:type="string">catalogProductSimple::default</item>
+                </item>
+                <item name="productSimpleSecond" xsi:type="array">
+                    <item name="dataset" xsi:type="string">catalogProductSimple::default</item>
+                </item>
+                <item name="productSimpleThird" xsi:type="array">
+                    <item name="dataset" xsi:type="string">catalogProductSimple::default</item>
+                </item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable, shared_catalog_enable, category_permissions_on</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertDuplicateSharedCatalog" />
+        </variation>
+    </testCase>
+</config>

@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<sections>
+    <shared_catalog>
+        <selector>[data-index="shared_catalog"]</selector>
+        <strategy>css selector</strategy>
+    </shared_catalog>
+</sections>

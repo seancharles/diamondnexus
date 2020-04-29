@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\Company\Test\TestCase\ManageCompanyProfileTest" summary="Manage company profile test" ticketId="MAGETWO-68206">
+        <variation name="ManageCompanyProfileTestVariation1_Admin">
+            <data name="companyAdmin/dataset" xsi:type="string">default</data>
+            <data name="companyUser/dataset" xsi:type="string">default</data>
+            <data name="isAdmin" xsi:type="number">1</data>
+            <data name="configData" xsi:type="string">company_enable</data>
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertCompanyForm" />
+        </variation>
+        <variation name="ManageCompanyProfileTestVariation2_NotAdmin">
+            <data name="companyAdmin/dataset" xsi:type="string">default</data>
+            <data name="companyUser/dataset" xsi:type="string">default</data>
+            <data name="isAdmin" xsi:type="number">0</data>
+            <data name="configData" xsi:type="string">company_enable</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertEditButtonNotVisible" />
+        </variation>
+    </testCase>
+</config>

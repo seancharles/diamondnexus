@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\CompanyCredit\Test\TestCase\CheckFieldsInCompaniesGridTest" summary="Test new fields sorting and filtering in admin panel.">
+        <variation name="CheckFieldsInCompaniesGridTestVariation1" ticketId="MC-11928">
+            <data name="productsData/0" xsi:type="string">catalogProductSimple::product_100_dollar</data>
+            <data name="productsData/1" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="productsData/2" xsi:type="string">catalogProductSimple::default</data>
+            <data name="companyDatasets" xsi:type="array">
+                <item name="0" xsi:type="string">company_with_required_fields_and_status</item>
+                <item name="1" xsi:type="string">company_with_required_fields_and_status</item>
+                <item name="2" xsi:type="string">company_with_required_fields_and_status</item>
+            </data>
+            <data name="customerDatasets" xsi:type="array">
+                <item name="0" xsi:type="string">customer_US</item>
+                <item name="1" xsi:type="string">customer_US</item>
+                <item name="2" xsi:type="string">customer_US</item>
+            </data>
+            <data name="companyCreditDatasets" xsi:type="array">
+                <item name="0" xsi:type="string">company_credit_500_dollar</item>
+                <item name="1" xsi:type="string">company_credit_300_dollar</item>
+                <item name="2" xsi:type="string">company_credit_11000_dollar</item>
+            </data>
+            <data name="companyPaymentDatasets" xsi:type="array">
+                <item name="0" xsi:type="string">company_payment_companycredit</item>
+                <item name="1" xsi:type="string">company_payment_companycredit</item>
+                <item name="2" xsi:type="string">company_payment_companycredit</item>
+            </data>
+            <data name="checkout/shipping/shipping_service" xsi:type="string">Flat Rate</data>
+            <data name="checkout/shipping/shipping_method" xsi:type="string">Fixed</data>
+            <data name="checkout/payment/method" xsi:type="string">companycredit</data>
+            <data name="checkout/payment/po_number" xsi:type="string">hkl-878</data>
+            <data name="expectedCreditLimitRange" xsi:type="array">
+                <item name="0" xsi:type="string">300</item>
+                <item name="1" xsi:type="string">600</item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable,companycredit_disabled,specific_payment_methods,select_specific_payment_methods,cashondelivery,companycredit,banktransfer</data>
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertOutstandingBalanceSortOrder" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCreditLimitSortOrder" />
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCreditLimitFilter" />
+        </variation>
+    </testCase>
+</config>

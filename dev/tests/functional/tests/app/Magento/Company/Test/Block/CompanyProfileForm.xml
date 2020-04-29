@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<mapping strict="0">
+    <fields>
+        <company_name>
+            <selector>[name="company_name"]</selector>
+        </company_name>
+        <legal_name>
+            <selector>[name="legal_name"]</selector>
+        </legal_name>
+        <company_email>
+            <selector>[name="company_email"]</selector>
+        </company_email>
+        <vat_tax_id>
+            <selector>[name="vat_tax_id"]</selector>
+        </vat_tax_id>
+        <reseller_id>
+            <selector>[name="reseller_id"]</selector>
+        </reseller_id>
+        <street>
+            <selector>[name="street[0]"]</selector>
+        </street>
+        <city>
+            <selector>[name="city"]</selector>
+        </city>
+        <country_id>
+            <selector>[name="country_id"]</selector>
+            <input>select</input>
+        </country_id>
+        <postcode>
+            <selector>[name="postcode"]</selector>
+        </postcode>
+        <telephone>
+            <selector>[name="telephone"]</selector>
+        </telephone>
+    </fields>
+</mapping>

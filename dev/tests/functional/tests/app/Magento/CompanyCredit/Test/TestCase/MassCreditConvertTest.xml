@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\CompanyCredit\Test\TestCase\MassCreditConvertTest" summary="Test mass company credit conversion.">
+        <variation name="MassCreditConvertTestVariation1" ticketId="MAGETWO-68393" summary="Verify that credit update required warning message is correct.">
+            <data name="customerDatasets" xsi:type="array">
+                <item name="0" xsi:type="string">default</item>
+            </data>
+            <data name="companyDataset" xsi:type="array">
+                <item name="0" xsi:type="string">company_with_credit_in_euro</item>
+            </data>
+            <data name="currencyTo" xsi:type="string">US Dollar</data>
+            <data name="steps" xsi:type="array">
+                <item name="configureCurrencies" xsi:type="array">
+                    <item name="currencies" xsi:type="array">
+                        <item name="0" xsi:type="string">USD,EUR</item>
+                        <item name="1" xsi:type="string">USD,RUB</item>
+                    </item>
+                </item>
+            </data>
+            <data name="configData" xsi:type="string">catalog_price_scope_website</data>
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCreditConversionRequiredMessage"/>
+        </variation>
+        <variation name="MassCreditConvertTestVariation2" ticketId="MAGETWO-68393" summary="Verify company credit limit after conversion.">
+            <data name="customerDatasets" xsi:type="array">
+                <item name="0" xsi:type="string">default</item>
+                <item name="1" xsi:type="string">default</item>
+                <item name="2" xsi:type="string">default</item>
+            </data>
+            <data name="companyDataset" xsi:type="array">
+                <item name="0" xsi:type="string">company_with_credit_in_euro</item>
+                <item name="1" xsi:type="string">company_with_credit_in_euro</item>
+                <item name="2" xsi:type="string">company_with_credit_in_rub</item>
+            </data>
+            <data name="currencyTo" xsi:type="string">US Dollar</data>
+            <data name="currencyToCode" xsi:type="string">USD</data>
+            <data name="rates" xsi:type="array">
+                <item name="0" xsi:type="number">1.4150</item>
+            </data>
+            <data name="steps" xsi:type="array">
+                <item name="configureCurrencies" xsi:type="array">
+                    <item name="currencies" xsi:type="array">
+                        <item name="0" xsi:type="string">USD,EUR</item>
+                        <item name="1" xsi:type="string">USD,RUB</item>
+                    </item>
+                </item>
+            </data>
+            <data name="amounts" xsi:type="array">
+                <item name="creditLimit" xsi:type="string">1415.00</item>
+                <item name="availableCredit" xsi:type="string">1415.00</item>
+                <item name="outstandingBalance" xsi:type="string">0.00</item>
+            </data>
+            <data name="configData" xsi:type="string">catalog_price_scope_website</data>
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditBalance"/>
+            <constraint name="Magento\CompanyCredit\Test\Constraint\AssertCompanyCreditComment"/>
+        </variation>
+    </testCase>
+</config>

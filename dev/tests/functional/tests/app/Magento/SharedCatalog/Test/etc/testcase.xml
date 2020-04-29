@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/TestCase/etc/testcase.xsd">
+    <scenario name="UpdateQtyWithTirePriceTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createSharedCatalog"/>
+        <step name="createSharedCatalog" module="Magento_SharedCatalog" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="assignCompany"/>
+        <step name="assignCompany" module="Magento_SharedCatalog" next="configureSharedCatalog"/>
+        <step name="configureSharedCatalog" module="Magento_SharedCatalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="adminUpdateQuote"/>
+        <step name="adminUpdateQuote" module="Magento_NegotiableQuote" next="updateQuote"/>
+        <step name="updateQuote" module="Magento_NegotiableQuote" next="sendQuote"/>
+        <step name="sendQuote" module="Magento_NegotiableQuote" next="adminSend"/>
+        <step name="adminSend" module="Magento_NegotiableQuote" />
+    </scenario>
+</config>

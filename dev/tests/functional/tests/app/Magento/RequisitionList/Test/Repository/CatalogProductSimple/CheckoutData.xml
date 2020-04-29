@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+    <repository class="Magento\Catalog\Test\Repository\CatalogProductSimple\CheckoutData">
+        <dataset name="product_qty_2">
+            <field name="qty" xsi:type="string">2</field>
+            <field name="cartItem" xsi:type="array">
+                <item name="price" xsi:type="string">10</item>
+                <item name="subtotal" xsi:type="string">10</item>
+            </field>
+        </dataset>
+        <dataset name="product_qty_5">
+            <field name="qty" xsi:type="string">5</field>
+            <field name="cartItem" xsi:type="array">
+                <item name="price" xsi:type="string">20</item>
+                <item name="subtotal" xsi:type="string">20</item>
+            </field>
+        </dataset>
+    </repository>
+</config>

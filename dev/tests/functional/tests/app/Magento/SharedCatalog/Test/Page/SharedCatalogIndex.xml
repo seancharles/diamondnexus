@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/pages.xsd">
+    <page name="SharedCatalogIndex" area="Adminhtml" mca="shared_catalog/sharedCatalog/index/" module="Magento_SharedCatalog">
+        <block name="grid" class="Magento\SharedCatalog\Test\Block\Adminhtml\SharedCatalogGrid" locator="//div[contains(@data-bind, 'shared_catalog_listing')]" strategy="xpath"/>
+        <block name="gridPageActionBlock" class="Magento\Backend\Test\Block\GridPageActions" locator=".page-main-actions" strategy="css selector"/>
+        <block name="modalBlock" class="Magento\SharedCatalog\Test\Block\Adminhtml\Popup" locator="._show[data-role=modal]" strategy="css selector"/>
+        <block name="messages" class="Magento\Backend\Test\Block\Messages" locator="#messages" strategy="css selector"/>
+        <block name="systemMessageDialog" class="Magento\AdminNotification\Test\Block\System\Messages" locator='.ui-popup-message .modal-inner-wrap' strategy="css selector" />
+        <block name="sharedCatalogMessage" class="Magento\SharedCatalog\Test\Block\Adminhtml\SharedCatalogMessage" locator='#messages' strategy="css selector" />
+    </page>
+</config>

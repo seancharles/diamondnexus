@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\RequisitionList\Test\TestCase\RequisitionListsLimitTest" summary="Enable requisition list" ticketId="MAGETWO-68153">
+        <variation name="RequisitionListsLimitTestVariation1">
+            <data name="configData" xsi:type="string">company_enable,requisition_list_enable,requisition_list_limit_3</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="productsList/1" xsi:type="string">catalogProductSimple::product_20_dollar</data>
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="requisitionList/name" xsi:type="string">name</data>
+            <data name="requisitionList/description" xsi:type="string">description</data>
+            <data name="requisitionListsNumber" xsi:type="number">3</data>
+            <constraint name="Magento\RequisitionList\Test\Constraint\AssertRequisitionListLinkIsNotVisible" />
+        </variation>
+    </testCase>
+</config>

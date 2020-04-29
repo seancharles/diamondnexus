@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../vendor/magento/mtf/etc/pages.xsd">
+    <page name="OrderIndex" area="Adminhtml" mca="sales/order/index" module="Magento_Sales">
+        <block name="structureGrid" class="Magento\Company\Test\Block\Adminhtml\Order\StructureGrid" locator="//div[contains(@data-bind, 'sales_order_grid')]" strategy="xpath"/>
+    </page>
+</config>

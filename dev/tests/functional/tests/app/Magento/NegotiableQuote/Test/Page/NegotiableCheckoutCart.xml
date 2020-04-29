@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/pages.xsd">
+    <page name="NegotiableCheckoutCart" mca="checkout/cart/index" module="Magento_NegotiableQuote">
+        <block name="requestQuote" class="Magento\NegotiableQuote\Test\Block\RequestQuote" locator=".form.negotiable-quote.request" strategy="css selector"/>
+        <block name="requestQuotePopup" class="Magento\NegotiableQuote\Test\Block\RequestQuotePopup" locator=".modal-popup.popup-request-quote" strategy="css selector"/>
+        <block name="requestQuoteDiscountsPopup" class="Magento\NegotiableQuote\Test\Block\RequestQuoteDiscountsPopup" locator=".modal-popup.popup-request-quote-discounts" strategy="css selector"/>
+        <block name="discountBlock" class="Magento\NegotiableQuote\Test\Block\Onepage\Discount" locator="#block-discount" strategy="css selector" />
+        <block name="giftCardBlock" class="Magento\NegotiableQuote\Test\Block\Onepage\GiftCard" locator="#block-giftcard" strategy="css selector" />
+    </page>
+</config>

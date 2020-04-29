@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\UpdateCompanySharedCatalogTest" summary="Update catalog on company page" ticketId="MAGETWO-67972">
+        <variation name="UpdateCompanySharedCatalogTestVariation1">
+            <data name="description" xsi:type="string">Update company shared catalog</data>
+            <data name="initialCompany/dataset" xsi:type="string">company_with_required_fields_and_status</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="tag" xsi:type="string">test_type:acceptance_test</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertCompanySharedCatalogUpdated" />
+        </variation>
+    </testCase>
+</config>

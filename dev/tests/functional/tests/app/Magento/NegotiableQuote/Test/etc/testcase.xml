@@ -1,0 +1,258 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/TestCase/etc/testcase.xsd">
+    <scenario name="CloseNegotiableQuoteTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="closeQuote"/>
+        <step name="closeQuote" module="Magento_NegotiableQuote"/>
+    </scenario>
+    <scenario name="DeleteNegotiableQuoteTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="closeQuote"/>
+        <step name="closeQuote" module="Magento_NegotiableQuote" next="deleteQuote"/>
+        <step name="deleteQuote" module="Magento_NegotiableQuote"/>
+    </scenario>
+    <scenario name="CommentNegotiableQuoteTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="addCommentOnStorefront"/>
+        <step name="addCommentOnStorefront" module="Magento_NegotiableQuote" next="addCommentOnBackend"/>
+        <step name="addCommentOnBackend" module="Magento_NegotiableQuote"/>
+    </scenario>
+    <scenario name="CurrencyNegotiableQuoteTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="currencyRate"/>
+        <step name="currencyRate" module="Magento_NegotiableQuote" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote"/>
+    </scenario>
+    <scenario name="DraftNegotiableQuoteTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createTaxRule"/>
+        <step name="createTaxRule" module="Magento_Tax" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="draftQuote"/>
+        <step name="draftQuote" module="Magento_NegotiableQuote"/>
+    </scenario>
+    <scenario name="DeclineNegotiableQuoteTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createTaxRule"/>
+        <step name="createTaxRule" module="Magento_Tax" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="declineQuote"/>
+        <step name="declineQuote" module="Magento_NegotiableQuote"/>
+    </scenario>
+    <scenario name="RequestQuoteTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote"/>
+    </scenario>
+    <scenario name="UpdateNegotiableQuoteInAdminPanelTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="adminUpdateQuote"/>
+        <step name="adminUpdateQuote" module="Magento_NegotiableQuote"/>
+    </scenario>
+    <scenario name="RequestQuoteWithAddressTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="changeAddress"/>
+        <step name="changeAddress" module="Magento_NegotiableQuote" next="adminUpdateQuote"/>
+        <step name="adminUpdateQuote" module="Magento_NegotiableQuote"/>
+    </scenario>
+    <scenario name="RequestQuoteWithAddressAndTaxRuleTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createTaxRule"/>
+        <step name="createTaxRule" module="Magento_Tax" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="changeAddress"/>
+        <step name="changeAddress" module="Magento_NegotiableQuote" next="adminUpdateQuote"/>
+        <step name="adminUpdateQuote" module="Magento_NegotiableQuote"/>
+    </scenario>
+    <scenario name="RequestQuoteWithTaxRuleTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createTaxRule"/>
+        <step name="createTaxRule" module="Magento_Tax" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="adminUpdateQuote"/>
+        <step name="adminUpdateQuote" module="Magento_NegotiableQuote"/>
+    </scenario>
+    <scenario name="UpdateNegotiableQuoteOnStorefrontTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createTaxRule"/>
+        <step name="createTaxRule" module="Magento_Tax" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="adminSend"/>
+        <step name="adminSend" module="Magento_NegotiableQuote" next="updateQuote"/>
+        <step name="updateQuote" module="Magento_NegotiableQuote" next="sendQuote"/>
+        <step name="sendQuote" module="Magento_NegotiableQuote"/>
+    </scenario>
+    <scenario name="PlaceOrderWithoutShippingAddressTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createTaxRule"/>
+        <step name="createTaxRule" module="Magento_Tax" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="adminSend"/>
+        <step name="adminSend" module="Magento_NegotiableQuote" next="checkoutFromQuote"/>
+        <step name="checkoutFromQuote" module="Magento_NegotiableQuote" next="fillShippingAddress"/>
+        <step name="fillShippingAddress" module="Magento_Checkout" next="fillShippingMethod"/>
+        <step name="fillShippingMethod" module="Magento_Checkout" next="placeOrder"/>
+        <step name="placeOrder" module="Magento_Checkout"/>
+    </scenario>
+    <scenario name="PlaceOrderWithShippingAddressTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="changeAddress"/>
+        <step name="changeAddress" module="Magento_NegotiableQuote" next="adminUpdateQuote"/>
+        <step name="adminUpdateQuote" module="Magento_NegotiableQuote" next="checkoutFromQuote"/>
+        <step name="checkoutFromQuote" module="Magento_NegotiableQuote" next="fillShippingMethod"/>
+        <step name="fillShippingMethod" module="Magento_Checkout" next="placeOrder"/>
+        <step name="placeOrder" module="Magento_Checkout"/>
+    </scenario>
+    <scenario name="PlaceOrderWithExistingShippingAddressTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="selectDefaultShippingAddress"/>
+        <step name="selectDefaultShippingAddress" module="Magento_NegotiableQuote" next="adminUpdateQuote"/>
+        <step name="adminUpdateQuote" module="Magento_NegotiableQuote" next="checkoutFromQuote"/>
+        <step name="checkoutFromQuote" module="Magento_NegotiableQuote" next="fillShippingMethod"/>
+        <step name="fillShippingMethod" module="Magento_Checkout" next="placeOrder"/>
+        <step name="placeOrder" module="Magento_Checkout"/>
+    </scenario>
+    <scenario name="UpdateNegotiableQuoteTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createTaxRule"/>
+        <step name="createTaxRule" module="Magento_Tax" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="changeAddress"/>
+        <step name="changeAddress" module="Magento_NegotiableQuote" next="adminUpdateQuote"/>
+        <step name="adminUpdateQuote" module="Magento_NegotiableQuote" next="updateQuote"/>
+        <step name="updateQuote" module="Magento_NegotiableQuote" next="sendQuote"/>
+        <step name="sendQuote" module="Magento_NegotiableQuote" next="adminSend"/>
+        <step name="adminSend" module="Magento_NegotiableQuote"/>
+    </scenario>
+    <scenario name="CheckoutWithGiftCardAndCouponTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createTaxRule"/>
+        <step name="createTaxRule" module="Magento_Tax" next="createProducts"/>
+        <step name="createGiftCardAccount" module="Magento_GiftCardAccount" next="createCoupon"/>
+        <step name="createCoupon" module="Magento_NegotiableQuote" next="createSalesRule"/>
+        <step name="createSalesRule" module="Magento_SalesRule" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="changeAddress"/>
+        <step name="changeAddress" module="Magento_NegotiableQuote" next="adminUpdateQuote"/>
+        <step name="adminUpdateQuote" module="Magento_NegotiableQuote" next="updateQuote"/>
+        <step name="updateQuote" module="Magento_NegotiableQuote" next="sendQuote"/>
+        <step name="sendQuote" module="Magento_NegotiableQuote" next="adminSend"/>
+        <step name="adminSend" module="Magento_NegotiableQuote" next="checkoutFromQuote"/>
+        <step name="checkoutFromQuote" module="Magento_NegotiableQuote" next="fillShippingAddress"/>
+        <step name="fillShippingAddress" module="Magento_Checkout" next="fillShippingMethod"/>
+        <step name="fillShippingMethod" module="Magento_Checkout" next="placeOrder"/>
+        <step name="placeOrder" module="Magento_Checkout" next="createInvoice"/>
+        <step name="createInvoice" module="Magento_Sales"/>
+    </scenario>
+    <scenario name="CheckoutWithDeletedShippingAddressTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="changeAddress"/>
+        <step name="changeAddress" module="Magento_NegotiableQuote" next="sendQuote"/>
+        <step name="sendQuote" module="Magento_NegotiableQuote" next="adminUpdateQuote"/>
+        <step name="adminUpdateQuote" module="Magento_NegotiableQuote" next="openCustomerOnBackend"/>
+        <step name="openCustomerOnBackend" module="Magento_Customer" next="adminDeleteDefaultAddress"/>
+        <step name="adminDeleteDefaultAddress" module="Magento_NegotiableQuote"/>
+    </scenario>
+    <scenario name="PlaceOrderWithCartPriceRuleTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createTaxRule"/>
+        <step name="createTaxRule" module="Magento_Tax" next="createSalesRule"/>
+        <step name="createSalesRule" module="Magento_SalesRule" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="changeAddress"/>
+        <step name="changeAddress" module="Magento_NegotiableQuote" next="adminUpdateQuote"/>
+        <step name="adminUpdateQuote" module="Magento_NegotiableQuote" next="checkoutFromQuote"/>
+        <step name="checkoutFromQuote" module="Magento_NegotiableQuote" next="fillShippingMethod"/>
+        <step name="fillShippingMethod" module="Magento_Checkout" next="placeOrder"/>
+        <step name="placeOrder" module="Magento_NegotiableQuote"/>
+    </scenario>
+    <scenario name="PlaceOrderWithCustomDisplayCurrencyTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="currencyRate"/>
+        <step name="currencyRate" module="Magento_NegotiableQuote" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="adminUpdateQuote"/>
+        <step name="adminUpdateQuote" module="Magento_NegotiableQuote" next="checkoutFromQuote"/>
+        <step name="checkoutFromQuote" module="Magento_NegotiableQuote" next="fillShippingAddress"/>
+        <step name="fillShippingAddress" module="Magento_Checkout" next="fillShippingMethod"/>
+        <step name="fillShippingMethod" module="Magento_Checkout" next="placeOrder"/>
+        <step name="placeOrder" module="Magento_Checkout"/>
+    </scenario>
+    <scenario name="CheckoutFromDeclinedQuoteTest" firstStep="setupConfiguration">
+        <step name="setupConfiguration" module="Magento_Config" next="createCompanyAdmin"/>
+        <step name="createCompanyAdmin" module="Magento_NegotiableQuote" next="createProducts"/>
+        <step name="createProducts" module="Magento_Catalog" next="loginCustomerOnFrontend"/>
+        <step name="loginCustomerOnFrontend" module="Magento_Customer" next="addProductsToTheCart"/>
+        <step name="addProductsToTheCart" module="Magento_Checkout" next="requestQuote"/>
+        <step name="requestQuote" module="Magento_NegotiableQuote" next="adminUpdateQuote"/>
+        <step name="adminUpdateQuote" module="Magento_NegotiableQuote" next="checkoutFromQuote"/>
+        <step name="checkoutFromQuote" module="Magento_NegotiableQuote" next="fillShippingAddress"/>
+        <step name="fillShippingAddress" module="Magento_Checkout" next="fillShippingMethod"/>
+        <step name="fillShippingMethod" module="Magento_Checkout" next="placeOrder"/>
+        <step name="placeOrder" module="Magento_Checkout"/>
+    </scenario>
+</config>

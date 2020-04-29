@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\Company\Test\TestCase\ManageStatusOfParentUserTest" summary="Manage status of parent user" ticketId="MAGETWO-68319">
+        <variation name="ManageStatusOfParentUserTestVariation1_Change" summary="Change status of parent user and check status of child user">
+            <data name="companyAdmin/dataset" xsi:type="string">default</data>
+            <data name="parentCompanyUser/dataset" xsi:type="string">company_customer_3</data>
+            <data name="companyUser/dataset" xsi:type="string">default</data>
+            <data name="userInactivePresenceInGrid" xsi:type="array">
+                <item name="active" xsi:type="boolean">false</item>
+                <item name="all" xsi:type="boolean">true</item>
+                <item name="inactive" xsi:type="boolean">true</item>
+            </data>
+            <data name="userActivePresenceInGrid" xsi:type="array">
+                <item name="active" xsi:type="boolean">true</item>
+                <item name="all" xsi:type="boolean">true</item>
+                <item name="inactive" xsi:type="boolean">false</item>
+            </data>
+            <data name="userInactivePresenceInCompanyTree" xsi:type="array">
+                <item name="parent" xsi:type="boolean">false</item>
+                <item name="child" xsi:type="boolean">true</item>
+            </data>
+            <data name="userActivePresenceInCompanyTree" xsi:type="array">
+                <item name="parent" xsi:type="boolean">true</item>
+                <item name="child" xsi:type="boolean">true</item>
+            </data>
+            <data name="isChangeUserStatusToActive" xsi:type="boolean">true</data>
+            <data name="steps" xsi:type="array">
+                <item name="0" xsi:type="string">set_user_status_inactive</item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertUserPresenceAfterStatusChange"/>
+        </variation>
+        <variation name="ManageStatusOfParentUserTestVariation2_Delete" summary="Delete parent user and check status of child user">
+            <data name="companyAdmin/dataset" xsi:type="string">default</data>
+            <data name="parentCompanyUser/dataset" xsi:type="string">company_customer_3</data>
+            <data name="companyUser/dataset" xsi:type="string">default</data>
+            <data name="userInactivePresenceInGrid" xsi:type="array">
+                <item name="active" xsi:type="boolean">false</item>
+                <item name="all" xsi:type="boolean">false</item>
+                <item name="inactive" xsi:type="boolean">false</item>
+            </data>
+            <data name="userInactivePresenceInCompanyTree" xsi:type="array">
+                <item name="parent" xsi:type="boolean">false</item>
+                <item name="child" xsi:type="boolean">true</item>
+            </data>
+            <data name="isChangeUserStatusToActive" xsi:type="boolean">false</data>
+            <data name="steps" xsi:type="array">
+                <item name="0" xsi:type="string">delete_user</item>
+            </data>
+            <data name="configData" xsi:type="string">company_enable</data>
+            <constraint name="Magento\Company\Test\Constraint\AssertUserPresenceAfterStatusChange"/>
+        </variation>
+    </testCase>
+</config>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\PricesPerWebsiteTest" summary="Validate prices and currency symbols in shared catalog pricing grid">
+        <variation name="PricesPerWebsiteTestVariation1" summary="Set custom currencies for multiple websites and validate currency symbols" ticketId="MAGETWO-68593">
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="product/dataset" xsi:type="string">product_with_additional_website</data>
+            <data name="currencies" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="allowedCurrencies" xsi:type="array">
+                        <item name="0" xsi:type="string">EUR</item>
+                        <item name="1" xsi:type="string">USD</item>
+                    </item>
+                    <item name="baseCurrency" xsi:type="string">EUR</item>
+                </item>
+                <item name="1" xsi:type="array">
+                    <item name="allowedCurrencies" xsi:type="array">
+                        <item name="0" xsi:type="string">RUB</item>
+                        <item name="1" xsi:type="string">USD</item>
+                    </item>
+                    <item name="baseCurrency" xsi:type="string">RUB</item>
+                </item>
+            </data>
+            <data name="data/discount" xsi:type="string">20</data>
+            <data name="data/type" xsi:type="string">fixed</data>
+            <data name="allWebsitesCurrency" xsi:type="array">
+                <item name="price" xsi:type="string">$</item>
+                <item name="custom_price" xsi:type="string">$</item>
+                <item name="new_price" xsi:type="string">$</item>
+            </data>
+            <data name="expectedCurrencies" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="price" xsi:type="string">€</item>
+                    <item name="custom_price" xsi:type="string">€</item>
+                    <item name="new_price" xsi:type="string">€</item>
+                </item>
+                <item name="1" xsi:type="array">
+                    <item name="price" xsi:type="string">RUB</item>
+                    <item name="new_price" xsi:type="string">RUB</item>
+                </item>
+            </data>
+            <data name="configData" xsi:type="string">shared_catalog_enable,category_permissions_on,catalog_price_scope_website</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertProductPricesPerWebsite" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertTierPricesCurrencyInWebsite" />
+        </variation>
+        <variation name="PricesPerWebsiteTestVariation2" summary="Set custom prices for multiple websites and validate prices" ticketId="MAGETWO-68581">
+            <data name="issue" xsi:type="string">MAGETWO-63241: Base price for the Main Website Store is displayed for the product in the Catalog</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="product/dataset" xsi:type="string">product_with_additional_website_and_custom_price</data>
+            <data name="allWebsitesCurrency" xsi:type="array">
+                <item name="price" xsi:type="string">$10</item>
+                <item name="custom_price" xsi:type="string">$</item>
+                <item name="new_price" xsi:type="string">$10</item>
+            </data>
+            <data name="expectedCurrencies" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="price" xsi:type="string">$15</item>
+                    <item name="custom_price" xsi:type="string">$</item>
+                    <item name="new_price" xsi:type="string">$15</item>
+                </item>
+                <item name="1" xsi:type="array">
+                    <item name="price" xsi:type="string">$20</item>
+                    <item name="custom_price" xsi:type="string">$</item>
+                    <item name="new_price" xsi:type="string">$20</item>
+                </item>
+            </data>
+            <data name="configData" xsi:type="string">shared_catalog_enable,category_permissions_on,catalog_price_scope_website</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertProductPricesPerWebsite" />
+        </variation>
+    </testCase>
+</config>

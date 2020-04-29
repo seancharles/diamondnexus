@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\ConfigureSharedCatalogTest" summary="Configure Shared Catalog" ticketId="MAGETWO-68471">
+        <variation name="ConfigureSharedCatalogTestVariation1">
+            <data name="description" xsi:type="string">shared catalog configuration</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="products/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="data/0/is_tier_price_allowed" xsi:type="boolean">true</data>
+            <data name="products/1" xsi:type="string">bundleProduct::bundle_fixed_100_dollar_product</data>
+            <data name="data/1/is_tier_price_allowed" xsi:type="boolean">true</data>
+            <data name="products/2" xsi:type="string">bundleProduct::bundle_dynamic_product</data>
+            <data name="data/2/is_tier_price_allowed" xsi:type="boolean">true</data>
+            <data name="products/3" xsi:type="string">groupedProduct::three_simple_products</data>
+            <data name="data/3/is_tier_price_allowed" xsi:type="boolean">false</data>
+            <data name="products/4" xsi:type="string">giftCardProduct::giftcard_product_with_price</data>
+            <data name="data/4/is_tier_price_allowed" xsi:type="boolean">false</data>
+            <data name="products/5" xsi:type="string">configurableProduct::with_out_of_stock_item</data>
+            <data name="data/5/is_tier_price_allowed" xsi:type="boolean">false</data>
+            <data name="data/discount" xsi:type="string">20</data>
+            <data name="data/type" xsi:type="string">discount</data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertProductsChecked" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertTierPriceConfigureLink" />
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertTierPrices" />
+        </variation>
+    </testCase>
+</config>

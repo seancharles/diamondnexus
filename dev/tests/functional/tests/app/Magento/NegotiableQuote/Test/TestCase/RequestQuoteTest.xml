@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\RequestQuoteTest" summary="Negotiable quote test" ticketId="MAGETWO-68069, MAGETWO-67878">
+        <variation name="RequestQuoteTestVariation1" summary="Request negotiated quote" ticketId="B2B-774">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="company" xsi:type="string">company_with_required_fields_and_sales_rep</data>
+            <data name="products/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="products/1" xsi:type="string">catalogProductSimple::product_20_dollar</data>
+            <data name="qtys/0" xsi:type="string">1</data>
+            <data name="qtys/1" xsi:type="string">1</data>
+            <data name="tax" xsi:type="number">0</data>
+            <data name="messages/0" xsi:type="string">message</data>
+            <data name="historyLog/0" xsi:type="string">Comment</data>
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable, default_tax_configuration</data>
+            <data name="frontDiscountApplied" xsi:type="null"/>
+            <data name="discountType" xsi:type="null"/>
+            <data name="discountValue" xsi:type="null"/>
+            <data name="method" xsi:type="null"/>
+            <data name="proposedShippingPrice" xsi:type="null"/>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteCorrectOnStorefront" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuotePrintCorrectOnStorefront" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteCorrectInAdmin" />
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuotePrintCorrectInAdmin" />
+        </variation>
+        <variation name="RequestQuoteTestVariation2_WithCompanyStatusBlocked" summary="Change company status to Blocked and verify customer access" ticketId="B2B-2674">
+            <data name="customer/dataset" xsi:type="string">default</data>
+            <data name="company" xsi:type="string">company_status_blocked</data>
+            <data name="products/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="products/1" xsi:type="string">catalogProductSimple::product_20_dollar</data>
+            <data name="qtys/0" xsi:type="string">1</data>
+            <data name="qtys/1" xsi:type="string">1</data>
+            <data name="updateData/discountType" xsi:type="string">percentage</data>
+            <data name="updateData/discountValue" xsi:type="string">20</data>
+            <data name="updateData/historyLog/0" xsi:type="string">Comment</data>
+            <data name="prices/quoteGrandTotal" xsi:type="string">$30.00</data>
+            <data name="tax" xsi:type="number">0</data>
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable</data>
+            <data name="frontDiscountApplied" xsi:type="null"/>
+            <data name="method" xsi:type="null"/>
+            <data name="proposedShippingPrice" xsi:type="null"/>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertCheckoutLinkNotVisibleInQuote"/>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteGrandTotalOnStorefront"/>
+        </variation>
+    </testCase>
+</config>

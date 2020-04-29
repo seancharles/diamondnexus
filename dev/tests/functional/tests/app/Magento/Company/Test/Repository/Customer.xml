@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/Magento/Mtf/Repository/etc/repository.xsd">
+    <repository class="Magento\Customer\Test\Repository\Customer">
+        <dataset name="company_customer_register">
+            <field name="firstname" xsi:type="string">john</field>
+            <field name="lastname" xsi:type="string">doe</field>
+            <field name="email" xsi:type="string">johndoe%isolation%@example.com</field>
+            <field name="is_subscribed" xsi:type="string">No</field>
+            <field name="password" xsi:type="string">123123^qQ</field>
+            <field name="password_confirmation" xsi:type="string">123123^qQ</field>
+        </dataset>
+        <dataset name="company_customer_1">
+            <field name="firstname" xsi:type="string">john%isolation%</field>
+            <field name="lastname" xsi:type="string">doe%isolation%</field>
+            <field name="email" xsi:type="string">johndoe%isolation%@example.com</field>
+            <field name="job_title" xsi:type="string">job %isolation%</field>
+            <field name="telephone" xsi:type="string">%isolation%</field>
+        </dataset>
+        <dataset name="company_customer_2">
+            <field name="firstname" xsi:type="string">anotherjohn%isolation%</field>
+            <field name="lastname" xsi:type="string">anotherdoe%isolation%</field>
+            <field name="email" xsi:type="string">anotherjohndoe%isolation%@example.com</field>
+            <field name="job_title" xsi:type="string">anotherjob %isolation%</field>
+            <field name="telephone" xsi:type="string">%isolation%</field>
+        </dataset>
+        <dataset name="company_customer_3">
+            <field name="firstname" xsi:type="string">Jack</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="group_id" xsi:type="array">
+                <item name="dataset" xsi:type="string">General</item>
+            </field>
+            <field name="email" xsi:type="string">JackDoe_%isolation%@example.com</field>
+            <field name="password" xsi:type="string">123123^q</field>
+            <field name="password_confirmation" xsi:type="string">123123^q</field>
+        </dataset>
+        <dataset name="register_customer_company" replace="register_customer">
+            <field name="firstname" xsi:type="string">John</field>
+            <field name="lastname" xsi:type="string">Doe</field>
+            <field name="email" xsi:type="string">JohnDoe_%isolation%@example.com</field>
+            <field name="password" xsi:type="string">123123^q</field>
+            <field name="password_confirmation" xsi:type="string">123123^q</field>
+        </dataset>
+        <dataset name="default_with_company_association">
+            <field name="company_association" xsi:type="string">Company %isolation%</field>
+        </dataset>
+        <dataset name="company_customer_job_phone">
+            <field name="job_title" xsi:type="string">job %isolation%</field>
+            <field name="telephone" xsi:type="string">%isolation%</field>
+        </dataset>
+    </repository>
+</config>

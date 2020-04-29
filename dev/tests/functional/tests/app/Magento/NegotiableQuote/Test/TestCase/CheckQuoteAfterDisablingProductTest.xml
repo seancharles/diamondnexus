@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\NegotiableQuote\Test\TestCase\CheckQuoteAfterDisablingProductTest" summary="Check quote after disabling product" ticketId="MAGETWO-68253">
+        <variation name="CheckQuoteAfterDisablingProductTest1" summary="">
+            <data name="customer/dataset" xsi:type="string">johndoe_with_addresses</data>
+            <data name="company" xsi:type="string">company_with_required_fields_and_sales_rep</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="productsList/1" xsi:type="string">catalogProductSimple::product_20_dollar</data>
+            <data name="quote/quote-message" xsi:type="string">comment</data>
+            <data name="quote/quote-name" xsi:type="string">name</data>
+            <data name="address/dataset" xsi:type="string">US_address_1_without_email</data>
+            <data name="configData" xsi:type="string">company_enable, negotiable_quote_enable</data>
+            <data name="taxRule" xsi:type="string">custom_product_tax_rule,custom_shipping_tax_rule</data>
+            <data name="steps" xsi:type="array">
+                <item name="0" xsi:type="string">select_default_shipping_address</item>
+            </data>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteChangesAfterDisablingProductInAdmin"/>
+            <constraint name="Magento\NegotiableQuote\Test\Constraint\AssertQuoteChangesAfterDisablingProductOnStorefront"/>
+        </variation>
+    </testCase>
+</config>

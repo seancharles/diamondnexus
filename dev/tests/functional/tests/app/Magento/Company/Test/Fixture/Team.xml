@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/fixture.xsd">
+    <fixture name="team" module="Magento_Company" type="flat" collection="Magento\Company\Model\ResourceModel\Team\Collection" repository_class="Magento\Company\Test\Repository\Team" handler_interface="Magento\Company\Test\Handler\Team\TeamInterface" class="Magento\Company\Test\Fixture\Team" entity_type="team">
+        <field name="name" is_required="1"/>
+        <field name="description" is_required="0"/>
+    </fixture>
+</config>

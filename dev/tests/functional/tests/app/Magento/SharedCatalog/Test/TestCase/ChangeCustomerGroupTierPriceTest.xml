@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\SharedCatalog\Test\TestCase\ChangeCustomerGroupTierPriceTest" summary="Change customer group for tier price" ticketId="MAGETWO-68473">
+        <variation name="ChangeCustomerGroupTierPriceTestVariation1" summary="Change product tier price customer group. Check that tier price is not displaying in the shared catalog settings">
+            <data name="emptySharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="tierPricesData" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="qty" xsi:type="string">1</item>
+                    <item name="price" xsi:type="string">5.00</item>
+                </item>
+            </data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\AssertSharedCatalogTierPriceRemoved" />
+        </variation>
+        <variation name="ChangeCustomerGroupTierPriceTestVariation2" summary="Add tier price in the shared catalog settings. Check that tier price is displaying in product advanced pricing">
+            <data name="emptySharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="tierPricesData" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="qty" xsi:type="string">1</item>
+                    <item name="price" xsi:type="string">5.00</item>
+                </item>
+            </data>
+            <data name="steps" xsi:type="array">
+                <item name="0" xsi:type="string">add_tier_price_in_shared_catalog</item>
+            </data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\Product\AssertTierPriceIsDisplaying" />
+        </variation>
+        <variation name="ChangeCustomerGroupTierPriceTestVariation3" summary="Add tier price, remove product from the shared catalog. Check that tier price in not displaying in product advanced pricing">
+            <data name="emptySharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="sharedCatalog/dataset" xsi:type="string">shared_catalog_default</data>
+            <data name="productsList/0" xsi:type="string">catalogProductSimple::product_10_dollar</data>
+            <data name="tierPricesData" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="qty" xsi:type="string">1</item>
+                    <item name="price" xsi:type="string">5.00</item>
+                </item>
+            </data>
+            <data name="steps" xsi:type="array">
+                <item name="0" xsi:type="string">add_tier_price_in_shared_catalog</item>
+                <item name="0" xsi:type="string">unassign_product_from_shared_catalog</item>
+            </data>
+            <constraint name="Magento\SharedCatalog\Test\Constraint\Product\AssertTierPriceIsNotDisplaying" />
+        </variation>
+    </testCase>
+</config>

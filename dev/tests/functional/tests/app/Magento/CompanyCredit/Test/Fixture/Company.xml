@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/fixture.xsd">
+    <fixture name="company">
+        <field name="exceed_limit" is_required="0" group="company_credit" />
+        <field name="currency_code" is_required="0" group="company_credit" />
+        <field name="credit_limit" is_required="0" group="company_credit" />
+        <field name="credit_comment" is_required="0" group="company_credit" />
+    </fixture>
+</config>
