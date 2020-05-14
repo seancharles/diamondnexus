@@ -357,6 +357,7 @@ return [
         'Magento_PaypalReCaptcha' => 1,
         'MSP_TwoFactorAuth' => 1,
         'RunAsRoot_PrometheusExporter' => 1,
+        'ShipperHQ_AddressAutocomplete' => 1,
         'ShipperHQ_Common' => 1,
         'ShipperHQ_Logger' => 1,
         'ShipperHQ_Shipper' => 1,
