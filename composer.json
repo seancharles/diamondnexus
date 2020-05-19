@@ -13,7 +13,7 @@
         "magento/extension-b2b": "^1.1",
         "magento/product-enterprise-edition": "2.3.4",
         "paypal/module-braintree": "^3.4",
-        "run-as-root/magento2-prometheus-exporter": "^1.2"
+        "run-as-root/magento2-prometheus-exporter": "^1.2",
         "shipperhq/module-address-autocomplete": "^20.3",
         "shipperhq/module-shipper": "^20.37"
     },
