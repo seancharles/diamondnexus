@@ -55,8 +55,8 @@ public function install(
             ',',
             $eavSetup->getAttribute(\Magento\Catalog\Model\Product::ENTITY, $field, 'apply_to')
         );
-        if (!in_array(\ForeverCompanies\DynamicBundle\Model\Product\Type\Bundle::TYPE_ID, $applyTo)) {
-            $applyTo[] = \ForeverCompanies\DynamicBundle\Model\Product\Type\Bundle::TYPE_ID;
+        if (!in_array(\ForeverCompanies\DynamicBundle\Model\Product\Type\Dynamic::TYPE_ID, $applyTo)) {
+            $applyTo[] = \ForeverCompanies\DynamicBundle\Model\Product\Type\Dynamic::TYPE_ID;
             $eavSetup->updateAttribute(
                 \Magento\Catalog\Model\Product::ENTITY,
                 $field,

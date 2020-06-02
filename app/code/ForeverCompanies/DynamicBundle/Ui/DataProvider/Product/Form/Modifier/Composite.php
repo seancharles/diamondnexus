@@ -81,7 +81,7 @@ class Composite extends AbstractModifier
             }
         }
         return $meta;
-    }W
+    }
 
     /**
      * {@inheritdoc}

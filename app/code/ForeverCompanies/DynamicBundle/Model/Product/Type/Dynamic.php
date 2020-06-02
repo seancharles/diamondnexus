@@ -2,9 +2,9 @@
  
 namespace ForeverCompanies\DynamicBundle\Model\Product\Type;
  
-class Bundle extends \Magento\Bundle\Model\Product\Type
+class Dynamic extends \Magento\Bundle\Model\Product\Type
 {
-    const TYPE_ID = 'dynamic_bundle';
+    const TYPE_ID = 'dynamic';
 
     /**
      * {@inheritdoc}
