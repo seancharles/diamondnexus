@@ -1,6 +1,6 @@
 <?php
 
-	namespace ForeverCompanies\BundleOptions\Observer;
+	namespace ForeverCompanies\DynamicBundle\Observer;
 
 	use Magento\Framework\Event\ObserverInterface;
 	

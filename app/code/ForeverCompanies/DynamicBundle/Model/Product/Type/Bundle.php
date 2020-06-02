@@ -1,10 +1,10 @@
 <?php
  
-namespace ForeverCompanies\BundleOptions\Model\Product\Type;
+namespace ForeverCompanies\DynamicBundle\Model\Product\Type;
  
 class Bundle extends \Magento\Bundle\Model\Product\Type
 {
-    const TYPE_ID = 'forevercompanies_bundleoptions_type_code';
+    const TYPE_ID = 'dynamic_bundle';
 
     /**
      * {@inheritdoc}
