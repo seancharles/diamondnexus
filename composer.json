@@ -10,6 +10,7 @@
         "sort-packages": true
     },
     "require": {
+        "magento/data-migration-tool": "2.3.4",
         "magento/extension-b2b": "^1.1",
         "magento/product-enterprise-edition": "2.3.4",
         "gene/module-braintree": "^3.4",

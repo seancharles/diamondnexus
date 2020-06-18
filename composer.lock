@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "53f71a3607ccf052ee45fb011f75f508",
+    "content-hash": "894024fdbeb6ab2278c122b7e1bc1537",
     "packages": [
         {
             "name": "amzn/amazon-pay-and-login-magento-2-module",
@@ -2027,6 +2027,34 @@
             ],
             "description": "Magento composer library helps to instantiate Composer application and run composer commands.",
             "time": "2020-01-07T22:16:08+00:00"
+        },
+        {
+            "name": "magento/data-migration-tool",
+            "version": "2.3.4",
+            "dist": {
+                "type": "zip",
+                "url": "https://repo.magento.com/archives/magento/data-migration-tool/magento-data-migration-tool-2.3.4.0.zip",
+                "shasum": "1a198c3c15721f3bae4fd5751d5547ba3136607b"
+            },
+            "require": {
+                "magento/framework": "*",
+                "monolog/monolog": "^1.17",
+                "symfony/console": "~4.1.0||~4.2.0||~4.3.0||~4.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Migration\\": "src/Migration"
+                },
+                "files": [
+                    "src/Migration/cli_commands.php",
+                    "registration.php"
+                ]
+            },
+            "description": "Migration Tool"
         },
         {
             "name": "magento/extension-b2b",
