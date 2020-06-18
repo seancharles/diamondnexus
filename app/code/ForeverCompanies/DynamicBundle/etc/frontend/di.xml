@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+	<!--
+	<type name="Magento\Catalog\Model\Product">
+		<plugin name="plugin_for_product_name" type="ForeverCompanies\DynamicBundle\Plugins\Product" />
+	</type>
+	-->
+	
+	<type name="Magento\Quote\Model\Quote\Item">
+		<plugin name="cart_item_plugin" type="ForeverCompanies\DynamicBundle\Plugins\Quote" />
+	</type>
+	
+	<!--
+	<type name="Magento\Quote\Model\Quote\Address\Total\Subtotal">
+		<plugin name="cart_total_plugin" type="ForeverCompanies\DynamicBundle\Plugins\Total" />
+	</type>
+	-->
+	
+	<!--
+    <type name="Magento\Catalog\Helper\Product\Configuration">
+      <plugin name="modifyCartOptions" type="ForeverCompanies\DynamicBundle\Plugins\ConfigurationHelper" sortOrder="1" />
+    </type>
+    <type name="Magento\Bundle\Helper\Catalog\Product\Configuration">
+      <plugin name="modifyBundleOptions" type="ForeverCompanies\DynamicBundle\Plugins\BundleConfigurationHelper" sortOrder="1" />
+    </type>
+	-->
+	
+	<preference for="Magento\Catalog\Helper\Product\Configuration" type="ForeverCompanies\DynamicBundle\Helper\Product\Configuration" />
+	<preference for="Magento\Bundle\Helper\Catalog\Product\Configuration" type="ForeverCompanies\DynamicBundle\Helper\Catalog\Product\Configuration" />
+	
+    <type name="Magento\Checkout\Model\DefaultConfigProvider">
+        <plugin name="checkout-summary-product-attribute" type="ForeverCompanies\DynamicBundle\Plugins\Checkout\Model\DefaultConfigProvider" />
+    </type>
+	
+</config>

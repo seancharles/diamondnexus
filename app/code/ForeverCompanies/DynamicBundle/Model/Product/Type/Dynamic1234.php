@@ -13,4 +13,13 @@ class Dynamic extends \Magento\Bundle\Model\Product\Type
     {
         // method intentionally empty
     }
+	
+	public function getEditableAttributes($product)
+	{
+		$attributes = parent::getEditableAttributes($product);
+		
+		unset($attributes['quantity']);
+		
+		return $attributes;
+	}
 }

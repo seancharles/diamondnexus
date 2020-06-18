@@ -68,7 +68,7 @@ class Composite extends AbstractModifier
      */
     public function modifyMeta(array $meta)
     {
-        if ($this->locator->getProduct()->getTypeId() === 'dynamic_bundle') {
+        if ($this->locator->getProduct()->getTypeId() === 'dynamic') {
             foreach ($this->modifiers as $bundleClass) {
                 /** @var ModifierInterface $bundleModifier */
                 $bundleModifier = $this->objectManager->get($bundleClass);
@@ -93,7 +93,7 @@ class Composite extends AbstractModifier
         /** @var \Magento\Catalog\Api\Data\ProductInterface $product */
         $product = $this->locator->getProduct();
         $modelId = $product->getId();
-        $isBundleProduct = $product->getTypeId() === 'dynamic_bundle';
+        $isBundleProduct = $product->getTypeId() === 'dynamic';
         if ($isBundleProduct && $modelId) {
             $data[$modelId][BundlePanel::CODE_BUNDLE_OPTIONS][BundlePanel::CODE_BUNDLE_OPTIONS] = [];
             /** @var \Magento\Bundle\Api\Data\OptionInterface $option */
@@ -135,6 +135,8 @@ class Composite extends AbstractModifier
                 ];
             }
         }
+		
+		unset($data['']);
 
         return $data;
     }

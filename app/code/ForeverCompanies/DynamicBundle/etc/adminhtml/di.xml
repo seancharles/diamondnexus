@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 	<virtualType name="Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Pool">
 		<arguments>
@@ -25,5 +26,36 @@
 				<item name="bundleCustomOptions" xsi:type="string">Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundleCustomOptions</item>
 			</argument>
 		</arguments>
+	</type>
+	<type name="Magento\Catalog\Block\Adminhtml\Product\Edit\Tabs\Plugin">
+		<plugin name="product-form-decorator" type="ForeverCompanies\DynamicBundle\Block\Adminhtml\Product\Edit\Tabs\Plugin" />
+	</type>
+	<type name="ForeverCompanies\DynamicBundle\Block\Adminhtml\Product\Edit\Tabs\Plugin">
+		<arguments>
+			<argument name="ignoredTabs" xsi:type="array">
+				<item name="design" xsi:type="string">design</item>
+			</argument>
+			<argument name="updatedTabs" xsi:type="array">
+				<item name="content" xsi:type="array">
+					<item name="label" xsi:type="string">Custom Product Title</item>
+					<item name="group_code" xsi:type="const">Magento\Catalog\Block\Adminhtml\Product\Edit\Tabs::BASIC_TAB_GROUP_CODE</item>
+				</item>
+			</argument>
+		</arguments>
+	</type>
+	<!--
+	<virtualType name="Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Pool">
+		<arguments>
+			<argument name="modifiers" xsi:type="array">
+				<item name="advancedInventory" xsi:type="array">
+					<item name="class" xsi:type="string">Magento\CatalogInventory\Ui\DataProvider\Product\Form\Modifier\AdvancedInventory</item>
+					<item name="sortOrder" xsi:type="number">20</item>
+				</item>
+			</argument>
+		</arguments>
+	</virtualType>
+	-->
+	<type name="Magento\Catalog\Model\Product">
+		<plugin name="plugin_for_product_name" type="ForeverCompanies\DynamicBundle\Plugins\Product" />
 	</type>
 </config>
