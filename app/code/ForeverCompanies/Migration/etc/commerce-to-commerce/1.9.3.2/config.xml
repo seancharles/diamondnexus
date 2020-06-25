@@ -107,28 +107,28 @@
         </step>
     </steps>
     <source>
-        <database host="172.19.0.3" name="forevercompanies" user="root" password="admin123" />
+        <database host="magento-stage.cp9ve0szhrvj.us-east-2.rds.amazonaws.com" name="magento_paul" user="magento_admin" password="329gvqbu42" />
     </source>
     <destination>
-        <database host="172.20.0.3" name="forevercompanies" user="root" password="admin123" />
+        <database host="magento-stage.cp9ve0szhrvj.us-east-2.rds.amazonaws.com" name="magento2_joeltwo" user="magento_admin" password="329gvqbu42" />
     </destination>
     <options>
-        <map_file>app/code/ForeverCompanies/Migration/etc/opensource-to-opensource/1.9.3.2/map.xml</map_file>
-        <eav_map_file>etc/opensource-to-opensource/map-eav.xml.dist</eav_map_file>
-        <eav_document_groups_file>etc/opensource-to-opensource/eav-document-groups.xml.dist</eav_document_groups_file>
-        <eav_attribute_groups_file>etc/opensource-to-opensource/eav-attribute-groups.xml.dist</eav_attribute_groups_file>
-        <log_map_file>etc/opensource-to-opensource/map-log.xml.dist</log_map_file>
-        <log_document_groups_file>etc/opensource-to-opensource/log-document-groups.xml.dist</log_document_groups_file>
-        <settings_map_file>etc/opensource-to-opensource/settings.xml.dist</settings_map_file>
-        <customer_map_file>etc/opensource-to-opensource/map-customer.xml.dist</customer_map_file>
-        <customer_document_groups_file>etc/opensource-to-opensource/customer-document-groups.xml.dist</customer_document_groups_file>
-        <customer_attribute_groups_file>etc/opensource-to-opensource/customer-attribute-groups.xml.dist</customer_attribute_groups_file>
-        <delta_document_groups_file>etc/opensource-to-opensource/deltalog.xml.dist</delta_document_groups_file>
-        <order_grids_document_groups_file>etc/opensource-to-opensource/order-grids-document-groups.xml.dist</order_grids_document_groups_file>
-        <map_document_groups>etc/opensource-to-opensource/map-document-groups.xml.dist</map_document_groups>
-        <class_map>etc/opensource-to-opensource/class-map.xml.dist</class_map>
-        <tier_price_map_file>etc/opensource-to-opensource/1.9.3.2/map-tier-price.xml.dist</tier_price_map_file>
-        <stores_map_file>etc/opensource-to-opensource/map-stores.xml.dist</stores_map_file>
+        <map_file>app/code/ForeverCompanies/Migration/etc/commerce-to-commerce/1.9.3.2/map.xml</map_file>
+        <eav_map_file>etc/commerce-to-commerce/map-eav.xml.dist</eav_map_file>
+        <eav_document_groups_file>etc/commerce-to-commerce/eav-document-groups.xml.dist</eav_document_groups_file>
+        <eav_attribute_groups_file>etc/commerce-to-commerce/eav-attribute-groups.xml.dist</eav_attribute_groups_file>
+        <log_map_file>etc/commerce-to-commerce/map-log.xml.dist</log_map_file>
+        <log_document_groups_file>etc/commerce-to-commerce/log-document-groups.xml.dist</log_document_groups_file>
+        <settings_map_file>etc/commerce-to-commerce/settings.xml.dist</settings_map_file>
+        <customer_map_file>etc/commerce-to-commerce/map-customer.xml.dist</customer_map_file>
+        <customer_document_groups_file>etc/commerce-to-commerce/customer-document-groups.xml.dist</customer_document_groups_file>
+        <customer_attribute_groups_file>etc/commerce-to-commerce/customer-attribute-groups.xml.dist</customer_attribute_groups_file>
+        <delta_document_groups_file>etc/commerce-to-commerce/deltalog.xml.dist</delta_document_groups_file>
+        <order_grids_document_groups_file>etc/commerce-to-commerce/order-grids-document-groups.xml.dist</order_grids_document_groups_file>
+        <map_document_groups>etc/commerce-to-commerce/map-document-groups.xml.dist</map_document_groups>
+        <class_map>etc/commerce-to-commerce/class-map.xml.dist</class_map>
+        <tier_price_map_file>etc/commerce-to-commerce/1.9.3.2/map-tier-price.xml.dist</tier_price_map_file>
+        <stores_map_file>etc/commerce-to-commerce/map-stores.xml.dist</stores_map_file>
         <!--
         In case bulk_size=0 it will be auto-detected for every document.
         -->
@@ -145,7 +145,7 @@
         <log_file>migration.log</log_file>
         <progress_bar_format>%percent%% [%bar%] Remaining Time: %remaining%</progress_bar_format>
         <upgrade_customer_password_hash>1</upgrade_customer_password_hash>
-        <edition_migrate>opensource-to-opensource</edition_migrate>
+        <edition_migrate>commerce-to-commerce</edition_migrate>
         <edition_number>1.9.3.2</edition_number>
         <init_statements_source>SET NAMES utf8;</init_statements_source>
         <init_statements_destination>SET NAMES utf8;</init_statements_destination>
