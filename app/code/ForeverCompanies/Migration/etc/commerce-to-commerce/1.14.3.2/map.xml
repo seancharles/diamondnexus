@@ -9,6 +9,24 @@
     <source>
         <document_rules>
             <ignore>
+                <document>forevercompanies_tealium_event</document>
+            </ignore>
+            <ignore>
+                <document>stones_intermediary</document>
+            </ignore>
+            <ignore>
+                <document>stones_intermediary_shapemap</document>
+            </ignore>
+            <ignore>
+                <document>stones_intermediary_suppliers</document>
+            </ignore>
+            <ignore>
+                <document>teal_orders_new</document>
+            </ignore>
+            <ignore>
+                <document>visitor_submissions_11_18_2019</document>
+            </ignore>
+            <ignore>
                 <document>wishlist</document>
             </ignore>
             <ignore>
@@ -1657,6 +1675,16 @@
                 <field>admin_user.extra</field>
                 <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
+			
+			<!-- custom -->
+            <ignore>
+                <field>customer_entity.anonymized</field>
+            </ignore>
+            <ignore>
+                <field>customer_address_entity.anonymized</field>
+            </ignore>
+			<!-- end custom -->
+			
             <ignore>
                 <field>admin_rule.role_type</field>
             </ignore>
@@ -3679,6 +3707,13 @@
                     <param name="fieldWithProductId" value="parent_product_id" />
                 </handler>
             </transform>
+			
+			<!-- additional ignore fields -->
+            <ignore>
+                <field>customer_entity.anonymized</field>
+            </ignore>
+			<!-- end custom ignore -->
+			
             <ignore>
                 <field>catalog_product_entity_media_gallery_value.entity_id</field>
             </ignore>

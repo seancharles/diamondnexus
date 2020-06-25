@@ -110,7 +110,7 @@
         <database host="magento-stage.cp9ve0szhrvj.us-east-2.rds.amazonaws.com" name="magento_paul" user="magento_admin" password="329gvqbu42" />
     </source>
     <destination>
-        <database host="magento-stage.cp9ve0szhrvj.us-east-2.rds.amazonaws.com" name="magento2_joeltwo" user="magento_admin" password="329gvqbu42" />
+        <database host="magento-stage.cp9ve0szhrvj.us-east-2.rds.amazonaws.com" name="magento2_paultwo" user="magento_admin" password="329gvqbu42" />
     </destination>
     <options>
         <map_file>app/code/ForeverCompanies/Migration/etc/commerce-to-commerce/1.14.3.2/map.xml</map_file>
