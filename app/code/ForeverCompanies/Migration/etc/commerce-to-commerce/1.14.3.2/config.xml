@@ -113,7 +113,7 @@
         <database host="magento-stage.cp9ve0szhrvj.us-east-2.rds.amazonaws.com" name="magento2_joeltwo" user="magento_admin" password="329gvqbu42" />
     </destination>
     <options>
-        <map_file>app/code/ForeverCompanies/Migration/etc/commerce-to-commerce/1.9.3.2/map.xml</map_file>
+        <map_file>app/code/ForeverCompanies/Migration/etc/commerce-to-commerce/1.14.3.2/map.xml</map_file>
         <eav_map_file>etc/commerce-to-commerce/map-eav.xml.dist</eav_map_file>
         <eav_document_groups_file>etc/commerce-to-commerce/eav-document-groups.xml.dist</eav_document_groups_file>
         <eav_attribute_groups_file>etc/commerce-to-commerce/eav-attribute-groups.xml.dist</eav_attribute_groups_file>
@@ -127,7 +127,7 @@
         <order_grids_document_groups_file>etc/commerce-to-commerce/order-grids-document-groups.xml.dist</order_grids_document_groups_file>
         <map_document_groups>etc/commerce-to-commerce/map-document-groups.xml.dist</map_document_groups>
         <class_map>etc/commerce-to-commerce/class-map.xml.dist</class_map>
-        <tier_price_map_file>etc/commerce-to-commerce/1.9.3.2/map-tier-price.xml.dist</tier_price_map_file>
+        <tier_price_map_file>etc/commerce-to-commerce/1.14.3.2/map-tier-price.xml.dist</tier_price_map_file>
         <stores_map_file>etc/commerce-to-commerce/map-stores.xml.dist</stores_map_file>
         <!--
         In case bulk_size=0 it will be auto-detected for every document.
@@ -146,7 +146,7 @@
         <progress_bar_format>%percent%% [%bar%] Remaining Time: %remaining%</progress_bar_format>
         <upgrade_customer_password_hash>1</upgrade_customer_password_hash>
         <edition_migrate>commerce-to-commerce</edition_migrate>
-        <edition_number>1.9.3.2</edition_number>
+        <edition_number>1.14.3.2</edition_number>
         <init_statements_source>SET NAMES utf8;</init_statements_source>
         <init_statements_destination>SET NAMES utf8;</init_statements_destination>
         <crypt_key>fca5cbc2643d81dd3055a626cbbf0c42</crypt_key>
