@@ -26,11 +26,11 @@
 <!--            <data>Migration\Step\Eav\Data</data>-->
 <!--            <volume>Migration\Step\Eav\Volume</volume>-->
 <!--        </step>-->
-        <step title="Customer Attributes Step">
-            <integrity>Migration\Step\Customer\Integrity</integrity>
-            <data>Migration\Step\Customer\Data</data>
-            <volume>Migration\Step\Customer\Volume</volume>
-        </step>
+<!--        <step title="Customer Attributes Step">-->
+<!--            <integrity>Migration\Step\Customer\Integrity</integrity>-->
+<!--            <data>Migration\Step\Customer\Data</data>-->
+<!--            <volume>Migration\Step\Customer\Volume</volume>-->
+<!--        </step>-->
         <step title="Map Step">
             <integrity>Migration\Step\Map\Integrity</integrity>
             <data>Migration\Step\Map\Data</data>
@@ -56,21 +56,21 @@
 <!--            <data>Migration\Step\ConfigurablePrices\Data</data>-->
 <!--            <volume>Migration\Step\ConfigurablePrices\Volume</volume>-->
 <!--        </step>-->
-        <step title="OrderGrids Step">
-            <integrity>Migration\Step\OrderGrids\Integrity</integrity>
-            <data>Migration\Step\OrderGrids\Data</data>
-            <volume>Migration\Step\OrderGrids\Volume</volume>
-        </step>
+<!--        <step title="OrderGrids Step">-->
+<!--            <integrity>Migration\Step\OrderGrids\Integrity</integrity>-->
+<!--            <data>Migration\Step\OrderGrids\Data</data>-->
+<!--            <volume>Migration\Step\OrderGrids\Volume</volume>-->
+<!--        </step>-->
 <!--        <step title="Tier Price Step">-->
 <!--            <integrity>Migration\Step\TierPrice\Integrity</integrity>-->
 <!--            <data>Migration\Step\TierPrice\Data</data>-->
 <!--            <volume>Migration\Step\TierPrice\Volume</volume>-->
 <!--        </step>-->
-        <step title="SalesIncrement Step">
-            <integrity>Migration\Step\SalesIncrement\Integrity</integrity>
-            <data>Migration\Step\SalesIncrement\Data</data>
-            <volume>Migration\Step\SalesIncrement\Volume</volume>
-        </step>
+<!--        <step title="SalesIncrement Step">-->
+<!--            <integrity>Migration\Step\SalesIncrement\Integrity</integrity>-->
+<!--            <data>Migration\Step\SalesIncrement\Data</data>-->
+<!--            <volume>Migration\Step\SalesIncrement\Volume</volume>-->
+<!--        </step>-->
 <!--        <step title="Inventory Step">-->
 <!--            <integrity>Migration\Step\Inventory\Integrity</integrity>-->
 <!--            <data>Migration\Step\Inventory\Data</data>-->

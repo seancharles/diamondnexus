@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<settings xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+          xs:noNamespaceSchemaLocation="urn:magento:module:Magento_DataMigrationTool:etc/settings.xsd">
+    <key>
+        <ignore>
+            <path>advanced/modules_disable_output/*</path>
+        </ignore>
+        <ignore>
+            <path>api/*</path>
+        </ignore>
+        <ignore>
+            <path>carriers/*</path>
+        </ignore>
+        <ignore>
+            <path>catalog/*</path>
+        </ignore>
+        <ignore>
+            <path>configswatches/*</path>
+        </ignore>
+        <ignore>
+            <path>crontab/*</path>
+        </ignore>
+        <ignore>
+            <path>customer/*</path>
+        </ignore>
+        <ignore>
+            <path>design/*</path>
+        </ignore>
+        <ignore>
+            <path>dev/*</path>
+        </ignore>
+        <ignore>
+            <path>enterprise_*</path>
+        </ignore>
+        <ignore>
+            <path>general/*</path>
+        </ignore>
+        <ignore>
+            <path>general/content_staging/block_frontend_stub</path>
+        </ignore>
+        <ignore>
+            <path>google/*</path>
+        </ignore>
+        <ignore>
+            <path>index_management/*</path>
+        </ignore>
+        <ignore>
+            <path>moneybookers/*</path>
+        </ignore>
+        <ignore>
+            <path>oauth/*</path>
+        </ignore>
+        <ignore>
+            <path>payment/*</path>
+        </ignore>
+		<!-- what is this? -->
+        <ignore>
+            <path>rewrite_matchers/category/priority</path>
+        </ignore>
+        <ignore>
+            <path>rewrite_matchers/product/priority</path>
+        </ignore>
+        <ignore>
+            <path>rewrite_matchers/redirect/priority</path>
+        </ignore>
+        <ignore>
+            <path>rss/*</path>
+        </ignore>
+        <ignore>
+            <path>sales/*</path>
+        </ignore>
+        <ignore>
+            <path>system/*</path>
+        </ignore>
+        <ignore>
+            <path>tax/weee/discount</path>
+        </ignore>
+        <ignore>
+            <path>web/*</path>
+        </ignore>
+        <ignore>
+            <path>admin/*</path>
+        </ignore>
+        <ignore>
+            <path>giftcard/*</path>
+        </ignore>
+        <ignore>
+            <path>contacts/*</path>
+        </ignore>
+        <ignore>
+            <path>promo/*</path>
+        </ignore>
+        <ignore>
+            <path>shipping/*</path>
+        </ignore>
+        <ignore>
+            <path>cataloginventory/*</path>
+        </ignore>
+        <ignore>
+            <path>currency/*</path>
+        </ignore>
+		
+		
+		<!--
+			rename paths have all been removed
+			
+			example:
+			<rename>
+				<path>system/enterprise_import_export_log/time</path>
+				<to>system/magento_scheduled_import_export_log/time</to>
+			</rename>
+		-->
+    </key>
+    <value>
+        <transform>
+            <path>catalog/category/root_id</path>
+            <handler class="\Migration\Handler\Settings\CategoryRootId" />
+        </transform>
+        <transform>
+            <path>catalog/seo/category_url_suffix</path>
+            <handler class="\Migration\Handler\Settings\UrlSuffix" />
+        </transform>
+    </value>
+</settings>
