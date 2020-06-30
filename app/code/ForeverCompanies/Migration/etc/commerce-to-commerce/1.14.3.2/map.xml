@@ -9,7 +9,34 @@
      xs:noNamespaceSchemaLocation="urn:magento:module:Magento_DataMigrationTool:etc/map.xsd">
     <source>
         <document_rules>
+			
+			<!--
+				missing category mappings:
+					1) url_key (119)
+					2) name (45)
+					3) display_mode (52) "PRODUCTS" ?
+					4) page_layout (63) "category-full-width"
+					5) 
+			-->
+		
 			<!-- begin custom document ignore -->
+			<!--
+			<ignore>
+				<document>catalog_category_flat_*</document>
+			</ignore>
+			<ignore>
+				<document>catalog_product_flat_*</document>
+			</ignore>
+			<ignore>
+				<document>catalog_product_*</document>
+			</ignore>
+			<ignore>
+				<document>enterprise_*</document>
+			</ignore>
+			-->
+			<ignore>
+				<document>catalog_product_entity_media_*</document>
+			</ignore>
 			<ignore>
 				<document>catalogrule</document>
 			</ignore>
@@ -176,28 +203,7 @@
 				<document>forms</document>
 			</ignore>
 			<ignore>
-				<document>listrak_remarketing_click</document>
-			</ignore>
-			<ignore>
-				<document>listrak_remarketing_emailcapture</document>
-			</ignore>
-			<ignore>
-				<document>listrak_remarketing_log</document>
-			</ignore>
-			<ignore>
-				<document>listrak_remarketing_product_attribute_set_map</document>
-			</ignore>
-			<ignore>
-				<document>listrak_remarketing_review_update</document>
-			</ignore>
-			<ignore>
-				<document>listrak_remarketing_session</document>
-			</ignore>
-			<ignore>
-				<document>listrak_remarketing_session_email</document>
-			</ignore>
-			<ignore>
-				<document>listrak_remarketing_subscriber_update</document>
+				<document>listrak_*</document>
 			</ignore>
 			<ignore>
 				<document>log</document>
