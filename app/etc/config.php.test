@@ -116,7 +116,6 @@ return [
         'Magento_CustomerImportExport' => 1,
         'Magento_CatalogWidget' => 1,
         'Magento_Vault' => 1,
-        'Magento_DataMigrationTool' => 1,
         'Magento_Deploy' => 1,
         'Magento_Developer' => 1,
         'Magento_Dhl' => 1,
@@ -346,10 +345,11 @@ return [
         'Amazon_Core' => 1,
         'Amazon_Login' => 1,
         'Amazon_Payment' => 1,
+        'Astound_Affirm' => 1,
+        'Cloudinary_Cloudinary' => 1,
         'Dotdigitalgroup_Email' => 1,
         'Dotdigitalgroup_Chat' => 1,
         'Dotdigitalgroup_Enterprise' => 1,
-        'ForeverCompanies_Migration' => 1,
         'Inchoo_Helloworld' => 1,
         'Klarna_Core' => 1,
         'Klarna_Ordermanagement' => 1,
@@ -423,7 +423,7 @@ return [
                 'website_id' => '1',
                 'name' => 'Diamond Nexus',
                 'root_category_id' => '2',
-                'default_store_id' => '2',
+                'default_store_id' => '1',
                 'code' => 'diamond_nexus',
             ],
             3 => [
@@ -643,6 +643,42 @@ return [
             'type' => '0',
             'code' => 'Magento/luma',
         ],
+        'frontend/ForeverCompanies/dn' => [
+            'parent_id' => 'Magento/luma',
+            'theme_path' => 'ForeverCompanies/dn',
+            'theme_title' => 'Forever Companies: Diamond Nexus',
+            'is_featured' => '0',
+            'area' => 'frontend',
+            'type' => '0',
+            'code' => 'ForeverCompanies/dn',
+        ],
+        'frontend/ForeverCompanies/fa' => [
+            'parent_id' => 'Magento/luma',
+            'theme_path' => 'ForeverCompanies/fa',
+            'theme_title' => 'Forever Companies: Forever Artisans',
+            'is_featured' => '0',
+            'area' => 'frontend',
+            'type' => '0',
+            'code' => 'ForeverCompanies/fa',
+        ],
+        'frontend/ForeverCompanies/tf' => [
+            'parent_id' => 'Magento/luma',
+            'theme_path' => 'ForeverCompanies/tf',
+            'theme_title' => 'Forever Companies: 1215 Diamonds',
+            'is_featured' => '0',
+            'area' => 'frontend',
+            'type' => '0',
+            'code' => 'ForeverCompanies/tf',
+        ],
+        'adminhtml/ForeverCompanies/admin' => [
+            'parent_id' => 'Magento/backend',
+            'theme_path' => 'ForeverCompanies/admin',
+            'theme_title' => 'Forever Companies Admin Theme',
+            'is_featured' => '0',
+            'area' => 'adminhtml',
+            'type' => '0',
+            'code' => 'ForeverCompanies/admin',
+        ],
     ],
     /**
      * For the section: system
@@ -676,13 +712,19 @@ return [
      * CONFIG__DEFAULT__PAYMENT__EWAY__SANDBOX_API_KEY for payment/eway/sandbox_api_key
      * CONFIG__DEFAULT__PAYMENT__EWAY__SANDBOX_API_PASSWORD for payment/eway/sandbox_api_password
      * CONFIG__DEFAULT__PAYMENT__EWAY__SANDBOX_ENCRYPTION_KEY for payment/eway/sandbox_encryption_key
+     * CONFIG__DEFAULT__PAYMENT__PAYPAL_EXPRESS_BML__PUBLISHER_ID for payment/paypal_express_bml/publisher_id
      * CONFIG__DEFAULT__PAYMENT__PAYFLOWPRO__USER for payment/payflowpro/user
      * CONFIG__DEFAULT__PAYMENT__PAYFLOWPRO__PWD for payment/payflowpro/pwd
+     * CONFIG__DEFAULT__PAYMENT__PAYFLOWPRO__PARTNER for payment/payflowpro/partner
      * CONFIG__DEFAULT__PAYMENT__PAYFLOW_LINK__PWD for payment/payflow_link/pwd
      * CONFIG__DEFAULT__PAYMENT__PAYFLOW_ADVANCED__USER for payment/payflow_advanced/user
      * CONFIG__DEFAULT__PAYMENT__PAYFLOW_ADVANCED__PWD for payment/payflow_advanced/pwd
+     * CONFIG__DEFAULT__PAYMENT__CHECKMO__MAILING_ADDRESS for payment/checkmo/mailing_address
      * CONFIG__DEFAULT__PAYMENT__BRAINTREE__PUBLIC_KEY for payment/braintree/public_key
      * CONFIG__DEFAULT__PAYMENT__BRAINTREE__PRIVATE_KEY for payment/braintree/private_key
+     * CONFIG__DEFAULT__PAYMENT__BRAINTREE__MERCHANT_ID for payment/braintree/merchant_id
+     * CONFIG__DEFAULT__PAYMENT__BRAINTREE__MERCHANT_ACCOUNT_ID for payment/braintree/merchant_account_id
+     * CONFIG__DEFAULT__PAYMENT__BRAINTREE_PAYPAL__MERCHANT_NAME_OVERRIDE for payment/braintree_paypal/merchant_name_override
      * CONFIG__DEFAULT__PAYMENT__CYBERSOURCE__ACCESS_KEY for payment/cybersource/access_key
      * CONFIG__DEFAULT__PAYMENT__CYBERSOURCE__PROFILE_ID for payment/cybersource/profile_id
      * CONFIG__DEFAULT__PAYMENT__CYBERSOURCE__SECRET_KEY for payment/cybersource/secret_key
@@ -692,6 +734,11 @@ return [
      * CONFIG__DEFAULT__PAYMENT__WORLDPAY__AUTH_PASSWORD for payment/worldpay/auth_password
      * CONFIG__DEFAULT__PAYMENT__WORLDPAY__MD5_SECRET for payment/worldpay/md5_secret
      * CONFIG__DEFAULT__PAYMENT__WORLDPAY__SIGNATURE_FIELDS for payment/worldpay/signature_fields
+     * CONFIG__DEFAULT__PAYMENT__WORLDPAY__INSTALLATION_ID for payment/worldpay/installation_id
+     * CONFIG__DEFAULT__PAYMENT__AMAZON_PAYMENT__SECRET_KEY for payment/amazon_payment/secret_key
+     * CONFIG__DEFAULT__PAYMENT__AMAZON_PAYMENT__CLIENT_SECRET for payment/amazon_payment/client_secret
+     * CONFIG__DEFAULT__PAYMENT__AMAZON_PAYMENT__CREDENTIALS_JSON for payment/amazon_payment/credentials_json
+     * CONFIG__DEFAULT__PAYMENT__AMAZON_PAYMENTS__SIMPLEPATH__PRIVATEKEY for payment/amazon_payments/simplepath/privatekey
      * CONFIG__DEFAULT__CATALOGINVENTORY__SOURCE_SELECTION_DISTANCE_BASED_GOOGLE__API_KEY for cataloginventory/source_selection_distance_based_google/api_key
      * CONFIG__DEFAULT__PROMO__MAGENTO_REMINDER__IDENTITY for promo/magento_reminder/identity
      * CONFIG__DEFAULT__COMPANY__EMAIL__COMPANY_REGISTRATION for company/email/company_registration
@@ -714,12 +761,14 @@ return [
      * CONFIG__DEFAULT__CARRIERS__FEDEX__PASSWORD for carriers/fedex/password
      * CONFIG__DEFAULT__CARRIERS__FEDEX__PRODUCTION_WEBSERVICES_URL for carriers/fedex/production_webservices_url
      * CONFIG__DEFAULT__CARRIERS__FEDEX__SANDBOX_WEBSERVICES_URL for carriers/fedex/sandbox_webservices_url
+     * CONFIG__DEFAULT__CARRIERS__FEDEX__SMARTPOST_HUBID for carriers/fedex/smartpost_hubid
      * CONFIG__DEFAULT__CARRIERS__UPS__ACCESS_LICENSE_NUMBER for carriers/ups/access_license_number
      * CONFIG__DEFAULT__CARRIERS__UPS__GATEWAY_URL for carriers/ups/gateway_url
      * CONFIG__DEFAULT__CARRIERS__UPS__GATEWAY_XML_URL for carriers/ups/gateway_xml_url
      * CONFIG__DEFAULT__CARRIERS__UPS__TRACKING_XML_URL for carriers/ups/tracking_xml_url
      * CONFIG__DEFAULT__CARRIERS__UPS__USERNAME for carriers/ups/username
      * CONFIG__DEFAULT__CARRIERS__UPS__PASSWORD for carriers/ups/password
+     * CONFIG__DEFAULT__CARRIERS__UPS__SHIPPER_NUMBER for carriers/ups/shipper_number
      * CONFIG__DEFAULT__CARRIERS__USPS__GATEWAY_URL for carriers/usps/gateway_url
      * CONFIG__DEFAULT__CARRIERS__USPS__GATEWAY_SECURE_URL for carriers/usps/gateway_secure_url
      * CONFIG__DEFAULT__CARRIERS__USPS__USERID for carriers/usps/userid
@@ -739,6 +788,10 @@ return [
      * CONFIG__DEFAULT__PAYPAL__WPP__API_USERNAME for paypal/wpp/api_username
      * CONFIG__DEFAULT__PAYPAL__FETCH_REPORTS__FTP_LOGIN for paypal/fetch_reports/ftp_login
      * CONFIG__DEFAULT__PAYPAL__FETCH_REPORTS__FTP_PASSWORD for paypal/fetch_reports/ftp_password
+     * CONFIG__DEFAULT__PAYPAL__FETCH_REPORTS__FTP_IP for paypal/fetch_reports/ftp_ip
+     * CONFIG__DEFAULT__PAYPAL__FETCH_REPORTS__FTP_PATH for paypal/fetch_reports/ftp_path
+     * CONFIG__DEFAULT__PAYPAL__GENERAL__MERCHANT_COUNTRY for paypal/general/merchant_country
+     * CONFIG__DEFAULT__PAYPAL__GENERAL__BUSINESS_ACCOUNT for paypal/general/business_account
      * CONFIG__DEFAULT__NEWRELICREPORTING__GENERAL__API_URL for newrelicreporting/general/api_url
      * CONFIG__DEFAULT__NEWRELICREPORTING__GENERAL__INSIGHTS_API_URL for newrelicreporting/general/insights_api_url
      * CONFIG__DEFAULT__FRAUD_PROTECTION__SIGNIFYD__API_URL for fraud_protection/signifyd/api_url
@@ -961,6 +1014,7 @@ Disallow: /*SID=
                     'use_https' => '1',
                     'frequency' => '1',
                     'last_update' => '0',
+                    'notification_feed' => 'https://github.com/Affirm/Magento2_Affirm/releases.atom',
                 ],
                 'backup' => [
                     'functionality_enabled' => '0',
@@ -1056,6 +1110,15 @@ Disallow: /*SID=
                         'use_separate_process' => '1',
                     ],
                     'scconnector' => [
+                        'schedule_generate_every' => '1',
+                        'schedule_ahead_for' => '4',
+                        'schedule_lifetime' => '2',
+                        'history_cleanup_every' => '10',
+                        'history_success_lifetime' => '60',
+                        'history_failure_lifetime' => '600',
+                        'use_separate_process' => '1',
+                    ],
+                    'cloudinary_cloudinary' => [
                         'schedule_generate_every' => '1',
                         'schedule_ahead_for' => '4',
                         'schedule_lifetime' => '2',
@@ -1572,6 +1635,7 @@ Disallow: /*SID=
                     'allowspecific' => '0',
                     'sort_order' => '1',
                     'group' => 'offline',
+                    'specificcountry' => null,
                 ],
                 'substitution' => [
                     'active' => '0',
@@ -1610,6 +1674,10 @@ Disallow: /*SID=
                     'privateInfoKeys' => 'authCode,avsResultCode,cvvResultCode,cavvResultCode',
                     'paymentInfoKeys' => 'accountType,ccLast4,authCode,avsResultCode,cvvResultCode,cavvResultCode',
                     'transactionSyncKeys' => 'transactionStatus,responseCode,responseReasonCode,authCode,AVSResponse,cardCodeResponse,CAVVResponse',
+                    'specificcountry' => null,
+                    'min_order_total' => null,
+                    'max_order_total' => null,
+                    'sort_order' => null,
                 ],
                 'authorizenet_directpost' => [
                     'active' => '0',
@@ -1629,6 +1697,11 @@ Disallow: /*SID=
                     'cgi_url_td_test_mode' => 'https://apitest.authorize.net/xml/v1/request.api',
                     'paymentInfoKeys' => 'x_card_type,x_account_number,x_avs_code,x_auth_code,x_response_reason_text,x_cvv2_resp_code',
                     'group' => 'authorizenet',
+                    'useccv' => '0',
+                    'specificcountry' => null,
+                    'min_order_total' => null,
+                    'max_order_total' => null,
+                    'sort_order' => null,
                 ],
                 'vault' => [
                     'debug' => '1',
@@ -1662,6 +1735,8 @@ Disallow: /*SID=
                     'debugReplaceKeys' => 'api_password,api_key,encryption_key',
                     'paymentInfoKeys' => 'cc_type,transaction_type,transaction_id,beagle_score,cvv_validation,address_verification,email_verification,mobile_verification,phone_verification,card_number,card_expiry_date,response_code,fraud_messages,approve_messages',
                     'privateInfoKeys' => 'transaction_type,transaction_id,beagle_score,cvv_validation,address_verification,email_verification,mobile_verification,phone_verification,response_code,fraud_messages,approve_messages',
+                    'specificcountry' => null,
+                    'sort_order' => null,
                 ],
                 'paypal_express' => [
                     'model' => 'Magento\\Paypal\\Model\\Express',
@@ -1679,11 +1754,29 @@ Disallow: /*SID=
                     'verify_peer' => '1',
                     'skip_order_review_step' => '1',
                     'supported_locales' => 'ar_EG,cs_CZ,da_DK,de_DE,el_GR,en_AU,en_GB,en_IN,en_US,es_ES,es_XC,fi_FI,fr_CA,fr_FR,fr_XC,he_IL,hu_HU,id_ID,it_IT,ja_JP,ko_KR,nl_NL,no_NO,pl_PL,pt_BR,pt_PT,ru_RU,sk_SK,sv_SE,th_TH,zh_CN,zh_HK,zh_TW,zh_XC',
+                    'active' => '0',
+                    'in_context' => '0',
+                    'sort_order' => null,
+                    'allowspecific' => '0',
+                    'transfer_shipping_options' => '0',
+                    'require_billing_address' => '0',
                 ],
                 'paypal_express_bml' => [
                     'model' => 'Magento\\Paypal\\Model\\Bml',
                     'title' => 'PayPal Credit (Paypal Express Bml)',
                     'group' => 'paypal',
+                    'homepage_display' => '0',
+                    'homepage_position' => '0',
+                    'homepage_size' => '190x100',
+                    'categorypage_display' => '0',
+                    'categorypage_position' => '0',
+                    'categorypage_size' => '190x100',
+                    'productpage_display' => '0',
+                    'productpage_position' => '0',
+                    'productpage_size' => '190x100',
+                    'checkout_display' => '0',
+                    'checkout_position' => '0',
+                    'checkout_size' => '234x60',
                 ],
                 'payflow_express' => [
                     'title' => 'PayPal Express Checkout Payflow Edition',
@@ -1694,11 +1787,15 @@ Disallow: /*SID=
                     'group' => 'paypal',
                     'verify_peer' => '1',
                     'model' => 'Magento\\Paypal\\Model\\PayflowExpress',
+                    'active' => '0',
+                    'sort_order' => null,
+                    'allowspecific' => '0',
                 ],
                 'payflow_express_bml' => [
                     'model' => 'Magento\\Paypal\\Model\\Payflow\\Bml',
                     'title' => 'PayPal Credit (Payflow Express Bml)',
                     'group' => 'paypal',
+                    'active' => '0',
                 ],
                 'payflowpro' => [
                     'model' => 'Magento\\Paypal\\Model\\Payflow\\Transparent',
@@ -1726,6 +1823,11 @@ Disallow: /*SID=
                     'can_capture_vault' => '1',
                     'avs_ems_adapter' => 'Magento\\Paypal\\Model\\Payflow\\AvsEmsCodeMapper',
                     'cvv_ems_adapter' => 'Magento\\Paypal\\Model\\Payflow\\CvvEmsCodeMapper',
+                    'vendor' => null,
+                    'use_proxy' => '0',
+                    'sort_order' => null,
+                    'allowspecific' => '0',
+                    'active' => '0',
                 ],
                 'payflowpro_cc_vault' => [
                     'model' => 'PayflowProCreditCardVaultFacade',
@@ -1734,6 +1836,7 @@ Disallow: /*SID=
                         'tokenFormat' => '\\Magento\\Paypal\\Model\\InstantPurchase\\Payflow\\Pro\\TokenFormatter',
                     ],
                     'group' => 'paypal',
+                    'active' => '0',
                 ],
                 'paypal_billing_agreement' => [
                     'active' => '1',
@@ -1742,6 +1845,10 @@ Disallow: /*SID=
                     'title' => 'PayPal Billing Agreement',
                     'group' => 'paypal',
                     'verify_peer' => '1',
+                    'sort_order' => null,
+                    'payment_action' => 'Authorization',
+                    'allowspecific' => '0',
+                    'line_items_enabled' => '0',
                 ],
                 'payflow_link' => [
                     'model' => 'Magento\\Paypal\\Model\\Payflowlink',
@@ -1759,6 +1866,10 @@ Disallow: /*SID=
                     'transaction_url' => 'https://payflowpro.paypal.com',
                     'cgi_url_test_mode' => 'https://pilot-payflowlink.paypal.com',
                     'cgi_url' => 'https://payflowlink.paypal.com',
+                    'active' => '0',
+                    'vendor' => null,
+                    'sort_order' => null,
+                    'allowspecific' => '0',
                 ],
                 'payflow_advanced' => [
                     'model' => 'Magento\\Paypal\\Model\\Payflowadvanced',
@@ -1776,6 +1887,10 @@ Disallow: /*SID=
                     'transaction_url' => 'https://payflowpro.paypal.com',
                     'cgi_url_test_mode' => 'https://pilot-payflowlink.paypal.com',
                     'cgi_url' => 'https://payflowlink.paypal.com',
+                    'active' => '0',
+                    'use_proxy' => '0',
+                    'sort_order' => null,
+                    'allowspecific' => '0',
                 ],
                 'hosted_pro' => [
                     'model' => 'Magento\\Paypal\\Model\\Hostedpro',
@@ -1792,6 +1907,11 @@ Disallow: /*SID=
                     'title' => 'Check / Money order',
                     'allowspecific' => '0',
                     'group' => 'offline',
+                    'specificcountry' => null,
+                    'payable_to' => null,
+                    'min_order_total' => null,
+                    'max_order_total' => null,
+                    'sort_order' => null,
                 ],
                 'purchaseorder' => [
                     'active' => '0',
@@ -1800,6 +1920,10 @@ Disallow: /*SID=
                     'title' => 'Purchase Order',
                     'allowspecific' => '0',
                     'group' => 'offline',
+                    'specificcountry' => null,
+                    'min_order_total' => null,
+                    'max_order_total' => null,
+                    'sort_order' => null,
                 ],
                 'banktransfer' => [
                     'active' => '0',
@@ -1808,6 +1932,11 @@ Disallow: /*SID=
                     'title' => 'Bank Transfer Payment',
                     'allowspecific' => '0',
                     'group' => 'offline',
+                    'specificcountry' => null,
+                    'instructions' => null,
+                    'min_order_total' => null,
+                    'max_order_total' => null,
+                    'sort_order' => null,
                 ],
                 'cashondelivery' => [
                     'active' => '0',
@@ -1816,6 +1945,11 @@ Disallow: /*SID=
                     'title' => 'Cash On Delivery',
                     'allowspecific' => '0',
                     'group' => 'offline',
+                    'specificcountry' => null,
+                    'instructions' => null,
+                    'min_order_total' => null,
+                    'max_order_total' => null,
+                    'sort_order' => null,
                 ],
                 'braintree' => [
                     'model' => 'BraintreeFacade',
@@ -1847,6 +1981,19 @@ Disallow: /*SID=
                     'privateInfoKeys' => 'avsPostalCodeResponseCode,avsStreetAddressResponseCode,cvvResponseCode,processorAuthorizationCode,processorResponseCode,processorResponseText,liabilityShifted,liabilityShiftPossible,riskDataId,riskDataDecision,transactionSource',
                     'paymentInfoKeys' => 'cc_type,cc_number,avsPostalCodeResponseCode,avsStreetAddressResponseCode,cvvResponseCode,processorAuthorizationCode,processorResponseCode,processorResponseText,liabilityShifted,liabilityShiftPossible,riskDataId,riskDataDecision,transactionSource',
                     'kount_allowed_ips' => '208.75.112.0/22,209.81.12.0/24',
+                    'fraudprotection' => '0',
+                    'fraudprotection_threshold' => null,
+                    'debug' => '0',
+                    'sort_order' => null,
+                    'specificcountry' => null,
+                    'countrycreditcard' => '[]',
+                    'verify_3dsecure' => '0',
+                    'threshold_amount' => null,
+                    'verify_all_countries' => '0',
+                    'verify_specific_countries' => null,
+                    'descriptor_name' => null,
+                    'descriptor_phone' => null,
+                    'descriptor_url' => null,
                 ],
                 'braintree_paypal' => [
                     'model' => 'BraintreePayPalFacade',
@@ -1887,6 +2034,9 @@ Disallow: /*SID=
                     'button_color_productpage' => '2',
                     'button_size_productpage' => '2',
                     'button_shape_productpage' => '1',
+                    'specificcountry' => null,
+                    'debug' => '0',
+                    'disabled_funding_productpage' => null,
                 ],
                 'braintree_paypal_credit' => [
                     'model' => 'BraintreePayPalCreditFacade',
@@ -1900,11 +2050,13 @@ Disallow: /*SID=
                 'braintree_cc_vault' => [
                     'model' => 'BraintreeCreditCardVaultFacade',
                     'title' => 'Stored Cards',
+                    'active' => '0',
                 ],
                 'braintree_paypal_vault' => [
                     'model' => 'BraintreePayPalVaultFacade',
                     'title' => 'Stored Accounts (PayPal)',
                     'can_use_internal' => '1',
+                    'active' => '0',
                 ],
                 'braintree_applepay' => [
                     'model' => 'BraintreeApplePay',
@@ -2006,6 +2158,10 @@ Disallow: /*SID=
                     'allowspecific' => '0',
                     'title' => 'Payment on Account',
                     'group' => 'b2b',
+                    'specificcountry' => null,
+                    'min_order_total' => null,
+                    'max_order_total' => null,
+                    'sort_order' => null,
                 ],
                 'cybersource' => [
                     'active' => '0',
@@ -2051,6 +2207,10 @@ Disallow: /*SID=
                     'avs_ems_adapter' => 'Magento\\Cybersource\\Model\\AvsEmsCodeMapper',
                     'cvv_ems_adapter' => 'Magento\\Cybersource\\Model\\CvvEmsCodeMapper',
                     'cctypes_mapper' => '{"001":"VI","002":"MC","003":"AE","004":"DI","005":"DN","006":"DN","007":"JCB","024":"MI","042":"MD"}',
+                    'specificcountry' => null,
+                    'min_order_total' => null,
+                    'max_order_total' => null,
+                    'sort_order' => null,
                 ],
                 'worldpay' => [
                     'debug' => '1',
@@ -2078,6 +2238,11 @@ Disallow: /*SID=
                     'debugReplaceKeys' => 'callbackPW,installation,instId',
                     'paymentInfoKeys' => 'cc_type,cvv_result,postcode_avs,address_avs,country_comparison,waf_merch_message',
                     'privateInfoKeys' => 'cvv_result,postcode_avs,address_avs,country_comparison,waf_merch_message',
+                    'admin_installation_id' => null,
+                    'allowspecific' => '0',
+                    'specificcountry' => null,
+                    'cvv_fraud_case' => null,
+                    'avs_fraud_case' => null,
                 ],
                 'amazon_payment' => [
                     'amazon_login_in_popup' => '1',
@@ -2110,6 +2275,11 @@ Disallow: /*SID=
                     'hard_decline_code' => '4273',
                     'soft_decline_code' => '7638',
                     'sca_regions' => 'de,uk',
+                    'payment_region' => null,
+                    'button_display_language' => null,
+                    'multicurrency' => '0',
+                    'storename' => null,
+                    'allowed_ips' => null,
                 ],
                 'amazonlogin' => [
                     'active' => '0',
@@ -2117,6 +2287,45 @@ Disallow: /*SID=
                     'order_status' => 'pending',
                     'title' => 'Amazon Pay',
                     'allowspecific' => '0',
+                ],
+                'affirm_gateway' => [
+                    'active' => '1',
+                    'debug' => '1',
+                    'model' => 'OnePicaAffirmGatewayFacade',
+                    'mode' => 'sandbox',
+                    'private_api_key_sandbox' => '0:3:zapgAWZxFMkWewnBASnT08CaKHgmKWQpVYvAl8NQ9Ep5vk26stoIwedwxhXYF2hM+yyUHzw2jolSIxU0',
+                    'private_api_key_production' => null,
+                    'min_order_total' => '0.01',
+                    'max_order_total' => '50000',
+                    'payment_action' => 'authorize',
+                    'disable_for_backordered_items' => '0',
+                    'allowspecific' => '1',
+                    'specificcountry' => 'US,AS,GU,MP,PR,VI',
+                    'allowspecificcurrency' => '1',
+                    'currency' => 'USD',
+                    'can_authorize' => '1',
+                    'can_capture' => '1',
+                    'can_capture_partial' => '0',
+                    'can_void' => '1',
+                    'can_cancel' => '1',
+                    'can_use_checkout' => '1',
+                    'can_refund' => '1',
+                    'can_refund_partial_per_invoice' => '1',
+                    'can_use_internal' => '1',
+                    'is_gateway' => '1',
+                    'sort_order' => '0',
+                    'title' => 'Affirm',
+                    'icon' => 'https://cdn-assets.affirm.com/images/blue_logo-transparent_bg.png',
+                    'info' => 'Monthly Payments',
+                    'virtual_terminal_url' => 'http://help.merchants.affirm.com/article/67-virtual-terminal-overview',
+                    'enable_checkout_button' => '0',
+                    'checkout_button_code' => 'https://cdn-assets.affirm.com/images/buttons/30_148-white.png',
+                    'notification' => [
+                        'notification_update' => '1',
+                    ],
+                    'public_api_key_sandbox' => 'TR4S22LQ0MR8QUOS',
+                    'control' => '0',
+                    'checkout_flow_type' => 'modal',
                 ],
                 'klarna_kp' => [
                     'model' => 'Klarna\\Kp\\Model\\Payment\\Kp',
@@ -2145,6 +2354,17 @@ Disallow: /*SID=
                     'can_initialize' => '0',
                     'can_review_payment' => '0',
                     'can_use_for_multishipping' => '0',
+                    'enable_b2b' => '0',
+                    'sort_order' => null,
+                ],
+                'paypal_payment_pro' => [
+                    'active' => '0',
+                ],
+                'wps_express' => [
+                    'active' => '0',
+                ],
+                'wps_express_bml' => [
+                    'active' => '0',
                 ],
             ],
             'cataloginventory' => [
@@ -2414,6 +2634,13 @@ Disallow: /*SID=
                     'identity' => 'general',
                     'receiver' => 'general',
                     'template' => 'checkout_payment_failed_template',
+                ],
+                'klarna_kp_design' => [
+                    'color_details' => null,
+                    'color_border' => null,
+                    'color_border_selected' => null,
+                    'color_text' => null,
+                    'color_radius_border' => null,
                 ],
             ],
             'captcha' => [
@@ -2711,6 +2938,13 @@ Disallow: /*SID=
                     'shipment_days' => 'Mon,Tue,Wed,Thu,Fri',
                     'active_rma' => '0',
                     'is_online' => '1',
+                    'handling_fee' => null,
+                    'free_method_nondoc' => null,
+                    'free_shipping_enable' => '0',
+                    'specificcountry' => null,
+                    'showmethod' => '0',
+                    'sandbox_mode' => '0',
+                    'sort_order' => null,
                 ],
                 'fedex' => [
                     'shipment_requesttype' => '0',
@@ -2731,6 +2965,13 @@ Disallow: /*SID=
                     'handling_action' => 'O',
                     'active_rma' => '0',
                     'is_online' => '1',
+                    'handling_fee' => null,
+                    'residence_delivery' => '0',
+                    'free_shipping_enable' => '0',
+                    'specificcountry' => null,
+                    'debug' => '0',
+                    'showmethod' => '0',
+                    'sort_order' => null,
                 ],
                 'flatrate' => [
                     'active' => '0',
@@ -2742,6 +2983,10 @@ Disallow: /*SID=
                     'type' => 'I',
                     'specificerrmsg' => 'This shipping method is not available. To use this shipping method, please contact us.',
                     'handling_type' => 'F',
+                    'handling_fee' => null,
+                    'specificcountry' => null,
+                    'showmethod' => '0',
+                    'sort_order' => null,
                 ],
                 'tablerate' => [
                     'active' => '0',
@@ -2753,6 +2998,10 @@ Disallow: /*SID=
                     'title' => 'Best Way',
                     'specificerrmsg' => 'This shipping method is not available. To use this shipping method, please contact us.',
                     'handling_type' => 'F',
+                    'handling_fee' => null,
+                    'specificcountry' => null,
+                    'showmethod' => '0',
+                    'sort_order' => null,
                 ],
                 'freeshipping' => [
                     'active' => '0',
@@ -2762,6 +3011,10 @@ Disallow: /*SID=
                     'name' => 'Free',
                     'title' => 'Free Shipping',
                     'specificerrmsg' => 'This shipping method is not available. To use this shipping method, please contact us.',
+                    'free_shipping_subtotal' => null,
+                    'specificcountry' => null,
+                    'showmethod' => '0',
+                    'sort_order' => null,
                 ],
                 'ups' => [
                     'active' => '0',
@@ -2789,6 +3042,11 @@ Disallow: /*SID=
                     'type' => 'UPS_XML',
                     'active_rma' => '0',
                     'is_online' => '1',
+                    'handling_fee' => null,
+                    'free_shipping_enable' => '0',
+                    'specificcountry' => null,
+                    'showmethod' => '0',
+                    'sort_order' => null,
                 ],
                 'usps' => [
                     'active' => '0',
@@ -2811,12 +3069,18 @@ Disallow: /*SID=
                     'handling_action' => 'O',
                     'active_rma' => '0',
                     'is_online' => '1',
+                    'handling_fee' => null,
+                    'free_shipping_enable' => '0',
+                    'specificcountry' => null,
+                    'debug' => '0',
+                    'showmethod' => '0',
+                    'sort_order' => null,
                 ],
                 'shipper' => [
                     'active' => '1',
                     'title' => 'Shipping Rates',
-                    'api_key' => '0:3:chCWp16NVnwCsr+oF91CvROWU9d8XZxjEnjyUZGcEGO5obiWSkzMCgly7OwbC61HG8vAeJFaSs6O/ZGJ',
-                    'password' => '0:3:LS81qP9ChWxcATkybVPStSox6EzPcRtydjNfQZh5ZLAImicMZBPF9OUnyNoxHJ2m6DiDnSlgf6LId4Mgxrkij7apBdF2oeYdJodx6heh',
+                    'api_key' => '0:3:8ruxmPZknhSGIYV5mSL8p5+DdMlgjmdfaVFsdczZvxUOpETdKnz4V67iOkmr2ptD7EaOEmLbHD5MI6ti',
+                    'password' => '0:3:LU86ydkKFyWbvfrD832eTN8OBGUaIxPoQdOendg2Xlh5H83Ft7SUfwaAWcxK5i2Sf3f8CCM0bX7LL7QJ3AnQyTDFZlEOPQ+ock9IxMIh',
                     'invalid_credentials_supplied' => '0',
                     'url' => 'http://sandbox.shipperhq.com/v1/',
                     'live_url' => 'https://api.shipperhq.com/v1/',
@@ -2825,7 +3089,7 @@ Disallow: /*SID=
                     'token_url' => 'https://shipperhq.com/oauth/ec/token/',
                     'model' => 'ShipperHQ\\Shipper\\Model\\Carrier\\Shipper',
                     'sandbox_mode' => '0',
-                    'environment_scope' => 'LIVE',
+                    'environment_scope' => 'DEVELOPMENT',
                     'hide_notify' => '0',
                     'display_transaction' => '0',
                     'sallowspecific' => '0',
@@ -2836,7 +3100,7 @@ Disallow: /*SID=
                     'use_cache' => '0',
                     'always_use_cache' => '1',
                     'extension_version' => '20.38.1',
-                    'allowed_methods' => '{"shqfedex":{"FEDEX_2_DAY":"2nd Day","FEDEX_GROUND":"Ground","INTERNATIONAL_ECONOMY":"International Economy","PRIORITY_OVERNIGHT":"Priority Overnight","PRIORITY_OVERNIGHT_SAT":"Priority Overnight Saturday","INTERNATIONAL_PRIORITY":"International Priority","FEDEX_NEXT_DAY_END_OF_DAY":"Next Day End of Day","STANDARD_OVERNIGHT":"Standard Overnight","FEDEX_2_DAY_SAT":"2nd Day Saturday"},"shqusps":{"Priority_Mail_Express":"Priority Mail Express"},"shqups":{"STD":"UPS\\u00ae Standard","2DA":"UPS 2nd Day Air\\u00ae","1DA":"UPS Next Day Air\\u00ae","WXS":"UPS Worldwide Express\\u00ae Saver","GND":"UPS\\u00ae Ground","65":"UPS Worldwide Saver\\u00ae","XPD":"UPS Worldwide Expedited\\u00ae","XPR":"UPS Worldwide Express\\u00ae","3DS":"UPS 3 Day Select\\u00ae"}}',
+                    'allowed_methods' => '{"shqfedex":{"FEDEX_2_DAY":"2nd Day","FEDEX_GROUND":"Ground","PRIORITY_OVERNIGHT":"Priority Overnight","PRIORITY_OVERNIGHT_SAT":"Priority Overnight Saturday","FEDEX_2_DAY_SAT":"2nd Day Saturday"},"shqusps":{"Priority_Mail_Express":"Priority Mail Express"},"shqups":{"XPRL":"UPS Worldwide Express\\u00ae Letter","WXS":"UPS Worldwide Express\\u00ae Saver"}}',
                     'magento_version' => '2.3.4',
                     'ignore_empty_zip' => '1',
                     'backup_carrier' => null,
@@ -2869,6 +3133,19 @@ Disallow: /*SID=
                     'api_version' => '1.0',
                     'session_endpoint' => null,
                     'sovereign_endpoint' => null,
+                    'specificcountry' => null,
+                ],
+                'shqfedex' => [
+                    'title' => 'Fedex',
+                    'active' => '1',
+                ],
+                'shqusps' => [
+                    'title' => 'USPS',
+                    'active' => '1',
+                ],
+                'shqups' => [
+                    'title' => 'UPS',
+                    'active' => '1',
                 ],
             ],
             'import' => [
@@ -3020,9 +3297,17 @@ Disallow: /*SID=
                     'mini_cart_page_button_size' => 'responsive',
                     'mini_cart_page_button_shape' => 'rect',
                     'mini_cart_page_button_color' => 'gold',
+                    'page_style' => null,
+                    'paypal_hdrimg' => null,
+                    'paypal_hdrbackcolor' => null,
+                    'paypal_hdrbordercolor' => null,
+                    'paypal_payflowcolor' => null,
+                    'disable_funding_options' => null,
                 ],
                 'wpp' => [
                     'button_flavor' => 'dynamic',
+                    'api_authentication' => '0',
+                    'use_proxy' => '0',
                 ],
                 'wpuk' => [
                     'user' => null,
@@ -3031,6 +3316,7 @@ Disallow: /*SID=
                 'fetch_reports' => [
                     'schedule' => '1',
                     'time' => '00,00,00',
+                    'active' => '0',
                 ],
             ],
             'reports' => [
@@ -3051,12 +3337,21 @@ Disallow: /*SID=
             'shipping' => [
                 'origin' => [
                     'country_id' => 'US',
-                    'postcode' => '90034',
-                    'region_id' => '12',
+                    'postcode' => '53132',
+                    'region_id' => '64',
+                    'city' => 'Franklin',
+                    'street_line1' => '5050 W Ashland Way',
+                    'street_line2' => null,
                 ],
                 'shipper_autocomplete' => [
                     'use_geolocation' => '1',
                     'use_long_postcode' => '0',
+                    'active' => '0',
+                    'google_api_key' => null,
+                ],
+                'shipping_policy' => [
+                    'enable_shipping_policy' => '0',
+                    'shipping_policy_content' => null,
                 ],
             ],
             'magento_invitation' => [
@@ -3321,6 +3616,110 @@ Disallow: /*SID=
                     'uk' => 'https://static-eu.payments-amazon.com/OffAmazonPayments/uk/sandbox/lpa/js/Widgets.js?nomin',
                     'us' => 'https://static-na.payments-amazon.com/OffAmazonPayments/us/sandbox/js/Widgets.js?nomin',
                     'jp' => 'https://static-fe.payments-amazon.com/OffAmazonPayments/jp/sandbox/lpa/js/Widgets.js?nomin',
+                ],
+            ],
+            'affirm' => [
+                'affirm_promo' => [
+                    'enabled' => '0',
+                ],
+                'affirm_promo_homepage' => [
+                    'display' => '1',
+                    'size' => '170x100',
+                    'position' => '0',
+                ],
+                'affirm_promo_category' => [
+                    'display' => '1',
+                    'size' => '170x100',
+                    'position' => '0',
+                ],
+                'affirm_promo_product' => [
+                    'display' => '1',
+                    'size' => '468x60',
+                    'position' => '0',
+                ],
+                'affirm_promo_checkout_cart' => [
+                    'display' => '1',
+                    'size' => '468x60',
+                    'position' => 'center-top',
+                ],
+                'affirm_developer' => [
+                    'homepage_container' => '<div style="width: 100%; text-align: center; padding-bottom: 7px ">{container}</div>',
+                    'category_container' => '<div style="width: 100%; text-align: center; padding-bottom: 7px ">{container}</div>',
+                    'product_container' => '<div style="width: 100%; text-align: center; padding-bottom: 7px ">{container}</div>',
+                    'checkout_cart_container' => '<div style="width: 100%; text-align: center; padding-bottom: 7px ">{container}</div>',
+                ],
+                'affirm_aslowas' => [
+                    'enabled_pdp' => '0',
+                    'enabled_sc' => '0',
+                    'apr_value' => '0.10',
+                    'month' => '12',
+                    'learn_more' => '1',
+                ],
+                'affirm_pixel' => [
+                    'enabled' => '1',
+                    'add_cart' => '1',
+                    'add_search' => '1',
+                    'add_product_view' => '1',
+                    'add_product_list' => '1',
+                    'add_checkout_start' => '1',
+                    'add_checkout_success' => '1',
+                ],
+            ],
+            'cloudinary' => [
+                'transformations' => [
+                    'cloudinary_fetch_format' => '1',
+                    'cloudinary_image_quality' => 'auto',
+                    'cloudinary_image_dpr' => '1.0',
+                ],
+                'configuration' => [
+                    'cloudinary_cdn_subdomain' => '1',
+                    'cloudinary_auto_upload_mapping_state' => '0',
+                ],
+                'lazyload' => [
+                    'enabled' => '1',
+                    'auto_replace_cms_blocks' => '0',
+                    'threshold' => '500',
+                    'effect' => 'fadeIn',
+                    'placeholder' => 'blur',
+                    'ignored_cms_blocks' => null,
+                ],
+                'advanced' => [
+                    'remove_version_number' => '0',
+                    'use_root_path' => '0',
+                    'enable_local_mapping' => '1',
+                    'cloudinary_scheduled_video_data_import_limit' => '10',
+                ],
+                'product_gallery' => [
+                    'enabled' => '0',
+                    'themeProps_primary' => '#ffffff',
+                    'themeProps_onPrimary' => '#000000',
+                    'themeProps_active' => '#0078ff',
+                    'themeProps_onActive' => '#ffffff',
+                    'transition' => 'slide',
+                    'aspectRatio' => 'square',
+                    'navigation' => 'mouseover',
+                    'zoom' => '1',
+                    'zoomProps_type' => 'inline',
+                    'zoomProps_viewerPosition' => 'right',
+                    'zoomProps_trigger' => 'click',
+                    'carouselLocation' => 'left',
+                    'carouselOffset' => '5',
+                    'carouselStyle' => 'thumbnails',
+                    'thumbnailProps_width' => '64',
+                    'thumbnailProps_height' => '64',
+                    'thumbnailProps_navigationShape' => 'rectangle',
+                    'thumbnailProps_selectedStyle' => 'all',
+                    'thumbnailProps_selectedBorderPosition' => 'left',
+                    'thumbnailProps_selectedBorderWidth' => '2',
+                    'thumbnailProps_mediaSymbolShape' => 'round',
+                    'indicatorProps_shape' => 'round',
+                    'custom_free_params' => '{}',
+                ],
+                'cloud' => [
+                    'cloudinary_enabled' => '1',
+                ],
+                'setup' => [
+                    'cloudinary_environment_variable' => '0:3:TYnDHvfPzgOeKffuaf7lyAWO11rZZ6QERqfOEAdIEv1b8yxdFCiU/i53gG62d7CDvt3uZ+WTddWxKa0xQaA0TeSc5h6qgNVJuV7KoH2TADvCMxYFBm1jVcwWVdym3MiS2NYiZReiVd4=',
                 ],
             ],
             'connector_api_credentials' => [
@@ -3754,6 +4153,25 @@ Disallow: /*SID=
                         'order_status' => 'processing',
                         'payment_action' => 'authorize',
                         'currency' => 'USD',
+                    ],
+                ],
+                'design' => [
+                    'theme' => [
+                        'theme_id' => 'frontend/ForeverCompanies/dn',
+                    ],
+                ],
+            ],
+            'www_fa' => [
+                'design' => [
+                    'theme' => [
+                        'theme_id' => 'frontend/ForeverCompanies/fa',
+                    ],
+                ],
+            ],
+            'www_1215' => [
+                'design' => [
+                    'theme' => [
+                        'theme_id' => 'frontend/ForeverCompanies/tf',
                     ],
                 ],
             ],
