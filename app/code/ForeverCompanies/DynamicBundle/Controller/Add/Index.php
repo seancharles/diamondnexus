@@ -49,30 +49,22 @@
 		{
 			ini_set("display_errors", 1);
 			
-			// clear out old cart contents
-			 $this->cart->truncate();
+			try{
+				$post = $this->getRequest()->getParams();
 
-			/*
-			$product = $this->productFactory->create()->load($productId);
-			$productsArray = $this->getBundleOptions($product);
-			$params = [
-				'product' => $productId,
-				'bundle_option' => $productsArray,
-				'qty' => $qty,
-				'options' => array(
+				//$bundleId = $post['product'];
+				//$childId = $post['dynamic_bundled_item_id'];
+				//$options = $post['options'];
+				
+				$bundleId = 8;
+				$childId = 7;
+				$options = array(
 					5 => 27,
 					6 => 30
-				),
-				'dynamic_bundled_item_id' => 6
-			];
-			*/
+				);
 
-			try{
-
-				$bundleId = $this->getRequest()->getParam('parent_id');
-				$childId = $this->getRequest()->getParam('child_id');
-				
-				$post = $this->getRequest()->getParams();
+				// clear out old cart contents
+				 $this->cart->truncate();
 				
 				// get the quote id
 				$quoteId = $this->cart->getQuote()->getId();
@@ -83,34 +75,37 @@
 					
 					// fetch the card id again
 					$quoteId = $this->cart->getQuote()->getId();
+				} else {
+					
 				}
 				
 				// load the quote factory
 				$quote = $this->quoteRepository->get($quoteId);
 				
 				if($bundleId > 0) {
-					
-					$optionCollection = $this->optioncollection->create();
-					
-					echo $optionCollection->getSize();
-					
 					$parentItem = $this->addParentItem($bundleId);
 					$quote->addItem($parentItem);
 					$quote->save();
 					
-					$parentId = $this->getLastItemId($quoteId);
+					$itemId = $this->getLastItemId($quoteId);
 					
-					$options = array(
+					// we will use this to associate the loose stone product
+					$parentId = $itemId;
+					
+					//$buyRequest = {[;
+					
+					$itemOptions = array(
 						'info_buyRequest' => '{"uenc":"aHR0cHM6Ly9wYXVsdHdvLjEyMTVkaWFtb25kcy5jb20vdGVzdC1hd2Vzb21lLXJpbmcuaHRtbA,,","product":"8","selected_configurable_option":"","related_product":"","item":"8","bundle_option":{"2":"6"},"dynamic_bundled_item_id":"6","options":{"5":"28","6":"32"},"qty":"1"}',
-						'option_ids' => '5,6',
-						'option_5' => '28',
-						'option_6' => '32',
-						'bundle_identity' => '8_6_1',
+						'bundle_identity' => "{$bundleId}_{$childId}_1",
 						'bundle_option_ids' => '[2]',
 						'bundle_selection_ids' => '["6"]'
 					);
+
+					//$this->formatBuyRequest($options, $childId);
+					$this->formatBundleOptionsParent($itemOptions, $options);
+					$this->formatBundleSelectionsParent($itemOptions, $options);
 					
-					$this->setItemOptions($parentId, $bundleId, $options);
+					$this->setItemOptions($itemId, $bundleId, $itemOptions);
 				}
 				
 				if($childId > 0 && $parentId) {
@@ -118,24 +113,33 @@
 					$quote->addItem($childItem);
 					$quote->save();
 					
-					$parentId = $this->getLastItemId($quoteId);
+					$itemId = $this->getLastItemId($quoteId);
 					
-					$options = array(
+					$itemOptions = array(
 						'selection_qty_6' => '1',
 						'product_qty_7' => '1',
 						'selection_id' => '6',
 						'info_buyRequest' => '{"uenc":"aHR0cHM6Ly9wYXVsdHdvLjEyMTVkaWFtb25kcy5jb20vdGVzdC1hd2Vzb21lLXJpbmcuaHRtbA,,","product":"8","selected_configurable_option":"","related_product":"","item":"8","bundle_option":{"2":"6"},"dynamic_bundled_item_id":"6","options":{"5":"28","6":"32"},"qty":"1"}',
 						'bundle_option_ids' => '[2]',
 						'bundle_selection_attributes' => '{"price":372,"qty":1,"option_label":"Center Stone","option_id":"2"}',
-						'bundle_identity' => '8_6_1'
+						'bundle_identity' => "{$bundleId}_{$childId}_1",
 					);
 					
-					$this->setItemOptions($parentId, $childId, $options);
+					$this->setItemOptions($itemId, $childId, $itemOptions);
 				}
 				
 				$quote->collectTotals()->save();
 				
-				echo "Add complete";
+				$product = $this->productloader->create()->load($bundleId);
+				
+				$message = __(
+					'You added %1 to your shopping cart.',
+					$product->getName()
+				);
+				
+				$this->messageManager->addSuccessMessage($message);
+				
+				//return $this->resultRedirectFactory->create()->setUrl($this->_url->getUrl('checkout/cart'));
 				
 			} catch (\Exception $e) {
 				echo $e->getMessage();
@@ -153,6 +157,37 @@
 			$lastitem = $collecion->getLastItem();
 			
 			return $lastitem->getId();
+		}
+		
+		private function formatBuyRequest()
+		{
+			
+		}
+		
+		/**
+		* format bundle custom options
+		*/
+		private function formatBundleOptionsParent(&$itemOptions = null, $options = null)
+		{
+			$itemOptions['option_ids'] = implode(',',array_keys($options));
+			
+			foreach($options as $key => $value)
+			{
+				$itemOptions['option_' . $key] = $value;
+			}
+		}
+		
+		private function formatBundleSelectionsParent(&$itemSelections = null, $options = null)
+		{
+			foreach($options as $key => $value)
+			{
+				$itemOptions[$key] = $value;
+			}
+		}
+		
+		private function formatBundleSelectionsChild(&$itemSelections = null, $selections = null)
+		{
+			
 		}
 		
 		private function setItemOptions($itemId = 0, $productId = 0, $options = null)
@@ -189,49 +224,6 @@
 					$quoteItem->setRowTotal(100);
 					$quoteItem->setBaseRowTotal(100);
 					$quoteItem->getProduct()->setIsSuperMode(true);
-					
-					/*
-					echo "<pre>", print_r(get_class_methods($quoteItem)), "</pre>";
-					
-					$infoBuyRequest = [
-							"info_buyRequest" => [
-								"uenc" => "aHR0cHM6Ly93d3cud2V0YWcuY2EvZW5fY2EvbmFtZS10YWdzL25hbWUtdGFncy1pbnNwaXJhdGlvbi9jdXN0b20tbmFtZS10YWctb3JkZXIv",
-								"product" => $productId,
-								"qty" => 1
-							]
-						];
-
-					$option = $this->_objectManager->create(
-						\Magento\Quote\Model\Quote\Item\Option::class,
-						['data' => $infoBuyRequest]
-					);
-
-					$quoteItem->addOption($option);
-					$quoteItem->setProductOptions($infoBuyRequest);
-					*/
-					
-					// addOption
-					// setOptions
-					// setProductOption
-					// saveItemOptions
-					
-					/*
-					$quoteItem->setAdditionalData(serialize(array(
-						'product' => $productId,
-						'code'  => 'test',
-						'value' => '1'
-					)));
-					*/
-					
-					# {"product":"8","bundle_option":{"2":"13"},"dynamic_bundled_item_id":"6","options":{"5":"27","6":"30"},"qty":"1"}
-					
-					/*
-					$quoteItem->setOptions([
-						'product' => $productId,
-						'code'  => 'test',
-						'value' => '1'
-					]);
-					*/
 					
 					return $quoteItem;
 				}
