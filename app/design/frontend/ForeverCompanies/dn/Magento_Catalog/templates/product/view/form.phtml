@@ -17,7 +17,12 @@
 
 <div class="product-add-form">
     <form data-product-sku="<?= $block->escapeHtmlAttr($_product->getSku()) ?>"
-          action="<?= $block->escapeUrl($block->getSubmitUrl($_product)) ?>" method="post"
+		<?php if($_product->getDynamicBundle() == '1'): ?>
+			action="<?= $block->escapeUrl($this->getUrl('dynamicbundle/add')) ?>"
+		<?php else: ?>
+			action="<?= $block->escapeUrl($block->getSubmitUrl($_product)) ?>"
+		<?php endif; ?>
+          method="post"
           id="product_addtocart_form"<?php if ($_product->getOptions()) :?> enctype="multipart/form-data"<?php endif; ?>>
         <input type="hidden" name="product" value="<?= (int)$_product->getId() ?>" />
         <input type="hidden" name="selected_configurable_option" value="" />
@@ -36,30 +41,6 @@
         <?php if ($_product->isSaleable() && $block->hasOptions() && $block->getOptionsContainer() == 'container2') :?>
             <?= $block->getChildChildHtml('options_container') ?>
         <?php endif;?>
-		
-		<!--
-		<div class="field required">
-			<label class="label" for="dynamic_bundled_item_id">
-				<span>Bundled Stone</span>
-			</label>
-			<select id="dynamic_bundled_item_id" name="dynamic_bundled_item_id">
-			<?php
-				$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-				/** @var \Magento\Catalog\Model\ResourceModel\Product\Collection $productCollection */
-				$productCollection = $objectManager->create('Magento\Catalog\Model\ResourceModel\Product\Collection');
-				/** Apply filters here */
-				$collection = $productCollection->addAttributeToSelect('*')
-						->addAttributeToFilter('attribute_set_id',13)
-						->load();
-
-				foreach ($collection as $product){
-					 echo '<option value="' . $product->getId() . '">' . $product->getName() . '</option>';
-				}
-			?>
-			</select>
-		</div>
-		-->
-		
         <?= $block->getChildHtml('form_bottom') ?>
     </form>
 </div>

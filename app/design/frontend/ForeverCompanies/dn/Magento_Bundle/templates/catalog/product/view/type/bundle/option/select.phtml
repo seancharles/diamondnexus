@@ -10,7 +10,9 @@
 <?php $_selections  = $_option->getSelections(); ?>
 <?php $_default     = $_option->getDefaultSelection(); ?>
 <?php list($_defaultQty, $_canChangeQty) = $block->getDefaultValues(); ?>
-<div class="field option <?= ($_option->getRequired()) ? ' required': '' ?>" style="display:none;">
+<div
+	class="field option <?= ($_option->getRequired()) ? ' required': '' ?>"
+	<?php if($block->getProduct()->getDynamicBundle() == '1'): ?>style="display:none;"><?php endif; ?>
     <label class="label" for="bundle-option-<?= $block->escapeHtmlAttr($_option->getId()) ?>">
         <span><?= $block->escapeHtml($_option->getTitle()) ?></span>
     </label>
