@@ -52,16 +52,19 @@
 			try{
 				$post = $this->getRequest()->getParams();
 
-				//$bundleId = $post['product'];
-				//$childId = $post['dynamic_bundled_item_id'];
-				//$options = $post['options'];
 				
+				$bundleId = $post['product'];
+				$childId = $post['dynamic_bundled_item_id'];
+				$options = $post['options'];
+				
+				/*
 				$bundleId = 8;
 				$childId = 7;
 				$options = array(
 					5 => 27,
 					6 => 30
 				);
+				*/
 
 				// clear out old cart contents
 				 $this->cart->truncate();
@@ -83,63 +86,52 @@
 				$quote = $this->quoteRepository->get($quoteId);
 				
 				if($bundleId > 0) {
-					$parentItem = $this->addParentItem($bundleId);
+					$bundleProductModel = $this->productloader->create()->load($bundleId);
+					$bundleOptions = $this->getBundleOptions($bundleProductModel);
+					
+					$parentItem = $this->addParentItem($bundleProductModel);
 					$quote->addItem($parentItem);
 					$quote->save();
-					
-					$itemId = $this->getLastItemId($quoteId);
-					
-					// we will use this to associate the loose stone product
-					$parentId = $itemId;
-					
-					//$buyRequest = {[;
+					$parentItemId = $this->getLastQuoteItemId($quoteId);
 					
 					$itemOptions = array(
 						'info_buyRequest' => '{"uenc":"aHR0cHM6Ly9wYXVsdHdvLjEyMTVkaWFtb25kcy5jb20vdGVzdC1hd2Vzb21lLXJpbmcuaHRtbA,,","product":"8","selected_configurable_option":"","related_product":"","item":"8","bundle_option":{"2":"6"},"dynamic_bundled_item_id":"6","options":{"5":"28","6":"32"},"qty":"1"}',
-						'bundle_identity' => "{$bundleId}_{$childId}_1",
-						'bundle_option_ids' => '[2]',
-						'bundle_selection_ids' => '["6"]'
+						'bundle_identity' => "{$bundleId}_{$childId}_1"
 					);
 
-					//$this->formatBuyRequest($options, $childId);
 					$this->formatBundleOptionsParent($itemOptions, $options);
-					$this->formatBundleSelectionsParent($itemOptions, $options);
-					
-					$this->setItemOptions($itemId, $bundleId, $itemOptions);
+					$this->formatBundleSelectionsParent($itemOptions, $bundleOptions);
+					$this->setItemOptions($parentItemId, $bundleId, $itemOptions);
 				}
 				
-				if($childId > 0 && $parentId) {
-					$childItem = $this->addChildItem($childId, $parentId);
+				if($childId > 0 && $parentItemId) {
+					$childProductModel = $this->productloader->create()->load($childId);
+					$childItem = $this->addChildItem($childProductModel, $parentItemId);
 					$quote->addItem($childItem);
 					$quote->save();
-					
-					$itemId = $this->getLastItemId($quoteId);
+					$itemId = $this->getLastQuoteItemId($quoteId);
 					
 					$itemOptions = array(
-						'selection_qty_6' => '1',
-						'product_qty_7' => '1',
-						'selection_id' => '6',
+						'product_qty_' . $childId => '1',
 						'info_buyRequest' => '{"uenc":"aHR0cHM6Ly9wYXVsdHdvLjEyMTVkaWFtb25kcy5jb20vdGVzdC1hd2Vzb21lLXJpbmcuaHRtbA,,","product":"8","selected_configurable_option":"","related_product":"","item":"8","bundle_option":{"2":"6"},"dynamic_bundled_item_id":"6","options":{"5":"28","6":"32"},"qty":"1"}',
-						'bundle_option_ids' => '[2]',
 						'bundle_selection_attributes' => '{"price":372,"qty":1,"option_label":"Center Stone","option_id":"2"}',
 						'bundle_identity' => "{$bundleId}_{$childId}_1",
 					);
 					
+					$this->formatBundleSelectionsChild($itemOptions, $bundleOptions);
 					$this->setItemOptions($itemId, $childId, $itemOptions);
 				}
 				
 				$quote->collectTotals()->save();
 				
-				$product = $this->productloader->create()->load($bundleId);
-				
 				$message = __(
 					'You added %1 to your shopping cart.',
-					$product->getName()
+					$bundleProductModel->getName()
 				);
 				
 				$this->messageManager->addSuccessMessage($message);
 				
-				//return $this->resultRedirectFactory->create()->setUrl($this->_url->getUrl('checkout/cart'));
+				return $this->resultRedirectFactory->create()->setUrl($this->_url->getUrl('checkout/cart'));
 				
 			} catch (\Exception $e) {
 				echo $e->getMessage();
@@ -149,7 +141,7 @@
 		/**
 		* get last cart item added
 		*/
-		private function getLastItemId($quoteId = 0)
+		private function getLastQuoteItemId($quoteId = 0)
 		{
 			$_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 			$collecion = $_objectManager->create('Magento\Quote\Model\ResourceModel\Quote\Item\Collection')->addFieldToFilter('quote_id',$quoteId);
@@ -177,17 +169,25 @@
 			}
 		}
 		
-		private function formatBundleSelectionsParent(&$itemSelections = null, $options = null)
+		private function formatBundleSelectionsParent(&$itemSelections = null, $selections = null)
 		{
-			foreach($options as $key => $value)
+			foreach($selections as $key => $value)
 			{
-				$itemOptions[$key] = $value;
+				$itemSelections['bundle_option_ids'] = '[' . $key . ']';
+				
+				$itemSelections['bundle_selection_ids'] = '["' . implode(",", $value) . '"]';
 			}
 		}
 		
 		private function formatBundleSelectionsChild(&$itemSelections = null, $selections = null)
 		{
-			
+			foreach($selections as $key => $value)
+			{
+				$itemSelections['bundle_option_ids'] = '[' . $key . ']';
+				
+				$itemSelections['selection_id'] = $value[0];
+				$itemSelections['selection_qty_' . $value[0]] = 1;
+			}
 		}
 		
 		private function setItemOptions($itemId = 0, $productId = 0, $options = null)
@@ -205,25 +205,23 @@
 			}
 		}
 		
-		private function addParentItem($productId = 0)
+		private function addParentItem($bundleProductModel)
 		{
 			try{
-				$product = $this->productloader->create()->load($productId);
-				
-				if ($product->getId()) {
+				if ($bundleProductModel->getId()) {
 					$quoteItem = $this->cartItemFactory->create();
-					$quoteItem->setProduct($product);
+					$quoteItem->setProduct($bundleProductModel);
 					
 					// set the values specific to what they need to be...
 					$quoteItem->setProductType('bundle');
-					$quoteItem->setSku('1235');
+					//$quoteItem->setSku('1235');
 					$quoteItem->setName('Test Bundle Item');
 					$quoteItem->setQty(1);
-					$quoteItem->setCustomPrice(100);
-					$quoteItem->setOriginalCustomPrice(200);
-					$quoteItem->setRowTotal(100);
-					$quoteItem->setBaseRowTotal(100);
-					$quoteItem->getProduct()->setIsSuperMode(true);
+					//$quoteItem->setCustomPrice(100);
+					//$quoteItem->setOriginalCustomPrice(200);
+					//$quoteItem->setRowTotal(100);
+					//$quoteItem->setBaseRowTotal(100);
+					//$quoteItem->getProduct()->setIsSuperMode(true);
 					
 					return $quoteItem;
 				}
@@ -232,24 +230,24 @@
 			}
 		}
 		
-		private function addChildItem($productId = 0, $parentId = 0)
+		private function addChildItem($childProductModel, $parentId = 0)
 		{
 			try{
-				$product = $this->productloader->create()->load($productId);
-				
-				if ($product->getId()) {
+				if ($childProductModel->getId()) {
 					$quoteItem = $this->cartItemFactory->create();
-					$quoteItem->setProduct($product);
+					$quoteItem->setProduct($childProductModel);
+					
+					$price = $childProductModel->getPrice();
 					
 					// set the values specific to what they need to be...
 					$quoteItem->setParentItemId($parentId);
-					$quoteItem->setSku('56456456');
-					$quoteItem->setName('Test Diamond Item');
+					$quoteItem->setSku($childProductModel->getSku());
+					$quoteItem->setName($childProductModel->getName());
 					$quoteItem->setQty(1);
-					$quoteItem->setCustomPrice(100);
-					$quoteItem->setOriginalCustomPrice(200);
-					$quoteItem->setRowTotal(100);
-					$quoteItem->setBaseRowTotal(100);
+					$quoteItem->setCustomPrice($price);
+					$quoteItem->setOriginalCustomPrice($price);
+					$quoteItem->setRowTotal($price);
+					$quoteItem->setBaseRowTotal($price);
 					
 					return $quoteItem;
 				}
@@ -263,7 +261,7 @@
 		 * @param $product
 		 * @return mixed
 		 */
-		private function getBundleOptions(Product $product)
+		private function getBundleOptions($product)
 		{
 			$selectionCollection = $product->getTypeInstance()
 				->getSelectionsCollection(
