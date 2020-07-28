@@ -102,6 +102,7 @@
         </step>
     </steps>
     <steps mode="delta">
+        <!--
         <step title="Custom Customer Attributes Step">
             <delta>Migration\Step\CustomCustomerAttributes\Delta</delta>
             <volume>Migration\Step\CustomCustomerAttributes\Volume</volume>
@@ -110,10 +111,12 @@
             <delta>Migration\Step\Customer\Delta</delta>
             <volume>Migration\Step\Customer\Volume</volume>
         </step>
+        -->
         <step title="Map Step">
             <delta>Migration\Step\Map\Delta</delta>
             <volume>Migration\Step\Map\Volume</volume>
         </step>
+        <!--
         <step title="Log Step">
             <delta>Migration\Step\Log\Delta</delta>
             <volume>Migration\Step\Log\Volume</volume>
@@ -130,10 +133,12 @@
             <delta>Migration\Step\TierPrice\Delta</delta>
             <volume>Migration\Step\TierPrice\Volume</volume>
         </step>
+        -->
         <step title="Url Rewrite Step">
             <delta>Migration\Step\UrlRewrite\Version11410to2000Delta</delta>
             <volume>Migration\Step\UrlRewrite\Version11410to2000</volume>
         </step>
+        <!--
         <step title="OrderGrids Step">
             <delta>Migration\Step\OrderGridsEE\Delta</delta>
             <volume>Migration\Step\OrderGridsEE\Volume</volume>
@@ -142,13 +147,15 @@
             <delta>Migration\Step\SalesIncrement\Delta</delta>
             <volume>Migration\Step\SalesIncrement\Volume</volume>
         </step>
+        -->
         <step title="Inventory Step">
             <delta>Migration\Step\Inventory\Delta</delta>
             <volume>Migration\Step\Inventory\Volume</volume>
         </step>
     </steps>
     <source>
-        <database host="mysql" name="magento_paul" user="root" password="password" />
+        <!--<database host="mysql" name="magento_paul" user="root" password="password" />-->
+        <database host="mysql" name="magento_one" user="root" password="password" />
     </source>
     <destination>
         <database host="mysql" name="magento_unit" user="root" password="password" />
