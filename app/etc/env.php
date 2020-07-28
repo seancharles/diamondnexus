@@ -10,10 +10,10 @@ return [
         'table_prefix' => '',
         'connection' => [
             'default' => [
-                'host' => 'mysql',
-                'dbname' => 'magento_unit',
-                'username' => 'root',
-                'password' => 'password',
+                'host' => $_ENV['DB_HOST'],
+                'dbname' => $_ENV['DB_NAME'],
+                'username' => $_ENV['DB_USER'],
+                'password' => $_ENV['DB_ROOT_PASSWORD'],
                 'model' => 'mysql4',
                 'engine' => 'innodb',
                 'initStatements' => 'SET NAMES utf8;',
@@ -27,11 +27,11 @@ return [
         ]
     ],
     'x-frame-options' => 'SAMEORIGIN',
-    'MAGE_MODE' => 'developer',
+    'MAGE_MODE' => 'production',
     'session' => [
         'save' => 'redis',
         'redis' => [
-            'host' => 'redis',
+            'host' => $_ENV['REDIS_HOST'],
             'port' => '6379',
             'password' => '',
             'timeout' => '2.5',
@@ -56,7 +56,7 @@ return [
             'default' => [
                 'backend' => 'Cm_Cache_Backend_Redis',
                 'backend_options' => [
-                    'server' => 'redis',
+                    'server' => $_ENV['REDIS_HOST'],
                     'database' => '11',
                     'port' => '6379'
                 ]
@@ -64,7 +64,7 @@ return [
             'page_cache' => [
                 'backend' => 'Cm_Cache_Backend_Redis',
                 'backend_options' => [
-                    'server' => 'redis',
+                    'server' => $_ENV['REDIS_HOST'],
                     'port' => '6379',
                     'database' => '12',
                     'compress_data' => '0'
@@ -94,20 +94,19 @@ return [
         'full_page' => 1,
         'config_webservice' => 1,
         'translate' => 1,
-        'vertex' => 1,
-        'target_rule' => 1
+        'vertex' => 1
     ],
     'queue' => [
         'amqp' => [
-            'host' => 'rabbitmq',
+            'host' => $_ENV['RABBIT_HOST'],
             'port' => '5672',
-            'user' => 'root',
-            'password' => 'KpAHUm2E',
+            'user' => $_ENV['RABBIT_USER'],
+            'password' => $_ENV['RABBIT_PASSWORD'],
             'virtualhost' => 'magento'
         ]
     ],
     'downloadable_domains' => [
-        'local-mag.1215diamonds.com'
+        $_ENV['MAG_NAME'].'.1215diamonds.com'
     ],
     'install' => [
         'date' => 'Mon, 13 Jan 2020 18:43:07 +0000'
@@ -116,10 +115,10 @@ return [
         'default' => [
             'web' => [
                 'unsecure' => [
-                    'base_url' => 'https://local-mag.1215diamonds.com/'
+                    'base_url' => 'https://'.$_ENV['MAG_NAME'].'.1215diamonds.com/'
                 ],
                 'secure' => [
-                    'base_url' => 'https://local-mag.1215diamonds.com/'
+                    'base_url' => 'https://'.$_ENV['MAG_NAME'].'.1215diamonds.com/'
                 ]
             ],
             'iwd_storelocator' => [
@@ -131,7 +130,7 @@ return [
     ],
     'http_cache_hosts' => [
         [
-            'host' => 'varnish'
+            'host' => $_ENV['VARNISH_HOST']
         ]
     ]
 ];
