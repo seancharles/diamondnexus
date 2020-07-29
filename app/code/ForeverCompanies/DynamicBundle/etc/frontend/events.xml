@@ -3,4 +3,7 @@
    <event name="checkout_cart_product_add_after">
        <observer name="dynamic_bundle_add_to_cart" instance="ForeverCompanies\DynamicBundle\Observer\AddToCart" />
    </event>
+   <event name="checkout_cart_product_update_after">
+        <observer name="dynamic_bundle_set_options_for_item_update" instance="ForeverCompanies\DynamicBundle\Observer\SetOptionsForItem"/>
+    </event>
 </config>

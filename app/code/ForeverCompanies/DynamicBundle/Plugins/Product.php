@@ -17,8 +17,6 @@ class Product
 	{
 		//$productPrice = $product->getData('key: price');
 		
-		$name .= " for the win.";
-		
 		return $name;
 	}
 }

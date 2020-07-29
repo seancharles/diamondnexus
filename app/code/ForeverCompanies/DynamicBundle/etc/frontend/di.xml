@@ -27,9 +27,14 @@
 	
 	<preference for="Magento\Catalog\Helper\Product\Configuration" type="ForeverCompanies\DynamicBundle\Helper\Product\Configuration" />
 	<preference for="Magento\Bundle\Helper\Catalog\Product\Configuration" type="ForeverCompanies\DynamicBundle\Helper\Catalog\Product\Configuration" />
+	<!--<preference for="Magento\Bundle\Model\Product\Type" type="ForeverCompanies\DynamicBundle\Model\Product\Type" />-->
 	
     <type name="Magento\Checkout\Model\DefaultConfigProvider">
         <plugin name="checkout-summary-product-attribute" type="ForeverCompanies\DynamicBundle\Plugins\Checkout\Model\DefaultConfigProvider" />
+    </type>
+	
+    <type name="Magento\Sales\Model\Order\Item">
+        <plugin name="sales-order-item-options" type="ForeverCompanies\DynamicBundle\Plugins\Sales\Order\Item" />
     </type>
 	
 </config>
