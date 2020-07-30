@@ -56,13 +56,14 @@
 				$childId = $post['dynamic_bundled_item_id'];
 				$options = $post['options'];
 				
+				/* used for debug testing directly: comment out after */
 				/*
-				$bundleId = 8;
-				$childId = 7;
-				$options = array(
-					5 => 27,
-					6 => 30
-				);
+					$bundleId = 15;
+					$childId = 6;
+					$options = array(
+						13 => 61,
+						14 => 65
+					);
 				*/
 
 				// clear out old cart contents
@@ -95,10 +96,27 @@
 					$quote->save();
 					$parentItemId = $this->getLastQuoteItemId($quoteId);
 					
+					/*
 					$itemOptions = array(
-						'info_buyRequest' => '{"uenc":"aHR0cHM6Ly9wYXVsdHdvLjEyMTVkaWFtb25kcy5jb20vdGVzdC1hd2Vzb21lLXJpbmcuaHRtbA,,","product":"8","selected_configurable_option":"","related_product":"","item":"8","bundle_option":{"2":"6"},"dynamic_bundled_item_id":"' . $childId . '","options":{"5":"28","6":"32"},"qty":"1"}',
+						'info_buyRequest' => '{"uenc":"aHR0cHM6Ly9wYXVsdHdvLjEyMTVkaWFtb25kcy5jb20vdGVzdC1hd2Vzb21lLXJpbmcuaHRtbA","product":"' . $bundleId . '","selected_configurable_option":"","related_product":"","item":"' . $bundleId . '","bundle_option":{"2":"6"},"dynamic_bundled_item_id":"' . $childId . '","options":{"5":"28","6":"32"},"qty":"1"}',
 						'bundle_identity' => "{$bundleId}_{$childId}_1"
 					);
+					*/
+
+					$itemOptions = [
+						'info_buyRequest' => json_encode([
+							'uenc' => 'aHR0cHM6Ly9wYXVsdHdvLjEyMTVkaWFtb25kcy5jb20vdGVzdC1hd2Vzb21lLXJpbmcuaHRtbA',
+							'product' => $bundleId,
+							'selected_configurable_option' => '',
+							'related_product' => '',
+							'item' => $bundleId,
+							'bundle_option' => $bundleOptions,
+							'dynamic_bundled_item_id' => $childId,
+							'options' => $options,
+							'qty' => 1
+						]),
+						'bundle_identity' => "{$bundleId}_{$childId}_1"
+					];
 
 					$this->formatBundleOptionsParent($itemOptions, $options);
 					$this->formatBundleSelectionsParent($itemOptions, $bundleOptions);
@@ -110,12 +128,28 @@
 					$quote->save();
 					$itemId = $this->getLastQuoteItemId($quoteId);
 					
+					/*
 					$itemOptions = array(
 						'product_qty_' . $childId => '1',
-						'info_buyRequest' => '{"uenc":"aHR0cHM6Ly9wYXVsdHdvLjEyMTVkaWFtb25kcy5jb20vdGVzdC1hd2Vzb21lLXJpbmcuaHRtbA,,","product":"8","selected_configurable_option":"","related_product":"","item":"8","bundle_option":{"2":"6"},"options":{"5":"28","6":"32"},"qty":"1"}',
+						'info_buyRequest' => '{"uenc":"aHR0cHM6Ly9wYXVsdHdvLjEyMTVkaWFtb25kcy5jb20vdGVzdC1hd2Vzb21lLXJpbmcuaHRtbA","product":"' . $bundleId . '","selected_configurable_option":"","related_product":"","item":"' . $bundleId . '","bundle_option":{"2":"6"},"options":{"5":"28","6":"32"},"qty":"1"}',
 						//'bundle_selection_attributes' => '{"price":372,"qty":1,"option_label":"Center Stone","option_id":"2"}',
 						'bundle_identity' => "{$bundleId}_{$childId}_1",
 					);
+					*/
+					
+					$itemOptions = [
+						'info_buyRequest' => json_encode([
+							'uenc' => 'aHR0cHM6Ly9wYXVsdHdvLjEyMTVkaWFtb25kcy5jb20vdGVzdC1hd2Vzb21lLXJpbmcuaHRtbA',
+							'product' => $bundleId,
+							'selected_configurable_option' => '',
+							'related_product' => '',
+							'item' => $bundleId,
+							'bundle_option' => $bundleOptions,
+							'options' => $options,
+							'qty' => 1
+						]),
+						'bundle_identity' => "{$bundleId}_{$childId}_1"
+					];
 					
 					$this->formatBundleSelectionsChild($itemOptions, $bundleOptions);
 					$this->setItemOptions($itemId, $childId, $itemOptions);
@@ -187,6 +221,13 @@
 				
 				$itemSelections['selection_id'] = $value[0];
 				$itemSelections['selection_qty_' . $value[0]] = 1;
+				
+				$itemSelections['bundle_selection_attributes'] = json_encode([
+					'price' => 1,
+					'qty' => 1,
+					'option_label' => 'Center Stone',
+					'option_id' => $key
+				]);
 			}
 		}
 		
@@ -215,10 +256,8 @@
 					$price = $bundleProductModel->getPrice() + $childProductModel->getPrice();
 					
 					// set the values specific to what they need to be...
-					$quoteItem->setProductType('bundle');
-					//$quoteItem->setSku('1235');
-					//$quoteItem->setName('Test Bundle Item');
 					$quoteItem->setQty(1);
+					$quoteItem->setProductType('bundle');
 					$quoteItem->setCustomPrice($price);
 					$quoteItem->setOriginalCustomPrice($price);
 					$quoteItem->setRowTotal($price);
@@ -250,7 +289,7 @@
 					$quoteItem->setOriginalCustomPrice($price);
 					$quoteItem->setRowTotal($price);
 					$quoteItem->setBaseRowTotal($price);
-					$quoteItem->getProduct()->setIsSuperMode(true);
+					#$quoteItem->getProduct()->setIsSuperMode(true);
 					
 					return $quoteItem;
 				}
