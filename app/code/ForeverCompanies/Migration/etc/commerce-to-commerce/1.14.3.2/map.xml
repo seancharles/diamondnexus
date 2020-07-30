@@ -168,6 +168,12 @@
                 <document>fb_uid_link</document>
             </ignore>
             <ignore>
+                <document>fishbowl_vendor</document>
+            </ignore>
+            <ignore>
+                <document>fishbowl_vendorpart</document>
+            </ignore>
+            <ignore>
                 <document>foreverartisans_getstarted</document>
             </ignore>
             <ignore>
@@ -2751,6 +2757,27 @@
 
 
             <!-- custom destination ignores -->
+            <ignore>
+                <document>astound_affirm_attribute</document>
+            </ignore>
+            <ignore>
+                <document>astound_affirm_rule</document>
+            </ignore>
+            <ignore>
+                <document>catalogrule_group_websitee256e0a9</document>
+            </ignore>
+            <ignore>
+                <document>catalogrule_product_priceb741e4cf</document>
+            </ignore>
+            <ignore>
+                <document>cloudinary_media_library_map</document>
+            </ignore>
+            <ignore>
+                <document>cloudinary_synchronisation</document>
+            </ignore>
+            <ignore>
+                <document>cloudinary_transformation</document>
+            </ignore>
             <ignore>
                 <document>braintree_credit_prices</document>
             </ignore>
