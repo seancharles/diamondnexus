@@ -350,6 +350,7 @@ return [
         'Dotdigitalgroup_Email' => 1,
         'Dotdigitalgroup_Chat' => 1,
         'Dotdigitalgroup_Enterprise' => 1,
+        'ForeverCompanies_SearchEngine' => 1,
         'Inchoo_Helloworld' => 1,
         'Klarna_Core' => 1,
         'Klarna_Ordermanagement' => 1,
