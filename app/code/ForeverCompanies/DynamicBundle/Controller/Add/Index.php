@@ -52,19 +52,17 @@
 			try{
 				$post = $this->getRequest()->getParams();
 
-				$bundleId = $post['product'];
-				$childId = $post['dynamic_bundled_item_id'];
-				$options = $post['options'];
+				//$bundleId = $post['product'];
+				//$childId = $post['dynamic_bundled_item_id'];
+				//$options = $post['options'];
 				
 				/* used for debug testing directly: comment out after */
-				/*
-					$bundleId = 15;
-					$childId = 6;
-					$options = array(
-						13 => 61,
-						14 => 65
-					);
-				*/
+				$bundleId = 15;
+				$childId = 6;
+				$options = array(
+					13 => 61,
+					14 => 65
+				);
 
 				// clear out old cart contents
 				 $this->cart->truncate();
@@ -91,7 +89,7 @@
 					
 					$bundleOptions = $this->getBundleOptions($bundleProductModel);
 					
-					$parentItem = $this->addParentItem($bundleProductModel, $childProductModel);
+					$parentItem = $this->addParentItem($bundleProductModel, $childProductModel, $options);
 					$quote->addItem($parentItem);
 					$quote->save();
 					$parentItemId = $this->getLastQuoteItemId($quoteId);
@@ -246,14 +244,36 @@
 			}
 		}
 		
-		private function addParentItem($bundleProductModel, $childProductModel)
+		private function addParentItem($bundleProductModel, $childProductModel, $options)
 		{
 			try{
 				if ($bundleProductModel->getId()) {
 					$quoteItem = $this->cartItemFactory->create();
 					$quoteItem->setProduct($bundleProductModel);
+
+					if($bundleProductModel->hasOptions() == true)
+					{
+						// get custom options
+						$productOptions = $bundleProductModel->getOptions();
+						
+						$customOptionPrice = 0;
+						
+						foreach($productOptions as $option)
+						{
+							$values = $option->getValues();
+							
+							foreach($values as $valueId => $value)
+							{
+								// compare the option values to the selections
+								if($options[$option['option_id']] == $valueId)
+								{
+									$customOptionPrice += $value['price'];
+								}
+							}
+						}
+					}
 					
-					$price = $bundleProductModel->getPrice() + $childProductModel->getPrice();
+					$price = $bundleProductModel->getPrice() + $childProductModel->getPrice() + $customOptionPrice;
 					
 					// set the values specific to what they need to be...
 					$quoteItem->setQty(1);
