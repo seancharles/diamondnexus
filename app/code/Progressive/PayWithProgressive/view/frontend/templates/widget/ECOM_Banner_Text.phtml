@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * Copyright (c) 2018, Prog Leasing, LLC
+ * Licensed under the Open Software License version 3.0
+ */
+
+    $client_token = $this->getClientToken();
+    $api_url = $this->getApiUrl() . '/content/ui';
+	$element_name = "prog-valprop-".uniqid();
+?>
+
+<a href="javascript:void(0)" id="<?php echo $element_name?>">
+<?php echo $this->getBannerText()?>
+</a>
+
+<script src='<?php echo $api_url?>'></script>
+<script>
+    document.getElementById('<?php echo $element_name?>').addEventListener("click", function() {
+        ProgLeasing.OpenApplicationUI('<?php echo $client_token?>', window.location.href, window.location.href, "","",true,window.BASE_URL+"checkout/#shipping");
+    });
+</script>
