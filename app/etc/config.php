@@ -351,6 +351,7 @@ return [
         'Dotdigitalgroup_Email' => 1,
         'Dotdigitalgroup_Chat' => 1,
         'Dotdigitalgroup_Enterprise' => 1,
+        'ForeverCompanies_CustomAttributes' => 1,
         'ForeverCompanies_Migration' => 1,
         'Inchoo_Helloworld' => 1,
         'Klarna_Core' => 1,
