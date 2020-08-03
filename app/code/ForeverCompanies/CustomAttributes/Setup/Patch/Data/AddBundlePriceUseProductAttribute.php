@@ -14,7 +14,7 @@ use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\Patch\PatchRevertableInterface;
 
-class AddMetalTypeProductAttribute implements DataPatchInterface, PatchRevertableInterface
+class AddBundlePriceUseProductAttribute implements DataPatchInterface, PatchRevertableInterface
 {
 
     /**
@@ -50,11 +50,11 @@ class AddMetalTypeProductAttribute implements DataPatchInterface, PatchRevertabl
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
         $eavSetup->addAttribute(
             \Magento\Catalog\Model\Product::ENTITY,
-            'metal_type',
+            'bundle_price_use',
             [
-                'type' => 'varchar',
-                'label' => 'Metal type',
-                'input' => 'text',
+                'type' => 'decimal',
+                'label' => 'Bundle price use',
+                'input' => 'price',
                 'source' => '',
                 'frontend' => '',
                 'required' => false,
@@ -64,18 +64,18 @@ class AddMetalTypeProductAttribute implements DataPatchInterface, PatchRevertabl
                 'default' => null,
                 'visible' => true,
                 'user_defined' => true,
-                'searchable' => true,
+                'searchable' => false,
                 'filterable' => false,
-                'comparable' => false,
+                'comparable' => true,
                 'visible_on_front' => true,
                 'unique' => false,
-                'apply_to' => 'bundle',
+                'apply_to' => '',
                 'group' => 'General',
                 'used_in_product_listing' => false,
                 'is_used_in_grid' => true,
                 'is_visible_in_grid' => false,
                 'is_filterable_in_grid' => false,
-                'option' => array('values' => array(""))
+                'option' => ['values' => [""]]
             ]
         );
 
@@ -87,7 +87,7 @@ class AddMetalTypeProductAttribute implements DataPatchInterface, PatchRevertabl
         $this->moduleDataSetup->getConnection()->startSetup();
         /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $eavSetup->removeAttribute(\Magento\Catalog\Model\Product::ENTITY, 'metal_type');
+        $eavSetup->removeAttribute(\Magento\Catalog\Model\Product::ENTITY, 'bundle_price_use');
 
         $this->moduleDataSetup->getConnection()->endSetup();
     }
@@ -103,7 +103,7 @@ class AddMetalTypeProductAttribute implements DataPatchInterface, PatchRevertabl
     /**
      * {@inheritdoc}
      */
-    public static function getDependencies()
+        public static function getDependencies()
     {
         return [
 
@@ -118,4 +118,3 @@ class AddMetalTypeProductAttribute implements DataPatchInterface, PatchRevertabl
         return '0.0.1';
     }
 }
-

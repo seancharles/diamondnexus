@@ -75,7 +75,7 @@ class AddDevTagProductAttribute implements DataPatchInterface, PatchRevertableIn
                 'is_used_in_grid' => true,
                 'is_visible_in_grid' => false,
                 'is_filterable_in_grid' => false,
-                'option' => array('values' => array(""))
+                'option' => ['values' => [""]]
             ]
         );
 
@@ -103,7 +103,7 @@ class AddDevTagProductAttribute implements DataPatchInterface, PatchRevertableIn
     /**
      * {@inheritdoc}
      */
-    public static function getDependencies()
+        public static function getDependencies()
     {
         return [
 
@@ -118,4 +118,3 @@ class AddDevTagProductAttribute implements DataPatchInterface, PatchRevertableIn
         return '0.0.1';
     }
 }
-

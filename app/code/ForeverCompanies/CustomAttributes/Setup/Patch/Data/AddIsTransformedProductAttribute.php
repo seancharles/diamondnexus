@@ -14,7 +14,7 @@ use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\Patch\PatchRevertableInterface;
 
-class AddFeedDescriptionProductAttribute implements DataPatchInterface, PatchRevertableInterface
+class AddIsTransformedProductAttribute implements DataPatchInterface, PatchRevertableInterface
 {
 
     /**
@@ -50,18 +50,18 @@ class AddFeedDescriptionProductAttribute implements DataPatchInterface, PatchRev
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
         $eavSetup->addAttribute(
             \Magento\Catalog\Model\Product::ENTITY,
-            'feed_description',
+            'is_transformed',
             [
-                'type' => 'text',
-                'label' => 'Feedonomics description',
-                'input' => 'textarea',
+                'type' => 'int',
+                'label' => 'is transformed',
+                'input' => 'boolean',
                 'source' => '',
                 'frontend' => '',
-                'required' => false,
+                'required' => true,
                 'backend' => '',
                 'sort_order' => '30',
                 'global' => ScopedAttributeInterface::SCOPE_STORE,
-                'default' => null,
+                'default' => false,
                 'visible' => true,
                 'user_defined' => true,
                 'searchable' => false,
@@ -75,7 +75,7 @@ class AddFeedDescriptionProductAttribute implements DataPatchInterface, PatchRev
                 'is_used_in_grid' => true,
                 'is_visible_in_grid' => false,
                 'is_filterable_in_grid' => false,
-                'option' => array('values' => array(""))
+                'option' => ['values' => [""]]
             ]
         );
 
@@ -87,7 +87,7 @@ class AddFeedDescriptionProductAttribute implements DataPatchInterface, PatchRev
         $this->moduleDataSetup->getConnection()->startSetup();
         /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $eavSetup->removeAttribute(\Magento\Catalog\Model\Product::ENTITY, 'feed_description');
+        $eavSetup->removeAttribute(\Magento\Catalog\Model\Product::ENTITY, 'is_transformed');
 
         $this->moduleDataSetup->getConnection()->endSetup();
     }
@@ -103,7 +103,7 @@ class AddFeedDescriptionProductAttribute implements DataPatchInterface, PatchRev
     /**
      * {@inheritdoc}
      */
-    public static function getDependencies()
+        public static function getDependencies()
     {
         return [
 
@@ -118,4 +118,3 @@ class AddFeedDescriptionProductAttribute implements DataPatchInterface, PatchRev
         return '0.0.1';
     }
 }
-

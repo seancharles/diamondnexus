@@ -64,18 +64,18 @@ class AddBundleTagsProductAttribute implements DataPatchInterface, PatchRevertab
                 'default' => null,
                 'visible' => true,
                 'user_defined' => true,
-                'searchable' => false,
+                'searchable' => true,
                 'filterable' => false,
                 'comparable' => false,
-                'visible_on_front' => false,
+                'visible_on_front' => true,
                 'unique' => false,
-                'apply_to' => 'bundle',
+                'apply_to' => '',
                 'group' => 'General',
                 'used_in_product_listing' => false,
                 'is_used_in_grid' => true,
                 'is_visible_in_grid' => false,
                 'is_filterable_in_grid' => false,
-                'option' => array('values' => array(""))
+                'option' => ['values' => [""]]
             ]
         );
 
@@ -103,7 +103,7 @@ class AddBundleTagsProductAttribute implements DataPatchInterface, PatchRevertab
     /**
      * {@inheritdoc}
      */
-    public static function getDependencies()
+        public static function getDependencies()
     {
         return [
 
@@ -118,4 +118,3 @@ class AddBundleTagsProductAttribute implements DataPatchInterface, PatchRevertab
         return '0.0.1';
     }
 }
-
