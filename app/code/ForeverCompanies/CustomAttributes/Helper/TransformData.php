@@ -7,16 +7,24 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Helper;
 
+use Magento\Bundle\Api\Data\LinkInterfaceFactory;
+use Magento\Bundle\Api\Data\OptionInterfaceFactory;
 use Magento\Catalog\Api\AttributeSetRepositoryInterface;
+use Magento\Catalog\Api\Data\ProductExtension;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
+use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Model\Config;
+use Magento\Framework\Api\Data\VideoContentInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
+use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Exception\StateException;
+use Magento\ProductVideo\Model\Product\Attribute\Media\ExternalVideoEntryConverter;
 use Zend_Db_Select;
 
 class TransformData extends AbstractHelper
@@ -40,6 +48,11 @@ class TransformData extends AbstractHelper
      * @var AttributeSetRepositoryInterface
      */
     protected $attrSetRepository;
+
+    /**
+     * @var LinkInterfaceFactory
+     */
+    protected $linkFactory;
 
     /**
      * @var string[]
@@ -66,18 +79,34 @@ class TransformData extends AbstractHelper
     ];
 
     /**
+     * @var ExternalVideoEntryConverter
+     */
+    private $externalVideoEntryConverter;
+
+    /**
+     * @var OptionInterfaceFactory
+     */
+    private $optionInterfaceFactory;
+
+    /**
      * @param Context $context
      * @param Config $config
      * @param CollectionFactory $collectionFactory
      * @param ProductRepository $productRepository
      * @param AttributeSetRepositoryInterface $attributeSetRepository
+     * @param ExternalVideoEntryConverter $videoEntryConverter
+     * @param LinkInterfaceFactory $linkFactory
+     * @param OptionInterfaceFactory $optionInterfaceFactory
      */
     public function __construct(
         Context $context,
         Config $config,
         CollectionFactory $collectionFactory,
         ProductRepository $productRepository,
-        AttributeSetRepositoryInterface $attributeSetRepository
+        AttributeSetRepositoryInterface $attributeSetRepository,
+        ExternalVideoEntryConverter $videoEntryConverter,
+        LinkInterfaceFactory $linkFactory,
+        OptionInterfaceFactory $optionInterfaceFactory
     )
     {
         parent::__construct($context);
@@ -85,6 +114,9 @@ class TransformData extends AbstractHelper
         $this->productCollectionFactory = $collectionFactory;
         $this->productRepository = $productRepository;
         $this->attrSetRepository = $attributeSetRepository;
+        $this->externalVideoEntryConverter = $videoEntryConverter;
+        $this->linkFactory = $linkFactory;
+        $this->optionInterfaceFactory = $optionInterfaceFactory;
     }
 
     /**
@@ -110,14 +142,44 @@ class TransformData extends AbstractHelper
 
     /**
      * @param int $entityId
+     * @throws InputException
+     * @throws LocalizedException
      * @throws NoSuchEntityException
+     * @throws StateException
      */
     public function transformProduct(int $entityId)
     {
         $product = $this->productRepository->getById($entityId);
+        if ($product->getTypeId() == Configurable::TYPE_CODE) {
+            if (strpos($product->getName(), 'Chelsa') === false) {
+                $this->convertConfigToBundle($product);
+            }
+        }
         $attributeSetName = $this->attrSetRepository->get($product->getAttributeSetId())->getAttributeSetName();
         $product->setCustomAttribute('product_type', $this->attributeSetToProductType($attributeSetName));
-        // TO BE CONTINUED...
+        if ($product->getCustomAttribute('product_type') == 'Stone') {
+            $product->setCustomAttribute('allow_in_bundles', 1);
+        }
+        foreach (['youtube', 'video_url'] as $link) {
+            $videoUrl = $product->getCustomAttribute($link);
+            if ($videoUrl != null) {
+                $this->addVideoToProduct($videoUrl, $product);
+            }
+        }
+        $returnable = $product->getCustomAttribute('returnable');
+        if ($returnable != null) {
+            $product->setCustomAttribute('is_returnable', $returnable);
+        }
+        /** TODO: check other attributes */
+
+        /** Finally! */
+        try {
+            $this->productRepository->save($product);
+        } catch (InputException $inputException) {
+            throw $inputException;
+        } catch (\Exception $e) {
+            throw new StateException(__('Cannot save product.'));
+        }
         exit;
     }
 
@@ -128,6 +190,56 @@ class TransformData extends AbstractHelper
     protected function attributeSetToProductType(string $attributeSetName)
     {
         return $this->mappingProductType[$attributeSetName];
+    }
+
+    /**
+     * @param Product $product
+     * @param string $videoUrl
+     *
+     * @throws LocalizedException
+     */
+    protected function addVideoToProduct($videoUrl, $product)
+    {
+        $videoProvider = str_replace('https://', '', $videoUrl);
+        $videoProvider = str_replace('http://', '', $videoProvider);
+        $videoProvider = substr($videoUrl, 0, strpos($videoProvider, "."));
+        $videoData =  [
+            VideoContentInterface::TITLE => 'Product video',
+            VideoContentInterface::DESCRIPTION => '',
+            VideoContentInterface::PROVIDER => $videoProvider,
+            VideoContentInterface::METADATA => null,
+            VideoContentInterface::URL => $videoUrl,
+            VideoContentInterface::TYPE => ExternalVideoEntryConverter::MEDIA_TYPE_CODE,
+        ];
+        // Convert video data array to video entry
+        $media = $this->externalVideoEntryConverter->convertTo($product, $videoData);
+        $product->setMediaGalleryEntries([$media]);
+    }
+
+    /**
+     * @param Product $product
+     */
+    protected function convertConfigToBundle(Product $product)
+    {
+        /** @var Configurable $configurableInstance */
+        $configurableInstance = $product->getTypeInstance();
+        $bundleOptions = $this->optionInterfaceFactory->create();
+        /** @var ProductExtension $extensionAttributes */
+        $extensionAttributes = $product->getExtensionAttributes();
+        $links = [];
+        foreach ($configurableInstance->getUsedProducts($product) as $usedProduct) {
+            $link = $this->linkFactory->create();
+            $link->setPosition(0);
+            $link->setSku($usedProduct->getSku());
+            $link->setIsDefault(false);
+            $link->setPrice($usedProduct->getPrice());
+            $link->setPriceType(\Magento\Bundle\Api\Data\LinkInterface::PRICE_TYPE_FIXED);
+            $links[] = $link;
+            /** TODO: Delete parent_entity_id and save it */
+        }
+        $bundleOptions->setProductLinks($links);
+        $extensionAttributes->setBundleProductOptions([$bundleOptions]);
+        $product->setExtensionAttributes($extensionAttributes);
     }
 
 }
