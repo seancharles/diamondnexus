@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+
+<!--
+Astound
+NOTICE OF LICENSE
+This source file is subject to the Open Software License (OSL 3.0)
+that is bundled with this package in the file LICENSE.txt.
+It is also available through the world-wide-web at this URL:
+http://opensource.org/licenses/osl-3.0.php
+If you did not receive a copy of the license and are unable to
+obtain it through the world-wide-web, please send an email
+to codemaster@astoundcommerce.com so we can send you a copy immediately.
+
+@category  Affirm
+@package   Astound_Affirm
+@copyright Copyright (c) 2016 Astound, Inc. (http://www.astoundcommerce.com)
+@license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+-->
+
+<!--
+Copyright (c) 2016 Astound, Inc. (http://www.astoundcommerce.com).
+Modified by Prog Leasing, LLC. Copyright (c) 2018, Prog Leasing, LLC.
+-->
+
+<config 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="payment">
+            <group id="progressive_gateway" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Progressive</label>
+                <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="mode" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Api Mode</label>
+                    <source_model>Progressive\PayWithProgressive\Model\Adminhtml\Source\ApiMode</source_model>
+                </field>
+                <field id="public_api_key_demo" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Demo Public API Key</label>
+                    <depends>
+                        <field id="mode">demo</field>
+                    </depends>
+                </field>
+                <field id="private_api_key_demo" translate="label" type="obscure" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Demo Private API Key</label>
+                    <config_path>payment/progressive_gateway/private_api_key_demo</config_path>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <attribute type="shared">1</attribute>
+                    <depends>
+                        <field id="mode">demo</field>
+                    </depends>
+                </field>
+                <field id="public_api_key_production" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Public API Key</label>
+                    <config_path>payment/progressive_gateway/public_api_key_production</config_path>
+                    <depends>
+                        <field id="mode">production</field>
+                    </depends>
+                </field>
+                <field id="private_api_key_production" translate="label" type="obscure" sortOrder="40" showInDefault="1" showInWebsite="0">
+                    <label>Private API Key</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <attribute type="shared">1</attribute>
+                    <depends>
+                        <field id="mode">production</field>
+                    </depends>
+                </field>
+
+                <field id="demo_api_url" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Demo API Url</label>
+                </field>
+                <field id="production_api_url" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Production API Url</label>
+                    <depends>
+                        <field id="mode">production</field>
+                    </depends>
+                </field>
+                <field id="merchant_id" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Merchant ID</label>
+                </field>
+                <field id="store_id" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Store ID</label>
+                </field>
+                <field id="tax_exempt" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Make Progressive Deals Tax Exempt</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+              </field>
+            </group>
+        </section>
+    </system>
+</config>
