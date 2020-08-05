@@ -149,6 +149,8 @@ class TransformData extends AbstractHelper
      */
     public function transformProduct(int $entityId)
     {
+        $entityId = 135081; //Need delete it after testing
+
         $product = $this->productRepository->getById($entityId);
         if ($product->getTypeId() == Configurable::TYPE_CODE) {
             if (strpos($product->getName(), 'Chelsa') === false) {
@@ -170,17 +172,25 @@ class TransformData extends AbstractHelper
         if ($returnable != null) {
             $product->setCustomAttribute('is_returnable', $returnable);
         }
+        $tcw = $product->getCustomAttribute('tcw');
+        if ($tcw != null) {
+            $product->setCustomAttribute('acw', $tcw);
+        }
         /** TODO: check other attributes */
+
+        /** TODO: Delete attributes from delete list */
 
         /** Finally! */
         try {
-            $this->productRepository->save($product);
+            //$this->productRepository->save($product); DONT NEED NOW
         } catch (InputException $inputException) {
+            var_dump($inputException);exit; //delet it after testing
             throw $inputException;
         } catch (\Exception $e) {
+            var_dump($e);exit; //delete it after testing too
             throw new StateException(__('Cannot save product.'));
         }
-        exit;
+        exit('stop test');
     }
 
     /**
@@ -204,7 +214,7 @@ class TransformData extends AbstractHelper
         $videoProvider = str_replace('http://', '', $videoProvider);
         $videoProvider = substr($videoUrl, 0, strpos($videoProvider, "."));
         $videoData =  [
-            VideoContentInterface::TITLE => 'Product video',
+            VideoContentInterface::TITLE => 'Migrated Video',
             VideoContentInterface::DESCRIPTION => '',
             VideoContentInterface::PROVIDER => $videoProvider,
             VideoContentInterface::METADATA => null,
@@ -222,24 +232,30 @@ class TransformData extends AbstractHelper
     protected function convertConfigToBundle(Product $product)
     {
         /** @var Configurable $configurableInstance */
-        $configurableInstance = $product->getTypeInstance();
         $bundleOptions = $this->optionInterfaceFactory->create();
         /** @var ProductExtension $extensionAttributes */
         $extensionAttributes = $product->getExtensionAttributes();
+        $productLinks = $product->getExtensionAttributes()->getConfigurableProductLinks() ?: [];
+        /** TODO: Get configurable options and set it like title in bundle's options $links */
         $links = [];
-        foreach ($configurableInstance->getUsedProducts($product) as $usedProduct) {
+        foreach ($productLinks as $productLinkId) {
+            $linkedProduct = $this->productRepository->getById($productLinkId);
             $link = $this->linkFactory->create();
-            $link->setPosition(0);
-            $link->setSku($usedProduct->getSku());
+            $link->setSku($linkedProduct->getSku());
+            $link->setQty(1);
             $link->setIsDefault(false);
-            $link->setPrice($usedProduct->getPrice());
+            $link->setPrice($linkedProduct->getPrice());
             $link->setPriceType(\Magento\Bundle\Api\Data\LinkInterface::PRICE_TYPE_FIXED);
             $links[] = $link;
             /** TODO: Delete parent_entity_id and save it */
         }
+        $bundleOptions->setTitle('Here is title'); // TODO: Set here configurable option label
+        $bundleOptions->setType('radio'); // TODO: not only radio
+        $bundleOptions->setRequired(true);
         $bundleOptions->setProductLinks($links);
         $extensionAttributes->setBundleProductOptions([$bundleOptions]);
         $product->setExtensionAttributes($extensionAttributes);
+        $product->setTypeId('bundle');
     }
 
 }

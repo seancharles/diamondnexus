@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace ForeverCompanies\CustomAttributes\Console\Command;
 
 use ForeverCompanies\CustomAttributes\Helper\TransformData;
+use Magento\Framework\App\State;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -25,18 +26,26 @@ class TransformAttributes extends Command
     protected $helper;
 
     /**
+     * @var State
+     */
+    protected $state;
+
+    /**
      * @var string
      */
     protected $name = 'forevercompanies:transform-attributes';
 
     /**
      * TransformAttributes constructor.
+     * @param State $state
      * @param TransformData $helper
      */
     public function __construct(
+        State $state,
         TransformData $helper
     )
     {
+        $this->state = $state;
         $this->helper = $helper;
         parent::__construct($this->name);
     }
@@ -50,12 +59,14 @@ class TransformAttributes extends Command
         OutputInterface $output
     )
     {
+        $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_GLOBAL);
         $output->writeln("Get products for transformation...");
         $productCollection = $this->helper->getProductsForTransformCollection();
         $output->writeln('Products for transformation: ' . $productCollection->count());
         foreach ($productCollection->getItems() as $item) {
             try {
                 $this->helper->transformProduct((int)$item->getData('entity_id'));
+                exit;
             } catch (InputException $e) {
                 /** TODO Exception */
             } catch (NoSuchEntityException $e) {
