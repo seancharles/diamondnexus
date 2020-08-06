@@ -79,6 +79,9 @@ class Base extends AbstractModifier
    protected function getOptionFieldsConfig()
    {
        # $fields['is_special_offer'] = $this->getSpecialOfferFieldConfig();
+	   
+	   # replace this with above if additional parameter is needed
+	   $fields = array();
 
        return $fields;
    }
