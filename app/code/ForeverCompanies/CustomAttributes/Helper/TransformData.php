@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Helper;
 
+use Magento\Bundle\Api\Data\LinkInterface;
 use Magento\Bundle\Api\Data\LinkInterfaceFactory;
 use Magento\Bundle\Api\Data\OptionInterfaceFactory;
 use Magento\Catalog\Api\AttributeSetRepositoryInterface;
@@ -20,6 +21,7 @@ use Magento\Framework\Api\Data\VideoContentInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
+use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -149,7 +151,7 @@ class TransformData extends AbstractHelper
      */
     public function transformProduct(int $entityId)
     {
-        $entityId = 135081; //Need delete it after testing
+        $entityId = 9403; //Need delete it after testing
 
         $product = $this->productRepository->getById($entityId);
         if ($product->getTypeId() == Configurable::TYPE_CODE) {
@@ -176,15 +178,12 @@ class TransformData extends AbstractHelper
         if ($tcw != null) {
             $product->setCustomAttribute('acw', $tcw);
         }
-        /** TODO: check other attributes */
-
-        /** TODO: Delete attributes from delete list */
 
         /** Finally! */
         try {
-            //$this->productRepository->save($product); DONT NEED NOW
+            //$this->productRepository->save($product); TESTING
         } catch (InputException $inputException) {
-            var_dump($inputException);exit; //delet it after testing
+            var_dump($inputException);exit; //delete it after testing
             throw $inputException;
         } catch (\Exception $e) {
             var_dump($e);exit; //delete it after testing too
@@ -228,6 +227,7 @@ class TransformData extends AbstractHelper
 
     /**
      * @param Product $product
+     * @throws NoSuchEntityException
      */
     protected function convertConfigToBundle(Product $product)
     {
@@ -236,26 +236,77 @@ class TransformData extends AbstractHelper
         /** @var ProductExtension $extensionAttributes */
         $extensionAttributes = $product->getExtensionAttributes();
         $productLinks = $product->getExtensionAttributes()->getConfigurableProductLinks() ?: [];
-        /** TODO: Get configurable options and set it like title in bundle's options $links */
+        $productOptions = $product->getExtensionAttributes()->getConfigurableProductOptions() ?: [];
         $links = [];
-        foreach ($productLinks as $productLinkId) {
-            $linkedProduct = $this->productRepository->getById($productLinkId);
-            $link = $this->linkFactory->create();
-            $link->setSku($linkedProduct->getSku());
-            $link->setQty(1);
-            $link->setIsDefault(false);
-            $link->setPrice($linkedProduct->getPrice());
-            $link->setPriceType(\Magento\Bundle\Api\Data\LinkInterface::PRICE_TYPE_FIXED);
-            $links[] = $link;
-            /** TODO: Delete parent_entity_id and save it */
+        if (count($productOptions) === 1) {
+            $productOptionData = $productOptions[0]->getData();
+            foreach ($productLinks as $productLinkId) {
+                $linkedProduct = $this->productRepository->getById($productLinkId);
+                $links[] = $this->createNewLink($linkedProduct);
+                $this->changeLinkedProduct($linkedProduct, $productOptionData);
+            }
+            $bundleOptions->setTitle($productOptionData['label']);
+            $bundleOptions->setType('select');
+            $bundleOptions->setRequired(true);
+            $bundleOptions->setProductLinks($links);
+            $extensionAttributes->setBundleProductOptions([$bundleOptions]);
+            $product->setExtensionAttributes($extensionAttributes);
+            $product->setTypeId('bundle');
         }
-        $bundleOptions->setTitle('Here is title'); // TODO: Set here configurable option label
-        $bundleOptions->setType('radio'); // TODO: not only radio
-        $bundleOptions->setRequired(true);
-        $bundleOptions->setProductLinks($links);
-        $extensionAttributes->setBundleProductOptions([$bundleOptions]);
-        $product->setExtensionAttributes($extensionAttributes);
-        $product->setTypeId('bundle');
+    }
+
+    /**
+     * @param Product $linkedProduct
+     * @return LinkInterface
+     */
+    private function createNewLink(Product $linkedProduct)
+    {
+        $link = $this->linkFactory->create();
+        $link->setSku($linkedProduct->getSku());
+        $link->setQty(1);
+        $link->setIsDefault(false);
+        $link->setPrice($linkedProduct->getPrice());
+        $link->setPriceType(LinkInterface::PRICE_TYPE_FIXED);
+        return $link;
+    }
+
+    /**
+     * @param Product $linkedProduct
+     * @param array $productOptionData
+     */
+    private function changeLinkedProduct(Product $linkedProduct, array $productOptionData)
+    {
+        $optionAttributeCode = $productOptionData['product_attribute']->getAttributeCode();
+        $options = $productOptionData['options'];
+        $attributeValue = $linkedProduct->getData($optionAttributeCode);
+        foreach($options as $option) {
+            if ($attributeValue == $option['value_index']) {
+                if ($linkedProduct->getData('old_name') === null) {
+                    $linkedProduct->setData('old_name', $linkedProduct->getName());
+                }
+                $linkedProduct->setName($option['label']);
+                $linkedProduct->setVisibility(false);
+                $movedAsPart = 'Moved as part ' . $productOptionData['product_id'];
+                $devTag = $linkedProduct->getData('dev_tag');
+                if ($devTag !== null && strpos($devTag, $movedAsPart) === false) {
+                    $linkedProduct->setData('dev_tag', $devTag . ', ' . $movedAsPart);
+                }
+                if ($devTag === null) {
+                    $linkedProduct->setData('dev_tag', $movedAsPart);
+                }
+
+                try {
+                    //$this->productRepository->save($linkedProduct); TESTING
+                } catch (CouldNotSaveException $e) {
+                    /** TODO EXCEPTION */
+                } catch (InputException $e) {
+                    /** TODO EXCEPTION */
+                } catch (StateException $e) {
+                    /** TODO EXCEPTION */
+                }
+                break;
+            }
+        }
     }
 
 }
