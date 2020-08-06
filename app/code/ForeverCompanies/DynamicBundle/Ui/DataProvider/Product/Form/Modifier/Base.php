@@ -78,7 +78,7 @@ class Base extends AbstractModifier
     */
    protected function getOptionFieldsConfig()
    {
-       $fields['is_special_offer'] = $this->getSpecialOfferFieldConfig();
+       # $fields['is_special_offer'] = $this->getSpecialOfferFieldConfig();
 
        return $fields;
    }
@@ -90,7 +90,6 @@ class Base extends AbstractModifier
     */
    protected function getValueFieldsConfig()
    {
-		$fields['description'] = $this->getDescriptionFieldConfig();
 		$fields['shippinggroup'] = $this->getShippingGroupFieldConfig();
 
 		return $fields;
@@ -101,6 +100,7 @@ class Base extends AbstractModifier
     *
     * @return array
     */
+	/*
    protected function getSpecialOfferFieldConfig()
    {
        return [
@@ -122,12 +122,14 @@ class Base extends AbstractModifier
            ],
        ];
    }
+   */
 
    /**
     * Get description field config
     *
     * @return array
     */
+	/*
    protected function getDescriptionFieldConfig()
    {
        return [
@@ -145,6 +147,7 @@ class Base extends AbstractModifier
            ],
        ];
    }
+   */
    
    /**
     * Get shipping group field config
