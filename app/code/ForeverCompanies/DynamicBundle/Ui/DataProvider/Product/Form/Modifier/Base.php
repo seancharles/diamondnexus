@@ -6,10 +6,20 @@ use Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\CustomOptions;
 use Magento\Ui\Component\Form\Element\Input;
 use Magento\Ui\Component\Form\Element\Checkbox;
 use Magento\Ui\Component\Form\Element\DataType\Text;
+use Magento\Ui\Component\Form\Element\Select;
+use Magento\Ui\Component\Form\Element\DataType\Number;
 use Magento\Ui\Component\Form\Field;
 
 class Base extends AbstractModifier
 {
+	protected $eavConfig;
+	
+	public function __construct(
+		\Magento\Eav\Model\Config $eavConfig
+	) {
+        $this->eavConfig = $eavConfig;
+	}
+	
    /**
     * @var array
     */
@@ -80,9 +90,10 @@ class Base extends AbstractModifier
     */
    protected function getValueFieldsConfig()
    {
-       $fields['description'] = $this->getDescriptionFieldConfig();
+		$fields['description'] = $this->getDescriptionFieldConfig();
+		$fields['shippinggroup'] = $this->getShippingGroupFieldConfig();
 
-       return $fields;
+		return $fields;
    }
 
    /**
@@ -132,6 +143,40 @@ class Base extends AbstractModifier
                    ],
                ],
            ],
+       ];
+   }
+   
+   /**
+    * Get shipping group field config
+    *
+    * @return array
+    */
+   protected function getShippingGroupFieldConfig()
+   {
+		// pull attribute options from EAV
+		$attribute = $this->eavConfig->getAttribute('catalog_product', 'shipperhq_shipping_group');
+
+		$options = $attribute->getSource()->getAllOptions();
+
+		$arr = [];
+		foreach ($options as $option) {
+				$arr[] = $option;
+		}
+	   
+		return [
+			'arguments' => [
+				'data' => [
+					'config' => [
+						'label' => __('Shipping Group Override'),
+						'componentType' => Field::NAME,
+						'formElement'   => Select::NAME,
+						'dataType'      => Text::NAME,
+						'dataScope'     => 'shippinggroup',
+						'sortOrder'     => 42,
+						'options'       => $arr
+					],
+				],
+			],
        ];
    }
 }
