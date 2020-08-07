@@ -102,5 +102,26 @@
            </argument>
        </arguments>
    </virtualType>
-	
+
+    <preference for="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\Composite" type="ForeverCompanies\DynamicBundle\Ui\DataProvider\Product\Form\Modifier\Composite" />
+    <preference for="Magento\Bundle\Model\Product\OptionList" type="ForeverCompanies\DynamicBundle\Model\Bundle\Product\OptionList"/>
+    <preference for="Magento\Bundle\Model\LinkManagement" type="ForeverCompanies\DynamicBundle\Model\LinkManagement" />
+
+    <type name="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePanel">
+        <plugin name="bundle_option_sku" type="ForeverCompanies\DynamicBundle\Plugins\Catalog\Ui\DataProvider\Product\Form\Modifier\BundlePanel" sortOrder="1000"/>
+    </type>
+
+    <type name="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundleCustomOptions">
+        <plugin
+                sortOrder="100"
+                name="ForeverCompaniesDynamicBundleBundleModifierCustomOptions"
+                type="ForeverCompanies\DynamicBundle\Plugins\Ui\DataProvider\Product\Form\Modifier\BundleCustomOptions"/>
+    </type>
+    <type name="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\Composite">
+        <plugin
+                sortOrder="100"
+                name="ForeverCompaniesDynamicBundleModifierComposite"
+                type="ForeverCompanies\DynamicBundle\Plugins\Ui\DataProvider\Product\Form\Modifier\Composite"/>
+    </type>
+
 </config>

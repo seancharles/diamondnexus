@@ -23,6 +23,17 @@ class InstallSchema implements InstallSchemaInterface
                'comment'  => 'Shipping Group Override',
            ]
        );
+
+       $setup->getConnection()->addColumn(
+           $setup->getTable('catalog_product_bundle_option'),
+           'option_sku',
+           [
+               'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+               'length' => 255,
+               'nullable' => true,
+               'comment' => 'Sku'
+           ]
+       );
  
        $setup->endSetup();
    }
