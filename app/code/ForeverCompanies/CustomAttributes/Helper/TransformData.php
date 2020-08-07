@@ -52,33 +52,14 @@ class TransformData extends AbstractHelper
     protected $attrSetRepository;
 
     /**
+     * @var Mapping
+     */
+    protected $mapping;
+
+    /**
      * @var LinkInterfaceFactory
      */
     protected $linkFactory;
-
-    /**
-     * @var string[]
-     */
-    private $mappingProductType = [
-        'Migration_Bracelets' => 'Bracelet',
-        'Migration_Chains' => 'Chain',
-        'Migration_Custom Cut' => 'Other',
-        'Migration_Default' => 'Other',
-        'Migration_Earrings' => 'Earring',
-        'Migration_Gift Card' => 'Gift Card',
-        'Migration_Loose Diamonds' => 'Diamond',
-        'Migration_Loose Stones' => 'Stone',
-        'Migration_Matched Sets' => 'Matched Set',
-        'Migration_Matching Bands' => 'Matching Band',
-        'Migration_Mens Rings' => 'Ring',
-        'Migration_Necklaces' => 'Necklace',
-        'Migration_Pendants' => 'Pendant',
-        'Migration_Pure Carbon Rings' => 'Ring',
-        'Migration_Ring Settings' => 'Ring Setting',
-        'Migration_Rings' => 'Ring',
-        'Migration_Simple' => 'Other',
-        'Migration_Watches' => 'Watch'
-    ];
 
     /**
      * @var ExternalVideoEntryConverter
@@ -99,6 +80,7 @@ class TransformData extends AbstractHelper
      * @param ExternalVideoEntryConverter $videoEntryConverter
      * @param LinkInterfaceFactory $linkFactory
      * @param OptionInterfaceFactory $optionInterfaceFactory
+     * @param Mapping $mapping
      */
     public function __construct(
         Context $context,
@@ -108,7 +90,8 @@ class TransformData extends AbstractHelper
         AttributeSetRepositoryInterface $attributeSetRepository,
         ExternalVideoEntryConverter $videoEntryConverter,
         LinkInterfaceFactory $linkFactory,
-        OptionInterfaceFactory $optionInterfaceFactory
+        OptionInterfaceFactory $optionInterfaceFactory,
+        Mapping $mapping
     )
     {
         parent::__construct($context);
@@ -119,6 +102,7 @@ class TransformData extends AbstractHelper
         $this->externalVideoEntryConverter = $videoEntryConverter;
         $this->linkFactory = $linkFactory;
         $this->optionInterfaceFactory = $optionInterfaceFactory;
+        $this->mapping = $mapping;
     }
 
     /**
@@ -160,7 +144,8 @@ class TransformData extends AbstractHelper
             }
         }
         $attributeSetName = $this->attrSetRepository->get($product->getAttributeSetId())->getAttributeSetName();
-        $product->setCustomAttribute('product_type', $this->attributeSetToProductType($attributeSetName));
+        $productType = $this->mapping->attributeSetToProductType($attributeSetName);
+        $product->setCustomAttribute('product_type', $productType);
         if ($product->getCustomAttribute('product_type') == 'Stone') {
             $product->setCustomAttribute('allow_in_bundles', 1);
         }
@@ -170,35 +155,27 @@ class TransformData extends AbstractHelper
                 $this->addVideoToProduct($videoUrl, $product);
             }
         }
-        $returnable = $product->getCustomAttribute('returnable');
-        if ($returnable != null) {
-            $product->setCustomAttribute('is_returnable', $returnable);
-        }
-        $tcw = $product->getCustomAttribute('tcw');
-        if ($tcw != null) {
-            $product->setCustomAttribute('acw', $tcw);
+        foreach(['returnable'=>'is_returnable', 'tcw'=>'acw'] as $before => $new)
+        {
+            $customAttribute = $product->getCustomAttribute($before);
+            if ($customAttribute != null) {
+                $product->setCustomAttribute($new, $customAttribute);
+            }
         }
 
         /** Finally! */
         try {
             //$this->productRepository->save($product); TESTING
         } catch (InputException $inputException) {
-            var_dump($inputException);exit; //delete it after testing
+            var_dump($inputException);
+            exit; //delete it after testing
             throw $inputException;
         } catch (\Exception $e) {
-            var_dump($e);exit; //delete it after testing too
+            var_dump($e);
+            exit; //delete it after testing too
             throw new StateException(__('Cannot save product.'));
         }
         exit('stop test');
-    }
-
-    /**
-     * @param string $attributeSetName
-     * @return string
-     */
-    protected function attributeSetToProductType(string $attributeSetName)
-    {
-        return $this->mappingProductType[$attributeSetName];
     }
 
     /**
@@ -212,7 +189,7 @@ class TransformData extends AbstractHelper
         $videoProvider = str_replace('https://', '', $videoUrl);
         $videoProvider = str_replace('http://', '', $videoProvider);
         $videoProvider = substr($videoUrl, 0, strpos($videoProvider, "."));
-        $videoData =  [
+        $videoData = [
             VideoContentInterface::TITLE => 'Migrated Video',
             VideoContentInterface::DESCRIPTION => '',
             VideoContentInterface::PROVIDER => $videoProvider,
@@ -231,28 +208,44 @@ class TransformData extends AbstractHelper
      */
     protected function convertConfigToBundle(Product $product)
     {
-        /** @var Configurable $configurableInstance */
-        $bundleOptions = $this->optionInterfaceFactory->create();
         /** @var ProductExtension $extensionAttributes */
         $extensionAttributes = $product->getExtensionAttributes();
         $productLinks = $product->getExtensionAttributes()->getConfigurableProductLinks() ?: [];
         $productOptions = $product->getExtensionAttributes()->getConfigurableProductOptions() ?: [];
         $links = [];
-        if (count($productOptions) === 1) {
-            $productOptionData = $productOptions[0]->getData();
-            foreach ($productLinks as $productLinkId) {
-                $linkedProduct = $this->productRepository->getById($productLinkId);
-                $links[] = $this->createNewLink($linkedProduct);
-                $this->changeLinkedProduct($linkedProduct, $productOptionData);
-            }
-            $bundleOptions->setTitle($productOptionData['label']);
-            $bundleOptions->setType('select');
-            $bundleOptions->setRequired(true);
-            $bundleOptions->setProductLinks($links);
-            $extensionAttributes->setBundleProductOptions([$bundleOptions]);
-            $product->setExtensionAttributes($extensionAttributes);
-            $product->setTypeId('bundle');
+        $this->transformOptionsToBundle($product, $productOptions);
+        foreach ($productLinks as $productLinkId) {
+            $linkedProduct = $this->productRepository->getById($productLinkId);
+            $links[] = $this->createNewLink($linkedProduct);
+            $this->changeLinkedProduct($linkedProduct, $productOptionData);
         }
+        /*$bundleOptions->setTitle($productOptionData['label']);
+        $bundleOptions->setType('select');
+        $bundleOptions->setRequired(true);
+        $bundleOptions->setProductLinks($links);*/
+        $extensionAttributes->setBundleProductOptions([$bundleOptions]);
+        $product->setExtensionAttributes($extensionAttributes);
+        $product->setTypeId('bundle');
+    }
+
+    /**
+     * @param Product $product
+     * @param array $productOptions
+     */
+    private function transformOptionsToBundle(Product $product, array $productOptions)
+    {
+        $optionsData = $this->mapping->prepareOptionsForBundle($product, $productOptions);
+        $product->setBundleOptionsData($optionsData['bundle']);
+        $options = [];
+        foreach ($product->getBundleOptionsData() as $key => $optionData) {
+            $option = $this->optionInterfaceFactory->create();
+            /** TODO: set data from $optionsData['options'] */
+
+            $options[] = $option;
+        }
+        $extension = $product->getExtensionAttributes();
+        $extension->setBundleProductOptions($options);
+        $product->setExtensionAttributes($extension);
     }
 
     /**
@@ -262,6 +255,7 @@ class TransformData extends AbstractHelper
     private function createNewLink(Product $linkedProduct)
     {
         $link = $this->linkFactory->create();
+        /** TODO: REFACTORING FOR STONE!!! */
         $link->setSku($linkedProduct->getSku());
         $link->setQty(1);
         $link->setIsDefault(false);
@@ -273,13 +267,14 @@ class TransformData extends AbstractHelper
     /**
      * @param Product $linkedProduct
      * @param array $productOptionData
+     * TODO: REFACTORING!!!!
      */
     private function changeLinkedProduct(Product $linkedProduct, array $productOptionData)
     {
         $optionAttributeCode = $productOptionData['product_attribute']->getAttributeCode();
         $options = $productOptionData['options'];
         $attributeValue = $linkedProduct->getData($optionAttributeCode);
-        foreach($options as $option) {
+        foreach ($options as $option) {
             if ($attributeValue == $option['value_index']) {
                 if ($linkedProduct->getData('old_name') === null) {
                     $linkedProduct->setData('old_name', $linkedProduct->getName());
