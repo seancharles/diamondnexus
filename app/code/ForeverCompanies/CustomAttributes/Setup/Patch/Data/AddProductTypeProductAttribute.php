@@ -45,6 +45,7 @@ class AddProductTypeProductAttribute implements DataPatchInterface, PatchReverta
      */
     public function apply()
     {
+        /** TODO: Check why its not showed */
         $this->moduleDataSetup->getConnection()->startSetup();
         /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
@@ -52,7 +53,7 @@ class AddProductTypeProductAttribute implements DataPatchInterface, PatchReverta
             \Magento\Catalog\Model\Product::ENTITY,
             'product_type',
             [
-                'type' => 'int',
+                'type' => 'static',
                 'label' => 'Product Type',
                 'input' => 'select',
                 'source' => '',

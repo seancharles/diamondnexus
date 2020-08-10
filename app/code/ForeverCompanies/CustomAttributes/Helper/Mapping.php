@@ -7,7 +7,12 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Helper;
 
+use Magento\Bundle\Api\Data\LinkInterface;
+use Magento\Bundle\Api\Data\LinkInterfaceFactory;
+use Magento\Catalog\Api\Data\ProductLinkInterface;
+use Magento\Catalog\Api\Data\ProductLinkInterfaceFactory;
 use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
+use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
 use Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory;
@@ -16,6 +21,7 @@ use Magento\Eav\Api\Data\AttributeInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Catalog\Api\Data\ProductInterface;
 
 
 class Mapping extends AbstractHelper
@@ -48,7 +54,130 @@ class Mapping extends AbstractHelper
      * @var array
      */
     protected $mappingSku = [
-        // TODO: Map for get SKU
+        'Precious Metal' => [
+            '10K White Gold' => '10WX',
+            '10K Yellow Gold' => '10YX',
+            '14K Yellow Gold & Platinum Plating' => '14DX',
+            '14K Rose/White Gold' => '14RW',
+            '14K Rose Gold' => '14RX',
+            '14K Rose/Yellow Gold' => '14RY',
+            '14K White/Rose Gold' => '14WR',
+            '14K White Gold' => '14WX',
+            '14K White/Yellow Gold' => '14WY',
+            '14K White/Yellow/Rose Gold' => '14WYRX',
+            '14K Yellow/Rose Gold' => '14YR',
+            '14K Yellow/White Gold' => '14YW',
+            '14K Yellow Gold' => '14YX',
+            '18K Rose/White Gold' => '18RW',
+            '18K Rose Gold' => '18RX',
+            '18K Rose/Yellow Gold' => '18RY',
+            '18K White/Rose Gold' => '18WR',
+            '18K White Gold' => '18WX',
+            '18K White/Yellow Gold' => '18WY',
+            '18K Yellow/Rose Gold' => '18YR',
+            '18K Yellow/White Gold' => '18YW',
+            '18K Yellow Gold' => '18YX',
+            'Black Zirconium' => 'BZXX',
+            'Cobalt' => 'COXX',
+            'Damascus' => 'DMXX',
+            'Lorian Platinum Tutone' => 'LP2U',
+            'Lorian Platinum & Rose Gold' => 'LPRG',
+            'Lorian Platinum' => 'LPXX',
+            'Lorian Platinum & Yellow Gold' => 'LPYG',
+            'Palladium' => 'PDXX',
+            'Platinum' => 'PTXX',
+            'Silver & 14K Rose Gold	' => 'SSRX',
+            'Sterling Silver' => 'SSXX',
+            'Silver & 14K Yellow Gold' => 'SSYX',
+            'Tungsten' => 'TNXX',
+            'Titanium' => 'TTXX'
+        ],
+        'Certified Stone' => [
+            'Classic Stone' => '0',
+            'Certified Stone' => '1'
+        ],
+        'Stone Shape' => [
+            'Antique Rose Asscher' => 'RA',
+            'Antique Rose Cushion' => 'RC',
+            'Antique Rose Oval' => 'RO',
+            'Antique Rose Pear' => 'RP',
+            'Antique Rose Princess(SQUARE)' => 'RS',
+            'Antique Rose Round' => 'RR',
+            'Asscher' => 'AS',
+            'Cushion' => 'CU',
+            'Emerald' => 'EM',
+            'Heart' => 'HT',
+            'Marquise' => 'MQ',
+            'Multi Cuts' => 'ML',
+            'Octagon' => 'OC',
+            'Oval' => 'OV',
+            'Pear' => 'PR',
+            'Princess' => 'PC',
+            'Radiant' => 'RA',
+            'Round Brilliant' => 'RB',
+            'Straight Baguette' => 'SB',
+            'Tapered Baguette' => 'TB',
+            'Triangle' => 'TR',
+            'Trillion' => 'TL'
+        ],
+        'Color' => [
+            'Black Multi' => 'BLML',
+            'Black Pearl' => 'BLPR',
+            'Black & White' => 'BLWH',
+            'Black' => 'BLXX',
+            'Blue Topaz' => 'BUTZ',
+            'CocoBollo & Damascus' => 'CBDM',
+            'CocoBollo & Titanium' => 'CBTX',
+            'Charcoal & Titanium' => 'CCTX',
+            'Chocolate Multi' => 'CHML',
+            'Chocolate & White	' => 'CHWH',
+            'Chocolate' => 'CHXX',
+            'Champagne & Chocolate' => 'CPCH',
+            'Champagne Multi' => 'CPML',
+            'Champagne & White' => 'CPWH',
+            'Champagne' => 'CPXX',
+            'Cross Satin Black' => 'CRSB',
+            'Cross Satin Silver' => 'CRSS',
+            'Cross Satin' => 'CRSX',
+            'Emerald & White' => 'EMWH',
+            'Emerald' => 'EMXX',
+            'Fiji Orangewood & Black Zirconium' => 'FOBZ',
+            'Glacial Ice & White' => 'GIWH',
+            'Glacial Ice' => 'GIXX',
+            'Hammer' => 'HMXX',
+            'Meteorite' => 'MEXX',
+            'Multi Topaz' => 'MLTZ',
+            'Multi Color' => 'MLXX',
+            'New Canary Multi' => 'NCML',
+            'Canary & Sapphire' => 'NCSP',
+            'Canary & White' => 'NCWH',
+            'Canary' => 'NCXX',
+            'Pink Topaz' => 'PKTZ',
+            'Red Topaz' => 'RDTZ',
+            'Rose & White' => 'RSWH',
+            'Rose' => 'RSXX',
+            'Ruby & White' => 'RUWH',
+            'Ruby' => 'RUXX',
+            'Rosewood & Titanium' => 'RXTX',
+            'Sapphire & Canary' => 'SPNC',
+            'Sapphire & White' => 'SPWH',
+            'Sapphire' => 'SPXX',
+            'White & Black' => 'WHBL',
+            'White & Chocolate' => 'WHCH',
+            'White & Champagne' => 'WHCP',
+            'White & Emerald' => 'WHEM',
+            'White & Glacial Ice' => 'WHGI',
+            'White Multi' => 'WHML',
+            'White & New Canary' => 'WHNC',
+            'White Pearl' => 'WHPR',
+            'Whit & Rose' => 'WHRS',
+            'White & Ruby' => 'WHRU',
+            'White & Sapphire' => 'WHSP',
+            'White Topaz' => 'WHTZ',
+            'White' => 'WHXX',
+            'None' => 'XXXX',
+            'Yellow Topaz' => 'YLTZ'
+        ]
     ];
 
     /**
@@ -57,17 +186,33 @@ class Mapping extends AbstractHelper
     protected $productAttributeRepository;
 
     /**
+     * @var ProductRepositoryInterface
+     */
+    protected $productRepository;
+
+    /**
+     * @var LinkInterfaceFactory
+     */
+    protected $linkFactory;
+
+    /**
      * Mapping constructor.
      * @param Context $context
      * @param ProductAttributeRepositoryInterface $productAttributeRepository
+     * @param ProductRepositoryInterface $productRepository
+     * @param LinkInterfaceFactory $linkFactory
      */
     public function __construct(
         Context $context,
-        ProductAttributeRepositoryInterface $productAttributeRepository
+        ProductAttributeRepositoryInterface $productAttributeRepository,
+        ProductRepositoryInterface $productRepository,
+        LinkInterfaceFactory $linkFactory
     )
     {
         parent::__construct($context);
         $this->productAttributeRepository = $productAttributeRepository;
+        $this->productRepository = $productRepository;
+        $this->linkFactory = $linkFactory;
     }
 
     /**
@@ -89,7 +234,7 @@ class Mapping extends AbstractHelper
         $bundleOptions = [];
         $options = [];
         foreach ($productOptions as $productOption) {
-            if ($productOption['label'] != 'Center Stone Size') {
+            if ($productOption['label'] != 'Carat Weight') {
                 $bundleOptions[] = [
                     'title' => $productOption['label'],
                     'default_title' => $productOption['label'],
@@ -100,7 +245,8 @@ class Mapping extends AbstractHelper
                 $options[$productOption['attribute_id']] = $this->prepareOptions($productOption);
 
             } else {
-                /** TODO LOGIC FOR STONE */
+                $configurableProductLinks = $product->getExtensionAttributes()->getConfigurableProductLinks();
+                $links = $this->prepareLinksForBundle($configurableProductLinks);
             }
         }
         $customizableOptions = [];
@@ -108,17 +254,17 @@ class Mapping extends AbstractHelper
         $configurable = $product->getTypeInstance();
         foreach ($configurable->getConfigurableOptions($product) as $attributeId => $configurableOption) {
             foreach ($configurableOption as $dataOption) {
-                $options[$attributeId] = $dataOption['option_title'];
+                $options[$attributeId][$dataOption['value_index']] = $dataOption['option_title'];
             }
 
         }
-        foreach($options as $attributeId => $option) {
+        foreach ($options as $attributeId => $option) {
             try {
                 /** @var Attribute $attribute */
                 $attribute = $this->productAttributeRepository->get($attributeId);
                 $customizableOption = [
                     'title' => $option,
-                    'price' => 0, //TODO: NEED CHANGE!!!
+                    'price' => 0,
                     'price_type' => 'select',
                     'sku' => $this->mappingSku[$attribute->getData(AttributeInterface::FRONTEND_LABEL)][$option],
                 ];
@@ -127,21 +273,94 @@ class Mapping extends AbstractHelper
                 /** TODO: Exception */
             }
         }
-        return ['bundle' => $bundleOptions, 'options' => $customizableOptions];
+        $bundleData = ['bundle' => $bundleOptions, 'options' => $customizableOptions];
+        if (isset($links)) {
+            $bundleData['links'] = $links;
+        }
+
+        return $bundleData;
     }
 
     /**
-     * @param \Magento\ConfigurableProduct\Model\Product\Type\Configurable\Attribute $productOption
+     * @param Configurable\Attribute $productOption
      * @return array
      */
-    protected function prepareOptions(\Magento\ConfigurableProduct\Model\Product\Type\Configurable\Attribute $productOption)
+    protected function prepareOptions(Configurable\Attribute $productOption)
     {
         $readyOptions = [];
-        foreach ($productOption->getValues() as $value)
-        {
+        foreach ($productOption->getValues() as $value) {
             $readyOptions[$value->getValueIndex()] = '';
         }
         return $readyOptions;
+    }
+
+    /**
+     * @param array $productIds
+     * @return ProductLinkInterface[]
+     */
+    protected function prepareLinksForBundle(array $productIds)
+    {
+        $skusForLikedProduct = [];
+        $links = [];
+        foreach ($productIds as $productId) {
+            try {
+                $product = $this->productRepository->getById($productId);
+                $sku = $product->getSku();
+                $skusForLikedProduct[] = $this->getStoneSkuFromProductSku($sku);
+            } catch (NoSuchEntityException $e) {
+                /** TODO: Exception */
+            }
+            $uniqSkus = array_unique($skusForLikedProduct);
+            foreach ($uniqSkus as $sku) {
+                try {
+                    $product = $this->productRepository->get($sku);
+                    if ($product->getId() !== null) {
+                        $links[] = $this->createNewLink($product);
+                    }
+                } catch (NoSuchEntityException $e) {
+                    /** TODO: Exception */
+                }
+            }
+        }
+        return $links;
+    }
+
+    /**
+     * @param string $sku
+     * TODO: add ext-mbstring in composer
+     * @return string
+     */
+    private function getStoneSkuFromProductSku(string $sku)
+    {
+        $lastSymbols = mb_strimwidth($sku, 11, 12);
+        $lastSymbol = substr($sku, -1);
+        if (mb_strimwidth("Hello World", 10, 2) == 'CS') {
+            $lastSymbols = mb_strimwidth($lastSymbols, 0, 10) . '00' . $lastSymbol;
+        }
+        $firstSymbols = '';
+        if ($lastSymbol == '0') {
+            $firstSymbols = 'USLSCS0001X';
+        }
+        if ($lastSymbol == '1') {
+            $firstSymbols = 'USLSSS0001X';
+        }
+
+        return  $firstSymbols . $lastSymbols . 'XXXX';
+    }
+
+    /**
+     * @param ProductInterface $product
+     * @return LinkInterface
+     */
+    private function createNewLink(ProductInterface $product)
+    {
+        $link = $this->linkFactory->create();
+        $link->setSku($product->getSku());
+        $link->setQty(1);
+        $link->setIsDefault(false);
+        $link->setPrice($product->getPrice());
+        $link->setPriceType(LinkInterface::PRICE_TYPE_FIXED);
+        return $link;
     }
 
 }
