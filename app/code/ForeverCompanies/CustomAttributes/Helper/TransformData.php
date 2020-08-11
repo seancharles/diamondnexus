@@ -10,9 +10,14 @@ namespace ForeverCompanies\CustomAttributes\Helper;
 use Magento\Bundle\Api\Data\LinkInterface;
 use Magento\Bundle\Api\Data\LinkInterfaceFactory;
 use Magento\Bundle\Api\Data\OptionInterfaceFactory;
+use Magento\Bundle\Model\Product\Type;
 use Magento\Catalog\Api\AttributeSetRepositoryInterface;
+use Magento\Catalog\Api\Data\ProductCustomOptionInterface;
+use Magento\Catalog\Api\Data\ProductCustomOptionInterfaceFactory;
 use Magento\Catalog\Api\Data\ProductExtension;
+use Magento\Catalog\Api\Data\TierPriceInterface;
 use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\Product\Option;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
@@ -57,6 +62,11 @@ class TransformData extends AbstractHelper
     protected $mapping;
 
     /**
+     * @var ProductFunctional
+     */
+    protected $productFunctionalHelper;
+
+    /**
      * @var ExternalVideoEntryConverter
      */
     private $externalVideoEntryConverter;
@@ -67,6 +77,11 @@ class TransformData extends AbstractHelper
     private $optionInterfaceFactory;
 
     /**
+     * @var ProductCustomOptionInterfaceFactory
+     */
+    private $productCustomOptionInterfaceFactory;
+
+    /**
      * @param Context $context
      * @param Config $config
      * @param CollectionFactory $collectionFactory
@@ -74,7 +89,9 @@ class TransformData extends AbstractHelper
      * @param AttributeSetRepositoryInterface $attributeSetRepository
      * @param ExternalVideoEntryConverter $videoEntryConverter
      * @param OptionInterfaceFactory $optionInterfaceFactory
+     * @param ProductCustomOptionInterfaceFactory $productCustomOptionInterfaceFactory
      * @param Mapping $mapping
+     * @param ProductFunctional $productFunctionalHelper
      */
     public function __construct(
         Context $context,
@@ -84,7 +101,9 @@ class TransformData extends AbstractHelper
         AttributeSetRepositoryInterface $attributeSetRepository,
         ExternalVideoEntryConverter $videoEntryConverter,
         OptionInterfaceFactory $optionInterfaceFactory,
-        Mapping $mapping
+        ProductCustomOptionInterfaceFactory $productCustomOptionInterfaceFactory,
+        Mapping $mapping,
+        ProductFunctional $productFunctionalHelper
     )
     {
         parent::__construct($context);
@@ -94,7 +113,9 @@ class TransformData extends AbstractHelper
         $this->attrSetRepository = $attributeSetRepository;
         $this->externalVideoEntryConverter = $videoEntryConverter;
         $this->optionInterfaceFactory = $optionInterfaceFactory;
+        $this->productCustomOptionInterfaceFactory = $productCustomOptionInterfaceFactory;
         $this->mapping = $mapping;
+        $this->productFunctionalHelper = $productFunctionalHelper;
     }
 
     /**
@@ -147,8 +168,7 @@ class TransformData extends AbstractHelper
                 $this->addVideoToProduct($videoUrl, $product);
             }
         }
-        foreach(['returnable'=>'is_returnable', 'tcw'=>'acw'] as $before => $new)
-        {
+        foreach (['returnable' => 'is_returnable', 'tcw' => 'acw'] as $before => $new) {
             $customAttribute = $product->getCustomAttribute($before);
             if ($customAttribute != null) {
                 $product->setCustomAttribute($new, $customAttribute);
@@ -196,89 +216,82 @@ class TransformData extends AbstractHelper
 
     /**
      * @param Product $product
-     * @throws NoSuchEntityException
      */
     protected function convertConfigToBundle(Product $product)
     {
-        /** @var ProductExtension $extensionAttributes */
-        $extensionAttributes = $product->getExtensionAttributes();
-        //$productLinks = $product->getExtensionAttributes()->getConfigurableProductLinks() ?: [];
-        $productOptions = $product->getExtensionAttributes()->getConfigurableProductOptions() ?: [];
-        $this->transformOptionsToBundle($product, $productOptions);
-        /*foreach ($productLinks as $productLinkId) {
-            $linkedProduct = $this->productRepository->getById($productLinkId);
-            $this->changeLinkedProduct($linkedProduct, $productOptionData);
-        }*/
-        //$extensionAttributes->setBundleProductOptions([$bundleOptions]);
-        $product->setExtensionAttributes($extensionAttributes);
-        $product->setTypeId('bundle');
+        $product->setTypeId(Type::TYPE_CODE);
+        $this->transformOptionsToBundle($product);
+        $this->editProductsFromConfigurable($product);
     }
 
     /**
      * @param Product $product
-     * @param array $productOptions
      */
-    private function transformOptionsToBundle(Product $product, array $productOptions)
+    private function transformOptionsToBundle(Product $product)
     {
+        /** @var ProductExtension $extensionAttributes */
+        $extensionAttributes = $product->getExtensionAttributes();
+        $productOptions = $extensionAttributes->getConfigurableProductOptions() ?: [];
         $optionsData = $this->mapping->prepareOptionsForBundle($product, $productOptions);
-        $product->setBundleOptionsData($optionsData['bundle']);
+        $product->setData('bundle_options_data', $optionsData['bundle']);
         $options = [];
-        foreach ($product->getBundleOptionsData() as $key => $optionData) {
-            $option = $this->optionInterfaceFactory->create();
-            /** TODO: set data from $optionsData['options'] */
-
+        foreach ($product->getData('bundle_options_data') as $key => $optionData) {
+            /** @var Option $option */
+            $option = $this->productCustomOptionInterfaceFactory->create();
+            $attributeId = $this->mapping->getAttributeIdFromProductOptions($productOptions, $optionData['title']);
+            $option->setData(
+                [
+                    'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
+                    'type' => ProductCustomOptionInterface::OPTION_TYPE_DROP_DOWN,
+                    'is_require' => 1,
+                    'values' => $optionsData['options'][$attributeId]
+                ]
+            );
             $options[] = $option;
         }
-        if (isset($optionData['links'])) {
-            $option = $this->optionInterfaceFactory->create();
-            $option->setData([
-
-            ]); // TODO: add Data (HOW IT WORKS VIA ADMINHTML)
-            $option->setProductLinks($optionData['links']);
-            $options[] = $option;
+        $product->setOptions($options);
+        if (isset($optionsData['links'])) {
+            /** @var \Magento\Bundle\Model\Option $bundleOption */
+            $bundleOption = $this->optionInterfaceFactory->create();
+            $bundleOption->setData([
+                'title' => 'Center Stone Size',
+                'type' => 'select',
+                'required' => '1',
+                'product_links' => $optionsData['links']
+            ]);
+            $extensionAttributes->setBundleProductOptions([$bundleOption]);
+            $product->setExtensionAttributes($extensionAttributes);
         }
-        $extension = $product->getExtensionAttributes();
-        $extension->setBundleProductOptions($options);
-        $product->setExtensionAttributes($extension);
+
     }
 
     /**
-     * @param Product $linkedProduct
-     * @param array $productOptionData
-     * TODO: REFACTORING!!!!
+     * @param Product $product
+     * // TODO: NEED TESTING!!! IN progress...
      */
-    private function changeLinkedProduct(Product $linkedProduct, array $productOptionData)
+    private function editProductsFromConfigurable(Product $product)
     {
-        $optionAttributeCode = $productOptionData['product_attribute']->getAttributeCode();
-        $options = $productOptionData['options'];
-        $attributeValue = $linkedProduct->getData($optionAttributeCode);
-        foreach ($options as $option) {
-            if ($attributeValue == $option['value_index']) {
-                if ($linkedProduct->getData('old_name') === null) {
-                    $linkedProduct->setData('old_name', $linkedProduct->getName());
-                }
-                $linkedProduct->setName($option['label']);
-                $linkedProduct->setVisibility(false);
-                $movedAsPart = 'Moved as part ' . $productOptionData['product_id'];
-                $devTag = $linkedProduct->getData('dev_tag');
-                if ($devTag !== null && strpos($devTag, $movedAsPart) === false) {
-                    $linkedProduct->setData('dev_tag', $devTag . ', ' . $movedAsPart);
-                }
-                if ($devTag === null) {
-                    $linkedProduct->setData('dev_tag', $movedAsPart);
-                }
-
-                try {
-                    //$this->productRepository->save($linkedProduct); TESTING
-                } catch (CouldNotSaveException $e) {
-                    /** TODO EXCEPTION */
-                } catch (InputException $e) {
-                    /** TODO EXCEPTION */
-                } catch (StateException $e) {
-                    /** TODO EXCEPTION */
-                }
-                break;
+        foreach ($this->productFunctionalHelper->getProductForDelete() as $productForDelete) {
+            $productForDelete->setVisibility(false);
+            $movedAsPart = 'Removed as part of: ';
+            $devTag = $productForDelete->getData('dev_tag');
+            if ($devTag !== null && strpos($devTag, $movedAsPart) === false) {
+                $productForDelete->setData('dev_tag', $devTag . ', ' . $product->getId());
             }
+            if ($devTag === null) {
+                $productForDelete->setData('dev_tag', $movedAsPart . $product->getId());
+            }
+
+            try {
+                //$this->productRepository->save($productForDelete); TESTING
+            } catch (CouldNotSaveException $e) {
+                /** TODO EXCEPTION */
+            } catch (InputException $e) {
+                /** TODO EXCEPTION */
+            } catch (StateException $e) {
+                /** TODO EXCEPTION */
+            }
+            break;
         }
     }
 

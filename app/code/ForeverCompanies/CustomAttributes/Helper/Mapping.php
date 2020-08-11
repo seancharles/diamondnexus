@@ -11,6 +11,7 @@ use Magento\Bundle\Api\Data\LinkInterface;
 use Magento\Bundle\Api\Data\LinkInterfaceFactory;
 use Magento\Catalog\Api\Data\ProductLinkInterface;
 use Magento\Catalog\Api\Data\ProductLinkInterfaceFactory;
+use Magento\Catalog\Api\Data\TierPriceInterface;
 use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
@@ -196,23 +197,48 @@ class Mapping extends AbstractHelper
     protected $linkFactory;
 
     /**
+     * @var ProductFunctional
+     */
+    protected $productFunctionalHelper;
+
+    /**
      * Mapping constructor.
      * @param Context $context
      * @param ProductAttributeRepositoryInterface $productAttributeRepository
      * @param ProductRepositoryInterface $productRepository
      * @param LinkInterfaceFactory $linkFactory
+     * @param ProductFunctional $productFunctionalHelper
      */
     public function __construct(
         Context $context,
         ProductAttributeRepositoryInterface $productAttributeRepository,
         ProductRepositoryInterface $productRepository,
-        LinkInterfaceFactory $linkFactory
+        LinkInterfaceFactory $linkFactory,
+        ProductFunctional $productFunctionalHelper
     )
     {
         parent::__construct($context);
         $this->productAttributeRepository = $productAttributeRepository;
         $this->productRepository = $productRepository;
         $this->linkFactory = $linkFactory;
+        $this->productFunctionalHelper = $productFunctionalHelper;
+    }
+
+    /**
+     * @param array $options
+     * @param string $title
+     * @return false|mixed|string|null
+     */
+    public function getAttributeIdFromProductOptions(array $options, string $title)
+    {
+        /** @var Configurable\Attribute $option */
+        foreach ($options as $option)
+        {
+            if ($option->getLabel() == $title) {
+                return $option->getAttributeId();
+            }
+        }
+        return false;
     }
 
     /**
@@ -262,13 +288,18 @@ class Mapping extends AbstractHelper
             try {
                 /** @var Attribute $attribute */
                 $attribute = $this->productAttributeRepository->get($attributeId);
-                $customizableOption = [
-                    'title' => $option,
-                    'price' => 0,
-                    'price_type' => 'select',
-                    'sku' => $this->mappingSku[$attribute->getData(AttributeInterface::FRONTEND_LABEL)][$option],
-                ];
-                $customizableOptions[$attributeId] = $customizableOption;
+                if ($attribute->getData(AttributeInterface::FRONTEND_LABEL) == 'Center Stone Size') {
+                    continue;
+                }
+                foreach ($option as $index) {
+                    $customizableOption = [
+                        'title' => $index,
+                        'price' => 0,
+                        'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
+                        'sku' => $this->mappingSku[$attribute->getData(AttributeInterface::FRONTEND_LABEL)][$index],
+                    ];
+                    $customizableOptions[$attributeId][] = $customizableOption;
+                }
             } catch (NoSuchEntityException $e) {
                 /** TODO: Exception */
             }
@@ -300,52 +331,21 @@ class Mapping extends AbstractHelper
      */
     protected function prepareLinksForBundle(array $productIds)
     {
-        $skusForLikedProduct = [];
         $links = [];
-        foreach ($productIds as $productId) {
+        $uniqSkus = $this->getUniqSkus($productIds);
+        foreach ($uniqSkus as $sku) {
             try {
-                $product = $this->productRepository->getById($productId);
-                $sku = $product->getSku();
-                $skusForLikedProduct[] = $this->getStoneSkuFromProductSku($sku);
+                $product = $this->productRepository->get($sku);
+                $this->productFunctionalHelper->addProductToDelete($product);
+                if ($product->getId() !== null) {
+                    $links[] = $this->createNewLink($product);
+                }
             } catch (NoSuchEntityException $e) {
                 /** TODO: Exception */
             }
-            $uniqSkus = array_unique($skusForLikedProduct);
-            foreach ($uniqSkus as $sku) {
-                try {
-                    $product = $this->productRepository->get($sku);
-                    if ($product->getId() !== null) {
-                        $links[] = $this->createNewLink($product);
-                    }
-                } catch (NoSuchEntityException $e) {
-                    /** TODO: Exception */
-                }
-            }
         }
+
         return $links;
-    }
-
-    /**
-     * @param string $sku
-     * TODO: add ext-mbstring in composer
-     * @return string
-     */
-    private function getStoneSkuFromProductSku(string $sku)
-    {
-        $lastSymbols = mb_strimwidth($sku, 11, 12);
-        $lastSymbol = substr($sku, -1);
-        if (mb_strimwidth("Hello World", 10, 2) == 'CS') {
-            $lastSymbols = mb_strimwidth($lastSymbols, 0, 10) . '00' . $lastSymbol;
-        }
-        $firstSymbols = '';
-        if ($lastSymbol == '0') {
-            $firstSymbols = 'USLSCS0001X';
-        }
-        if ($lastSymbol == '1') {
-            $firstSymbols = 'USLSSS0001X';
-        }
-
-        return  $firstSymbols . $lastSymbols . 'XXXX';
     }
 
     /**
@@ -356,11 +356,28 @@ class Mapping extends AbstractHelper
     {
         $link = $this->linkFactory->create();
         $link->setSku($product->getSku());
+        $link->setName($product->getName());
         $link->setQty(1);
+        $link->setProductId($product->getId());
         $link->setIsDefault(false);
         $link->setPrice($product->getPrice());
         $link->setPriceType(LinkInterface::PRICE_TYPE_FIXED);
         return $link;
+    }
+
+    private function getUniqSkus($productIds)
+    {
+        $skusForLikedProduct = [];
+        foreach ($productIds as $productId) {
+            try {
+                $product = $this->productRepository->getById($productId);
+                $sku = $product->getSku();
+                $skusForLikedProduct[] = $this->productFunctionalHelper->getStoneSkuFromProductSku($sku);
+            } catch (NoSuchEntityException $e) {
+                /** TODO: Exception */
+            }
+        }
+        return array_unique($skusForLikedProduct);
     }
 
 }
