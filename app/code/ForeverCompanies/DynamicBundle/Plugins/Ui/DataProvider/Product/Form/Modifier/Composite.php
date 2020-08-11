@@ -38,7 +38,7 @@ class Composite
             foreach ($data[$modelId][BundlePanel::CODE_BUNDLE_OPTIONS][BundlePanel::CODE_BUNDLE_OPTIONS] as &$option) {
                 foreach ($option['bundle_selections'] as &$selection) {
                     $this->selection->load($selection['selection_id']);
-                    $selection['custom_field'] = $this->selection->getCustomField();
+                    $selection['option_sku'] = $this->selection->getOptionSku();
                 }
             }
         }

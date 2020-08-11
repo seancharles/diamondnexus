@@ -24,8 +24,8 @@ class LinkManagement extends \Magento\Bundle\Model\LinkManagement
     ) {
 
         $selectionModel = parent::mapProductLinkToSelectionModel($selectionModel, $productLink, $linkedProductId, $parentProductId);
-        if ($productLink->getCustomField() !== null) {
-            $selectionModel->setCustomField($productLink->getCustomField());
+        if ($productLink->getOptionSku() !== null) {
+            $selectionModel->setOptionSku($productLink->getOptionSku());
         }
 
         return $selectionModel;

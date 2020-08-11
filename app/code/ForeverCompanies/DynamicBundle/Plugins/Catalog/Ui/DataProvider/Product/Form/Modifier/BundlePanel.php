@@ -14,11 +14,11 @@ class BundlePanel
     public function afterModifyMeta(\Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePanel $subject, $meta)
     {
         $fieldSet = [
-            'option_sku' => [
+            'is_dynamic_selection' => [
                 'dataType' => Form\Element\DataType\Text::NAME,
-                'formElement'   => Form\Element\Input::NAME,
-                'label' => 'Option Sku',
-                'dataScope' => 'option_sku',
+                'formElement'   => Form\Element\Select::NAME,
+                'label' => 'Dynamic Option',
+                'dataScope' => 'is_dynamic_selection',
                 'sortOrder' => 40
             ]
         ];
@@ -48,7 +48,16 @@ class BundlePanel
                         'label'         => __($fieldOptions['label']),
                         'dataScope'     => $fieldOptions['dataScope'],
                         'sortOrder'     => $fieldOptions['sortOrder'],
-                        'options'       => array_key_exists('options', $fieldOptions) ? $fieldOptions['options']: "",
+                        'options'       => [
+                            [
+                                'label' => __('No'),
+                                'value' => '0',
+                            ],
+                            [
+                                'label' => __('Yes'),
+                                'value' => '1',
+                            ]
+                        ]
                     ]
                 ]
             ]

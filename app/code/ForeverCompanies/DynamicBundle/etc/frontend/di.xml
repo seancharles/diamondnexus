@@ -37,4 +37,6 @@
         <plugin name="sales-order-item-options" type="ForeverCompanies\DynamicBundle\Plugins\Sales\Order\Item" />
     </type>
 	
+	<!--<preference for="Magento\Sales\Model\Convert\Order" type="ForeverCompanies\DynamicBundle\Model\Sales\Convert\Order" />-->
+	
 </config>

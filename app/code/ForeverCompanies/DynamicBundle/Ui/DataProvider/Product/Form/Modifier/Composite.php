@@ -49,7 +49,7 @@ class Composite extends \Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\Co
                     'position' => $option->getPosition(),
                     'option_id' => $option->getOptionId(),
                     'title' => $option->getTitle(),
-                    'option_sku' => $option->getOptionSku(), //new field
+                    'is_dynamic_selection' => $option->getIsDynamicSelection(), //new field
                     'default_title' => $option->getDefaultTitle(),
                     'type' => $option->getType(),
                     'required' => ($option->getRequired()) ? '1' : '0',

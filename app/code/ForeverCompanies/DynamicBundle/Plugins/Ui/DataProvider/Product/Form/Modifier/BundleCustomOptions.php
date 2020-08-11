@@ -42,13 +42,13 @@ class BundleCustomOptions
             'arguments' => [
                 'data' => [
                     'config' => [
-                        'label' => __('Sku'),
+                        'label' => __('Sku Override'),
                         'componentType' => Field::NAME,
                         'formElement' => Input::NAME,
                         'dataScope' => static::FIELD_CUSTOM_FIELD_OPTION_NAME,
                         'dataType' => Text::NAME,
                         'sortOrder' => $sortOrder,
-                        'default' => 'default',
+                        'default' => '',
                         /*
                         'options' => [
                             [

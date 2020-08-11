@@ -27,7 +27,7 @@ class OptionList extends \Magento\Bundle\Model\Product\OptionList
                 ->setTitle($option->getTitle() === null ? $option->getDefaultTitle() : $option->getTitle())
                 ->setDefaultTitle($option->getDefaultTitle())
                 ->setSku($product->getSku())
-                ->setOptionSku($option->getOptionSku()) // retrieve "min_qty" from db
+                ->setIsDynamicSelection($option->getIsDynamicSelection()) // retrieve "is_dynamic_selection" from db
                 ->setProductLinks($productLinks);
             $optionList[] = $optionDataObject;
         }
