@@ -9,6 +9,8 @@ namespace ForeverCompanies\CustomAttributes\Helper;
 
 use Magento\Bundle\Api\Data\LinkInterface;
 use Magento\Bundle\Api\Data\LinkInterfaceFactory;
+use Magento\Bundle\Model\Link;
+use Magento\Catalog\Api\Data\ProductExtension;
 use Magento\Catalog\Api\Data\ProductLinkInterface;
 use Magento\Catalog\Api\Data\ProductLinkInterfaceFactory;
 use Magento\Catalog\Api\Data\TierPriceInterface;
@@ -269,10 +271,19 @@ class Mapping extends AbstractHelper
                     'delete' => '',
                 ];
                 $options[$productOption['attribute_id']] = $this->prepareOptions($productOption);
+                if ($productOption['label'] == 'Precious Metal') {
+                    $product->setData('metal_type', null);
+                }
+                if ($productOption['label'] == 'Certified Stone') {
+                    $product->setData('certified_stone', null);
+                }
 
             } else {
-                $configurableProductLinks = $product->getExtensionAttributes()->getConfigurableProductLinks();
+                /** @var ProductExtension $extensionAttributes */
+                $extensionAttributes = $product->getExtensionAttributes();
+                $configurableProductLinks = $extensionAttributes->getConfigurableProductLinks();
                 $links = $this->prepareLinksForBundle($configurableProductLinks);
+                $product->setData('carat_weight', null);
             }
         }
         $customizableOptions = [];
@@ -336,7 +347,6 @@ class Mapping extends AbstractHelper
         foreach ($uniqSkus as $sku) {
             try {
                 $product = $this->productRepository->get($sku);
-                $this->productFunctionalHelper->addProductToDelete($product);
                 if ($product->getId() !== null) {
                     $links[] = $this->createNewLink($product);
                 }
@@ -354,23 +364,30 @@ class Mapping extends AbstractHelper
      */
     private function createNewLink(ProductInterface $product)
     {
+        /** @var Link $link */
         $link = $this->linkFactory->create();
         $link->setSku($product->getSku());
-        $link->setName($product->getName());
+        $link->setData('name', $product->getName());
         $link->setQty(1);
-        $link->setProductId($product->getId());
+        $link->setData('product_id', $product->getId());
         $link->setIsDefault(false);
         $link->setPrice($product->getPrice());
         $link->setPriceType(LinkInterface::PRICE_TYPE_FIXED);
         return $link;
     }
 
+    /**
+     * @param $productIds
+     * @return array
+     */
     private function getUniqSkus($productIds)
     {
         $skusForLikedProduct = [];
         foreach ($productIds as $productId) {
             try {
-                $product = $this->productRepository->getById($productId);
+                /** @var Product $product */
+                $product = $this->productRepository->getById($productId, true, 0, true);
+                $this->productFunctionalHelper->addProductToDelete($product);
                 $sku = $product->getSku();
                 $skusForLikedProduct[] = $this->productFunctionalHelper->getStoneSkuFromProductSku($sku);
             } catch (NoSuchEntityException $e) {

@@ -17,6 +17,7 @@ use Magento\Catalog\Api\Data\ProductCustomOptionInterfaceFactory;
 use Magento\Catalog\Api\Data\ProductExtension;
 use Magento\Catalog\Api\Data\TierPriceInterface;
 use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Option;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
@@ -150,18 +151,13 @@ class TransformData extends AbstractHelper
     {
         $entityId = 9403; //Need delete it after testing
 
-        $product = $this->productRepository->getById($entityId);
+        $product = $this->productRepository->getById($entityId, true, 0, true);
         if ($product->getTypeId() == Configurable::TYPE_CODE) {
             if (strpos($product->getName(), 'Chelsa') === false) {
                 $this->convertConfigToBundle($product);
             }
         }
-        $attributeSetName = $this->attrSetRepository->get($product->getAttributeSetId())->getAttributeSetName();
-        $productType = $this->mapping->attributeSetToProductType($attributeSetName);
-        $product->setCustomAttribute('product_type', $productType);
-        if ($product->getCustomAttribute('product_type') == 'Stone') {
-            $product->setCustomAttribute('allow_in_bundles', 1);
-        }
+        $this->setProductType($product);
         foreach (['youtube', 'video_url'] as $link) {
             $videoUrl = $product->getCustomAttribute($link);
             if ($videoUrl != null) {
@@ -177,7 +173,7 @@ class TransformData extends AbstractHelper
 
         /** Finally! */
         try {
-            //$this->productRepository->save($product); TESTING
+            $this->productRepository->save($product);
         } catch (InputException $inputException) {
             var_dump($inputException);
             exit; //delete it after testing
@@ -188,6 +184,22 @@ class TransformData extends AbstractHelper
             throw new StateException(__('Cannot save product.'));
         }
         exit('stop test');
+    }
+
+    /**
+     * @param Product $product
+     * @throws NoSuchEntityException
+     */
+    protected function setProductType(Product $product)
+    {
+        if ($product->getData('product_type') == null) {
+            $attributeSetName = $this->attrSetRepository->get($product->getAttributeSetId())->getAttributeSetName();
+            $productType = $this->mapping->attributeSetToProductType($attributeSetName);
+            $product->setCustomAttribute('product_type', $productType);
+            if ($product->getCustomAttribute('product_type') == 'Stone') {
+                $product->setCustomAttribute('allow_in_bundles', 1);
+            }
+        }
     }
 
     /**
@@ -216,12 +228,13 @@ class TransformData extends AbstractHelper
 
     /**
      * @param Product $product
+     * @throws NoSuchEntityException
      */
     protected function convertConfigToBundle(Product $product)
     {
-        $product->setTypeId(Type::TYPE_CODE);
         $this->transformOptionsToBundle($product);
         $this->editProductsFromConfigurable($product);
+        $product->setTypeId(Type::TYPE_CODE);
     }
 
     /**
@@ -267,12 +280,13 @@ class TransformData extends AbstractHelper
 
     /**
      * @param Product $product
-     * // TODO: NEED TESTING!!! IN progress...
+     * @throws NoSuchEntityException
      */
     private function editProductsFromConfigurable(Product $product)
     {
         foreach ($this->productFunctionalHelper->getProductForDelete() as $productForDelete) {
             $productForDelete->setVisibility(false);
+            $productForDelete->setStatus(Status::STATUS_DISABLED);
             $movedAsPart = 'Removed as part of: ';
             $devTag = $productForDelete->getData('dev_tag');
             if ($devTag !== null && strpos($devTag, $movedAsPart) === false) {
@@ -281,17 +295,21 @@ class TransformData extends AbstractHelper
             if ($devTag === null) {
                 $productForDelete->setData('dev_tag', $movedAsPart . $product->getId());
             }
+            $this->setProductType($productForDelete);
 
             try {
-                //$this->productRepository->save($productForDelete); TESTING
+                /** TODO: CHECK WHY NOT SAVED BUNDLE PRODUCT (PROBLEM WITH SKU) */
+                $this->productRepository->save($productForDelete);
             } catch (CouldNotSaveException $e) {
+                var_dump($e);
                 /** TODO EXCEPTION */
             } catch (InputException $e) {
+                var_dump($e);
                 /** TODO EXCEPTION */
             } catch (StateException $e) {
+                var_dump($e);
                 /** TODO EXCEPTION */
             }
-            break;
         }
     }
 

@@ -85,6 +85,12 @@ class DisableRequiredProductAttributes implements DataPatchInterface
             'is_required',
             false
         );
+        $eavSetup->updateAttribute(
+            Product::ENTITY,
+            'price_view',
+            'is_required',
+            false
+        );
     }
 
     public static function getVersion()

@@ -35,7 +35,8 @@ class AddProductTypeProductAttribute implements DataPatchInterface, PatchReverta
     public function __construct(
         ModuleDataSetupInterface $moduleDataSetup,
         EavSetupFactory $eavSetupFactory
-    ) {
+    )
+    {
         $this->moduleDataSetup = $moduleDataSetup;
         $this->eavSetupFactory = $eavSetupFactory;
     }
@@ -45,7 +46,6 @@ class AddProductTypeProductAttribute implements DataPatchInterface, PatchReverta
      */
     public function apply()
     {
-        /** TODO: Check why its not showed */
         $this->moduleDataSetup->getConnection()->startSetup();
         /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
@@ -53,7 +53,7 @@ class AddProductTypeProductAttribute implements DataPatchInterface, PatchReverta
             \Magento\Catalog\Model\Product::ENTITY,
             'product_type',
             [
-                'type' => 'static',
+                'type' => 'int',
                 'label' => 'Product Type',
                 'input' => 'select',
                 'source' => '',
@@ -66,34 +66,17 @@ class AddProductTypeProductAttribute implements DataPatchInterface, PatchReverta
                 'visible' => true,
                 'user_defined' => true,
                 'searchable' => true,
-                'filterable' => true,
-                'comparable' => false,
+                'filterable' => false,
+                'comparable' => true,
                 'visible_on_front' => true,
                 'unique' => false,
                 'apply_to' => '',
                 'group' => 'General',
-                'used_in_product_listing' => true,
+                'used_in_product_listing' => false,
                 'is_used_in_grid' => true,
                 'is_visible_in_grid' => false,
                 'is_filterable_in_grid' => false,
-                'option' => [
-                    'values' => [
-                        "Bracelet",
-                        "Chain",
-                        "Earring",
-                        "Diamond",
-                        "Gift Card",
-                        "Stone",
-                        "Matched Set",
-                        "Matching Band",
-                        "Necklace",
-                        "Pendant",
-                        "Ring",
-                        "Ring Setting",
-                        "Watch",
-                        "Other"
-                    ]
-                ]
+                'option' => ['values' => ["Bracelet", "Chain", "Earring", "Diamond", "Gift Card", "Stone", "Matched Set", "Matching Band", "Necklace", "Pendant", "Ring", "Ring Setting", "Watch", "Other"]]
             ]
         );
 
@@ -121,7 +104,7 @@ class AddProductTypeProductAttribute implements DataPatchInterface, PatchReverta
     /**
      * {@inheritdoc}
      */
-        public static function getDependencies()
+    public static function getDependencies()
     {
         return [
 
