@@ -21,8 +21,10 @@ use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
 use Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Api\Data\AttributeInterface;
+use Magento\Eav\Model\Config;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Catalog\Api\Data\ProductInterface;
 
@@ -204,19 +206,27 @@ class Mapping extends AbstractHelper
     protected $productFunctionalHelper;
 
     /**
+     * @var Config
+     */
+    protected $eavConfig;
+
+    /**
      * Mapping constructor.
      * @param Context $context
      * @param ProductAttributeRepositoryInterface $productAttributeRepository
      * @param ProductRepositoryInterface $productRepository
      * @param LinkInterfaceFactory $linkFactory
      * @param ProductFunctional $productFunctionalHelper
+     * @param Config $eavConfig
+     * @throws LocalizedException
      */
     public function __construct(
         Context $context,
         ProductAttributeRepositoryInterface $productAttributeRepository,
         ProductRepositoryInterface $productRepository,
         LinkInterfaceFactory $linkFactory,
-        ProductFunctional $productFunctionalHelper
+        ProductFunctional $productFunctionalHelper,
+        Config $eavConfig
     )
     {
         parent::__construct($context);
@@ -224,6 +234,7 @@ class Mapping extends AbstractHelper
         $this->productRepository = $productRepository;
         $this->linkFactory = $linkFactory;
         $this->productFunctionalHelper = $productFunctionalHelper;
+        $this->eavConfig = $eavConfig->getAttribute(Product::ENTITY, 'product_type')->getSource();
     }
 
     /**
@@ -234,8 +245,7 @@ class Mapping extends AbstractHelper
     public function getAttributeIdFromProductOptions(array $options, string $title)
     {
         /** @var Configurable\Attribute $option */
-        foreach ($options as $option)
-        {
+        foreach ($options as $option) {
             if ($option->getLabel() == $title) {
                 return $option->getAttributeId();
             }
@@ -249,7 +259,8 @@ class Mapping extends AbstractHelper
      */
     public function attributeSetToProductType(string $attributeSetName)
     {
-        return $this->mappingProductType[$attributeSetName];
+        $typeName = $this->mappingProductType[$attributeSetName];
+        return $this->eavConfig->getOptionId($typeName);
     }
 
     /**
@@ -269,6 +280,7 @@ class Mapping extends AbstractHelper
                     'type' => 'select',
                     'required' => 1,
                     'delete' => '',
+                    'price_type' => TierPriceInterface::PRICE_TYPE_FIXED
                 ];
                 $options[$productOption['attribute_id']] = $this->prepareOptions($productOption);
                 if ($productOption['label'] == 'Precious Metal') {
@@ -308,6 +320,7 @@ class Mapping extends AbstractHelper
                         'price' => 0,
                         'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
                         'sku' => $this->mappingSku[$attribute->getData(AttributeInterface::FRONTEND_LABEL)][$index],
+                        'product_sku' => $product->getSku(),
                     ];
                     $customizableOptions[$attributeId][] = $customizableOption;
                 }
@@ -368,11 +381,11 @@ class Mapping extends AbstractHelper
         $link = $this->linkFactory->create();
         $link->setSku($product->getSku());
         $link->setData('name', $product->getName());
-        $link->setQty(1);
+        $link->setData('selection_qty', 1);
         $link->setData('product_id', $product->getId());
         $link->setIsDefault(false);
-        $link->setPrice($product->getPrice());
-        $link->setPriceType(LinkInterface::PRICE_TYPE_FIXED);
+        $link->setData('selection_price_value', $product->getPrice());
+        $link->setData('selection_price_type', LinkInterface::PRICE_TYPE_FIXED);
         return $link;
     }
 

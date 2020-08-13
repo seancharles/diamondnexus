@@ -33,6 +33,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\StateException;
 use Magento\ProductVideo\Model\Product\Attribute\Media\ExternalVideoEntryConverter;
+use Magento\Store\Model\StoreManagerInterface;
 use Zend_Db_Select;
 
 class TransformData extends AbstractHelper
@@ -68,6 +69,11 @@ class TransformData extends AbstractHelper
     protected $productFunctionalHelper;
 
     /**
+     * @var StoreManagerInterface
+     */
+    protected $storeManager;
+
+    /**
      * @var ExternalVideoEntryConverter
      */
     private $externalVideoEntryConverter;
@@ -93,6 +99,7 @@ class TransformData extends AbstractHelper
      * @param ProductCustomOptionInterfaceFactory $productCustomOptionInterfaceFactory
      * @param Mapping $mapping
      * @param ProductFunctional $productFunctionalHelper
+     * @param StoreManagerInterface $storeManager
      */
     public function __construct(
         Context $context,
@@ -104,7 +111,8 @@ class TransformData extends AbstractHelper
         OptionInterfaceFactory $optionInterfaceFactory,
         ProductCustomOptionInterfaceFactory $productCustomOptionInterfaceFactory,
         Mapping $mapping,
-        ProductFunctional $productFunctionalHelper
+        ProductFunctional $productFunctionalHelper,
+        StoreManagerInterface $storeManager
     )
     {
         parent::__construct($context);
@@ -117,6 +125,7 @@ class TransformData extends AbstractHelper
         $this->productCustomOptionInterfaceFactory = $productCustomOptionInterfaceFactory;
         $this->mapping = $mapping;
         $this->productFunctionalHelper = $productFunctionalHelper;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -149,8 +158,8 @@ class TransformData extends AbstractHelper
      */
     public function transformProduct(int $entityId)
     {
-        $entityId = 9403; //Need delete it after testing
-
+        $entityId = 9599; //Need delete it after testing
+        $this->storeManager->setCurrentStore(0);
         $product = $this->productRepository->getById($entityId, true, 0, true);
         if ($product->getTypeId() == Configurable::TYPE_CODE) {
             if (strpos($product->getName(), 'Chelsa') === false) {
@@ -170,7 +179,7 @@ class TransformData extends AbstractHelper
                 $product->setCustomAttribute($new, $customAttribute);
             }
         }
-
+        $product->setData('is_transformed', 1);
         /** Finally! */
         try {
             $this->productRepository->save($product);
@@ -232,6 +241,7 @@ class TransformData extends AbstractHelper
      */
     protected function convertConfigToBundle(Product $product)
     {
+        $product->setData('price_type', TierPriceInterface::PRICE_TYPE_FIXED);
         $this->transformOptionsToBundle($product);
         $this->editProductsFromConfigurable($product);
         $product->setTypeId(Type::TYPE_CODE);
@@ -255,9 +265,11 @@ class TransformData extends AbstractHelper
             $option->setData(
                 [
                     'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
+                    'title' => $optionData['title'],
                     'type' => ProductCustomOptionInterface::OPTION_TYPE_DROP_DOWN,
                     'is_require' => 1,
-                    'values' => $optionsData['options'][$attributeId]
+                    'values' => $optionsData['options'][$attributeId],
+                    'product_sku' => $product->getSku(),
                 ]
             );
             $options[] = $option;
@@ -289,7 +301,7 @@ class TransformData extends AbstractHelper
             $productForDelete->setStatus(Status::STATUS_DISABLED);
             $movedAsPart = 'Removed as part of: ';
             $devTag = $productForDelete->getData('dev_tag');
-            if ($devTag !== null && strpos($devTag, $movedAsPart) === false) {
+            if ($devTag !== null && strpos($devTag, $movedAsPart) !== false) {
                 $productForDelete->setData('dev_tag', $devTag . ', ' . $product->getId());
             }
             if ($devTag === null) {
