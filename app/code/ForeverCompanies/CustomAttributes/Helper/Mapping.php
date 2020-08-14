@@ -28,7 +28,6 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Catalog\Api\Data\ProductInterface;
 
-
 class Mapping extends AbstractHelper
 {
 
@@ -211,6 +210,11 @@ class Mapping extends AbstractHelper
     protected $eavConfig;
 
     /**
+     * @var \ForeverCompanies\CustomAttributes\Logger\Logger
+     */
+    protected $customLogger;
+
+    /**
      * Mapping constructor.
      * @param Context $context
      * @param ProductAttributeRepositoryInterface $productAttributeRepository
@@ -226,14 +230,15 @@ class Mapping extends AbstractHelper
         ProductRepositoryInterface $productRepository,
         LinkInterfaceFactory $linkFactory,
         ProductFunctional $productFunctionalHelper,
-        Config $eavConfig
-    )
-    {
+        Config $eavConfig,
+        \ForeverCompanies\CustomAttributes\Logger\Logger $logger
+    ) {
         parent::__construct($context);
         $this->productAttributeRepository = $productAttributeRepository;
         $this->productRepository = $productRepository;
         $this->linkFactory = $linkFactory;
         $this->productFunctionalHelper = $productFunctionalHelper;
+        $this->customLogger = $logger;
         $this->eavConfig = $eavConfig->getAttribute(Product::ENTITY, 'product_type')->getSource();
     }
 
@@ -267,9 +272,12 @@ class Mapping extends AbstractHelper
      * @param Product $product
      * @param array $productOptions
      * @return array[]
+     * @throws NoSuchEntityException
      */
     public function prepareOptionsForBundle(Product $product, array $productOptions)
     {
+        /** @var Configurable $configurable */
+        $configurable = $product->getTypeInstance();
         $bundleOptions = [];
         $options = [];
         foreach ($productOptions as $productOption) {
@@ -289,7 +297,6 @@ class Mapping extends AbstractHelper
                 if ($productOption['label'] == 'Certified Stone') {
                     $product->setData('certified_stone', null);
                 }
-
             } else {
                 /** @var ProductExtension $extensionAttributes */
                 $extensionAttributes = $product->getExtensionAttributes();
@@ -299,13 +306,10 @@ class Mapping extends AbstractHelper
             }
         }
         $customizableOptions = [];
-        /** @var Configurable $configurable */
-        $configurable = $product->getTypeInstance();
         foreach ($configurable->getConfigurableOptions($product) as $attributeId => $configurableOption) {
             foreach ($configurableOption as $dataOption) {
                 $options[$attributeId][$dataOption['value_index']] = $dataOption['option_title'];
             }
-
         }
         foreach ($options as $attributeId => $option) {
             try {
@@ -325,7 +329,7 @@ class Mapping extends AbstractHelper
                     $customizableOptions[$attributeId][] = $customizableOption;
                 }
             } catch (NoSuchEntityException $e) {
-                /** TODO: Exception */
+                $this->_logger->error($e->getMessage);
             }
         }
         $bundleData = ['bundle' => $bundleOptions, 'options' => $customizableOptions];
@@ -333,7 +337,36 @@ class Mapping extends AbstractHelper
             $bundleData['links'] = $links;
         }
 
-        return $bundleData;
+        return $this->reconfigurePrices($product, $configurable, $bundleData);
+    }
+
+    /**
+     * @param Product $product
+     * @param Configurable $configurable
+     * @param array $bundleOptions
+     * @return array
+     * @throws NoSuchEntityException
+     */
+    protected function reconfigurePrices(Product $product, Configurable $configurable, array $bundleOptions)
+    {
+        $usedProducts = $configurable->getUsedProducts($product);
+        $price = (float)0;
+        foreach ($usedProducts as $config) {
+            if ($price == 0) {
+                $price = $config->getPrice();
+            }
+            if ($price > $config->getPrice()) {
+                $price = (float)$config->getPrice();
+            }
+        }
+        foreach ($bundleOptions['options'] as $attributeId => &$options) {
+            $code = $this->productAttributeRepository->get($attributeId)->getAttributeCode();
+            foreach ($options as &$option) {
+                $option['price'] = $this->getPriceFromConfigurable($usedProducts, $price, $code, $option['sku']);
+            }
+        }
+        $product->setPrice($price);
+        return $bundleOptions;
     }
 
     /**
@@ -362,9 +395,25 @@ class Mapping extends AbstractHelper
                 $product = $this->productRepository->get($sku);
                 if ($product->getId() !== null) {
                     $links[] = $this->createNewLink($product);
+                } else {
+                    $product = $this->productRepository->get($sku . 'XXXX');
+                    if ($product->getId() !== null) {
+                        $links[] = $this->createNewLink($product);
+                    } else {
+                        $this->customLogger->info('SKU not found - ' . $sku);
+                    }
                 }
             } catch (NoSuchEntityException $e) {
-                /** TODO: Exception */
+                try {
+                    $product = $this->productRepository->get($sku . 'XXXX');
+                    if ($product->getId() !== null) {
+                        $links[] = $this->createNewLink($product);
+                    } else {
+                        $this->customLogger->info('SKU not found - ' . $sku);
+                    }
+                } catch (NoSuchEntityException $e) {
+                    $this->customLogger->info('SKU not found - ' . $e->getMessage());
+                }
             }
         }
 
@@ -404,10 +453,31 @@ class Mapping extends AbstractHelper
                 $sku = $product->getSku();
                 $skusForLikedProduct[] = $this->productFunctionalHelper->getStoneSkuFromProductSku($sku);
             } catch (NoSuchEntityException $e) {
-                /** TODO: Exception */
+                $this->customLogger->info('SKU not found - ' . $e->getMessage());
             }
         }
         return array_unique($skusForLikedProduct);
     }
 
+    /**
+     * @param array $usedProducts
+     * @param $price
+     * @param string $code
+     * @param string $sku
+     * @return mixed
+     */
+    private function getPriceFromConfigurable(array $usedProducts, $price, string $code, string $sku)
+    {
+        $prices = [];
+        /** @var Product $product */
+        foreach ($usedProducts as $product) {
+            if (strpos($product->getSku(), $sku) !== false) {
+                $codeValue = $product->getData($code);
+                if (isset($codeValue) && $codeValue !== '') {
+                    $prices[] = (float)$product->getPrice() - $price;
+                }
+            }
+        }
+        return min($prices);
+    }
 }

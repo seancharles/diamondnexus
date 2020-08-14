@@ -103,7 +103,7 @@ class AddAllowInBundlesProductAttribute implements DataPatchInterface, PatchReve
     /**
      * {@inheritdoc}
      */
-        public static function getDependencies()
+    public static function getDependencies()
     {
         return [
 

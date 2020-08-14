@@ -113,8 +113,7 @@ class TransformData extends AbstractHelper
         Mapping $mapping,
         ProductFunctional $productFunctionalHelper,
         StoreManagerInterface $storeManager
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->eav = $config;
         $this->productCollectionFactory = $collectionFactory;
@@ -158,9 +157,12 @@ class TransformData extends AbstractHelper
      */
     public function transformProduct(int $entityId)
     {
-        $entityId = 9599; //Need delete it after testing
         $this->storeManager->setCurrentStore(0);
+        /** @var Product $product */
         $product = $this->productRepository->getById($entityId, true, 0, true);
+        if ($product->isDisabled()) {
+            return;
+        }
         if ($product->getTypeId() == Configurable::TYPE_CODE) {
             if (strpos($product->getName(), 'Chelsa') === false) {
                 $this->convertConfigToBundle($product);
@@ -179,20 +181,18 @@ class TransformData extends AbstractHelper
                 $product->setCustomAttribute($new, $customAttribute);
             }
         }
+        $product->setData('is_salable', true);
+        $product->setData('on_sale', true);
         $product->setData('is_transformed', 1);
         /** Finally! */
         try {
             $this->productRepository->save($product);
         } catch (InputException $inputException) {
-            var_dump($inputException);
-            exit; //delete it after testing
+            $this->_logger->error($inputException->getMessage());
             throw $inputException;
         } catch (\Exception $e) {
-            var_dump($e);
-            exit; //delete it after testing too
             throw new StateException(__('Cannot save product.'));
         }
-        exit('stop test');
     }
 
     /**
@@ -249,6 +249,7 @@ class TransformData extends AbstractHelper
 
     /**
      * @param Product $product
+     * @throws NoSuchEntityException
      */
     private function transformOptionsToBundle(Product $product)
     {
@@ -287,7 +288,6 @@ class TransformData extends AbstractHelper
             $extensionAttributes->setBundleProductOptions([$bundleOption]);
             $product->setExtensionAttributes($extensionAttributes);
         }
-
     }
 
     /**
@@ -310,19 +310,14 @@ class TransformData extends AbstractHelper
             $this->setProductType($productForDelete);
 
             try {
-                /** TODO: CHECK WHY NOT SAVED BUNDLE PRODUCT (PROBLEM WITH SKU) */
                 $this->productRepository->save($productForDelete);
             } catch (CouldNotSaveException $e) {
-                var_dump($e);
-                /** TODO EXCEPTION */
+                $this->_logger->error($e->getMessage());
             } catch (InputException $e) {
-                var_dump($e);
-                /** TODO EXCEPTION */
+                $this->_logger->error($e->getMessage());
             } catch (StateException $e) {
-                var_dump($e);
-                /** TODO EXCEPTION */
+                $this->_logger->error($e->getMessage());
             }
         }
     }
-
 }

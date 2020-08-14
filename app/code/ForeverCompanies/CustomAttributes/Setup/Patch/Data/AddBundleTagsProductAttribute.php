@@ -103,7 +103,7 @@ class AddBundleTagsProductAttribute implements DataPatchInterface, PatchRevertab
     /**
      * {@inheritdoc}
      */
-        public static function getDependencies()
+    public static function getDependencies()
     {
         return [
 

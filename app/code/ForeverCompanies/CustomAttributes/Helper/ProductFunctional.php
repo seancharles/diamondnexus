@@ -11,7 +11,6 @@ use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\App\Helper\AbstractHelper;
 
-
 class ProductFunctional extends AbstractHelper
 {
     /**
@@ -61,5 +60,4 @@ class ProductFunctional extends AbstractHelper
     {
         $this->productsForDelete = [];
     }
-
 }

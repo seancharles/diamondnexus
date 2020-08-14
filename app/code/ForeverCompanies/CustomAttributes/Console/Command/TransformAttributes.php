@@ -43,8 +43,7 @@ class TransformAttributes extends Command
     public function __construct(
         State $state,
         TransformData $helper
-    )
-    {
+    ) {
         $this->state = $state;
         $this->helper = $helper;
         parent::__construct($this->name);
@@ -57,8 +56,7 @@ class TransformAttributes extends Command
     protected function execute(
         InputInterface $input,
         OutputInterface $output
-    )
-    {
+    ) {
         $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_GLOBAL);
         $output->writeln("Get products for transformation...");
         $productCollection = $this->helper->getProductsForTransformCollection();
@@ -66,15 +64,14 @@ class TransformAttributes extends Command
         foreach ($productCollection->getItems() as $item) {
             try {
                 $this->helper->transformProduct((int)$item->getData('entity_id'));
-                exit;
             } catch (InputException $e) {
-                /** TODO Exception */
+                $output->writeln($e->getMessage());
             } catch (NoSuchEntityException $e) {
-                /** TODO Exception */
+                $output->writeln($e->getMessage());
             } catch (StateException $e) {
-                /** TODO Exception */
+                $output->writeln($e->getMessage());
             } catch (LocalizedException $e) {
-                /** TODO Exception */
+                $output->writeln($e->getMessage());
             }
         }
     }

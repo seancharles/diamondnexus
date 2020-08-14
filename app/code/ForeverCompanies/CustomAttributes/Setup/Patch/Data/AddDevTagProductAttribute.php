@@ -103,7 +103,7 @@ class AddDevTagProductAttribute implements DataPatchInterface, PatchRevertableIn
     /**
      * {@inheritdoc}
      */
-        public static function getDependencies()
+    public static function getDependencies()
     {
         return [
 

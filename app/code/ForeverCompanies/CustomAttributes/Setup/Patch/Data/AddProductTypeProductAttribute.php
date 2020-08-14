@@ -35,8 +35,7 @@ class AddProductTypeProductAttribute implements DataPatchInterface, PatchReverta
     public function __construct(
         ModuleDataSetupInterface $moduleDataSetup,
         EavSetupFactory $eavSetupFactory
-    )
-    {
+    ) {
         $this->moduleDataSetup = $moduleDataSetup;
         $this->eavSetupFactory = $eavSetupFactory;
     }
@@ -76,7 +75,24 @@ class AddProductTypeProductAttribute implements DataPatchInterface, PatchReverta
                 'is_used_in_grid' => true,
                 'is_visible_in_grid' => false,
                 'is_filterable_in_grid' => false,
-                'option' => ['values' => ["Bracelet", "Chain", "Earring", "Diamond", "Gift Card", "Stone", "Matched Set", "Matching Band", "Necklace", "Pendant", "Ring", "Ring Setting", "Watch", "Other"]]
+                'option' => [
+                    'values' => [
+                        "Bracelet",
+                        "Chain",
+                        "Earring",
+                        "Diamond",
+                        "Gift Card",
+                        "Stone",
+                        "Matched Set",
+                        "Matching Band",
+                        "Necklace",
+                        "Pendant",
+                        "Ring",
+                        "Ring Setting",
+                        "Watch",
+                        "Other"
+                    ]
+                ]
             ]
         );
 

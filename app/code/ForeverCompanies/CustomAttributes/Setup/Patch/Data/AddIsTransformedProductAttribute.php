@@ -103,7 +103,7 @@ class AddIsTransformedProductAttribute implements DataPatchInterface, PatchRever
     /**
      * {@inheritdoc}
      */
-        public static function getDependencies()
+    public static function getDependencies()
     {
         return [
 
