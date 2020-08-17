@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="ShipperHQ\Shipper\Model\Carrier\Processor\ShipperMapper">
+        <plugin name="shipperhq-carrier-shippermapper" type="ForeverCompanies\DynamicBundle\Plugins\Shipperhq\ShipperMapper" />
+    </type>
+	<!--<preference for="ShipperHQ\Shipper\Model\Carrier\Processor\ShipperMapper" type="ForeverCompanies\DynamicBundle\Model\Shipperhq\ShipperMapper" />-->
+</config>
