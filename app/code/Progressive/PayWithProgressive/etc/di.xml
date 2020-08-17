@@ -1,0 +1,237 @@
+<?xml version="1.0"?>
+
+<!--
+Astound
+NOTICE OF LICENSE
+This source file is subject to the Open Software License (OSL 3.0)
+that is bundled with this package in the file LICENSE.txt.
+It is also available through the world-wide-web at this URL:
+http://opensource.org/licenses/osl-3.0.php
+If you did not receive a copy of the license and are unable to
+obtain it through the world-wide-web, please send an email
+to codemaster@astoundcommerce.com so we can send you a copy immediately.
+
+@category  Affirm
+@package   Astound_Affirm
+@copyright Copyright (c) 2016 Astound, Inc. (http://www.astoundcommerce.com)
+@license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+-->
+
+<!--
+Copyright (c) 2016 Astound, Inc. (http://www.astoundcommerce.com).
+Modified by Prog Leasing, LLC. Copyright (c) 2018, Prog Leasing, LLC.
+-->
+
+<config 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Progressive\PayWithProgressive\Api\CheckoutManagerInterface" type="Progressive\PayWithProgressive\Model\CheckoutManager" />
+    <preference for="Progressive\PayWithProgressive\Api\CheckoutPaymentManagerInterface" type="Progressive\PayWithProgressive\Model\CheckoutPaymentManager" />
+    <preference for="Progressive\PayWithProgressive\Api\LeaseConfirmationInterface" type="Progressive\PayWithProgressive\Model\LeaseConfirmation" />
+    <preference for="Progressive\PayWithProgressive\Api\DeliveryManagerInterface" type="Progressive\PayWithProgressive\Model\DeliveryManager"/>
+
+     <type name="Magento\Framework\App\Request\CsrfValidator">
+        <plugin name="csrf_validator_skip" type="Progressive\PayWithProgressive\Plugin\CsrfValidatorSkip" />
+   </type>
+
+    <!-- Config reader -->
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="addLeasableAttribute" xsi:type="object">Progressive\PayWithProgressive\Console\AddLeasableAttribute</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Config\Model\Config">
+	    <plugin name="admin_system_config_save_plugin" type="Progressive\PayWithProgressive\Plugin\ConfigPlugin" />
+    </type>
+    <!-- Payment method facade config -->
+    <virtualType name="ProgressiveGatewayFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">\Progressive\PayWithProgressive\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Progressive\PayWithProgressive\Block\Info</argument>
+            <argument name="valueHandlerPool" xsi:type="object">ProgressiveValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">ProgressiveCommandPool</argument>
+            <argument name="validatorPool" xsi:type="object">ProgressiveValidatorPool</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Value handlers -->
+    <virtualType name="ProgressiveValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">ProgressiveGatewayConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Configuration reader -->
+    <virtualType name="ProgressiveGatewayConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">\Progressive\PayWithProgressive\Model\Ui\ConfigProvider::CODE</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="ProgressiveGatewayConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">ProgressiveGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Validators -->
+    <virtualType name="ProgressiveCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">ProgressiveGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="ProgressiveCurrencyValidator" type="Progressive\PayWithProgressive\Gateway\Validator\CurrencyValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">ProgressiveGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+    <!-- Validators -->
+
+    <!-- Validator Pool -->
+    <virtualType name="ProgressiveValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">ProgressiveCountryValidator</item>
+                <item name="currency" xsi:type="string">ProgressiveCurrencyValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <!-- Validator Pool -->
+
+    <!-- Command pool for payment gateway -->
+    <virtualType name="ProgressiveCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <!--<item name="pre_authorize" xsi:type="string">ProgressiveGatewayPreAuthorizeCommand</item>-->
+                <item name="authorize" xsi:type="string">Progressive\PayWithProgressive\Gateway\Command\AuthorizeStrategyCommand</item>
+                <item name="order_authorize" xsi:type="string">ProgressiveGatewayAuthorizeCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <!-- Command pool for payment gateway -->
+
+
+    <!-- Strategy commands -->
+    <type name="Progressive\PayWithProgressive\Gateway\Command\AuthorizeStrategyCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">ProgressiveCommandPool</argument>
+        </arguments>
+    </type>
+
+    <!-- Authorize command -->
+    <virtualType name="ProgressiveGatewayAuthorizeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">ProgressiveGatewayAuthorizationRequest</argument>
+            <argument name="transferFactory" xsi:type="object">ProgressiveClientGatewayTransferFactory</argument>
+            <argument name="client" xsi:type="object">Progressive\PayWithProgressive\Gateway\Http\Client\ClientService</argument>
+            <argument name="handler" xsi:type="object">Progressive\PayWithProgressive\Gateway\Response\TransactionAuthorizeHandler</argument>
+            <argument name="validator" xsi:type="object">Progressive\PayWithProgressive\Gateway\Validator\Client\PaymentActionsValidator</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Pre Authorize command -->
+    <virtualType name="ProgressiveGatewayPreAuthorizeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">ProgressiveGatewayPreAuthorizationRequest</argument>
+            <argument name="transferFactory" xsi:type="object">ProgressivePreAuthorizationGatewayTransferFactory</argument>
+            <argument name="client" xsi:type="object">Progressive\PayWithProgressive\Gateway\Http\Client\ClientService</argument>
+            <argument name="validator" xsi:type="object">Progressive\PayWithProgressive\Gateway\Validator\Client\PaymentActionsValidatorPreAuthorize</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Client service config -->
+    <type name="Progressive\PayWithProgressive\Gateway\Http\Client\ClientService">
+        <arguments>
+            <argument name="logger" xsi:type="object">ProgressiveLogger</argument>
+            <argument name="converter" xsi:type="object">Progressive\PayWithProgressive\Gateway\Http\Converter\JsonToArray</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="ProgressiveLogger" type="Magento\Payment\Model\Method\Logger">
+        <arguments>
+            <argument name="config" xsi:type="object">ProgressiveGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Authorization request builder-->
+    <virtualType name="ProgressiveGatewayAuthorizationRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="transaction" xsi:type="string">Progressive\PayWithProgressive\Gateway\Request\AuthorizationRequest</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Progressive\PayWithProgressive\Gateway\Request\AbstractDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">ProgressiveGatewayConfig</argument>
+        </arguments>
+    </type>
+
+    <!-- Preauthorization request builder-->
+    <virtualType name="ProgressiveGatewayPreAuthorizationRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="transaction" xsi:type="string">Progressive\PayWithProgressive\Gateway\Request\PreAuthorizationRequest</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+
+    <!-- Authorization transfer factory -->
+    <virtualType name="ProgressiveClientGatewayTransferFactory" type="Progressive\PayWithProgressive\Gateway\Http\TransferFactory">
+        <arguments>
+            <argument name="action" xsi:type="object">ProgressiveClientTransactionAction</argument>
+            <argument name="config" xsi:type="object">ProgressiveGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="ProgressiveClientTransactionAction" type="Progressive\PayWithProgressive\Gateway\Helper\Request\Action">
+        <arguments>
+            <argument name="action" xsi:type="const">Progressive\PayWithProgressive\Gateway\Helper\Request\Action::API_CONFIRM_PATH</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Request action config -->
+    <type name="Progressive\PayWithProgressive\Gateway\Helper\Request\Action">
+        <arguments>
+            <argument name="config" xsi:type="object">ProgressiveGatewayConfig</argument>
+        </arguments>
+    </type>
+
+    <!-- Preauthorization transfer factory -->
+    <virtualType name="ProgressivePreAuthorizationGatewayTransferFactory" type="Progressive\PayWithProgressive\Gateway\Http\TransferFactory">
+        <arguments>
+            <argument name="action" xsi:type="object">ProgressivePreAuthorizationTransactionAction</argument>
+            <argument name="config" xsi:type="object">ProgressiveGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+
+
+    <!-- Init payment helper -->
+    <type name="Progressive\PayWithProgressive\Helper\Payment">
+        <arguments>
+            <argument name="payment" xsi:type="object">ProgressiveGatewayFacade</argument>
+        </arguments>
+    </type>
+
+    <!-- Order confirmation logger -->
+    <type name="Progressive\PayWithProgressive\Logger\Handler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="Progressive\PayWithProgressive\Logger\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">ProgConfLog</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">Progressive\PayWithProgressive\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

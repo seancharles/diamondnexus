@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<!--
+Astound
+NOTICE OF LICENSE
+This source file is subject to the Open Software License (OSL 3.0)
+that is bundled with this package in the file LICENSE.txt.
+It is also available through the world-wide-web at this URL:
+http://opensource.org/licenses/osl-3.0.php
+If you did not receive a copy of the license and are unable to
+obtain it through the world-wide-web, please send an email
+to codemaster@astoundcommerce.com so we can send you a copy immediately.
+
+@category  Affirm
+@package   Astound_Affirm
+@copyright Copyright (c) 2016 Astound, Inc. (http://www.astoundcommerce.com)
+@license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+-->
+
+<!--
+Copyright (c) 2016 Astound, Inc. (http://www.astoundcommerce.com).
+Modified by Prog Leasing, LLC. Copyright (c) 2018, Prog Leasing, LLC.
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <progressive_gateway>
+                <active>1</active>
+                <can_authorize>1</can_authorize>
+                <can_use_checkout>1</can_use_checkout>
+                <can_use_internal>1</can_use_internal>
+                <currency>USD</currency>
+                <debug>1</debug>
+                <demo_api_url>https://demo.progressivelp.com/</demo_api_url>
+                <icon>http://progleasing.com/wp-content/uploads/2017/03/prog_new-red.png</icon>
+                <info>Monthly Payments</info>
+                <is_gateway>1</is_gateway>
+                <mode>demo</mode>
+                <model>ProgressiveGatewayFacade</model>
+                <order_status>processing</order_status>
+                <payment_action>authorize</payment_action>
+                <paymentInfoKeys>id</paymentInfoKeys>
+                <private_api_key_demo backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <private_api_key_production backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <production_api_url>https://progressivelp.com/</production_api_url>
+                <test>1</test>
+                <title>Progressive Leasing</title>
+                <tax_exempt>1</tax_exempt>
+            </progressive_gateway>
+        </payment>
+    </default>
+</config>
