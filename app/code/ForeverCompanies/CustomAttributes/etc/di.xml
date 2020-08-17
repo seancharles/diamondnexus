@@ -4,6 +4,7 @@
         <arguments>
             <argument name="commands" xsi:type="array">
                 <item name="TransformAttributes" xsi:type="object">ForeverCompanies\CustomAttributes\Console\Command\TransformAttributes</item>
+                <item name="DeleteDisabled" xsi:type="object">ForeverCompanies\CustomAttributes\Console\Command\DeleteDisabled</item>
             </argument>
         </arguments>
     </type>
