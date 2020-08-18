@@ -113,8 +113,7 @@ class TransformData extends AbstractHelper
         Mapping $mapping,
         ProductFunctional $productFunctionalHelper,
         StoreManagerInterface $storeManager
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->eav = $config;
         $this->productCollectionFactory = $collectionFactory;
@@ -208,9 +207,7 @@ class TransformData extends AbstractHelper
             $product = $this->productRepository->getById($productId, true, 0);
             $this->productRepository->delete($product);
         } catch (StateException $e) {
-            /** TODO: IT'S NOT WORKING NOW!!! */
-            var_dump($e);exit;
-            throw new StateException('Cannot get product ID = ' . $productId);
+            throw new StateException(__('Cannot get product ID = ' . $productId));
         } catch (NoSuchEntityException $e) {
             throw new NoSuchEntityException(__('Cannot delete product ID = ' . $productId));
         }
