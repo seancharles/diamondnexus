@@ -281,7 +281,7 @@ class Mapping extends AbstractHelper
         $bundleOptions = [];
         $options = [];
         foreach ($productOptions as $productOption) {
-            if ($productOption['label'] != 'Carat Weight') {
+            if ($productOption['label'] != 'Carat Weight' && $productOption['label'] != 'Center Stone Size' ) {
                 $bundleOptions[] = [
                     'title' => $productOption['label'],
                     'default_title' => $productOption['label'],
@@ -411,8 +411,8 @@ class Mapping extends AbstractHelper
                     } else {
                         $this->customLogger->info('SKU not found - ' . $sku);
                     }
-                } catch (NoSuchEntityException $e) {
-                    $this->customLogger->info('SKU not found - ' . $e->getMessage());
+                } catch (\Exception $e) {
+                    $this->customLogger->info('SKU not found - ' . $sku);
                 }
             }
         }
@@ -432,8 +432,10 @@ class Mapping extends AbstractHelper
         $link->setData('name', $product->getName());
         $link->setData('selection_qty', 1);
         $link->setData('product_id', $product->getId());
+        $link->setData('record_id', $product->getId());
         $link->setIsDefault(false);
         $link->setData('selection_price_value', $product->getPrice());
+        $link->setData('price', $product->getPrice());
         $link->setData('selection_price_type', LinkInterface::PRICE_TYPE_FIXED);
         return $link;
     }

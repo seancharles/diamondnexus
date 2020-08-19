@@ -113,7 +113,8 @@ class TransformData extends AbstractHelper
         Mapping $mapping,
         ProductFunctional $productFunctionalHelper,
         StoreManagerInterface $storeManager
-    ) {
+    )
+    {
         parent::__construct($context);
         $this->eav = $config;
         $this->productCollectionFactory = $collectionFactory;
@@ -183,7 +184,7 @@ class TransformData extends AbstractHelper
         }
         $product->setData('is_salable', true);
         $product->setData('on_sale', true);
-        $product->setData('is_transformed', 1);
+        $product->setData('is_transformed', true);
         /** Finally! */
         try {
             $this->productRepository->save($product);
@@ -254,39 +255,45 @@ class TransformData extends AbstractHelper
     private function transformOptionsToBundle(Product $product)
     {
         /** @var ProductExtension $extensionAttributes */
-        $extensionAttributes = $product->getExtensionAttributes();
-        $productOptions = $extensionAttributes->getConfigurableProductOptions() ?: [];
-        $optionsData = $this->mapping->prepareOptionsForBundle($product, $productOptions);
-        $product->setData('bundle_options_data', $optionsData['bundle']);
-        $options = [];
-        foreach ($product->getData('bundle_options_data') as $key => $optionData) {
-            /** @var Option $option */
-            $option = $this->productCustomOptionInterfaceFactory->create();
-            $attributeId = $this->mapping->getAttributeIdFromProductOptions($productOptions, $optionData['title']);
-            $option->setData(
-                [
-                    'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
-                    'title' => $optionData['title'],
-                    'type' => ProductCustomOptionInterface::OPTION_TYPE_DROP_DOWN,
-                    'is_require' => 1,
-                    'values' => $optionsData['options'][$attributeId],
-                    'product_sku' => $product->getSku(),
-                ]
-            );
-            $options[] = $option;
-        }
-        $product->setOptions($options);
-        if (isset($optionsData['links'])) {
-            /** @var \Magento\Bundle\Model\Option $bundleOption */
-            $bundleOption = $this->optionInterfaceFactory->create();
-            $bundleOption->setData([
-                'title' => 'Center Stone Size',
-                'type' => 'select',
-                'required' => '1',
-                'product_links' => $optionsData['links']
-            ]);
-            $extensionAttributes->setBundleProductOptions([$bundleOption]);
-            $product->setExtensionAttributes($extensionAttributes);
+        try {
+            $extensionAttributes = $product->getExtensionAttributes();
+            $productOptions = $extensionAttributes->getConfigurableProductOptions() ?: [];
+            $optionsData = $this->mapping->prepareOptionsForBundle($product, $productOptions);
+            $product->setData('bundle_options_data', $optionsData['bundle']);
+            $product->setData('bundle_selections_data', $optionsData['bundle']);
+            $options = [];
+            foreach ($product->getData('bundle_options_data') as $optionData) {
+                /** @var Option $option */
+                $option = $this->productCustomOptionInterfaceFactory->create();
+                $attributeId = $this->mapping->getAttributeIdFromProductOptions($productOptions, $optionData['title']);
+                $option->setData(
+                    [
+                        'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
+                        'title' => $optionData['title'],
+                        'type' => ProductCustomOptionInterface::OPTION_TYPE_DROP_DOWN,
+                        'is_require' => 1,
+                        'values' => $optionsData['options'][$attributeId],
+                        'product_sku' => $product->getSku(),
+                    ]
+                );
+                $options[] = $option;
+            }
+            $product->setOptions($options);
+            if (isset($optionsData['links'])) {
+                /** @var \Magento\Bundle\Model\Option $bundleOption */
+                $bundleOption = $this->optionInterfaceFactory->create();
+                $bundleOption->setData([
+                    'title' => 'Center Stone Size',
+                    'type' => 'select',
+                    'required' => '1',
+                    'product_links' => $optionsData['links']
+                ]);
+                $extensionAttributes->setBundleProductOptions([$bundleOption]);
+                $product->setExtensionAttributes($extensionAttributes);
+            }
+        } catch (\Exception $e) {
+            $this->_logger->error('Transformation error in product ID = '. $product->getId(). ': ' . $e->getMessage());
+            throw $e;
         }
     }
 

@@ -63,6 +63,7 @@ class TransformAttributes extends Command
         $output->writeln('Products for transformation: ' . $productCollection->count());
         foreach ($productCollection->getItems() as $item) {
             try {
+                $output->writeln('In process product ID = '. $item->getData('entity_id'));
                 $this->helper->transformProduct((int)$item->getData('entity_id'));
             } catch (InputException $e) {
                 $output->writeln($e->getMessage());
