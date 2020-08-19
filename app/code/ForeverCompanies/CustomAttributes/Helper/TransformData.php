@@ -130,23 +130,24 @@ class TransformData extends AbstractHelper
 
     /**
      * @return Collection
-     * @throws LocalizedException
+     */
+    public function getProductsForDeleteCollection()
+    {
+        $table = 'catalog_product_entity_varchar';
+        $attr = 'dev_tag';
+        $where = 'like "%Removed as part of%"';
+        return $this->getProductCollection($table, $attr, $where);
+    }
+
+    /**
+     * @return Collection
      */
     public function getProductsForTransformCollection()
     {
-        $isTransformedAttr = $this->eav->getAttribute(Product::ENTITY, 'is_transformed');
-        $productCollection = $this->productCollectionFactory->create();
-        $productCollection->getSelect()
-            ->reset(Zend_Db_Select::COLUMNS)
-            ->columns('entity_id')
-            ->joinLeft(
-                ['eav_int' => 'catalog_product_entity_int'],
-                "`eav_int`.`row_id` = `e`.`row_id` AND
-            `eav_int`.`attribute_id` = {$isTransformedAttr->getAttributeId()} AND
-            `eav_int`.`store_id` = 0",
-                ['value']
-            )->where('eav_int.value is null');
-        return $productCollection;
+        $table = 'catalog_product_entity_int';
+        $attr = 'is_transformed';
+        $where = 'is null';
+        return $this->getProductCollection($table, $attr, $where);
     }
 
     /**
@@ -193,6 +194,51 @@ class TransformData extends AbstractHelper
             throw $inputException;
         } catch (\Exception $e) {
             throw new StateException(__('Cannot save product.'));
+        }
+    }
+
+    /**
+     * @param int $productId
+     * @throws NoSuchEntityException
+     * @throws StateException
+     */
+    public function deleteProduct(int $productId)
+    {
+        try {
+            $product = $this->productRepository->getById($productId, true, 0);
+            $this->productRepository->delete($product);
+        } catch (StateException $e) {
+            throw new StateException(__('Cannot get product ID = ' . $productId));
+        } catch (NoSuchEntityException $e) {
+            throw new NoSuchEntityException(__('Cannot delete product ID = ' . $productId));
+        }
+    }
+
+    /**
+     * @param string $table
+     * @param string $attr
+     * @param string $where
+     * @return false|Collection
+     */
+    protected function getProductCollection(string $table, string $attr, string $where)
+    {
+        try {
+            $needAttr = $this->eav->getAttribute(Product::ENTITY, $attr);
+            $productCollection = $this->productCollectionFactory->create();
+            $productCollection->getSelect()
+                ->reset(Zend_Db_Select::COLUMNS)
+                ->columns('entity_id')
+                ->joinLeft(
+                    ['eav_table' => $table],
+                    "`eav_table`.`row_id` = `e`.`row_id` AND
+            `eav_table`.`attribute_id` = {$needAttr->getAttributeId()} AND
+            `eav_table`.`store_id` = 0",
+                    ['value']
+                )->where('eav_table.value ' . $where);
+            return $productCollection;
+        } catch (LocalizedException $e) {
+            $this->_logger->critical($e->getMessage());
+            return false;
         }
     }
 

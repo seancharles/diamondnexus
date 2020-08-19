@@ -17,37 +17,13 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class TransformAttributes extends Command
+class TransformAttributes extends AbstractCommand
 {
-
-    /**
-     * @var TransformData
-     */
-    protected $helper;
-
-    /**
-     * @var State
-     */
-    protected $state;
 
     /**
      * @var string
      */
     protected $name = 'forevercompanies:transform-attributes';
-
-    /**
-     * TransformAttributes constructor.
-     * @param State $state
-     * @param TransformData $helper
-     */
-    public function __construct(
-        State $state,
-        TransformData $helper
-    ) {
-        $this->state = $state;
-        $this->helper = $helper;
-        parent::__construct($this->name);
-    }
 
     /**
      * {@inheritdoc}
