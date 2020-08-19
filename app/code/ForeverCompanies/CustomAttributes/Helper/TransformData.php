@@ -291,7 +291,13 @@ class TransformData extends AbstractHelper
         $product->setData('price_type', TierPriceInterface::PRICE_TYPE_FIXED);
         $this->transformOptionsToBundle($product);
         $this->editProductsFromConfigurable($product);
-        $product->setTypeId(Type::TYPE_CODE);
+        $type = \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE;
+        foreach ($product->getOptions() as $option) {
+            if ($option->getTitle() == 'Center Stone Size') {
+                $type = \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE;
+            }
+        }
+        $product->setTypeId($type);
     }
 
     /**
