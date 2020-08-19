@@ -10,6 +10,7 @@
         "sort-packages": true
     },
     "require": {
+        "magento/data-migration-tool": "2.3.4",
         "affirm/magento2": "^3.0",
         "cloudinary/cloudinary-magento2": "^1.11",
         "gene/module-braintree": "^3.4",
