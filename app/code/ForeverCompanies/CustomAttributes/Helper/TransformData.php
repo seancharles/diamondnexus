@@ -9,11 +9,11 @@ namespace ForeverCompanies\CustomAttributes\Helper;
 
 use Magento\Bundle\Api\Data\LinkInterface;
 use Magento\Bundle\Api\Data\LinkInterfaceFactory;
-use Magento\Bundle\Api\Data\OptionInterfaceFactory;
+
 use Magento\Bundle\Model\Product\Type;
 use Magento\Catalog\Api\AttributeSetRepositoryInterface;
 use Magento\Catalog\Api\Data\ProductCustomOptionInterface;
-use Magento\Catalog\Api\Data\ProductCustomOptionInterfaceFactory;
+
 use Magento\Catalog\Api\Data\ProductExtension;
 use Magento\Catalog\Api\Data\TierPriceInterface;
 use Magento\Catalog\Model\Product;
@@ -74,19 +74,15 @@ class TransformData extends AbstractHelper
     protected $storeManager;
 
     /**
+     * @var Converter
+     */
+    protected $converter;
+
+    /**
      * @var ExternalVideoEntryConverter
      */
     private $externalVideoEntryConverter;
 
-    /**
-     * @var OptionInterfaceFactory
-     */
-    private $optionInterfaceFactory;
-
-    /**
-     * @var ProductCustomOptionInterfaceFactory
-     */
-    private $productCustomOptionInterfaceFactory;
 
     /**
      * @param Context $context
@@ -95,11 +91,10 @@ class TransformData extends AbstractHelper
      * @param ProductRepository $productRepository
      * @param AttributeSetRepositoryInterface $attributeSetRepository
      * @param ExternalVideoEntryConverter $videoEntryConverter
-     * @param OptionInterfaceFactory $optionInterfaceFactory
-     * @param ProductCustomOptionInterfaceFactory $productCustomOptionInterfaceFactory
      * @param Mapping $mapping
      * @param ProductFunctional $productFunctionalHelper
      * @param StoreManagerInterface $storeManager
+     * @param Converter $converter
      */
     public function __construct(
         Context $context,
@@ -108,11 +103,10 @@ class TransformData extends AbstractHelper
         ProductRepository $productRepository,
         AttributeSetRepositoryInterface $attributeSetRepository,
         ExternalVideoEntryConverter $videoEntryConverter,
-        OptionInterfaceFactory $optionInterfaceFactory,
-        ProductCustomOptionInterfaceFactory $productCustomOptionInterfaceFactory,
         Mapping $mapping,
         ProductFunctional $productFunctionalHelper,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        Converter $converter
     )
     {
         parent::__construct($context);
@@ -121,11 +115,10 @@ class TransformData extends AbstractHelper
         $this->productRepository = $productRepository;
         $this->attrSetRepository = $attributeSetRepository;
         $this->externalVideoEntryConverter = $videoEntryConverter;
-        $this->optionInterfaceFactory = $optionInterfaceFactory;
-        $this->productCustomOptionInterfaceFactory = $productCustomOptionInterfaceFactory;
         $this->mapping = $mapping;
         $this->productFunctionalHelper = $productFunctionalHelper;
         $this->storeManager = $storeManager;
+        $this->converter = $converter;
     }
 
     /**
@@ -291,13 +284,13 @@ class TransformData extends AbstractHelper
         $product->setData('price_type', TierPriceInterface::PRICE_TYPE_FIXED);
         $this->transformOptionsToBundle($product);
         $this->editProductsFromConfigurable($product);
-        $type = \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE;
+        /*$type = \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE;
         foreach ($product->getOptions() as $option) {
             if ($option->getTitle() == 'Center Stone Size') {
                 $type = \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE;
             }
         }
-        $product->setTypeId($type);
+        $product->setTypeId($type);*/
     }
 
     /**
@@ -306,42 +299,16 @@ class TransformData extends AbstractHelper
      */
     private function transformOptionsToBundle(Product $product)
     {
-        /** @var ProductExtension $extensionAttributes */
         try {
+            /** @var ProductExtension $extensionAttributes */
             $extensionAttributes = $product->getExtensionAttributes();
             $productOptions = $extensionAttributes->getConfigurableProductOptions() ?: [];
             $optionsData = $this->mapping->prepareOptionsForBundle($product, $productOptions);
-            $product->setData('bundle_options_data', $optionsData['bundle']);
-            $product->setData('bundle_selections_data', $optionsData['bundle']);
-            $options = [];
-            foreach ($product->getData('bundle_options_data') as $optionData) {
-                /** @var Option $option */
-                $option = $this->productCustomOptionInterfaceFactory->create();
-                $attributeId = $this->mapping->getAttributeIdFromProductOptions($productOptions, $optionData['title']);
-                $option->setData(
-                    [
-                        'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
-                        'title' => $optionData['title'],
-                        'type' => ProductCustomOptionInterface::OPTION_TYPE_DROP_DOWN,
-                        'is_require' => 1,
-                        'values' => $optionsData['options'][$attributeId],
-                        'product_sku' => $product->getSku(),
-                    ]
-                );
-                $options[] = $option;
+            if ($product->getTypeId() == \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE) {
+                $this->converter->toSimple($product, $optionsData, $productOptions);
             }
-            $product->setOptions($options);
-            if (isset($optionsData['links'])) {
-                /** @var \Magento\Bundle\Model\Option $bundleOption */
-                $bundleOption = $this->optionInterfaceFactory->create();
-                $bundleOption->setData([
-                    'title' => 'Center Stone Size',
-                    'type' => 'select',
-                    'required' => '1',
-                    'product_links' => $optionsData['links']
-                ]);
-                $extensionAttributes->setBundleProductOptions([$bundleOption]);
-                $product->setExtensionAttributes($extensionAttributes);
+            if ($product->getTypeId() == \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE) {
+                $this->converter->toBundle($product, $optionsData, $productOptions);
             }
         } catch (\Exception $e) {
             $this->_logger->error('Transformation error in product ID = '. $product->getId(). ': ' . $e->getMessage());
