@@ -9,7 +9,6 @@ namespace ForeverCompanies\CustomAttributes\Helper;
 
 use Magento\Catalog\Api\Data\ProductCustomOptionInterface;
 use Magento\Catalog\Api\Data\ProductExtension;
-use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\TierPriceInterface;
 use Magento\Catalog\Model\Product\Option;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable\Attribute;

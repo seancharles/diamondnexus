@@ -15,12 +15,14 @@ use Magento\Catalog\Api\AttributeSetRepositoryInterface;
 use Magento\Catalog\Api\Data\ProductCustomOptionInterface;
 
 use Magento\Catalog\Api\Data\ProductExtension;
+use Magento\Catalog\Api\Data\ProductExtensionFactory;
 use Magento\Catalog\Api\Data\TierPriceInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Option;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
+use Magento\CatalogInventory\Model\Stock\Item;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Model\Config;
 use Magento\Framework\Api\Data\VideoContentInterface;
@@ -79,6 +81,11 @@ class TransformData extends AbstractHelper
     protected $converter;
 
     /**
+     * @var ProductExtensionFactory
+     */
+    protected $productExtensionFactory;
+
+    /**
      * @var ExternalVideoEntryConverter
      */
     private $externalVideoEntryConverter;
@@ -95,6 +102,7 @@ class TransformData extends AbstractHelper
      * @param ProductFunctional $productFunctionalHelper
      * @param StoreManagerInterface $storeManager
      * @param Converter $converter
+     * @param ProductExtensionFactory $productExtensionFactory
      */
     public function __construct(
         Context $context,
@@ -106,7 +114,8 @@ class TransformData extends AbstractHelper
         Mapping $mapping,
         ProductFunctional $productFunctionalHelper,
         StoreManagerInterface $storeManager,
-        Converter $converter
+        Converter $converter,
+        ProductExtensionFactory $productExtensionFactory
     )
     {
         parent::__construct($context);
@@ -119,6 +128,7 @@ class TransformData extends AbstractHelper
         $this->productFunctionalHelper = $productFunctionalHelper;
         $this->storeManager = $storeManager;
         $this->converter = $converter;
+        $this->productExtensionFactory = $productExtensionFactory;
     }
 
     /**
@@ -154,7 +164,11 @@ class TransformData extends AbstractHelper
     {
         $this->storeManager->setCurrentStore(0);
         /** @var Product $product */
-        $product = $this->productRepository->getById($entityId, true, 0, true);
+        try {
+            $product = $this->productRepository->getById($entityId, true, 0, true);
+        } catch (\Magento\Framework\Exception\NoSuchEntityException $exception) {
+            $this->_logger->warning('Product with ID = ' . $entityId . 'not found');
+        }
         if ($product->isDisabled()) {
             return;
         }
@@ -284,13 +298,6 @@ class TransformData extends AbstractHelper
         $product->setData('price_type', TierPriceInterface::PRICE_TYPE_FIXED);
         $this->transformOptionsToBundle($product);
         $this->editProductsFromConfigurable($product);
-        /*$type = \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE;
-        foreach ($product->getOptions() as $option) {
-            if ($option->getTitle() == 'Center Stone Size') {
-                $type = \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE;
-            }
-        }
-        $product->setTypeId($type);*/
     }
 
     /**
@@ -323,8 +330,9 @@ class TransformData extends AbstractHelper
     private function editProductsFromConfigurable(Product $product)
     {
         foreach ($this->productFunctionalHelper->getProductForDelete() as $productForDelete) {
-            $productForDelete->setVisibility(false);
-            $productForDelete->setStatus(Status::STATUS_DISABLED);
+            /** I don't know why but with that code products not showing in frontend */
+            /*$productForDelete->setVisibility(false);
+            $productForDelete->setStatus(Status::STATUS_DISABLED);*/
             $movedAsPart = 'Removed as part of: ';
             $devTag = $productForDelete->getData('dev_tag');
             if ($devTag !== null && strpos($devTag, $movedAsPart) !== false) {
@@ -345,5 +353,41 @@ class TransformData extends AbstractHelper
                 $this->_logger->error($e->getMessage());
             }
         }
+        /** @var ProductExtension $extension */
+        $extension = $product->getExtensionAttributes();
+        /** Create new extensions */
+
+        $newExtensions = $this->productExtensionFactory->create();
+        if ($extension->getBundleProductOptions() !== null) {
+            $newExtensions->setBundleProductOptions($extension->getBundleProductOptions());
+        }
+        if ($extension->getDownloadableProductLinks() !== null) {
+            $newExtensions->setDownloadableProductLinks($extension->getDownloadableProductLinks());
+        }
+        if ($extension->getCategoryLinks() !== null) {
+            $newExtensions->setCategoryLinks($extension->getCategoryLinks());
+        }
+        if ($extension->getDownloadableProductSamples() !== null) {
+            $newExtensions->setDownloadableProductSamples($extension->getDownloadableProductSamples());
+        }
+        if ($extension->getGiftcardAmounts() !== null) {
+            $newExtensions->setGiftcardAmounts($extension->getGiftcardAmounts());
+        }
+        if ($extension->getWebsiteIds() !== null) {
+            $newExtensions->setWebsiteIds($extension->getWebsiteIds());
+        }
+        $stock = $extension->getStockItem();
+        if ($stock !== null) {
+            /** @var Item $stock */
+            $stock->setData('type_id', $product->getTypeId());
+            $qty = $product->getQty();
+            $stock->setData('qty', $qty);
+            if ($qty == 0) {
+                $this->_logger->info('Product with SKU = ' . $product->getSku(). ' don\'t have qty in stock');
+                $stock->setData('qty', 999);
+            }
+            $newExtensions->setStockItem($stock);
+        }
+        $product->setExtensionAttributes($newExtensions);
     }
 }

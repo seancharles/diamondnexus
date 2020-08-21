@@ -8,10 +8,8 @@ declare(strict_types=1);
 namespace ForeverCompanies\CustomAttributes\Helper;
 
 use ForeverCompanies\CustomAttributes\Logger\Logger;
-use Magento\Catalog\Api\Data\ProductCustomOptionInterface;
 use Magento\Catalog\Api\Data\ProductExtension;
 use Magento\Catalog\Api\Data\ProductLinkInterface;
-use Magento\Catalog\Api\Data\ProductLinkInterfaceFactory;
 use Magento\Catalog\Api\Data\TierPriceInterface;
 use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
@@ -260,7 +258,6 @@ class Mapping extends AbstractHelper
      * @param Product $product
      * @param array $productOptions
      * @return array|boolean
-     * @throws NoSuchEntityException
      */
     public function prepareOptionsForBundle(Product $product, array $productOptions)
     {
@@ -278,10 +275,27 @@ class Mapping extends AbstractHelper
         if ($type == \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE) {
             $data = $this->prepareProductToBundle($product, $productOptions, $configurable);
         }
+        $product->setQty($this->prepareQty($product, $configurable));
         return $this->reconfigurePrices($product, $data, $configurable);
     }
 
 
+    protected function prepareQty(Product $product, Configurable $configurable)
+    {
+        $countOfProducts = $product->getQty();
+        $usedProducts = $configurable->getUsedProducts($product);
+        foreach ($usedProducts as $usedProduct) {
+            $qty = $usedProduct->getQty();
+            if ($countOfProducts == 0) {
+                $countOfProducts = $qty;
+            }
+            if ($countOfProducts > $qty) {
+                $this->customLogger->info('Different qty products in Product SKU = ' . $product->getSku());
+                $countOfProducts = $qty;
+            }
+        }
+        return $countOfProducts;
+    }
 
     protected function prepareProductToSimple(Product $product, array $productOptions)
     {
@@ -395,7 +409,8 @@ class Mapping extends AbstractHelper
         $type = \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE;
         foreach ($productOptions as $productOption) {
             try {
-                $label = $this->productAttributeRepository->get($productOption->getAttributeId())->getFrontendLabels();
+                $productAttribute = $this->productAttributeRepository->get($productOption->getAttributeId());
+                $label = $productAttribute->getData('frontend_label');
 
                 if ($label == 'Center Stone Size') {
                     $type = \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE;
@@ -413,40 +428,40 @@ class Mapping extends AbstractHelper
      * @param array $data
      * @param Configurable $configurable
      * @return array
-     * @throws NoSuchEntityException
      */
     protected function reconfigurePrices(Product $product, array $data, Configurable $configurable)
     {
         $productPrices = [];
         $usedProducts = $configurable->getUsedProducts($product);
         $price = (float)0;
-        foreach ($usedProducts as $key => $config) {
-            if ($price == 0) {
-                $price = $config->getPrice();
+        /**
+         * @var int $key
+         * @var Product $config */
+        if (count($usedProducts) > 0) {
+            foreach ($usedProducts as $key => $config) {
+                if ($price == 0) {
+                    $price = $config->getPrice();
+                }
+                if ($price > $config->getPrice()) {
+                    $price = (float)$config->getPrice();
+                }
+                $productPrices[$key] = $config->getPrice();
+                $this->productFunctionalHelper->addProductToDelete($config);
             }
-            if ($price > $config->getPrice()) {
-                $price = (float)$config->getPrice();
-            }
-            $productPrices[$key] = $config->getPrice();
-        }
-        foreach ($data['options'] as $attributeId => &$options) {
-            foreach($options as $key => &$option) {
-                $option['price'] = $productPrices[$key] - $price;
-            }
-        }
-        /*if ($product->getTypeId() == \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE) {
             foreach ($data['options'] as $attributeId => &$options) {
-                $option['price'] = 'test';
-            }
-        } else {
-            foreach ($data['options'] as $attributeId => &$options) {
-                $code = $this->productAttributeRepository->get($attributeId)->getAttributeCode();
-                foreach ($options as &$option) {
-                    $option['price'] = $this->getPriceFromConfigurable($usedProducts, $price, $code, $option['sku']);
+                foreach ($options as $key => &$option) {
+                    $option['price'] = $productPrices[$key] - $price;
                 }
             }
-        }*/
-        $product->setPrice($price);
+        }
+        if (isset($data['links'])) {
+            /** @var \Magento\Bundle\Model\Link $link */
+            foreach ($data['links'] as &$link) {
+                $link->setData('selection_price_value', $link->getPrice() - $price);
+            }
+        } else {
+            $product->setPrice($price);
+        }
         return $data;
     }
 
@@ -528,7 +543,7 @@ class Mapping extends AbstractHelper
             try {
                 /** @var Product $product */
                 $product = $this->productRepository->getById($productId, true, 0, true);
-                $this->productFunctionalHelper->addProductToDelete($product);
+                //$this->productFunctionalHelper->addProductToDelete($product);
                 $sku = $product->getSku();
                 $skusForLikedProduct[] = $this->productFunctionalHelper->getStoneSkuFromProductSku($sku);
             } catch (NoSuchEntityException $e) {
@@ -536,27 +551,5 @@ class Mapping extends AbstractHelper
             }
         }
         return array_unique($skusForLikedProduct);
-    }
-
-    /**
-     * @param array $usedProducts
-     * @param $price
-     * @param string $code
-     * @param string $sku
-     * @return mixed
-     */
-    private function getPriceFromConfigurable(array $usedProducts, $price, string $code, string $sku)
-    {
-        $prices = [];
-        /** @var Product $product */
-        foreach ($usedProducts as $product) {
-            if (strpos($product->getSku(), $sku) !== false) {
-                $codeValue = $product->getData($code);
-                if (isset($codeValue) && $codeValue !== '') {
-                    $prices[] = (float)$product->getPrice() - $price;
-                }
-            }
-        }
-        return min($prices);
     }
 }
