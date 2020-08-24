@@ -42,8 +42,7 @@ class UpgradeIsTransformedProductAttribute implements DataPatchInterface, PatchR
         ModuleDataSetupInterface $moduleDataSetup,
         EavSetupFactory $eavSetupFactory,
         AddIsTransformedProductAttribute $addIsTransformedProductAttribute
-    )
-    {
+    ) {
         $this->moduleDataSetup = $moduleDataSetup;
         $this->eavSetupFactory = $eavSetupFactory;
         $this->previousSetup = $addIsTransformedProductAttribute;
@@ -61,7 +60,8 @@ class UpgradeIsTransformedProductAttribute implements DataPatchInterface, PatchR
         if ($attribute) {
             $eavSetup->removeAttribute(
                 \Magento\Catalog\Model\Product::ENTITY,
-                'is_transformed');
+                'is_transformed'
+            );
         }
         $eavSetup->addAttribute(
             \Magento\Catalog\Model\Product::ENTITY,
@@ -99,7 +99,8 @@ class UpgradeIsTransformedProductAttribute implements DataPatchInterface, PatchR
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
         $eavSetup->removeAttribute(
             \Magento\Catalog\Model\Product::ENTITY,
-            'is_transformed');
+            'is_transformed'
+        );
         $this->previousSetup->apply();
         $this->moduleDataSetup->getConnection()->endSetup();
     }

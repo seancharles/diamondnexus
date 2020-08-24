@@ -116,8 +116,7 @@ class TransformData extends AbstractHelper
         StoreManagerInterface $storeManager,
         Converter $converter,
         ProductExtensionFactory $productExtensionFactory
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->eav = $config;
         $this->productCollectionFactory = $collectionFactory;

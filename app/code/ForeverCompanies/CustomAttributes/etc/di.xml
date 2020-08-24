@@ -20,4 +20,6 @@
             </argument>
         </arguments>
     </type>
+    <preference for="Cloudinary\Cloudinary\Model\Observer\ProductGalleryChangeTemplate"
+                type="ForeverCompanies\CustomAttributes\Model\Observer\ProductGalleryChangeTemplate" />
 </config>

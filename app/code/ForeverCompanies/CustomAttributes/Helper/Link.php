@@ -20,8 +20,7 @@ class Link extends AbstractHelper
     public function __construct(
         Context $context,
         LinkInterfaceFactory $linkFactory
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->linkFactory = $linkFactory;
     }

@@ -34,8 +34,7 @@ class Converter extends AbstractHelper
         Context $context,
         ProductCustomOptionInterfaceFactory $productCustomOptionInterfaceFactory,
         OptionInterfaceFactory $optionInterfaceFactory
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->productCustomOptionInterfaceFactory = $productCustomOptionInterfaceFactory;
         $this->optionInterfaceFactory = $optionInterfaceFactory;

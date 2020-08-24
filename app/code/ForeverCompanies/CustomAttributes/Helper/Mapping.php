@@ -231,8 +231,7 @@ class Mapping extends AbstractHelper
         ProductFunctional $productFunctionalHelper,
         Config $eavConfig,
         Logger $logger
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->productAttributeRepository = $productAttributeRepository;
         $this->productRepository = $productRepository;
@@ -354,7 +353,6 @@ class Mapping extends AbstractHelper
                     if ($productOption['label'] == 'Certified Stone') {
                         $product->setData('certified_stone', null);
                     }
-
                 } else {
                     /** @var ProductExtension $extensionAttributes */
                     $extensionAttributes = $product->getExtensionAttributes();
