@@ -35,6 +35,8 @@ class Configuration extends \Magento\Bundle\Helper\Catalog\Product\Configuration
      * @var \Magento\Framework\Serialize\Serializer\Json
      */
     private $serializer;
+	
+	protected $shipperLogger;
 
     /**
      * @param \Magento\Framework\App\Helper\Context $context
@@ -48,13 +50,15 @@ class Configuration extends \Magento\Bundle\Helper\Catalog\Product\Configuration
         \Magento\Catalog\Helper\Product\Configuration $productConfiguration,
         \Magento\Framework\Pricing\Helper\Data $pricingHelper,
         \Magento\Framework\Escaper $escaper,
-        \Magento\Framework\Serialize\Serializer\Json $serializer = null
+        \Magento\Framework\Serialize\Serializer\Json $serializer = null,
+		\ShipperHQ\Shipper\Helper\LogAssist $shipperLogger
     ) {
         $this->productConfiguration = $productConfiguration;
         $this->pricingHelper = $pricingHelper;
         $this->escaper = $escaper;
         $this->serializer = $serializer ?: \Magento\Framework\App\ObjectManager::getInstance()
             ->get(\Magento\Framework\Serialize\Serializer\Json::class);
+		$this->shipperLogger = $shipperLogger;
     }
 	
     /**
@@ -74,6 +78,12 @@ class Configuration extends \Magento\Bundle\Helper\Catalog\Product\Configuration
         /** @var \Magento\Bundle\Model\Product\Type $typeInstance */
         $typeInstance = $product->getTypeInstance();
 
+		// get bundle options
+		$optionsQuoteItemOption = $item->getOptionByCode('bundle_option_ids');
+		$bundleOptionsIds = $optionsQuoteItemOption
+			? $this->serializer->unserialize($optionsQuoteItemOption->getValue())
+			: [];
+
 		// fetch dynamic bundled item
 		$bundledItemId = $item->getBuyRequest()->getDynamicBundledItemId();
 
@@ -81,60 +91,61 @@ class Configuration extends \Magento\Bundle\Helper\Catalog\Product\Configuration
 		if($bundledItemId){
 			
 			$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-			$product = $objectManager->create('Magento\Catalog\Model\Product')->load($bundledItemId);
-			
-			$options = array(
-				['label' => "Diamond",'value' => [$product->getName() . " " . $this->pricingHelper->currency($product->getPrice())]]
-			);
-			
-		} else {
+			$dynamicProduct = $objectManager->create('Magento\Catalog\Model\Product')->load($bundledItemId);
+		}
 
-        // get bundle options
-        $optionsQuoteItemOption = $item->getOptionByCode('bundle_option_ids');
-        $bundleOptionsIds = $optionsQuoteItemOption
-            ? $this->serializer->unserialize($optionsQuoteItemOption->getValue())
-            : [];
+		if ($bundleOptionsIds) {
+			/** @var \Magento\Bundle\Model\ResourceModel\Option\Collection $optionsCollection */
+			$optionsCollection = $typeInstance->getOptionsByIds($bundleOptionsIds, $product);
 
-        if ($bundleOptionsIds) {
-            /** @var \Magento\Bundle\Model\ResourceModel\Option\Collection $optionsCollection */
-            $optionsCollection = $typeInstance->getOptionsByIds($bundleOptionsIds, $product);
+			// get and add bundle selections collection
+			$selectionsQuoteItemOption = $item->getOptionByCode('bundle_selection_ids');
 
-            // get and add bundle selections collection
-            $selectionsQuoteItemOption = $item->getOptionByCode('bundle_selection_ids');
+			$bundleSelectionIds = $this->serializer->unserialize($selectionsQuoteItemOption->getValue());
 
-            $bundleSelectionIds = $this->serializer->unserialize($selectionsQuoteItemOption->getValue());
+			if (!empty($bundleSelectionIds)) {
+				$selectionsCollection = $typeInstance->getSelectionsByIds($bundleSelectionIds, $product);
 
-            if (!empty($bundleSelectionIds)) {
-                $selectionsCollection = $typeInstance->getSelectionsByIds($bundleSelectionIds, $product);
+				$bundleOptions = $optionsCollection->appendSelections($selectionsCollection, true);
+				foreach ($bundleOptions as $bundleOption) {
 
-                $bundleOptions = $optionsCollection->appendSelections($selectionsCollection, true);
-                foreach ($bundleOptions as $bundleOption) {
-                    if ($bundleOption->getSelections()) {
-                        $option = ['label' => $bundleOption->getTitle(), 'value' => []];
+					// determine if option is dynamic
+					if($bundleOption->getIsDynamicSelection() == 1) {
+						
+						if($bundledItemId > 0) {
+							$options = array(
+								['label' => "Diamond",'value' => [$dynamicProduct->getName() . " " . $this->pricingHelper->currency($dynamicProduct->getPrice())]]
+							);
+						}
+						
+					} else {
+						
+						// handle standard options normally
+						if ($bundleOption->getSelections()) {
+							$option = ['label' => $bundleOption->getTitle(), 'value' => []];
 
-                        $bundleSelections = $bundleOption->getSelections();
+							$bundleSelections = $bundleOption->getSelections();
 
-                        foreach ($bundleSelections as $bundleSelection) {
-                            $qty = $this->getSelectionQty($product, $bundleSelection->getSelectionId()) * 1;
-                            if ($qty) {
-                                $option['value'][] = $qty . ' x '
-                                    . $this->escaper->escapeHtml($bundleSelection->getName())
-                                    . ' '
-                                    . $this->pricingHelper->currency(
-                                        $this->getSelectionFinalPrice($item, $bundleSelection)
-                                    );
-                                $option['has_html'] = true;
-                            }
-                        }
+							foreach ($bundleSelections as $bundleSelection) {
+								$qty = $this->getSelectionQty($product, $bundleSelection->getSelectionId()) * 1;
+								if ($qty) {
+									$option['value'][] = $qty . ' x '
+										. $this->escaper->escapeHtml($bundleSelection->getName())
+										. ' '
+										. $this->pricingHelper->currency(
+											$this->getSelectionFinalPrice($item, $bundleSelection)
+										);
+									$option['has_html'] = true;
+								}
+							}
 
-                        if ($option['value']) {
-                            $options[] = $option;
-                        }
-                    }
-                }
-            }
-        }
-			
+							if ($option['value']) {
+								$options[] = $option;
+							}
+						}
+					}
+				}
+			}
 		}
 
         return $options;

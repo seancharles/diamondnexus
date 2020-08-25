@@ -2,11 +2,13 @@
 
 	namespace ForeverCompanies\DynamicBundle\Controller\Add;
 
+	use Magento\Framework\Event\ManagerInterface as EventManager;
 	use Magento\Framework\App\Action\Context;
 	use Magento\Checkout\Model\Cart;
 
 	class Index extends \Magento\Framework\App\Action\Action
 	{
+		protected $eventManager;
 		protected $cart;
 		protected $quoteRepository;
 		protected $quoteManagement;
@@ -16,8 +18,14 @@
 		protected $productloader;
 		protected $optioncollection;
 		protected $itemoption;
+		protected $shipperLogger;
+		
+		protected $bundleIdentity;
+		protected $bundleSelectionProductIds;
+		protected $bundleDynamicOptionIds;
 
 		public function __construct(
+			EventManager $eventManager,
 			Context $context,
 			Cart $cart,
 			\Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
@@ -27,9 +35,11 @@
 			\Magento\Quote\Api\Data\CartItemInterfaceFactory $cartItemFactory,
 			\Magento\Catalog\Model\ProductFactory $productloader,
 			\Magento\Quote\Model\ResourceModel\Quote\Item\Option\CollectionFactory $optioncollection,
-			\Magento\Quote\Model\Quote\Item\Option $itemoption
+			\Magento\Quote\Model\Quote\Item\Option $itemoption,
+			\ShipperHQ\Shipper\Helper\LogAssist $shipperLogger
 		) {
 			parent::__construct($context);
+			$this->eventManager = $eventManager;
 			$this->cart = $cart;
 			$this->quoteRepository = $quoteRepository;
 			$this->quoteManagement = $quoteManagement;
@@ -39,6 +49,7 @@
 			$this->productloader = $productloader;
 			$this->optioncollection = $optioncollection;
 			$this->itemoption = $itemoption;
+			$this->shipperLogger = $shipperLogger;
 		}
 
 		
@@ -52,20 +63,25 @@
 			try{
 				$post = $this->getRequest()->getParams();
 
-				//$bundleId = $post['product'];
-				//$childId = $post['dynamic_bundled_item_id'];
-				//$options = $post['options'];
+				$bundleId = $post['product'];
+				$dynamicId = $post['dynamic_bundled_item_id'];
+				$options = $post['options'];
+				
+				// added to handle standard bundled options
+				$bundleProductSelections = $post['bundle_option'];
 				
 				/* used for debug testing directly: comment out after */
+				/*
 				$bundleId = 15;
 				$childId = 6;
 				$options = array(
 					13 => 61,
 					14 => 65
 				);
+				*/
 
 				// clear out old cart contents
-				 $this->cart->truncate();
+				//$this->cart->truncate();
 				
 				// get the quote id
 				$quoteId = $this->cart->getQuote()->getId();
@@ -76,84 +92,94 @@
 					
 					// fetch the card id again
 					$quoteId = $this->cart->getQuote()->getId();
-				} else {
-					
 				}
 				
-				// load the quote factory
+				// load the quote using quote repository
 				$quote = $this->quoteRepository->get($quoteId);
 				
-				if($bundleId > 0 && $childId > 0) {
+				if($bundleId > 0 && $dynamicId > 0) {
 					$bundleProductModel = $this->productloader->create()->load($bundleId);
-					$childProductModel = $this->productloader->create()->load($childId);
+					$dynamicProductModel = $this->productloader->create()->load($dynamicId);
 					
+					// get the identity for the product to identify uniquely
+					$this->getBundleIdentity($bundleProductModel, $dynamicId, $bundleProductSelections);
+					
+					// pulls all associated bundle options for item with no selection
 					$bundleOptions = $this->getBundleOptions($bundleProductModel);
 					
-					$parentItem = $this->addParentItem($bundleProductModel, $childProductModel, $options);
+					// gets the bundle options for the specific item in cart with selection
+					$bundleOptionValues = $this->formatBundleOptionSelection();
+					
+					$parentItem = $this->addParentItem($bundleProductModel, $dynamicProductModel, $options);
 					$quote->addItem($parentItem);
 					$quote->save();
 					$parentItemId = $this->getLastQuoteItemId($quoteId);
 					
-					/*
-					$itemOptions = array(
-						'info_buyRequest' => '{"uenc":"aHR0cHM6Ly9wYXVsdHdvLjEyMTVkaWFtb25kcy5jb20vdGVzdC1hd2Vzb21lLXJpbmcuaHRtbA","product":"' . $bundleId . '","selected_configurable_option":"","related_product":"","item":"' . $bundleId . '","bundle_option":{"2":"6"},"dynamic_bundled_item_id":"' . $childId . '","options":{"5":"28","6":"32"},"qty":"1"}',
-						'bundle_identity' => "{$bundleId}_{$childId}_1"
-					);
-					*/
-
 					$itemOptions = [
 						'info_buyRequest' => json_encode([
-							'uenc' => 'aHR0cHM6Ly9wYXVsdHdvLjEyMTVkaWFtb25kcy5jb20vdGVzdC1hd2Vzb21lLXJpbmcuaHRtbA',
+							// read more: https://maxchadwick.xyz/blog/wtf-is-uenc
+							'uenc' => '', // no url redirect on add to cart
 							'product' => $bundleId,
 							'selected_configurable_option' => '',
 							'related_product' => '',
 							'item' => $bundleId,
-							'bundle_option' => $bundleOptions,
-							'dynamic_bundled_item_id' => $childId,
+							'bundle_option' => $bundleOptionValues,
+							'dynamic_bundled_item_id' => $dynamicId,
 							'options' => $options,
-							'qty' => 1
+							'qty' => "1"
 						]),
-						'bundle_identity' => "{$bundleId}_{$childId}_1"
+						'bundle_identity' =>  $this->bundleIdentity
 					];
 
 					$this->formatBundleOptionsParent($itemOptions, $options);
-					$this->formatBundleSelectionsParent($itemOptions, $bundleOptions);
+					$this->formatBundleOptionIds($itemOptions, $bundleOptions);
+					$this->formatBundleSelectionsParent($itemOptions);
 					$this->setItemOptions($parentItemId, $bundleId, $itemOptions);
 					
-					// child item handling
-					$childItem = $this->addChildItem($childProductModel, $parentItemId);
-					$quote->addItem($childItem);
-					$quote->save();
-					$itemId = $this->getLastQuoteItemId($quoteId);
+					// iterate through native bundle options
+					foreach($this->bundleSelectionProductIds as $selectionId => $bundle)
+					{
+						// implements the dynamic product when enabled
+						if(in_array($bundle['option_id'], $this->bundleDynamicOptionIds) == true) {
+							$childId = $dynamicId;
+						} else {
+							$childId = $bundle['product_id'];
+						}
+							
+						$childProductModel = $this->productloader->create()->load($childId);
+						
+						// child item handling
+						$childItem = $this->addChildItem($childProductModel, $parentItemId);
+						$quote->addItem($childItem);
+						$quote->save();
+						$itemId = $this->getLastQuoteItemId($quoteId);
+						
+						$itemOptions = [
+							'info_buyRequest' => json_encode([
+								// read more: https://maxchadwick.xyz/blog/wtf-is-uenc
+								'uenc' => '', // no url redirect on add to cart
+								'product' => $bundleId,
+								'selected_configurable_option' => '',
+								'related_product' => '',
+								'item' => $bundleId,
+								'bundle_option' => $bundleOptionValues,
+								'options' => $options,
+								'qty' => "1"
+							]),
+							'bundle_identity' => $this->bundleIdentity
+						];
+						
+						$this->formatBundleOptionIds($itemOptions, $bundleOptions);
+						$this->formatBundleSelectionsChild($itemOptions, $selectionId, $bundle);
+						$this->setItemOptions($itemId, $childId, $itemOptions);
+					}
 					
-					/*
-					$itemOptions = array(
-						'product_qty_' . $childId => '1',
-						'info_buyRequest' => '{"uenc":"aHR0cHM6Ly9wYXVsdHdvLjEyMTVkaWFtb25kcy5jb20vdGVzdC1hd2Vzb21lLXJpbmcuaHRtbA","product":"' . $bundleId . '","selected_configurable_option":"","related_product":"","item":"' . $bundleId . '","bundle_option":{"2":"6"},"options":{"5":"28","6":"32"},"qty":"1"}',
-						//'bundle_selection_attributes' => '{"price":372,"qty":1,"option_label":"Center Stone","option_id":"2"}',
-						'bundle_identity' => "{$bundleId}_{$childId}_1",
-					);
-					*/
-					
-					$itemOptions = [
-						'info_buyRequest' => json_encode([
-							'uenc' => 'aHR0cHM6Ly9wYXVsdHdvLjEyMTVkaWFtb25kcy5jb20vdGVzdC1hd2Vzb21lLXJpbmcuaHRtbA',
-							'product' => $bundleId,
-							'selected_configurable_option' => '',
-							'related_product' => '',
-							'item' => $bundleId,
-							'bundle_option' => $bundleOptions,
-							'options' => $options,
-							'qty' => 1
-						]),
-						'bundle_identity' => "{$bundleId}_{$childId}_1"
-					];
-					
-					$this->formatBundleSelectionsChild($itemOptions, $bundleOptions);
-					$this->setItemOptions($itemId, $childId, $itemOptions);
 				}
 				
 				$quote->collectTotals()->save();
+				
+				// dispatch add to cart method to allow other modules to implement customization
+				$this->eventManager->dispatch('tf_cart_product_add_after', ['parent' => $parentItem, 'child' => $childItem]);
 				
 				$message = __(
 					'You added %1 to your shopping cart.',
@@ -183,11 +209,6 @@
 			return $lastitem->getId();
 		}
 		
-		private function formatBuyRequest()
-		{
-			
-		}
-		
 		/**
 		* format bundle custom options
 		*/
@@ -201,32 +222,43 @@
 			}
 		}
 		
-		private function formatBundleSelectionsParent(&$itemSelections = null, $selections = null)
+		private function formatBundleOptionIds(&$itemSelections = null, $selections = null)
 		{
+			$optionIds = array();
+			
 			foreach($selections as $key => $value)
 			{
-				$itemSelections['bundle_option_ids'] = '[' . $key . ']';
-				
-				$itemSelections['bundle_selection_ids'] = '["' . implode(",", $value) . '"]';
+				$optionIds[] = $key;
 			}
+			
+			$itemSelections['bundle_option_ids'] = '[' . implode(",", $optionIds) . ']';
 		}
 		
-		private function formatBundleSelectionsChild(&$itemSelections = null, $selections = null)
+		private function formatBundleSelectionsParent(&$itemSelections = null)
 		{
-			foreach($selections as $key => $value)
+			$selectionIds = array();
+			
+			foreach($this->bundleSelectionProductIds as $key => $value)
 			{
-				$itemSelections['bundle_option_ids'] = '[' . $key . ']';
+				$selectionIds[] = '"' . $key . '"';
 				
-				$itemSelections['selection_id'] = $value[0];
-				$itemSelections['selection_qty_' . $value[0]] = 1;
-				
-				$itemSelections['bundle_selection_attributes'] = json_encode([
-					'price' => 1,
-					'qty' => 1,
-					'option_label' => 'Center Stone',
-					'option_id' => $key
-				]);
+				$itemSelections['selection_qty_' . $key] = '1';
+				$itemSelections['product_qty_' . $value['product_id']] = '1';
 			}
+			
+			$itemSelections['bundle_selection_ids'] = '[' . implode(",", $selectionIds)  . ']';
+		}
+		
+		private function formatBundleSelectionsChild(&$itemSelections = null, $selectionId = null, $selection = null)
+		{
+			$itemSelections['selection_id'] = $selectionId;
+			
+			$itemSelections['bundle_selection_attributes'] = json_encode([
+				'price' => 1,
+				'qty' => "1",
+				'option_label' => $selection['option_title'],
+				'option_id' => $selection['option_id']
+			]);
 		}
 		
 		private function setItemOptions($itemId = 0, $productId = 0, $options = null)
@@ -334,6 +366,69 @@
 			foreach ($selectionCollection as $selection) {
 				$bundleOptions[$selection->getOptionId()][] = $selection->getSelectionId();
 			}
+			return $bundleOptions;
+		}
+		
+		/**
+		 * get the unique identifer used in cart/quote
+		 * @param $product
+		 * @return mixed
+		 */
+		private function getBundleIdentity(\Magento\Catalog\Model\Product $product = null, $childId = 0, $bundleProductSelections)
+		{
+			$bundleSelectionProductIds = array();
+			$bundleSelectionsId = array();
+			
+			// get bundled options
+			$optionsCollection = $product->getTypeInstance(true)
+				->getOptionsCollection($product);
+
+			foreach ($optionsCollection as $option){
+				
+				if($option->getIsDynamicSelection() == 1){
+					$this->bundleDynamicOptionIds[] = $option->getOptionId();
+				}
+				
+				// handle native bundle
+				$selections = $product->getTypeInstance(true)
+					->getSelectionsCollection($option->getOptionId(),$product);
+					
+				
+				foreach( $selections as $selection )
+				{
+					if($bundleProductSelections[$option->getId()] == $selection->getSelectionId())
+					{
+						$bundleSelectionsId[] = $selection->getSelectionId();
+						
+						// native selection mapping
+						$bundleSelectionProductIds[$selection->getSelectionId()] = array(
+							'product_id' => $selection->getProductId(),
+							'price' => $selection->getPrice(),
+							'option_id' => $option->getOptionId(),
+							'option_title' => 'title placeholder'
+						);
+						
+						break;
+					}
+				}
+			}
+			
+			// format identifier string
+			$this->bundleIdentity = $product->getId() . "_" . implode("_1_", $bundleSelectionsId) . "_1";
+			
+			// used by other functions to map products into cart
+			$this->bundleSelectionProductIds = $bundleSelectionProductIds;
+		}
+		
+		private function formatBundleOptionSelection()
+		{
+			$bundleOptions = array();
+			
+			foreach($this->bundleSelectionProductIds as $selectionId => $bundeOption)
+			{
+				$bundleOptions[$bundeOption['option_id']] = "{$selectionId}";
+			}
+			
 			return $bundleOptions;
 		}
 	}
