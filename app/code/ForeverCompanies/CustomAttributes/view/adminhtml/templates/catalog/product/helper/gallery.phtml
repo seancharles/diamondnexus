@@ -170,6 +170,18 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                    name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][role]"
                    value="<%- data.video_description %>"
                    data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+            <input type="hidden"
+                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][option_type_id]"
+                   value="<%- data.option_type_id %>"
+                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+            <input type="hidden"
+                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][bundle_selection_id]"
+                   value="<%- data.bundle_selection_id %>"
+                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+            <input type="hidden"
+                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][tags]"
+                   value="<%- data.tags %>"
+                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
 
             <div class="product-image-wrapper <% if (data.cldspinset) { %>cldspinset-overlay<% } %>">
                 <img class="product-image"
@@ -284,6 +296,62 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                                     </label>
                                 </li>
                                 <?php
+                            endforeach;
+                            ?>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="admin__field field-image-product-option-types">
+                    <label class="admin__field-label">
+                        <span><?= $block->escapeHtml(__('Product option type')) ?></span>
+                    </label>
+
+                    <div class="admin__field-control">
+                        <ul class="multiselect-alt">
+                            <?php
+                            foreach ($block->getProductOptionTypes() as $optionType) :
+                                ?>
+                                <li class="item">
+                                    <label>
+                                        <input class="image-option-selector"
+                                               data-role="option-selector"
+                                               data-form-part="<?= /* @escapeNotVerified */ $formName ?>"
+                                               type="checkbox"
+                                               value="<?= $block->escapeHtml($optionType['id']) ?>"
+                                        />
+                                        <?= /* @escapeNotVerified */ $block->escapeHtml($optionType['label']) ?>
+                                    </label>
+                                </li>
+                            <?php
+                            endforeach;
+                            ?>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="admin__field field-image-product-option-types">
+                    <label class="admin__field-label">
+                        <span><?= $block->escapeHtml(__('Product bundle selections')) ?></span>
+                    </label>
+
+                    <div class="admin__field-control">
+                        <ul class="multiselect-alt">
+                            <?php
+                            foreach ($block->getProductBundleSelections() as $selection) :
+                                ?>
+                                <li class="item">
+                                    <label>
+                                        <input class="image-option-selector"
+                                               data-role="option-selector"
+                                               data-form-part="<?= /* @escapeNotVerified */ $formName ?>"
+                                               type="checkbox"
+                                               value="<?= $block->escapeHtml($selection['id']) ?>"
+                                        />
+                                        <?= /* @escapeNotVerified */ $block->escapeHtml($selection['label']) ?>
+                                    </label>
+                                </li>
+                            <?php
                             endforeach;
                             ?>
                         </ul>
