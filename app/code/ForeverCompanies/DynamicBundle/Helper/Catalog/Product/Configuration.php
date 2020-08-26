@@ -132,9 +132,12 @@ class Configuration extends \Magento\Bundle\Helper\Catalog\Product\Configuration
 									$option['value'][] = $qty . ' x '
 										. $this->escaper->escapeHtml($bundleSelection->getName())
 										. ' '
+										. $this->pricingHelper->currency(($product->getBundlePrice() > 0) ? $product->getBundlePrice(): $product->getPrice());
+										/*
 										. $this->pricingHelper->currency(
 											$this->getSelectionFinalPrice($item, $bundleSelection)
 										);
+										*/
 									$option['has_html'] = true;
 								}
 							}

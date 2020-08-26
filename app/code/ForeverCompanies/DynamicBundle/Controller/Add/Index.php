@@ -110,6 +110,12 @@
 					// gets the bundle options for the specific item in cart with selection
 					$bundleOptionValues = $this->formatBundleOptionSelection();
 					
+					$this->shipperLogger->postDebug(
+						'DynamicBundle_Configuration',
+						'bundleSelectionProductIds',
+						$this->bundleSelectionProductIds
+					);
+					
 					$parentItem = $this->addParentItem($bundleProductModel, $dynamicProductModel, $options);
 					$quote->addItem($parentItem);
 					$quote->save();
@@ -164,7 +170,7 @@
 								'item' => $bundleId,
 								'bundle_option' => $bundleOptionValues,
 								'options' => $options,
-								'qty' => "1"
+								'qty' => 1
 							]),
 							'bundle_identity' => $this->bundleIdentity
 						];
@@ -255,7 +261,7 @@
 			
 			$itemSelections['bundle_selection_attributes'] = json_encode([
 				'price' => 1,
-				'qty' => "1",
+				'qty' => 1,
 				'option_label' => $selection['option_title'],
 				'option_id' => $selection['option_id']
 			]);
@@ -287,7 +293,8 @@
 					{
 						// get custom options
 						$productOptions = $bundleProductModel->getOptions();
-						
+
+						$selectionPrice = 0;
 						$customOptionPrice = 0;
 						
 						foreach($productOptions as $option)
@@ -305,12 +312,19 @@
 						}
 					}
 					
-					$price = $bundleProductModel->getPrice() + $childProductModel->getPrice() + $customOptionPrice;
+					// iterate through native bundle options
+					foreach($this->bundleSelectionProductIds as $bundle)
+					{
+						$selectionPrice += $bundle['price'];
+					}
+					
+					$price = $bundleProductModel->getPrice() + $childProductModel->getPrice() + $customOptionPrice + $selectionPrice;
 					
 					// set the values specific to what they need to be...
 					$quoteItem->setQty(1);
 					$quoteItem->setProductType('bundle');
 					$quoteItem->setCustomPrice($price);
+					$quoteItem->set($price);
 					$quoteItem->setOriginalCustomPrice($price);
 					$quoteItem->setRowTotal($price);
 					$quoteItem->setBaseRowTotal($price);
@@ -330,11 +344,22 @@
 					$quoteItem = $this->cartItemFactory->create();
 					$quoteItem->setProduct($childProductModel);
 					
-					$price = $childProductModel->getPrice();
+					// implement the bundle price preference
+					if($childProductModel->getBundlePrice() != null) {
+						$price = $childProductModel->getBundlePrice();
+					} else {
+						$price = $childProductModel->getPrice();
+					}
+
+					// implement the bundle sku preference
+					if(strlen($childProductModel->getBundleSku()) > 0) {
+						$quoteItem->setSku($childProductModel->getBundleSku());
+					} else {
+						$quoteItem->setSku($childProductModel->getSku());
+					}
 					
 					// set the values specific to what they need to be...
 					$quoteItem->setParentItemId($parentId);
-					$quoteItem->setSku($childProductModel->getSku());
 					$quoteItem->setName($childProductModel->getName());
 					$quoteItem->setQty(1);
 					$quoteItem->setCustomPrice($price);
@@ -405,7 +430,7 @@
 							'product_id' => $selection->getProductId(),
 							'price' => $selection->getPrice(),
 							'option_id' => $option->getOptionId(),
-							'option_title' => 'title placeholder'
+							'option_title' => $option->getTitle()
 						);
 						
 						break;
