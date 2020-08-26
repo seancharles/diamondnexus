@@ -6,9 +6,12 @@ use Cloudinary\Cloudinary\Helper\MediaLibraryHelper;
 use Cloudinary\Cloudinary\Model\ProductSpinsetMapFactory;
 use ForeverCompanies\CustomAttributes\Helper\Media;
 use Magento\Backend\Block\Template\Context;
+use Magento\Catalog\Api\Data\ProductExtension;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Media\Config;
 use Magento\Catalog\Model\Product\Option;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Json\DecoderInterface;
 use Magento\Framework\Json\EncoderInterface;
 
@@ -99,13 +102,20 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
         return $optionTypes;
     }
 
+    /**
+     * @return array
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
+     */
     public function getProductBundleSelections()
     {
         $data = [];
         /** @var Product $product */
-        $product = $this->getElement()->getDataObject();
+        $product = $this->getData('element')->getDataObject();
         if ($product->getTypeId() == \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE) {
-            $options = $product->getExtensionAttributes()->getBundleProductOptions();
+            /** @var ProductExtension $extensionAttributes */
+            $extensionAttributes = $product->getExtensionAttributes();
+            $options = $extensionAttributes->getBundleProductOptions();
             foreach ($options as $option) {
                 if ($option->getTitle() == 'Center Stone Size') {
                     $data = $this->mediaHelper->prepareBundleSelectionsFromLinks($option->getProductLinks());

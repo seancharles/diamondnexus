@@ -175,8 +175,8 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                    value="<%- data.option_type_id %>"
                    data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][bundle_selection_id]"
-                   value="<%- data.bundle_selection_id %>"
+                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][catalog_product_bundle_selection_id]"
+                   value="<%- data.catalog_product_bundle_selection_id %>"
                    data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
             <input type="hidden"
                    name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][tags]"
@@ -330,7 +330,7 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                     </div>
                 </div>
 
-                <div class="admin__field field-image-product-option-types">
+                <div class="admin__field field-image-product-bundle-selections">
                     <label class="admin__field-label">
                         <span><?= $block->escapeHtml(__('Product bundle selections')) ?></span>
                     </label>
@@ -343,7 +343,7 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                                 <li class="item">
                                     <label>
                                         <input class="image-option-selector"
-                                               data-role="option-selector"
+                                               data-role="bundle-selector"
                                                data-form-part="<?= /* @escapeNotVerified */ $formName ?>"
                                                type="checkbox"
                                                value="<?= $block->escapeHtml($selection['id']) ?>"
@@ -355,6 +355,19 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                             endforeach;
                             ?>
                         </ul>
+                    </div>
+                </div>
+
+                <div class="admin__field field-image-tags">
+                    <label class="admin__field-label" for="image-tags">
+                        <span><?= /* @escapeNotVerified */ __('Tags') ?></span>
+                    </label>
+
+                    <div class="admin__field-control">
+                        <input data-role="image-tags"
+                               class="admin__control-text"
+                               name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][tags]"
+                               value="<%- data.tags %>" />
                     </div>
                 </div>
 

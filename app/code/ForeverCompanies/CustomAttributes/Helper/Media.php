@@ -7,11 +7,15 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Helper;
 
+use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ResourceModel\Product\Gallery;
+use Magento\Eav\Model\Config;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 class Media extends AbstractHelper
 {
@@ -25,14 +29,28 @@ class Media extends AbstractHelper
      */
     protected $productRepository;
 
+    /**
+     * @var Config
+     */
+    protected $eavConfig;
+
+    /**
+     * Media constructor.
+     * @param Context $context
+     * @param ResourceConnection $resourceConnection
+     * @param ProductRepositoryInterface $productRepository
+     * @param Config $eavConfig
+     */
     public function __construct(
         Context $context,
         ResourceConnection $resourceConnection,
-        ProductRepositoryInterface $productRepository
+        ProductRepositoryInterface $productRepository,
+        Config $eavConfig
     ) {
         parent::__construct($context);
         $this->resourceConnection = $resourceConnection;
         $this->productRepository = $productRepository;
+        $this->eavConfig = $eavConfig;
     }
 
     /**
@@ -57,13 +75,24 @@ class Media extends AbstractHelper
         return $images;
     }
 
+    /**
+     * @param array $links
+     * @return array
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
+     */
     public function prepareBundleSelectionsFromLinks(array $links)
     {
         $data = [];
+        $metalTypeSource = $this->eavConfig->getAttribute(Product::ENTITY,'gemstone')->getSource();
         /** @var \Magento\Bundle\Model\Link $link */
         foreach ($links as $link) {
             $product = $this->productRepository->get($link->getSku());
-            /** TODO: get selected item label from SKU */
+            $data[] = [
+                'id' => $link->getId(),
+                'label' => $metalTypeSource->getOptionText($product->getData('gemstone'))
+            ];
         }
+        return $data;
     }
 }

@@ -11,14 +11,14 @@
                 identity="false"
                 default="0" comment="Bundle selection item ID"/>
         <column xsi:type="varchar" name="tags" nullable="true" length="255" comment="Tags"/>
-        <constraint xsi:type="foreign" referenceId="CAT_PRD_ENTT_MDA_GLR_VAL_CAT_PRD_OPT_TYP_ID"
+        <!--constraint xsi:type="foreign" referenceId="CAT_PRD_ENTT_MDA_GLR_VAL_CAT_PRD_OPT_TYP_ID"
                     table="catalog_product_entity_media_gallery_value" column="catalog_product_option_type_id"
                     referenceTable="catalog_product_option_type_value" referenceColumn="option_type_id"
                     onDelete="CASCADE"/>
         <constraint xsi:type="foreign" referenceId="CAT_PRD_ENTT_MDA_GLR_VAL_CAT_PRD_BND_SLCT_ID"
                     table="catalog_product_entity_media_gallery_value" column="catalog_product_bundle_selection_id"
                     referenceTable="catalog_product_bundle_selection"
-                    referenceColumn="selection_id" onDelete="CASCADE"/>
+                    referenceColumn="selection_id" onDelete="CASCADE"/>-->
         <index referenceId="CATALOG_PRODUCT_ENTITY_MEDIA_GALLERY_VALUE_CATALOG_PRODUCT_OPTION_ENTITY_ID"
                indexType="btree">
             <column name="catalog_product_option_type_id"/>
