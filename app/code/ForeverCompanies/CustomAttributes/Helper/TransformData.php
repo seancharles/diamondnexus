@@ -26,10 +26,12 @@ use Magento\CatalogInventory\Model\Stock\Item;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Model\Config;
 use Magento\Framework\Api\Data\VideoContentInterface;
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -89,6 +91,10 @@ class TransformData extends AbstractHelper
      * @var ExternalVideoEntryConverter
      */
     private $externalVideoEntryConverter;
+    /**
+     * @var DirectoryList
+     */
+    protected $directoryList;
 
 
     /**
@@ -103,6 +109,7 @@ class TransformData extends AbstractHelper
      * @param StoreManagerInterface $storeManager
      * @param Converter $converter
      * @param ProductExtensionFactory $productExtensionFactory
+     * @param DirectoryList $directorylist
      */
     public function __construct(
         Context $context,
@@ -115,7 +122,8 @@ class TransformData extends AbstractHelper
         ProductFunctional $productFunctionalHelper,
         StoreManagerInterface $storeManager,
         Converter $converter,
-        ProductExtensionFactory $productExtensionFactory
+        ProductExtensionFactory $productExtensionFactory,
+        DirectoryList $directorylist
     )
     {
         parent::__construct($context);
@@ -129,6 +137,7 @@ class TransformData extends AbstractHelper
         $this->storeManager = $storeManager;
         $this->converter = $converter;
         $this->productExtensionFactory = $productExtensionFactory;
+        $this->directoryList = $directorylist;
     }
 
     /**
@@ -179,7 +188,7 @@ class TransformData extends AbstractHelper
         }
         $this->setProductType($product);
         foreach (['youtube', 'video_url'] as $link) {
-            $videoUrl = $product->getCustomAttribute($link);
+            $videoUrl = $product->getData($link);
             if ($videoUrl != null) {
                 $this->addVideoToProduct($videoUrl, $product);
             }
@@ -275,7 +284,7 @@ class TransformData extends AbstractHelper
     {
         $videoProvider = str_replace('https://', '', $videoUrl);
         $videoProvider = str_replace('http://', '', $videoProvider);
-        $videoProvider = substr($videoUrl, 0, strpos($videoProvider, "."));
+        $videoProvider = substr($videoProvider, 0, strpos($videoProvider, "."));
         $videoData = [
             VideoContentInterface::TITLE => 'Migrated Video',
             VideoContentInterface::DESCRIPTION => '',
@@ -284,9 +293,44 @@ class TransformData extends AbstractHelper
             VideoContentInterface::URL => $videoUrl,
             VideoContentInterface::TYPE => ExternalVideoEntryConverter::MEDIA_TYPE_CODE,
         ];
+        if ($videoProvider == 'vimeo') {
+
+            $file = $this->getFileFromVimeoVideo($videoUrl);
+        }
+        if ($videoProvider == 'youtube') {
+            //* TODO: later
+        }
         // Convert video data array to video entry
+
         $media = $this->externalVideoEntryConverter->convertTo($product, $videoData);
         $product->setMediaGalleryEntries([$media]);
+    }
+
+    private function getFileFromVimeoVideo($url)
+    {
+        $id = substr(strrchr($url, "/"), 1);
+        $fileXml = unserialize(file_get_contents("http://vimeo.com/api/v2/video/$id.php"));
+        $videoData['file']= $fileXml[0]['thumbnail_medium'];
+        $imageType = substr(strrchr($url,"."),1); //find the image extension
+        $filename   = $id.'.'.$imageType; //give a new name, you can modify as per your requirement
+        try {
+            $filepath = $this->directoryList->getPath('media') . DS . 'import' . DS . $filename;
+            $curl_handle = curl_init();
+            curl_setopt($curl_handle, CURLOPT_URL,$url);
+            curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
+            curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Cirkel');
+            $query = curl_exec($curl_handle);
+            curl_close($curl_handle);
+
+            file_put_contents($filepath, $query); //store the image from external url to the temp storage folder file_get_contents(trim($image_url))
+            $filepath_to_image = $filepath;
+        } catch (FileSystemException $e) {
+            // TODO: error
+        } //path for temp storage folder: ./media/import/
+        // TODO: rework cURL + save file + return file and save to product
+
+
     }
 
     /**
