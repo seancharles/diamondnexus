@@ -241,8 +241,6 @@ class Mapping extends AbstractHelper
         $this->eavConfig = $eavConfig->getAttribute(Product::ENTITY, 'product_type')->getSource();
     }
 
-
-
     /**
      * @param string $attributeSetName
      * @return string
@@ -277,7 +275,6 @@ class Mapping extends AbstractHelper
         $product->setQty($this->prepareQty($product, $configurable));
         return $this->reconfigurePrices($product, $data, $configurable);
     }
-
 
     protected function prepareQty(Product $product, Configurable $configurable)
     {
@@ -343,7 +340,8 @@ class Mapping extends AbstractHelper
         $options = [];
         foreach ($productOptions as $productOption) {
             try {
-                $attrCode = $this->productAttributeRepository->get($productOption->getAttributeId())->getAttributeCode();
+                $productAttribute = $this->productAttributeRepository->get($productOption->getAttributeId());
+                $attrCode = $productAttribute->getAttributeCode();
                 if ($attrCode !== 'gemstone') {
                     $bundleOptions[] = $this->getOption($productOption);
                     $options[$productOption['attribute_id']] = $this->prepareOptions($productOption);

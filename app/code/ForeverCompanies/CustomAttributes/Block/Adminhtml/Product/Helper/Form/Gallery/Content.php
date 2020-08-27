@@ -14,6 +14,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Json\DecoderInterface;
 use Magento\Framework\Json\EncoderInterface;
+use Magento\Framework\Serialize\Serializer\Json;
 
 /**
  * Block for gallery content.
@@ -24,6 +25,11 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
      * @var Media
      */
     protected $mediaHelper;
+
+    /**
+     * @var Json
+     */
+    protected $jsonHelper;
 
     /**
      * @var string
@@ -41,6 +47,7 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
      * @param MediaLibraryHelper $mediaLibraryHelper
      * @param ProductSpinsetMapFactory $productSpinsetMapFactory
      * @param Media $mediaHelper
+     * @param Json $jsonHelper
      * @param array $data
      */
     public function __construct(
@@ -51,9 +58,9 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
         MediaLibraryHelper $mediaLibraryHelper,
         ProductSpinsetMapFactory $productSpinsetMapFactory,
         Media $mediaHelper,
+        Json $jsonHelper,
         array $data = []
-    )
-    {
+    ) {
         parent::__construct(
             $context,
             $jsonEncoder,
@@ -64,6 +71,7 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
             $data
         );
         $this->mediaHelper = $mediaHelper;
+        $this->jsonHelper = $jsonHelper;
     }
 
     /**
@@ -78,6 +86,15 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
             return [];
         }
         return $this->_jsonEncoder->encode($images);
+    }
+
+    /**
+     * @param $data
+     * @return bool|string
+     */
+    public function jsonSerialize($data)
+    {
+        return $this->jsonHelper->serialize($data);
     }
 
     /**

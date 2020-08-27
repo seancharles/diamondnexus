@@ -90,7 +90,6 @@ class TransformData extends AbstractHelper
      */
     private $externalVideoEntryConverter;
 
-
     /**
      * @param Context $context
      * @param Config $config
@@ -317,7 +316,7 @@ class TransformData extends AbstractHelper
                 $this->converter->toBundle($product, $optionsData, $productOptions);
             }
         } catch (\Exception $e) {
-            $this->_logger->error('Transformation error in product ID = '. $product->getId(). ': ' . $e->getMessage());
+            $this->_logger->error('Transformation error in productID = ' . $product->getId() . ': ' . $e->getMessage());
             throw $e;
         }
     }
@@ -382,7 +381,7 @@ class TransformData extends AbstractHelper
             $qty = $product->getQty();
             $stock->setData('qty', $qty);
             if ($qty == 0) {
-                $this->_logger->info('Product with SKU = ' . $product->getSku(). ' don\'t have qty in stock');
+                $this->_logger->info('Product with SKU = ' . $product->getSku() . ' don\'t have qty in stock');
                 $stock->setData('qty', 999);
             }
             $newExtensions->setStockItem($stock);

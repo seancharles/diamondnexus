@@ -62,17 +62,33 @@ class Media extends AbstractHelper
         $connection = $this->resourceConnection->getConnection();
         $mediaGallery = $connection->getTableName(Gallery::GALLERY_VALUE_TABLE);
 
-        foreach ($images as &$image)
-        {
+        foreach ($images as &$image) {
             $select = $connection->select();
-            $select->from($mediaGallery)->where( 'value_id = ?', $image['value_id']);
+            $select->from($mediaGallery)->where('value_id = ?', $image['value_id']);
             $row = $connection->fetchRow($select);
-            $image['option_type_id'] = $row['catalog_product_option_type_id'];
-            $image['bundle_selection_id'] = $row['catalog_product_bundle_selection_id'];
+            $image['catalog_product_option_type_id'] = $row['catalog_product_option_type_id'];
+            $image['catalog_product_bundle_selection_id'] = $row['catalog_product_bundle_selection_id'];
             $image['tags'] = $row['tags'];
         }
 
         return $images;
+    }
+
+    public function saveFieldsToMedia($mediaImages)
+    {
+        $connection = $this->resourceConnection->getConnection();
+        $mediaGallery = $connection->getTableName(Gallery::GALLERY_VALUE_TABLE);
+        foreach ($mediaImages as $image) {
+            $connection->update(
+                $mediaGallery,
+                [
+                    'catalog_product_option_type_id' => $image['catalog_product_option_type_id'],
+                    'catalog_product_bundle_selection_id' => $image['catalog_product_bundle_selection_id'],
+                    'tags' => $image['tags']
+                ],
+                ['value_id = ?' => $image['value_id']]
+            );
+        }
     }
 
     /**
@@ -84,7 +100,7 @@ class Media extends AbstractHelper
     public function prepareBundleSelectionsFromLinks(array $links)
     {
         $data = [];
-        $metalTypeSource = $this->eavConfig->getAttribute(Product::ENTITY,'gemstone')->getSource();
+        $metalTypeSource = $this->eavConfig->getAttribute(Product::ENTITY, 'gemstone')->getSource();
         /** @var \Magento\Bundle\Model\Link $link */
         foreach ($links as $link) {
             $product = $this->productRepository->get($link->getSku());

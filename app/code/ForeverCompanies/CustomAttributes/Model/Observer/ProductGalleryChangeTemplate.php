@@ -6,11 +6,12 @@
 
 namespace ForeverCompanies\CustomAttributes\Model\Observer;
 
+use Cloudinary\Cloudinary\Model\Observer\ProductGalleryChangeTemplate as OriginalObserver;
 use ForeverCompanies\CustomAttributes\Block\Adminhtml\Product\Helper\Form\Gallery\Content;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 
-class ProductGalleryChangeTemplate extends \Cloudinary\Cloudinary\Model\Observer\ProductGalleryChangeTemplate implements ObserverInterface
+class ProductGalleryChangeTemplate extends OriginalObserver implements ObserverInterface
 {
 
     /**

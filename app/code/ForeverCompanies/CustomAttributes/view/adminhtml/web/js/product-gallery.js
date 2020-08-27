@@ -22,7 +22,8 @@ define([
      * @param {Number} bytes
      * @returns {String}
      */
-    function bytesToSize(bytes) {
+    function bytesToSize(bytes)
+    {
         var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'],
             i;
 
@@ -510,14 +511,14 @@ define([
             $dialog.on('change', '[data-role=option-selector]', function () {
                 var parent = $(this).closest('.item'),
                     selectedClass = 'selected';
-
+                $dialog.find('.field-image-product-option-types').find('.item.selected').removeClass('selected');
                 parent.toggleClass(selectedClass, $(this).prop('checked'));
             });
 
             $dialog.on('change', '[data-role=bundle-selector]', function () {
                 var parent = $(this).closest('.item'),
                     selectedClass = 'selected';
-
+                $dialog.find('.field-image-product-bundle-selections').find('.item.selected').removeClass('selected');
                 parent.toggleClass(selectedClass, $(this).prop('checked'));
             });
             /** CUSTOM OFF */
@@ -557,9 +558,7 @@ define([
                     targetName = images + '[' + imageData['value_id'] + '][catalog_product_option_type_id]',
                     optionValue = target.val();
 
-
-                this.element.find('input[type="hidden"][name="' + targetName + '"]').val(optionValue);
-                imageData.catalog_product_option_type_id = optionValue;
+                this._setFields(imageData, optionValue, targetName, 'catalog_product_option_type_id');
             }.bind(this));
 
             $dialog.on('change', '[data-role="bundle-selector"]', function (e) {
@@ -569,9 +568,20 @@ define([
                     targetName = images + '[' + imageData['value_id'] + '][catalog_product_bundle_selection_id]',
                     optionValue = target.val();
 
+                this._setFields(imageData, optionValue, targetName, 'catalog_product_bundle_selection_id');
 
-                this.element.find('input[type="hidden"][name="' + targetName + '"]').val(optionValue);
-                imageData.catalog_product_bundle_selection_id = optionValue;
+            }.bind(this));
+
+            $dialog.on('change', '[data-role="image-tags"]', function (e) {
+                let images = 'product[media_gallery][images]';
+                var target = $(e.target),
+                    imageData = $dialog.data('imageData'),
+                    targetName = images + '[' + imageData['value_id'] + '][tags]',
+                    tags = target.val();
+
+                this.element.find('input[type="hidden"][name="' + targetName + '"]').val(tags);
+
+                imageData.tags = tags;
             }.bind(this));
             /** END CUSTOM */
 
@@ -587,6 +597,16 @@ define([
             }.bind(this));
 
             this.$dialog = $dialog;
+        },
+
+        _setFields: function (imageData, optionValue, targetName, param) {
+            if (imageData[param] === optionValue) {
+                imageData[param] = 0;
+                this.element.find('input[type="hidden"][name="' + targetName + '"]').val(0);
+            } else {
+                imageData[param] = optionValue;
+                this.element.find('input[type="hidden"][name="' + targetName + '"]').val(optionValue);
+            }
         },
 
         /**

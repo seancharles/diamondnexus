@@ -30,19 +30,19 @@ $cloudinaryMLwidgetOprions = $block->getCloudinaryMediaLibraryWidgetOptions();
                     <span><?= $block->escapeHtml(__('Add from Cloudinary')) ?></span>
                     <div id="gallery_top_add_from_cloudinary_dd">
                         <div id="gallery_top_add_from_cloudinary_dd_inner">
-                            <button id="gallery_top_add_from_cloudinary_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>"
+                            <button id="gallery_top_add_from_cloudinary_button_<?= /* @noEscape*/ $block->getHtmlId() ?>"
                                 title="<?= $block->escapeHtml(__('Add Image/Video')) ?>"
                                 data-role="add-from-cloudinary-button"
                                 type="button"
-                                data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'
+                                data-mage-init='{"cloudinaryMediaLibraryModal": <?= /* @noEscape*/ $cloudinaryMLwidgetOprions ?>}'
                                 class="action-secondary add-from-cloudinary-button">
                                 <span><?= $block->escapeHtml(__('Add Image/Video')) ?></span>
                             </button>
-                            <button id="gallery_top_add_cldspinset_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>"
+                            <button id="gallery_top_add_cldspinset_button_<?= /* @noEscape*/ $block->getHtmlId() ?>"
                                 title="<?= $block->escapeHtml(__('Add Spinset')) ?>"
                                 data-role="add-cldspinset-button"
                                 type="button"
-                                data-mage-init='{"cloudinarySpinsetModal": <?= $cloudinaryMLwidgetOprions ?>}'
+                                data-mage-init='{"cloudinarySpinsetModal": <?= /* @noEscape*/ $cloudinaryMLwidgetOprions ?>}'
                                 class="action-secondary">
                                 <span><?= $block->escapeHtml(__('Add Spinset')) ?></span>
                             </button>
@@ -56,7 +56,7 @@ $cloudinaryMLwidgetOprions = $block->getCloudinaryMediaLibraryWidgetOptions();
 
 <?php
 /** @var $block \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Gallery\Content */
-$element = $block->getElement();
+$element = $block->getData('element');
 $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'toggleValueElements(this, this.parentNode.parentNode.parentNode)';
 ?>
 
@@ -65,10 +65,10 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
      data-mage-init='{"openVideoModal":{}}'
      data-parent-component="<?= $block->escapeHtml($block->getData('config/parentComponent')) ?>"
      data-images="<?= $block->escapeHtmlAttr($block->getImagesJson()) ?>"
-     data-types="<?= $block->escapeHtml($this->helper('Magento\Framework\Json\Helper\Data')->jsonEncode($block->getImageTypes())) ?>">
+     data-types="<?= $block->escapeHtml($block->jsonSerialize($block->getImageTypes())) ?>">
 
     <?php if ($cloudinaryMLwidgetOprions) : ?>
-        <div id="gallery_inner_add_from_cloudinary_placeholder_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>" class="image image-placeholder add-from-cloudinary-button" data-role="add-from-cloudinary-button" data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'>
+        <div id="gallery_inner_add_from_cloudinary_placeholder_button_<?= /* @noEscape*/ $block->getHtmlId() ?>" class="image image-placeholder add-from-cloudinary-button" data-role="add-from-cloudinary-button" data-mage-init='{"cloudinaryMediaLibraryModal": <?= /* @noEscape*/ $cloudinaryMLwidgetOprions ?>}'>
             <div class="product-image-wrapper">
                 <p class="image-placeholder-text">
                     <?= $block->escapeHtml(__('Add from Cloudinary')) ?>
@@ -81,14 +81,14 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
     if (!$block->getElement()->getReadonly()) :
         ?>
         <div class="image image-placeholder">
-            <?= /* @escapeNotVerified */ $block->getUploaderHtml() ?>
+            <?= /* @noEscape*/ $block->getUploaderHtml() ?>
             <div class="product-image-wrapper">
                 <p class="image-placeholder-text">
                     <?= $block->escapeHtml(__('Browse to find or drag image here')) ?>
                 </p>
             </div>
         </div>
-        <?= /* @escapeNotVerified */ $block->getChildHtml('additional_buttons') ?>
+        <?= /* @noEscape*/ $block->getChildHtml('additional_buttons') ?>
         <?php
     endif;
     ?>
@@ -96,92 +96,92 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
     foreach ($block->getImageTypes() as $typeData) :
         ?>
         <input name="<?= $block->escapeHtml($typeData['name']) ?>"
-               data-form-part="<?= /* @escapeNotVerified */ $formName ?>"
+               data-form-part="<?= /* @noEscape*/ $formName ?>"
                class="image-<?= $block->escapeHtml($typeData['code']) ?>"
                type="hidden"
                value="<?= $block->escapeHtml($typeData['value']) ?>"/>
         <?php
     endforeach;
     ?>
-    <script id="<?= /* @escapeNotVerified */ $block->getHtmlId() ?>-template" data-template="image" type="text/x-magento-template">
+    <script id="<?= /* @noEscape*/ $block->getHtmlId() ?>-template" data-template="image" type="text/x-magento-template">
         <div class="image item <% if (data.disabled == 1) { %>hidden-for-front<% } %>  <% if (data.video_url) { %>video-item<% } %>"
              data-role="image">
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][position]"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][position]"
                    value="<%- data.position %>"
-                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"
                    class="position"/>
             <% if (data.media_type !== 'external-video') {%>
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][media_type]"
-                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][media_type]"
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"
                    value="image"/>
             <% } else { %>
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][media_type]"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][media_type]"
                    value="<%- data.media_type %>"
-                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
             <% } %>
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][video_provider]"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][video_provider]"
                    value="<%- data.video_provider %>"
-                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][file]"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][file]"
                    value="<%- data.file %>"
-                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][value_id]"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][value_id]"
                    value="<%- data.value_id %>"
-                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][label]"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][label]"
                    value="<%- data.label %>"
-                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][cldspinset]"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][cldspinset]"
                    value="<%- data.cldspinset %>"
-                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][disabled]"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][disabled]"
                    value="<%- data.disabled %>"
-                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][removed]"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][removed]"
                    value="" class="is-removed"
-                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][video_url]"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][video_url]"
                    value="<%- data.video_url %>"
-                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][video_title]"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][video_title]"
                    value="<%- data.video_title %>"
-                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][video_description]"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][video_description]"
                    value="<%- data.video_description %>"
-                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][video_metadata]"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][video_metadata]"
                    value="<%- data.video_metadata %>"
-                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][role]"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][role]"
                    value="<%- data.video_description %>"
-                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][option_type_id]"
-                   value="<%- data.option_type_id %>"
-                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][catalog_product_option_type_id]"
+                   value="<%- data.catalog_product_option_type_id %>"
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][catalog_product_bundle_selection_id]"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][catalog_product_bundle_selection_id]"
                    value="<%- data.catalog_product_bundle_selection_id %>"
-                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
             <input type="hidden"
-                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][tags]"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][tags]"
                    value="<%- data.tags %>"
-                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
 
             <div class="product-image-wrapper <% if (data.cldspinset) { %>cldspinset-overlay<% } %>">
                 <img class="product-image"
@@ -251,26 +251,26 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
             <fieldset class="admin__fieldset fieldset-image-panel">
                 <div class="admin__field field-image-description">
                     <label class="admin__field-label" for="image-description">
-                        <span><?= /* @escapeNotVerified */ __('Alt Text') ?></span>
+                        <span><?= /* @noEscape*/ __('Alt Text') ?></span>
                     </label>
 
                     <div class="admin__field-control">
                             <textarea data-role="image-description"
                                       rows="3"
                                       class="admin__control-textarea"
-                                      name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][label]"><%- data.label %></textarea>
+                                      name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][label]"><%- data.label %></textarea>
                     </div>
                 </div>
 
                 <div class="admin__field field-image-cldspinset">
                     <label class="admin__field-label" for="image-cldspinset">
-                        <span><?= /* @escapeNotVerified */ __('Cloudinary Spinset Tag') ?></span>
+                        <span><?= /* @noEscape*/ __('Cloudinary Spinset Tag') ?></span>
                     </label>
 
                     <div class="admin__field-control">
                             <input data-role="image-cldspinset"
                                     class="admin__control-text"
-                                    name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][cldspinset]"
+                                    name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][cldspinset]"
                                     value="<%- data.cldspinset %>" />
                     </div>
                 </div>
@@ -288,11 +288,11 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                                     <label>
                                         <input class="image-type"
                                                data-role="type-selector"
-                                               data-form-part="<?= /* @escapeNotVerified */ $formName ?>"
+                                               data-form-part="<?= /* @noEscape*/ $formName ?>"
                                                type="checkbox"
                                                value="<?= $block->escapeHtml($attribute->getAttributeCode()) ?>"
                                         />
-                                        <?= /* @escapeNotVerified */ $block->escapeHtml($attribute->getFrontendLabel()) ?>
+                                        <?= /* @noEscape*/ $block->escapeHtml($attribute->getFrontendLabel()) ?>
                                     </label>
                                 </li>
                                 <?php
@@ -316,14 +316,14 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                                     <label>
                                         <input class="image-option-selector"
                                                data-role="option-selector"
-                                               data-form-part="<?= /* @escapeNotVerified */ $formName ?>"
+                                               data-form-part="<?= /* @noEscape*/ $formName ?>"
                                                type="checkbox"
                                                value="<?= $block->escapeHtml($optionType['id']) ?>"
                                         />
-                                        <?= /* @escapeNotVerified */ $block->escapeHtml($optionType['label']) ?>
+                                        <?= /* @noEscape*/ $block->escapeHtml($optionType['label']) ?>
                                     </label>
                                 </li>
-                            <?php
+                                <?php
                             endforeach;
                             ?>
                         </ul>
@@ -344,14 +344,14 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                                     <label>
                                         <input class="image-option-selector"
                                                data-role="bundle-selector"
-                                               data-form-part="<?= /* @escapeNotVerified */ $formName ?>"
+                                               data-form-part="<?= /* @noEscape*/ $formName ?>"
                                                type="checkbox"
                                                value="<?= $block->escapeHtml($selection['id']) ?>"
                                         />
-                                        <?= /* @escapeNotVerified */ $block->escapeHtml($selection['label']) ?>
+                                        <?= /* @noEscape*/ $block->escapeHtml($selection['label']) ?>
                                     </label>
                                 </li>
-                            <?php
+                                <?php
                             endforeach;
                             ?>
                         </ul>
@@ -360,29 +360,29 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
 
                 <div class="admin__field field-image-tags">
                     <label class="admin__field-label" for="image-tags">
-                        <span><?= /* @escapeNotVerified */ __('Tags') ?></span>
+                        <span><?= /* @noEscape*/ __('Tags') ?></span>
                     </label>
 
                     <div class="admin__field-control">
                         <input data-role="image-tags"
                                class="admin__control-text"
-                               name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][tags]"
+                               name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][tags]"
                                value="<%- data.tags %>" />
                     </div>
                 </div>
 
                 <div class="admin__field admin__field-inline field-image-size" data-role="size">
                     <label class="admin__field-label">
-                        <span><?= /* @escapeNotVerified */ __('Image Size') ?></span>
+                        <span><?= /* @noEscape*/ __('Image Size') ?></span>
                     </label>
-                    <div class="admin__field-value" data-message="<?= /* @escapeNotVerified */ __('{size}') ?>"></div>
+                    <div class="admin__field-value" data-message="<?= /* @noEscape*/ __('{size}') ?>"></div>
                 </div>
 
                 <div class="admin__field admin__field-inline field-image-resolution" data-role="resolution">
                     <label class="admin__field-label">
-                        <span><?= /* @escapeNotVerified */ __('Image Resolution') ?></span>
+                        <span><?= /* @noEscape*/ __('Image Resolution') ?></span>
                     </label>
-                    <div class="admin__field-value" data-message="<?= /* @escapeNotVerified */ __('{width}^{height} px') ?>"></div>
+                    <div class="admin__field-value" data-message="<?= /* @noEscape*/ __('{width}^{height} px') ?>"></div>
                 </div>
 
                 <div class="admin__field field-image-hide">
@@ -391,10 +391,10 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                             <input type="checkbox"
                                    id="hide-from-product-page"
                                    data-role="visibility-trigger"
-                                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"
+                                   data-form-part="<?= /* @noEscape*/ $formName ?>"
                                    value="1"
                                    class="admin__control-checkbox"
-                                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][disabled]"
+                                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][disabled]"
                             <% if (data.disabled == 1) { %>checked="checked"<% } %> />
 
                             <label for="hide-from-product-page" class="admin__field-label">
@@ -407,7 +407,7 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
         </div>
     </script>
     <div id="<?= /* @noEscape */ $block->getNewVideoBlockName() ?>" style="display:none">
-        <?= /* @escapeNotVerified */ $block->getFormHtml() ?>
+        <?= /* @noEscape*/ $block->getFormHtml() ?>
         <div id="video-player-preview-location" class="video-player-sidebar">
             <div class="video-player-container"></div>
             <div class="video-information title">
@@ -433,7 +433,7 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                 <fieldset class="admin__fieldset fieldset-image-panel">
                     <div class="admin__field field-image-cldspinset">
                         <label class="admin__field-label" for="image-cldspinset">
-                            <span><?= /* @escapeNotVerified */ __('Cloudinary Spinset Tag') ?></span>
+                            <span><?= /* @noEscape*/ __('Cloudinary Spinset Tag') ?></span>
                         </label>
                         <div class="admin__field-control">
                             <input data-role="new-cldspinset"
@@ -448,11 +448,11 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                 <fieldset class="admin__fieldset fieldset-image-panel">
                     <div class="admin__field field-image-cldspinset">
                         <label class="admin__field-label" for="image-cldspinset">
-                            <span><?= /* @escapeNotVerified */ __('Preview') ?></span>
+                            <span><?= /* @noEscape*/ __('Preview') ?></span>
                         </label>
                         <div class="admin__field-control">
                             <div id="cldspinset-preview" class="cldspinset-preview">
-                                <img id="cldspinset-preview-img" class="placeholder" src="<?= $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_spinset_placeholder.svg') ?>" alt="Cloudinary spinset preview" data-placeholder="<?= $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_spinset_placeholder.svg') ?>"/>
+                                <img id="cldspinset-preview-img" class="placeholder" src="<?= /* @noEscape*/ $block->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_spinset_placeholder.svg') ?>" alt="Cloudinary spinset preview" data-placeholder="<?= /* @noEscape*/ $block->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_spinset_placeholder.svg') ?>"/>
                                 <div id="cldspinset-indic"></div>
                             </div>
                         </div>
