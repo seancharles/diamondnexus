@@ -34,8 +34,7 @@ class Converter extends AbstractHelper
         Context $context,
         ProductCustomOptionInterfaceFactory $productCustomOptionInterfaceFactory,
         OptionInterfaceFactory $optionInterfaceFactory
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->productCustomOptionInterfaceFactory = $productCustomOptionInterfaceFactory;
         $this->optionInterfaceFactory = $optionInterfaceFactory;
@@ -43,7 +42,7 @@ class Converter extends AbstractHelper
 
     public function toSimple(Product $product, $optionsData, $productOptions)
     {
-        $options = [];
+        $options = $product->getOptions();
         foreach ($optionsData['simple'] as $optionData) {
             /** @var Option $option */
             $option = $this->productCustomOptionInterfaceFactory->create();
@@ -68,7 +67,7 @@ class Converter extends AbstractHelper
         $extensionAttributes = $product->getExtensionAttributes();
         $product->setData('bundle_options_data', $optionsData['bundle']);
         $product->setData('bundle_selections_data', $optionsData['bundle']);
-        $options = [];
+        $options = $product->getOptions();
         foreach ($product->getData('bundle_options_data') as $optionData) {
             /** @var Option $option */
             $option = $this->productCustomOptionInterfaceFactory->create();

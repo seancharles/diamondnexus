@@ -231,8 +231,7 @@ class Mapping extends AbstractHelper
         ProductFunctional $productFunctionalHelper,
         Config $eavConfig,
         Logger $logger
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->productAttributeRepository = $productAttributeRepository;
         $this->productRepository = $productRepository;
@@ -241,8 +240,6 @@ class Mapping extends AbstractHelper
         $this->customLogger = $logger;
         $this->eavConfig = $eavConfig->getAttribute(Product::ENTITY, 'product_type')->getSource();
     }
-
-
 
     /**
      * @param string $attributeSetName
@@ -279,7 +276,11 @@ class Mapping extends AbstractHelper
         return $this->reconfigurePrices($product, $data, $configurable);
     }
 
-
+    /**
+     * @param Product $product
+     * @param Configurable $configurable
+     * @return float
+     */
     protected function prepareQty(Product $product, Configurable $configurable)
     {
         $countOfProducts = $product->getQty();
@@ -344,7 +345,8 @@ class Mapping extends AbstractHelper
         $options = [];
         foreach ($productOptions as $productOption) {
             try {
-                $attrCode = $this->productAttributeRepository->get($productOption->getAttributeId())->getAttributeCode();
+                $productAttribute = $this->productAttributeRepository->get($productOption->getAttributeId());
+                $attrCode = $productAttribute->getAttributeCode();
                 if ($attrCode !== 'gemstone') {
                     $bundleOptions[] = $this->getOption($productOption);
                     $options[$productOption['attribute_id']] = $this->prepareOptions($productOption);
@@ -354,7 +356,6 @@ class Mapping extends AbstractHelper
                     if ($productOption['label'] == 'Certified Stone') {
                         $product->setData('certified_stone', null);
                     }
-
                 } else {
                     /** @var ProductExtension $extensionAttributes */
                     $extensionAttributes = $product->getExtensionAttributes();

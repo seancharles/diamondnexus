@@ -7,11 +7,13 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Helper;
 
+use Exception;
 use Magento\Bundle\Api\Data\LinkInterface;
 use Magento\Bundle\Api\Data\LinkInterfaceFactory;
 
 use Magento\Bundle\Model\Product\Type;
 use Magento\Catalog\Api\AttributeSetRepositoryInterface;
+use Magento\Catalog\Api\Data\ProductAttributeMediaGalleryEntryInterface;
 use Magento\Catalog\Api\Data\ProductCustomOptionInterface;
 
 use Magento\Catalog\Api\Data\ProductExtension;
@@ -19,12 +21,15 @@ use Magento\Catalog\Api\Data\ProductExtensionFactory;
 use Magento\Catalog\Api\Data\TierPriceInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
+use Magento\Catalog\Model\Product\Gallery\GalleryManagement;
 use Magento\Catalog\Model\Product\Option;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\CatalogInventory\Model\Stock\Item;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Model\Config;
+use Magento\Framework\Api\Data\ImageContentInterface;
+use Magento\Framework\Api\Data\ImageContentInterfaceFactory;
 use Magento\Framework\Api\Data\VideoContentInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\Helper\AbstractHelper;
@@ -36,6 +41,9 @@ use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\StateException;
+use Magento\Framework\Filesystem\DriverInterface;
+use Magento\Framework\Serialize\SerializerInterface;
+use Magento\MediaStorage\Model\ResourceModel\File\Storage\File;
 use Magento\ProductVideo\Model\Product\Attribute\Media\ExternalVideoEntryConverter;
 use Magento\Store\Model\StoreManagerInterface;
 use Zend_Db_Select;
@@ -91,11 +99,49 @@ class TransformData extends AbstractHelper
      * @var ExternalVideoEntryConverter
      */
     private $externalVideoEntryConverter;
-    /**
-     * @var DirectoryList
-     */
-    protected $directoryList;
 
+    /**
+     * @var File
+     */
+    protected $file;
+
+    /**
+     * @var Curl
+     */
+    protected $curl;
+
+    /**
+     * @var ImageContentInterfaceFactory
+     */
+    protected $imageContentFactory;
+
+    /**
+     * @var GalleryManagement
+     */
+    protected $galleryManagement;
+
+    protected $mimeTypes = [
+        'png' => 'image/png',
+        'jpe' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'jpg' => 'image/jpeg',
+        'gif' => 'image/gif',
+        'bmp' => 'image/bmp',
+        'ico' => 'image/vnd.microsoft.icon',
+        'tiff' => 'image/tiff',
+        'tif' => 'image/tiff',
+        'svg' => 'image/svg+xml',
+        'svgz' => 'image/svg+xml',
+    ];
+    /**
+     * @var SerializerInterface
+     */
+    protected $serializer;
+
+    /**
+     * @var DriverInterface
+     */
+    protected $fileDriver;
 
     /**
      * @param Context $context
@@ -109,7 +155,12 @@ class TransformData extends AbstractHelper
      * @param StoreManagerInterface $storeManager
      * @param Converter $converter
      * @param ProductExtensionFactory $productExtensionFactory
-     * @param DirectoryList $directorylist
+     * @param File $file
+     * @param Curl $curl
+     * @param ImageContentInterfaceFactory $imageContent
+     * @param GalleryManagement $galleryManagement
+     * @param SerializerInterface $serializer
+     * @param DriverInterface $fileDriver
      */
     public function __construct(
         Context $context,
@@ -123,9 +174,13 @@ class TransformData extends AbstractHelper
         StoreManagerInterface $storeManager,
         Converter $converter,
         ProductExtensionFactory $productExtensionFactory,
-        DirectoryList $directorylist
-    )
-    {
+        File $file,
+        Curl $curl,
+        ImageContentInterfaceFactory $imageContent,
+        GalleryManagement $galleryManagement,
+        SerializerInterface $serializer,
+        DriverInterface $fileDriver
+    ) {
         parent::__construct($context);
         $this->eav = $config;
         $this->productCollectionFactory = $collectionFactory;
@@ -137,7 +192,12 @@ class TransformData extends AbstractHelper
         $this->storeManager = $storeManager;
         $this->converter = $converter;
         $this->productExtensionFactory = $productExtensionFactory;
-        $this->directoryList = $directorylist;
+        $this->file = $file;
+        $this->curl = $curl;
+        $this->imageContentFactory = $imageContent;
+        $this->galleryManagement = $galleryManagement;
+        $this->serializer = $serializer;
+        $this->fileDriver = $fileDriver;
     }
 
     /**
@@ -187,12 +247,7 @@ class TransformData extends AbstractHelper
             }
         }
         $this->setProductType($product);
-        foreach (['youtube', 'video_url'] as $link) {
-            $videoUrl = $product->getData($link);
-            if ($videoUrl != null) {
-                $this->addVideoToProduct($videoUrl, $product);
-            }
-        }
+
         foreach (['returnable' => 'is_returnable', 'tcw' => 'acw'] as $before => $new) {
             $customAttribute = $product->getCustomAttribute($before);
             if ($customAttribute != null) {
@@ -205,10 +260,16 @@ class TransformData extends AbstractHelper
         /** Finally! */
         try {
             $this->productRepository->save($product);
+            foreach (['youtube', 'video_url'] as $link) {
+                $videoUrl = $product->getData($link);
+                if ($videoUrl != null) {
+                    $this->addVideoToProduct($videoUrl, $product);
+                }
+            }
         } catch (InputException $inputException) {
             $this->_logger->error($inputException->getMessage());
             throw $inputException;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new StateException(__('Cannot save product.'));
         }
     }
@@ -250,7 +311,8 @@ class TransformData extends AbstractHelper
             `eav_table`.`attribute_id` = {$needAttr->getAttributeId()} AND
             `eav_table`.`store_id` = 0",
                     ['value']
-                )->where('eav_table.value ' . $where);
+                )->where('eav_table.value ' . $where)
+                ->where('sku is not null');
             return $productCollection;
         } catch (LocalizedException $e) {
             $this->_logger->critical($e->getMessage());
@@ -285,57 +347,24 @@ class TransformData extends AbstractHelper
         $videoProvider = str_replace('https://', '', $videoUrl);
         $videoProvider = str_replace('http://', '', $videoProvider);
         $videoProvider = substr($videoProvider, 0, strpos($videoProvider, "."));
-        $videoData = [
-            VideoContentInterface::TITLE => 'Migrated Video',
-            VideoContentInterface::DESCRIPTION => '',
-            VideoContentInterface::PROVIDER => $videoProvider,
-            VideoContentInterface::METADATA => null,
-            VideoContentInterface::URL => $videoUrl,
-            VideoContentInterface::TYPE => ExternalVideoEntryConverter::MEDIA_TYPE_CODE,
-        ];
+        $videoData = [];
         if ($videoProvider == 'vimeo') {
-
-            $file = $this->getFileFromVimeoVideo($videoUrl);
+            $videoData = $this->getFileFromVimeoVideo($videoUrl);
         }
+
         if ($videoProvider == 'youtube') {
-            //* TODO: later
+            $this->_logger->info('Youtube video in product SKU' . $product->getSku());
         }
         // Convert video data array to video entry
 
         $media = $this->externalVideoEntryConverter->convertTo($product, $videoData);
-        $product->setMediaGalleryEntries([$media]);
-    }
-
-    private function getFileFromVimeoVideo($url)
-    {
-        $id = substr(strrchr($url, "/"), 1);
-        $fileXml = unserialize(file_get_contents("http://vimeo.com/api/v2/video/$id.php"));
-        $videoData['file']= $fileXml[0]['thumbnail_medium'];
-        $imageType = substr(strrchr($url,"."),1); //find the image extension
-        $filename   = $id.'.'.$imageType; //give a new name, you can modify as per your requirement
-        try {
-            $filepath = $this->directoryList->getPath('media') . DS . 'import' . DS . $filename;
-            $curl_handle = curl_init();
-            curl_setopt($curl_handle, CURLOPT_URL,$url);
-            curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
-            curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Cirkel');
-            $query = curl_exec($curl_handle);
-            curl_close($curl_handle);
-
-            file_put_contents($filepath, $query); //store the image from external url to the temp storage folder file_get_contents(trim($image_url))
-            $filepath_to_image = $filepath;
-        } catch (FileSystemException $e) {
-            // TODO: error
-        } //path for temp storage folder: ./media/import/
-        // TODO: rework cURL + save file + return file and save to product
-
-
+        $this->galleryManagement->create($product->getSku(), $media);
     }
 
     /**
      * @param Product $product
      * @throws NoSuchEntityException
+     * @throws Exception
      */
     protected function convertConfigToBundle(Product $product)
     {
@@ -345,8 +374,53 @@ class TransformData extends AbstractHelper
     }
 
     /**
+     * @param $url
+     * @return array
+     * @throws FileSystemException
+     */
+    private function getFileFromVimeoVideo($url)
+    {
+        $videoData = [];
+        $id = substr(strrchr($url, "/"), 1);
+        $contentFromVimeo = $this->fileDriver->fileGetContents("http://vimeo.com/api/v2/video/$id.php");
+        $fileXml = $this->serializer->unserialize($contentFromVimeo);
+        $fileUrl = $fileXml[0]['thumbnail_medium'];
+        $imageType = substr(strrchr($fileUrl, "."), 1); //find the image extension
+        $filename = $id . '.' . $imageType; //give a new name, you can modify as per your requirement
+        try {
+            $thumb = $this->curl->execute($fileUrl);
+            $this->file->saveFile($filename, $thumb);
+            $imageContent = $this->imageContentFactory->create();
+            $mimeContentType = $this->mimeTypes[$imageType];
+            $imageContent->setName('Migrated video')
+                ->setType($mimeContentType)
+                ->setBase64EncodedData(base64_encode($thumb));
+            // Build video data array for video entry converter
+            $generalMediaEntryData = [
+                ProductAttributeMediaGalleryEntryInterface::LABEL => 'Migrated video',
+                ProductAttributeMediaGalleryEntryInterface::CONTENT => $imageContent,
+                ProductAttributeMediaGalleryEntryInterface::DISABLED => false,
+                ProductAttributeMediaGalleryEntryInterface::FILE => $filename
+            ];
+            $videoData = array_merge($generalMediaEntryData, [
+                VideoContentInterface::TITLE => 'Migrated Video',
+                VideoContentInterface::DESCRIPTION => '',
+                VideoContentInterface::PROVIDER => 'vimeo',
+                VideoContentInterface::METADATA => null,
+                VideoContentInterface::URL => $url,
+                VideoContentInterface::TYPE => ExternalVideoEntryConverter::MEDIA_TYPE_CODE,
+            ]);
+        } catch (FileSystemException $e) {
+            return [];
+        } catch (LocalizedException $e) {
+            return [];
+        }
+        return $videoData;
+    }
+
+    /**
      * @param Product $product
-     * @throws NoSuchEntityException
+     * @throws Exception
      */
     private function transformOptionsToBundle(Product $product)
     {
@@ -361,8 +435,8 @@ class TransformData extends AbstractHelper
             if ($product->getTypeId() == \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE) {
                 $this->converter->toBundle($product, $optionsData, $productOptions);
             }
-        } catch (\Exception $e) {
-            $this->_logger->error('Transformation error in product ID = '. $product->getId(). ': ' . $e->getMessage());
+        } catch (Exception $e) {
+            $this->_logger->error('Transformation error in productID = ' . $product->getId() . ': ' . $e->getMessage());
             throw $e;
         }
     }
@@ -374,9 +448,6 @@ class TransformData extends AbstractHelper
     private function editProductsFromConfigurable(Product $product)
     {
         foreach ($this->productFunctionalHelper->getProductForDelete() as $productForDelete) {
-            /** I don't know why but with that code products not showing in frontend */
-            /*$productForDelete->setVisibility(false);
-            $productForDelete->setStatus(Status::STATUS_DISABLED);*/
             $movedAsPart = 'Removed as part of: ';
             $devTag = $productForDelete->getData('dev_tag');
             if ($devTag !== null && strpos($devTag, $movedAsPart) !== false) {
@@ -427,7 +498,7 @@ class TransformData extends AbstractHelper
             $qty = $product->getQty();
             $stock->setData('qty', $qty);
             if ($qty == 0) {
-                $this->_logger->info('Product with SKU = ' . $product->getSku(). ' don\'t have qty in stock');
+                $this->_logger->info('Product with SKU = ' . $product->getSku() . ' don\'t have qty in stock');
                 $stock->setData('qty', 999);
             }
             $newExtensions->setStockItem($stock);

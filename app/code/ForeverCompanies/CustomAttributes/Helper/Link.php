@@ -20,8 +20,7 @@ class Link extends AbstractHelper
     public function __construct(
         Context $context,
         LinkInterfaceFactory $linkFactory
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->linkFactory = $linkFactory;
     }
@@ -36,12 +35,15 @@ class Link extends AbstractHelper
         $link->setSku($product->getSku());
         $link->setData('name', $product->getName());
         $link->setData('selection_qty', 1);
+        $link->setData('qty', 1);
+        $link->setData('can_change_qty', 1);
         $link->setData('product_id', $product->getId());
         $link->setData('record_id', $product->getId());
         $link->setIsDefault(false);
         $link->setData('selection_price_value', $product->getPrice());
         $link->setData('price', $product->getPrice());
         $link->setData('selection_price_type', LinkInterface::PRICE_TYPE_FIXED);
+        $link->setData('price_type', LinkInterface::PRICE_TYPE_FIXED);
         return $link;
     }
 }
