@@ -1,0 +1,49 @@
+<?php
+
+use ForeverCompanies\CustomAttributes\Block\System\Config\DeleteByCsv;
+
+/* @var $block DeleteByCsv */
+?>
+<script>
+    require([
+        'jquery',
+        'prototype'
+    ], function (jQuery) {
+
+        var collectSpan = jQuery('#collect_span_csv');
+
+        jQuery('#deletebycsv_button').click(function () {
+            var params = {};
+            new Ajax.Request('<?= /* @noEscape */ $block->getAjaxUrl() ?>', {
+                parameters: params,
+                loaderArea: false,
+                asynchronous: true,
+                onCreate: function () {
+                    collectSpan.find('.collected').hide();
+                    collectSpan.find('.processing_csv').show();
+                },
+                onSuccess: function (response) {
+                    collectSpan.find('.processing_csv').hide();
+
+                    var resultText = '';
+                    if (response.status > 200) {
+                        resultText = response.statusText;
+                    } else {
+                        resultText = 'Success';
+                        collectSpan.find('.deleted_csv').show();
+                    }
+                }
+            });
+        });
+
+    });
+</script>
+
+<?= $block->getButtonHtml() ?>
+<span class="collect-indicator" id="collect_span_csv">
+    <img class="processing_csv" hidden="hidden" alt="Collecting" style="margin:0 5px"
+         src="<?= /* @noEscape */ $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
+    <img class="deleted_csv" hidden="hidden" alt="Collected" style="margin:-3px 5px"
+         src="<?= /* @noEscape */ $block->getViewFileUrl('images/rule_component_apply.gif') ?>"/>
+    <span id="collect_message_span"></span>
+</span>
