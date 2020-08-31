@@ -41,8 +41,7 @@ use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\StateException;
-use Magento\Framework\Filesystem\DriverInterface;
-use Magento\Framework\Serialize\SerializerInterface;
+use Magento\Framework\Serialize\Serializer\Serialize;
 use Magento\MediaStorage\Model\ResourceModel\File\Storage\File;
 use Magento\ProductVideo\Model\Product\Attribute\Media\ExternalVideoEntryConverter;
 use Magento\Store\Model\StoreManagerInterface;
@@ -134,14 +133,9 @@ class TransformData extends AbstractHelper
         'svgz' => 'image/svg+xml',
     ];
     /**
-     * @var SerializerInterface
+     * @var Serialize
      */
     protected $serializer;
-
-    /**
-     * @var DriverInterface
-     */
-    protected $fileDriver;
 
     /**
      * @param Context $context
@@ -159,8 +153,7 @@ class TransformData extends AbstractHelper
      * @param Curl $curl
      * @param ImageContentInterfaceFactory $imageContent
      * @param GalleryManagement $galleryManagement
-     * @param SerializerInterface $serializer
-     * @param DriverInterface $fileDriver
+     * @param Serialize $serializer
      */
     public function __construct(
         Context $context,
@@ -178,8 +171,7 @@ class TransformData extends AbstractHelper
         Curl $curl,
         ImageContentInterfaceFactory $imageContent,
         GalleryManagement $galleryManagement,
-        SerializerInterface $serializer,
-        DriverInterface $fileDriver
+        Serialize $serializer
     ) {
         parent::__construct($context);
         $this->eav = $config;
@@ -197,7 +189,6 @@ class TransformData extends AbstractHelper
         $this->imageContentFactory = $imageContent;
         $this->galleryManagement = $galleryManagement;
         $this->serializer = $serializer;
-        $this->fileDriver = $fileDriver;
     }
 
     /**
@@ -376,13 +367,14 @@ class TransformData extends AbstractHelper
     /**
      * @param $url
      * @return array
-     * @throws FileSystemException
+     * @throws LocalizedException
      */
     private function getFileFromVimeoVideo($url)
     {
         $videoData = [];
         $id = substr(strrchr($url, "/"), 1);
-        $contentFromVimeo = $this->fileDriver->fileGetContents("http://vimeo.com/api/v2/video/$id.php");
+        $path = "http://vimeo.com/api/v2/video/$id.php";
+        $contentFromVimeo = $this->curl->execute($path);
         $fileXml = $this->serializer->unserialize($contentFromVimeo);
         $fileUrl = $fileXml[0]['thumbnail_medium'];
         $imageType = substr(strrchr($fileUrl, "."), 1); //find the image extension
