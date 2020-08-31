@@ -358,6 +358,9 @@ class Mapping extends AbstractHelper
                     }
                 } else {
                     /** @var ProductExtension $extensionAttributes */
+                    if ($productAttribute->getData('frontend_label') != 'Center Stone Size') {
+                        $test = 1;
+                    }
                     $extensionAttributes = $product->getExtensionAttributes();
                     $configurableProductLinks = $extensionAttributes->getConfigurableProductLinks();
                     $links = $this->prepareLinksForBundle($configurableProductLinks);
@@ -432,6 +435,7 @@ class Mapping extends AbstractHelper
      */
     protected function reconfigurePrices(Product $product, array $data, Configurable $configurable)
     {
+        /** @var TODO: recreate it $productPrices */
         $productPrices = [];
         $usedProducts = $configurable->getUsedProducts($product);
         $price = (float)0;
@@ -525,7 +529,20 @@ class Mapping extends AbstractHelper
                         $this->customLogger->info('SKU not found - ' . $sku);
                     }
                 } catch (\Exception $e) {
-                    $this->customLogger->info('SKU not found - ' . $sku);
+                    try {
+                        /** TODO: add 'OV' and 'PR', 'EM', etc. */
+                        $this->customLogger->info('SKU not found - ' . $sku);
+                        $sku = str_replace('USLSSS0001X', 'USLSSS0009X', $sku);
+                        $sku = str_replace('USLSCS0001X', 'USLSCS0010X', $sku);
+                        $product = $this->productRepository->get($sku);
+                        if ($product->getId() !== null) {
+                            $links[] = $this->linkHelper->createNewLink($product);
+                        } else {
+                            $this->customLogger->info('SKU not found - ' . $sku);
+                        }
+                    } catch (\Exception $e) {
+                        $this->customLogger->info('SKU not found - ' . $sku);
+                    }
                 }
             }
         }
@@ -544,7 +561,6 @@ class Mapping extends AbstractHelper
             try {
                 /** @var Product $product */
                 $product = $this->productRepository->getById($productId, true, 0, true);
-                //$this->productFunctionalHelper->addProductToDelete($product);
                 $sku = $product->getSku();
                 $skusForLikedProduct[] = $this->productFunctionalHelper->getStoneSkuFromProductSku($sku);
             } catch (NoSuchEntityException $e) {
