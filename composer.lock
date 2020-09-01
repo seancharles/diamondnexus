@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "78184242b99c625dc575451a8bded20c",
+    "content-hash": "93781c94b1b3b67f7f326a58e6c33b44",
     "packages": [
         {
             "name": "affirm/magento2",
@@ -421,12 +421,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cloudinary/cloudinary_magento2.git",
-                "reference": "30187280a1e5ac9c1c344b7ee5812101641dbdca"
+                "reference": "8b4ae1b5cc4e274181982fd00f3c17744db84115"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cloudinary/cloudinary_magento2/zipball/30187280a1e5ac9c1c344b7ee5812101641dbdca",
-                "reference": "30187280a1e5ac9c1c344b7ee5812101641dbdca",
+                "url": "https://api.github.com/repos/cloudinary/cloudinary_magento2/zipball/8b4ae1b5cc4e274181982fd00f3c17744db84115",
+                "reference": "8b4ae1b5cc4e274181982fd00f3c17744db84115",
                 "shasum": ""
             },
             "require": {
@@ -446,7 +446,7 @@
                 "MIT"
             ],
             "description": "Cloudinary Magento 2 Integration.",
-            "time": "2020-07-27T11:57:42+00:00"
+            "time": "2020-07-29T06:03:58+00:00"
         },
         {
             "name": "cloudinary/cloudinary_php",
@@ -2290,6 +2290,34 @@
             ],
             "description": "Magento composer library helps to instantiate Composer application and run composer commands.",
             "time": "2020-01-07T22:16:08+00:00"
+        },
+        {
+            "name": "magento/data-migration-tool",
+            "version": "2.3.4",
+            "dist": {
+                "type": "zip",
+                "url": "https://repo.magento.com/archives/magento/data-migration-tool/magento-data-migration-tool-2.3.4.0.zip",
+                "shasum": "1a198c3c15721f3bae4fd5751d5547ba3136607b"
+            },
+            "require": {
+                "magento/framework": "*",
+                "monolog/monolog": "^1.17",
+                "symfony/console": "~4.1.0||~4.2.0||~4.3.0||~4.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Migration\\": "src/Migration"
+                },
+                "files": [
+                    "src/Migration/cli_commands.php",
+                    "registration.php"
+                ]
+            },
+            "description": "Migration Tool"
         },
         {
             "name": "magento/extension-b2b",
