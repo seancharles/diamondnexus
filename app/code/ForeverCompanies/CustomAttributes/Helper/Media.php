@@ -74,17 +74,23 @@ class Media extends AbstractHelper
         return $images;
     }
 
+    /**
+     * @param $mediaImages
+     */
     public function saveFieldsToMedia($mediaImages)
     {
         $connection = $this->resourceConnection->getConnection();
         $mediaGallery = $connection->getTableName(Gallery::GALLERY_VALUE_TABLE);
         foreach ($mediaImages as $image) {
+            $optionType = $image['catalog_product_option_type_id'] ?? 0;
+            $selectionId = $image['catalog_product_bundle_selection_id'] ?? 0;
+            $tags = $image['tags'] ?? '';
             $connection->update(
                 $mediaGallery,
                 [
-                    'catalog_product_option_type_id' => $image['catalog_product_option_type_id'],
-                    'catalog_product_bundle_selection_id' => $image['catalog_product_bundle_selection_id'],
-                    'tags' => $image['tags']
+                    'catalog_product_option_type_id' => $optionType,
+                    'catalog_product_bundle_selection_id' => $selectionId,
+                    'tags' => $tags
                 ],
                 ['value_id = ?' => $image['value_id']]
             );

@@ -231,7 +231,8 @@ class Mapping extends AbstractHelper
         ProductFunctional $productFunctionalHelper,
         Config $eavConfig,
         Logger $logger
-    ) {
+    )
+    {
         parent::__construct($context);
         $this->productAttributeRepository = $productAttributeRepository;
         $this->productRepository = $productRepository;
@@ -363,7 +364,8 @@ class Mapping extends AbstractHelper
                     }
                     $extensionAttributes = $product->getExtensionAttributes();
                     $configurableProductLinks = $extensionAttributes->getConfigurableProductLinks();
-                    $links = $this->prepareLinksForBundle($configurableProductLinks);
+                    $basePrice = $product->getPriceInfo()->getPrice('base_price')->getValue();
+                    $links = $this->prepareLinksForBundle($configurableProductLinks, $basePrice);
                     $product->setData('carat_weight', null);
                 }
             } catch (NoSuchEntityException $e) {
@@ -441,7 +443,8 @@ class Mapping extends AbstractHelper
         $price = (float)0;
         /**
          * @var int $key
-         * @var Product $config */
+         * @var Product $config
+         */
         if (count($usedProducts) > 0) {
             foreach ($usedProducts as $key => $config) {
                 if ($price == 0) {
@@ -459,14 +462,14 @@ class Mapping extends AbstractHelper
                 }
             }
         }
-        if (isset($data['links'])) {
-            /** @var \Magento\Bundle\Model\Link $link */
+        /*if (isset($data['links'])) {
+
             foreach ($data['links'] as &$link) {
                 $link->setData('selection_price_value', $link->getPrice() - $price);
             }
         } else {
             $product->setPrice($price);
-        }
+        }*/
         return $data;
     }
 
@@ -501,21 +504,24 @@ class Mapping extends AbstractHelper
 
     /**
      * @param array $productIds
+     * @param float $basePrice
      * @return ProductLinkInterface[]
      */
-    private function prepareLinksForBundle(array $productIds)
+    private function prepareLinksForBundle(array $productIds, float $basePrice)
     {
         $links = [];
         $uniqSkus = $this->getUniqSkus($productIds);
-        foreach ($uniqSkus as $sku) {
+        foreach ($uniqSkus as $originalId => $sku) {
+            $originalPrice = $this->productRepository->getById($originalId)->getPrice();
+            $itemPrice = $originalPrice - $basePrice;
             try {
                 $product = $this->productRepository->get($sku);
                 if ($product->getId() !== null) {
-                    $links[] = $this->linkHelper->createNewLink($product);
+                    $links[] = $this->linkHelper->createNewLink($product, $itemPrice);
                 } else {
                     $product = $this->productRepository->get($sku . 'XXXX');
                     if ($product->getId() !== null) {
-                        $links[] = $this->linkHelper->createNewLink($product);
+                        $links[] = $this->linkHelper->createNewLink($product, $itemPrice);
                     } else {
                         $this->customLogger->info('SKU not found - ' . $sku);
                     }
@@ -524,24 +530,77 @@ class Mapping extends AbstractHelper
                 try {
                     $product = $this->productRepository->get($sku . 'XXXX');
                     if ($product->getId() !== null) {
-                        $links[] = $this->linkHelper->createNewLink($product);
+                        $links[] = $this->linkHelper->createNewLink($product, $itemPrice);
                     } else {
                         $this->customLogger->info('SKU not found - ' . $sku);
                     }
                 } catch (\Exception $e) {
                     try {
-                        /** TODO: add 'OV' and 'PR', 'EM', etc. */
                         $this->customLogger->info('SKU not found - ' . $sku);
-                        $sku = str_replace('USLSSS0001X', 'USLSSS0009X', $sku);
-                        $sku = str_replace('USLSCS0001X', 'USLSCS0010X', $sku);
+                        $stoneForm = substr($sku, 11, 2);
+                        switch ($stoneForm) {
+                            case 'PR':
+                                $sku = str_replace('USLSSS0001X', 'USLSSS0009X', $sku);
+                                $sku = str_replace('USLSCS0001X', 'USLSCS0010X', $sku);
+                                break;
+                            case 'OV':
+                                $sku = str_replace('USLSSS0001X', 'USLSSS0008X', $sku);
+                                $sku = str_replace('USLSCS0001X', 'USLSCS0008X', $sku);
+                                break;
+                            case 'EM':
+                                $sku = str_replace('USLSSS0001X', 'USLSSS0007X', $sku);
+                                $sku = str_replace('USLSCS0001X', 'USLSCS0007X', $sku);
+                                break;
+                            case 'CR':
+                                $sku = str_replace('USLSSS0001X', 'USLSSS0003X', $sku);
+                                $sku = str_replace('USLSCS0001X', 'USLSCS0003X', $sku);
+                                break;
+                            case 'TR':
+                                $sku = str_replace('USLSSS0001X', 'USLSSS0012X', $sku);
+                                $sku = str_replace('USLSCS0001X', 'USLSCS0012X', $sku);
+                                break;
+                            case 'TL':
+                                $sku = str_replace('USLSSS0001X', 'USLSSS0011X', $sku);
+                                $sku = str_replace('USLSCS0001X', 'USLSCS0011X', $sku);
+                                break;
+                            case 'HT':
+                                $sku = str_replace('USLSSS0001X', 'USLSSS0010X', $sku);
+                                $sku = str_replace('USLSCS0001X', 'USLSCS0010X', $sku);
+                                break;
+                            case 'MQ':
+                                $sku = str_replace('USLSSS0001X', 'USLSSS0006X', $sku);
+                                $sku = str_replace('USLSCS0001X', 'USLSCS0006X', $sku);
+                                break;
+                            case 'RA':
+                                $sku = str_replace('USLSSS0001X', 'USLSSS0005X', $sku);
+                                $sku = str_replace('USLSCS0001X', 'USLSCS0005X', $sku);
+                                break;
+                            case 'AS':
+                                $sku = str_replace('USLSSS0001X', 'USLSSS0004X', $sku);
+                                $sku = str_replace('USLSCS0001X', 'USLSCS0004X', $sku);
+                                break;
+                            case 'PC':
+                                $sku = str_replace('USLSSS0001X', 'USLSSS0002X', $sku);
+                                $sku = str_replace('USLSCS0001X', 'USLSCS0002X', $sku);
+                                break;
+                        }
                         $product = $this->productRepository->get($sku);
                         if ($product->getId() !== null) {
-                            $links[] = $this->linkHelper->createNewLink($product);
+                            $links[] = $this->linkHelper->createNewLink($product, $itemPrice);
                         } else {
                             $this->customLogger->info('SKU not found - ' . $sku);
                         }
                     } catch (\Exception $e) {
-                        $this->customLogger->info('SKU not found - ' . $sku);
+                        try {
+                            $product = $this->productRepository->get($sku . 'XXXX');
+                            if ($product->getId() !== null) {
+                                $links[] = $this->linkHelper->createNewLink($product, $itemPrice);
+                            } else {
+                                $this->customLogger->info('SKU not found - ' . $sku);
+                            }
+                        } catch (\Exception $e) {
+                            $this->customLogger->info('SKU not found - ' . $sku);
+                        }
                     }
                 }
             }
@@ -557,12 +616,12 @@ class Mapping extends AbstractHelper
     private function getUniqSkus($productIds)
     {
         $skusForLikedProduct = [];
-        foreach ($productIds as $productId) {
+        foreach ($productIds as $id => $productId) {
             try {
                 /** @var Product $product */
                 $product = $this->productRepository->getById($productId, true, 0, true);
                 $sku = $product->getSku();
-                $skusForLikedProduct[] = $this->productFunctionalHelper->getStoneSkuFromProductSku($sku);
+                $skusForLikedProduct[$id] = $this->productFunctionalHelper->getStoneSkuFromProductSku($sku);
             } catch (NoSuchEntityException $e) {
                 $this->customLogger->info('SKU not found - ' . $e->getMessage());
             }

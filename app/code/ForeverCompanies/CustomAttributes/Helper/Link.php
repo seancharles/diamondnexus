@@ -15,21 +15,36 @@ use Magento\Bundle\Api\Data\LinkInterface;
 
 class Link extends AbstractHelper
 {
+    /**
+     * @var LinkInterfaceFactory
+     */
     protected $linkFactory;
 
+    /**
+     * @var array
+     */
+    protected $usedProducts = [];
+
+    /**
+     * Link constructor.
+     * @param Context $context
+     * @param LinkInterfaceFactory $linkFactory
+     */
     public function __construct(
         Context $context,
         LinkInterfaceFactory $linkFactory
-    ) {
+    )
+    {
         parent::__construct($context);
         $this->linkFactory = $linkFactory;
     }
 
     /**
      * @param ProductInterface $product
+     * @param float $itemPrice
      * @return LinkInterface
      */
-    public function createNewLink(ProductInterface $product)
+    public function createNewLink(ProductInterface $product, float $itemPrice)
     {
         $link = $this->linkFactory->create();
         $link->setSku($product->getSku());
@@ -40,8 +55,8 @@ class Link extends AbstractHelper
         $link->setData('product_id', $product->getId());
         $link->setData('record_id', $product->getId());
         $link->setIsDefault(false);
-        $link->setData('selection_price_value', $product->getPrice());
-        $link->setData('price', $product->getPrice());
+        $link->setData('selection_price_value', $itemPrice);
+        $link->setData('price', (string)$itemPrice);
         $link->setData('selection_price_type', LinkInterface::PRICE_TYPE_FIXED);
         $link->setData('price_type', LinkInterface::PRICE_TYPE_FIXED);
         return $link;

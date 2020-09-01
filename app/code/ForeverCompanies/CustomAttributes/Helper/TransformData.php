@@ -229,7 +229,7 @@ class TransformData extends AbstractHelper
         } catch (\Magento\Framework\Exception\NoSuchEntityException $exception) {
             $this->_logger->warning('Product with ID = ' . $entityId . 'not found');
         }
-        if ($product->isDisabled()) {
+        if ($product->isDisabled() || $product->getData('is_transformed') == true) {
             return;
         }
         if ($product->getTypeId() == Configurable::TYPE_CODE) {
