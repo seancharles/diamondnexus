@@ -58,8 +58,6 @@
 		*/
 		public function execute()
 		{
-			ini_set("display_errors", 1);
-			
 			try{
 				$post = $this->getRequest()->getParams();
 
@@ -69,19 +67,7 @@
 				
 				// added to handle standard bundled options
 				$bundleProductSelections = $post['bundle_option'];
-				
-				/* used for debug testing directly: comment out after */
-				/*
-				$bundleId = 15;
-				$childId = 6;
-				$options = array(
-					13 => 61,
-					14 => 65
-				);
-				*/
-
-				// clear out old cart contents
-				//$this->cart->truncate();
+				$bundleCustomOptions = $post['bundle_custom_option'];
 				
 				// get the quote id
 				$quoteId = $this->cart->getQuote()->getId();
@@ -110,12 +96,6 @@
 					// gets the bundle options for the specific item in cart with selection
 					$bundleOptionValues = $this->formatBundleOptionSelection();
 					
-					$this->shipperLogger->postDebug(
-						'DynamicBundle_Configuration',
-						'bundleSelectionProductIds',
-						$this->bundleSelectionProductIds
-					);
-					
 					$parentItem = $this->addParentItem($bundleProductModel, $dynamicProductModel, $options);
 					$quote->addItem($parentItem);
 					$quote->save();
@@ -131,6 +111,7 @@
 							'item' => $bundleId,
 							'bundle_option' => $bundleOptionValues,
 							'dynamic_bundled_item_id' => $dynamicId,
+							'dynamic_custom_options' => ((isset($bundleCustomOptions) == true) ? $bundleCustomOptions: []),
 							'options' => $options,
 							'qty' => "1"
 						]),
@@ -154,8 +135,15 @@
 							
 						$childProductModel = $this->productloader->create()->load($childId);
 						
+						// parse out the custom options for the selection
+						if(isset($bundleCustomOptions[$selectionId][$bundle['product_id']]) == true) {
+							$childCustomOptions = $bundleCustomOptions[$selectionId][$bundle['product_id']];
+						} else {
+							$childCustomOptions = [];
+						}
+						
 						// child item handling
-						$childItem = $this->addChildItem($childProductModel, $parentItemId);
+						$childItem = $this->addChildItem($childProductModel, $parentItemId, $childCustomOptions);
 						$quote->addItem($childItem);
 						$quote->save();
 						$itemId = $this->getLastQuoteItemId($quoteId);
@@ -164,12 +152,13 @@
 							'info_buyRequest' => json_encode([
 								// read more: https://maxchadwick.xyz/blog/wtf-is-uenc
 								'uenc' => '', // no url redirect on add to cart
-								'product' => $bundleId,
+								'product' => $childId,
 								'selected_configurable_option' => '',
 								'related_product' => '',
 								'item' => $bundleId,
 								'bundle_option' => $bundleOptionValues,
-								'options' => $options,
+								// conditionally set child custom option values if they are provided
+								'options' => $childCustomOptions,
 								'qty' => 1
 							]),
 							'bundle_identity' => $this->bundleIdentity
@@ -186,6 +175,11 @@
 				
 				// dispatch add to cart method to allow other modules to implement customization
 				$this->eventManager->dispatch('tf_cart_product_add_after', ['parent' => $parentItem, 'child' => $childItem]);
+				
+				$this->eventManager->dispatch(
+					'checkout_cart_product_add_after',
+					['quote_item' => $parentItem, 'product' => $bundleProductModel]
+				);
 				
 				$message = __(
 					'You added %1 to your shopping cart.',
@@ -284,94 +278,124 @@
 		
 		private function addParentItem($bundleProductModel, $childProductModel, $options)
 		{
-			try{
-				if ($bundleProductModel->getId()) {
-					$quoteItem = $this->cartItemFactory->create();
-					$quoteItem->setProduct($bundleProductModel);
+			$selectionPrice = 0;
+			$customOptionPrice = 0;
+			$customOptionSkus = null;
+			
+			if ($bundleProductModel->getId()) {
+				$quoteItem = $this->cartItemFactory->create();
+				$quoteItem->setProduct($bundleProductModel);
 
-					if($bundleProductModel->hasOptions() == true)
+				if($bundleProductModel->hasOptions() == true)
+				{
+					// get custom options
+					$productOptions = $bundleProductModel->getOptions();
+
+					foreach($productOptions as $option)
 					{
-						// get custom options
-						$productOptions = $bundleProductModel->getOptions();
-
-						$selectionPrice = 0;
-						$customOptionPrice = 0;
+						$values = $option->getValues();
 						
-						foreach($productOptions as $option)
+						foreach($values as $valueId => $value)
 						{
-							$values = $option->getValues();
-							
-							foreach($values as $valueId => $value)
+							// compare the option values to the selections
+							if($options[$option['option_id']] == $valueId)
 							{
-								// compare the option values to the selections
-								if($options[$option['option_id']] == $valueId)
+								$customOptionPrice += $value->getPrice();
+								
+								if(strlen($value->getSku()) > 0)
 								{
-									$customOptionPrice += $value['price'];
+									$customOptionSkus .= '-' . $value->getSku();
 								}
 							}
 						}
 					}
-					
-					// iterate through native bundle options
-					foreach($this->bundleSelectionProductIds as $bundle)
-					{
-						$selectionPrice += $bundle['price'];
-					}
-					
-					$price = $bundleProductModel->getPrice() + $childProductModel->getPrice() + $customOptionPrice + $selectionPrice;
-					
-					// set the values specific to what they need to be...
-					$quoteItem->setQty(1);
-					$quoteItem->setProductType('bundle');
-					$quoteItem->setCustomPrice($price);
-					$quoteItem->set($price);
-					$quoteItem->setOriginalCustomPrice($price);
-					$quoteItem->setRowTotal($price);
-					$quoteItem->setBaseRowTotal($price);
-					$quoteItem->getProduct()->setIsSuperMode(true);
-					
-					return $quoteItem;
 				}
-			} catch (\Exception $e) {
-				echo $e->getMessage();
+				
+				// iterate through native bundle options
+				foreach($this->bundleSelectionProductIds as $bundle)
+				{
+					$selectionPrice += $bundle['price'];
+				}
+				
+				$price = $bundleProductModel->getPrice() + $childProductModel->getPrice() + $customOptionPrice + $selectionPrice;
+				
+				// set the values specific to what they need to be...
+				$quoteItem->setQty(1);
+				$quoteItem->setProductType('bundle');
+				$quoteItem->setCustomPrice($price);
+				$quoteItem->setOriginalCustomPrice($price);
+				$quoteItem->setRowTotal($price);
+				$quoteItem->setBaseRowTotal($price);
+				$quoteItem->getProduct()->setIsSuperMode(true);
+
+				if($customOptionSkus != null) {
+					$quoteItem->setSku($bundleProductModel->getSku() . $customOptionSkus);
+				}
+				
+				return $quoteItem;
 			}
 		}
 		
-		private function addChildItem($childProductModel, $parentId = 0)
+		private function addChildItem($childProductModel, $parentId = 0, $options)
 		{
-			try{
-				if ($childProductModel->getId()) {
-					$quoteItem = $this->cartItemFactory->create();
-					$quoteItem->setProduct($childProductModel);
-					
-					// implement the bundle price preference
-					if($childProductModel->getBundlePrice() != null) {
-						$price = $childProductModel->getBundlePrice();
-					} else {
-						$price = $childProductModel->getPrice();
-					}
+			$customOptionPrice = 0;
+			$customOptionSkus = null;
+			
+			if ($childProductModel->getId()) {
+				$quoteItem = $this->cartItemFactory->create();
+				$quoteItem->setProduct($childProductModel);
+				
+				if($childProductModel->hasOptions() == true)
+				{
+					// get custom options
+					$productOptions = $childProductModel->getOptions();
 
-					// implement the bundle sku preference
-					if(strlen($childProductModel->getBundleSku()) > 0) {
-						$quoteItem->setSku($childProductModel->getBundleSku());
-					} else {
-						$quoteItem->setSku($childProductModel->getSku());
+					foreach($productOptions as $option)
+					{
+						$values = $option->getValues();
+						
+						foreach($values as $valueId => $value)
+						{
+							// compare the option values to the selections
+							if($options[$option['option_id']] == $valueId)
+							{
+								$customOptionPrice += $value->getPrice();
+								
+								if(strlen($value->getSku()) > 0)
+								{
+									$customOptionSkus .= '-' . $value->getSku();
+								}
+							}
+						}
 					}
-					
-					// set the values specific to what they need to be...
-					$quoteItem->setParentItemId($parentId);
-					$quoteItem->setName($childProductModel->getName());
-					$quoteItem->setQty(1);
-					$quoteItem->setCustomPrice($price);
-					$quoteItem->setOriginalCustomPrice($price);
-					$quoteItem->setRowTotal($price);
-					$quoteItem->setBaseRowTotal($price);
-					#$quoteItem->getProduct()->setIsSuperMode(true);
-					
-					return $quoteItem;
 				}
-			} catch (\Exception $e) {
-				echo $e->getMessage();
+				
+				// implement the bundle price preference
+				if($childProductModel->getBundlePrice() != null) {
+					$price = $childProductModel->getBundlePrice() + $customOptionPrice;
+				} else {
+					$price = $childProductModel->getPrice() + $customOptionPrice;
+				}
+
+				// implement the bundle sku preference
+				if(strlen($childProductModel->getBundleSku()) > 0) {
+					$quoteItem->setSku($childProductModel->getBundleSku() . $customOptionSkus);
+				} else {
+					$quoteItem->setSku($childProductModel->getSku() . $customOptionSkus);
+				}
+				
+				// set the values specific to what they need to be...
+				$quoteItem->setParentItemId($parentId);
+				$quoteItem->setName($childProductModel->getName());
+				$quoteItem->setQty(1);
+				$quoteItem->setProductType('simple');
+				$quoteItem->setCustomPrice($price);
+				$quoteItem->setOriginalCustomPrice($price);
+				$quoteItem->setRowTotal($price);
+				$quoteItem->setBaseRowTotal($price);
+				//$quoteItem->getProduct()->setIsSuperMode(true);
+				
+				return $quoteItem;
 			}
 		}
 		

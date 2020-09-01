@@ -86,6 +86,9 @@ class Configuration extends \Magento\Bundle\Helper\Catalog\Product\Configuration
 
 		// fetch dynamic bundled item
 		$bundledItemId = $item->getBuyRequest()->getDynamicBundledItemId();
+		
+		// fetch bundle child custom options
+		$bundleChildCustomOptions = $item->getBuyRequest()->getOptions();
 
 		// specific for 1216 engagement rings
 		if($bundledItemId){
@@ -113,14 +116,18 @@ class Configuration extends \Magento\Bundle\Helper\Catalog\Product\Configuration
 					if($bundleOption->getIsDynamicSelection() == 1) {
 						
 						if($bundledItemId > 0) {
-							$options = array(
-								['label' => "Diamond",'value' => [$dynamicProduct->getName() . " " . $this->pricingHelper->currency($dynamicProduct->getPrice())]]
+							
+							$itemPrice = $this->pricingHelper->currency(($dynamicProduct->getBundlePrice() > 0) ? $dynamicProduct->getBundlePrice(): $dynamicProduct->getPrice());
+							
+							$options = array([
+									'label' => $bundleOption->getTitle(),
+									'value' => [$dynamicProduct->getName() . " " . $itemPrice]]
 							);
 						}
 						
 					} else {
 						
-						// handle standard options normally
+						// handle standard options
 						if ($bundleOption->getSelections()) {
 							$option = ['label' => $bundleOption->getTitle(), 'value' => []];
 
@@ -129,15 +136,14 @@ class Configuration extends \Magento\Bundle\Helper\Catalog\Product\Configuration
 							foreach ($bundleSelections as $bundleSelection) {
 								$qty = $this->getSelectionQty($product, $bundleSelection->getSelectionId()) * 1;
 								if ($qty) {
+									
+									$itemPrice = $this->getChildCustomOptionPrice($product, $bundleChildCustomOptions);
+									
 									$option['value'][] = $qty . ' x '
 										. $this->escaper->escapeHtml($bundleSelection->getName())
 										. ' '
-										. $this->pricingHelper->currency(($product->getBundlePrice() > 0) ? $product->getBundlePrice(): $product->getPrice());
-										/*
-										. $this->pricingHelper->currency(
-											$this->getSelectionFinalPrice($item, $bundleSelection)
-										);
-										*/
+										. $itemPrice;
+										
 									$option['has_html'] = true;
 								}
 							}
@@ -153,4 +159,34 @@ class Configuration extends \Magento\Bundle\Helper\Catalog\Product\Configuration
 
         return $options;
     }
+	
+	public function getChildCustomOptionPrice($product, $options)
+	{
+		$customOptionPrice = 0;
+		
+			$this->shipperLogger->postDebug(
+				'DynamicBundle_Configuration',
+				'options',
+				$options
+			);
+		
+		foreach($product->getOptions() as $option)
+		{
+			$values = $option->getValues();
+			
+			foreach($values as $value)
+			{
+				if( isset($options[$option->getId()]) == true && $options[$option->getId()] == $value->getId() && $value->getPrice() > 0 )
+				{
+					$customOptionPrice += $value->getPrice();
+					
+					break;
+				}
+			}
+		}
+		
+		$price = (($product->getBundlePrice() > 0) ? $product->getBundlePrice(): $product->getPrice());
+		
+		return $this->pricingHelper->currency($price + $customOptionPrice);
+	}
 }

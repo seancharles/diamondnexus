@@ -53,27 +53,22 @@ class ShipperMapper
 		$magentoItems,
 		$childItems = false
     ) {
+
 		$this->getShippingGroupMap();
 
 		$aShipGroup = array();
-		
+
 		foreach($magentoItems as $item)
 		{
 			$buyRequest = $item->getBuyRequest();
 
 			$productShippingGroup = $item->getProduct()->getShipperhqShippingGroup();
 
-			$aShipGroup[] = $this->getShippingGroupDays(
-				$this->aShippingGroupMap[$productShippingGroup]
-			);
-
-			/*
-				$this->shipperLogger->postDebug(
-					'Plugin_ShipperMapper',
-					'product attribute',
+			if($productShippingGroup) {
+				$aShipGroup[] = $this->getShippingGroupDays(
 					$this->aShippingGroupMap[$productShippingGroup]
 				);
-			*/
+			}
 
 			$options = $this->productOptionRepository->getProductOptions($item->getProduct());
 
@@ -81,32 +76,19 @@ class ShipperMapper
 			{
 				$values = $option->getValues();
 				
-				foreach($values as $value) {
-					
-					/*
-						$this->shipperLogger->postDebug(
-							'Plugin_ShipperMapper',
-							'value',
-							$value->getId()
-						);
-					*/
-					
-					if( $buyRequest['options'][$option['option_id']] == $value->getId() )
+				foreach($values as $value)
+				{
+					if($value->getShippinggroup() > 0)
 					{
-						if( isset($this->aShippingGroupMap[$value->getShippinggroup()]) == true )
+						if( $buyRequest['options'][$option['option_id']] == $value->getId() )
 						{
-							$aShipGroup[] = $this->getShippingGroupDays(
-								$this->aShippingGroupMap[$value->getShippinggroup()]
-							);
-							
-						} else {
-							
-							// log condition where mapping didn't match
-							$this->shipperLogger->postDebug(
-								'Plugin_ShipperMapper',
-								'Error: missing shipping group',
-								print_r ($buyRequest, true) .	print_r ($this->aShippingGroupMap, true)
-							);
+							if( isset($this->aShippingGroupMap[$value->getShippinggroup()]) == true )
+							{
+								$aShipGroup[] = $this->getShippingGroupDays(
+									$this->aShippingGroupMap[$value->getShippinggroup()]
+								);
+								
+							}
 						}
 					}
 				}
@@ -120,28 +102,25 @@ class ShipperMapper
 				// load the product to get ship group
 				$product = $this->productRepository->getById($productId);
 				
-				$aShipGroup[] = $this->getShippingGroupDays(
-					$this->aShippingGroupMap[$product->getShipperhqShippingGroup()]
-				);
+				$bundledItemShipGroup = $product->getShipperhqShippingGroup();
+				
+				if($bundledItemShipGroup > 0)
+				{
+					$aShipGroup[] = $this->getShippingGroupDays(
+						$this->aShippingGroupMap[$product->getShipperhqShippingGroup()]
+					);
+				}
 			}
-			
-			
 		}
 		
 		if(count($aShipGroup) == 0)
 		{
 			// set default ship date to 5 days
 			$aShipGroup[0] = 5;
-			
-			$this->shipperLogger->postDebug(
-				'Plugin_ShipperMapper',
-				'error: aShipGroup empty, no valid ship groups for: ' . $item->getProduct()->getSku() . ', setting default ship group to 5 Day',
-				$aShipGroup
-			);
 		}
 		
 		$max = max($aShipGroup);
-			
+		
 		foreach($result as &$item)
 		{
 			$item->attributes[0]['value'] = $max . ' Day';
