@@ -88,3 +88,4 @@ mer.php
 nginx.conf.sample
 package.json.sample
 phpserver/README.md
+app/etc/env.php
