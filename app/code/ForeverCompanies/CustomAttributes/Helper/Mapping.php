@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace ForeverCompanies\CustomAttributes\Helper;
 
 use ForeverCompanies\CustomAttributes\Logger\Logger;
+use Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePrice;
 use Magento\Catalog\Api\Data\ProductExtension;
 use Magento\Catalog\Api\Data\ProductLinkInterface;
 use Magento\Catalog\Api\Data\TierPriceInterface;
@@ -211,6 +212,10 @@ class Mapping extends AbstractHelper
      * @var Logger
      */
     protected $customLogger;
+    /**
+     * @var BundlePriceUse
+     */
+    private $bundlePriceHelper;
 
     /**
      * Mapping constructor.
@@ -220,6 +225,7 @@ class Mapping extends AbstractHelper
      * @param Link $linkHelper
      * @param ProductFunctional $productFunctionalHelper
      * @param Config $eavConfig
+     * @param BundlePriceUse $bundlePriceHelper
      * @param Logger $logger
      * @throws LocalizedException
      */
@@ -230,6 +236,7 @@ class Mapping extends AbstractHelper
         Link $linkHelper,
         ProductFunctional $productFunctionalHelper,
         Config $eavConfig,
+        BundlePriceUse $bundlePriceHelper,
         Logger $logger
     )
     {
@@ -238,6 +245,7 @@ class Mapping extends AbstractHelper
         $this->productRepository = $productRepository;
         $this->linkHelper = $linkHelper;
         $this->productFunctionalHelper = $productFunctionalHelper;
+        $this->bundlePriceHelper = $bundlePriceHelper;
         $this->customLogger = $logger;
         $this->eavConfig = $eavConfig->getAttribute(Product::ENTITY, 'product_type')->getSource();
     }
@@ -274,7 +282,7 @@ class Mapping extends AbstractHelper
             $data = $this->prepareProductToBundle($product, $productOptions, $configurable);
         }
         $product->setQty($this->prepareQty($product, $configurable));
-        return $this->reconfigurePrices($product, $data, $configurable);
+        return $data;
     }
 
     /**
@@ -286,7 +294,9 @@ class Mapping extends AbstractHelper
     {
         $countOfProducts = $product->getQty();
         $usedProducts = $configurable->getUsedProducts($product);
+        /** @var Product $usedProduct */
         foreach ($usedProducts as $usedProduct) {
+            $this->productFunctionalHelper->addProductToDelete($usedProduct);
             $qty = $usedProduct->getQty();
             if ($countOfProducts == 0) {
                 $countOfProducts = $qty;
@@ -365,7 +375,7 @@ class Mapping extends AbstractHelper
                     $extensionAttributes = $product->getExtensionAttributes();
                     $configurableProductLinks = $extensionAttributes->getConfigurableProductLinks();
                     $basePrice = $product->getPriceInfo()->getPrice('base_price')->getValue();
-                    $links = $this->prepareLinksForBundle($configurableProductLinks, $basePrice);
+                    $links = $this->prepareLinksForBundle($configurableProductLinks, $basePrice, $product->getSku());
                     $product->setData('carat_weight', null);
                 }
             } catch (NoSuchEntityException $e) {
@@ -433,11 +443,11 @@ class Mapping extends AbstractHelper
      * @param Product $product
      * @param array $data
      * @param Configurable $configurable
+     * @deprecared
      * @return array
      */
     protected function reconfigurePrices(Product $product, array $data, Configurable $configurable)
     {
-        /** @var TODO: recreate it $productPrices */
         $productPrices = [];
         $usedProducts = $configurable->getUsedProducts($product);
         $price = (float)0;
@@ -454,7 +464,6 @@ class Mapping extends AbstractHelper
                     $price = (float)$config->getPrice();
                 }
                 $productPrices[$key] = $config->getPrice();
-                $this->productFunctionalHelper->addProductToDelete($config);
             }
             foreach ($data['options'] as $attributeId => &$options) {
                 foreach ($options as $key => &$option) {
@@ -505,9 +514,11 @@ class Mapping extends AbstractHelper
     /**
      * @param array $productIds
      * @param float $basePrice
+     * @param string $originalSku
      * @return ProductLinkInterface[]
+     * @throws NoSuchEntityException
      */
-    private function prepareLinksForBundle(array $productIds, float $basePrice)
+    private function prepareLinksForBundle(array $productIds, float $basePrice, string $originalSku)
     {
         $links = [];
         $uniqSkus = $this->getUniqSkus($productIds);
@@ -517,11 +528,13 @@ class Mapping extends AbstractHelper
             try {
                 $product = $this->productRepository->get($sku);
                 if ($product->getId() !== null) {
-                    $links[] = $this->linkHelper->createNewLink($product, $itemPrice);
+                    $links[] = $this->linkHelper->createNewLink($product);
+                    $this->bundlePriceHelper->setBundlePrice($product, $itemPrice, $originalSku);
                 } else {
                     $product = $this->productRepository->get($sku . 'XXXX');
                     if ($product->getId() !== null) {
-                        $links[] = $this->linkHelper->createNewLink($product, $itemPrice);
+                        $links[] = $this->linkHelper->createNewLink($product);
+                        $this->bundlePriceHelper->setBundlePrice($product, $itemPrice, $originalSku);
                     } else {
                         $this->customLogger->info('SKU not found - ' . $sku);
                     }
@@ -530,7 +543,8 @@ class Mapping extends AbstractHelper
                 try {
                     $product = $this->productRepository->get($sku . 'XXXX');
                     if ($product->getId() !== null) {
-                        $links[] = $this->linkHelper->createNewLink($product, $itemPrice);
+                        $links[] = $this->linkHelper->createNewLink($product);
+                        $this->bundlePriceHelper->setBundlePrice($product, $itemPrice, $originalSku);
                     } else {
                         $this->customLogger->info('SKU not found - ' . $sku);
                     }
@@ -586,7 +600,8 @@ class Mapping extends AbstractHelper
                         }
                         $product = $this->productRepository->get($sku);
                         if ($product->getId() !== null) {
-                            $links[] = $this->linkHelper->createNewLink($product, $itemPrice);
+                            $links[] = $this->linkHelper->createNewLink($product);
+                            $this->bundlePriceHelper->setBundlePrice($product, $itemPrice, $originalSku);
                         } else {
                             $this->customLogger->info('SKU not found - ' . $sku);
                         }
@@ -594,7 +609,8 @@ class Mapping extends AbstractHelper
                         try {
                             $product = $this->productRepository->get($sku . 'XXXX');
                             if ($product->getId() !== null) {
-                                $links[] = $this->linkHelper->createNewLink($product, $itemPrice);
+                                $links[] = $this->linkHelper->createNewLink($product);
+                                $this->bundlePriceHelper->setBundlePrice($product, $itemPrice, $originalSku);
                             } else {
                                 $this->customLogger->info('SKU not found - ' . $sku);
                             }
@@ -622,6 +638,7 @@ class Mapping extends AbstractHelper
                 $product = $this->productRepository->getById($productId, true, 0, true);
                 $sku = $product->getSku();
                 $skusForLikedProduct[$id] = $this->productFunctionalHelper->getStoneSkuFromProductSku($sku);
+                $this->productFunctionalHelper->addProductToDelete($product);
             } catch (NoSuchEntityException $e) {
                 $this->customLogger->info('SKU not found - ' . $e->getMessage());
             }

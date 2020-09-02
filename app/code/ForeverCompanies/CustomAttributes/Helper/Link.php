@@ -41,10 +41,9 @@ class Link extends AbstractHelper
 
     /**
      * @param ProductInterface $product
-     * @param float $itemPrice
      * @return LinkInterface
      */
-    public function createNewLink(ProductInterface $product, float $itemPrice)
+    public function createNewLink(ProductInterface $product)
     {
         $link = $this->linkFactory->create();
         $link->setSku($product->getSku());
@@ -55,10 +54,10 @@ class Link extends AbstractHelper
         $link->setData('product_id', $product->getId());
         $link->setData('record_id', $product->getId());
         $link->setIsDefault(false);
-        $link->setData('selection_price_value', $itemPrice);
-        $link->setData('price', (string)$itemPrice);
-        $link->setData('selection_price_type', LinkInterface::PRICE_TYPE_FIXED);
-        $link->setData('price_type', LinkInterface::PRICE_TYPE_FIXED);
+        //$link->setData('selection_price_value', $itemPrice);
+        //$link->setData('price', (string)$itemPrice);
+        //$link->setData('selection_price_type', LinkInterface::PRICE_TYPE_FIXED);
+        //$link->setData('price_type', LinkInterface::PRICE_TYPE_FIXED);
         return $link;
     }
 }
