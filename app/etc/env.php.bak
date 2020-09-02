@@ -113,24 +113,11 @@ return [
     ],
     'system' => [
         'default' => [
-            'web' => [
-                'unsecure' => [
-                    'base_url' => 'https://'.$_ENV['MAG_NAME'].'.1215diamonds.com/'
-                ],
-                'secure' => [
-                    'base_url' => 'https://'.$_ENV['MAG_NAME'].'.1215diamonds.com/'
-                ]
-            ],
             'iwd_storelocator' => [
                 'api_settings' => [
                     'type' => 'google'
                 ]
             ]
-        ]
-    ],
-    'http_cache_hosts' => [
-        [
-            'host' => $_ENV['VARNISH_HOST']
         ]
     ]
 ];
