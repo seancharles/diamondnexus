@@ -16,42 +16,14 @@ use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Option;
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Api\Data\AttributeInterface;
-use Magento\Eav\Model\Config;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Catalog\Api\Data\ProductInterface;
 
 class Mapping extends AbstractHelper
 {
-
-    /**
-     * @var string[]
-     */
-    protected $mappingProductType = [
-        'Migration_Bracelets' => 'Bracelet',
-        'Migration_Chains' => 'Chain',
-        'Migration_Custom Cut' => 'Other',
-        'Migration_Default' => 'Other',
-        'Migration_Earrings' => 'Earring',
-        'Migration_Gift Card' => 'Gift Card',
-        'Migration_Loose Diamonds' => 'Diamond',
-        'Migration_Loose Stones' => 'Stone',
-        'Migration_Matched Sets' => 'Matched Set',
-        'Migration_Matching Bands' => 'Matching Band',
-        'Migration_Mens Rings' => 'Ring',
-        'Migration_Necklaces' => 'Necklace',
-        'Migration_Pendants' => 'Pendant',
-        'Migration_Pure Carbon Rings' => 'Ring',
-        'Migration_Ring Settings' => 'Ring Setting',
-        'Migration_Rings' => 'Ring',
-        'Migration_Simple' => 'Other',
-        'Migration_Watches' => 'Watch'
-    ];
     /**
      * @var array
      */
@@ -203,11 +175,6 @@ class Mapping extends AbstractHelper
     protected $productFunctionalHelper;
 
     /**
-     * @var Config
-     */
-    protected $eavConfig;
-
-    /**
      * @var Logger
      */
     protected $customLogger;
@@ -219,9 +186,7 @@ class Mapping extends AbstractHelper
      * @param ProductRepositoryInterface $productRepository
      * @param Link $linkHelper
      * @param ProductFunctional $productFunctionalHelper
-     * @param Config $eavConfig
      * @param Logger $logger
-     * @throws LocalizedException
      */
     public function __construct(
         Context $context,
@@ -229,7 +194,6 @@ class Mapping extends AbstractHelper
         ProductRepositoryInterface $productRepository,
         Link $linkHelper,
         ProductFunctional $productFunctionalHelper,
-        Config $eavConfig,
         Logger $logger
     ) {
         parent::__construct($context);
@@ -238,17 +202,6 @@ class Mapping extends AbstractHelper
         $this->linkHelper = $linkHelper;
         $this->productFunctionalHelper = $productFunctionalHelper;
         $this->customLogger = $logger;
-        $this->eavConfig = $eavConfig->getAttribute(Product::ENTITY, 'product_type')->getSource();
-    }
-
-    /**
-     * @param string $attributeSetName
-     * @return string
-     */
-    public function attributeSetToProductType(string $attributeSetName)
-    {
-        $typeName = $this->mappingProductType[$attributeSetName];
-        return $this->eavConfig->getOptionId($typeName);
     }
 
     /**
@@ -273,7 +226,7 @@ class Mapping extends AbstractHelper
             $data = $this->prepareProductToBundle($product, $productOptions, $configurable);
         }
         $product->setQty($this->prepareQty($product, $configurable));
-        return $this->reconfigurePrices($product, $data, $configurable);
+        return $data;
     }
 
     /**
@@ -285,7 +238,9 @@ class Mapping extends AbstractHelper
     {
         $countOfProducts = $product->getQty();
         $usedProducts = $configurable->getUsedProducts($product);
+        /** @var Product $usedProduct */
         foreach ($usedProducts as $usedProduct) {
+            $this->productFunctionalHelper->addProductToDelete($usedProduct);
             $qty = $usedProduct->getQty();
             if ($countOfProducts == 0) {
                 $countOfProducts = $qty;
@@ -358,9 +313,13 @@ class Mapping extends AbstractHelper
                     }
                 } else {
                     /** @var ProductExtension $extensionAttributes */
+
+                    /** TODO when I can get attribute 'Total Carat Weight' */
+
                     $extensionAttributes = $product->getExtensionAttributes();
                     $configurableProductLinks = $extensionAttributes->getConfigurableProductLinks();
-                    $links = $this->prepareLinksForBundle($configurableProductLinks);
+                    $basePrice = $product->getPriceInfo()->getPrice('base_price')->getValue();
+                    $links = $this->prepareLinksForBundle($configurableProductLinks, $basePrice, $product->getSku());
                     $product->setData('carat_weight', null);
                 }
             } catch (NoSuchEntityException $e) {
@@ -428,6 +387,7 @@ class Mapping extends AbstractHelper
      * @param Product $product
      * @param array $data
      * @param Configurable $configurable
+     * @deprecared
      * @return array
      */
     protected function reconfigurePrices(Product $product, array $data, Configurable $configurable)
@@ -437,7 +397,8 @@ class Mapping extends AbstractHelper
         $price = (float)0;
         /**
          * @var int $key
-         * @var Product $config */
+         * @var Product $config
+         */
         if (count($usedProducts) > 0) {
             foreach ($usedProducts as $key => $config) {
                 if ($price == 0) {
@@ -447,7 +408,6 @@ class Mapping extends AbstractHelper
                     $price = (float)$config->getPrice();
                 }
                 $productPrices[$key] = $config->getPrice();
-                $this->productFunctionalHelper->addProductToDelete($config);
             }
             foreach ($data['options'] as $attributeId => &$options) {
                 foreach ($options as $key => &$option) {
@@ -455,14 +415,14 @@ class Mapping extends AbstractHelper
                 }
             }
         }
-        if (isset($data['links'])) {
-            /** @var \Magento\Bundle\Model\Link $link */
+        /*if (isset($data['links'])) {
+
             foreach ($data['links'] as &$link) {
                 $link->setData('selection_price_value', $link->getPrice() - $price);
             }
         } else {
             $product->setPrice($price);
-        }
+        }*/
         return $data;
     }
 
@@ -497,39 +457,20 @@ class Mapping extends AbstractHelper
 
     /**
      * @param array $productIds
+     * @param float $basePrice
+     * @param string $originalSku
      * @return ProductLinkInterface[]
+     * @throws NoSuchEntityException
      */
-    private function prepareLinksForBundle(array $productIds)
+    private function prepareLinksForBundle(array $productIds, float $basePrice, string $originalSku)
     {
         $links = [];
         $uniqSkus = $this->getUniqSkus($productIds);
-        foreach ($uniqSkus as $sku) {
-            try {
-                $product = $this->productRepository->get($sku);
-                if ($product->getId() !== null) {
-                    $links[] = $this->linkHelper->createNewLink($product);
-                } else {
-                    $product = $this->productRepository->get($sku . 'XXXX');
-                    if ($product->getId() !== null) {
-                        $links[] = $this->linkHelper->createNewLink($product);
-                    } else {
-                        $this->customLogger->info('SKU not found - ' . $sku);
-                    }
-                }
-            } catch (NoSuchEntityException $e) {
-                try {
-                    $product = $this->productRepository->get($sku . 'XXXX');
-                    if ($product->getId() !== null) {
-                        $links[] = $this->linkHelper->createNewLink($product);
-                    } else {
-                        $this->customLogger->info('SKU not found - ' . $sku);
-                    }
-                } catch (\Exception $e) {
-                    $this->customLogger->info('SKU not found - ' . $sku);
-                }
-            }
+        foreach ($uniqSkus as $originalId => $sku) {
+            $originalPrice = $this->productRepository->getById($originalId)->getPrice();
+            $itemPrice = $originalPrice - $basePrice;
+            $links[] = $this->linkHelper->createNewLink($sku, $itemPrice, $originalSku);
         }
-
         return $links;
     }
 
@@ -540,13 +481,13 @@ class Mapping extends AbstractHelper
     private function getUniqSkus($productIds)
     {
         $skusForLikedProduct = [];
-        foreach ($productIds as $productId) {
+        foreach ($productIds as $id => $productId) {
             try {
                 /** @var Product $product */
                 $product = $this->productRepository->getById($productId, true, 0, true);
-                //$this->productFunctionalHelper->addProductToDelete($product);
                 $sku = $product->getSku();
-                $skusForLikedProduct[] = $this->productFunctionalHelper->getStoneSkuFromProductSku($sku);
+                $skusForLikedProduct[$id] = $this->productFunctionalHelper->getStoneSkuFromProductSku($sku);
+                $this->productFunctionalHelper->addProductToDelete($product);
             } catch (NoSuchEntityException $e) {
                 $this->customLogger->info('SKU not found - ' . $e->getMessage());
             }

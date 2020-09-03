@@ -10,12 +10,10 @@ namespace ForeverCompanies\CustomAttributes\Helper;
 use Exception;
 use Magento\Bundle\Api\Data\LinkInterface;
 use Magento\Bundle\Api\Data\LinkInterfaceFactory;
-
 use Magento\Bundle\Model\Product\Type;
 use Magento\Catalog\Api\AttributeSetRepositoryInterface;
 use Magento\Catalog\Api\Data\ProductAttributeMediaGalleryEntryInterface;
 use Magento\Catalog\Api\Data\ProductCustomOptionInterface;
-
 use Magento\Catalog\Api\Data\ProductExtension;
 use Magento\Catalog\Api\Data\ProductExtensionFactory;
 use Magento\Catalog\Api\Data\TierPriceInterface;
@@ -63,11 +61,6 @@ class TransformData extends AbstractHelper
      * @var ProductRepository
      */
     protected $productRepository;
-
-    /**
-     * @var AttributeSetRepositoryInterface
-     */
-    protected $attrSetRepository;
 
     /**
      * @var Mapping
@@ -119,6 +112,16 @@ class TransformData extends AbstractHelper
      */
     protected $galleryManagement;
 
+    /**
+     * @var Serialize
+     */
+    protected $serializer;
+
+    /**
+     * @var ProductType
+     */
+    protected $productTypeHelper;
+
     protected $mimeTypes = [
         'png' => 'image/png',
         'jpe' => 'image/jpeg',
@@ -132,17 +135,13 @@ class TransformData extends AbstractHelper
         'svg' => 'image/svg+xml',
         'svgz' => 'image/svg+xml',
     ];
-    /**
-     * @var Serialize
-     */
-    protected $serializer;
 
     /**
      * @param Context $context
      * @param Config $config
      * @param CollectionFactory $collectionFactory
      * @param ProductRepository $productRepository
-     * @param AttributeSetRepositoryInterface $attributeSetRepository
+     * @param ProductType $productTypeHelper
      * @param ExternalVideoEntryConverter $videoEntryConverter
      * @param Mapping $mapping
      * @param ProductFunctional $productFunctionalHelper
@@ -160,7 +159,7 @@ class TransformData extends AbstractHelper
         Config $config,
         CollectionFactory $collectionFactory,
         ProductRepository $productRepository,
-        AttributeSetRepositoryInterface $attributeSetRepository,
+        ProductType $productTypeHelper,
         ExternalVideoEntryConverter $videoEntryConverter,
         Mapping $mapping,
         ProductFunctional $productFunctionalHelper,
@@ -177,7 +176,7 @@ class TransformData extends AbstractHelper
         $this->eav = $config;
         $this->productCollectionFactory = $collectionFactory;
         $this->productRepository = $productRepository;
-        $this->attrSetRepository = $attributeSetRepository;
+        $this->productTypeHelper = $productTypeHelper;
         $this->externalVideoEntryConverter = $videoEntryConverter;
         $this->mapping = $mapping;
         $this->productFunctionalHelper = $productFunctionalHelper;
@@ -226,10 +225,10 @@ class TransformData extends AbstractHelper
         /** @var Product $product */
         try {
             $product = $this->productRepository->getById($entityId, true, 0, true);
-        } catch (\Magento\Framework\Exception\NoSuchEntityException $exception) {
+        } catch (NoSuchEntityException $exception) {
             $this->_logger->warning('Product with ID = ' . $entityId . 'not found');
         }
-        if ($product->isDisabled()) {
+        if ($product->isDisabled() || $product->getData('is_transformed') == true) {
             return;
         }
         if ($product->getTypeId() == Configurable::TYPE_CODE) {
@@ -237,7 +236,7 @@ class TransformData extends AbstractHelper
                 $this->convertConfigToBundle($product);
             }
         }
-        $this->setProductType($product);
+        $this->productTypeHelper->setProductType($product);
 
         foreach (['returnable' => 'is_returnable', 'tcw' => 'acw'] as $before => $new) {
             $customAttribute = $product->getCustomAttribute($before);
@@ -254,7 +253,7 @@ class TransformData extends AbstractHelper
             foreach (['youtube', 'video_url'] as $link) {
                 $videoUrl = $product->getData($link);
                 if ($videoUrl != null) {
-                    $this->addVideoToProduct($videoUrl, $product);
+                    $this->addVideoToProduct($videoUrl, $product, $link);
                 }
             }
         } catch (InputException $inputException) {
@@ -303,7 +302,8 @@ class TransformData extends AbstractHelper
             `eav_table`.`store_id` = 0",
                     ['value']
                 )->where('eav_table.value ' . $where)
-                ->where('sku is not null');
+                ->where('sku is not null')
+            ->where('entity_id > 86033');
             return $productCollection;
         } catch (LocalizedException $e) {
             $this->_logger->critical($e->getMessage());
@@ -313,39 +313,20 @@ class TransformData extends AbstractHelper
 
     /**
      * @param Product $product
-     * @throws NoSuchEntityException
-     */
-    protected function setProductType(Product $product)
-    {
-        if ($product->getData('product_type') == null) {
-            $attributeSetName = $this->attrSetRepository->get($product->getAttributeSetId())->getAttributeSetName();
-            $productType = $this->mapping->attributeSetToProductType($attributeSetName);
-            $product->setCustomAttribute('product_type', $productType);
-            if ($product->getCustomAttribute('product_type') == 'Stone') {
-                $product->setCustomAttribute('allow_in_bundles', 1);
-            }
-        }
-    }
-
-    /**
-     * @param Product $product
      * @param string $videoUrl
      *
      * @throws LocalizedException
      */
-    protected function addVideoToProduct($videoUrl, $product)
+    protected function addVideoToProduct($videoUrl, $product, $videoProvider = '')
     {
-        $videoProvider = str_replace('https://', '', $videoUrl);
-        $videoProvider = str_replace('http://', '', $videoProvider);
-        $videoProvider = substr($videoProvider, 0, strpos($videoProvider, "."));
-        $videoData = [];
-        if ($videoProvider == 'vimeo') {
-            $videoData = $this->getFileFromVimeoVideo($videoUrl);
-        }
-
         if ($videoProvider == 'youtube') {
-            $this->_logger->info('Youtube video in product SKU' . $product->getSku());
+            $videoProvider = 'youtube';
+        } else {
+            $videoProvider = str_replace('https://', '', $videoUrl);
+            $videoProvider = str_replace('http://', '', $videoProvider);
+            $videoProvider = substr($videoProvider, 0, strpos($videoProvider, "."));
         }
+        $videoData = $this->getFileFromVimeoVideo($videoUrl, $videoProvider);
         // Convert video data array to video entry
 
         $media = $this->externalVideoEntryConverter->convertTo($product, $videoData);
@@ -366,21 +347,34 @@ class TransformData extends AbstractHelper
 
     /**
      * @param $url
+     * @param string $provider
      * @return array
      * @throws LocalizedException
      */
-    private function getFileFromVimeoVideo($url)
+    private function getFileFromVimeoVideo($url, string $provider = 'vimeo')
     {
         $videoData = [];
-        $id = substr(strrchr($url, "/"), 1);
-        $path = "http://vimeo.com/api/v2/video/$id.php";
-        $contentFromVimeo = $this->curl->execute($path);
-        $fileXml = $this->serializer->unserialize($contentFromVimeo);
-        $fileUrl = $fileXml[0]['thumbnail_medium'];
-        $imageType = substr(strrchr($fileUrl, "."), 1); //find the image extension
+        $imageType = '';
+        $thumb = '';
+        $id = '';
+        if ($provider == 'vimeo') {
+            $id = substr(strrchr($url, "/"), 1);
+            $path = "http://vimeo.com/api/v2/video/$id.php";
+            $contentFromVimeo = $this->curl->execute($path);
+            $fileXml = $this->serializer->unserialize($contentFromVimeo);
+            $fileUrl = $fileXml[0]['thumbnail_medium'];
+            $imageType = substr(strrchr($fileUrl, "."), 1); //find the image extension
+            $thumb = $this->curl->execute($fileUrl);
+        }
+        if ($provider == 'youtube') {
+            $id = $url;
+            $url = 'https://www.youtube.com/watch?v=' . $id;
+            $path = "http://img.youtube.com/vi/$id/hqdefault.jpg";
+            $thumb = $this->curl->execute($path);
+            $imageType = 'jpg';
+        }
         $filename = $id . '.' . $imageType; //give a new name, you can modify as per your requirement
         try {
-            $thumb = $this->curl->execute($fileUrl);
             $this->file->saveFile($filename, $thumb);
             $imageContent = $this->imageContentFactory->create();
             $mimeContentType = $this->mimeTypes[$imageType];
@@ -397,7 +391,7 @@ class TransformData extends AbstractHelper
             $videoData = array_merge($generalMediaEntryData, [
                 VideoContentInterface::TITLE => 'Migrated Video',
                 VideoContentInterface::DESCRIPTION => '',
-                VideoContentInterface::PROVIDER => 'vimeo',
+                VideoContentInterface::PROVIDER => $provider,
                 VideoContentInterface::METADATA => null,
                 VideoContentInterface::URL => $url,
                 VideoContentInterface::TYPE => ExternalVideoEntryConverter::MEDIA_TYPE_CODE,
@@ -448,7 +442,7 @@ class TransformData extends AbstractHelper
             if ($devTag === null) {
                 $productForDelete->setData('dev_tag', $movedAsPart . $product->getId());
             }
-            $this->setProductType($productForDelete);
+            $this->productTypeHelper->setProductType($productForDelete);
 
             try {
                 $this->productRepository->save($productForDelete);
