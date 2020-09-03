@@ -51,6 +51,7 @@ class TransformAttributes extends AbstractCommand
                 $output->writeln($e->getMessage());
             }
         }
+        $output->writeln('Transformation is complete! Please execute bin/magento indexer:reindex');
     }
 
     /**

@@ -17,6 +17,7 @@ use Magento\Bundle\Api\Data\LinkInterfaceFactory;
 use Magento\Bundle\Api\Data\LinkInterface;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\InputException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\StateException;
 
 class BundlePriceUse extends AbstractHelper
@@ -31,24 +32,30 @@ class BundlePriceUse extends AbstractHelper
      * @var Logger
      */
     protected $logger;
+    /**
+     * @var ProductType
+     */
+    private $productTypeHelper;
 
     public function __construct(
         Context $context,
         ProductRepositoryInterface $productRepository,
+        ProductType $productTypeHelper,
         Logger $logger
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->productRepository = $productRepository;
+        $this->productTypeHelper = $productTypeHelper;
         $this->logger = $logger;
     }
 
     public function setBundlePrice(Product $product, float $price, string $originalSku)
     {
         $sku = $product->getSku();
-        if ($product->getData('bundle_price_use') == 0) {
+        if ($product->getData('bundle_price_use') == 0 || $product->getData('bundle_price_use') == null) {
             $product->setData('bundle_price_use', $price);
             try {
+                $this->productTypeHelper->setProductType($product);
                 $this->productRepository->save($product);
             } catch (CouldNotSaveException $e) {
                 $this->logger->info("Can\t save bundle_price ($price) for $sku, " . $e->getMessage());
@@ -56,6 +63,8 @@ class BundlePriceUse extends AbstractHelper
                 $this->logger->info("Can\t save bundle_price ($price) for $sku, " . $e->getMessage());
             } catch (StateException $e) {
                 $this->logger->info("Can\t save bundle_price ($price) for $sku, " . $e->getMessage());
+            } catch (NoSuchEntityException $e) {
+                $this->logger->error("Can't set product_type for $sku - {$e->getMessage()}");
             }
         }
         if ($product->getData('bundle_price_use') !== $price) {

@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace ForeverCompanies\CustomAttributes\Helper;
 
 use ForeverCompanies\CustomAttributes\Logger\Logger;
-use Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePrice;
 use Magento\Catalog\Api\Data\ProductExtension;
 use Magento\Catalog\Api\Data\ProductLinkInterface;
 use Magento\Catalog\Api\Data\TierPriceInterface;
@@ -17,42 +16,14 @@ use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Option;
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Api\Data\AttributeInterface;
-use Magento\Eav\Model\Config;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Catalog\Api\Data\ProductInterface;
 
 class Mapping extends AbstractHelper
 {
-
-    /**
-     * @var string[]
-     */
-    protected $mappingProductType = [
-        'Migration_Bracelets' => 'Bracelet',
-        'Migration_Chains' => 'Chain',
-        'Migration_Custom Cut' => 'Other',
-        'Migration_Default' => 'Other',
-        'Migration_Earrings' => 'Earring',
-        'Migration_Gift Card' => 'Gift Card',
-        'Migration_Loose Diamonds' => 'Diamond',
-        'Migration_Loose Stones' => 'Stone',
-        'Migration_Matched Sets' => 'Matched Set',
-        'Migration_Matching Bands' => 'Matching Band',
-        'Migration_Mens Rings' => 'Ring',
-        'Migration_Necklaces' => 'Necklace',
-        'Migration_Pendants' => 'Pendant',
-        'Migration_Pure Carbon Rings' => 'Ring',
-        'Migration_Ring Settings' => 'Ring Setting',
-        'Migration_Rings' => 'Ring',
-        'Migration_Simple' => 'Other',
-        'Migration_Watches' => 'Watch'
-    ];
     /**
      * @var array
      */
@@ -204,18 +175,9 @@ class Mapping extends AbstractHelper
     protected $productFunctionalHelper;
 
     /**
-     * @var Config
-     */
-    protected $eavConfig;
-
-    /**
      * @var Logger
      */
     protected $customLogger;
-    /**
-     * @var BundlePriceUse
-     */
-    private $bundlePriceHelper;
 
     /**
      * Mapping constructor.
@@ -224,10 +186,7 @@ class Mapping extends AbstractHelper
      * @param ProductRepositoryInterface $productRepository
      * @param Link $linkHelper
      * @param ProductFunctional $productFunctionalHelper
-     * @param Config $eavConfig
-     * @param BundlePriceUse $bundlePriceHelper
      * @param Logger $logger
-     * @throws LocalizedException
      */
     public function __construct(
         Context $context,
@@ -235,29 +194,14 @@ class Mapping extends AbstractHelper
         ProductRepositoryInterface $productRepository,
         Link $linkHelper,
         ProductFunctional $productFunctionalHelper,
-        Config $eavConfig,
-        BundlePriceUse $bundlePriceHelper,
         Logger $logger
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->productAttributeRepository = $productAttributeRepository;
         $this->productRepository = $productRepository;
         $this->linkHelper = $linkHelper;
         $this->productFunctionalHelper = $productFunctionalHelper;
-        $this->bundlePriceHelper = $bundlePriceHelper;
         $this->customLogger = $logger;
-        $this->eavConfig = $eavConfig->getAttribute(Product::ENTITY, 'product_type')->getSource();
-    }
-
-    /**
-     * @param string $attributeSetName
-     * @return string
-     */
-    public function attributeSetToProductType(string $attributeSetName)
-    {
-        $typeName = $this->mappingProductType[$attributeSetName];
-        return $this->eavConfig->getOptionId($typeName);
     }
 
     /**
@@ -369,9 +313,9 @@ class Mapping extends AbstractHelper
                     }
                 } else {
                     /** @var ProductExtension $extensionAttributes */
-                    if ($productAttribute->getData('frontend_label') != 'Center Stone Size') {
-                        $test = 1;
-                    }
+
+                    /** TODO when I can get attribute 'Total Carat Weight' */
+
                     $extensionAttributes = $product->getExtensionAttributes();
                     $configurableProductLinks = $extensionAttributes->getConfigurableProductLinks();
                     $basePrice = $product->getPriceInfo()->getPrice('base_price')->getValue();
@@ -525,103 +469,8 @@ class Mapping extends AbstractHelper
         foreach ($uniqSkus as $originalId => $sku) {
             $originalPrice = $this->productRepository->getById($originalId)->getPrice();
             $itemPrice = $originalPrice - $basePrice;
-            try {
-                $product = $this->productRepository->get($sku);
-                if ($product->getId() !== null) {
-                    $links[] = $this->linkHelper->createNewLink($product);
-                    $this->bundlePriceHelper->setBundlePrice($product, $itemPrice, $originalSku);
-                } else {
-                    $product = $this->productRepository->get($sku . 'XXXX');
-                    if ($product->getId() !== null) {
-                        $links[] = $this->linkHelper->createNewLink($product);
-                        $this->bundlePriceHelper->setBundlePrice($product, $itemPrice, $originalSku);
-                    } else {
-                        $this->customLogger->info('SKU not found - ' . $sku);
-                    }
-                }
-            } catch (NoSuchEntityException $e) {
-                try {
-                    $product = $this->productRepository->get($sku . 'XXXX');
-                    if ($product->getId() !== null) {
-                        $links[] = $this->linkHelper->createNewLink($product);
-                        $this->bundlePriceHelper->setBundlePrice($product, $itemPrice, $originalSku);
-                    } else {
-                        $this->customLogger->info('SKU not found - ' . $sku);
-                    }
-                } catch (\Exception $e) {
-                    try {
-                        $this->customLogger->info('SKU not found - ' . $sku);
-                        $stoneForm = substr($sku, 11, 2);
-                        switch ($stoneForm) {
-                            case 'PR':
-                                $sku = str_replace('USLSSS0001X', 'USLSSS0009X', $sku);
-                                $sku = str_replace('USLSCS0001X', 'USLSCS0010X', $sku);
-                                break;
-                            case 'OV':
-                                $sku = str_replace('USLSSS0001X', 'USLSSS0008X', $sku);
-                                $sku = str_replace('USLSCS0001X', 'USLSCS0008X', $sku);
-                                break;
-                            case 'EM':
-                                $sku = str_replace('USLSSS0001X', 'USLSSS0007X', $sku);
-                                $sku = str_replace('USLSCS0001X', 'USLSCS0007X', $sku);
-                                break;
-                            case 'CR':
-                                $sku = str_replace('USLSSS0001X', 'USLSSS0003X', $sku);
-                                $sku = str_replace('USLSCS0001X', 'USLSCS0003X', $sku);
-                                break;
-                            case 'TR':
-                                $sku = str_replace('USLSSS0001X', 'USLSSS0012X', $sku);
-                                $sku = str_replace('USLSCS0001X', 'USLSCS0012X', $sku);
-                                break;
-                            case 'TL':
-                                $sku = str_replace('USLSSS0001X', 'USLSSS0011X', $sku);
-                                $sku = str_replace('USLSCS0001X', 'USLSCS0011X', $sku);
-                                break;
-                            case 'HT':
-                                $sku = str_replace('USLSSS0001X', 'USLSSS0010X', $sku);
-                                $sku = str_replace('USLSCS0001X', 'USLSCS0010X', $sku);
-                                break;
-                            case 'MQ':
-                                $sku = str_replace('USLSSS0001X', 'USLSSS0006X', $sku);
-                                $sku = str_replace('USLSCS0001X', 'USLSCS0006X', $sku);
-                                break;
-                            case 'RA':
-                                $sku = str_replace('USLSSS0001X', 'USLSSS0005X', $sku);
-                                $sku = str_replace('USLSCS0001X', 'USLSCS0005X', $sku);
-                                break;
-                            case 'AS':
-                                $sku = str_replace('USLSSS0001X', 'USLSSS0004X', $sku);
-                                $sku = str_replace('USLSCS0001X', 'USLSCS0004X', $sku);
-                                break;
-                            case 'PC':
-                                $sku = str_replace('USLSSS0001X', 'USLSSS0002X', $sku);
-                                $sku = str_replace('USLSCS0001X', 'USLSCS0002X', $sku);
-                                break;
-                        }
-                        $product = $this->productRepository->get($sku);
-                        if ($product->getId() !== null) {
-                            $links[] = $this->linkHelper->createNewLink($product);
-                            $this->bundlePriceHelper->setBundlePrice($product, $itemPrice, $originalSku);
-                        } else {
-                            $this->customLogger->info('SKU not found - ' . $sku);
-                        }
-                    } catch (\Exception $e) {
-                        try {
-                            $product = $this->productRepository->get($sku . 'XXXX');
-                            if ($product->getId() !== null) {
-                                $links[] = $this->linkHelper->createNewLink($product);
-                                $this->bundlePriceHelper->setBundlePrice($product, $itemPrice, $originalSku);
-                            } else {
-                                $this->customLogger->info('SKU not found - ' . $sku);
-                            }
-                        } catch (\Exception $e) {
-                            $this->customLogger->info('SKU not found - ' . $sku);
-                        }
-                    }
-                }
-            }
+            $links[] = $this->linkHelper->createNewLink($sku, $itemPrice, $originalSku);
         }
-
         return $links;
     }
 
