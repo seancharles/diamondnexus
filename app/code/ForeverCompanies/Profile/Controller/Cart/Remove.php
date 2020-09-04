@@ -24,45 +24,46 @@
 			];
 			
 			try {
-				// parse the json post
-				$json = file_get_contents('php://input');
-
-				// Converts it into a PHP object
-				$post = json_decode($json);
+				$post = $this->profileHelper->getPost();
 				
-				$itemId = $post->item_id;
-				
-				if($itemId > 0)
-				{
-					// get the quote id
-					$quoteId = $this->quoteHelper->getQuoteId();
+				if ($this->profileHelper->formKeyValidator->validate($this->getRequest())) {
+					$itemId = $post->item_id;
 					
-					// load the quote using quote repository
-					$quote = $this->quoteHelper->getQuote($quoteId);
-					
-					// get the cart items
-					$items = $quote->getItems();
-					
-					// iterate the users cart items
-					foreach($items as $item)
-					{
-						if($item->getItemId() == $itemId)
+					if($itemId > 0){
+						// get the quote id
+						$quoteId = $this->quoteHelper->getQuoteId();
+						
+						// load the quote using quote repository
+						$quote = $this->quoteHelper->getQuote($quoteId);
+						
+						// get the cart items
+						$items = $quote->getItems();
+						
+						// iterate the users cart items
+						foreach($items as $item)
 						{
-							$item->delete();
+							if($item->getItemId() == $itemId)
+							{
+								$item->delete();
+							}
 						}
+						
+						$result['message'] = 'Removed item from cart';
+						$result['success'] = true;
+						
+					} else {
+						$result['message'] = 'Unable to find cart item';
 					}
 					
-					$result['message'] = 'Removed item from cart';
-					$result['success'] = true;
+					// updates the last sync time
+					$this->profileHelper->sync();
+					
+					$result['profile'] = $this->profileHelper->getProfile();
 					
 				} else {
-					$result['message'] = 'Unable to find cart item';
+					$result['success'] = false;
+					$result['message'] = 'Invalid form key.';
 				}
-				
-				// updates the last sync time
-				$this->profileHelper->sync();
-				
-				$result['profile'] = $this->profileHelper->getProfile();
 			
 			} catch (\Exception $e) {
 				$result['message'] = $e->getMessage();

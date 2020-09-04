@@ -24,14 +24,23 @@
 			];
 			
 			try {
-				// clear cart contents
-				$this->quoteHelper->clear();
+				$post = $this->profileHelper->getPost();
 				
-				// updates the last sync time
-				$this->profileHelper->sync();
-				
-				$result['success'] = true;
-				$result['profile'] = $this->profileHelper->getProfile();
+				if ($this->profileHelper->formKeyValidator->validate($this->getRequest())) {
+					// clear cart contents
+					$this->quoteHelper->clear();
+					
+					// updates the last sync time
+					$this->profileHelper->sync();
+					
+					$result['success'] = true;
+					$result['message'] = 'Cart cleared.';
+					$result['profile'] = $this->profileHelper->getProfile();
+					
+				} else {
+					$result['success'] = false;
+					$result['message'] = 'Invalid form key.';
+				}
 			
 			} catch (\Exception $e) {
 				$result['message'] = $e->getMessage();
