@@ -23,13 +23,21 @@
 				'success' => false
 			];
 			
+			$itemsList = array();
+			
 			try {
 				$post = $this->profileHelper->getPost();
 				
 				if ($this->profileHelper->formKeyValidator->validate($this->getRequest())) {
-					$itemId = $post->item_id;
 					
-					if($itemId > 0){
+					$itemPost = $post->item_list;
+					
+					// convert post object to array;
+					foreach($itemPost as $item) {
+						$itemsList[$item] = $item;
+					}
+					
+					if(count($itemsList) > 0){
 						// get the quote id
 						$quoteId = $this->quoteHelper->getQuoteId();
 						
@@ -37,18 +45,18 @@
 						$quote = $this->quoteHelper->getQuote($quoteId);
 						
 						// get the cart items
-						$items = $quote->getItems();
+						$quoteItems = $quote->getItems();
 						
 						// iterate the users cart items
-						foreach($items as $item)
+						foreach($quoteItems as $item)
 						{
-							if($item->getItemId() == $itemId)
+							if(in_array($item->getItemId(), $itemsList) == true)
 							{
 								$item->delete();
 							}
 						}
 						
-						$result['message'] = 'Removed item from cart';
+						$result['message'] = 'Removed item(s) from cart';
 						$result['success'] = true;
 						
 					} else {
