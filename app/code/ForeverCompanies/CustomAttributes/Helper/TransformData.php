@@ -302,8 +302,7 @@ class TransformData extends AbstractHelper
             `eav_table`.`store_id` = 0",
                     ['value']
                 )->where('eav_table.value ' . $where)
-                ->where('sku is not null')
-            ->where('entity_id > 86033');
+                ->where('sku is not null');
             return $productCollection;
         } catch (LocalizedException $e) {
             $this->_logger->critical($e->getMessage());

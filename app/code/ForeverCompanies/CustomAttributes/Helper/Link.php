@@ -73,7 +73,6 @@ class Link extends AbstractHelper
             if ($product->getId() !== null) {
                 $this->bundlePriceHelper->setBundlePrice($product, $itemPrice, $originalSku);
                 return $this->prepareLink($product);
-                ;
             } else {
                 $product = $this->productRepository->get($sku . 'XXXX');
                 if ($product->getId() !== null) {

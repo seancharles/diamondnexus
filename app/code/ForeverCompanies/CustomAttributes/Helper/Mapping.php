@@ -469,7 +469,10 @@ class Mapping extends AbstractHelper
         foreach ($uniqSkus as $originalId => $sku) {
             $originalPrice = $this->productRepository->getById($originalId)->getPrice();
             $itemPrice = $originalPrice - $basePrice;
-            $links[] = $this->linkHelper->createNewLink($sku, $itemPrice, $originalSku);
+            $link = $this->linkHelper->createNewLink($sku, $itemPrice, $originalSku);
+            if ($link !== null) {
+                $links[] = $link;
+            }
         }
         return $links;
     }

@@ -93,7 +93,7 @@ class ProductType extends AbstractHelper
         try {
             $this->eavConfig = $eavConfig->getAttribute(Product::ENTITY, 'product_type')->getSource();
         } catch (LocalizedException $e) {
-            $this->logger->error('Can\t get product_type attribute source - ' .$e->getMessage());
+            $this->logger->error('Can\t get product_type attribute source - ' . $e->getMessage());
         }
     }
 
