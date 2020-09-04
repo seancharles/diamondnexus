@@ -8,4 +8,13 @@
             </argument>
         </arguments>
     </virtualType>
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="TransformStatuses" xsi:type="object">
+                    ForeverCompanies\CustomSales\Console\Command\TransformStatuses
+                </item>
+            </argument>
+        </arguments>
+    </type>
 </config>
