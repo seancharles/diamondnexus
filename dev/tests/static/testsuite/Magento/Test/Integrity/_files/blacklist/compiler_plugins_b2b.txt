@@ -1,2 +1,0 @@
-Magento\SharedCatalog\Plugin\Source\CustomerGroupPlugin
-Magento\SharedCatalog\Plugin\Catalog\Api\Data\CategoryInterfacePlugin
