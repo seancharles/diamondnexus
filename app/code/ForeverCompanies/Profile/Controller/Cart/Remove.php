@@ -1,8 +1,8 @@
 <?php
 
-	namespace ForeverCompanies\Profile\Controller\Sync;
+	namespace ForeverCompanies\Profile\Controller\Cart;
 
-	class RemoveCartItem extends \ForeverCompanies\Profile\Controller\Sync\ApiController
+	class Remove extends \ForeverCompanies\Profile\Controller\ApiController
 	{
 		protected $profileHelper;
 		protected $quoteHelper;
@@ -46,17 +46,17 @@
 					// iterate the users cart items
 					foreach($items as $item)
 					{
-						if($item->getId() == $itemId)
+						if($item->getItemId() == $itemId)
 						{
 							$item->delete();
 						}
 					}
 					
+					$result['message'] = 'Removed item from cart';
 					$result['success'] = true;
 					
 				} else {
 					$result['message'] = 'Unable to find cart item';
-					$result['success'] = false;
 				}
 				
 				// updates the last sync time

@@ -1,8 +1,8 @@
 <?php
 
-	namespace ForeverCompanies\Profile\Controller\Sync;
+	namespace ForeverCompanies\Profile\Controller\Cart;
 
-	class ClearCart extends \ForeverCompanies\Profile\Controller\Sync\ApiController
+	class Clear extends \ForeverCompanies\Profile\Controller\ApiController
 	{
 		protected $profileHelper;
 		protected $cartHelper;

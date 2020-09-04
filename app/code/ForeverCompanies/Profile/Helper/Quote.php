@@ -47,7 +47,7 @@ class Quote
 	/**
 	* get last cart item added
 	*/
-	private function getLastQuoteItemId($quoteId = 0)
+	public function getLastQuoteItemId($quoteId = 0)
 	{
 		$_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 		$collecion = $_objectManager->create('Magento\Quote\Model\ResourceModel\Quote\Item\Collection')->addFieldToFilter('quote_id',$quoteId);
