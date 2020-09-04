@@ -1,0 +1,9 @@
+<?php
+
+use ForeverCompanies\CustomSales\Block\Adminhtml\Order\View\LoggedUser;
+
+/** @var LoggedUser $block */
+?>
+<div class="admin__page-section-title">
+    <span class="title"><?= $block->escapeHtml('Logged User: ' . $block->getLoggedUser()) ?></span>
+</div>
