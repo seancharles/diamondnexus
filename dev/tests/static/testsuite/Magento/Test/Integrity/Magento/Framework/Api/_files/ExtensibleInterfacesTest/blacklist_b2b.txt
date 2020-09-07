@@ -1,2 +1,0 @@
-module Magento_NegotiableQuote Api/Data/NegotiableQuoteTotalsInterface.php
-module Magento_NegotiableQuote Model/NegotiableQuoteTotals.php

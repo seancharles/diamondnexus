@@ -1,2 +1,0 @@
-app/code/**/*.js
-dev/tests/js/jasmine/tests/**/*.js
