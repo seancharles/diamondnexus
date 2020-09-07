@@ -16,6 +16,7 @@ use Magento\Catalog\Api\Data\ProductAttributeMediaGalleryEntryInterface;
 use Magento\Catalog\Api\Data\ProductCustomOptionInterface;
 use Magento\Catalog\Api\Data\ProductExtension;
 use Magento\Catalog\Api\Data\ProductExtensionFactory;
+use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\TierPriceInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
@@ -23,6 +24,7 @@ use Magento\Catalog\Model\Product\Gallery\GalleryManagement;
 use Magento\Catalog\Model\Product\Option;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
+use Magento\Catalog\Model\ResourceModel\Product\Gallery;
 use Magento\CatalogInventory\Model\Stock\Item;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Model\Config;
@@ -122,6 +124,11 @@ class TransformData extends AbstractHelper
      */
     protected $productTypeHelper;
 
+    /**
+     * @var Media
+     */
+    protected $mediaHelper;
+
     protected $mimeTypes = [
         'png' => 'image/png',
         'jpe' => 'image/jpeg',
@@ -152,6 +159,7 @@ class TransformData extends AbstractHelper
      * @param Curl $curl
      * @param ImageContentInterfaceFactory $imageContent
      * @param GalleryManagement $galleryManagement
+     * @param Media $media
      * @param Serialize $serializer
      */
     public function __construct(
@@ -170,8 +178,10 @@ class TransformData extends AbstractHelper
         Curl $curl,
         ImageContentInterfaceFactory $imageContent,
         GalleryManagement $galleryManagement,
+        Media $media,
         Serialize $serializer
-    ) {
+    )
+    {
         parent::__construct($context);
         $this->eav = $config;
         $this->productCollectionFactory = $collectionFactory;
@@ -187,6 +197,7 @@ class TransformData extends AbstractHelper
         $this->curl = $curl;
         $this->imageContentFactory = $imageContent;
         $this->galleryManagement = $galleryManagement;
+        $this->mediaHelper = $media;
         $this->serializer = $serializer;
     }
 
@@ -212,6 +223,81 @@ class TransformData extends AbstractHelper
         return $this->getProductCollection($table, $attr, $where);
     }
 
+    public function getProductsForMediaTransformCollection()
+    {
+        $table = 'catalog_product_entity_int';
+        $attr = 'is_media_transformed';
+        $where = 'is null';
+        return $this->getProductCollection($table, $attr, $where);
+    }
+
+    /**
+     * @param int $entityId
+     */
+    public function transformMediaProduct(int $entityId)
+    {
+        $product = $this->getCurrentProduct($entityId, false);
+        if ($product == null) {
+            return;
+        }
+        try {
+            $media = $product->getMediaGalleryEntries();
+            $options = $product->getOptions();
+            $metalTypeOptions = false;
+            foreach ($options as $option) {
+                if ($option->getTitle() == 'Precious Metal') {
+                    /** @var Option $metalTypeOptions */
+                    $metalTypeOptions = $option;
+                }
+            }
+            foreach ($media as &$mediaGalleryEntry) {
+                $optionLabel = false;
+                $role = false;
+                if ($mediaGalleryEntry['label'] !== null) {
+                    $optionLabel = explode(',', $mediaGalleryEntry['label'])[0] ?? false;
+                    $role = explode(',', $mediaGalleryEntry['label'])[1] ?? false;
+                }
+                if ($metalTypeOptions) {
+                    foreach ($metalTypeOptions->getValues() as $id => $option) {
+                        if ($optionLabel == $option->getTitle()) {
+                            $mediaGalleryEntry['catalog_product_option_type_id'] = $id;
+                            continue;
+                        }
+                    }
+                }
+                if ($role) {
+                    $mediaGalleryEntry->setTypes([strtolower(trim($role)) . '_image']);
+                }
+            }
+            $product->setMediaGalleryEntries($media);
+            $product->setData('is_media_transformed', true);
+            $this->productRepository->save($product);
+            $this->mediaHelper->saveFieldsToMedia($media);
+        } catch (LocalizedException $e) {
+            $this->_logger->error('Can\'t save media for product id = ' . $entityId);
+        }
+    }
+
+    /**
+     * @param int $entityId
+     * @param bool $transformed
+     * @return ProductInterface|Product|void|null
+     */
+    protected function getCurrentProduct(int $entityId, $transformed = true)
+    {
+        $this->storeManager->setCurrentStore(0);
+        /** @var Product $product */
+        try {
+            $product = $this->productRepository->getById($entityId, true, 0, true);
+        } catch (NoSuchEntityException $exception) {
+            $this->_logger->warning('Product with ID = ' . $entityId . 'not found');
+        }
+        if ($product->isDisabled() || $product->getData('is_transformed') == $transformed) {
+            return;
+        }
+        return $product;
+    }
+
     /**
      * @param int $entityId
      * @throws InputException
@@ -221,14 +307,8 @@ class TransformData extends AbstractHelper
      */
     public function transformProduct(int $entityId)
     {
-        $this->storeManager->setCurrentStore(0);
-        /** @var Product $product */
-        try {
-            $product = $this->productRepository->getById($entityId, true, 0, true);
-        } catch (NoSuchEntityException $exception) {
-            $this->_logger->warning('Product with ID = ' . $entityId . 'not found');
-        }
-        if ($product->isDisabled() || $product->getData('is_transformed') == true) {
+        $product = $this->getCurrentProduct($entityId);
+        if ($product == null) {
             return;
         }
         if ($product->getTypeId() == Configurable::TYPE_CODE) {

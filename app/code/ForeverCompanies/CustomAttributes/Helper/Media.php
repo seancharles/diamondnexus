@@ -82,6 +82,7 @@ class Media extends AbstractHelper
         $connection = $this->resourceConnection->getConnection();
         $mediaGallery = $connection->getTableName(Gallery::GALLERY_VALUE_TABLE);
         foreach ($mediaImages as $image) {
+            $id = $image['value_id'] ?? $image['id'];
             $optionType = $image['catalog_product_option_type_id'] ?? 0;
             $selectionId = $image['catalog_product_bundle_selection_id'] ?? 0;
             $tags = $image['tags'] ?? '';
@@ -92,7 +93,7 @@ class Media extends AbstractHelper
                     'catalog_product_bundle_selection_id' => $selectionId,
                     'tags' => $tags
                 ],
-                ['value_id = ?' => $image['value_id']]
+                ['value_id = ?' => $id]
             );
         }
     }
