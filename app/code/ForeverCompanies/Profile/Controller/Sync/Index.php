@@ -19,7 +19,6 @@
 			
 			$profile = $this->profileHelper->getProfile();
 			
-			print_r($profile);
-			exit;
+			print_r(json_encode($profile));
 		}
 	}

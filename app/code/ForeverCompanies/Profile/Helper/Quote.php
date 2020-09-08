@@ -6,8 +6,8 @@ use Magento\Checkout\Model\Cart;
  
 class Quote
 {
-	protected $cart;
-	protected $quoteRepository;
+	public $cart;
+	public $quoteRepository;
 	
 		public function __construct(
 			Cart $cart,
