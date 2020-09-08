@@ -2,13 +2,13 @@
 
 namespace ForeverCompanies\Profile\Helper;
  
-use Magento\Checkout\Model\Cart;
- 
 class Profile
 {
 	public $request;
 	public $formKeyValidator;
 	protected $customerSession;
+	protected $checkoutSession;
+	private $cartRepository;
 	protected $formKey;
 	protected $cart;
 	
@@ -25,22 +25,24 @@ class Profile
 		\Magento\Framework\App\RequestInterface $request,
 		\Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator,
 		\Magento\Customer\Model\Session $customerSession,
+		\Magento\Checkout\Model\Session $checkoutSession,
+		\Magento\Quote\Api\CartRepositoryInterface $cartRepository,
 		\Magento\Framework\Data\Form\FormKey $formKey,
-		Cart $cart,
 		\Magento\Backend\App\Action\Context $context
 	) {
 		$this->request = $request;
 		$this->formKeyValidator = $formKeyValidator;
 		$this->customerSession = $customerSession;
+		$this->checkoutSession = $checkoutSession;
+		$this->cartRepository = $cartRepository;
 		$this->formKey = $formKey;
-		$this->cart = $cart;
 		
 		$this->setProfileKey('form_key', $this->formKey->getFormKey());
 		$this->setProfileKey('customer_id', (int) $customerSession->getCustomerId());
 		$this->setProfileKey('logged_in', (bool) $customerSession->isLoggedIn());
 		
 		// add cart into to 
-		if($this->cart) {
+		if($this->checkoutSession->getQuote()->getId() > 0) {
 			
 			/*
 			$items = [];
@@ -55,8 +57,8 @@ class Profile
 			$this->setProfileKey('cart_items', $items);
 			*/
 			
-			$this->setProfileKey('quote_id', (int) $this->cart->getQuote()->getId());
-			$this->setProfileKey('cart_qty', (int) $cart->getItemsCount());
+			$this->setProfileKey('quote_id', (int) $this->checkoutSession->getQuote()->getId());
+			$this->setProfileKey('cart_qty', (int) $this->checkoutSession->getQuote()->getItemsCount());
 		} else {
 			//$this->setProfileKey('cart_items', null);
 			$this->setProfileKey('cart_qty', 0);
@@ -104,5 +106,43 @@ class Profile
 	public function setProfileKey($key = null, $value = null)
 	{
 		$this->profile[$key] = $value;
+	}
+	
+	public function clearQuote()
+	{
+		$quoteItems = $this->checkoutSession->getQuote()->getAllVisibleItems();
+		
+		foreach ($quoteItems as $item) {
+			$item->delete();
+		}
+		
+		$this->saveQuote();
+	}
+	
+	public function getQuote()
+	{
+		// load the quote using quote repository
+		return $this->checkoutSession->getQuote();
+	}
+	
+	public function saveQuote()
+	{
+		$this->cartRepository->save($this->getQuote());
+		
+		// updating profile info to match quote after the quote is saved (don't do this before)
+		$this->profile['cart_qty'] = $this->checkoutSession->getQuote()->getItemsCount();
+	}
+	
+	/**
+	* get last cart item added
+	*/
+	public function getLastQuoteItemId($quoteId = 0)
+	{
+		$_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+		$collecion = $_objectManager->create('Magento\Quote\Model\ResourceModel\Quote\Item\Collection')->addFieldToFilter('quote_id',$quoteId);
+		
+		$lastitem = $collecion->getLastItem();
+		
+		return $lastitem->getId();
 	}
 }

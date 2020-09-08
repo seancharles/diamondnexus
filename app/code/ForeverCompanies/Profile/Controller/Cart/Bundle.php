@@ -6,7 +6,6 @@
 	{
 		protected $productloader;
 		protected $profileHelper;
-		protected $quoteHelper;
 		protected $bundleHelper;
 		
 		public $bundleSelectionProductIds;
@@ -14,13 +13,11 @@
 		public function __construct(
 			\Magento\Catalog\Model\ProductFactory $productloader,
 			\ForeverCompanies\Profile\Helper\Profile $profileHelper,
-			\ForeverCompanies\Profile\Helper\Quote $quoteHelper,
 			\ForeverCompanies\Profile\Helper\Product\Bundle $bundleHelper,
 			\Magento\Backend\App\Action\Context $context
 		) {
 			$this->productloader = $productloader;
 			$this->profileHelper = $profileHelper;
-			$this->quoteHelper = $quoteHelper;
 			$this->bundleHelper = $bundleHelper;
 			parent::__construct($context);
 		}
@@ -55,11 +52,11 @@
 						}
 					}
 					
-					// get the quote id
-					$quoteId = $this->quoteHelper->getQuoteId();
-					
 					// load the quote using quote repository
-					$quote = $this->quoteHelper->getQuote($quoteId);
+					$quote = $this->profileHelper->getQuote();
+					
+					// get the quote id
+					$quoteId = $quote->getId();
 					
 					if($bundleId > 0) {
 						$bundleProductModel = $this->productloader->create()->load($bundleId);
@@ -81,7 +78,7 @@
 
 						$quote->addItem($parentItem);
 						$quote->save();
-						$parentItemId = $this->quoteHelper->getLastQuoteItemId($quoteId);
+						$parentItemId = $this->profileHelper->getLastQuoteItemId($quoteId);
 
 						$itemOptions = [
 							'info_buyRequest' => json_encode([
@@ -129,7 +126,7 @@
 							$childItem = $this->bundleHelper->addChildItem($childProductModel, $parentItemId, $childCustomOptions);
 							$quote->addItem($childItem);
 							$quote->save();
-							$itemId = $this->quoteHelper->getLastQuoteItemId($quoteId);
+							$itemId = $this->profileHelper->getLastQuoteItemId($quoteId);
 							
 							$itemOptions = [
 								'info_buyRequest' => json_encode([
@@ -154,6 +151,8 @@
 					}
 					
 					$quote->collectTotals()->save();
+					
+					$this->profileHelper->saveQuote();
 					
 					$message = __(
 						'You added %1 to your shopping cart.',

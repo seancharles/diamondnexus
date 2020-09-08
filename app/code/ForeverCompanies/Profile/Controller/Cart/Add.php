@@ -8,20 +8,21 @@
 	{
 		protected $productloader;
 		protected $profileHelper;
-		protected $quoteHelper;
 		protected $simpleHelper;
+		protected $dataObjectFactory;
 		
 		public function __construct(
 			\Magento\Catalog\Model\ProductFactory $productloader,
 			\ForeverCompanies\Profile\Helper\Profile $profileHelper,
-			\ForeverCompanies\Profile\Helper\Quote $quoteHelper,
 			\ForeverCompanies\Profile\Helper\Product\Simple $simpleHelper,
+			\Magento\Framework\DataObject\Factory $dataObjectFactory,
 			\Magento\Backend\App\Action\Context $context
 		) {
 			$this->productloader = $productloader;
 			$this->profileHelper = $profileHelper;
-			$this->quoteHelper = $quoteHelper;
 			$this->simpleHelper = $simpleHelper;
+			$this->dataObjectFactory = $dataObjectFactory;
+			
 			parent::__construct($context);
 		}
 
@@ -40,10 +41,7 @@
 					$qty = $post->qty;
 
 					// get the quote id
-					$quoteId = $this->quoteHelper->getQuoteId();
-					
-					// load the quote using quote repository
-					$quote = $this->quoteHelper->getQuote($quoteId);
+					$quote = $this->profileHelper->getQuote();
 					
 					if($productId > 0) {
 						$productModel = $this->productloader->create()->load($productId);
@@ -67,8 +65,9 @@
 							}
 						}
 
-						$this->quoteHelper->cart->addProduct($productModel,$params);
-						$this->quoteHelper->cart->save();
+						$quote->addProduct($productModel,$this->dataObjectFactory->create($params));
+						
+						$this->profileHelper->saveQuote();
 						
 						$message = __(
 							'You added %1 to your shopping cart.',

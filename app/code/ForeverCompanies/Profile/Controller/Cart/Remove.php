@@ -5,15 +5,12 @@
 	class Remove extends \ForeverCompanies\Profile\Controller\ApiController
 	{
 		protected $profileHelper;
-		protected $quoteHelper;
 		
 		public function __construct(
 			\ForeverCompanies\Profile\Helper\Profile $profileHelper,
-			\ForeverCompanies\Profile\Helper\Quote $quoteHelper,
 			\Magento\Backend\App\Action\Context $context
 		) {
 			$this->profileHelper = $profileHelper;
-			$this->quoteHelper = $quoteHelper;
 			parent::__construct($context);
 		}
 
@@ -38,11 +35,7 @@
 					}
 					
 					if(count($itemsList) > 0){
-						// get the quote id
-						$quoteId = $this->quoteHelper->getQuoteId();
-						
-						// load the quote using quote repository
-						$quote = $this->quoteHelper->getQuote($quoteId);
+						$quote = $this->profileHelper->getQuote();
 						
 						// get the cart items
 						$quoteItems = $quote->getItems();
@@ -55,6 +48,8 @@
 								$item->delete();
 							}
 						}
+						
+						$this->profileHelper->saveQuote();
 						
 						$result['message'] = 'Removed item(s) from cart';
 						$result['success'] = true;
