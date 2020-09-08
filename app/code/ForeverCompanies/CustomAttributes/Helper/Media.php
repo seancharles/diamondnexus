@@ -60,11 +60,8 @@ class Media extends AbstractHelper
     public function addFieldsToMedia(array $images)
     {
         $connection = $this->resourceConnection->getConnection();
-        $mediaGallery = $connection->getTableName(Gallery::GALLERY_VALUE_TABLE);
-
         foreach ($images as &$image) {
-            $select = $connection->select();
-            $select->from($mediaGallery)->where('value_id = ?', $image['value_id']);
+            $select = $this->getGalleryValues($connection, $image['value_id']);
             $row = $connection->fetchRow($select);
             $image['catalog_product_option_type_id'] = $row['catalog_product_option_type_id'];
             $image['catalog_product_bundle_selection_id'] = $row['catalog_product_bundle_selection_id'];
@@ -117,5 +114,43 @@ class Media extends AbstractHelper
             ];
         }
         return $data;
+    }
+
+    /**
+     * @param $valueId
+     * @return array
+     */
+    public function getCustomMediaOptions($valueId)
+    {
+        $connection = $this->resourceConnection->getConnection();
+        $select = $this->getGalleryValues(
+            $connection,
+            $valueId
+        )->joinInner(
+            ['type_title' => 'catalog_product_option_type_title'],
+            'gallery_value.catalog_product_option_type_id = type_title.option_type_id',
+            ['type_title_value' => 'type_title.title']
+        )->joinInner(
+            ['type_value' => 'catalog_product_option_type_value'],
+            'gallery_value.catalog_product_option_type_id = type_value.option_type_id',
+            ['option_id']
+        )->joinInner(
+            ['option_title' => 'catalog_product_option_title'],
+            'type_value.option_id = option_title.option_id',
+            ['option_title_value' => 'option_title.title']
+        );
+        return $connection->fetchRow($select);
+    }
+
+    /**
+     * @param $connection
+     * @param $valueId
+     * @return mixed
+     */
+    protected function getGalleryValues($connection, $valueId)
+    {
+        return $connection->select()->from(
+            ['gallery_value' => Gallery::GALLERY_VALUE_TABLE]
+        )->where('gallery_value.value_id = ?', $valueId);
     }
 }

@@ -36,17 +36,13 @@ class AddDefaultImageAttribute implements DataPatchInterface
     public function __construct(
         ModuleDataSetupInterface $moduleDataSetup,
         EavSetupFactory $eavSetupFactory
-    )
-    {
+    ) {
         $this->moduleDataSetup = $moduleDataSetup;
         $this->eavSetupFactory = $eavSetupFactory;
     }
 
-
     /**
      * @return AddHoverImageAttribute|void
-     * @throws LocalizedException
-     * @throws Zend_Validate_Exception
      */
     public function apply()
     {
@@ -70,7 +66,6 @@ class AddDefaultImageAttribute implements DataPatchInterface
                 'used_in_product_listing' => true
             ]
         );
-
     }
 
     /**

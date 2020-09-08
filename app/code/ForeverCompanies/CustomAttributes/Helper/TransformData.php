@@ -180,8 +180,7 @@ class TransformData extends AbstractHelper
         GalleryManagement $galleryManagement,
         Media $media,
         Serialize $serializer
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->eav = $config;
         $this->productCollectionFactory = $collectionFactory;
