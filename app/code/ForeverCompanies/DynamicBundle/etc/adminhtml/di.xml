@@ -106,6 +106,8 @@
     <preference for="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\Composite" type="ForeverCompanies\DynamicBundle\Ui\DataProvider\Product\Form\Modifier\Composite" />
     <preference for="Magento\Bundle\Model\Product\OptionList" type="ForeverCompanies\DynamicBundle\Model\Bundle\Product\OptionList"/>
     <preference for="Magento\Bundle\Model\LinkManagement" type="ForeverCompanies\DynamicBundle\Model\LinkManagement" />
+	
+	<preference for="ShipperHQ\Shipper\Model\Carrier\Shipper" type="ForeverCompanies\DynamicBundle\Model\Carrier\Shipper" />
 
     <type name="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePanel">
         <plugin name="bundle_option_sku" type="ForeverCompanies\DynamicBundle\Plugins\Catalog\Ui\DataProvider\Product\Form\Modifier\BundlePanel" sortOrder="1000"/>

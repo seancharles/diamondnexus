@@ -32,11 +32,20 @@
     <type name="Magento\Checkout\Model\DefaultConfigProvider">
         <plugin name="checkout-summary-product-attribute" type="ForeverCompanies\DynamicBundle\Plugins\Checkout\Model\DefaultConfigProvider" />
     </type>
-	
-    <type name="Magento\Sales\Model\Order\Item">
-        <plugin name="sales-order-item-options" type="ForeverCompanies\DynamicBundle\Plugins\Sales\Order\Item" />
+		
+    <type name="Magento\Checkout\Model\DefaultConfigProvider">
+        <plugin name="checkout-summary-product-attribute" type="ForeverCompanies\DynamicBundle\Plugins\Checkout\Model\DefaultConfigProvider" />
     </type>
 	
 	<!--<preference for="Magento\Sales\Model\Convert\Order" type="ForeverCompanies\DynamicBundle\Model\Sales\Convert\Order" />-->
+	
+	<!--<preference for="ShipperHQ\Shipper\Model\Carrier\Shipper" type="ForeverCompanies\DynamicBundle\Model\Carrier\Shipper" />-->
+	<!--<preference for="ShipperHQ\Shipper\Model\Carrier\Processor\ShipperMapper" type="ForeverCompanies\DynamicBundle\Model\Shipperhq\ShipperMapper" />-->
+	
+	<!--
+    <type name="ShipperHQ\Shipper\Model\Carrier\Processor\ShipperMapper">
+        <plugin name="shipperhq-carrier-shippermapper" type="ForeverCompanies\DynamicBundle\Plugins\Shipperhq\ShipperMapper" />
+    </type>
+	-->
 	
 </config>
