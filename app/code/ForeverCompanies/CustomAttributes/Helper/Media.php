@@ -34,6 +34,15 @@ class Media extends AbstractHelper
      */
     protected $eavConfig;
 
+    const CUSTOM_UI_ROLES = [
+        'Default',
+        'Hover',
+        'Base',
+        'Small',
+        'Swatch',
+        'Thumbnail'
+    ];
+
     /**
      * Media constructor.
      * @param Context $context
@@ -66,6 +75,7 @@ class Media extends AbstractHelper
             $image['catalog_product_option_type_id'] = $row['catalog_product_option_type_id'];
             $image['catalog_product_bundle_selection_id'] = $row['catalog_product_bundle_selection_id'];
             $image['tags'] = $row['tags'];
+            $image['ui_role'] = $row['ui_role'];
         }
 
         return $images;
@@ -83,12 +93,14 @@ class Media extends AbstractHelper
             $optionType = $image['catalog_product_option_type_id'] ?? 0;
             $selectionId = $image['catalog_product_bundle_selection_id'] ?? 0;
             $tags = $image['tags'] ?? '';
+            $uiRole = $image['ui_role'] ?? '';
             $connection->update(
                 $mediaGallery,
                 [
                     'catalog_product_option_type_id' => $optionType,
                     'catalog_product_bundle_selection_id' => $selectionId,
-                    'tags' => $tags
+                    'tags' => $tags,
+                    'ui_role' => $uiRole
                 ],
                 ['value_id = ?' => $id]
             );

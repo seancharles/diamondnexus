@@ -123,6 +123,14 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
 
     /**
      * @return array
+     */
+    public function getUiRoles()
+    {
+        return $this->mediaHelper::CUSTOM_UI_ROLES;
+    }
+
+    /**
+     * @return array
      * @throws LocalizedException
      * @throws NoSuchEntityException
      */

@@ -521,6 +521,13 @@ define([
                 $dialog.find('.field-image-product-bundle-selections').find('.item.selected').removeClass('selected');
                 parent.toggleClass(selectedClass, $(this).prop('checked'));
             });
+
+            $dialog.on('change', '[data-role=ui-selector]', function () {
+                var parent = $(this).closest('.item'),
+                    selectedClass = 'selected';
+                $dialog.find('.field-image-product-ui-role').find('.item.selected').removeClass('selected');
+                parent.toggleClass(selectedClass, $(this).prop('checked'));
+            });
             /** CUSTOM OFF */
 
             $dialog.on('change', '[data-role=type-selector]', $.proxy(this._notifyType, this));
@@ -569,6 +576,17 @@ define([
                     optionValue = target.val();
 
                 this._setFields(imageData, optionValue, targetName, 'catalog_product_bundle_selection_id');
+
+            }.bind(this));
+
+            $dialog.on('change', '[data-role="ui-selector"]', function (e) {
+                let images = 'product[media_gallery][images]';
+                var target = $(e.target),
+                    imageData = $dialog.data('imageData'),
+                    targetName = images + '[' + imageData['value_id'] + '][ui_role]',
+                    optionValue = target.val();
+
+                this._setFields(imageData, optionValue, targetName, 'ui_role');
 
             }.bind(this));
 
@@ -690,6 +708,21 @@ define([
                         parent = $checkbox.closest('.item'),
                         selectedClass = 'selected',
                         isChecked = imageData.catalog_product_bundle_selection_id == $checkbox.val();
+
+                    $checkbox.prop(
+                        'checked',
+                        isChecked
+                    );
+                    parent.toggleClass(selectedClass, isChecked);
+                }, this));
+
+            $(event.target)
+                .find('[data-role=ui-selector]')
+                .each($.proxy(function (index, checkbox) {
+                    var $checkbox = $(checkbox),
+                        parent = $checkbox.closest('.item'),
+                        selectedClass = 'selected',
+                        isChecked = imageData.ui_role == $checkbox.val();
 
                     $checkbox.prop(
                         'checked',
