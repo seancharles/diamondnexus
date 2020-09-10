@@ -5,4 +5,7 @@ interface MediaGalleryInterface {
     custom_options: String
     @doc(description: "The options of the product image or video.")
     @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\MediaGallery\\CustomOptions")
+    role_ui: String
+    @doc(description: "The role of the product image or video.")
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\MediaGallery\\UiRole")
 }

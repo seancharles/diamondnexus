@@ -279,26 +279,6 @@ class TransformData extends AbstractHelper
 
     /**
      * @param int $entityId
-     * @param bool $transformed
-     * @return ProductInterface|Product|void|null
-     */
-    protected function getCurrentProduct(int $entityId, $transformed = true)
-    {
-        $this->storeManager->setCurrentStore(0);
-        /** @var Product $product */
-        try {
-            $product = $this->productRepository->getById($entityId, true, 0, true);
-        } catch (NoSuchEntityException $exception) {
-            $this->_logger->warning('Product with ID = ' . $entityId . 'not found');
-        }
-        if ($product->isDisabled() || $product->getData('is_transformed') == $transformed) {
-            return;
-        }
-        return $product;
-    }
-
-    /**
-     * @param int $entityId
      * @throws InputException
      * @throws LocalizedException
      * @throws NoSuchEntityException
@@ -390,10 +370,14 @@ class TransformData extends AbstractHelper
     }
 
     /**
-     * @param Product $product
      * @param string $videoUrl
      *
+     * @param Product $product
+     * @param string $videoProvider
+     * @throws InputException
      * @throws LocalizedException
+     * @throws NoSuchEntityException
+     * @throws StateException
      */
     protected function addVideoToProduct($videoUrl, $product, $videoProvider = '')
     {
@@ -418,9 +402,30 @@ class TransformData extends AbstractHelper
      */
     protected function convertConfigToBundle(Product $product)
     {
+        /** TODO: Transform all cross-sell products before! */
         $product->setData('price_type', TierPriceInterface::PRICE_TYPE_FIXED);
         $this->transformOptionsToBundle($product);
         $this->editProductsFromConfigurable($product);
+    }
+
+    /**
+     * @param int $entityId
+     * @param bool $transformed
+     * @return ProductInterface|Product|void|null
+     */
+    protected function getCurrentProduct(int $entityId, $transformed = true)
+    {
+        $this->storeManager->setCurrentStore(0);
+        /** @var Product $product */
+        try {
+            $product = $this->productRepository->getById($entityId, true, 0, true);
+        } catch (NoSuchEntityException $exception) {
+            $this->_logger->warning('Product with ID = ' . $entityId . 'not found');
+        }
+        if ($product->isDisabled() || $product->getData('is_transformed') == $transformed) {
+            return;
+        }
+        return $product;
     }
 
     /**
@@ -493,10 +498,10 @@ class TransformData extends AbstractHelper
             $extensionAttributes = $product->getExtensionAttributes();
             $productOptions = $extensionAttributes->getConfigurableProductOptions() ?: [];
             $optionsData = $this->mapping->prepareOptionsForBundle($product, $productOptions);
-            if ($product->getTypeId() == \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE) {
+            if ($product->getTypeId() == Product\Type::TYPE_SIMPLE) {
                 $this->converter->toSimple($product, $optionsData, $productOptions);
             }
-            if ($product->getTypeId() == \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE) {
+            if ($product->getTypeId() == Product\Type::TYPE_BUNDLE) {
                 $this->converter->toBundle($product, $optionsData, $productOptions);
             }
         } catch (Exception $e) {

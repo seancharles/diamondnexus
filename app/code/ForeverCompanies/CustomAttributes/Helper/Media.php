@@ -138,15 +138,15 @@ class Media extends AbstractHelper
         $select = $this->getGalleryValues(
             $connection,
             $valueId
-        )->joinInner(
+        )->joinLeft(
             ['type_title' => 'catalog_product_option_type_title'],
             'gallery_value.catalog_product_option_type_id = type_title.option_type_id',
             ['type_title_value' => 'type_title.title']
-        )->joinInner(
+        )->joinLeft(
             ['type_value' => 'catalog_product_option_type_value'],
             'gallery_value.catalog_product_option_type_id = type_value.option_type_id',
             ['option_id']
-        )->joinInner(
+        )->joinLeft(
             ['option_title' => 'catalog_product_option_title'],
             'type_value.option_id = option_title.option_id',
             ['option_title_value' => 'option_title.title']

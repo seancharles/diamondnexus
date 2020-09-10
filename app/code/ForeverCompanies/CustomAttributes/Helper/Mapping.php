@@ -15,6 +15,7 @@ use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Option;
+use Magento\Catalog\Model\Product\Type;
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Api\Data\AttributeInterface;
@@ -219,10 +220,10 @@ class Mapping extends AbstractHelper
             $this->customLogger->error('Product ID = ' . $product->getId() . ' can\'t transform to bundle');
             return false;
         }
-        if ($type == \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE) {
+        if ($type == Type::TYPE_SIMPLE) {
             $data = $this->prepareProductToSimple($product, $productOptions);
         }
-        if ($type == \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE) {
+        if ($type == Type::TYPE_BUNDLE) {
             $data = $this->prepareProductToBundle($product, $productOptions, $configurable);
         }
         $product->setQty($this->prepareQty($product, $configurable));
@@ -255,7 +256,7 @@ class Mapping extends AbstractHelper
 
     protected function prepareProductToSimple(Product $product, array $productOptions)
     {
-        $product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_SIMPLE);
+        $product->setTypeId(Type::TYPE_SIMPLE);
         $customizableOptions = [];
         $simpleOptions = [];
         $options = [];
@@ -295,7 +296,7 @@ class Mapping extends AbstractHelper
 
     protected function prepareProductToBundle(Product $product, array $productOptions, Configurable $configurable)
     {
-        $product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_BUNDLE);
+        $product->setTypeId(Type::TYPE_BUNDLE);
         $bundleOptions = [];
         $options = [];
         foreach ($productOptions as $productOption) {
@@ -366,14 +367,14 @@ class Mapping extends AbstractHelper
      */
     protected function getTypeOfProduct($productOptions)
     {
-        $type = \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE;
+        $type = Type::TYPE_SIMPLE;
         foreach ($productOptions as $productOption) {
             try {
                 $productAttribute = $this->productAttributeRepository->get($productOption->getAttributeId());
                 $label = $productAttribute->getData('frontend_label');
 
                 if ($label == 'Center Stone Size') {
-                    $type = \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE;
+                    $type = Type::TYPE_BUNDLE;
                 }
             } catch (NoSuchEntityException $e) {
                 $this->_logger->critical($e->getMessage());
