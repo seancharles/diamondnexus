@@ -1,7 +1,9 @@
 <?php
+/**
+ * Copyright ©  All rights reserved.
+ * See COPYING.txt for license details.
+ */
+use Magento\Framework\Component\ComponentRegistrar;
 
-\Magento\Framework\Component\ComponentRegistrar::register(
-    \Magento\Framework\Component\ComponentRegistrar::MODULE,
-    'DiamondNexus_Multipay',
-    __DIR__
-);
+ComponentRegistrar::register(ComponentRegistrar::MODULE, 'DiamondNexus_Multipay', __DIR__);
+

@@ -1,4 +1,10 @@
 <?php
+/**
+ * Copyright ©  All rights reserved.
+ * See COPYING.txt for license details.
+ */
+declare(strict_types=1);
+
 namespace DiamondNexus\Multipay\Model\Payment;
 
 class Multipay extends \Magento\Payment\Model\Method\AbstractMethod
@@ -13,3 +19,4 @@ class Multipay extends \Magento\Payment\Model\Method\AbstractMethod
         return parent::isAvailable($quote);
     }
 }
+
