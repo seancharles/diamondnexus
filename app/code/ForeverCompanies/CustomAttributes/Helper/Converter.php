@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Helper;
 
-use ForeverCompanies\CustomAttributes\Model\ResourceModel\CrossSell;
 use Magento\Bundle\Api\Data\LinkInterfaceFactory;
 use Magento\Catalog\Api\Data\ProductCustomOptionInterface;
 use Magento\Catalog\Api\Data\ProductExtension;
@@ -45,9 +44,9 @@ class Converter extends AbstractHelper
     protected $eavConfig;
 
     /**
-     * @var CrossSell
+     * @var MatchingBand
      */
-    protected $crossSell;
+    protected $matchingBand;
 
     /**
      * @var string[]
@@ -66,7 +65,7 @@ class Converter extends AbstractHelper
      * @param OptionInterfaceFactory $optionInterfaceFactory
      * @param LinkInterfaceFactory $linkInterfaceFactory
      * @param Config $eavConfig
-     * @param CrossSell $crossSell
+     * @param MatchingBand $matchingBand
      */
     public function __construct(
         Context $context,
@@ -74,7 +73,7 @@ class Converter extends AbstractHelper
         OptionInterfaceFactory $optionInterfaceFactory,
         LinkInterfaceFactory $linkInterfaceFactory,
         Config $eavConfig,
-        CrossSell $crossSell
+        MatchingBand $matchingBand
     )
     {
         parent::__construct($context);
@@ -82,17 +81,19 @@ class Converter extends AbstractHelper
         $this->optionInterfaceFactory = $optionInterfaceFactory;
         $this->linkFactory = $linkInterfaceFactory;
         $this->eavConfig = $eavConfig;
-        $this->crossSell = $crossSell;
+        $this->matchingBand = $matchingBand;
     }
 
     /**
      * @param Product $product
      * @param $optionsData
-     * @param $productOptions
      */
-    public function toSimple(Product $product, $optionsData, $productOptions)
+    public function toSimple(Product $product, $optionsData)
     {
         $options = $product->getOptions();
+        foreach ($options as &$option) {
+            $option['is_require'] = 0;
+        }
         foreach ($optionsData['simple'] as $optionData) {
             /** @var Option $option */
             $option = $this->productCustomOptionInterfaceFactory->create();
@@ -101,7 +102,7 @@ class Converter extends AbstractHelper
                     'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
                     'title' => $optionData['title'],
                     'type' => ProductCustomOptionInterface::OPTION_TYPE_DROP_DOWN,
-                    'is_require' => 1,
+                    'is_require' => 0,
                     'values' => $optionsData['options'][$optionData['title']],
                     'product_sku' => $product->getSku(),
                 ]
@@ -115,7 +116,6 @@ class Converter extends AbstractHelper
      * @param Product $product
      * @param $optionsData
      * @param $productOptions
-     * @throws LocalizedException
      */
     public function toBundle(Product $product, $optionsData, $productOptions)
     {
@@ -145,7 +145,7 @@ class Converter extends AbstractHelper
         if (isset($optionsData['links'])) {
             $bOptions[] = $this->prepareBundleOpt('Center Stone Size', '1', $optionsData['links']);
         }
-        $matchingBands = $this->getMatchingBands((int)$product->getId());
+        $matchingBands = $this->matchingBand->getMatchingBands((int)$product->getId());
         if (count($matchingBands) > 0) {
             $optionsData['matching_bands'] =$this->prepareMatchingBandLinks($matchingBands);
             $bOptions[] = $this->prepareBundleOpt('Matching Bands', '0', $optionsData['matching_bands']);
@@ -170,27 +170,6 @@ class Converter extends AbstractHelper
             }
         }
         return false;
-    }
-
-    /**
-     * @param int $entityId
-     * @return array
-     * @throws LocalizedException
-     */
-    protected function getMatchingBands(int $entityId)
-    {
-        $select = $this->crossSell->getCrossSellSelect();
-        try {
-            $attributeId = $this->eavConfig->getAttribute(Product::ENTITY, 'name')->getAttributeId();
-            $select->where('main_table.parent_id = ?', $entityId)
-                ->where('entity_varchar.attribute_id = ?', $attributeId)
-                ->where(implode(' OR ', $this->matchingBandWhere))
-                ->columns(['main_table.product_id', 'entity_varchar.value', 'entity.sku']);
-
-        } catch (LocalizedException $e) {
-            $this->_logger->critical('Can\'t get matching bands for product ID = ' . $entityId);
-        }
-        return $select->getConnection()->fetchAll($select);
     }
 
     /**

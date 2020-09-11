@@ -19,19 +19,15 @@ use Magento\Catalog\Api\Data\ProductExtensionFactory;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\TierPriceInterface;
 use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Gallery\GalleryManagement;
 use Magento\Catalog\Model\Product\Option;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
-use Magento\Catalog\Model\ResourceModel\Product\Gallery;
 use Magento\CatalogInventory\Model\Stock\Item;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Model\Config;
-use Magento\Framework\Api\Data\ImageContentInterface;
 use Magento\Framework\Api\Data\ImageContentInterfaceFactory;
 use Magento\Framework\Api\Data\VideoContentInterface;
-use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
@@ -105,6 +101,11 @@ class TransformData extends AbstractHelper
     protected $curl;
 
     /**
+     * @var MatchingBand
+     */
+    protected $matchingBand;
+
+    /**
      * @var ImageContentInterfaceFactory
      */
     protected $imageContentFactory;
@@ -157,6 +158,7 @@ class TransformData extends AbstractHelper
      * @param ProductExtensionFactory $productExtensionFactory
      * @param File $file
      * @param Curl $curl
+     * @param MatchingBand $matchingBand
      * @param ImageContentInterfaceFactory $imageContent
      * @param GalleryManagement $galleryManagement
      * @param Media $media
@@ -176,6 +178,7 @@ class TransformData extends AbstractHelper
         ProductExtensionFactory $productExtensionFactory,
         File $file,
         Curl $curl,
+        MatchingBand $matchingBand,
         ImageContentInterfaceFactory $imageContent,
         GalleryManagement $galleryManagement,
         Media $media,
@@ -194,6 +197,7 @@ class TransformData extends AbstractHelper
         $this->productExtensionFactory = $productExtensionFactory;
         $this->file = $file;
         $this->curl = $curl;
+        $this->matchingBand = $matchingBand;
         $this->imageContentFactory = $imageContent;
         $this->galleryManagement = $galleryManagement;
         $this->mediaHelper = $media;
@@ -403,6 +407,7 @@ class TransformData extends AbstractHelper
     protected function convertConfigToBundle(Product $product)
     {
         /** TODO: Transform all cross-sell products before! */
+        $this->transformIncludedProductsFirst($product->getId());
         $product->setData('price_type', TierPriceInterface::PRICE_TYPE_FIXED);
         $this->transformOptionsToBundle($product);
         $this->editProductsFromConfigurable($product);
@@ -499,7 +504,7 @@ class TransformData extends AbstractHelper
             $productOptions = $extensionAttributes->getConfigurableProductOptions() ?: [];
             $optionsData = $this->mapping->prepareOptionsForBundle($product, $productOptions);
             if ($product->getTypeId() == Product\Type::TYPE_SIMPLE) {
-                $this->converter->toSimple($product, $optionsData, $productOptions);
+                $this->converter->toSimple($product, $optionsData);
             }
             if ($product->getTypeId() == Product\Type::TYPE_BUNDLE) {
                 $this->converter->toBundle($product, $optionsData, $productOptions);
@@ -573,5 +578,28 @@ class TransformData extends AbstractHelper
             $newExtensions->setStockItem($stock);
         }
         $product->setExtensionAttributes($newExtensions);
+    }
+
+    /**
+     * @param $entityId
+     */
+    private function transformIncludedProductsFirst($entityId)
+    {
+        $products = $this->matchingBand->getMatchingBands((int)$entityId);
+        if (count($products) > 0) {
+            foreach ($products as $product) {
+                try {
+                    $this->transformProduct((int)$product['product_id']);
+                } catch (InputException $e) {
+                    $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
+                } catch (NoSuchEntityException $e) {
+                    $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
+                } catch (StateException $e) {
+                    $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
+                } catch (LocalizedException $e) {
+                    $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
+                }
+            }
+        }
     }
 }
