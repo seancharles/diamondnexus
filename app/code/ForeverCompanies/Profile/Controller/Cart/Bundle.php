@@ -6,6 +6,7 @@
 	{
 		protected $productloader;
 		protected $profileHelper;
+		protected $resultHelper;
 		protected $bundleHelper;
 		
 		public $bundleSelectionProductIds;
@@ -13,33 +14,31 @@
 		public function __construct(
 			\Magento\Catalog\Model\ProductFactory $productloader,
 			\ForeverCompanies\Profile\Helper\Profile $profileHelper,
+			\ForeverCompanies\Profile\Helper\Result $resultHelper,
 			\ForeverCompanies\Profile\Helper\Product\Bundle $bundleHelper,
 			\Magento\Backend\App\Action\Context $context
 		) {
 			$this->productloader = $productloader;
 			$this->profileHelper = $profileHelper;
+			$this->resultHelper = $resultHelper;
 			$this->bundleHelper = $bundleHelper;
 			parent::__construct($context);
 		}
 
 		public function execute()
 		{
-			$result = [
-				'success' => false
-			];
-			
 			try{
-				$post = $this->profileHelper->getPost();
+				$this->profileHelper->getPost();
 				
 				if ($this->profileHelper->formKeyValidator->validate($this->getRequest())) {
 
-					$bundleId = $post->product;
-					$dynamicId = $post->dynamic_bundled_item_id;
-					$options = $post->options;
+					$bundleId = $this->profileHelper->getPostParam('product');
+					$dynamicId = $this->profileHelper->getPostParam('dynamic_bundled_item_id');
+					$options = $this->profileHelper->getPostParam('options');
 					
 					// added to handle standard bundled options
-					$bundleProductSelections = $post->bundle_option;
-					$bundleCustomOptionsValues = $post->bundle_child_options;
+					$bundleProductSelections = $this->profileHelper->getPostParam('bundle_option');
+					$bundleCustomOptionsValues = $this->profileHelper->getPostParam('bundle_child_options');
 					
 					$bundleCustomOptions = array();
 					
@@ -148,6 +147,8 @@
 							$this->bundleHelper->formatBundleSelectionsChild($itemOptions, $selectionId, $bundle);
 							$this->bundleHelper->setItemOptions($itemId, $childId, $itemOptions);
 						}
+					} else {
+						$this->resultHelper->addProductError($productId, "Product ID is invalid.");
 					}
 					
 					$quote->collectTotals()->save();
@@ -159,24 +160,24 @@
 						$bundleProductModel->getName()
 					);
 					
-					$result['success'] = true;
-					$result['message'] = $message;
+					$this->resultHelper->setSuccess(true, $message);
 					
 					// updates the last sync time
 					$this->profileHelper->sync();
 					
-					$result['profile'] = $this->profileHelper->getProfile();
+					$this->resultHelper->setProfile(
+						$this->profileHelper->getProfile()
+					);
 					
 				} else {
-					$result['success'] = false;
-					$result['message'] = 'Invalid form key.';
+					$this->resultHelper->addFormKeyError();
 				}
 			
 			} catch (\Exception $e) {
-				$result['message'] = $e->getMessage();
+				$this->resultHelper->addExceptionError($e);
 			}
 			
-			print_r(json_encode($result));
+			$this->resultHelper->getResult();
 		}
 		
 		/**

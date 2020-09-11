@@ -6,11 +6,13 @@ class Profile
 {
 	public $request;
 	public $formKeyValidator;
+	
 	protected $customerSession;
 	protected $checkoutSession;
-	private $cartRepository;
+	protected $cartRepository;
 	protected $formKey;
 	protected $cart;
+	protected $post;
 	
 	protected $profile = [
 		'form_key' => null,
@@ -43,26 +45,43 @@ class Profile
 		
 		// add cart into to 
 		if($this->checkoutSession->getQuote()->getId() > 0) {
-			
-			/*
-			$items = [];
-			
-			foreach($cart->getItems() as $item) {
-				$items[] = [
-					'name' => $item->getName(),
-					'sku' => $item->getSku(),
-					'price' => $item->getPrice()
-				];
-			}
-			$this->setProfileKey('cart_items', $items);
-			*/
-			
 			$this->setProfileKey('quote_id', (int) $this->checkoutSession->getQuote()->getId());
-			$this->setProfileKey('cart_qty', (int) $this->checkoutSession->getQuote()->getItemsCount());
+			$this->setProfileKey('cart_items', $this->getCartItems());
+			$this->setProfileKey('cart_qty', (int) $this->getCartQty());
 		} else {
 			//$this->setProfileKey('cart_items', null);
 			$this->setProfileKey('cart_qty', 0);
 		}
+	}
+	
+	public function getCartItems()
+	{
+		$items = [];
+		
+		foreach($this->checkoutSession->getQuote()->getItems() as $item) {
+			$items[] = [
+				'item_id' => $item->getId(),
+				'name' => $item->getName(),
+				'sku' => $item->getSku(),
+				'price' => $item->getPrice()
+			];
+		}
+		
+		return $items;
+	}
+	
+	public function getCartQty()
+	{
+		$cartQty = 0;
+		$items = $this->checkoutSession->getQuote()->getItems();
+		
+		if(isset($items) == true) {
+			foreach ($items as $item){
+				$cartQty += $item->getQty();
+			}
+		}
+		
+		return $cartQty;
 	}
 	
 	public function getPost()
@@ -81,7 +100,16 @@ class Profile
 			$this->request->setPostValue('form_key', $formKey);
 		}
 
-		return $data;
+		$this->post = $data;
+	}
+	
+	public function getPostParam($field = null)
+	{
+		if(isset($this->post->{$field}) == true) {
+			return $this->post->{$field};
+		}
+		
+		return null;
 	}
 	
 	public function sync()
@@ -129,8 +157,28 @@ class Profile
 	{
 		$this->cartRepository->save($this->getQuote());
 		
+		// workaround to load the quote after it was updated to fetch qty and items
+		// otherwise this information might be off from the actual cart data, this
+		// might not be the best way to implement
+		$quote = $this->cartRepository->get($this->checkoutSession->getQuote()->getId());
+
+		$cartQty = 0;
+		$items = [];
+		
+		foreach($quote->getItems() as $item) {
+			$items[] = [
+				'item_id' => $item->getId(),
+				'name' => $item->getName(),
+				'sku' => $item->getSku(),
+				'price' => $item->getPrice()
+			];
+			
+			$cartQty += $item->getQty();
+		}
+		
 		// updating profile info to match quote after the quote is saved (don't do this before)
-		$this->profile['cart_qty'] = $this->checkoutSession->getQuote()->getItemsCount();
+		$this->setProfileKey("cart_qty", $cartQty);
+		$this->setProfileKey("cart_items", $items);
 	}
 	
 	/**

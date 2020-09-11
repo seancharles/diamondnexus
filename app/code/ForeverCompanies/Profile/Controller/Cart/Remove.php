@@ -5,29 +5,28 @@
 	class Remove extends \ForeverCompanies\Profile\Controller\ApiController
 	{
 		protected $profileHelper;
+		protected $resultHelper;
 		
 		public function __construct(
 			\ForeverCompanies\Profile\Helper\Profile $profileHelper,
+			\ForeverCompanies\Profile\Helper\Result $resultHelper,
 			\Magento\Backend\App\Action\Context $context
 		) {
 			$this->profileHelper = $profileHelper;
+			$this->resultHelper = $resultHelper;
 			parent::__construct($context);
 		}
 
 		public function execute()
 		{
-			$result = [
-				'success' => false
-			];
-			
-			$itemsList = array();
-			
 			try {
-				$post = $this->profileHelper->getPost();
+				$this->profileHelper->getPost();
+				
+				$itemsList = array();
 				
 				if ($this->profileHelper->formKeyValidator->validate($this->getRequest())) {
 					
-					$itemPost = $post->item_list;
+					$itemPost = $this->profileHelper->getPostParam('item_list');
 					
 					// convert post object to array;
 					foreach($itemPost as $item) {
@@ -51,27 +50,27 @@
 						
 						$this->profileHelper->saveQuote();
 						
-						$result['message'] = 'Removed item(s) from cart';
-						$result['success'] = true;
+						$this->resultHelper->setSuccess(true, 'Removed item(s) from cart');
 						
 					} else {
-						$result['message'] = 'Unable to find cart item';
+						$this->resultHelper->addCartError("Unable to find cart item");
 					}
 					
 					// updates the last sync time
 					$this->profileHelper->sync();
 					
-					$result['profile'] = $this->profileHelper->getProfile();
+					$this->resultHelper->setProfile(
+						$this->profileHelper->getProfile()
+					);
 					
 				} else {
-					$result['success'] = false;
-					$result['message'] = 'Invalid form key.';
+					$this->resultHelper->addFormKeyError();
 				}
 			
 			} catch (\Exception $e) {
-				$result['message'] = $e->getMessage();
+				$this->resultHelper->addExceptionError($e);
 			}
 			
-			print_r(json_encode($result));
+			$this->resultHelper->getResult();
 		}
 	}

@@ -5,21 +5,20 @@
 	class Clear extends \ForeverCompanies\Profile\Controller\ApiController
 	{
 		protected $profileHelper;
+		protected $resultHelper;
 		
 		public function __construct(
 			\ForeverCompanies\Profile\Helper\Profile $profileHelper,
+			\ForeverCompanies\Profile\Helper\Result $resultHelper,
 			\Magento\Backend\App\Action\Context $context
 		) {
 			$this->profileHelper = $profileHelper;
+			$this->resultHelper = $resultHelper;
 			parent::__construct($context);
 		}
 
 		public function execute()
 		{
-			$result = [
-				'success' => false
-			];
-			
 			try {
 				$post = $this->profileHelper->getPost();
 				
@@ -30,19 +29,20 @@
 					// updates the last sync time
 					$this->profileHelper->sync();
 					
-					$result['success'] = true;
-					$result['message'] = 'Cart cleared.';
-					$result['profile'] = $this->profileHelper->getProfile();
+					$this->resultHelper->setSuccess(true, "Cart cleared.");
+					
+					$this->resultHelper->setProfile(
+						$this->profileHelper->getProfile()
+					);
 					
 				} else {
-					$result['success'] = false;
-					$result['message'] = 'Invalid form key.';
+					$this->resultHelper->addFormKeyError();
 				}
 			
 			} catch (\Exception $e) {
-				$result['message'] = $e->getMessage();
+				$this->resultHelper->addExceptionError($e);
 			}
 			
-			print_r(json_encode($result));
+			$this->resultHelper->getResult();
 		}
 	}
