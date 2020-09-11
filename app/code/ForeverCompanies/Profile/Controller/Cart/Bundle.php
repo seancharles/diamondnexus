@@ -60,95 +60,108 @@
 					if($bundleId > 0) {
 						$bundleProductModel = $this->productloader->create()->load($bundleId);
 						
-						// get the identity for the product to identify uniquely
-						$this->getBundleIdentity($bundleProductModel, $bundleProductSelections);
+						$validationResult = $this->resultHelper->validateBundleProductOptions($bundleProductModel, $options, $bundleProductSelections, $bundleCustomOptions, $dynamicId );
 						
-						$this->bundleHelper->setBundleSelectionProductIds($this->bundleSelectionProductIds);
-
-						// pulls all associated bundle options for item with no selection
-						$bundleOptions = $this->bundleHelper->getBundleOptions($bundleProductModel);
+						if($validationResult == false) {
 						
-						// gets the bundle options for the specific item in cart with selection
-						$bundleOptionValues = $this->bundleHelper->formatBundleOptionSelection();
+							// get the identity for the product to identify uniquely
+							$this->getBundleIdentity($bundleProductModel, $bundleProductSelections);
+							
+							$this->bundleHelper->setBundleSelectionProductIds($this->bundleSelectionProductIds);
 
-						$dynamicProductModel = $this->productloader->create()->load($dynamicId);
-						
-						$parentItem = $this->bundleHelper->addParentItem($bundleProductModel, $dynamicProductModel, $options);
+							// pulls all associated bundle options for item with no selection
+							$bundleOptions = $this->bundleHelper->getBundleOptions($bundleProductModel);
+							
+							// gets the bundle options for the specific item in cart with selection
+							$bundleOptionValues = $this->bundleHelper->formatBundleOptionSelection();
 
-						$quote->addItem($parentItem);
-						$quote->save();
-						$parentItemId = $this->profileHelper->getLastQuoteItemId($quoteId);
-
-						$itemOptions = [
-							'info_buyRequest' => json_encode([
-								// read more: https://maxchadwick.xyz/blog/wtf-is-uenc
-								'uenc' => '', // no url redirect on add to cart
-								'product' => $bundleId,
-								'selected_configurable_option' => '',
-								'related_product' => '',
-								'item' => $bundleId,
-								'bundle_option' => $bundleOptionValues,
-								'dynamic_bundled_item_id' => $dynamicId,
-								'dynamic_custom_options' => ((isset($bundleCustomOptions) == true) ? $bundleCustomOptions: []),
-								'options' => $options,
-								'qty' => "1"
-							]),
-							'bundle_identity' =>  $this->bundleIdentity
-						];
-
-						$this->bundleHelper->formatBundleOptionsParent($itemOptions, $options);
-						$this->bundleHelper->formatBundleOptionIds($itemOptions, $bundleOptions);
-						$this->bundleHelper->formatBundleSelectionsParent($itemOptions);
-						
-						$this->bundleHelper->setItemOptions($parentItemId, $bundleId, $itemOptions);
-						
-						// iterate through native bundle options
-						foreach($this->bundleSelectionProductIds as $selectionId => $bundle)
-						{
-							// implements the dynamic product when enabled
-							if(in_array($bundle['option_id'], $this->bundleDynamicOptionIds) == true) {
-								$childId = $dynamicId;
-							} else {
-								$childId = $bundle['product_id'];
-							}
+							if($dynamicId > 0) {
+								$dynamicProductModel = $this->productloader->create()->load($dynamicId);
 								
-							$childProductModel = $this->productloader->create()->load($childId);
-							
-							// parse out the custom options for the selection
-							if(isset($bundleCustomOptions[$selectionId][$bundle['product_id']]) == true) {
-								$childCustomOptions = $bundleCustomOptions[$selectionId][$bundle['product_id']];
+								$parentItem = $this->bundleHelper->addParentItem($bundleProductModel, $options, $dynamicProductModel);
 							} else {
-								$childCustomOptions = [];
+								$parentItem = $this->bundleHelper->addParentItem($bundleProductModel, $options);
 							}
-							
-							// child item handling
-							$childItem = $this->bundleHelper->addChildItem($childProductModel, $parentItemId, $childCustomOptions);
-							$quote->addItem($childItem);
+
+							$quote->addItem($parentItem);
 							$quote->save();
-							$itemId = $this->profileHelper->getLastQuoteItemId($quoteId);
-							
+							$parentItemId = $this->profileHelper->getLastQuoteItemId($quoteId);
+
 							$itemOptions = [
 								'info_buyRequest' => json_encode([
 									// read more: https://maxchadwick.xyz/blog/wtf-is-uenc
 									'uenc' => '', // no url redirect on add to cart
-									'product' => $childId,
+									'product' => $bundleId,
 									'selected_configurable_option' => '',
 									'related_product' => '',
 									'item' => $bundleId,
 									'bundle_option' => $bundleOptionValues,
-									// conditionally set child custom option values if they are provided
-									'options' => $childCustomOptions,
-									'qty' => 1
+									'dynamic_bundled_item_id' => $dynamicId,
+									'dynamic_custom_options' => ((isset($bundleCustomOptions) == true) ? $bundleCustomOptions: []),
+									'options' => $options,
+									'qty' => "1"
 								]),
-								'bundle_identity' => $this->bundleIdentity
+								'bundle_identity' =>  $this->bundleIdentity
 							];
-							
+
+							$this->bundleHelper->formatBundleOptionsParent($itemOptions, $options);
 							$this->bundleHelper->formatBundleOptionIds($itemOptions, $bundleOptions);
-							$this->bundleHelper->formatBundleSelectionsChild($itemOptions, $selectionId, $bundle);
-							$this->bundleHelper->setItemOptions($itemId, $childId, $itemOptions);
+							$this->bundleHelper->formatBundleSelectionsParent($itemOptions);
+							
+							$this->bundleHelper->setItemOptions($parentItemId, $bundleId, $itemOptions);
+							
+							// iterate through native bundle options
+							foreach($this->bundleSelectionProductIds as $selectionId => $bundle)
+							{
+								// implements the dynamic product when enabled
+								if(in_array($bundle['option_id'], $this->bundleDynamicOptionIds) == true) {
+									$childId = $dynamicId;
+								} else {
+									$childId = $bundle['product_id'];
+								}
+									
+								$childProductModel = $this->productloader->create()->load($childId);
+								
+								// parse out the custom options for the selection
+								if(isset($bundleCustomOptions[$selectionId][$bundle['product_id']]) == true) {
+									$childCustomOptions = $bundleCustomOptions[$selectionId][$bundle['product_id']];
+								} else {
+									$childCustomOptions = [];
+								}
+								
+								// child item handling
+								$childItem = $this->bundleHelper->addChildItem($childProductModel, $parentItemId, $childCustomOptions);
+								$quote->addItem($childItem);
+								$quote->save();
+								$itemId = $this->profileHelper->getLastQuoteItemId($quoteId);
+								
+								$itemOptions = [
+									'info_buyRequest' => json_encode([
+										// read more: https://maxchadwick.xyz/blog/wtf-is-uenc
+										'uenc' => '', // no url redirect on add to cart
+										'product' => $childId,
+										'selected_configurable_option' => '',
+										'related_product' => '',
+										'item' => $bundleId,
+										'bundle_option' => $bundleOptionValues,
+										// conditionally set child custom option values if they are provided
+										'options' => $childCustomOptions,
+										'qty' => 1
+									]),
+									'bundle_identity' => $this->bundleIdentity
+								];
+								
+								$this->bundleHelper->formatBundleOptionIds($itemOptions, $bundleOptions);
+								$this->bundleHelper->formatBundleSelectionsChild($itemOptions, $selectionId, $bundle);
+								$this->bundleHelper->setItemOptions($itemId, $childId, $itemOptions);
+							}
+						} else {
+							foreach($validationResult as $error) {
+								$this->resultHelper->addProductError($bundleId, $error);
+							}
 						}
 					} else {
-						$this->resultHelper->addProductError($productId, "Product ID is invalid.");
+						$this->resultHelper->addProductError($bundleId, "Product ID is invalid.");
 					}
 					
 					$quote->collectTotals()->save();

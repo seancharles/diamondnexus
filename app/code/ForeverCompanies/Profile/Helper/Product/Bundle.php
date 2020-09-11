@@ -27,8 +27,6 @@ class Bundle
 		*/
 		public function formatBundleOptionsParent(&$itemOptions = null, $options = null)
 		{
-			
-			
 			$itemOptions['option_ids'] = implode(',',array_keys($options));
 			
 			foreach($options as $option)
@@ -91,7 +89,7 @@ class Bundle
 			}
 		}
 		
-		public function addParentItem($bundleProductModel, $childProductModel, $options)
+		public function addParentItem($bundleProductModel, $options, $childProductModel)
 		{
 			$selectionPrice = 0;
 			$customOptionPrice = 0;
@@ -132,7 +130,13 @@ class Bundle
 					$selectionPrice += $bundle['price'];
 				}
 				
-				$price = $bundleProductModel->getPrice() + $childProductModel->getPrice() + $customOptionPrice + $selectionPrice;
+				if(isset($childProductModel) == true && $childProductModel->getId() > 0) {
+					// add the dynamic bundled item price to the selection total only when dynamic bundling
+					$price = $bundleProductModel->getPrice() + $childProductModel->getPrice() + $customOptionPrice + $selectionPrice;
+				} else {
+					// native pricing
+					$price = $bundleProductModel->getPrice() + $customOptionPrice + $selectionPrice;
+				}
 				
 				// set the values specific to what they need to be...
 				$quoteItem->setQty(1);

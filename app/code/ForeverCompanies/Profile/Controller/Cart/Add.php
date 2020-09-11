@@ -67,24 +67,33 @@
 									$params['options'][$option->id] = $option->value;
 								}
 							}
+							
+							$validationResult = $this->resultHelper->validateProductOptions($productModel, $params);
 
-							$quote->addProduct($productModel, $this->dataObjectFactory->create($params));
+							if($validationResult == false) {
+
+								$quote->addProduct($productModel, $this->dataObjectFactory->create($params));
+								
+								$this->profileHelper->saveQuote($quote);
+								
+								$message = __(
+									'You added %1 to your shopping cart.',
+									$productModel->getName()
+								);
+								
+								$this->resultHelper->setSuccess(true, $message);
+								
+								// updates the last sync time
+								$this->profileHelper->sync();
 							
-							$this->profileHelper->saveQuote($quote);
-							
-							$message = __(
-								'You added %1 to your shopping cart.',
-								$productModel->getName()
-							);
-							
-							$this->resultHelper->setSuccess(true, $message);
-							
-							// updates the last sync time
-							$this->profileHelper->sync();
-							
-							$this->resultHelper->setProfile(
-								$this->profileHelper->getProfile()
-							);
+								$this->resultHelper->setProfile(
+									$this->profileHelper->getProfile()
+								);
+							} else {
+								foreach($validationResult as $error) {
+									$this->resultHelper->addProductError($productId, $error);
+								}
+							}
 						} else {
 							$this->resultHelper->addProductError($productId, "Product could not be found.");
 						}
