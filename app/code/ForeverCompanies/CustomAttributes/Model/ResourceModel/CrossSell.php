@@ -1,7 +1,6 @@
 <?php
 namespace ForeverCompanies\CustomAttributes\Model\ResourceModel;
 
-
 use Magento\Framework\DB\Select;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
@@ -9,14 +8,10 @@ use Magento\Framework\Model\ResourceModel\Db\Context;
 
 class CrossSell extends AbstractDb
 {
+    /**
+     * @var string
+     */
     protected $mainTable = 'catalog_product_cross_sell';
-
-    public function __construct(
-        Context $context
-    )
-    {
-        parent::__construct($context);
-    }
 
     protected function _construct()
     {
@@ -40,5 +35,4 @@ class CrossSell extends AbstractDb
             'main_table.product_id = entity.entity_id'
         );
     }
-
 }

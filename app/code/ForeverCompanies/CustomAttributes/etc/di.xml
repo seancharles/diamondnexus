@@ -13,6 +13,11 @@
                     ForeverCompanies\CustomAttributes\Console\Command\TransformMedia
                 </item>
             </argument>
+            <argument name="commands" xsi:type="array">
+                <item name="TransformMedia" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\DeleteOIdAttributes
+                </item>
+            </argument>
         </arguments>
     </type>
     <type name="ForeverCompanies\CustomAttributes\Logger\Handler">

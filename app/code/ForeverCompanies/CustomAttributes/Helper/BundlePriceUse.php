@@ -52,7 +52,7 @@ class BundlePriceUse extends AbstractHelper
     public function setBundlePrice(Product $product, float $price, string $originalSku)
     {
         $sku = $product->getSku();
-        if ($product->getData('bundle_price_use') == 0 || $product->getData('bundle_price_use') == null) {
+        if ($product->getData('bundle_price_use') == 0 || $product->getData('bundle_price_use') !== $price) {
             $product->setData('bundle_price_use', $price);
             try {
                 $this->productTypeHelper->setProductType($product);

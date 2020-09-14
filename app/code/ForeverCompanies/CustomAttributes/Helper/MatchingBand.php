@@ -52,7 +52,6 @@ class MatchingBand extends AbstractHelper
         $this->crossSellResource = $crossSellResource;
     }
 
-
     /**
      * @param int $entityId
      * @return array

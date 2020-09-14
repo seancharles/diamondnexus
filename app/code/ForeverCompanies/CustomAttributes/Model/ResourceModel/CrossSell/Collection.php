@@ -8,8 +8,19 @@ use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 
 class Collection extends AbstractCollection
 {
+    /**
+     * @var string
+     */
     protected $_idFieldName = 'id';
+
+    /**
+     * @var string
+     */
     protected $_eventPrefix = 'forevercompanies_customattributes_crosssell_collection';
+
+    /**
+     * @var string
+     */
     protected $_eventObject = 'crosssell_collection';
 
     /**
@@ -19,7 +30,6 @@ class Collection extends AbstractCollection
      */
     protected function _construct()
     {
-        $this->_init(CrossSell::class,ResourceModel::class);
+        $this->_init(CrossSell::class, ResourceModel::class);
     }
-
 }

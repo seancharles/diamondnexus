@@ -525,7 +525,7 @@ class TransformData extends AbstractHelper
             $movedAsPart = 'Removed as part of: ';
             $devTag = $productForDelete->getData('dev_tag');
             if ($devTag !== null && strpos($devTag, $movedAsPart) !== false) {
-                $productForDelete->setData('dev_tag', $devTag . ', ' . $product->getId());
+                continue;
             }
             if ($devTag === null) {
                 $productForDelete->setData('dev_tag', $movedAsPart . $product->getId());
