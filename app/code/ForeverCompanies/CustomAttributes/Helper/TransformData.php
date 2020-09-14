@@ -476,14 +476,17 @@ class TransformData extends AbstractHelper
                 ProductAttributeMediaGalleryEntryInterface::DISABLED => false,
                 ProductAttributeMediaGalleryEntryInterface::FILE => $filename
             ];
-            $videoData = array_merge($generalMediaEntryData, [
+            $videoData = array_merge(
+                $generalMediaEntryData,
+                [
                 VideoContentInterface::TITLE => 'Migrated Video',
                 VideoContentInterface::DESCRIPTION => '',
                 VideoContentInterface::PROVIDER => $provider,
                 VideoContentInterface::METADATA => null,
                 VideoContentInterface::URL => $url,
                 VideoContentInterface::TYPE => ExternalVideoEntryConverter::MEDIA_TYPE_CODE,
-            ]);
+                ]
+            );
         } catch (FileSystemException $e) {
             return [];
         } catch (LocalizedException $e) {

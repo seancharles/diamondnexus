@@ -146,7 +146,7 @@ class Converter extends AbstractHelper
         }
         $matchingBands = $this->matchingBand->getMatchingBands((int)$product->getId());
         if (count($matchingBands) > 0) {
-            $optionsData['matching_bands'] =$this->prepareMatchingBandLinks($matchingBands);
+            $optionsData['matching_bands'] = $this->prepareMatchingBandLinks($matchingBands);
             $bOptions[] = $this->prepareBundleOpt('Matching Bands', '0', $optionsData['matching_bands']);
         }
         if (count($bOptions) > 0) {
@@ -199,12 +199,14 @@ class Converter extends AbstractHelper
     {
         /** @var \Magento\Bundle\Model\Option $bundleOption */
         $bundleOption = $this->optionInterfaceFactory->create();
-        $bundleOption->setData([
+        $bundleOption->setData(
+            [
             'title' => $title,
             'type' => 'select',
             'required' => $required,
             'product_links' => $links
-        ]);
+            ]
+        );
         return $bundleOption;
     }
 }

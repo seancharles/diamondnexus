@@ -8,9 +8,6 @@ use Magento\Framework\Model\AbstractModel;
 
 class CrossSell extends AbstractModel implements IdentityInterface
 {
-    /**
-     *
-     */
     const CACHE_TAG = 'forevercompanies_customattributes_crosssell';
 
     /**
