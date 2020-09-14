@@ -41,8 +41,7 @@ class TransformStatuses extends Command
     public function __construct(
         State $state,
         TransformData $helper
-    )
-    {
+    ) {
         $this->state = $state;
         $this->helper = $helper;
         parent::__construct($this->name);
@@ -66,7 +65,6 @@ class TransformStatuses extends Command
             }
             $this->helper->deleteStatuses();
             $output->writeln("Done! Please execute command 'bin/magento indexer:reindex'");
-
         } catch (LocalizedException $e) {
             $output->writeln($e->getMessage());
         }

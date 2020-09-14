@@ -47,8 +47,7 @@ class TransformData extends AbstractHelper
     public function __construct(
         Context $context,
         CollectionFactory $orderFactory
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->orderFactory = $orderFactory;
     }
@@ -84,6 +83,4 @@ class TransformData extends AbstractHelper
             ['status in (?)' => array_keys($this->getStatusesForDelete())]
         );
     }
-
-
 }
