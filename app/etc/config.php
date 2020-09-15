@@ -354,6 +354,7 @@ return [
         'ForeverCompanies_CustomAttributes' => 1,
         'ForeverCompanies_CustomSales' => 1,
         'ForeverCompanies_Migration' => 1,
+        'ForeverCompanies_QuoteCleaner' => 1,
         'ForeverCompanies_SearchEngine' => 1,
         'Inchoo_Helloworld' => 1,
         'Klarna_Core' => 1,
