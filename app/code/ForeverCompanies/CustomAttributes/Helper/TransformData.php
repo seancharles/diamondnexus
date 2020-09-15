@@ -323,7 +323,7 @@ class TransformData extends AbstractHelper
             $this->_logger->error($inputException->getMessage());
             throw $inputException;
         } catch (Exception $e) {
-            throw new StateException(__('Cannot save product.'));
+            throw new StateException(__('Cannot save product - ' .$e->getMessage()));
         }
     }
 
@@ -365,7 +365,8 @@ class TransformData extends AbstractHelper
             `eav_table`.`store_id` = 0",
                     ['value']
                 )->where('eav_table.value ' . $where)
-                ->where('sku is not null');
+                ->where('sku is not null')
+            ->where('e.row_id > 107888');
             return $productCollection;
         } catch (LocalizedException $e) {
             $this->_logger->critical($e->getMessage());
@@ -385,12 +386,29 @@ class TransformData extends AbstractHelper
      */
     protected function addVideoToProduct($videoUrl, $product, $videoProvider = '')
     {
+        /** TODO: all of that functions */
+        if (strpos($videoUrl, 'up.diacam360')) {
+            throw new StateException(__('Cannot save video from up.diacam360 for product'));
+        }
+        if (strpos($videoUrl, 's3.amazonaws')) {
+            throw new StateException(__('Cannot save video from s3.amazonaws for product'));
+        }
+        if (strpos($videoUrl, 'assets.stullercloud')) {
+            throw new StateException(__('Cannot save video from assets.stullercloud for product'));
+        }
+        if (strpos($videoUrl, 'v360.in')) {
+            throw new StateException(__('Cannot save video from v360.in for product'));
+        }
         if ($videoProvider == 'youtube') {
             $videoProvider = 'youtube';
         } else {
             $videoProvider = str_replace('https://', '', $videoUrl);
             $videoProvider = str_replace('http://', '', $videoProvider);
-            $videoProvider = substr($videoProvider, 0, strpos($videoProvider, "."));
+            $dotPosition = strpos($videoProvider, ".") ?? false;
+            if ($dotPosition == false ) {
+                return;
+            }
+            $videoProvider = substr($videoProvider, 0, $dotPosition);
         }
         $videoData = $this->getFileFromVimeoVideo($videoUrl, $videoProvider);
         // Convert video data array to video entry
