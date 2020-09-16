@@ -1,0 +1,12 @@
+{
+    "sales_order": {
+        "column": {
+            "flag_fishbowl_import": true
+        }
+    },
+    "sales_order_item": {
+        "column": {
+            "flag_loose_stone": true
+        }
+    }
+}
