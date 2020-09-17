@@ -45,6 +45,10 @@ class OrderFishbowlImport
         }
 
         $extensionAttributes->setFlagFishbowlImport($order->getData('flag_fishbowl_import'));
+        $extensionAttributes->setShippingMethod($order->getShippingMethod());
+        $extensionAttributes->setAnticipatedShipdate($order->getData('anticipated_shipdate'));
+        $extensionAttributes->setDeliveryDate($order->getData('delivery_date'));
+        $extensionAttributes->setSalesPersonId($order->getData('sales_person_id'));
         $order->setExtensionAttributes($extensionAttributes);
 
         return $order;
