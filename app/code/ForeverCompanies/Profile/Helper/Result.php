@@ -4,16 +4,24 @@ namespace ForeverCompanies\Profile\Helper;
  
 class Result
 {
-	CONST ERROR_TYPE_FORM_KEY = 'form_key';
+	CONST PRODUCT_CUSTOM_OPTION = 'custom_option';
+	CONST PRODUCT_BUNDLE_OPTION = 'bundle_option';
+	CONST PRODUCT_BUNDLE_CHILD_CUSTOM_OPTION = 'bundle_child_custom_option';
+	CONST PRODUCT_CONFIGURABLE_OPTION = 'configurable_option';
+
 	CONST ERROR_TYPE_PRODUCT = 'product';
-	CONST ERROR_TYPE_CUSTOM_OPTION_VALIDATION = 'custom_option';
-	CONST ERROR_TYPE_BUNDLE_OPTION_VALIDATION = 'bundle_option';
-	CONST ERROR_TYPE_CONFIGURABLE_OPTION_VALIDATION = 'configurable_option';
+	CONST ERROR_TYPE_FORM_KEY = 'form_key';	
 	CONST ERROR_TYPE_EXCEPTION = 'general_exception';
 	
 	protected $productloader;
 	
-	protected $errors = array();
+	protected $errors = [
+		self::PRODUCT_CUSTOM_OPTION => [],
+		self::PRODUCT_BUNDLE_OPTION => [],
+		self::PRODUCT_BUNDLE_CHILD_CUSTOM_OPTION => [],
+		self::PRODUCT_CONFIGURABLE_OPTION => []
+	];
+	
 	protected $success = false;
 	
 	// this is a singular response message
@@ -27,15 +35,41 @@ class Result
 		$this->productloader = $productloader;
 	}
 	
+	private function keyFormat($params)
+	{
+		$buffer = $params[0];
+		
+		for($i=1; $i<count($params); $i++) {
+			$buffer = $params[$i] . '_' . $buffer;
+		}
+		
+		return $buffer;
+	}
+	
+	private function hasOptionErrors()
+	{
+		$hasErrors = false;
+		
+		if(
+			count($this->errors[self::PRODUCT_CUSTOM_OPTION]) > 0 ||
+			count($this->errors[self::PRODUCT_BUNDLE_OPTION]) > 0 ||
+			count($this->errors[self::PRODUCT_BUNDLE_CHILD_CUSTOM_OPTION]) > 0 ||
+			count($this->errors[self::PRODUCT_CONFIGURABLE_OPTION]) > 0
+		) {
+			$hasErrors = true;
+		}
+		
+		return $hasErrors;
+	}
+	
 	// validate add to cart params for simple and configurables
 	public function validateBundleProductOptions($product, $customOptions, $bundleSelections, $bundleCustomOptions, $dynamicId)
 	{
-		$acustomOptions = array();
-		$aOptionsResult = array();
+		$aCustomOptions = array();
 		$aBundleSelections = array();
 		
 		foreach($customOptions as $option) {
-			$acustomOptions[$option->id] = $option->value;
+			$aCustomOptions[$option->id] = $option->value;
 		}
 		
 		foreach($bundleSelections as $selection) {
@@ -49,26 +83,29 @@ class Result
 
 			foreach($productOptions as $option)
 			{
-				$aOptionsResult[$option->getId()] = "Invalid option selected for " . $option->getTitle();
+				$this->errors[self::PRODUCT_CUSTOM_OPTION][$option->getOptionId()] = [
+					"message" => "Invalid custom option selected for " . $option->getTitle(),
+					"option_id" => $option->getOptionId()
+				];
 				
 				$values = $option->getValues();
 				
 				foreach($values as $valueId => $value)
 				{
 					// compare the option values to the selections
-					if(isset($acustomOptions[$option->getOptionId()]) == true && $acustomOptions[$option->getOptionId()] == $valueId)
+					if(isset($aCustomOptions[$option->getOptionId()]) == true && $aCustomOptions[$option->getOptionId()] == $valueId)
 					{
 						// remove the option from the array since it has a valid selection
-						unset($aOptionsResult[$option->getOptionId()]);
+						unset($this->errors[self::PRODUCT_CUSTOM_OPTION][$option->getOptionId()]);
 					}
 				}
 			}
 			
-			// get bundled options
+			// get bundled options from bundle
 			$optionsCollection = $product->getTypeInstance(true)
 				->getOptionsCollection($product);
 
-			foreach ($optionsCollection as $option){
+			foreach ($optionsCollection as $bundleOption){
 				if($option->getIsDynamicSelection() == 1){
 					
 					// additional dynamic bundle validation goes here to
@@ -76,9 +113,14 @@ class Result
 					//echo $option->getTitle() . " is dynamic\n";
 				}
 				
+				$this->errors[self::PRODUCT_BUNDLE_OPTION][$bundleOption->getOptionId()] = [
+					"message" => "Invalid bundle option selected for " . $bundleOption->getTitle(),
+					"option_id" => $bundleOption->getOptionId()
+				];
+				
 				// handle native bundle
 				$selections = $product->getTypeInstance(true)
-					->getSelectionsCollection($option->getOptionId(),$product);
+					->getSelectionsCollection($bundleOption->getOptionId(),$product);
 				
 				foreach( $selections as $selection )
 				{
@@ -86,28 +128,43 @@ class Result
 				
 					$childModel = $this->productloader->create()->load($childId);
 					
+					if(
+						isset($aBundleSelections[$bundleOption->getOptionId()]) == true && $aBundleSelections[$bundleOption->getOptionId()] == $selection->getSelectionId())
+					{
+						// remove error if valid selection is found
+						unset($this->errors[self::PRODUCT_BUNDLE_OPTION][$bundleOption->getOptionId()]);
+						
+					}
+					
 					// only validate child custom options if the child product was selected as a bundled option
 					if($childModel->hasOptions() == true && isset($aBundleSelections[$selection->getSelectionId()]) == true)
 					{
 						// get custom options
 						$childProductOptions = $childModel->getOptions();
 
-						foreach($childProductOptions as $option)
+						foreach($childProductOptions as $chuldOption)
 						{
-							$optionsResult[$selection->getSelectionId()][$childId][$option->getId()] = "Invalid option selected for " . $option->getTitle();
+							$key = $this->keyFormat(array($selection->getSelectionId(), $childId, $chuldOption->getId()));
 							
-							$values = $option->getValues();
+							$this->errors[self::PRODUCT_BUNDLE_CHILD_CUSTOM_OPTION][$key] = [
+								"message" => "Invalid option selected for child product " . $chuldOption->getTitle(),
+								"product_id" => $childModel->getId(),
+								"selection_id" => $selection->getSelectionId(),
+								"option_id" => $chuldOption->getId()
+							];
+							
+							$values = $chuldOption->getValues();
 							
 							foreach($values as $valueId => $value)
 							{
 								// compare the option values to the selections
 								if(
-									isset($bundleCustomOptions[$selection->getSelectionId()][$childId][$option->getOptionId()]) == true &&
-									$bundleCustomOptions[$selection->getSelectionId()][$childId][$option->getOptionId()] == $valueId
+									isset($bundleCustomOptions[$selection->getSelectionId()][$childId][$chuldOption->getOptionId()]) == true &&
+									$bundleCustomOptions[$selection->getSelectionId()][$childId][$chuldOption->getOptionId()] == $valueId
 								)
 								{
 									// remove the option from the array since it has a valid selection
-									unset($optionsResult[$selection->getSelectionId()][$childId][$option->getOptionId()]);
+									unset($this->errors[self::PRODUCT_BUNDLE_CHILD_CUSTOM_OPTION][$key]);
 								}
 							}
 						}
@@ -116,8 +173,13 @@ class Result
 			}
 		}
 		
-		if(count($aOptionsResult) > 0) {
-			return $aOptionsResult;
+		if($this->hasOptionErrors() == true) {
+			
+			// set the error message
+			$this->setSuccess(false, "Product options are required.");
+			
+			return true;
+
 		} else {
 			return false;
 		}
@@ -126,8 +188,6 @@ class Result
 	// validate add to cart params for simple and configurables
 	public function validateProductOptions($product, $params)
 	{
-		$optionsResult = array();
-		
 		if($product->hasOptions() == true)
 		{
 			// get custom options
@@ -139,7 +199,7 @@ class Result
 				// a valid option is passed otherwise this will be returned to
 				// help identity the error
 				
-				$optionsResult[$option['option_id']] = "Invalid option selected for " . $option->getTitle();
+				$this->errors[self::PRODUCT_CUSTOM_OPTION][$option['option_id']] = "Invalid option selected for " . $option['title'];
 				
 				$values = $option->getValues();
 				
@@ -149,7 +209,7 @@ class Result
 					if(isset($params['options'][$option['option_id']]) == true && $params['options'][$option['option_id']] == $valueId)
 					{
 						// remove the option from the array since it has a valid selection
-						unset($optionsResult[$option['option_id']]);
+						unset($this->errors[self::PRODUCT_CUSTOM_OPTION][$option['option_id']]);
 					}
 				}
 			}
@@ -160,26 +220,26 @@ class Result
 				
 				foreach($configOptions as $optionId => $config)
 				{
-					$optionsResult[$optionId] = "Invalid option for attribute " . $config[0]['super_attribute_label'];
+					$this->errors[self::PRODUCT_CONFIGURABLE_OPTION][$optionId] = "Invalid option for attribute " . $config[0]['super_attribute_label'];
 					
 					foreach($config as $option){
 						if($params['super_attribute'][$optionId] == $option['value_index']) {
-							unset($optionsResult[$optionId]);
+							unset($this->errors[self::PRODUCT_CONFIGURABLE_OPTION][$optionId]);
 						}
 					}
 				}
 				
 				// loop through the configurable attributes on the product to get the option title
 				// foreach ($product->getTypeInstance()->getConfigurableAttributes($product) as $attribute) {
-				//	if(isset($optionsResult[$attribute->getId()]) == true) {
+				//	if(isset($aOptionsResult[$attribute->getId()]) == true) {
 				//		$optionsResult[$attribute->getId()] = "Invalid option selected for " . $attribute->getLabel();
 				//	}
 				// }
 			}
 		}
 		
-		if(count($optionsResult) > 0) {
-			return $optionsResult;
+		if($this->hasOptionErrors($aOptionsResult) == true) {
+			return $this->errors;
 		} else {
 			return false;
 		}
@@ -221,58 +281,18 @@ class Result
 		return $this->errors;
 	}
 
-	public function addCartError($message)
-	{
-		$this->errors[] = [
-			"type" => self::ERROR_TYPE_CART,
-			"message" => $message
-		];
-	}
-
 	public function addFormKeyError()
 	{
-		$this->errors[] = [
-			"type" => self::ERROR_TYPE_FORM_KEY,
+		$this->errors[self::ERROR_TYPE_FORM_KEY][] = [
 			"message" => "Invalid form key."
 		];
 	}
-
+	
 	public function addProductError($productId = 0, $message = null)
 	{
 		$this->success = false;
-		$this->errors[] = [
-			"type" => self::ERROR_TYPE_PRODUCT,
+		$this->errors[self::ERROR_TYPE_PRODUCT][] = [
 			"message" => $message,
-			"product_id" => $productId
-		];
-	}
-	
-	public function addCustomOptionError($productId = 0)
-	{
-		$this->success = false;
-		$this->errors[] = [
-			"type" => self::ERROR_TYPE_CUSTOM_OPTION_VALIDATION,
-			"message" => "Please enter a valid custom option",
-			"product_id" => $productId
-		];
-	}
-
-	public function addBundleOptionError($productId = 0, $selectionId = 0, $optionId = 0)
-	{
-		$this->success = false;
-		$this->errors[] = [
-			"type" => self::ERROR_TYPE_BUNDLE_OPTION_VALIDATION,
-			"message" => "Please enter a valid custom option",
-			"product_id" => $productId
-		];
-	}
-	
-	public function addConfigurableOptionError($productId = 0, $optionId = 0)
-	{
-		$this->success = false;
-		$this->errors[] = [
-			"type" => self::ERROR_TYPE_CONFIGURABLE_OPTION_VALIDATION,
-			"message" => "Please enter a valid custom option",
 			"product_id" => $productId
 		];
 	}
@@ -280,8 +300,7 @@ class Result
 	public function addExceptionError($e)
 	{
 		$this->success = false;
-		$this->errors[] = [
-			"type" => self::ERROR_TYPE_EXCEPTION,
+		$this->errors[self::ERROR_TYPE_EXCEPTION][] = [
 			"message" => $e->getMessage()
 		];
 	}

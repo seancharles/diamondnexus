@@ -46,7 +46,7 @@
 					foreach($bundleCustomOptionsValues as $bundleCustomOption) {
 						foreach($bundleCustomOption->selections as $selection) {
 							foreach($selection->options as $option) {
-								$bundleCustomOptions[$bundleCustomOption->product_id][$selection->selection_id][$option->option_id] = $option->value;
+								$bundleCustomOptions[$selection->selection_id][$option->option_id] = $option->value;
 							}
 						}
 					}
@@ -123,8 +123,8 @@
 								$childProductModel = $this->productloader->create()->load($childId);
 								
 								// parse out the custom options for the selection
-								if(isset($bundleCustomOptions[$selectionId][$bundle['product_id']]) == true) {
-									$childCustomOptions = $bundleCustomOptions[$selectionId][$bundle['product_id']];
+								if(isset($bundleCustomOptions[$selectionId]) == true) {
+									$childCustomOptions = $bundleCustomOptions[$selectionId];
 								} else {
 									$childCustomOptions = [];
 								}
@@ -155,25 +155,22 @@
 								$this->bundleHelper->formatBundleSelectionsChild($itemOptions, $selectionId, $bundle);
 								$this->bundleHelper->setItemOptions($itemId, $childId, $itemOptions);
 							}
-						} else {
-							foreach($validationResult as $error) {
-								$this->resultHelper->addProductError($bundleId, $error);
-							}
+							
+							$quote->collectTotals()->save();
+							
+							$this->profileHelper->saveQuote();
+							
+							$message = __(
+								'You added %1 to your shopping cart.',
+								$bundleProductModel->getName()
+							);
+							
+							$this->resultHelper->setSuccess(true, $message);
+							
 						}
 					} else {
 						$this->resultHelper->addProductError($bundleId, "Product ID is invalid.");
 					}
-					
-					$quote->collectTotals()->save();
-					
-					$this->profileHelper->saveQuote();
-					
-					$message = __(
-						'You added %1 to your shopping cart.',
-						$bundleProductModel->getName()
-					);
-					
-					$this->resultHelper->setSuccess(true, $message);
 					
 					// updates the last sync time
 					$this->profileHelper->sync();
