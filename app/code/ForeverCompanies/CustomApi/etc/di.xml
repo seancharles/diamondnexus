@@ -24,4 +24,6 @@
         <plugin name="forevercompanies_customapi_plugin_quote"
                 type="ForeverCompanies\CustomApi\Plugin\Quote" sortOrder="30"/>
     </type>
+    <preference for="ForeverCompanies\CustomApi\Api\ExtSalesOrderUpdateManagementInterface"
+                type="ForeverCompanies\CustomApi\Model\ExtSalesOrderUpdateManagement"/>
 </config>

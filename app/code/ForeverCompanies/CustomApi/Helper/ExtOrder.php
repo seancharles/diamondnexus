@@ -36,13 +36,18 @@ class ExtOrder extends AbstractHelper
         $this->extResource = $extResource;
     }
 
-    public function createNewExtSalesOrder(int $orderId, array $data)
+    /**
+     * @param int $orderId
+     * @param array|string $data
+     * @param int $flag
+     */
+    public function createNewExtSalesOrder(int $orderId, $data, $flag = 0)
     {
         $extOrder = $this->extSalesOrderUpdateFactory->create();
-        $changesText = implode(', ', $data);
+        $changesText = is_array($data) ? implode(', ', $data) : $data;
         $extOrder->setOrderId($orderId);
         $extOrder->setUpdatedFields($changesText);
-        $extOrder->setFlag(0);
+        $extOrder->setFlag($flag);
         try {
             $this->extResource->save($extOrder);
         } catch (AlreadyExistsException $e) {
