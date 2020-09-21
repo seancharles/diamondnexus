@@ -60,5 +60,4 @@ interface ExtSalesOrderUpdateInterface extends ExtensibleDataInterface
      * @return void
      */
     public function setFlag(int $flag): void;
-
 }

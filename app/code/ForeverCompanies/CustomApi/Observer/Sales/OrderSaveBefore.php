@@ -2,15 +2,10 @@
 
 namespace ForeverCompanies\CustomApi\Observer\Sales;
 
-use ForeverCompanies\CustomApi\Model\ExtSalesOrderUpdate;
-use ForeverCompanies\CustomApi\Model\ExtSalesOrderUpdateFactory;
-use ForeverCompanies\CustomApi\Model\ResourceModel\ExtSalesOrderUpdate as ExtResource;
+use ForeverCompanies\CustomApi\Helper\ExtOrder;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use Magento\Framework\Exception\AlreadyExistsException;
-use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
-use Psr\Log\LoggerInterface;
 
 /**
  * Save original order status.
@@ -18,25 +13,13 @@ use Psr\Log\LoggerInterface;
 class OrderSaveBefore implements ObserverInterface
 {
     /**
-     * @var OrderRepositoryInterface
+     * @var ExtOrder
      */
-    protected $orderRepository;
+    protected $extOrder;
 
     /**
-     * @var ExtSalesOrderUpdateFactory
+     * @var string[]
      */
-    protected $extSalesOrderUpdateFactory;
-
-    /**
-     * @var ExtResource
-     */
-    protected $extResource;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
     protected $checkingFields = [
         'status',
         'shipping_address_id',
@@ -47,32 +30,17 @@ class OrderSaveBefore implements ObserverInterface
 
     /**
      * OrderSaveBefore constructor.
-     * @param OrderRepositoryInterface $orderRepository
-     * @param ExtSalesOrderUpdateFactory $extSalesOrderUpdateFactory
-     * @param ExtResource $extResource
-     * @param LoggerInterface $logger
+     * @param ExtOrder $extOrder
      */
     public function __construct(
-        OrderRepositoryInterface $orderRepository,
-        ExtSalesOrderUpdateFactory $extSalesOrderUpdateFactory,
-        ExtResource $extResource,
-        LoggerInterface $logger
-    )
-    {
-        $this->orderRepository = $orderRepository;
-        $this->extSalesOrderUpdateFactory = $extSalesOrderUpdateFactory;
-        $this->extResource = $extResource;
-        $this->logger = $logger;
+        ExtOrder $extOrder
+    ) {
+        $this->extOrder = $extOrder;
     }
 
     /**
      * @param Observer $observer
      * @return $this|void
-     * a. Order Status
-     * b. Shipping Address
-     * c. Anticipated Ship Date
-     * d. Delivery Date
-     * e. Order Notes/Comment
      */
     public function execute(Observer $observer)
     {
@@ -82,28 +50,17 @@ class OrderSaveBefore implements ObserverInterface
         if (!$order->getId()) {
             return $this;
         }
-        /** @var Order $oldOrderData */
-        $oldOrderData = $this->orderRepository->get($order->getId())->getData();
-        $newOrderData = $order->getData();
         $changes = [];
         foreach ($this->checkingFields as $key) {
-            if ($oldOrderData[$key] != $newOrderData[$key]) {
-                $changes[] = $key;
+            $data = $order->getData($key);
+            if ($data !== null) {
+                if ($order->dataHasChangedFor($key)) {
+                    $changes[] = $key;
+                }
             }
         }
-        if (count($changes > 0)) {
-            $extOrder = $this->extSalesOrderUpdateFactory->create();
-            $changesText = implode(', ', $changes);
-            $extOrder->setOrderId($order->getId());
-            $extOrder->setUpdatedFields($changesText);
-            $extOrder->setFlag(0);
-            try {
-                $this->extResource->save($extOrder);
-            } catch (AlreadyExistsException $e) {
-                $this->logger->error('Can\'t create new ExtOrder - ' . $e->getMessage());
-            } catch (\Exception $e) {
-                $this->logger->error('Something went wrong when order updates - ' . $e->getMessage());
-            }
+        if (count($changes) > 0) {
+            $this->extOrder->createNewExtSalesOrder((int)$order->getId(), $changes);
         }
         return $this;
     }
