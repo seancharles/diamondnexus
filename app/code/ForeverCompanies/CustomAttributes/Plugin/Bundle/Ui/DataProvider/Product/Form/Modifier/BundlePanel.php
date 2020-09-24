@@ -7,7 +7,7 @@ use Magento\Ui\Component\Form\Field;
 use Magento\Ui\Component\Form\Element\Select;
 use Magento\Ui\Component\Form\Element\DataType\Text;
 
-class BundleCustomOptions
+class BundlePanel
 {
     const FIELD_CUSTOMIZATION_TYPE = 'bundle_customization_type';
 
@@ -27,16 +27,16 @@ class BundleCustomOptions
     }
 
     /**
-     * @param BundlePanel $subject
+     * @param \Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePanel $subject
      * @param $meta
      * @return mixed
      */
     public function afterModifyMeta(
-        BundlePanel $subject,
+        \Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePanel $subject,
         $meta
     ) {
         $meta['bundle-items']['children']['bundle_options']['children']['record']['children']
-        ['product_bundle_container']['children']['option_info']['children']['bundle_customization_type'] =
+        ['product_bundle_container']['children']['option_info']['children'][self::FIELD_CUSTOMIZATION_TYPE] =
             $this->getCustomizationTypeFieldConfig(
                 25
             );
@@ -58,7 +58,10 @@ class BundleCustomOptions
                         'config' => [
                             'label' => __('Customization Type'),
                             'componentType' => Field::NAME,
+                            'component' => 'Magento_Ui/js/form/element/select',
                             'formElement' => Select::NAME,
+                            'parentContainer' => 'product_bundle_container',
+                            'selections' => 'bundle_selections',
                             'dataScope' => static::FIELD_CUSTOMIZATION_TYPE,
                             'dataType' => Text::NAME,
                             'sortOrder' => $sortOrder,
