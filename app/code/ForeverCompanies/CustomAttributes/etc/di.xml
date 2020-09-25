@@ -35,4 +35,14 @@
     </type>
     <preference for="Cloudinary\Cloudinary\Model\Observer\ProductGalleryChangeTemplate"
                 type="ForeverCompanies\CustomAttributes\Model\Observer\ProductGalleryChangeTemplate"/>
+    <type name="Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\CustomOptions">
+        <plugin name="forevercompanies_customattributes_custom_option"
+                type="ForeverCompanies\CustomAttributes\Plugin\Catalog\Ui\DataProvider\Product\Form\Modifier\CustomOptions"
+                sortOrder="1"/>
+    </type>
+    <type name="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePanel">
+        <plugin name="forevercompanies_customattributes_bundlecustom_option"
+                type="ForeverCompanies\CustomAttributes\Plugin\Bundle\Ui\DataProvider\Product\Form\Modifier\BundleCustomOptions"
+                sortOrder="1"/>
+    </type>
 </config>
