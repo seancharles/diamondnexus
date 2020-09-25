@@ -7,6 +7,14 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Setup\Patch\Data;
 
+use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\CertifiedStone;
+use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\ChainLength;
+use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\ChainSize;
+use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\Color;
+use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\CutType;
+use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\MetalType;
+use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\RingSize;
+use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\Shape;
 use Magento\Catalog\Model\Product;
 use Magento\Eav\Model\Entity\Attribute\Backend\ArrayBackend;
 use Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface;
@@ -67,9 +75,55 @@ class UpgradeSourceModelAttributes implements DataPatchInterface, PatchRevertabl
          * 'shape'
          */
         $this->moduleDataSetup->getConnection()->startSetup();
-        /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        /** TODO! */
+        $eavSetup->updateAttribute(
+            Product::ENTITY,
+            'chain_length',
+            'source_model',
+            ChainLength::class
+        );
+        $eavSetup->updateAttribute(
+            Product::ENTITY,
+            'chain_size',
+            'source_model',
+            ChainSize::class
+        );
+        $eavSetup->updateAttribute(
+            Product::ENTITY,
+            'metal_type',
+            'source_model',
+            MetalType::class
+        );
+        $eavSetup->updateAttribute(
+            Product::ENTITY,
+            'ring_size',
+            'source_model',
+            RingSize::class
+        );
+        $eavSetup->updateAttribute(
+            Product::ENTITY,
+            'certified_stone',
+            'source_model',
+            CertifiedStone::class
+        );
+        $eavSetup->updateAttribute(
+            Product::ENTITY,
+            'color',
+            'source_model',
+            Color::class
+        );
+        $eavSetup->updateAttribute(
+            Product::ENTITY,
+            'cut_type',
+            'source_model',
+            CutType::class
+        );
+        $eavSetup->updateAttribute(
+            Product::ENTITY,
+            'shape',
+            'source_model',
+            Shape::class
+        );
         $this->moduleDataSetup->getConnection()->endSetup();
     }
 

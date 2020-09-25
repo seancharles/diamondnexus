@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source;
 
-class RingSize extends AbstractEav
+class ChainSize extends AbstractEav
 {
-    protected $eq = 'float';
+    protected $eq = 'string';
 }
