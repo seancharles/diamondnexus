@@ -83,7 +83,7 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
         if ($images) {
             $images = $this->mediaHelper->addFieldsToMedia($images);
         } else {
-            return [];
+            return "[]";
         }
         return $this->_jsonEncoder->encode($images);
     }
@@ -104,19 +104,29 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
     {
         $optionTypes = [];
         /** @var Product $product */
-        $product = $this->getElement()->getDataObject();
+        $product = $this->getData('element')->getDataObject();
         /** @var Option $option */
-        foreach ($product->getOptions() as $option) {
-            if ($option->getTitle() == 'Precious Metal') {
-                foreach ($option->getValues() as $value) {
-                    $optionTypes[] = [
-                        'id' => $value->getOptionTypeId(),
-                        'label' => $value->getTitle()
-                    ];
+        if ($product->getId()) {
+            foreach ($product->getOptions() as $option) {
+                if ($option->getTitle() == 'Precious Metal') {
+                    foreach ($option->getValues() as $value) {
+                        $optionTypes[] = [
+                            'id' => $value->getOptionTypeId(),
+                            'label' => $value->getTitle()
+                        ];
+                    }
                 }
             }
         }
         return $optionTypes;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUiRoles()
+    {
+        return $this->mediaHelper::CUSTOM_UI_ROLES;
     }
 
     /**
@@ -129,7 +139,7 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
         $data = [];
         /** @var Product $product */
         $product = $this->getData('element')->getDataObject();
-        if ($product->getTypeId() == \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE) {
+        if ($product->getTypeId() == \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE && $product->getId()) {
             /** @var ProductExtension $extensionAttributes */
             $extensionAttributes = $product->getExtensionAttributes();
             $options = $extensionAttributes->getBundleProductOptions();

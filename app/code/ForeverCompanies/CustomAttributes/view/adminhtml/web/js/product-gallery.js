@@ -6,14 +6,15 @@
 /**
  * @api
  */
-define([
+define(
+    [
     'jquery',
     'underscore',
     'mage/template',
     'uiRegistry',
     'jquery/ui',
     'baseImage'
-], function ($, _, mageTemplate, registry) {
+    ], function ($, _, mageTemplate, registry) {
     'use strict';
 
     /**
@@ -39,7 +40,8 @@ define([
     /**
      * Product gallery widget
      */
-    $.widget('mage.productGallery', {
+    $.widget(
+        'mage.productGallery', {
         options: {
             imageSelector: '[data-role=image]',
             imageElementSelector: '[data-role=image-element]',
@@ -67,9 +69,13 @@ define([
 
             this._bind();
 
-            $.each(this.options.images, $.proxy(function (index, imageData) {
-                this.element.trigger('addItem', imageData);
-            }, this));
+            $.each(
+                this.options.images, $.proxy(
+                    function (index, imageData) {
+                    this.element.trigger('addItem', imageData);
+                    }, this
+                )
+            );
 
             this.options.initialized = true;
         },
@@ -79,7 +85,8 @@ define([
          * @protected
          */
         _bind: function () {
-            this._on({
+            this._on(
+                {
                 updateImageTitle: '_updateImageTitle',
                 updateVisibility: '_updateVisibility',
                 openDialog: '_onOpenDialog',
@@ -114,17 +121,22 @@ define([
                     imageData = $imageContainer.data('imageData');
                     this.setBase(imageData);
                 }
-            });
+                }
+            );
 
-            this.element.sortable({
+            this.element.sortable(
+                {
                 distance: 8,
                 items: this.options.imageSelector,
                 tolerance: 'pointer',
                 cancel: 'input, button, .uploader',
-                update: $.proxy(function () {
+                update: $.proxy(
+                    function () {
                     this.element.trigger('resort');
-                }, this)
-            });
+                    }, this
+                )
+                }
+            );
         },
 
         /**
@@ -135,28 +147,38 @@ define([
         setBase: function (imageData) {
             var baseImage = this.options.types.image,
                 sameImages = $.grep(
-                    $.map(this.options.types, function (el) {
+                    $.map(
+                        this.options.types, function (el) {
                         return el;
-                    }),
+                        }
+                    ),
                     function (el) {
                         return el.value === baseImage.value;
                     }
                 ),
                 isImageOpened = this.findElement(imageData).hasClass('active');
 
-            $.each(sameImages, $.proxy(function (index, image) {
-                this.element.trigger('setImageType', {
-                    type: image.code,
-                    imageData: imageData
-                });
+            $.each(
+                sameImages, $.proxy(
+                    function (index, image) {
+                    this.element.trigger(
+                        'setImageType', {
+                        type: image.code,
+                        imageData: imageData
+                        }
+                    );
 
-                if (isImageOpened) {
+                    if (isImageOpened) {
                     this.element.find('.item').addClass('selected');
-                    this.element.find('[data-role=type-selector]').prop({
+                    this.element.find('[data-role=type-selector]').prop(
+                        {
                         'checked': true
-                    });
-                }
-            }, this));
+                        }
+                    );
+                    }
+                    }, this
+                )
+            );
         },
 
         /**
@@ -165,9 +187,11 @@ define([
          * @returns {Element}
          */
         findElement: function (data) {
-            return this.element.find(this.options.imageSelector).filter(function () {
+            return this.element.find(this.options.imageSelector).filter(
+                function () {
                 return $(this).data('imageData').file === data.file;
-            }).first();
+                }
+            ).first();
         },
 
         /**
@@ -194,16 +218,20 @@ define([
                 element,
                 imgElement;
 
-            imageData = $.extend({
+            imageData = $.extend(
+                {
                 'file_id': imageData['value_id'] ? imageData['value_id'] : Math.random().toString(33).substr(2, 18),
                 'disabled': imageData.disabled ? imageData.disabled : 0,
                 'position': count + 1,
                 sizeLabel: bytesToSize(imageData.size)
-            }, imageData);
+                }, imageData
+            );
 
-            element = this.imgTmpl({
+            element = this.imgTmpl(
+                {
                 data: imageData
-            });
+                }
+            );
 
             element = $(element).data('imageData', imageData);
 
@@ -225,14 +253,20 @@ define([
 
             imgElement.on('load', this._updateImageDimesions.bind(this, element));
 
-            $.each(this.options.types, $.proxy(function (index, image) {
-                if (imageData.file === image.value) {
-                    this.element.trigger('setImageType', {
+            $.each(
+                this.options.types, $.proxy(
+                    function (index, image) {
+                    if (imageData.file === image.value) {
+                    this.element.trigger(
+                        'setImageType', {
                         type: image.code,
                         imageData: imageData
-                    });
-                }
-            }, this));
+                        }
+                    );
+                    }
+                    }, this
+                )
+            );
 
             this._updateImagesRoles();
             this._contentUpdated();
@@ -253,7 +287,8 @@ define([
          * @return {Object}
          */
         _getRoles: function () {
-            return _.mapObject(this.options.types, function (data, key) {
+            return _.mapObject(
+                this.options.types, function (data, key) {
                 var elem = this.element.find('.image-' + key);
 
                 return {
@@ -261,7 +296,8 @@ define([
                     value: elem.val(),
                     elem: elem
                 };
-            }, this);
+                }, this
+            );
         },
 
         /**
@@ -271,11 +307,13 @@ define([
             var $images = this._getImages().toArray(),
                 roles = this._getRoles();
 
-            $images.forEach(function (img) {
+            $images.forEach(
+                function (img) {
                 var $img = $(img),
                     data = $img.data('imageData');
 
-                $img.find('[data-role=roles-labels] li').each(function (index, elem) {
+                $img.find('[data-role=roles-labels] li').each(
+                    function (index, elem) {
                     var $elem = $(elem),
                         roleCode = $elem.data('roleCode'),
                         role = roles[roleCode];
@@ -283,9 +321,11 @@ define([
                     role.value === data.file ?
                         $elem.show() :
                         $elem.hide();
-                });
+                    }
+                );
 
-            });
+                }
+            );
         },
 
         /**
@@ -365,17 +405,23 @@ define([
          * @private
          */
         _resort: function () {
-            this.element.find('.position').each($.proxy(function (index, element) {
-                var value = $(element).val();
+            this.element.find('.position').each(
+                $.proxy(
+                    function (index, element) {
+                    var value = $(element).val();
 
-                if (value != index) { //eslint-disable-line eqeqeq
-                    this.element.trigger('moveElement', {
+                    if (value != index) { //eslint-disable-line eqeqeq
+                    this.element.trigger(
+                        'moveElement', {
                         imageData: $(element).closest(this.options.imageSelector).data('imageData'),
                         position: index
-                    });
+                        }
+                    );
                     $(element).val(index);
-                }
-            }, this));
+                    }
+                    }, this
+                )
+            );
 
             this._contentUpdated();
         },
@@ -404,10 +450,12 @@ define([
 
             this._contentUpdated();
         }
-    });
+        }
+    );
 
     // Extension for mage.productGallery - Add advanced settings block
-    $.widget('mage.productGallery', $.mage.productGallery, {
+    $.widget(
+        'mage.productGallery', $.mage.productGallery, {
         options: {
             dialogTemplate: '[data-role=img-dialog-tmpl]',
             dialogContainerTmpl: '[data-role=img-dialog-container-tmpl]'
@@ -443,9 +491,11 @@ define([
 
             this._super();
 
-            events['click [data-role=close-panel]'] = $.proxy(function () {
+            events['click [data-role=close-panel]'] = $.proxy(
+                function () {
                 this.element.find('[data-role=dialog]').trigger('close');
-            }, this);
+                }, this
+            );
 
             /**
              * @param {jQuery.Event} event
@@ -465,9 +515,13 @@ define([
                 }
             };
             this._on(events);
-            this.element.on('sortstart', $.proxy(function () {
-                this.element.find('[data-role=dialog]').trigger('close');
-            }, this));
+            this.element.on(
+                'sortstart', $.proxy(
+                    function () {
+                    this.element.find('[data-role=dialog]').trigger('close');
+                    }, this
+                )
+            );
         },
 
         /**
@@ -476,7 +530,8 @@ define([
         _initDialog: function () {
             var $dialog = $(this.dialogContainerTmpl());
 
-            $dialog.modal({
+            $dialog.modal(
+                {
                 'type': 'slide',
                 title: $.mage.__('Image Detail'),
                 buttons: [],
@@ -490,51 +545,76 @@ define([
                 closed: function () {
                     $dialog.trigger('close');
                 }
-            });
+                }
+            );
 
             $dialog.on('open', this.onDialogOpen.bind(this));
-            $dialog.on('close', function () {
+            $dialog.on(
+                'close', function () {
                 var $imageContainer = $dialog.data('imageContainer');
 
                 $imageContainer.removeClass('active');
                 $dialog.find('#hide-from-product-page').remove();
-            });
+                }
+            );
 
-            $dialog.on('change', '[data-role=type-selector]', function () {
+            $dialog.on(
+                'change', '[data-role=type-selector]', function () {
                 var parent = $(this).closest('.item'),
                     selectedClass = 'selected';
 
                 parent.toggleClass(selectedClass, $(this).prop('checked'));
-            });
+                }
+            );
 
             /** CUSTOM BY ForeverCompanies */
-            $dialog.on('change', '[data-role=option-selector]', function () {
+            $dialog.on(
+                'change', '[data-role=option-selector]', function () {
                 var parent = $(this).closest('.item'),
                     selectedClass = 'selected';
                 $dialog.find('.field-image-product-option-types').find('.item.selected').removeClass('selected');
                 parent.toggleClass(selectedClass, $(this).prop('checked'));
-            });
+                }
+            );
 
-            $dialog.on('change', '[data-role=bundle-selector]', function () {
+            $dialog.on(
+                'change', '[data-role=bundle-selector]', function () {
                 var parent = $(this).closest('.item'),
                     selectedClass = 'selected';
                 $dialog.find('.field-image-product-bundle-selections').find('.item.selected').removeClass('selected');
                 parent.toggleClass(selectedClass, $(this).prop('checked'));
-            });
+                }
+            );
+
+            $dialog.on(
+                'change', '[data-role=ui-selector]', function () {
+                var parent = $(this).closest('.item'),
+                    selectedClass = 'selected';
+                $dialog.find('.field-image-product-ui-role').find('.item.selected').removeClass('selected');
+                parent.toggleClass(selectedClass, $(this).prop('checked'));
+                }
+            );
             /** CUSTOM OFF */
 
             $dialog.on('change', '[data-role=type-selector]', $.proxy(this._notifyType, this));
 
-            $dialog.on('change', '[data-role=visibility-trigger]', $.proxy(function (e) {
-                var imageData = $dialog.data('imageData');
+            $dialog.on(
+                'change', '[data-role=visibility-trigger]', $.proxy(
+                    function (e) {
+                    var imageData = $dialog.data('imageData');
 
-                this.element.trigger('updateVisibility', {
-                    disabled: $(e.currentTarget).is(':checked'),
-                    imageData: imageData
-                });
-            }, this));
+                    this.element.trigger(
+                        'updateVisibility', {
+                        disabled: $(e.currentTarget).is(':checked'),
+                        imageData: imageData
+                        }
+                    );
+                    }, this
+                )
+            );
 
-            $dialog.on('change', '[data-role="image-description"]', function (e) {
+            $dialog.on(
+                'change', '[data-role="image-description"]', function (e) {
                 var target = $(e.target),
                     targetName = target.attr('name'),
                     desc = target.val(),
@@ -545,13 +625,17 @@ define([
                 imageData.label = desc;
                 imageData['label_default'] = desc;
 
-                this.element.trigger('updateImageTitle', {
+                this.element.trigger(
+                    'updateImageTitle', {
                     imageData: imageData
-                });
-            }.bind(this));
+                    }
+                );
+                }.bind(this)
+            );
 
             /** CUSTOM BY ForeverCompanies */
-            $dialog.on('change', '[data-role="option-selector"]', function (e) {
+            $dialog.on(
+                'change', '[data-role="option-selector"]', function (e) {
                 let images = 'product[media_gallery][images]';
                 var target = $(e.target),
                     imageData = $dialog.data('imageData'),
@@ -559,9 +643,11 @@ define([
                     optionValue = target.val();
 
                 this._setFields(imageData, optionValue, targetName, 'catalog_product_option_type_id');
-            }.bind(this));
+                }.bind(this)
+            );
 
-            $dialog.on('change', '[data-role="bundle-selector"]', function (e) {
+            $dialog.on(
+                'change', '[data-role="bundle-selector"]', function (e) {
                 let images = 'product[media_gallery][images]';
                 var target = $(e.target),
                     imageData = $dialog.data('imageData'),
@@ -570,9 +656,24 @@ define([
 
                 this._setFields(imageData, optionValue, targetName, 'catalog_product_bundle_selection_id');
 
-            }.bind(this));
+                }.bind(this)
+            );
 
-            $dialog.on('change', '[data-role="image-tags"]', function (e) {
+            $dialog.on(
+                'change', '[data-role="ui-selector"]', function (e) {
+                let images = 'product[media_gallery][images]';
+                var target = $(e.target),
+                    imageData = $dialog.data('imageData'),
+                    targetName = images + '[' + imageData['value_id'] + '][ui_role]',
+                    optionValue = target.val();
+
+                this._setFields(imageData, optionValue, targetName, 'ui_role');
+
+                }.bind(this)
+            );
+
+            $dialog.on(
+                'change', '[data-role="image-tags"]', function (e) {
                 let images = 'product[media_gallery][images]';
                 var target = $(e.target),
                     imageData = $dialog.data('imageData'),
@@ -582,10 +683,12 @@ define([
                 this.element.find('input[type="hidden"][name="' + targetName + '"]').val(tags);
 
                 imageData.tags = tags;
-            }.bind(this));
+                }.bind(this)
+            );
             /** END CUSTOM */
 
-            $dialog.on('change', '[data-role="image-cldspinset"]', function (e) {
+            $dialog.on(
+                'change', '[data-role="image-cldspinset"]', function (e) {
                 var target = $(e.target),
                     targetName = target.attr('name'),
                     cldspinset = target.val(),
@@ -594,7 +697,8 @@ define([
                 this.element.find('input[type="hidden"][name="' + targetName + '"]').val(cldspinset);
 
                 imageData.cldspinset = cldspinset;
-            }.bind(this));
+                }.bind(this)
+            );
 
             this.$dialog = $dialog;
         },
@@ -617,9 +721,11 @@ define([
             var $imageContainer = this.findElement(imageData),
                 $template;
 
-            $template = this.dialogTmpl({
+            $template = this.dialogTmpl(
+                {
                 'data': imageData
-            });
+                }
+            );
 
             this.$dialog
                 .html($template)
@@ -655,48 +761,79 @@ define([
 
             $(event.target)
                 .find('[data-role=type-selector]')
-                .each($.proxy(function (index, checkbox) {
-                    var $checkbox = $(checkbox),
+                .each(
+                    $.proxy(
+                        function (index, checkbox) {
+                        var $checkbox = $(checkbox),
                         parent = $checkbox.closest('.item'),
                         selectedClass = 'selected',
                         isChecked = this.options.types[$checkbox.val()].value == imageData.file; //eslint-disable-line
 
-                    $checkbox.prop(
-                        'checked',
-                        isChecked
-                    );
-                    parent.toggleClass(selectedClass, isChecked);
-                }, this));
+                        $checkbox.prop(
+                            'checked',
+                            isChecked
+                        );
+                        parent.toggleClass(selectedClass, isChecked);
+                        }, this
+                    )
+                );
             /** CUSTOM BY ForeverCompanies */
             $(event.target)
                 .find('[data-role=option-selector]')
-                .each($.proxy(function (index, checkbox) {
-                    var $checkbox = $(checkbox),
+                .each(
+                    $.proxy(
+                        function (index, checkbox) {
+                        var $checkbox = $(checkbox),
                         parent = $checkbox.closest('.item'),
                         selectedClass = 'selected',
                         isChecked = imageData.catalog_product_option_type_id == $checkbox.val();
 
-                    $checkbox.prop(
-                        'checked',
-                        isChecked
-                    );
-                    parent.toggleClass(selectedClass, isChecked);
-                }, this));
+                        $checkbox.prop(
+                            'checked',
+                            isChecked
+                        );
+                        parent.toggleClass(selectedClass, isChecked);
+                        }, this
+                    )
+                );
 
             $(event.target)
                 .find('[data-role=bundle-selector]')
-                .each($.proxy(function (index, checkbox) {
-                    var $checkbox = $(checkbox),
+                .each(
+                    $.proxy(
+                        function (index, checkbox) {
+                        var $checkbox = $(checkbox),
                         parent = $checkbox.closest('.item'),
                         selectedClass = 'selected',
                         isChecked = imageData.catalog_product_bundle_selection_id == $checkbox.val();
 
-                    $checkbox.prop(
-                        'checked',
-                        isChecked
-                    );
-                    parent.toggleClass(selectedClass, isChecked);
-                }, this));
+                        $checkbox.prop(
+                            'checked',
+                            isChecked
+                        );
+                        parent.toggleClass(selectedClass, isChecked);
+                        }, this
+                    )
+                );
+
+            $(event.target)
+                .find('[data-role=ui-selector]')
+                .each(
+                    $.proxy(
+                        function (index, checkbox) {
+                        var $checkbox = $(checkbox),
+                        parent = $checkbox.closest('.item'),
+                        selectedClass = 'selected',
+                        isChecked = imageData.ui_role == $checkbox.val();
+
+                        $checkbox.prop(
+                            'checked',
+                            isChecked
+                        );
+                        parent.toggleClass(selectedClass, isChecked);
+                        }, this
+                    )
+                );
         },
         /** CUSTOM OFF */
 
@@ -746,14 +883,18 @@ define([
             var $checkbox = $(event.currentTarget),
                 $imageContainer = $checkbox.closest('[data-role=dialog]').data('imageContainer');
 
-            this.element.trigger('setImageType', {
+            this.element.trigger(
+                'setImageType', {
                 type: $checkbox.val(),
                 imageData: $checkbox.is(':checked') ? $imageContainer.data('imageData') : null
-            });
+                }
+            );
 
             this._updateImagesRoles();
         }
-    });
+        }
+    );
 
     return $.mage.productGallery;
-});
+    }
+);

@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace ForeverCompanies\CustomAttributes\Console\Command;
 
 use ForeverCompanies\CustomAttributes\Helper\TransformData;
+use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
@@ -17,13 +18,13 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class TransformAttributes extends AbstractCommand
+class TransformMedia extends AbstractCommand
 {
 
     /**
      * @var string
      */
-    protected $name = 'forevercompanies:transform-attributes';
+    protected $name = 'forevercompanies:transform-media';
 
     /**
      * {@inheritdoc}
@@ -33,14 +34,14 @@ class TransformAttributes extends AbstractCommand
         InputInterface $input,
         OutputInterface $output
     ) {
-        $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_GLOBAL);
-        $output->writeln("Get products for transformation...");
-        $productCollection = $this->helper->getProductsForTransformCollection();
-        $output->writeln('Products for transformation: ' . $productCollection->count());
+        $this->state->setAreaCode(Area::AREA_GLOBAL);
+        $output->writeln("Get products for media-transformation...");
+        $productCollection = $this->helper->getProductsForMediaTransformCollection();
+        $output->writeln('Products for media transformation: ' . $productCollection->count());
         foreach ($productCollection->getItems() as $item) {
             try {
                 $output->writeln('In process product ID = ' . $item->getData('entity_id'));
-                $this->helper->transformProduct((int)$item->getData('entity_id'));
+                $this->helper->transformMediaProduct((int)$item->getData('entity_id'));
             } catch (InputException $e) {
                 $output->writeln($e->getMessage());
             } catch (NoSuchEntityException $e) {
@@ -60,7 +61,7 @@ class TransformAttributes extends AbstractCommand
     protected function configure()
     {
         $this->setName($this->name);
-        $this->setDescription("Transform attributes after M1 - M2 migration");
+        $this->setDescription("Transform media after transform attributes");
         parent::configure();
     }
 }

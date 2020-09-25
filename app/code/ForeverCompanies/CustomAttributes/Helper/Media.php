@@ -34,6 +34,15 @@ class Media extends AbstractHelper
      */
     protected $eavConfig;
 
+    const CUSTOM_UI_ROLES = [
+        'Default',
+        'Hover',
+        'Base',
+        'Small',
+        'Swatch',
+        'Thumbnail'
+    ];
+
     /**
      * Media constructor.
      * @param Context $context
@@ -60,33 +69,40 @@ class Media extends AbstractHelper
     public function addFieldsToMedia(array $images)
     {
         $connection = $this->resourceConnection->getConnection();
-        $mediaGallery = $connection->getTableName(Gallery::GALLERY_VALUE_TABLE);
-
         foreach ($images as &$image) {
-            $select = $connection->select();
-            $select->from($mediaGallery)->where('value_id = ?', $image['value_id']);
+            $select = $this->getGalleryValues($connection, $image['value_id']);
             $row = $connection->fetchRow($select);
             $image['catalog_product_option_type_id'] = $row['catalog_product_option_type_id'];
             $image['catalog_product_bundle_selection_id'] = $row['catalog_product_bundle_selection_id'];
             $image['tags'] = $row['tags'];
+            $image['ui_role'] = $row['ui_role'];
         }
 
         return $images;
     }
 
+    /**
+     * @param $mediaImages
+     */
     public function saveFieldsToMedia($mediaImages)
     {
         $connection = $this->resourceConnection->getConnection();
         $mediaGallery = $connection->getTableName(Gallery::GALLERY_VALUE_TABLE);
         foreach ($mediaImages as $image) {
+            $id = $image['value_id'] ?? $image['id'];
+            $optionType = $image['catalog_product_option_type_id'] ?? 0;
+            $selectionId = $image['catalog_product_bundle_selection_id'] ?? 0;
+            $tags = $image['tags'] ?? '';
+            $uiRole = $image['ui_role'] ?? '';
             $connection->update(
                 $mediaGallery,
                 [
-                    'catalog_product_option_type_id' => $image['catalog_product_option_type_id'],
-                    'catalog_product_bundle_selection_id' => $image['catalog_product_bundle_selection_id'],
-                    'tags' => $image['tags']
+                    'catalog_product_option_type_id' => $optionType,
+                    'catalog_product_bundle_selection_id' => $selectionId,
+                    'tags' => $tags,
+                    'ui_role' => $uiRole
                 ],
-                ['value_id = ?' => $image['value_id']]
+                ['value_id = ?' => $id]
             );
         }
     }
@@ -110,5 +126,43 @@ class Media extends AbstractHelper
             ];
         }
         return $data;
+    }
+
+    /**
+     * @param $valueId
+     * @return array
+     */
+    public function getCustomMediaOptions($valueId)
+    {
+        $connection = $this->resourceConnection->getConnection();
+        $select = $this->getGalleryValues(
+            $connection,
+            $valueId
+        )->joinLeft(
+            ['type_title' => 'catalog_product_option_type_title'],
+            'gallery_value.catalog_product_option_type_id = type_title.option_type_id',
+            ['type_title_value' => 'type_title.title']
+        )->joinLeft(
+            ['type_value' => 'catalog_product_option_type_value'],
+            'gallery_value.catalog_product_option_type_id = type_value.option_type_id',
+            ['option_id']
+        )->joinLeft(
+            ['option_title' => 'catalog_product_option_title'],
+            'type_value.option_id = option_title.option_id',
+            ['option_title_value' => 'option_title.title']
+        );
+        return $connection->fetchRow($select);
+    }
+
+    /**
+     * @param $connection
+     * @param $valueId
+     * @return mixed
+     */
+    protected function getGalleryValues($connection, $valueId)
+    {
+        return $connection->select()->from(
+            ['gallery_value' => Gallery::GALLERY_VALUE_TABLE]
+        )->where('gallery_value.value_id = ?', $valueId);
     }
 }

@@ -182,6 +182,10 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                    name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][tags]"
                    value="<%- data.tags %>"
                    data-form-part="<?= /* @noEscape*/ $formName ?>"/>
+            <input type="hidden"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][ui_role]"
+                   value="<%- data.ui_role %>"
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
 
             <div class="product-image-wrapper <% if (data.cldspinset) { %>cldspinset-overlay<% } %>">
                 <img class="product-image"
@@ -321,6 +325,34 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                                                value="<?= $block->escapeHtml($optionType['id']) ?>"
                                         />
                                         <?= /* @noEscape*/ $block->escapeHtml($optionType['label']) ?>
+                                    </label>
+                                </li>
+                                <?php
+                            endforeach;
+                            ?>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="admin__field field-image-product-ui-role">
+                    <label class="admin__field-label">
+                        <span><?= $block->escapeHtml(__('Image UI Role')) ?></span>
+                    </label>
+
+                    <div class="admin__field-control">
+                        <ul class="multiselect-alt">
+                            <?php
+                            foreach ($block->getUiRoles() as $uiRole) :
+                                ?>
+                                <li class="item">
+                                    <label>
+                                        <input class="image-option-selector"
+                                               data-role="ui-selector"
+                                               data-form-part="<?= /* @noEscape*/ $formName ?>"
+                                               type="checkbox"
+                                               value="<?= $block->escapeHtml($uiRole) ?>"
+                                        />
+                                        <?= /* @noEscape*/ $block->escapeHtml($uiRole) ?>
                                     </label>
                                 </li>
                                 <?php

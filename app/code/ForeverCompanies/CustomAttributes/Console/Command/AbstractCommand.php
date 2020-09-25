@@ -12,7 +12,7 @@ use Magento\Framework\App\State;
 use Magento\Framework\Exception\LocalizedException;
 use Symfony\Component\Console\Command\Command;
 
-class AbstractCommand extends Command
+abstract class AbstractCommand extends Command
 {
 
     /**
