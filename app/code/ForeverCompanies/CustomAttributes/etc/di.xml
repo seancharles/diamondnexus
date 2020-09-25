@@ -42,7 +42,11 @@
     </type>
     <type name="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePanel">
         <plugin name="forevercompanies_customattributes_bundlecustom_option"
-                type="ForeverCompanies\CustomAttributes\Plugin\Bundle\Ui\DataProvider\Product\Form\Modifier\BundleCustomOptions"
+                type="ForeverCompanies\CustomAttributes\Plugin\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePanel"
                 sortOrder="1"/>
     </type>
+    <preference for="Magento\Bundle\Model\Product\OptionList"
+                type="ForeverCompanies\CustomAttributes\Model\Bundle\Product\OptionList"/>
+    <preference for="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\Composite"
+                type="ForeverCompanies\CustomAttributes\Ui\DataProvider\Product\Form\Modifier\Composite"/>
 </config>
