@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="order_items">
+            <arguments>
+                <argument name="columns" xsi:type="array">
+                    <item name="flag_loose_stone" xsi:type="string" translate="true">Loose Stone Flag</item>
+                </argument>
+            </arguments>
+            <block class="ForeverCompanies\CustomApi\Block\Adminhtml\Order\View\Items\Column" name="column_flag_loose_stone"
+                   template="ForeverCompanies_CustomApi::order/view/flag_loose_stone.phtml" group="column"/>
+        </referenceBlock>
+    </body>
+</page>

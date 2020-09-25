@@ -17,37 +17,13 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class TransformAttributes extends Command
+class TransformAttributes extends AbstractCommand
 {
-
-    /**
-     * @var TransformData
-     */
-    protected $helper;
-
-    /**
-     * @var State
-     */
-    protected $state;
 
     /**
      * @var string
      */
     protected $name = 'forevercompanies:transform-attributes';
-
-    /**
-     * TransformAttributes constructor.
-     * @param State $state
-     * @param TransformData $helper
-     */
-    public function __construct(
-        State $state,
-        TransformData $helper
-    ) {
-        $this->state = $state;
-        $this->helper = $helper;
-        parent::__construct($this->name);
-    }
 
     /**
      * {@inheritdoc}
@@ -63,7 +39,7 @@ class TransformAttributes extends Command
         $output->writeln('Products for transformation: ' . $productCollection->count());
         foreach ($productCollection->getItems() as $item) {
             try {
-                $output->writeln('In process product ID = '. $item->getData('entity_id'));
+                $output->writeln('In process product ID = ' . $item->getData('entity_id'));
                 $this->helper->transformProduct((int)$item->getData('entity_id'));
             } catch (InputException $e) {
                 $output->writeln($e->getMessage());
@@ -75,6 +51,7 @@ class TransformAttributes extends Command
                 $output->writeln($e->getMessage());
             }
         }
+        $output->writeln('Transformation is complete! Please execute bin/magento indexer:reindex');
     }
 
     /**

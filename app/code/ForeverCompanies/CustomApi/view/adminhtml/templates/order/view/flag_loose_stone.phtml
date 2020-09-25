@@ -1,0 +1,11 @@
+<?php
+
+use ForeverCompanies\CustomApi\Block\Adminhtml\Order\View\Items\Column;
+
+/** @var Column $block */
+if ($item = $block->getItem()) : ?>
+    <div id="order_item_<?= /* @noEscape */
+    $item->getId() ?>_flag_loose_stone" class="product-title">
+        <?= $block->escapeHtml($block->getFlagLooseStone()) ?>
+    </div>
+<?php endif; ?>

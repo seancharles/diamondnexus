@@ -8,8 +8,10 @@ declare(strict_types=1);
 namespace ForeverCompanies\CustomAttributes\Setup\Patch\Data;
 
 use Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface;
+use Magento\Eav\Model\Entity\Attribute\Source\Boolean;
 use Magento\Eav\Setup\EavSetup;
 use Magento\Eav\Setup\EavSetupFactory;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\Patch\PatchRevertableInterface;
@@ -42,8 +44,7 @@ class UpgradeIsTransformedProductAttribute implements DataPatchInterface, PatchR
         ModuleDataSetupInterface $moduleDataSetup,
         EavSetupFactory $eavSetupFactory,
         AddIsTransformedProductAttribute $addIsTransformedProductAttribute
-    )
-    {
+    ) {
         $this->moduleDataSetup = $moduleDataSetup;
         $this->eavSetupFactory = $eavSetupFactory;
         $this->previousSetup = $addIsTransformedProductAttribute;
@@ -55,51 +56,57 @@ class UpgradeIsTransformedProductAttribute implements DataPatchInterface, PatchR
     public function apply()
     {
         $this->moduleDataSetup->getConnection()->startSetup();
-        /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
         $attribute = $eavSetup->getAttribute(\Magento\Catalog\Model\Product::ENTITY, 'is_transformed');
         if ($attribute) {
             $eavSetup->removeAttribute(
                 \Magento\Catalog\Model\Product::ENTITY,
-                'is_transformed');
+                'is_transformed'
+            );
         }
-        $eavSetup->addAttribute(
-            \Magento\Catalog\Model\Product::ENTITY,
-            'is_transformed',
-            [
-                'group' => 'General',
-                'type' => 'int',
-                'backend' => '',
-                'frontend' => '',
-                'label' => 'Is transformed',
-                'input' => 'boolean',
-                'class' => '',
-                'source' => \Magento\Eav\Model\Entity\Attribute\Source\Boolean::class,
-                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL,
-                'visible' => true,
-                'required' => false,
-                'user_defined' => false,
-                'default' => '1',
-                'searchable' => false,
-                'filterable' => false,
-                'comparable' => false,
-                'visible_on_front' => false,
-                'used_in_product_listing' => false,
-                'unique' => false,
-                'apply_to' => 'simple,configurable,virtual,bundle,downloadable'
-            ]
-        );
+        try {
+            $eavSetup->addAttribute(
+                \Magento\Catalog\Model\Product::ENTITY,
+                'is_transformed',
+                [
+                    'group' => 'General',
+                    'type' => 'int',
+                    'backend' => '',
+                    'frontend' => '',
+                    'label' => 'Is transformed',
+                    'input' => 'boolean',
+                    'class' => '',
+                    'source' => Boolean::class,
+                    'global' => ScopedAttributeInterface::SCOPE_GLOBAL,
+                    'visible' => true,
+                    'required' => false,
+                    'user_defined' => false,
+                    'default' => '1',
+                    'searchable' => false,
+                    'filterable' => false,
+                    'comparable' => false,
+                    'visible_on_front' => false,
+                    'used_in_product_listing' => false,
+                    'unique' => false,
+                    'apply_to' => 'simple,configurable,virtual,bundle,downloadable'
+                ]
+            );
+        } catch (LocalizedException $e) {
+            return;
+        } catch (\Zend_Validate_Exception $e) {
+            return;
+        }
         $this->moduleDataSetup->getConnection()->endSetup();
     }
 
     public function revert()
     {
         $this->moduleDataSetup->getConnection()->startSetup();
-        /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
         $eavSetup->removeAttribute(
             \Magento\Catalog\Model\Product::ENTITY,
-            'is_transformed');
+            'is_transformed'
+        );
         $this->previousSetup->apply();
         $this->moduleDataSetup->getConnection()->endSetup();
     }
@@ -120,13 +127,5 @@ class UpgradeIsTransformedProductAttribute implements DataPatchInterface, PatchR
         return [
 
         ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getVersion()
-    {
-        return '0.0.4';
     }
 }
