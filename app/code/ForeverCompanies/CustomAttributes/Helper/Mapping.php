@@ -7,53 +7,24 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Helper;
 
-use Magento\Bundle\Api\Data\LinkInterface;
-use Magento\Bundle\Api\Data\LinkInterfaceFactory;
-use Magento\Bundle\Model\Link;
+use ForeverCompanies\CustomAttributes\Logger\Logger;
 use Magento\Catalog\Api\Data\ProductExtension;
 use Magento\Catalog\Api\Data\ProductLinkInterface;
-use Magento\Catalog\Api\Data\ProductLinkInterfaceFactory;
 use Magento\Catalog\Api\Data\TierPriceInterface;
 use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\Product\Option;
+use Magento\Catalog\Model\Product\Type;
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Api\Data\AttributeInterface;
-use Magento\Eav\Model\Config;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Catalog\Api\Data\ProductInterface;
 
 class Mapping extends AbstractHelper
 {
-
-    /**
-     * @var string[]
-     */
-    protected $mappingProductType = [
-        'Migration_Bracelets' => 'Bracelet',
-        'Migration_Chains' => 'Chain',
-        'Migration_Custom Cut' => 'Other',
-        'Migration_Default' => 'Other',
-        'Migration_Earrings' => 'Earring',
-        'Migration_Gift Card' => 'Gift Card',
-        'Migration_Loose Diamonds' => 'Diamond',
-        'Migration_Loose Stones' => 'Stone',
-        'Migration_Matched Sets' => 'Matched Set',
-        'Migration_Matching Bands' => 'Matching Band',
-        'Migration_Mens Rings' => 'Ring',
-        'Migration_Necklaces' => 'Necklace',
-        'Migration_Pendants' => 'Pendant',
-        'Migration_Pure Carbon Rings' => 'Ring',
-        'Migration_Ring Settings' => 'Ring Setting',
-        'Migration_Rings' => 'Ring',
-        'Migration_Simple' => 'Other',
-        'Migration_Watches' => 'Watch'
-    ];
     /**
      * @var array
      */
@@ -195,9 +166,9 @@ class Mapping extends AbstractHelper
     protected $productRepository;
 
     /**
-     * @var LinkInterfaceFactory
+     * @var Link
      */
-    protected $linkFactory;
+    protected $linkHelper;
 
     /**
      * @var ProductFunctional
@@ -205,12 +176,7 @@ class Mapping extends AbstractHelper
     protected $productFunctionalHelper;
 
     /**
-     * @var Config
-     */
-    protected $eavConfig;
-
-    /**
-     * @var \ForeverCompanies\CustomAttributes\Logger\Logger
+     * @var Logger
      */
     protected $customLogger;
 
@@ -219,90 +185,146 @@ class Mapping extends AbstractHelper
      * @param Context $context
      * @param ProductAttributeRepositoryInterface $productAttributeRepository
      * @param ProductRepositoryInterface $productRepository
-     * @param LinkInterfaceFactory $linkFactory
+     * @param Link $linkHelper
      * @param ProductFunctional $productFunctionalHelper
-     * @param Config $eavConfig
-     * @throws LocalizedException
+     * @param Logger $logger
      */
     public function __construct(
         Context $context,
         ProductAttributeRepositoryInterface $productAttributeRepository,
         ProductRepositoryInterface $productRepository,
-        LinkInterfaceFactory $linkFactory,
+        Link $linkHelper,
         ProductFunctional $productFunctionalHelper,
-        Config $eavConfig,
-        \ForeverCompanies\CustomAttributes\Logger\Logger $logger
+        Logger $logger
     ) {
         parent::__construct($context);
         $this->productAttributeRepository = $productAttributeRepository;
         $this->productRepository = $productRepository;
-        $this->linkFactory = $linkFactory;
+        $this->linkHelper = $linkHelper;
         $this->productFunctionalHelper = $productFunctionalHelper;
         $this->customLogger = $logger;
-        $this->eavConfig = $eavConfig->getAttribute(Product::ENTITY, 'product_type')->getSource();
-    }
-
-    /**
-     * @param array $options
-     * @param string $title
-     * @return false|mixed|string|null
-     */
-    public function getAttributeIdFromProductOptions(array $options, string $title)
-    {
-        /** @var Configurable\Attribute $option */
-        foreach ($options as $option) {
-            if ($option->getLabel() == $title) {
-                return $option->getAttributeId();
-            }
-        }
-        return false;
-    }
-
-    /**
-     * @param string $attributeSetName
-     * @return string
-     */
-    public function attributeSetToProductType(string $attributeSetName)
-    {
-        $typeName = $this->mappingProductType[$attributeSetName];
-        return $this->eavConfig->getOptionId($typeName);
     }
 
     /**
      * @param Product $product
      * @param array $productOptions
-     * @return array[]
-     * @throws NoSuchEntityException
+     * @return array|boolean
      */
     public function prepareOptionsForBundle(Product $product, array $productOptions)
     {
         /** @var Configurable $configurable */
         $configurable = $product->getTypeInstance();
+        $data = [];
+        $type = $this->getTypeOfProduct($productOptions);
+        if (!$type) {
+            $this->customLogger->error('Product ID = ' . $product->getId() . ' can\'t transform to bundle');
+            return false;
+        }
+        if ($type == Type::TYPE_SIMPLE) {
+            $data = $this->prepareProductToSimple($product, $productOptions);
+        }
+        if ($type == Type::TYPE_BUNDLE) {
+            $data = $this->prepareProductToBundle($product, $productOptions, $configurable);
+        }
+        $product->setQty($this->prepareQty($product, $configurable));
+        return $data;
+    }
+
+    /**
+     * @param Product $product
+     * @param Configurable $configurable
+     * @return float
+     */
+    protected function prepareQty(Product $product, Configurable $configurable)
+    {
+        $countOfProducts = $product->getQty();
+        $usedProducts = $configurable->getUsedProducts($product);
+        /** @var Product $usedProduct */
+        foreach ($usedProducts as $usedProduct) {
+            $this->productFunctionalHelper->addProductToDelete($usedProduct);
+            $qty = $usedProduct->getQty();
+            if ($countOfProducts == 0) {
+                $countOfProducts = $qty;
+            }
+            if ($countOfProducts > $qty) {
+                $this->customLogger->info('Different qty products in Product SKU = ' . $product->getSku());
+                $countOfProducts = $qty;
+            }
+        }
+        return $countOfProducts;
+    }
+
+    protected function prepareProductToSimple(Product $product, array $productOptions)
+    {
+        $product->setTypeId(Type::TYPE_SIMPLE);
+        $customizableOptions = [];
+        $simpleOptions = [];
+        $options = [];
+        foreach ($productOptions as $productOption) {
+            $simpleOptions[] = $this->getOption($productOption);
+            $options[$productOption['label']] = $this->prepareOptions($productOption);
+            if ($productOption['label'] == 'Precious Metal') {
+                $product->setData('metal_type', null);
+            }
+            if ($productOption['label'] == 'Certified Stone') {
+                $product->setData('certified_stone', null);
+            }
+        }
+        foreach ($options as $attributeId => $option) {
+            try {
+                foreach ($option as $attribute => $index) {
+                    $customizableOption = [
+                        'title' => $index,
+                        'price' => 0,
+                        'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
+                        'sku' => $this->getSkuForOption($attributeId, $index),
+                        'product_sku' => $product->getSku(),
+                    ];
+                    $customizableOptions[$attributeId][] = $customizableOption;
+                }
+            } catch (NoSuchEntityException $e) {
+                $this->_logger->error($e->getMessage());
+            }
+        }
+        return ['simple' => $simpleOptions, 'options' => $customizableOptions];
+    }
+
+    private function getSkuForOption($attribute, $index)
+    {
+        return $this->mappingSku[$attribute][$index] ?? '';
+    }
+
+    protected function prepareProductToBundle(Product $product, array $productOptions, Configurable $configurable)
+    {
+        $product->setTypeId(Type::TYPE_BUNDLE);
         $bundleOptions = [];
         $options = [];
         foreach ($productOptions as $productOption) {
-            if ($productOption['label'] != 'Carat Weight' && $productOption['label'] != 'Center Stone Size' ) {
-                $bundleOptions[] = [
-                    'title' => $productOption['label'],
-                    'default_title' => $productOption['label'],
-                    'type' => 'select',
-                    'required' => 1,
-                    'delete' => '',
-                    'price_type' => TierPriceInterface::PRICE_TYPE_FIXED
-                ];
-                $options[$productOption['attribute_id']] = $this->prepareOptions($productOption);
-                if ($productOption['label'] == 'Precious Metal') {
-                    $product->setData('metal_type', null);
+            try {
+                $productAttribute = $this->productAttributeRepository->get($productOption->getAttributeId());
+                $attrCode = $productAttribute->getAttributeCode();
+                if ($attrCode !== 'gemstone') {
+                    $bundleOptions[] = $this->getOption($productOption);
+                    $options[$productOption['attribute_id']] = $this->prepareOptions($productOption);
+                    if ($productOption['label'] == 'Precious Metal') {
+                        $product->setData('metal_type', null);
+                    }
+                    if ($productOption['label'] == 'Certified Stone') {
+                        $product->setData('certified_stone', null);
+                    }
+                } else {
+                    /** @var ProductExtension $extensionAttributes */
+
+                    /** TODO when I can get attribute 'Total Carat Weight' */
+
+                    $extensionAttributes = $product->getExtensionAttributes();
+                    $configurableProductLinks = $extensionAttributes->getConfigurableProductLinks();
+                    $basePrice = $product->getPriceInfo()->getPrice('base_price')->getValue();
+                    $links = $this->prepareLinksForBundle($configurableProductLinks, $basePrice, $product->getSku());
+                    $product->setData('carat_weight', null);
                 }
-                if ($productOption['label'] == 'Certified Stone') {
-                    $product->setData('certified_stone', null);
-                }
-            } else {
-                /** @var ProductExtension $extensionAttributes */
-                $extensionAttributes = $product->getExtensionAttributes();
-                $configurableProductLinks = $extensionAttributes->getConfigurableProductLinks();
-                $links = $this->prepareLinksForBundle($configurableProductLinks);
-                $product->setData('carat_weight', null);
+            } catch (NoSuchEntityException $e) {
+                $this->customLogger->error('Can\'t get attributes from product ID = ' . $product->getId());
             }
         }
         $customizableOptions = [];
@@ -329,115 +351,131 @@ class Mapping extends AbstractHelper
                     $customizableOptions[$attributeId][] = $customizableOption;
                 }
             } catch (NoSuchEntityException $e) {
-                $this->_logger->error($e->getMessage);
+                $this->_logger->error($e->getMessage());
             }
         }
         $bundleData = ['bundle' => $bundleOptions, 'options' => $customizableOptions];
         if (isset($links)) {
             $bundleData['links'] = $links;
         }
+        return $bundleData;
+    }
 
-        return $this->reconfigurePrices($product, $configurable, $bundleData);
+    /**
+     * @param $productOptions
+     * @return false|string
+     */
+    protected function getTypeOfProduct($productOptions)
+    {
+        $type = Type::TYPE_SIMPLE;
+        foreach ($productOptions as $productOption) {
+            try {
+                $productAttribute = $this->productAttributeRepository->get($productOption->getAttributeId());
+                $label = $productAttribute->getData('frontend_label');
+
+                if ($label == 'Center Stone Size') {
+                    $type = Type::TYPE_BUNDLE;
+                }
+            } catch (NoSuchEntityException $e) {
+                $this->_logger->critical($e->getMessage());
+                return false;
+            }
+        }
+        return $type;
     }
 
     /**
      * @param Product $product
+     * @param array $data
      * @param Configurable $configurable
-     * @param array $bundleOptions
+     * @deprecared
      * @return array
-     * @throws NoSuchEntityException
      */
-    protected function reconfigurePrices(Product $product, Configurable $configurable, array $bundleOptions)
+    protected function reconfigurePrices(Product $product, array $data, Configurable $configurable)
     {
+        $productPrices = [];
         $usedProducts = $configurable->getUsedProducts($product);
         $price = (float)0;
-        foreach ($usedProducts as $config) {
-            if ($price == 0) {
-                $price = $config->getPrice();
+        /**
+         * @var int $key
+         * @var Product $config
+         */
+        if (count($usedProducts) > 0) {
+            foreach ($usedProducts as $key => $config) {
+                if ($price == 0) {
+                    $price = $config->getPrice();
+                }
+                if ($price > $config->getPrice()) {
+                    $price = (float)$config->getPrice();
+                }
+                $productPrices[$key] = $config->getPrice();
             }
-            if ($price > $config->getPrice()) {
-                $price = (float)$config->getPrice();
+            foreach ($data['options'] as $attributeId => &$options) {
+                foreach ($options as $key => &$option) {
+                    $option['price'] = $productPrices[$key] - $price;
+                }
             }
         }
-        foreach ($bundleOptions['options'] as $attributeId => &$options) {
-            $code = $this->productAttributeRepository->get($attributeId)->getAttributeCode();
-            foreach ($options as &$option) {
-                $option['price'] = $this->getPriceFromConfigurable($usedProducts, $price, $code, $option['sku']);
+        /*if (isset($data['links'])) {
+
+            foreach ($data['links'] as &$link) {
+                $link->setData('selection_price_value', $link->getPrice() - $price);
             }
-        }
-        $product->setPrice($price);
-        return $bundleOptions;
+        } else {
+            $product->setPrice($price);
+        }*/
+        return $data;
+    }
+
+    /**
+     * @param Configurable\Attribute $option
+     * @return array
+     */
+    private function getOption(\Magento\ConfigurableProduct\Model\Product\Type\Configurable\Attribute $option)
+    {
+        return [
+            'title' => $option['label'],
+            'default_title' => $option['label'],
+            'type' => 'select',
+            'required' => 1,
+            'delete' => '',
+            'price_type' => TierPriceInterface::PRICE_TYPE_FIXED
+        ];
     }
 
     /**
      * @param Configurable\Attribute $productOption
      * @return array
      */
-    protected function prepareOptions(Configurable\Attribute $productOption)
+    private function prepareOptions(Configurable\Attribute $productOption)
     {
         $readyOptions = [];
-        foreach ($productOption->getValues() as $value) {
-            $readyOptions[$value->getValueIndex()] = '';
+        foreach ($productOption->getOptions() as $option) {
+            $readyOptions[$option['value_index']] = $option['label'];
         }
         return $readyOptions;
     }
 
     /**
      * @param array $productIds
+     * @param float $basePrice
+     * @param string $originalSku
      * @return ProductLinkInterface[]
+     * @throws NoSuchEntityException
      */
-    protected function prepareLinksForBundle(array $productIds)
+    private function prepareLinksForBundle(array $productIds, float $basePrice, string $originalSku)
     {
         $links = [];
         $uniqSkus = $this->getUniqSkus($productIds);
-        foreach ($uniqSkus as $sku) {
-            try {
-                $product = $this->productRepository->get($sku);
-                if ($product->getId() !== null) {
-                    $links[] = $this->createNewLink($product);
-                } else {
-                    $product = $this->productRepository->get($sku . 'XXXX');
-                    if ($product->getId() !== null) {
-                        $links[] = $this->createNewLink($product);
-                    } else {
-                        $this->customLogger->info('SKU not found - ' . $sku);
-                    }
-                }
-            } catch (NoSuchEntityException $e) {
-                try {
-                    $product = $this->productRepository->get($sku . 'XXXX');
-                    if ($product->getId() !== null) {
-                        $links[] = $this->createNewLink($product);
-                    } else {
-                        $this->customLogger->info('SKU not found - ' . $sku);
-                    }
-                } catch (\Exception $e) {
-                    $this->customLogger->info('SKU not found - ' . $sku);
-                }
+        foreach ($uniqSkus as $originalId => $sku) {
+            $originalPrice = $this->productRepository->getById($originalId)->getPrice();
+            $itemPrice = $originalPrice - $basePrice;
+            $link = $this->linkHelper->createNewLink($sku, $itemPrice, $originalSku);
+            if ($link !== null) {
+                $links[] = $link;
             }
         }
-
         return $links;
-    }
-
-    /**
-     * @param ProductInterface $product
-     * @return LinkInterface
-     */
-    private function createNewLink(ProductInterface $product)
-    {
-        /** @var Link $link */
-        $link = $this->linkFactory->create();
-        $link->setSku($product->getSku());
-        $link->setData('name', $product->getName());
-        $link->setData('selection_qty', 1);
-        $link->setData('product_id', $product->getId());
-        $link->setData('record_id', $product->getId());
-        $link->setIsDefault(false);
-        $link->setData('selection_price_value', $product->getPrice());
-        $link->setData('price', $product->getPrice());
-        $link->setData('selection_price_type', LinkInterface::PRICE_TYPE_FIXED);
-        return $link;
     }
 
     /**
@@ -447,39 +485,17 @@ class Mapping extends AbstractHelper
     private function getUniqSkus($productIds)
     {
         $skusForLikedProduct = [];
-        foreach ($productIds as $productId) {
+        foreach ($productIds as $id => $productId) {
             try {
                 /** @var Product $product */
                 $product = $this->productRepository->getById($productId, true, 0, true);
-                $this->productFunctionalHelper->addProductToDelete($product);
                 $sku = $product->getSku();
-                $skusForLikedProduct[] = $this->productFunctionalHelper->getStoneSkuFromProductSku($sku);
+                $skusForLikedProduct[$id] = $this->productFunctionalHelper->getStoneSkuFromProductSku($sku);
+                $this->productFunctionalHelper->addProductToDelete($product);
             } catch (NoSuchEntityException $e) {
                 $this->customLogger->info('SKU not found - ' . $e->getMessage());
             }
         }
         return array_unique($skusForLikedProduct);
-    }
-
-    /**
-     * @param array $usedProducts
-     * @param $price
-     * @param string $code
-     * @param string $sku
-     * @return mixed
-     */
-    private function getPriceFromConfigurable(array $usedProducts, $price, string $code, string $sku)
-    {
-        $prices = [];
-        /** @var Product $product */
-        foreach ($usedProducts as $product) {
-            if (strpos($product->getSku(), $sku) !== false) {
-                $codeValue = $product->getData($code);
-                if (isset($codeValue) && $codeValue !== '') {
-                    $prices[] = (float)$product->getPrice() - $price;
-                }
-            }
-        }
-        return min($prices);
     }
 }

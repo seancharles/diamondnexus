@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="sales_order">
+        <column comment="Fishbowl Import Flag" xsi:type="smallint" name="flag_fishbowl_import"
+                unsigned="false" nullable="true" identity="false" default="0"/>
+    </table>
+    <table name="sales_order_grid">
+        <column comment="Fishbowl Import Flag" xsi:type="smallint" name="flag_fishbowl_import"
+                unsigned="false" nullable="true" identity="false" default="0"/>
+    </table>
+    <table name="sales_order_item">
+        <column comment="Loose Stone Flag" xsi:type="smallint" name="flag_loose_stone"
+                unsigned="false" nullable="false" identity="false" default="0"/>
+    </table>
+    <table name="ext_sales_order_updates" resource="default" engine="innodb" comment="Sales order updates">
+        <column xsi:type="int" name="entity_id" padding="11" unsigned="false" nullable="false" identity="true"
+                comment="Entity ID"/>
+        <column xsi:type="int" name="order_id" padding="10" unsigned="true" nullable="false" identity="false"
+                comment="Order ID"/>
+        <column xsi:type="datetime" name="updated_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP"
+                comment="Order update at"/>
+        <column xsi:type="varchar" name="updated_fields" nullable="true" length="255" comment="Updated Fields"/>
+        <column xsi:type="smallint" name="flag_fishbowl_update" padding="2" unsigned="true" nullable="false"
+                identity="false"
+                comment="Fishbowl update flag"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="EXT_SALES_ORDER_ID_SALES_ORDER_ENTITY_ID"
+                    table="ext_sales_order_updates"
+                    column="order_id" referenceTable="sales_order" referenceColumn="entity_id"
+                    onDelete="CASCADE"/>
+        <index referenceId="EXT_SALES_ENTITY_ID" indexType="btree">
+            <column name="entity_id"/>
+        </index>
+        <index referenceId="EXT_SALES_ORDER" indexType="btree">
+            <column name="order_id"/>
+        </index>
+        <index referenceId="EXT_SALES_UPDATED_AT" indexType="btree">
+            <column name="updated_at"/>
+        </index>
+    </table>
+</schema>

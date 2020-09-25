@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <system>
+        <tab id="forevercompanies" sortOrder="2001">
+            <label>ForeverCompanies</label>
+        </tab>
+        <section id="forevercompanies_customattributes" translate="label" type="text" sortOrder="100" showInDefault="1"
+                 showInWebsite="1" showInStore="0">
+            <label>Custom attributes</label>
+            <tab>forevercompanies</tab>
+            <resource>ForeverCompanies_CustomAttributes::config</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+                <label>General</label>
+                <field id="forevercompanies_deletebytags" translate="label comment" type="button" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="0">
+                    <frontend_model>ForeverCompanies\CustomAttributes\Block\System\Config\DeleteByTags</frontend_model>
+                    <label>Delete products by dev_tags (Removed as)</label>
+                </field>
+                <field id="forevercompanies_deletebycsv_file" translate="label"
+                       type="Magento\Config\Block\System\Config\Form\Field\File" sortOrder="20" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Delete products by CSV (file)</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\File</backend_model>
+                    <upload_dir config="system" scope_info="1">forevercompanies</upload_dir>
+                    <comment>Upload .csv file (PRODUCT ID,TYPE,KEEP?,SKU,NAME)</comment>
+                </field>
+                <field id="forevercompanies_deletebycsv" translate="label comment" type="button" sortOrder="25"
+                       showInDefault="1" showInWebsite="1" showInStore="0">
+                    <frontend_model>ForeverCompanies\CustomAttributes\Block\System\Config\DeleteByCsv</frontend_model>
+                    <label>Delete products by file (Save Config before use that button)</label>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
