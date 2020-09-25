@@ -16,4 +16,12 @@
         <plugin name="get_order_fishbowl_import" type="ForeverCompanies\CustomApi\Plugin\OrderFishbowlImport"/>
         <plugin name="get_order_item_loose_stone" type="ForeverCompanies\CustomApi\Plugin\OrderItemLooseStone"/>
     </type>
+    <type name="Magento\Sales\Model\Order\AddressRepository">
+        <plugin name="forevercompanies_customapi_plugin_address_repository"
+                type="ForeverCompanies\CustomApi\Plugin\AddressRepository" sortOrder="30"/>
+    </type>
+    <type name="\Magento\Quote\Model\ResourceModel\Quote">
+        <plugin name="forevercompanies_customapi_plugin_quote"
+                type="ForeverCompanies\CustomApi\Plugin\Quote" sortOrder="30"/>
+    </type>
 </config>
