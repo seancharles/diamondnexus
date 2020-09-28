@@ -1,9 +1,9 @@
 <?php
- /**
+/**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
- 
+
 namespace ForeverCompanies\DynamicBundle\Model\Product;
 
 use Magento\Bundle\Model\ResourceModel\Selection\Collection as Selections;
@@ -240,7 +240,7 @@ class Type extends \Magento\Catalog\Model\Product\Type\AbstractType
 
         $this->selectionCollectionFilterApplier = $selectionCollectionFilterApplier
             ?: ObjectManager::getInstance()->get(SelectionCollectionFilterApplier::class);
-        $this->arrayUtility= $arrayUtility ?: ObjectManager::getInstance()->get(ArrayUtils::class);
+        $this->arrayUtility = $arrayUtility ?: ObjectManager::getInstance()->get(ArrayUtils::class);
 
         parent::__construct(
             $catalogProductOption,
@@ -402,7 +402,7 @@ class Type extends \Magento\Catalog\Model\Product\Type\AbstractType
             $product->setData('weight', false);
         }
 
-        if ($product->getPriceType() == Price::PRICE_TYPE_DYNAMIC) {
+        if ($product->getPriceType() == \Magento\Bundle\Model\Product\Price::PRICE_TYPE_DYNAMIC) {
             /** unset product custom options for dynamic price */
             if ($product->hasData('product_options')) {
                 $product->unsetData('product_options');
@@ -414,19 +414,18 @@ class Type extends \Magento\Catalog\Model\Product\Type\AbstractType
         if ($product->getCanSaveBundleSelections()) {
             $product->canAffectOptions(true);
             $selections = $product->getBundleSelectionsData();
-            if ($selections && !empty($selections)) {
-                $options = $product->getBundleOptionsData();
-                if ($options) {
-                    foreach ($options as $option) {
-                        if (empty($option['delete']) || 1 != (int)$option['delete']) {
-                            $product->setTypeHasOptions(true);
-                            if (1 == (int)$option['required']) {
-                                $product->setTypeHasRequiredOptions(true);
-                                break;
-                            }
+            $options = $product->getBundleOptionsData();
+            if ($selections && $options) {
+                foreach ($options as $option) {
+                    if (empty($option['delete']) || 1 != (int)$option['delete']) {
+                        $product->setTypeHasOptions(true);
+                        if (1 == (int)$option['required']) {
+                            $product->setTypeHasRequiredOptions(true);
+                            break;
                         }
                     }
                 }
+
             }
         }
     }
@@ -530,10 +529,10 @@ class Type extends \Magento\Catalog\Model\Product\Type\AbstractType
      * Example: the catalog inventory validation of decimal qty can change qty to int,
      * so need to change quote item qty option value too.
      *
-     * @param   array $options
-     * @param   \Magento\Framework\DataObject $option
-     * @param   mixed $value
-     * @param   \Magento\Catalog\Model\Product $product
+     * @param array $options
+     * @param \Magento\Framework\DataObject $option
+     * @param mixed $value
+     * @param \Magento\Catalog\Model\Product $product
      * @return $this
      */
     public function updateQtyOption($options, \Magento\Framework\DataObject $option, $value, $product)
@@ -549,7 +548,7 @@ class Type extends \Magento\Catalog\Model\Product\Type\AbstractType
                 foreach ($options as $quoteItemOption) {
                     if ($quoteItemOption->getCode() == 'selection_qty_' . $selection->getSelectionId()) {
                         if ($optionUpdateFlag) {
-                            $quoteItemOption->setValue((int) $quoteItemOption->getValue());
+                            $quoteItemOption->setValue((int)$quoteItemOption->getValue());
                         } else {
                             $quoteItemOption->setValue($value);
                         }
@@ -571,7 +570,7 @@ class Type extends \Magento\Catalog\Model\Product\Type\AbstractType
      */
     public function prepareQuoteItemQty($qty, $product)
     {
-        return (int) $qty;
+        return (int)$qty;
     }
 
     /**
@@ -653,8 +652,6 @@ class Type extends \Magento\Catalog\Model\Product\Type\AbstractType
         $result = parent::_prepareProduct($buyRequest, $product, $processMode);
 
         try {
-
-
             $selections = [];
             $isStrictProcessMode = false;
 
@@ -665,8 +662,6 @@ class Type extends \Magento\Catalog\Model\Product\Type\AbstractType
             if (is_array($options)) {
                 $options = $this->recursiveIntval($options);
                 $optionIds = array_keys($options);
-
-
                 $product->getTypeInstance()
                     ->setStoreFilter($product->getStoreId(), $product);
                 $optionsCollection = $this->getOptionsCollection($product);
@@ -981,8 +976,8 @@ class Type extends \Magento\Catalog\Model\Product\Type\AbstractType
      *
      * Sort selections by option position, selection position and selection id
      *
-     * @param  \Magento\Catalog\Model\Product $firstItem
-     * @param  \Magento\Catalog\Model\Product $secondItem
+     * @param \Magento\Catalog\Model\Product $firstItem
+     * @param \Magento\Catalog\Model\Product $secondItem
      * @return int
      */
     public function shakeSelections($firstItem, $secondItem)
@@ -1112,7 +1107,7 @@ class Type extends \Magento\Catalog\Model\Product\Type\AbstractType
      *
      * At least one product in each group has to be purchased
      *
-     * @param  \Magento\Catalog\Model\Product $product
+     * @param \Magento\Catalog\Model\Product $product
      * @return array
      */
     public function getProductsToPurchaseByReqGroups($product)
@@ -1141,8 +1136,8 @@ class Type extends \Magento\Catalog\Model\Product\Type\AbstractType
     /**
      * Prepare selected options for bundle product
      *
-     * @param  \Magento\Catalog\Model\Product $product
-     * @param  \Magento\Framework\DataObject $buyRequest
+     * @param \Magento\Catalog\Model\Product $product
+     * @param \Magento\Framework\DataObject $buyRequest
      * @return array
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
@@ -1170,17 +1165,6 @@ class Type extends \Magento\Catalog\Model\Product\Type\AbstractType
         return $product instanceof \Magento\Catalog\Model\Product && $product->isAvailable() && parent::canConfigure(
             $product
         );
-    }
-
-    /**
-     * Delete data specific for Bundle product type
-     *
-     * @param \Magento\Catalog\Model\Product $product
-     * @return void
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function deleteTypeSpecificData(\Magento\Catalog\Model\Product $product)
-    {
     }
 
     /**

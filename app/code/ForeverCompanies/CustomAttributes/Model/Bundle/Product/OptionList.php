@@ -35,6 +35,7 @@ class OptionList extends \Magento\Bundle\Model\Product\OptionList
                 ->setData('default_title', $option->getData('default_title'))
                 ->setSku($product->getSku())
                 ->setData('bundle_customization_type', $option->getData('bundle_customization_type'))
+                ->setData('is_dynamic_selection', $option->getData('is_dynamic_selection'))
                 ->setProductLinks($productLinks);
             $optionList[] = $optionDataObject;
         }

@@ -17,8 +17,7 @@ class UpdateProductOptionAttributes implements ObserverInterface
 
     public function __construct(
         Config $eavConfig
-    )
-    {
+    ) {
         $this->eavConfig = $eavConfig;
     }
 
@@ -37,17 +36,28 @@ class UpdateProductOptionAttributes implements ObserverInterface
             $attribute = $option->getData('customization_type');
             $source = $this->eavConfig->getAttribute(Product::ENTITY, $attribute)->getSource();
             $value = $product->getData($attribute);
-            foreach ($option->getData('values') as $optionValue) {
+            $stringFlag = 0;
+            if (!is_array($value)) {
+                $value = explode(',', $value);
+                $stringFlag = 1;
+            }
+            $optionValues = $option->getValues() ?? $option->getData('values');
+            foreach ($optionValues as $optionValue) {
                 $isSetBefore = false;
                 $setValue = $source->getOptionId($optionValue['title']);
-                foreach ($value as $item) {
-                    if ($item == $setValue) {
-                        $isSetBefore = true;
+                if ($value !== null) {
+                    foreach ($value as $item) {
+                        if ($item == $setValue) {
+                            $isSetBefore = true;
+                        }
                     }
                 }
                 if (!$isSetBefore) {
                     $value[] = $setValue;
                 }
+            }
+            if ($stringFlag == 1) {
+                $value = implode(',', $value);
             }
             $product->setData($attribute, $value);
         }

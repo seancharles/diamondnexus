@@ -14,32 +14,32 @@ class Item extends \Magento\Quote\Model\Quote\Item
      */
     public function setProduct($product)
     {
-		$parent = $this->getParentItem();
-		
-		// workaround:
-		// 	omit the name and sku for items that are bundled
-		// 	in bundles, bundled items are managed separately
-		// 	from the line item details
-		if($parent) {
-			$this->setData('product', $product)
-				->setProductId($product->getId())
-				->setProductType($product->getTypeId())
-				//->setSku($this->getProduct()->getSku())
-				//->setName($product->getName())
-				->setWeight($this->getProduct()->getWeight())
-				->setTaxClassId($product->getTaxClassId())
-				->setBaseCost($product->getCost());
-		} else {
-			$this->setData('product', $product)
-				->setProductId($product->getId())
-				->setProductType($product->getTypeId())
-				->setSku($this->getProduct()->getSku())
-				->setName($product->getName())
-				->setWeight($this->getProduct()->getWeight())
-				->setTaxClassId($product->getTaxClassId())
-				->setBaseCost($product->getCost());
-		}
-		
+        $parent = $this->getParentItem();
+        
+        // workaround:
+        //     omit the name and sku for items that are bundled
+        //     in bundles, bundled items are managed separately
+        //     from the line item details
+        if ($parent) {
+            $this->setData('product', $product)
+                ->setProductId($product->getId())
+                ->setProductType($product->getTypeId())
+                //->setSku($this->getProduct()->getSku())
+                //->setName($product->getName())
+                ->setWeight($this->getProduct()->getWeight())
+                ->setTaxClassId($product->getTaxClassId())
+                ->setBaseCost($product->getCost());
+        } else {
+            $this->setData('product', $product)
+                ->setProductId($product->getId())
+                ->setProductType($product->getTypeId())
+                ->setSku($this->getProduct()->getSku())
+                ->setName($product->getName())
+                ->setWeight($this->getProduct()->getWeight())
+                ->setTaxClassId($product->getTaxClassId())
+                ->setBaseCost($product->getCost());
+        }
+        
         if ($this->getQuote()) {
             $product->setStoreId($this->getQuote()->getStoreId());
             $product->setCustomerGroupId($this->getQuote()->getCustomerGroupId());

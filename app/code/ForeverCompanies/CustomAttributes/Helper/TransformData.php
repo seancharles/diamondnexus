@@ -8,6 +8,8 @@ declare(strict_types=1);
 namespace ForeverCompanies\CustomAttributes\Helper;
 
 use Exception;
+use ForeverCompanies\CustomAttributes\Model\Config\Source\Product\BundleCustomizationType;
+use ForeverCompanies\CustomAttributes\Model\Config\Source\Product\CustomizationType;
 use Magento\Bundle\Api\Data\LinkInterface;
 use Magento\Bundle\Api\Data\LinkInterfaceFactory;
 use Magento\Bundle\Model\Product\Type;
@@ -226,6 +228,17 @@ class TransformData extends AbstractHelper
         return $this->getProductCollection($table, $attr, $where);
     }
 
+    /**
+     * @return Collection
+     */
+    public function getProductsAfterTransformCollection()
+    {
+        $table = 'catalog_product_entity_int';
+        $attr = 'is_transformed';
+        $where = '= 1';
+        return $this->getProductCollection($table, $attr, $where);
+    }
+
     public function getProductsForMediaTransformCollection()
     {
         $table = 'catalog_product_entity_int';
@@ -281,6 +294,43 @@ class TransformData extends AbstractHelper
         }
     }
 
+    public function transformProductOptions(int $entityId)
+    {
+        try {
+            $product = $this->getCurrentProduct($entityId, false);
+            if ($product == null) {
+                return;
+            }
+            $options = $product->getOptions();
+            $isBundle = $product->getTypeId();
+            if ($options == null && $isBundle != Type::TYPE_CODE) {
+                return;
+            }
+            if ($options !== null) {
+                foreach ($options as &$option) {
+                    $option['customization_type'] = $this->setCustomizationTypeToOption($option->getTitle());
+                }
+                $product->setOptions($options);
+            }
+            if ($isBundle == Type::TYPE_CODE) {
+                $bundleOptions = $product->getExtensionAttributes()->getBundleProductOptions();
+                foreach ($bundleOptions as &$bundleData) {
+                    $title = $bundleData->getTitle();
+                    $bundleData['bundle_customization_type'] = BundleCustomizationType::OPTIONS[$title];
+                }
+                $product->setData('bundle_options_data', $bundleOptions);
+            }
+
+            $this->productRepository->save($product);
+        } catch (CouldNotSaveException $e) {
+            $this->_logger->error('Error in transform options for ID = ' . $entityId . ': ' .$e->getMessage());
+        } catch (InputException $e) {
+            $this->_logger->error('Error in transform options for ID = ' . $entityId . ': ' .$e->getMessage());
+        } catch (StateException $e) {
+            $this->_logger->error('Error in transform options for ID = ' . $entityId . ': ' .$e->getMessage());
+        }
+    }
+
     /**
      * @param int $entityId
      * @throws InputException
@@ -323,7 +373,7 @@ class TransformData extends AbstractHelper
             $this->_logger->error($inputException->getMessage());
             throw $inputException;
         } catch (Exception $e) {
-            throw new StateException(__('Cannot save product - ' .$e->getMessage()));
+            throw new StateException(__('Cannot save product - ' . $e->getMessage()));
         }
     }
 
@@ -386,16 +436,20 @@ class TransformData extends AbstractHelper
     protected function addVideoToProduct($videoUrl, $product, $videoProvider = '')
     {
         /** TODO: all of that functions */
-        if (strpos($videoUrl, 'up.diacam360')) {
+        $updiacam = strpos($videoUrl, 'up.diacam360');
+        if ($updiacam) {
             throw new StateException(__('Cannot save video from up.diacam360 for product'));
         }
-        if (strpos($videoUrl, 's3.amazonaws')) {
+        $amazonaws = strpos($videoUrl, 's3.amazonaws');
+        if ($amazonaws) {
             throw new StateException(__('Cannot save video from s3.amazonaws for product'));
         }
-        if (strpos($videoUrl, 'assets.stullercloud')) {
+        $stullercloud = strpos($videoUrl, 'assets.stullercloud');
+        if ($stullercloud) {
             throw new StateException(__('Cannot save video from assets.stullercloud for product'));
         }
-        if (strpos($videoUrl, 'v360.in')) {
+        $v360 = strpos($videoUrl, 'v360.in');
+        if ($v360) {
             throw new StateException(__('Cannot save video from v360.in for product'));
         }
         if ($videoProvider == 'youtube') {
@@ -404,7 +458,7 @@ class TransformData extends AbstractHelper
             $videoProvider = str_replace('https://', '', $videoUrl);
             $videoProvider = str_replace('http://', '', $videoProvider);
             $dotPosition = strpos($videoProvider, ".") ?? false;
-            if ($dotPosition == false ) {
+            if ($dotPosition == false) {
                 return;
             }
             $videoProvider = substr($videoProvider, 0, $dotPosition);
@@ -448,6 +502,17 @@ class TransformData extends AbstractHelper
             return;
         }
         return $product;
+    }
+
+    protected function setCustomizationTypeToOption($title)
+    {
+        switch ($title) {
+            case 'Precious Metal':
+            case 'Metal Type':
+                return CustomizationType::OPTIONS['Metal Type'];
+            default:
+                return CustomizationType::OPTIONS[$title];
+        }
     }
 
     /**
@@ -496,12 +561,12 @@ class TransformData extends AbstractHelper
             $videoData = array_merge(
                 $generalMediaEntryData,
                 [
-                VideoContentInterface::TITLE => 'Migrated Video',
-                VideoContentInterface::DESCRIPTION => '',
-                VideoContentInterface::PROVIDER => $provider,
-                VideoContentInterface::METADATA => null,
-                VideoContentInterface::URL => $url,
-                VideoContentInterface::TYPE => ExternalVideoEntryConverter::MEDIA_TYPE_CODE,
+                    VideoContentInterface::TITLE => 'Migrated Video',
+                    VideoContentInterface::DESCRIPTION => '',
+                    VideoContentInterface::PROVIDER => $provider,
+                    VideoContentInterface::METADATA => null,
+                    VideoContentInterface::URL => $url,
+                    VideoContentInterface::TYPE => ExternalVideoEntryConverter::MEDIA_TYPE_CODE,
                 ]
             );
         } catch (FileSystemException $e) {

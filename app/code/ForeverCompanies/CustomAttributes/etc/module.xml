@@ -4,6 +4,7 @@
 		<sequence>
 			<module name="Cloudinary_Cloudinary"/>
             <module name="Magento_CatalogGraphQl"/>
+            <module name="ForeverCompanies_DynamicBundle"/>
 		</sequence>
 	</module>
 </config>
