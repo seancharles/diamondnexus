@@ -35,11 +35,8 @@ class ExtSalesOrderUpdateManagement implements ExtSalesOrderUpdateManagementInte
      * {@inheritdoc}
      * @throws LocalizedException
      */
-    public function getExtSalesOrderUpdate($flagFishbowlUpdate)
+    public function getExtSalesOrderUpdate(bool $flagFishbowlUpdate)
     {
-        if ($flagFishbowlUpdate !== 'true' && $flagFishbowlUpdate !== 'false') {
-            return 'Write param flag_fishbowl_update "true" or "false", please';
-        }
         $flag = ($flagFishbowlUpdate == 'true') ? 1 : 0;
         $connection = $this->resourceModel->getConnection();
         $mainTable = $this->resourceModel->getMainTable();
@@ -56,5 +53,13 @@ class ExtSalesOrderUpdateManagement implements ExtSalesOrderUpdateManagementInte
     {
         $this->helper->createNewExtSalesOrder($orderId, $updatedFields, $flagFishbowlUpdate);
         return 'Success';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function putExtSalesOrderUpdate(int $orderId, bool $flagFishbowlUpdate)
+    {
+        return $this->helper->updateExtSalesOrder($orderId, $flagFishbowlUpdate);
     }
 }
