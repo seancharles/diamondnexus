@@ -14,6 +14,11 @@
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
                    showInStore="1">
                 <label>General</label>
+                <field id="forevercompanies_disablebytags" translate="label comment" type="button" sortOrder="11"
+                       showInDefault="1" showInWebsite="1" showInStore="0">
+                    <frontend_model>ForeverCompanies\CustomAttributes\Block\System\Config\DisableByTags</frontend_model>
+                    <label>Disable old products (configurable, and with dev_tags)</label>
+                </field>
                 <field id="forevercompanies_deletebytags" translate="label comment" type="button" sortOrder="10"
                        showInDefault="1" showInWebsite="1" showInStore="0">
                     <frontend_model>ForeverCompanies\CustomAttributes\Block\System\Config\DeleteByTags</frontend_model>

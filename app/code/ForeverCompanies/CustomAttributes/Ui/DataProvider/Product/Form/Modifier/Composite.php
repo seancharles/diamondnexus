@@ -45,7 +45,7 @@ class Composite extends \Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\Co
         $product = $this->locator->getProduct();
         $modelId = $product->getId();
         $isBundleProduct = $product->getTypeId() === Type::TYPE_CODE;
-        if (!$isBundleProduct && !$modelId) {
+        if (!$isBundleProduct || !$modelId) {
             return $data;
         }
         $data[$modelId][BundlePanel::CODE_BUNDLE_OPTIONS][BundlePanel::CODE_BUNDLE_OPTIONS] = [];

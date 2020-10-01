@@ -1,0 +1,50 @@
+<?php
+
+use ForeverCompanies\CustomAttributes\Block\System\Config\disableByTags;
+
+/* @var $block disableByTags */
+?>
+<script>
+    require([
+        'jquery',
+        'prototype'
+    ], function (jQuery) {
+
+        var collectSpan = jQuery('#collect_span');
+
+        jQuery('#disablebytags_button').click(function () {
+            var params = {};
+
+            new Ajax.Request('<?= /* @noEscape */$block->getAjaxUrl() ?>', {
+                parameters: params,
+                loaderArea: false,
+                asynchronous: true,
+                onCreate: function () {
+                    collectSpan.find('.collected').hide();
+                    collectSpan.find('.processing').show();
+                },
+                onSuccess: function (response) {
+                    collectSpan.find('.processing').hide();
+
+                    var resultText = '';
+                    if (response.status > 200) {
+                        resultText = response.statusText;
+                    } else {
+                        resultText = 'Success';
+                        collectSpan.find('.disabled').show();
+                    }
+                }
+            });
+        });
+
+    });
+</script>
+
+<?= $block->getButtonHtml() ?>
+<span class="collect-indicator" id="collect_span">
+    <img class="processing2" hidden="hidden" alt="Collecting" style="margin:0 5px"
+         src="<?= /* @noEscape */ $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
+    <img class="disabled2" hidden="hidden" alt="Collected" style="margin:-3px 5px"
+         src="<?= /* @noEscape */ $block->getViewFileUrl('images/rule_component_apply.gif') ?>"/>
+    <span id="collect_message_span"></span>
+</span>

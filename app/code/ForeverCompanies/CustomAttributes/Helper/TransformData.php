@@ -13,6 +13,7 @@ use ForeverCompanies\CustomAttributes\Model\Config\Source\Product\CustomizationT
 use Magento\Bundle\Api\Data\LinkInterface;
 use Magento\Bundle\Api\Data\LinkInterfaceFactory;
 use Magento\Bundle\Model\Product\Type;
+use Magento\Bundle\Model\ResourceModel\Selection;
 use Magento\Catalog\Api\AttributeSetRepositoryInterface;
 use Magento\Catalog\Api\Data\ProductAttributeMediaGalleryEntryInterface;
 use Magento\Catalog\Api\Data\ProductCustomOptionInterface;
@@ -21,6 +22,7 @@ use Magento\Catalog\Api\Data\ProductExtensionFactory;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\TierPriceInterface;
 use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Gallery\GalleryManagement;
 use Magento\Catalog\Model\Product\Option;
 use Magento\Catalog\Model\ProductRepository;
@@ -132,6 +134,11 @@ class TransformData extends AbstractHelper
      */
     protected $mediaHelper;
 
+    /**
+     * @var Selection
+     */
+    protected $bundleSelection;
+
     protected $mimeTypes = [
         'png' => 'image/png',
         'jpe' => 'image/jpeg',
@@ -165,6 +172,7 @@ class TransformData extends AbstractHelper
      * @param GalleryManagement $galleryManagement
      * @param Media $media
      * @param Serialize $serializer
+     * @param Selection $bundleSelection
      */
     public function __construct(
         Context $context,
@@ -184,7 +192,8 @@ class TransformData extends AbstractHelper
         ImageContentInterfaceFactory $imageContent,
         GalleryManagement $galleryManagement,
         Media $media,
-        Serialize $serializer
+        Serialize $serializer,
+        Selection $bundleSelection
     ) {
         parent::__construct($context);
         $this->eav = $config;
@@ -204,6 +213,7 @@ class TransformData extends AbstractHelper
         $this->galleryManagement = $galleryManagement;
         $this->mediaHelper = $media;
         $this->serializer = $serializer;
+        $this->bundleSelection = $bundleSelection;
     }
 
     /**
@@ -214,6 +224,17 @@ class TransformData extends AbstractHelper
         $table = 'catalog_product_entity_varchar';
         $attr = 'dev_tag';
         $where = 'like "%Removed as part of%"';
+        return $this->getProductCollection($table, $attr, $where);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getProductsForDisableCollection()
+    {
+        $table = 'catalog_product_entity_varchar';
+        $attr = 'dev_tag';
+        $where = 'like "%Removed as part of%" || eav_table.value like "%Migrated to%"';
         return $this->getProductCollection($table, $attr, $where);
     }
 
@@ -391,6 +412,38 @@ class TransformData extends AbstractHelper
             throw new StateException(__('Cannot get product ID = ' . $productId));
         } catch (NoSuchEntityException $e) {
             throw new NoSuchEntityException(__('Cannot delete product ID = ' . $productId));
+        }
+    }
+
+    /**
+     * @param int $productId
+     * @throws NoSuchEntityException
+     * @throws StateException
+     */
+    public function disableProduct(int $productId)
+    {
+        try {
+            $product = $this->productRepository->getById($productId, true, 0);
+            if ($product->getTypeId() == Configurable::TYPE_CODE) {
+                $product->setStatus(Status::STATUS_DISABLED);
+                $this->productRepository->save($product);
+                return;
+            }
+            $parentIds = $this->bundleSelection->getParentIdsByChild($productId);
+            if ($parentIds !== null && count($parentIds) !== 0) {
+                $this->_logger->info('SPECIAL INFO FOR STEVE Z: product ID = ' . $productId . ' include in bundle');
+                return;
+            }
+            $product->setStatus(Status::STATUS_DISABLED);
+            $this->productRepository->save($product);
+        } catch (StateException $e) {
+            throw new StateException(__('Cannot get product ID = ' . $productId));
+        } catch (NoSuchEntityException $e) {
+            throw new NoSuchEntityException(__('Cannot delete product ID = ' . $productId));
+        } catch (CouldNotSaveException $e) {
+            $this->_logger->error('Can\'t disable product ID = ' . $productId . ': ' . $e->getMessage());
+        } catch (InputException $e) {
+            $this->_logger->error('Can\'t disable product ID = ' . $productId . ': ' . $e->getMessage());
         }
     }
 

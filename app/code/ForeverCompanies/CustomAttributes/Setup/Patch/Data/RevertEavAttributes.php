@@ -16,7 +16,7 @@ use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\Patch\PatchRevertableInterface;
 
-class UpgradeFilteringProductAttributes implements DataPatchInterface, PatchRevertableInterface
+class RevertEavAttributes implements DataPatchInterface
 {
 
     protected $filteringAttributes = [
@@ -26,7 +26,7 @@ class UpgradeFilteringProductAttributes implements DataPatchInterface, PatchReve
         'ring_size',
         'certified_stone',
         'color',
-        'cut',
+        'cut_grade',
         'shape'
     ];
 
@@ -67,7 +67,6 @@ class UpgradeFilteringProductAttributes implements DataPatchInterface, PatchReve
     public function apply()
     {
         $this->moduleDataSetup->getConnection()->startSetup();
-        /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
         foreach ($this->filteringAttributes as $filteringAttribute) {
             $attribute = $eavSetup->getAttribute(Product::ENTITY, $filteringAttribute);
@@ -76,35 +75,52 @@ class UpgradeFilteringProductAttributes implements DataPatchInterface, PatchReve
                     Product::ENTITY,
                     $filteringAttribute,
                     'backend_type',
-                    'varchar'
+                    'int'
                 );
                 $eavSetup->updateAttribute(
                     Product::ENTITY,
                     $filteringAttribute,
                     'frontend_input',
-                    'multiselect'
+                    'select'
                 );
                 $eavSetup->updateAttribute(
                     Product::ENTITY,
                     $filteringAttribute,
                     'backend_model',
-                    ArrayBackend::class
+                    null
+                );
+                $eavSetup->updateAttribute(
+                    Product::ENTITY,
+                    $filteringAttribute,
+                    'source_model',
+                    \Magento\Eav\Model\Entity\Attribute\Source\Table::class
                 );
             }
+            $eavSetup->updateAttribute(
+                Product::ENTITY,
+                'color',
+                'backend_model',
+                ArrayBackend::class
+            );
+            $eavSetup->updateAttribute(
+                Product::ENTITY,
+                'shape',
+                'backend_model',
+                ArrayBackend::class
+            );
+            $eavSetup->updateAttribute(
+                Product::ENTITY,
+                'color',
+                'source_model',
+                null
+            );
+            $eavSetup->updateAttribute(
+                Product::ENTITY,
+                'shape',
+                'source_model',
+                null
+            );
         }
-        $this->moduleDataSetup->getConnection()->endSetup();
-    }
-
-    public function revert()
-    {
-        $this->moduleDataSetup->getConnection()->startSetup();
-        /** @var EavSetup $eavSetup */
-        $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $eavSetup->removeAttribute(
-            Product::ENTITY,
-            'is_transformed'
-        );
-        $this->previousSetup->apply();
         $this->moduleDataSetup->getConnection()->endSetup();
     }
 
@@ -131,6 +147,6 @@ class UpgradeFilteringProductAttributes implements DataPatchInterface, PatchReve
      */
     public static function getVersion()
     {
-        return '0.0.4';
+        return '0.0.5';
     }
 }
