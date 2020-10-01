@@ -10,13 +10,24 @@ namespace ForeverCompanies\Promotions\Helper;
 use ForeverCompanies\Promotions\Logger\Logger;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Catalog\Api\ProductCustomOptionRepositoryInterface;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\CatalogRule\Model\Rule;
-use Magento\CatalogRule\Model\RuleFactory;
 use Magento\CatalogRule\Model\Rule\Job;
-use Magento\Catalog\Model\ProductRepository;
+use Magento\CatalogRule\Model\RuleFactory;
+
 
 class Data extends AbstractHelper
 {
+    /**
+     * @var ProductCustomOptionRepositoryInterface
+     */
+    protected $customOptionRepository;
+
+    /**
+     * @var CollectionFactory
+     */
+    protected $productCollection;
 
     /**
      * @var Rule
@@ -33,39 +44,69 @@ class Data extends AbstractHelper
      */
     protected $job;
 
-
     /**
      * @var Logger
      */
     protected $logger;
 
     /**
-     * Data constructor.
+     * Model constructor.
+     *
      * @param Rule $rule
      * @param RuleFactory $ruleFactory
      * @param Job $job
+     * @param ProductCustomOptionRepositoryInterface $customOptionsRepository
+     * @param CollectionFactory $productCollection
      * @param Logger $logger
-     * @param Context $context
      */
 
     public function __construct(
+        Context $context,
         RuleFactory $ruleFactory,
+        Rule $rule,
         Job $job,
-        Logger $logger,
-        Context $context
+        ProductCustomOptionRepositoryInterface $customOptionsRepository,
+        CollectionFactory $productCollection,
+        Logger $logger
     )
     {
-        $this->ruleFactory = $ruleFactory;
-        $this->job = $job;
-        $this->logger = $logger;
         parent::__construct($context);
+        $this->ruleFactory = $ruleFactory;
+        $this->rule = $rule;
+        $this->job = $job;
+        $this->customOptionRepository = $customOptionsRepository;
+        $this->productCollection = $productCollection;
+        $this->logger = $logger;
     }
 
-    public function createCatalogRulesConditions(){
+    public function selectProductsWithCustomOptions()
+    {
+        $collection = $this->productCollection->create()
+            ->addAttributeToSelect(['name','sku','metal_type'])
+            ->load();
+        $collection->getSelect()->limit(4);
+        foreach ($collection as $product){
+            $name = $product->getName();
+            $sku = $product->getSku();
+            $customOptions = $this->getCustomOptions($sku);
+            if ($customOptions){
+                if($sku == 'LRRHXX7033XPCWHXX0171CS0XXXX'){
+                    echo "Found custom options for product with sku = " . $sku . " exists \n";
+                    $this->createCatalogRulesForProduct($name,$sku);
+                }
+
+            }
+        }
+    }
+
+    public function createCatalogRulesForProduct($name, $sku){
         try {
+
+
             $catalogPriceRule =  $this->ruleFactory->create();
-            $catalogPriceRule->setName('forevercompanies_promotions')
-                ->setDescription('forevercompanies_promotions')
+            $desc = 'Create Catalog Price Rule for product ' . $name . '.';
+            $catalogPriceRule->setName($desc)
+                ->setDescription($desc)
                 ->setIsActive(1)
                 ->setCustomerGroupIds(array(1))
                 ->setWebsiteIds(array(1))
@@ -74,6 +115,19 @@ class Data extends AbstractHelper
                 ->setSimpleAction('by_fixed')
                 ->setDiscountAmount(1)
                 ->setStopRulesProcessing(0);
+
+            /**
+                $conditions = array();
+
+                $conditions[1] = array(
+                    'type' => 'catalogrule/rule_condition_product',
+                    'attribute' => 'sku',
+                    'operator' => '==',
+                    'value' => $sku,
+                );
+                $catalogPriceRule->setData('conditions',$conditions);
+             */
+
             // Validating rule data before Saving
             $validateResult = $this->rule->validateData(new \Magento\Framework\DataObject($catalogPriceRule->getData()));
             if ($validateResult !== true) {
@@ -87,9 +141,20 @@ class Data extends AbstractHelper
             $this->logger->addInfo($catalogPriceRule->getData('name'));
             $catalogPriceRule->save();
             $this->job->applyAll();
-            echo "Catalog Price Rule created\n";
+            echo "Catalog Price Rule for product with sku " . $sku . " created! \n";
         } catch (Exception $e) {
             echo $e->getMessage();
         }
+
     }
+
+    /**
+     * @param string $sku
+     * @return \Magento\Catalog\Api\Data\ProductCustomOptionInterface[]
+     */
+    public function getCustomOptions(string $sku)
+    {
+        return $this->customOptionRepository->getList($sku);
+    }
+
 }

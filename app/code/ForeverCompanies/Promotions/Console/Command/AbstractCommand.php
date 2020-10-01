@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright ©  All rights reserved.
  * See COPYING.txt for license details.
@@ -29,7 +30,7 @@ abstract class AbstractCommand extends Command
     /**
      * Promotions constructor.
      * @param State $state
-     * @param TransformData $helper
+     * @param Data $helper
      */
     public function __construct(
         State $state,

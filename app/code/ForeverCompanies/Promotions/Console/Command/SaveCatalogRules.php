@@ -30,9 +30,7 @@ class SaveCatalogRules extends AbstractCommand
     ) {
         $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_GLOBAL);
         $output->writeln("Create cart catalog price conditions...");
-        $productCollection = $this->helper->createCatalogRulesConditions();
-       // $output->writeln('Create cart catalog price conditions for  ' . $productCollection->count() . ' products');
-
+        $productCollection = $this->helper->selectProductsWithCustomOptions();
         $output->writeln('Created catalog price rules!');
     }
 
