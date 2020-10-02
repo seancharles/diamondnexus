@@ -5,4 +5,10 @@
         <referenceBlock class="Magento\Sales\Block\Adminhtml\Order\Create\Store\Select"
                         template="ForeverCompanies_CustomSales::order/create/store/select.phtml" name="select"/>
     </referenceBlock>
+    <referenceBlock name="content">
+        <block class="ForeverCompanies\CustomSales\Block\Adminhtml\Order\Create\SalesPerson"
+               template="ForeverCompanies_CustomSales::order/create/sales_person.phtml"
+               name="sales_person"
+               before="order_content"/>
+    </referenceBlock>
 </page>

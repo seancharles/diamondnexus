@@ -5,4 +5,14 @@
         <observer instance="ForeverCompanies\CustomSales\Observer\Backend\Sales\OrderPlaceBefore"
                   name="forevercompanies_customsales_observer_backend_sales_orderplacebefore_sales_order_place_before"/>
     </event>
+    <event name="sales_convert_order_to_quote">
+        <observer name="sales_person_convert"
+                  instance="ForeverCompanies\CustomSales\Observer\SalesEventOrderToQuoteObserver"
+                  shared="false" />
+    </event>
+    <event name="sales_model_service_quote_submit_before">
+        <observer name="sales_person_submit_before"
+                  instance="ForeverCompanies\CustomSales\Observer\SalesEventQuoteSubmitBeforeObserver"
+                  shared="false" />
+    </event>
 </config>
