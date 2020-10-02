@@ -15,6 +15,7 @@ use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\CatalogRule\Model\Rule;
 use Magento\CatalogRule\Model\Rule\Job;
 use Magento\CatalogRule\Model\RuleFactory;
+use Magento\CatalogRule\Model\Rule\Condition\ProductFactory;
 
 
 class Data extends AbstractHelper
@@ -40,6 +41,11 @@ class Data extends AbstractHelper
     protected $ruleFactory;
 
     /**
+     * @var  ProductFactory
+     */
+    protected $productFactory;
+
+    /**
      * @var Job
      */
     protected $job;
@@ -54,6 +60,7 @@ class Data extends AbstractHelper
      *
      * @param Rule $rule
      * @param RuleFactory $ruleFactory
+     * @param ProductFactory $productFactory
      * @param Job $job
      * @param ProductCustomOptionRepositoryInterface $customOptionsRepository
      * @param CollectionFactory $productCollection
@@ -63,6 +70,7 @@ class Data extends AbstractHelper
     public function __construct(
         Context $context,
         RuleFactory $ruleFactory,
+        ProductFactory  $productFactory,
         Rule $rule,
         Job $job,
         ProductCustomOptionRepositoryInterface $customOptionsRepository,
@@ -72,6 +80,7 @@ class Data extends AbstractHelper
     {
         parent::__construct($context);
         $this->ruleFactory = $ruleFactory;
+        $this->productFactory = $productFactory;
         $this->rule = $rule;
         $this->job = $job;
         $this->customOptionRepository = $customOptionsRepository;
@@ -100,11 +109,13 @@ class Data extends AbstractHelper
     }
 
     public function createCatalogRulesForProduct($name, $sku){
+
         try {
-
-
             $catalogPriceRule =  $this->ruleFactory->create();
             $desc = 'Create Catalog Price Rule for product ' . $name . '.';
+            $customOptions = $this->getCustomOptions($sku);
+
+
             $catalogPriceRule->setName($desc)
                 ->setDescription($desc)
                 ->setIsActive(1)
@@ -116,17 +127,6 @@ class Data extends AbstractHelper
                 ->setDiscountAmount(1)
                 ->setStopRulesProcessing(0);
 
-            /**
-                $conditions = array();
-
-                $conditions[1] = array(
-                    'type' => 'catalogrule/rule_condition_product',
-                    'attribute' => 'sku',
-                    'operator' => '==',
-                    'value' => $sku,
-                );
-                $catalogPriceRule->setData('conditions',$conditions);
-             */
 
             // Validating rule data before Saving
             $validateResult = $this->rule->validateData(new \Magento\Framework\DataObject($catalogPriceRule->getData()));
