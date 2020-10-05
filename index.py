@@ -6,8 +6,8 @@ from dirsync import sync
 
 def lambda_handler(event, context):
   print('Loading function')
-  source = 'sapper-app/src/'
-  dest1 = '/mnt/src'
+  source = './'
+  dest1 = '/mnt/magento'
   try:
     sync(source, dest1, 'sync')
   except Exception as e:
