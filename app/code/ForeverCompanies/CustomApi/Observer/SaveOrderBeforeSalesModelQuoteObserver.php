@@ -22,8 +22,7 @@ class SaveOrderBeforeSalesModelQuoteObserver implements ObserverInterface
      */
     public function __construct(
         Copy $objectCopyService
-    )
-    {
+    ) {
         $this->objectCopyService = $objectCopyService;
     }
 

@@ -32,8 +32,7 @@ class ExtOrder extends AbstractHelper
         Context $context,
         ExtSalesOrderUpdateFactory $extSalesOrderUpdateFactory,
         ExtResource $extResource
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->extSalesOrderUpdateFactory = $extSalesOrderUpdateFactory;
         $this->extResource = $extResource;

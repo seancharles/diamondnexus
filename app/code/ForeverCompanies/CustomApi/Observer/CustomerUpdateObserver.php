@@ -44,12 +44,11 @@ class CustomerUpdateObserver implements ObserverInterface
         if ($customer->getEmail() !== $oldCustomer->getEmail()) {
             $this->updateOrderEmailsByCustomerId($customer->getEmail(), (int)$customer->getId());
         }
-
     }
 
     protected function updateOrderEmailsByCustomerId(string $email, int $customerId)
     {
-        $orders = $this->orderCollection->addAttributeToFilter('customer_id',$customerId)->load();
+        $orders = $this->orderCollection->addAttributeToFilter('customer_id', $customerId)->load();
         /** @var \Magento\Sales\Model\Order $order */
         foreach ($orders->getItems() as $order) {
             $order->setCustomerEmail($email);
