@@ -24,8 +24,8 @@ phases:
       - pwd
       - ls
       - pip install dirsync
-      - cp -R /usr/local/python37/lib/python3.7/site-packages/dirsync .
-      - ls -la
+      - cp -p -r --backup=numbered `find ~/ -name dirsync -a -type d` ./
+      - ls 
       - zip -qr source.zip ./ -x '.git/*'
       - aws s3 cp source.zip s3://mag2-prod-codebuild/source.zip
       - aws lambda update-function-code --function-name $FUNCTION_NAME --s3-bucket mag2-prod-codebuild --s3-key source.zip
