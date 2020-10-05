@@ -3,7 +3,7 @@
     <body>
         <referenceContainer name="content">
             <block class="ForeverCompanies\Promotions\Block\Adminhtml\Promo\Rule" name="adminhtml.block.promo.rule.grid.container">
-                <block class="Magento\Backend\Block\Widget\Grid" name="adminhtml.block.example.rule.grid" as="grid">
+                <block class="Magento\Backend\Block\Widget\Grid" name="adminhtml.block.promo.rule.grid" as="grid">
                     <arguments>
                         <argument name="id" xsi:type="string">promo_rule_grid</argument>
                         <argument name="dataSource" xsi:type="object">ForeverCompanies\Promotions\Model\ResourceModel\Rule\Collection</argument>

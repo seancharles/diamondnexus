@@ -8,6 +8,13 @@ declare(strict_types=1);
 class Edit extends \ForeverCompanies\Promotions\Controller\Adminhtml\Promo\Rule
 {
     /**
+     * Authorization level of a basic admin session
+     *
+     * @see _isAllowed()
+     */
+    const ADMIN_RESOURCE = 'ForeverCompanies_Promotions::promotions';
+
+    /**
      * Rule edit action
      *
      * @return void

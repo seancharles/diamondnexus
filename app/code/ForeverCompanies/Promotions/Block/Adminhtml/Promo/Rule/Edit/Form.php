@@ -33,7 +33,7 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
             [
                 'data' => [
                     'id' => 'edit_form',
-                    'action' => $this->getUrl('forevercompanies_promotions/forevercompanies_rule/save'),
+                    'action' => $this->getUrl('forevercompanies_rules/promo_rule/save'),
                     'method' => 'post',
                 ],
             ]

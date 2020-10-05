@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
     <acl>
         <resources>
             <resource id="Magento_Backend::admin">
                 <resource id="Magento_Backend::marketing">
                     <resource id="Magento_CatalogRule::promo">
-                        <resource id="ForeverCompanies_Promotions::rules" sortOrder="40" title="ForeverCompanies Catalog Price Rules" />
+                        <resource id="ForeverCompanies_Promotions::promotions" sortOrder="60" title="Price Rules" />
                     </resource>
                 </resource>
             </resource>

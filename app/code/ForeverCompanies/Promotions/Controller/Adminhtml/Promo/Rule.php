@@ -13,6 +13,15 @@ namespace ForeverCompanies\Promotions\Controller\Adminhtml\Promo;
  */
 abstract class Rule extends \Magento\Backend\App\Action
 {
+
+    /**
+     * Authorization level of a basic admin session
+     *
+     * @see _isAllowed()
+     */
+    const ADMIN_RESOURCE = 'ForeverCompanies_Promotions::promotions';
+
+
     /**
      * Core registry
      *
@@ -95,19 +104,11 @@ abstract class Rule extends \Magento\Backend\App\Action
     protected function _initAction()
     {
         $this->_view->loadLayout();
-        $this->_setActiveMenu('ForeverCompanies_Promotions::rules')
+        $this->_setActiveMenu('ForeverCompanies_Promotions::foreverCompanies_promotions')
               ->_addBreadcrumb(__('ForeverCompanies Catalog Price Rules'), __('ForeverCompanies Catalog Price Rules'));
         return $this;
     }
 
-    /**
-     * Returns result of current user permission check on resource and privilege
-     *
-     * @return bool
-     */
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed('ForeverCompanies_Promotions::rules');
-    }
+
 
 }

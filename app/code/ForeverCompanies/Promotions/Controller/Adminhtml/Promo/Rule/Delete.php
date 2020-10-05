@@ -5,10 +5,19 @@
  */
 declare(strict_types=1);
 
-namespace ForeverCompanies\Promotions\Controller\Adminhtml\Promo\Rules;
+namespace ForeverCompanies\Promotions\Controller\Adminhtml\Promo\Rule;
 
 class Delete extends \ForeverCompanies\Promotions\Controller\Adminhtml\Promo\Rule
 {
+
+    /**
+     * Authorization level of a basic admin session
+     *
+     * @see _isAllowed()
+     */
+    const ADMIN_RESOURCE = 'ForeverCompanies_Promotions::promotions';
+
+
     /**
      * Delete rule action
      *

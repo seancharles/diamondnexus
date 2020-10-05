@@ -24,7 +24,7 @@ class Rule extends AbstractModel
      *
      * @var string
      */
-    protected $_eventPrefix = 'forevercompanies_promotions';
+    protected $_eventPrefix = 'forevercompanies_rules';
 
     /**
      * Parameter name in event

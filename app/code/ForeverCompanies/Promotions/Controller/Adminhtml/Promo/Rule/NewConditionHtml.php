@@ -10,6 +10,13 @@ namespace ForeverCompanies\Promotions\Controller\Adminhtml\Promo\Rule;
 class NewConditionHtml extends \ForeverCompanies\Promotions\Controller\Adminhtml\Promo\Rule
 {
     /**
+     * Authorization level of a basic admin session
+     *
+     * @see _isAllowed()
+     */
+    const ADMIN_RESOURCE = 'ForeverCompanies_Promotions::promotions';
+
+    /**
      * New condition html action
      *
      * @return void

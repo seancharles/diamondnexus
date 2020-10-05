@@ -116,6 +116,13 @@ class Data extends AbstractHelper
             $customOptions = $this->getCustomOptions($sku);
 
 
+         //   $conditions = $this->productFactory->create()
+          //      ->setType('Magento\CategoryRule\Model\Rule\Condition\Product')
+           //     ->setData('attribute','sku')
+           //     ->setData('operator','()')
+           //     ->setValue($sku);
+
+
             $catalogPriceRule->setName($desc)
                 ->setDescription($desc)
                 ->setIsActive(1)
@@ -126,7 +133,21 @@ class Data extends AbstractHelper
                 ->setSimpleAction('by_fixed')
                 ->setDiscountAmount(1)
                 ->setStopRulesProcessing(0);
+           // $catalogPriceRule->setData('conditions',$conditions);
 
+            //echo print_r($customOptions);
+
+            /**
+                $conditions = array();
+
+                $conditions[1] = array(
+                    'type' => 'catalogrule/rule_condition_product',
+                    'attribute' => 'sku',
+                    'operator' => '==',
+                    'value' => $sku,
+                );
+                $catalogPriceRule->setData('conditions',$conditions);
+             */
 
             // Validating rule data before Saving
             $validateResult = $this->rule->validateData(new \Magento\Framework\DataObject($catalogPriceRule->getData()));
