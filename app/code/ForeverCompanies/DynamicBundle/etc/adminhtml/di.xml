@@ -60,7 +60,7 @@
 	<type name="Magento\Catalog\Model\Product">
 		<plugin name="plugin_for_product_name" type="ForeverCompanies\DynamicBundle\Plugins\Product" />
 	</type>
-	
+
    <virtualType name="Magento\CatalogStaging\Ui\DataProvider\Product\Form\Modifier\Pool" type="Magento\Ui\DataProvider\Modifier\Pool">
        <arguments>
            <argument name="modifiers" xsi:type="array">
@@ -106,8 +106,6 @@
     <preference for="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\Composite" type="ForeverCompanies\DynamicBundle\Ui\DataProvider\Product\Form\Modifier\Composite" />
     <preference for="Magento\Bundle\Model\Product\OptionList" type="ForeverCompanies\DynamicBundle\Model\Bundle\Product\OptionList"/>
     <preference for="Magento\Bundle\Model\LinkManagement" type="ForeverCompanies\DynamicBundle\Model\LinkManagement" />
-	
-	<preference for="ShipperHQ\Shipper\Model\Carrier\Shipper" type="ForeverCompanies\DynamicBundle\Model\Carrier\Shipper" />
 
     <type name="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePanel">
         <plugin name="bundle_option_sku" type="ForeverCompanies\DynamicBundle\Plugins\Catalog\Ui\DataProvider\Product\Form\Modifier\BundlePanel" sortOrder="1000"/>

@@ -24,12 +24,18 @@ class MultipayForm extends \Magento\Backend\Block\Template
     }
 
     /**
+     * @param string $method
+     * @param string $template
      * @return string
      */
-    public function setMethodFormTemplate()
+    public function setMethodFormTemplate($method = '', $template = '')
     {
-        //Your block code
-        return __('Hello Developer! This how to get the storename: %1 and this is the way to build a url: %2', $this->_storeManager->getStore()->getName(), $this->getUrl('contacts'));
+        if (!empty($method) && !empty($template)) {
+            if ($block = $this->getChildBlock('payment.method.' . $method)) {
+                $block->setTemplate($template);
+            }
+        }
+        return $this;
     }
 }
 
