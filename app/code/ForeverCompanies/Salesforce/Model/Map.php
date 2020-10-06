@@ -25,7 +25,7 @@ class Map extends AbstractModel
      */
     public function _construct()
     {
-        $this->_init('ForeverCompanies\Salesforce');
+        $this->_init('ForeverCompanies\Salesforce\Model\ResourceModel\Map');
     }
 
     /**
