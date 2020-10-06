@@ -5,6 +5,8 @@
  */
 declare(strict_types=1);
 
+namespace ForeverCompanies\Promotions\Controller\Adminhtml\Promo\Rule;
+
 class Edit extends \ForeverCompanies\Promotions\Controller\Adminhtml\Promo\Rule
 {
     /**

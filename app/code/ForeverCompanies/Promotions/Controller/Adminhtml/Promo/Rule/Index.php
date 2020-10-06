@@ -24,16 +24,18 @@ class Index extends \ForeverCompanies\Promotions\Controller\Adminhtml\Promo\Rule
      */
     protected $resultPageFactory;
 
-    /**
-     * @param Context $context
-     * @param PageFactory $resultPageFactory
-     */
     public function __construct(
-        Context $context,
-        PageFactory $resultPageFactory
-    ) {
-        parent::__construct($context);
-        $this->resultPageFactory = $resultPageFactory;
+        \Magento\Backend\App\Action\Context $context,
+        \Magento\Framework\Registry $coreRegistry,
+        \Magento\Framework\App\Response\Http\FileFactory $fileFactory,
+        \Magento\Framework\Stdlib\DateTime\Filter\Date $dateFilter,
+        \ForeverCompanies\Promotions\Model\RuleFactory $ruleFactory,
+        \Psr\Log\LoggerInterface $logger,
+        PageFactory $pageFactory
+    )
+    {
+        parent::__construct($context, $coreRegistry, $fileFactory, $dateFilter, $ruleFactory, $logger);
+        $this->resultPageFactory = $pageFactory;
     }
 
     /**

@@ -5,7 +5,7 @@
  */
 declare(strict_types=1);
 
-namespace ForeverCompanies\Promotions\Controller\Adminhtml\Promo\Rule;
+namespace ForeverCompanies\Promotions\Block\Adminhtml\Promo;
 
 class Rule extends \Magento\Backend\Block\Widget\Grid\Container
 {
