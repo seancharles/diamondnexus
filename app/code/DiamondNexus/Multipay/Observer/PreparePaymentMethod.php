@@ -19,9 +19,11 @@ class PreparePaymentMethod implements ObserverInterface
 {
     protected $logger;
 
-    public function __construct(\Psr\Log\LoggerInterface $loggerInterface) {
+    public function __construct(\Psr\Log\LoggerInterface $loggerInterface)
+    {
         $this->logger = $loggerInterface;
     }
+
     /**
      * @param Observer $observer
      * @return $this
@@ -30,9 +32,8 @@ class PreparePaymentMethod implements ObserverInterface
     {
         $paymentCode = $observer->getMethodInstance()->getCode();
         $result = $observer->getResult();
-        if($paymentCode == Constant::MULTIPAY_METHOD){
-            $result->setData('is_available', $paymentCode === Constant::MULTIPAY_METHOD);
-        }
+        $result->setData('is_available', $paymentCode === Constant::MULTIPAY_METHOD);
+
         return $this;
     }
 }
