@@ -8,18 +8,38 @@ declare(strict_types=1);
 namespace DiamondNexus\Multipay\Model\Sales\Order;
 
 use DiamondNexus\Multipay\Model\Constant;
+use DiamondNexus\Multipay\Model\TransactionFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Sales\Api\CreditmemoManagementInterface as CreditmemoManager;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment\Transaction\ManagerInterface;
+use Magento\Sales\Model\Order\CreditmemoFactory;
 
 
+
+/**
+ * Class Payment
+ * @package DiamondNexus\Multipay\Model\Sales\Order
+ */
 class Payment extends \Magento\Sales\Model\Order\Payment
 {
 
+    /**
+     * @var TransactionFactory
+     */
     protected $transactionFactory;
+
+    /**
+     * @var CreditmemoFactory
+     */
+    protected $creditmemoFactory;
+
+    /**
+     * @var  CreditmemoManager
+     */
+    protected $creditmemoManager;
 
     public function __construct(
         \DiamondNexus\Multipay\Model\TransactionFactory $transactionFactory,
@@ -42,6 +62,8 @@ class Payment extends \Magento\Sales\Model\Order\Payment
         CreditmemoManager $creditmemoManager = null
     ) {
         $this->transactionFactory = $transactionFactory;
+        $this->creditmemoFactory = $creditmemoFactory;
+        $this->creditmemoManager = $creditmemoManager;
         parent::__construct(
             $context,
             $registry,

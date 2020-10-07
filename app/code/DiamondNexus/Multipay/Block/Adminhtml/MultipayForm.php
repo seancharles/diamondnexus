@@ -7,6 +7,10 @@ declare(strict_types=1);
 
 namespace DiamondNexus\Multipay\Block\Adminhtml;
 
+/**
+ * Class MultipayForm
+ * @package DiamondNexus\Multipay\Block\Adminhtml
+ */
 class MultipayForm extends \Magento\Backend\Block\Template
 {
 

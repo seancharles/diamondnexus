@@ -6,6 +6,10 @@ use DiamondNexus\Multipay\Model\Transaction;
 use DiamondNexus\Multipay\Model\ResourceModel\Transaction as ResourceModel;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 
+/**
+ * Class Collection
+ * @package DiamondNexus\Multipay\Model\ResourceModel\Transaction
+ */
 class Collection extends AbstractCollection
 {
     /**
