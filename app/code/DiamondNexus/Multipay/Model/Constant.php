@@ -39,4 +39,20 @@ class Constant
     const MULTIPAY_CANCEL_ACTION = 3;
 
     const STATE_QUOTE = 'quote';
+
+    const CASH_TENDERED_DATA = 'multipay_cash_tendered';
+    const CHANGE_DUE_DATA = 'multipay_change_due';
+    const OPTION_PARTIAL_DATA = 'multipay_option_partial';
+    const OPTION_TOTAL_DATA = 'multipay_option_total';
+    const PAYMENT_METHOD_DATA = 'multipay_payment_method';
+    const PAYMENT_METHOD_NONCE = 'payment_method_nonce';
+
+    const MULTIPAY_PAYMENT_DATA = [
+        self::CASH_TENDERED_DATA,
+        self::CHANGE_DUE_DATA,
+        self::OPTION_PARTIAL_DATA,
+        self::OPTION_TOTAL_DATA,
+        self::PAYMENT_METHOD_DATA,
+        self::PAYMENT_METHOD_NONCE,
+    ];
 }

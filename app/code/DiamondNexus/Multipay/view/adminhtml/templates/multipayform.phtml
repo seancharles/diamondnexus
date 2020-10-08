@@ -1,6 +1,7 @@
 <?php
 /**
- * @var $block \DiamondNexus\Multipay\Block\Adminhtml\MultipayForm
+ * @var $block \Magento\Payment\Block\Form
+ * @var $tmpBlock \Magento\Sales\Block\Adminhtml\Order\Create\Billing\Method\Form
  */
 ?>
 <?php
@@ -15,25 +16,29 @@ $code = 'multipay';
         <fieldset class="admin__fieldset payment-method-options multipay-fieldset" id="payment_form_multipay_method">
 
             <div class="admin__field-option _required">
-                <input id="multipay_method_cc" class="admin__control-radio" value="1" type="radio" name="payment[multipay_payment_method]" />
+                <input id="multipay_method_cc" class="admin__control-radio" value="1" type="radio"
+                       name="payment[multipay_payment_method]"/>
                 <label class="admin__field-label" for="multipay_method_cc">
                     <span><?= $block->escapeHtml(__('Credit Card')) ?></span>
                 </label>
             </div>
             <div class="admin__field-option _required">
-                <input id="multipay_method_cash" class="admin__control-radio" value="2" type="radio" name="payment[multipay_payment_method]" />
+                <input id="multipay_method_cash" class="admin__control-radio" value="2" type="radio"
+                       name="payment[multipay_payment_method]"/>
                 <label class="admin__field-label" for="multipay_method_cash">
                     <span><?= $block->escapeHtml(__('Cash')) ?></span>
                 </label>
             </div>
             <div class="admin__field-option _required">
-                <input id="multipay_method_quote" class="admin__control-radio" value="3" type="radio" name="payment[multipay_payment_method]" />
+                <input id="multipay_method_quote" class="admin__control-radio" value="3" type="radio"
+                       name="payment[multipay_payment_method]"/>
                 <label class="admin__field-label" for="multipay_method_quote">
                     <span><?= $block->escapeHtml(__('Quote')) ?></span>
                 </label>
             </div>
             <div class="admin__field-option _required">
-                <input id="multipay_method_pl" class="admin__control-radio" value="7" type="radio" name="payment[multipay_payment_method]" />
+                <input id="multipay_method_pl" class="admin__control-radio" value="7" type="radio"
+                       name="payment[multipay_payment_method]"/>
                 <label class="admin__field-label" for="multipay_method_pl">
                     <span><?= $block->escapeHtml(__('Progressive Leasing (offline)')) ?></span>
                 </label>
@@ -43,13 +48,15 @@ $code = 'multipay';
         <!-- choose full payment or partial payment -->
         <fieldset class="admin__fieldset payment-method-options multipay-fieldset" id="payment_form_multipay_amount">
             <div class="admin__field-option _required">
-                <input id="multipay_method_total_balance" class="admin__control-radio" value="1" type="radio" name="payment[multipay_option_total]" />
+                <input id="multipay_method_total_balance" class="admin__control-radio" value="1" type="radio"
+                       name="payment[multipay_option_total]"/>
                 <label class="label admin__field-label" for="multipay_method_total_balance">
                     <span><?= $block->escapeHtml(__('Total Amount')) ?></span>
                 </label>
             </div>
             <div class="admin__field-option _required">
-                <input id="multipay_method_partial_balance" class="admin__control-radio" value="2" type="radio" name="payment[multipay_option_total]" />
+                <input id="multipay_method_partial_balance" class="admin__control-radio" value="2" type="radio"
+                       name="payment[multipay_option_total]"/>
                 <label class="label admin__field-label" for="multipay_method_partial_balance">
                     <span><?= $block->escapeHtml(__('Partial Amount')) ?></span>
                 </label>
@@ -64,7 +71,9 @@ $code = 'multipay';
                 </label>
             </div>
             <div class="admin__field-control control">
-                <input id="multipay_amount_due" class="input-text admin__control-text disabled" value="" type="text" name="multipay_amount_due" />
+                <input id="multipay_amount_due" readonly="readonly" class="input-text admin__control-text disabled"
+                       value="<?= $tmpBlock->getQuote()->getGrandTotal() ?>" type="number" step="0.01"
+                       name="multipay_amount_due"/>
             </div>
         </div>
 
@@ -76,7 +85,9 @@ $code = 'multipay';
                 </label>
             </div>
             <div class="admin__field-control control">
-                <input id="multipay_option_partial" class="input-text admin__control-text" value="" type="text" name="payment[multipay_option_partial]" />
+                <input id="multipay_option_partial" class="input-text admin__control-text" value="" type="number"
+                       step="0.01"
+                       name="payment[multipay_option_partial]"/>
             </div>
 
             <div class="admin__field multipay-add-margin-top">
@@ -85,7 +96,9 @@ $code = 'multipay';
                 </label>
             </div>
             <div class="admin__field-control control">
-                <input id="multipay_new_balance" class="input-text admin__control-text disabled" value="" type="text" name="multipay_new_balance" />
+                <input readonly="readonly" id="multipay_new_balance" class="input-text admin__control-text disabled"
+                       value="<?= $tmpBlock->getQuote()->getGrandTotal() ?>" type="number" step="0.01"
+                       name="multipay_new_balance"/>
             </div>
         </div>
 
@@ -96,9 +109,7 @@ $code = 'multipay';
                     <span><?= $block->escapeHtml(__('Credit Card Number')) ?></span>
                 </label>
                 <div class="admin__field-control control">
-                    <div id="<?= $block->escapeHtmlAttr($code) ?>_cc_number" class="admin__control-text hosted-control">
-                        <span class="icon-type"></span>
-                    </div>
+                    <input id="<?= $block->escapeHtmlAttr($code) ?>_cc_number" class="admin__control-text hosted-control" />
                     <div class="hosted-error">
                         <?= $block->escapeHtml(__('Please, enter valid Credit Card Number')) ?>
                     </div>
@@ -111,13 +122,14 @@ $code = 'multipay';
                 </label>
                 <div class="admin__field-control control">
                     <div class="hosted-date-wrap">
-                        <div id="<?= $block->escapeHtmlAttr($code) ?>_cc_exp_month"
-                             class="admin__control-text hosted-control hosted-date"></div>
+                        <input id="<?= $block->escapeHtmlAttr($code) ?>_cc_exp_month"
+                             class="admin__control-text hosted-control hosted-date" />
 
-                        <div id="<?= $block->escapeHtmlAttr($code) ?>_cc_exp_year"
-                             class="admin__control-text hosted-control hosted-date"></div>
+                        <input id="<?= $block->escapeHtmlAttr($code) ?>_cc_exp_year"
+                             class="admin__control-text hosted-control hosted-date" />
 
-                        <div class="hosted-error"><?= $block->escapeHtml(__('Please, enter valid Expiration Date')) ?></div>
+                        <div
+                            class="hosted-error"><?= $block->escapeHtml(__('Please, enter valid Expiration Date')) ?></div>
                     </div>
                 </div>
             </div>
@@ -146,7 +158,8 @@ $code = 'multipay';
                 </label>
             </div>
             <div class="admin__field-control control">
-                <input id="multipay_cash_tendered" class="input-text admin__control-text" value="" type="text" name="payment[multipay_cash_tendered]" />
+                <input id="multipay_cash_tendered" class="input-text admin__control-text" value="" type="text"
+                       name="payment[multipay_cash_tendered]"/>
             </div>
 
             <div class="admin__field multipay-add-margin-top">
@@ -155,7 +168,9 @@ $code = 'multipay';
                 </label>
             </div>
             <div class="admin__field-control control">
-                <input id="multipay_change_due" class="input-text admin__control-text disabled" value="" type="text" name="payment[multipay_change_due]" />
+                <input id="multipay_change_due" class="input-text admin__control-text disabled" value="" type="text"
+                       readonly="readonly"
+                       name="payment[multipay_change_due]"/>
             </div>
         </div>
 
@@ -168,13 +183,15 @@ $code = 'multipay';
 
 <style type="text/css">
     .payment-method-options {
-        margin-left: 15px!important;
+        margin-left: 15px !important;
     }
+
     .multipay-fieldset {
         padding: 0 10px 1.5rem 10px;
         border: 1px dashed #333;
         margin: 10px 0;
     }
+
     .multipay-add-margin-top {
         margin-top: 1.5rem;
     }

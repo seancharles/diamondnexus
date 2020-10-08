@@ -41,5 +41,11 @@ class MultipayForm extends \Magento\Backend\Block\Template
         }
         return $this;
     }
+
+    public function getAmount()
+    {
+        $test = 1;
+        return 'aaaaaa';
+    }
 }
 
