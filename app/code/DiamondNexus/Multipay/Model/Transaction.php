@@ -11,7 +11,6 @@ namespace DiamondNexus\Multipay\Model;
 use Magento\Cron\Exception;
 use Magento\Framework\Model\AbstractModel;
 
-
 /**
  * Class  Transaction
  * @package DiamondNexus\Multipay\Model

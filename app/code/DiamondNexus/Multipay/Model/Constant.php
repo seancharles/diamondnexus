@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace DiamondNexus\Multipay\Model;
 
-
 /**
  * Class Constant
  * @package DiamondNexus\Multipay\Model
@@ -24,7 +23,7 @@ class Constant
     const MULTIPAY_PAYPAL_OFFLINE_METHOD = 6;
     const MULTIPAY_PROGRESSIVE_OFFLINE_METHOD = 7;
 
-    const MULTIPAY_METHOD_LABEL = array(
+    const MULTIPAY_METHOD_LABEL = [
         1 => 'Credit',
         2 => 'Cash',
         3 => 'Quote',
@@ -32,7 +31,7 @@ class Constant
         5 => 'Affirm (offline)',
         6 => 'Paypal (offline)',
         7 => 'Progressive Leasing (offline)',
-    );
+    ];
 
     const MULTIPAY_SALE_ACTION = 1;
     const MULTIPAY_REFUND_ACTION = 2;
@@ -45,6 +44,8 @@ class Constant
     const OPTION_PARTIAL_DATA = 'multipay_option_partial';
     const OPTION_TOTAL_DATA = 'multipay_option_total';
     const PAYMENT_METHOD_DATA = 'multipay_payment_method';
+    const NEW_BALANCE_DATA = 'multipay_new_balance';
+    const AMOUNT_DUE_DATA = 'multipay_amount_due';
     const PAYMENT_METHOD_NONCE = 'payment_method_nonce';
 
     const MULTIPAY_PAYMENT_DATA = [
@@ -54,5 +55,7 @@ class Constant
         self::OPTION_TOTAL_DATA,
         self::PAYMENT_METHOD_DATA,
         self::PAYMENT_METHOD_NONCE,
+        self::NEW_BALANCE_DATA,
+        self::AMOUNT_DUE_DATA,
     ];
 }

@@ -26,11 +26,11 @@ class Available
     public function afterGetAvailableMethods($subject, $result)
     {
         $multipayCode = Constant::MULTIPAY_METHOD;
-        foreach ($result as $key=>$_result) {
+        foreach ($result as $key => $_result) {
             if ($_result->getCode() == $multipayCode) {
                 $isAllowed =  true;
                 if ($isAllowed) {
-                   $result[$key] = $multipayCode;
+                    $result[$key] = $multipayCode;
                 }
             }
         }
