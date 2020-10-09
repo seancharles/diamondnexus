@@ -35,6 +35,9 @@ class Order extends Connector
      */
     protected $createOrderIds = [];
 
+    /**
+     * @var DataGetter
+     */
     protected $dataGetter;
 
     /**
@@ -60,7 +63,39 @@ class Order extends Connector
         RequestLogFactory $requestLogFactory
     )
     {
-        parent::__construct($scopeConfig, $resourceConfig, $reportFactory, $queueFactory, $requestLogFactory);
+        parent::__construct($scopeConfig, $resourceConfig,
+            $reportFactory, $queueFactory, $requestLogFactory);
         $this->orderFactory  = $orderFactory;
+        $this->dataGetter = $dataGetter;
+    }
+
+    /**
+     * @param $orderIds
+     * @param $response
+     * @throws \Exception
+     */
+    protected function saveAttributes($orderIds, $response)
+    {
+        if (is_array($response) && is_array($orderIds)){
+            for($i=0; $i<count($orderIds); $i++){
+                $order = $this->orderFactory->create()->loadByIncrementId($orderIds[$i]['mid']);
+                if(isset($response[$i]['id']) && $order->getId()){
+                    $this->saveAttribute($order, $response[$i]['id']);
+                }
+            }
+        } else {
+            throw new \Exception('Response not an array');
+        }
+    }
+
+    /**
+     * @param \Magento\Sales\Model\Order $order
+     * @param $salesforceId
+     */
+    protected function saveAttribute($order, $salesforceId)
+    {
+        $resource = $order->getResource();
+        $order->setData(self::SALESFORCE_ORDER_ATTRIBUTE_CODE, $salesforceId);
+        $resource->saveAttribute($order, self::SALESFORCE_ORDER_ATTRIBUTE_CODE);
     }
 }

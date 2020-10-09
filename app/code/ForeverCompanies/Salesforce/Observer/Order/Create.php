@@ -45,7 +45,7 @@ class Create extends SyncObserver
     }
 
     /**
-     * Admin/Customer edit information address
+     * Admin/Cutomer edit information address
      *
      * @param Observer $observer
      */

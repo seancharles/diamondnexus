@@ -28,21 +28,21 @@ class Report extends AbstractModel
      *
      * @var \Magento\Framework\Stdlib\DateTime\DateTime
      */
-    protected $_coreDate;
+    protected $coreDate;
 
     /**
      * Session Admin
      *
      * @var \Magento\Backend\Model\Auth\Session
      */
-    protected $_backendAuthSession;
+    protected $backendAuthSession;
 
     /**
      * Session Customer
      *
      * @var \Magento\Customer\Model\Session
      */
-    protected $_customerSession;
+    protected $customerSession;
 
     /**
      * @param Context $context
@@ -59,9 +59,9 @@ class Report extends AbstractModel
         CustomerSession $customerSession
     ) {
 
-        $this->_coreDate = $coreDate;
-        $this->_backendAuthSession = $backendAuthSession;
-        $this->_customerSession = $customerSession;
+        $this->coreDate = $coreDate;
+        $this->backendAuthSession = $backendAuthSession;
+        $this->customerSession = $customerSession;
         parent::__construct($context, $registry);
     }
 
@@ -85,9 +85,9 @@ class Report extends AbstractModel
      */
     public function saveReport($id, $action, $table, $status = 1, $message = null, $mid = null)
     {
-        $datetime = $this->_coreDate->gmtDate();
-        $admin_user = $this->_backendAuthSession->getUser();
-        $current_user = $this->_customerSession->getCustomer();
+        $datetime = $this->coreDate->gmtDate();
+        $admin_user = $this->backendAuthSession->getUser();
+        $current_user = $this->customerSession->getCustomer();
         if ($admin_user){
             $name = $admin_user->getName();
             $email = $admin_user->getEmail();
