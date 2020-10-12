@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="DiamondNexus\Multipay\Logger\Handler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="DiamondNexus\Multipay\Logger\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">ForeverCompaniesLog</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">DiamondNexus\Multipay\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Payment\Model\MethodList">
+        <plugin name="methodlist" type="DiamondNexus\Multipay\Plugin\Model\Method\Available" sortOrder="1"/>
+    </type>
+    <type name="Magento\Sales\Api\OrderRepositoryInterface">
+        <plugin name="save_order_multipay" type="DiamondNexus\Multipay\Plugin\Model\OrderSave"/>
+    </type>
+    <type name="Magento\Sales\Block\Adminhtml\Order\View">
+        <plugin disabled="false"
+                name="DiamondNexus_Multipay_Plugin_Block_Adminhtml_Order_View" sortOrder="10"
+                type="DiamondNexus\Multipay\Plugin\Block\Adminhtml\Order\View"/>
+    </type>
+</config>

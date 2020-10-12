@@ -28,7 +28,8 @@ Modified by Prog Leasing, LLC. Copyright (c) 2018, Prog Leasing, LLC.
         <observer
                 instance="Progressive\PayWithProgressive\Observer\PaymentMethodAvailable"
                 shared="false"
-                name="Progressive_PayWithProgressive"/>
+                name="Progressive_PayWithProgressive"
+        disabled="false"/>
     </event>
     <event name="customer_logout">
         <observer

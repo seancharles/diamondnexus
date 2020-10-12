@@ -106,6 +106,8 @@
     <preference for="Magento\Bundle\Model\LinkManagement" type="ForeverCompanies\DynamicBundle\Model\LinkManagement" />
     <!-- @see \ForeverCompanies\CustomAttributes\Plugin\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePanel -->
     <!--<type name="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePanel">
+
+    <type name="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePanel">
         <plugin name="bundle_option_sku" type="ForeverCompanies\DynamicBundle\Plugins\Catalog\Ui\DataProvider\Product\Form\Modifier\BundlePanel" sortOrder="1000"/>
     </type>-->
 
