@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source;
 
+use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Option;
 use Magento\Catalog\Model\Product\Option\Value;
 use Magento\Eav\Model\Entity\Attribute\Source\SpecificSourceInterface;
@@ -20,6 +21,7 @@ abstract class AbstractEav extends Table implements SpecificSourceInterface
      */
     public function getOptionsFor(CustomAttributesDataInterface $entity): array
     {
+        /** @var Product $entity */
         $options = $this->getAllOptions(true, true);
         /** @var Option $option */
         $entityOptions = $entity->getOptions();
@@ -32,6 +34,12 @@ abstract class AbstractEav extends Table implements SpecificSourceInterface
         return $options;
     }
 
+    /**
+     * @param array $values
+     * @param array $options
+     * @param string $eq
+     * @return array
+     */
     protected function unsetOptions(array $values, array $options, string $eq)
     {
         /** @var Value $value */
@@ -41,6 +49,12 @@ abstract class AbstractEav extends Table implements SpecificSourceInterface
         return $options;
     }
 
+    /**
+     * @param string $title
+     * @param array $options
+     * @param string $eq
+     * @return array
+     */
     private function checkOptionAndValue(string $title, array $options, string $eq)
     {
         foreach ($options as $key => $option) {

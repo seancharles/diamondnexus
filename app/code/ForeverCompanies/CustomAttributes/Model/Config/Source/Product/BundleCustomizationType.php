@@ -10,6 +10,7 @@ class BundleCustomizationType extends AbstractCustomizationType
     const OPTIONS = [
         ' ' => '',
         'Matching Band' => 'matching_band',
+        'Matching Bands' => 'matching_band',
         'Center Stone Size' => 'center_stone_size'
     ];
 }

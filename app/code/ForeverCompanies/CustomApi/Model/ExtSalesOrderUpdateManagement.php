@@ -46,7 +46,7 @@ class ExtSalesOrderUpdateManagement implements ExtSalesOrderUpdateManagementInte
         $connection = $this->resourceModel->getConnection();
         $mainTable = $this->resourceModel->getMainTable();
         $select = $connection->select()
-            ->from($mainTable, ['order_id', 'updated_at', 'updated_fields', 'flag_fishbowl_update'])
+            ->from($mainTable, ['entity_id', 'order_id', 'updated_at', 'updated_fields', 'flag_fishbowl_update'])
             ->where('flag_fishbowl_update = ?', $flag);
         return $connection->fetchAll($select);
     }

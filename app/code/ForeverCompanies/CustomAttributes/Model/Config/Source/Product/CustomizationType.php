@@ -18,6 +18,7 @@ class CustomizationType extends AbstractCustomizationType
         'Total Carat Weight' => 'tcw',
         'Stone Color' => 'color',
         'Stone Shape' => 'cut',
-        'Shape' => 'shape'
+        'Shape' => 'shape',
+        'Center Stone Cut' => 'shape',
     ];
 }

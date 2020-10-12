@@ -330,6 +330,10 @@ class TransformData extends AbstractHelper
             if ($options !== null) {
                 foreach ($options as &$option) {
                     $option['customization_type'] = $this->setCustomizationTypeToOption($option->getTitle());
+                    if ($option->getTitle() == 'Shape') {
+                        var_dump($option);
+                        exit('AAAAAAAAAAAAAAAAAAA');
+                    }
                 }
                 $product->setOptions($options);
             }
@@ -488,7 +492,6 @@ class TransformData extends AbstractHelper
      */
     protected function addVideoToProduct($videoUrl, $product, $videoProvider = '')
     {
-        /** TODO: all of that functions */
         $updiacam = strpos($videoUrl, 'up.diacam360');
         if ($updiacam) {
             throw new StateException(__('Cannot save video from up.diacam360 for product'));
@@ -530,7 +533,6 @@ class TransformData extends AbstractHelper
      */
     protected function convertConfigToBundle(Product $product)
     {
-        /** TODO: Transform all cross-sell products before! */
         $this->transformIncludedProductsFirst($product->getId());
         $product->setData('price_type', TierPriceInterface::PRICE_TYPE_FIXED);
         $this->transformOptionsToBundle($product);
@@ -557,6 +559,10 @@ class TransformData extends AbstractHelper
         return $product;
     }
 
+    /**
+     * @param $title
+     * @return string
+     */
     protected function setCustomizationTypeToOption($title)
     {
         switch ($title) {
