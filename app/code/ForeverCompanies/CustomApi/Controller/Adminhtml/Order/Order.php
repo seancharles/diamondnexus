@@ -34,6 +34,21 @@ class Order extends AdminOrder implements HttpPostActionInterface
      */
     protected $shipperResourceModel;
 
+    /**
+     * Order constructor.
+     * @param Context $context
+     * @param Registry $coreRegistry
+     * @param FileFactory $fileFactory
+     * @param InlineInterface $translateInline
+     * @param PageFactory $resultPageFactory
+     * @param JsonFactory $resultJsonFactory
+     * @param LayoutFactory $resultLayoutFactory
+     * @param RawFactory $resultRawFactory
+     * @param OrderManagementInterface $orderManagement
+     * @param OrderRepositoryInterface $orderRepository
+     * @param LoggerInterface $logger
+     * @param GridDetail $shipperResourceModel
+     */
     public function __construct(
         Action\Context $context,
         Registry $coreRegistry,

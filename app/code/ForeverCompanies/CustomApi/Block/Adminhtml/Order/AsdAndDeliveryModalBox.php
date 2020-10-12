@@ -10,7 +10,9 @@ use Magento\Backend\Block\Template\Context;
  */
 class AsdAndDeliveryModalBox extends \Magento\Backend\Block\Template
 {
-
+    /**
+     * @return string
+     */
     public function getFormUrl()
     {
         $orderId = false;

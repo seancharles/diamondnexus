@@ -1,24 +1,25 @@
 <?php
+
 use ForeverCompanies\CustomApi\Block\Adminhtml\Order\AsdAndDeliveryModalBox;
 
 /** @var $block AsdAndDeliveryModalBox */
 ?>
 <div id="popup-modal" style="display: none">
 
-    <form action="<?= $block->escapeUrl($block->getFormUrl())?>" method="post"
+    <form action="<?= $block->escapeUrl($block->getFormUrl()) ?>" method="post"
           id="order-view-add-warranty-form">
         Dispatch Date <input
             name="dispatch_date"
             type="date"
             data-date-format="Month dd yyyy"
-            min="<?=$block->escapeHtml(date('Y-m-d'))?>"
-            value="<?=$block->escapeHtml($block->getData('order')->getExtensionAttributes()->getAnticipatedShipdate()) ?>"
+            min="<?= $block->escapeHtml(date('Y-m-d')) ?>"
+            value="<?= $block->escapeHtml($block->getData('order')->getExtensionAttributes()->getAnticipatedShipdate()) ?>"
         >
         Delivery Date <input
             name="delivery_date"
             type="date"
-            min="<?=$block->escapeHtml(date('Y-m-d'))?>"
-            value="<?=$block->escapeHtml($block->getData('order')->getExtensionAttributes()->getDeliveryDate())?>"
+            min="<?= $block->escapeHtml(date('Y-m-d')) ?>"
+            value="<?= $block->escapeHtml($block->getData('order')->getExtensionAttributes()->getDeliveryDate()) ?>"
         >
 
         <input type="button" value="Submit" id="order-view-add-warranty">
@@ -46,12 +47,12 @@ use ForeverCompanies\CustomApi\Block\Adminhtml\Order\AsdAndDeliveryModalBox;
                     class: '',
                     click: function () {
                         this.closeModal();
-                     }
+                    }
                 }]
             };
 
             var popup = modal(options, $('#popup-modal'));
-            $("#sendordersms").click(function() {
+            $("#sendordersms").click(function () {
                 $("#popup-modal").modal('openModal');
             });
 
@@ -66,6 +67,5 @@ use ForeverCompanies\CustomApi\Block\Adminhtml\Order\AsdAndDeliveryModalBox;
             });
 
         }
-
     );
 </script>

@@ -23,6 +23,11 @@ class ExtSalesOrderUpdateManagement implements ExtSalesOrderUpdateManagementInte
      */
     protected $helper;
 
+    /**
+     * ExtSalesOrderUpdateManagement constructor.
+     * @param ResourceModel\ExtSalesOrderUpdate $resourceModel
+     * @param ExtOrder $helper
+     */
     public function __construct(
         \ForeverCompanies\CustomApi\Model\ResourceModel\ExtSalesOrderUpdate $resourceModel,
         ExtOrder $helper

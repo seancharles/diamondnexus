@@ -28,6 +28,11 @@ class View
         return [$layout];
     }
 
+    /**
+     * @param \Magento\Sales\Block\Adminhtml\Order\View $subject
+     * @param $result
+     * @return false|string
+     */
     public function afterToHtml(
         \Magento\Sales\Block\Adminhtml\Order\View $subject,
         $result
@@ -41,7 +46,7 @@ class View
                 );
                 $customBlockHtml->setData('order', $subject->getOrder())
                     ->setTemplate('ForeverCompanies_CustomApi::order/modalbox.phtml');
-                return $result.$customBlockHtml->toHtml();
+                return $result . $customBlockHtml->toHtml();
             } catch (LocalizedException $e) {
                 return false;
             }

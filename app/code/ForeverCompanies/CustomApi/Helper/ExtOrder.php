@@ -10,7 +10,6 @@ namespace ForeverCompanies\CustomApi\Helper;
 use ForeverCompanies\CustomApi\Api\Data\ExtSalesOrderUpdateInterface;
 use ForeverCompanies\CustomApi\Model\ExtSalesOrderUpdateFactory;
 use ForeverCompanies\CustomApi\Model\ResourceModel\ExtSalesOrderUpdate as ExtResource;
-use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Exception\AlreadyExistsException;
@@ -28,6 +27,12 @@ class ExtOrder extends AbstractHelper
      */
     protected $extResource;
 
+    /**
+     * ExtOrder constructor.
+     * @param Context $context
+     * @param ExtSalesOrderUpdateFactory $extSalesOrderUpdateFactory
+     * @param ExtResource $extResource
+     */
     public function __construct(
         Context $context,
         ExtSalesOrderUpdateFactory $extSalesOrderUpdateFactory,
@@ -76,7 +81,7 @@ class ExtOrder extends AbstractHelper
                 ->limit(1);
             $row = $connection->fetchRow($select);
             if (!$row) {
-                return 'Can\'t find ext sales row with order_id = ' .$orderId;
+                return 'Can\'t find ext sales row with order_id = ' . $orderId;
             }
             $connection->update(
                 $mainTable,
