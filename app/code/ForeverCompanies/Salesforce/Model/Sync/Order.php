@@ -26,6 +26,11 @@ class Order extends Connector
     protected $orderFactory;
 
     /**
+     * @var Job
+     */
+    protected $job;
+
+    /**
      * @var array
      */
     protected $existedOrders = [];
@@ -41,11 +46,16 @@ class Order extends Connector
     protected $dataGetter;
 
     /**
+     * @var Data
+     */
+    protected $data;
+    /**
      * Order constructor.
      * @param ScopeConfigInterface $scopeConfig
      * @param ResourceModelConfig $resourceConfig
      * @param ReportFactory $reportFactory
      * @param Data $data
+     * @param Job $job
      * @param OrderFactory $orderFactory
      * @param DataGetter $dataGetter
      * @param QueueFactory $queueFactory
@@ -57,16 +67,253 @@ class Order extends Connector
         ResourceModelConfig $resourceConfig,
         ReportFactory $reportFactory,
         Data $data,
-        OrderFactory $orderFactory,
-        DataGetter $dataGetter,
+        Job $job,
         QueueFactory $queueFactory,
-        RequestLogFactory $requestLogFactory
+        RequestLogFactory $requestLogFactory,
+        OrderFactory $orderFactory,
+        DataGetter $dataGetter
     )
     {
-        parent::__construct($scopeConfig, $resourceConfig,
-            $reportFactory, $queueFactory, $requestLogFactory);
+        parent::__construct($scopeConfig,
+            $resourceConfig,
+            $reportFactory,
+            $queueFactory,
+            $requestLogFactory);
         $this->orderFactory  = $orderFactory;
+        $this->data   = $data;
+        $this->job = $job;
         $this->dataGetter = $dataGetter;
+    }
+
+    /**
+     * Create new a Order in Salesforce
+     *
+     * @param $increment_id
+     * @return string|void
+     */
+    public function sync($increment_id)
+    {
+        $model = $this->orderFactory->create()->loadByIncrementId($increment_id);
+        $customerId = $model->getCustomerId();
+        $date =  date('Y-m-d', strtotime($model->getCreatedAt()));
+        //$email = $model->getCustomerEmail();
+        if ($model->getData(self::SALESFORCE_ORDER_ATTRIBUTE_CODE)){
+            return '';
+        }
+        if ($customerId){
+           // $accountId = $this->account->sync($customerId);
+           // $this->contact->sync($customerId);
+        } else {
+            //$accountId = $this->account->syncByEmail($email);
+            // $data      = [
+            //     'Email'     => $email,
+            //     'FirstName' => $model->getCustomerFirstname(),
+            //      'LastName'  => $model->getCustomerLastname(),
+            //  ];
+            //  $this->contact->syncByEmail($data);
+            $params = $this->data->getOrder($model, $this->_type);
+          //  $pricebookId = $this->searchRecords('Pricebook2','Name','Standard Price Book');
+            $params += [
+               // 'AccountId' => $accountId,
+                'EffectiveDate' => $date,
+                'Status' => 'Draft',
+                //'Pricebook2Id' => $pricebookId,
+            ];
+             // Create new Order
+            $orderId = $this->createRecords($this->_type, $params, $model->getIncrementId());
+            $this->saveAttribute($model, $orderId);
+
+            // Add new record to OrderItem need:
+            foreach ($model->getAllItems() as $item){
+                $productId = $item->getProductId();
+                $qty = $item->getQtyOrdered();
+                $price  = $item->getPrice() - $item->getDiscountAmount() / $qty;
+                if ($price > 0){
+                    //$pricebookEntryId = $this->searchRecords('PricebookEntry','Product2Id', $productId);
+                    $output = [
+                        //'PricebookEntryId' => $pricebookEntryId,
+                        'OrderId'          => $orderId,
+                        'Quantity'         => $qty,
+                        'UnitPrice'        => $price,
+                    ];
+                    $this->createRecords('OrderItem', $output, $productId);
+                }
+            }
+
+            if ($taxInfo = $this->getTaxItemInfo($model, $orderId)){
+                $this->createRecords('OrderItem', $taxInfo, 'TAX');
+            }
+            if ($shippingInfo = $this->getShippingItemInfo($model, $orderId)){
+                $this->createRecords('OrderItem', $shippingInfo, 'SHIPPING');
+            }
+
+            return $orderId;
+        }
+    }
+
+    public function syncAllOrders()
+    {
+        try {
+          $orders = $this->orderFactory->create()->getCollection();
+          $lastOrderId = $orders->getLastItem()->getId();
+          $count = 0;
+          $response = [];
+            /** @var \Magento\Sales\Model\Order $order */
+          foreach ($orders as $order){
+                $this->addRecord($order->getIncrementId());
+                $count++;
+                if ($count >= 1000 || $order->getId() == $lastOrderId){
+                    $response += $this->syncQueue();
+                }
+          }
+          return $response;
+
+        } catch (\Exception $e) {
+            \Magento\Framework\App\ObjectManager::getInstance()->get(\Psr\Log\LoggerInterface::class)->debug($e->getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * @param string $orderIncrementId
+     */
+    public function addRecord($orderIncrementId)
+    {
+        $order = $this->orderFactory->create()->loadByIncrementId($orderIncrementId);
+        if (!$order->getData(self::SALESFORCE_ORDER_ATTRIBUTE_CODE)){
+            $this->addToCreateProductQueue($orderIncrementId);
+        }
+    }
+
+    public function syncQueue()
+    {
+        $response = $this->createOrders();
+        $this->saveAttributes($this->createOrderIds, $response);
+        $response += $this->createOrderItems();
+        $this->unsetCreateProductQueue();
+        return $response;
+    }
+
+    protected function addToCreateProductQueue($orderIncrementId)
+    {
+        $this->createOrderIds[] = ['mid' => $orderIncrementId];
+    }
+
+    protected function unsetCreateProductQueue()
+    {
+        $this->createOrderIds = [];
+    }
+
+    protected function createOrders()
+    {
+        $params = [];
+        $pricebookId = $this->searchRecords('Pricebook2', 'Name', 'Standard Price Book');
+        /** @var \Magento\Sales\Model\Order $order */
+        foreach ($this->createOrderIds as $id){
+            $order = $this->orderFactory->create()->loadByIncrementId($id['mid']);
+            //$customer = $order->getCustomer();
+            $date = date('Y-m-d', strtotime($order->getCreatedAt()));
+           // $email = $order->getCustomerEmail();
+
+            $info = $this->data->getOrder($order, $this->_type);
+            $info += [
+                'EffectiveDate' => $date,
+                'Status' => 'Draft',
+                'Pricebook2Id' => $pricebookId
+                //'AccountId' => $accountId
+            ];
+            $params[] = $info;
+        }
+        $response = $this->job->sendBatchRequest('insert', $this->_type,json_encode($params));
+        $this->saveReports('create', $this->_type, $response, $this->createOrderIds);
+        return $response;
+    }
+
+    protected function createOrderItems()
+    {
+        $params = [];
+        $itemIds = [];
+        foreach ($this->createOrderIds as $id){
+            $order = $this->orderFactory->create()->loadByIncrementId($id['mid']);
+            $orderId = $order->getData(self::SALESFORCE_ORDER_ATTRIBUTE_CODE);
+            foreach ($order->getAllItems() as $item){
+                $qty  = $item->getQtyOrdered();
+                $price = $item->getPrice() - $item->getDiscountAmount() / $qty;
+              //  $pricebookEntryId = $item->getProduct()->getData(Product::SALESFORCE_PRICEBOOKENTRY_ATTRIBUTE_CODE);
+                if ($price > 0){
+                    $productId = $item->getProduct()->getData(Product::SALESFORCE_PRODUCT_ATTRIBUTE_CODE);
+                   // if (!$productId){
+                        //$productId = $this->_product->sync($item->getProductId());
+                   // }
+                    if ($productId && $orderId){
+                        //if (!$pricebookEntryId){
+                           // $pricebookEntryId = $this->searchRecords('PricebookEntry', 'Product2Id', $productId);
+                       // }
+                        $info = [
+                           // 'PricebookEntryId' => $pricebookEntryId,
+                            'OrderId' => $orderId,
+                            'Quantity' => $qty,
+                            'UnitPrice' => $price,
+                        ];
+                        $params[] = $info;
+                        $itemIds[] = ['mid' => $item->getProductId()];
+                    }
+                }
+            }
+            if ($taxInfo = $this->getTaxItemInfo($order, $orderId)){
+                $params[] = $taxInfo;
+                $itemIds[] = ['mid' => 'TAX'];
+            }
+            if ($shippingInfo = $this->getShippingItemInfo($order, $orderId)){
+                $params[] = $shippingInfo;
+                $itemIds[] = ['mid' => 'SHIPPING'];
+            }
+        }
+        $response = $this->job->sendBatchRequest('insert', 'OrderItem', json_encode($params));
+        $this->saveReports('create','OrderItem', $response, $itemIds);
+        return $response;
+    }
+
+    /**
+     * @param \Magento\Sales\Model\Order $order
+     * @param string $orderId
+     * @return array|null
+     */
+    protected function getTaxItemInfo($order, $orderId)
+    {
+        $taxAmount = $order->getTaxAmount();
+        if ($taxAmount >0) {
+            $info = [
+                //'PricebookEntryId' => $this->_scopeConfig->getValue(
+                //    XML_TAX_PRICEBOOKENTRY_ID_PATH),
+                'OrderId' => $orderId,
+                'Quantity' => 1,
+                'UnitPrice' => $taxAmount,
+            ];
+            return $info;
+        }
+        return null;
+    }
+
+    /**
+     * @param \Magento\Sales\Model\Order $order
+     * @param string $orderId
+     * @return array|null
+     */
+    protected function getShippingItemInfo($order, $orderId)
+    {
+        $shippingAmount = $order->getShippingAmount();
+        if ($shippingAmount > 0){
+            $info = [
+                //'PricebookEntryId' => $this->_scopeConfig->getValue(
+                //    Product::XML_SHIPPING_PRICEBOOKENTRY_ID_PATH),
+                'OrderId' => $orderId,
+                'Quantity' => 1,
+                'UnitPrice' => $shippingAmount,
+            ];
+            return $info;
+        }
+        return null;
     }
 
     /**

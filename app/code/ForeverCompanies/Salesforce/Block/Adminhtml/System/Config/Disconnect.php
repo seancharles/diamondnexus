@@ -61,6 +61,26 @@ class Disconnect extends Field
     }
 
     /**
-     * Get the
+     * Get the button and scripts contents
+     *
+     * @param  \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @return string
      */
+    protected function _getElementHtml(AbstractElement $element)
+    {
+        $originalData = $element->getOriginalData();
+        $buttonLabel = !empty($originalData['button_label']) ?
+            $originalData['button_label'] : $this->_authButtonLabel;
+        $this->addData(
+            [
+                'button_label' => -_($buttonLabel),
+                'html_id' => $element->getHtmlId(),
+                'ajax_url' => $this->_urlBuilder->getUrl(
+                    'salesforce/system_config_getauth/getAuth'
+                ),
+            ]
+        );
+
+        return $this->_toHtml();
+    }
 }

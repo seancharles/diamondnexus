@@ -7,8 +7,8 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Controller\Adminhtml\Map;
 
-
 use ForeverCompanies\Salesforce\Controller\Adminhtml\Map as MapController;
+use Magento\Backend\App\Action\Context;
 use Magento\Framework\Registry;
 use ForeverCompanies\Salesforce\Model\MapFactory;
 use ForeverCompanies\Salesforce\Model\ResourceModel\Map\CollectionFactory as MapCollectionFactory;
@@ -16,15 +16,16 @@ use Magento\Framework\View\Result\PageFactory;
 use Magento\Backend\Model\View\Result\ForwardFactory;
 
 /**
- * Class Order
+ * Class NewAction: Create new a mapping
+ *
  * @package ForeverCompanies\Salesforce\Controller\Adminhtml\Map
  */
-class Edit extends MapController
+class NewAction extends MapController
 {
     /**
-     * @var \Magento\Framework\View\Result\PageFactory
+     * @var \Magento\Backend\Model\View\Result\Forward
      */
-    protected $resultPageFactory;
+    protected $resultForwardFactory;
 
     /**
      * @param Context              $context
@@ -37,47 +38,25 @@ class Edit extends MapController
     public function __construct(
         Context $context,
         Registry $coreRegistry,
-        MapFactory $mapFactory,
+        MapFactory  $mapFactory,
         PageFactory $resultPageFactory,
         ForwardFactory $resultForwardFactory,
         MapCollectionFactory $collectionFactory
     ) {
-        $this->coreRegistry = $coreRegistry;
         $this->resultForwardFactory = $resultForwardFactory;
         parent::__construct($context, $coreRegistry, $resultPageFactory, $mapFactory, $collectionFactory);
     }
 
+
     /**
-     * Edit Mapping
+     * Forward to edit controller
      *
-     * @return \Magento\Backend\Model\View\Result\Page|\Magento\Backend\Model\View\Result\Redirect
-     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @return \Magento\Backend\Model\View\Result\Forward
      */
     public function execute()
     {
-        $id = $this->getRequest()->getParam('id');
-        $model = $this->mapFactory->create();
-        if ($id){
-            $model->load($id);
-            if (!$model->getId()){
-                $this->messageManager->addError(__('This mapping no longer exists.'));
-            }
-            $resultRedirect = $this->resultPageFactory->create();
-            return $resultRedirect->setPath('*/*/');
-        }
-
-
-        $data = $this->_objectManager->get('Magento\Backend\Model\Session')->getFormData(true);
-        if (!empty($data)){
-            $model->setData($data);
-        }
-
-        $this->coreRegistry->register('mapping', $model);
-
-        /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
-        $resultPage = $this->_initAction();
-        $resultPage->getConfig()->getTitle()
-            ->prepend($model->getId() ? __('Edit Mapping %1', $model->getType()) : __('New Mapping'));
-        return $resultPage;
+        /** @var \Magento\Backend\Model\View\Result\Forward $resultForward  */
+        $resultForward = $this->resultForwardFactory->create();
+        return $resultForward->forward('edit');
     }
 }

@@ -67,7 +67,7 @@ abstract class Map extends Action
         MapFactory  $mapFactory,
         Collection $collectionFactory
     ) {
-        $this->context           = $context;
+        $this->_context           = $context;
         $this->coreRegistry       = $coreRegistry;
         $this->mapFactory        = $mapFactory;
         $this->collectionFactory = $collectionFactory;
