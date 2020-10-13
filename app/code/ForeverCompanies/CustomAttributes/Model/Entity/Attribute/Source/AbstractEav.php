@@ -24,13 +24,13 @@ abstract class AbstractEav extends Table implements SpecificSourceInterface
         /** @var Product $entity */
         $options = $this->getAllOptions(true, true);
         /** @var Option $option */
-        $entityOptions = $entity->getOptions();
+        /*$entityOptions = $entity->getOptions();
         foreach ($entityOptions as $option) {
             if ($option->getData('customization_type') == $this->getAttribute()->getAttributeCode()) {
                 $options = $this->unsetOptions($option->getValues(), $options, $this->eq);
                 return $options;
             }
-        }
+        }*/
         return $options;
     }
 

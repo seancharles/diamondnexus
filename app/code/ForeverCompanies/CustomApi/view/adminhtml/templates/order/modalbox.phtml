@@ -4,7 +4,7 @@ use ForeverCompanies\CustomApi\Block\Adminhtml\Order\AsdAndDeliveryModalBox;
 
 /** @var $block AsdAndDeliveryModalBox */
 ?>
-<div id="popup-modal" style="display: none">
+<div id="popup-modal">
 
     <form action="<?= $block->escapeUrl($block->getFormUrl()) ?>" method="post"
           id="order-view-add-warranty-form">
@@ -34,7 +34,7 @@ use ForeverCompanies\CustomApi\Block\Adminhtml\Order\AsdAndDeliveryModalBox;
         ],
         function (
             $,
-            modal
+            modalA
         ) {
             var options = {
                 type: 'popup',
@@ -51,7 +51,7 @@ use ForeverCompanies\CustomApi\Block\Adminhtml\Order\AsdAndDeliveryModalBox;
                 }]
             };
 
-            var popup = modal(options, $('#popup-modal'));
+            var popup = modalA(options, $('#popup-modal'));
             $("#sendordersms").click(function () {
                 $("#popup-modal").modal('openModal');
             });

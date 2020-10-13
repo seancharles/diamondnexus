@@ -23,6 +23,7 @@ class Index extends \Magento\Framework\App\Action\Action
     protected $bundleIdentity;
     protected $bundleSelectionProductIds;
     protected $bundleDynamicOptionIds;
+    protected $test;
 
     public function __construct(
         EventManager $eventManager,
@@ -36,7 +37,8 @@ class Index extends \Magento\Framework\App\Action\Action
         \Magento\Catalog\Model\ProductFactory $productloader,
         \Magento\Quote\Model\ResourceModel\Quote\Item\Option\CollectionFactory $optioncollection,
         \Magento\Quote\Model\Quote\Item\Option $itemoption,
-        \ShipperHQ\Shipper\Helper\LogAssist $shipperLogger
+        \ShipperHQ\Shipper\Helper\LogAssist $shipperLogger,
+        \ForeverCompanies\CustomAttributes\Helper\TransformData $test
     ) {
         parent::__construct($context);
         $this->eventManager = $eventManager;
@@ -50,6 +52,7 @@ class Index extends \Magento\Framework\App\Action\Action
         $this->optioncollection = $optioncollection;
         $this->itemoption = $itemoption;
         $this->shipperLogger = $shipperLogger;
+        $this->test = $test;
     }
 
 
@@ -60,7 +63,7 @@ class Index extends \Magento\Framework\App\Action\Action
     {
         try {
             $post = $this->getRequest()->getParams();
-
+            $this->test->transformProductSelect(12707);
             $bundleId = $post['product'];
             $dynamicId = $post['dynamic_bundled_item_id'];
             $options = $post['options'];

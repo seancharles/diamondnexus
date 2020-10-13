@@ -34,7 +34,7 @@ class View
             try {
                 $customBlockHtml = $subject->getLayout()->createBlock(
                     \DiamondNexus\Multipay\Block\Adminhtml\Order\AddPaymentModalBox::class,
-                    $subject->getNameInLayout() . '_modal_box'
+                    $subject->getNameInLayout() . '_modal_box_payment'
                 )->setOrder($subject->getOrder())
                     ->setTemplate('DiamondNexus_Multipay::order/add_payment_modalbox.phtml')
                     ->toHtml();

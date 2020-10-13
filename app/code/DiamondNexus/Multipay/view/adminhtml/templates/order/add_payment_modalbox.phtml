@@ -8,6 +8,49 @@ use DiamondNexus\Multipay\Block\Adminhtml\Order\AddPaymentModalBox;
 if ($block->isMultipay()) {
     $code = 'multipay';
     ?>
+    <script>
+        require(
+            [
+                'jquery',
+                'Magento_Ui/js/modal/modal'
+            ],
+            function (
+                $,
+                modal
+            ) {
+                var options_payment = {
+                    type: 'popup',
+                    responsive: true,
+                    innerScroll: true,
+                    title: 'Add payment',
+                    modalClass: 'custom-modal',
+                    buttons: [{
+                        text: $.mage.__('Close'),
+                        class: '',
+                        click: function () {
+                            this.closeModal();
+                        }
+                    }]
+                };
+                var popup_payment = modal(options_payment, $('#popup-modal-add-payment'));
+                $("#add_payment_button").click(function() {
+                    $("#popup-modal-add-payment").modal('openModal');
+                });
+
+                $('#order-view-add-warranty-add-payment').click(function () {
+                    $('#order-view-add-warranty-add-payment-form').append($('<input>', {
+                        'name': 'form_key',
+                        'value': window.FORM_KEY,
+                        'type': 'hidden'
+                    }));
+                    $('#order-view-add-warranty-add-payment-form').submit();
+
+                });
+
+            }
+
+        );
+    </script>
 <style type="text/css">
     .payment-method-options {
         margin-left: 15px !important;
@@ -23,7 +66,7 @@ if ($block->isMultipay()) {
         margin-top: 1.5rem;
     }
 </style>
-<div id="popup-modal-add-payment" style="display: none">
+<div id="popup-modal-add-payment">
 
     <form action="<?= $block->escapeUrl($block->getFormUrl())?>" method="post"
           id="order-view-add-warranty-add-payment-form">
@@ -51,6 +94,13 @@ if ($block->isMultipay()) {
                            name="multipay_payment_method"/>
                     <label class="label" for="multipay_method_quote">
                         <span><?= $block->escapeHtml(__('Quote')) ?></span>
+                    </label>
+                </div>
+                <div class="admin__field-option _required">
+                    <input id="multipay_method_paypal_offline" class="admin__control-radio" value="6" type="radio"
+                           name="multipay_payment_method"/>
+                    <label class="label" for="multipay_method_paypal_offline">
+                        <span><?= $block->escapeHtml(__('Paypal (offline)')) ?></span>
                     </label>
                 </div>
                 <div class="admin__field-option _required">
@@ -121,7 +171,7 @@ if ($block->isMultipay()) {
 
             <!-- credit card info form -->
             <div class="payment-method-options multipay-fieldset">
-                <div class="admin__field _required">
+                <div class="admin__field-control">
                     <label class="label admin__field-label">
                         <span><?= $block->escapeHtml(__('Credit Card Number')) ?></span>
                     </label>
@@ -133,7 +183,7 @@ if ($block->isMultipay()) {
                     </div>
                 </div>
 
-                <div class="admin__field _required">
+                <div class="admin__field-control">
                     <label class="label admin__field-label">
                         <span><?= $block->escapeHtml(__('Expiration Date')) ?></span>
                     </label>
@@ -200,50 +250,5 @@ if ($block->isMultipay()) {
         <input type="button" value="Submit" id="order-view-add-warranty-add-payment">
     </form>
 </div>
-
-<script>
-    require(
-        [
-            'jquery',
-            'Magento_Ui/js/modal/modal'
-        ],
-        function (
-            $,
-            modal
-        ) {
-            var options = {
-                type: 'popup',
-                responsive: true,
-                innerScroll: true,
-                title: 'Add payment',
-                modalClass: 'custom-modal',
-                buttons: [{
-                    text: $.mage.__('Close'),
-                    class: '',
-                    click: function () {
-                        this.closeModal();
-                     }
-                }]
-            };
-
-            var popup = modal(options, $('#popup-modal-add-payment'));
-            $("#add_payment_button").click(function() {
-                $("#popup-modal-add-payment").modal('openModal');
-            });
-
-            $('#order-view-add-warranty-add-payment').click(function () {
-                $('#order-view-add-warranty-add-payment-form').append($('<input>', {
-                    'name': 'form_key',
-                    'value': window.FORM_KEY,
-                    'type': 'hidden'
-                }));
-                $('#order-view-add-warranty-add-payment-form').submit();
-
-            });
-
-        }
-
-    );
-</script>
 <?php } ?>
 

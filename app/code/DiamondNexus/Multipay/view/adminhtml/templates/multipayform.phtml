@@ -37,6 +37,13 @@ $code = 'multipay';
                 </label>
             </div>
             <div class="admin__field-option _required">
+                <input id="multipay_method_paypal_offline" class="admin__control-radio" value="6" type="radio"
+                       name="multipay_payment_method"/>
+                <label class="label" for="multipay_method_paypal_offline">
+                    <span><?= $block->escapeHtml(__('Paypal (offline)')) ?></span>
+                </label>
+            </div>
+            <div class="admin__field-option _required">
                 <input id="multipay_method_pl" class="admin__control-radio" value="7" type="radio"
                        name="payment[multipay_payment_method]"/>
                 <label class="admin__field-label" for="multipay_method_pl">
@@ -105,7 +112,7 @@ $code = 'multipay';
 
         <!-- credit card info form -->
         <div class="payment-method-options multipay-fieldset">
-            <div class="admin__field _required">
+            <div class="admin__field-control">
                 <label class="label admin__field-label">
                     <span><?= $block->escapeHtml(__('Credit Card Number')) ?></span>
                 </label>
@@ -118,7 +125,7 @@ $code = 'multipay';
                 </div>
             </div>
 
-            <div class="admin__field _required">
+            <div class="admin__field-control">
                 <label class="label admin__field-label">
                     <span><?= $block->escapeHtml(__('Expiration Date')) ?></span>
                 </label>

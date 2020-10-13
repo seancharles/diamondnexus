@@ -25,6 +25,7 @@ use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Gallery\GalleryManagement;
 use Magento\Catalog\Model\Product\Option;
+use Magento\Catalog\Model\Product\Option\Value;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\CatalogInventory\Model\Stock\Item;
@@ -260,12 +261,65 @@ class TransformData extends AbstractHelper
         return $this->getProductCollection($table, $attr, $where);
     }
 
+    /**
+     * @return false|Collection
+     */
     public function getProductsForMediaTransformCollection()
     {
         $table = 'catalog_product_entity_int';
         $attr = 'is_media_transformed';
         $where = 'is null';
         return $this->getProductCollection($table, $attr, $where);
+    }
+
+    /**
+     * @param int $orderId
+     */
+    public function transformProductSelect(int $orderId)
+    {
+        try {
+            $entity = $this->productRepository->getById($orderId);
+            /** @var Option $option */
+            $entityOptions = $entity->getOptions();
+            foreach ($entityOptions as $option) {
+                $attributeCode = $option->getData('customization_type');
+                $entity->unlockAttribute($attributeCode);
+                $data = [];
+                $eav = $this->eav->getAttribute(Product::ENTITY, $attributeCode);
+                foreach ($option->getValues() as $value) {
+                    $data[] = $this->getDataForMultiselectable($value, $eav->getOptions());
+                }
+                $entity->setData($attributeCode, implode(',', $data));
+            }
+            $this->productRepository->save($entity);
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->error('Can\'t transform product select for ' . $entity->getId() . ': ' .$e->getMessage());
+        } catch (LocalizedException $e) {
+            $this->_logger->error('Can\'t transform product select for ' . $entity->getId() . ': ' .$e->getMessage());
+        }
+    }
+
+    /**
+     * @param Value $value
+     * @param array $options
+     * @return mixed|string
+     */
+    protected function getDataForMultiselectable(Value $value, array $options)
+    {
+        /** @var \Magento\Eav\Model\Entity\Attribute\Option $option */
+        foreach ($options as $option) {
+            $title = $value->getTitle();
+            if ($title == $option['label']) {
+                return $option['value'];
+            }
+            if ($title == 'Round Brilliant') {
+                $title = 'Round';
+                if ($title == $option['label']) {
+                    return $option['value'];
+                }
+            }
+        }
+        return '';
     }
 
     /**
@@ -330,10 +384,6 @@ class TransformData extends AbstractHelper
             if ($options !== null) {
                 foreach ($options as &$option) {
                     $option['customization_type'] = $this->setCustomizationTypeToOption($option->getTitle());
-                    if ($option->getTitle() == 'Shape') {
-                        var_dump($option);
-                        exit('AAAAAAAAAAAAAAAAAAA');
-                    }
                 }
                 $product->setOptions($options);
             }
@@ -348,11 +398,11 @@ class TransformData extends AbstractHelper
 
             $this->productRepository->save($product);
         } catch (CouldNotSaveException $e) {
-            $this->_logger->error('Error in transform options for ID = ' . $entityId . ': ' .$e->getMessage());
+            $this->_logger->error('Error in transform options for ID = ' . $entityId . ': ' . $e->getMessage());
         } catch (InputException $e) {
-            $this->_logger->error('Error in transform options for ID = ' . $entityId . ': ' .$e->getMessage());
+            $this->_logger->error('Error in transform options for ID = ' . $entityId . ': ' . $e->getMessage());
         } catch (StateException $e) {
-            $this->_logger->error('Error in transform options for ID = ' . $entityId . ': ' .$e->getMessage());
+            $this->_logger->error('Error in transform options for ID = ' . $entityId . ': ' . $e->getMessage());
         }
     }
 

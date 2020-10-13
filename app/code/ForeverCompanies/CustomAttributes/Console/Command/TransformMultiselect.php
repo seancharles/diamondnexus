@@ -58,12 +58,10 @@ class TransformMultiselect extends AbstractCommand
         TransformData $helper,
         ModuleDataSetupInterface $moduleDataSetup,
         EavSetupFactory $eavSetupFactory
-    )
-    {
+    ) {
         parent::__construct($state, $helper);
         $this->moduleDataSetup = $moduleDataSetup;
         $this->eavSetupFactory = $eavSetupFactory;
-
     }
 
     /**
@@ -278,6 +276,13 @@ class TransformMultiselect extends AbstractCommand
             ArrayBackend::class
         );
         $output->writeln('Shape is updated');
+        $output->writeln('Get products for update selectable options ...');
+        $productCollection = $this->helper->getProductsAfterTransformCollection();
+        $output->writeln('Products for update selectable options: ' . $productCollection->count());
+        foreach ($productCollection->getItems() as $item) {
+            $output->writeln('In process product ID = ' . $item->getData('entity_id'));
+            $this->helper->transformProductSelect((int)$item->getData('entity_id'));
+        }
         $this->moduleDataSetup->getConnection()->endSetup();
         $output->writeln('Transformation is complete! Please execute bin/magento indexer:reindex');
     }

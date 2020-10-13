@@ -45,7 +45,7 @@ class CustomerUpdateObserver implements ObserverInterface
         /** @var Customer $customer */
         $customer = $observer->getData('customer_data_object');
         $oldCustomer = $observer->getData('orig_customer_data_object');
-        if ($customer->getEmail() !== $oldCustomer->getEmail()) {
+        if ($oldCustomer !== null && $customer->getEmail() !== $oldCustomer->getEmail()) {
             $this->updateOrderEmailsByCustomerId($customer->getEmail(), (int)$customer->getId());
         }
     }

@@ -45,6 +45,9 @@ class UpdateProductOptionAttributes implements ObserverInterface
             foreach ($optionValues as $optionValue) {
                 $isSetBefore = false;
                 $setValue = $source->getOptionId($optionValue['title']);
+                if ($setValue == null && $optionValue['title'] == 'Round Brilliant') {
+                    $setValue = $source->getOptionId('Round');
+                }
                 if ($value !== null) {
                     foreach ($value as $item) {
                         if ($item == $setValue) {
