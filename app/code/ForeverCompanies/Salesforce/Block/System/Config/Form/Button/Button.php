@@ -9,7 +9,6 @@ namespace ForeverCompanies\Salesforce\Block\System\Config\Form\Button;
 
 use Magento\Config\Block\System\Config\Form\Field as ConfirmFormField;
 use Magento\Backend\Block\Template\Context;
-use Magento\Tests\NamingConvention\true\string;
 
 /**
  * Class AbstractButton
@@ -47,7 +46,7 @@ class Button extends ConfirmFormField
      */
     protected function _prepareLayout()
     {
-        return parent::_prepareLayout();
+        parent::_prepareLayout();
         if (!$this->getTemplate()){
             $this->setTemplate('system/config/button/button.phtml');
         }

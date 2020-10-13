@@ -95,6 +95,55 @@ class GetAuth extends Field
         return $this;
     }
 
+    /**
+     * Set template to itself
+     *
+     * @return \ForeverCompanies\Salesforce\Block\Adminhtml\System\Config\GetAuth
+     */
+    protected function _prepareLayout()
+    {
+        parent::_prepareLayout();
+        if (!$this->getTemplate()) {
+            $this->setTemplate('system/config/getauth.phtml');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Unset some non-related element parameters
+     *
+     * @param  \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @return string
+     */
+    public function render(AbstractElement $element)
+    {
+        $element->unsScope()->unsCanUseWebsiteValue()->unsCanUseDefaultValue();
+        return parent::render($element);
+    }
+
+    /**
+     * Get the button and scripts contents
+     *
+     * @param  \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @return string
+     */
+    protected function _getElementHtml(AbstractElement $element)
+    {
+        $originalData = $element->getOriginalData();
+        $buttonLabel  = !empty($originalData['button_label']) ? $originalData['button_label'] : $this->_authButtonLabel;
+        $this->addData(
+            [
+                'button_label' => __($buttonLabel),
+                'html_id'      => $element->getHtmlId(),
+                'ajax_url'     => $this->_urlBuilder->getUrl('salesforce/system_config_getauth/getAuth'),
+            ]
+        );
+
+        return $this->_toHtml();
+    }
+
+
 
 
 

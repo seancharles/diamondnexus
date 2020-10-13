@@ -19,10 +19,40 @@
              action="salesforce/map/index"
              resource="ForeverCompanies_Salesforce::mapping"/>
 
+        <add id="ForeverCompanies_Salesforce::report"
+             title="View Report" sortOrder="20"
+             parent="ForeverCompanies::integration"
+             action="salesforce/report/index"
+             resource="ForeverCompanies_Salesforce::report"/>
+
+        <add id="ForeverCompanies_Salesforce::refresh"
+             title="Refresh Access Token"
+             module="ForeverCompanies_Salesforce"
+             sortOrder="30"
+             parent="ForeverCompanies_Salesforce::integration"
+             action="salesforce/map/refresh"
+             resource="ForeverCompanies_Salesforce::refresh"/>
+
+        <add id="ForeverCompanies_Salesforce::queue"
+             title="Queue"
+             module="ForeverCompanies_Salesforce"
+             sortOrder="35"
+             parent="ForeverCompanies_Salesforce::integration"
+             action="salesforce/queue/index"
+             resource="ForeverCompanies_Salesforce::queue"/>
+
+        <add id="ForeverCompanies_Salesforce::request"
+             title="Request Daily Report"
+             module="ForeverCompanies_Salesforce"
+             sortOrder="37"
+             parent="ForeverCompanies_Salesforce::integration"
+             action="salesforce/request/index"
+             resource="ForeverCompanies_Salesforce::request"/>
+
         <add id="ForeverCompanies_Salesforce::config_salesforce"
              title="Configuration"
              module="ForeverCompanies_Salesforce" sortOrder="40"
-             parent="ForeverCompanies_Salesforce::intergration"
+             parent="ForeverCompanies_Salesforce::integration"
              action="adminhtml/system_config/edit/section/salesforcecrm/"
              resource="ForeverCompanies_Salesforce::config_salesforce"/>
     </menu>
