@@ -7,15 +7,14 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Controller\Adminhtml\Map;
 
-use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Registry;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Ui\Component\MassAction\Filter;
 use ForeverCompanies\Salesforce\Controller\Adminhtml\Map as MapController;
-use Magento\Framework\View\Result\PageFactory;
+use Magento\Cms\Model\PageFactory;
 use ForeverCompanies\Salesforce\Model\MapFactory;
-use ForeverCompanies\Salesforce\Model\ResourceModel\Map\CollectionFactory
+use ForeverCompanies\Salesforce\Model\ResourceModel\Map\Collection
     as MapCollectionFactory;
 
 

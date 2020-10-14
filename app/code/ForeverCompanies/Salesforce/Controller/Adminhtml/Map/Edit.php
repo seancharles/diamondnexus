@@ -9,10 +9,11 @@ namespace ForeverCompanies\Salesforce\Controller\Adminhtml\Map;
 
 
 use ForeverCompanies\Salesforce\Controller\Adminhtml\Map as MapController;
+use Magento\Backend\App\Action\Context;
 use Magento\Framework\Registry;
 use ForeverCompanies\Salesforce\Model\MapFactory;
-use ForeverCompanies\Salesforce\Model\ResourceModel\Map\CollectionFactory as MapCollectionFactory;
-use Magento\Framework\View\Result\PageFactory;
+use ForeverCompanies\Salesforce\Model\ResourceModel\Map\Collection as MapCollectionFactory;
+use Magento\Cms\Model\PageFactory;
 use Magento\Backend\Model\View\Result\ForwardFactory;
 
 /**

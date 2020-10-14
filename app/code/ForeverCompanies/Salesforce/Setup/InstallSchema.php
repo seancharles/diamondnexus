@@ -73,6 +73,104 @@ class InstallSchema implements InstallSchemaInterface
             'Mapping Table'
         );
         $installer->getConnection()->createTable($table);
+
+        $table = $installer->getConnection()->newTable(
+            $installer->getTable('forevercompanies_salesforce_field')
+
+        )->addColumn(
+            'id',
+            Table::TYPE_INTEGER,
+            null,
+            [
+                'identity' => true,
+                'nullable' => false,
+                'primary' => true,
+            ],
+            'Field ID'
+        )->addColumn(
+            'type',
+            Table::TYPE_TEXT,
+            30,
+            ['nullable' => false],
+            'Type'
+        )->addColumn(
+            'salesforce',
+            Table::TYPE_TEXT,
+            '2M',
+            ['nullable' => false],
+            'Salesforce Field'
+        )->addColumn(
+            'magento',
+            Table::TYPE_TEXT,
+            '30',
+            ['nullable' => false],
+            'Magento Field'
+        );
+        $installer->getConnection()->createTable($table);
+
+        $table = $installer->getConnection()->newTable(
+            $installer->getTable('forevercompanies_salesforce_report')
+        )->addColumn(
+            'id',
+            Table::TYPE_INTEGER,
+            null,
+            [
+                'identity' => true,
+                'nullable' => false,
+                'primary'  => true,
+            ],
+            'Field ID'
+        )->addColumn(
+            'record_id',
+            Table::TYPE_TEXT,
+            50,
+            ['nullable' => true],
+            'Record Id in Salesforce'
+        )->addColumn(
+            'id_magento',
+            Table::TYPE_INTEGER,
+            12,
+            ['nullable' => true],
+            'Id in Magento'
+        )->addColumn(
+            'action',
+            Table::TYPE_TEXT,
+            20,
+            ['nullable' => true],
+            'Action'
+        )->addColumn(
+            'salesforce_table',
+            Table::TYPE_TEXT,
+            20,
+            ['nullable' => true],
+            'Table of Salesforce'
+        )->addColumn(
+            'username',
+            Table::TYPE_TEXT,
+            50,
+            ['nullable' => true],
+            'Name'
+        )->addColumn(
+            'email',
+            Table::TYPE_TEXT,
+            50,
+            ['nullable' => true],
+            'Email'
+        )->addColumn(
+            'datetime',
+            Table::TYPE_DATETIME,
+            null,
+            ['nullable' => true],
+            'Date time'
+        )->addColumn(
+            'status',
+            Table::TYPE_INTEGER,
+            1,
+            ['nullable' => true],
+            'Status'
+        );
+
+        $installer->getConnection()->createTable($table);
         $installer->endSetup();
     }
 

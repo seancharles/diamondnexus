@@ -10,7 +10,6 @@ namespace ForeverCompanies\Salesforce\Controller\Adminhtml;
 use ForeverCompanies\Salesforce\Model\ReportFactory;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\Registry;
 use Magento\Framework\View\LayoutFactory;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Backend\Model\View\Result\ForwardFactory;

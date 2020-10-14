@@ -73,7 +73,7 @@ class Disconnect extends Field
             $originalData['button_label'] : $this->_authButtonLabel;
         $this->addData(
             [
-                'button_label' => -_($buttonLabel),
+                'button_label' => __($buttonLabel),
                 'html_id' => $element->getHtmlId(),
                 'ajax_url' => $this->_urlBuilder->getUrl(
                     'salesforce/system_config_getauth/getAuth'

@@ -7,20 +7,17 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Controller\Adminhtml\Map;
 
-
-use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Registry;
 use ForeverCompanies\Salesforce\Model\MapFactory;
-use Magento\Framework\View\Result\PageFactory;
-use ForeverCompanies\Salesforce\Model\ResourceModel\Map\CollectionFactory as MapCollectionFactory;
-use Magento\Backend\Model\View\Result\RedirectFactory;
+use Magento\Cms\Model\PageFactory;
+use ForeverCompanies\Salesforce\Model\ResourceModel\Map\Collection as MapCollectionFactory;
 use ForeverCompanies\Salesforce\Controller\Adminhtml\Map as MapController;
 use Magento\Framework\Exception\LocalizedException;
 /**
  * Class Save
  *
- * @package Magenest\Salesforce\Controller\Adminhtml\Map
+ * @package ForeverCompanies\Salesforce\Controller\Adminhtml\Map
 */
 class Save extends MapController
 {
