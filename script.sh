@@ -1,5 +1,5 @@
 #!/bin/bash
-curl https://$username:$pass@api.github.com/repos/ForeverCompanies/tf/pulls\?head\="ForeverCompanies:$BRANCH" | grep labels/develop
+curl https://$username:$pass@api.github.com/repos/ForeverCompanies/magento2/pulls\?head\="ForeverCompanies:$BRANCH" | grep labels/develop
 rtn=$?
     if [ $rtn = 0 ]; then
         ls
