@@ -2,6 +2,7 @@
 
 namespace DiamondNexus\Multipay\Plugin\Block\Adminhtml\Order;
 
+use DiamondNexus\Multipay\Block\Adminhtml\Order\AddPaymentModalBox;
 use Magento\Framework\Exception\LocalizedException;
 
 /**
@@ -11,10 +12,13 @@ use Magento\Framework\Exception\LocalizedException;
 class View
 {
 
+    const TEMPLATE = 'DiamondNexus_Multipay::order/add_payment_modalbox.phtml';
+
     public function beforeSetLayout(
         \Magento\Sales\Block\Adminhtml\Order\View $subject,
         $layout
-    ) {
+    )
+    {
         $subject->addButton(
             'add_payment_button',
             [
@@ -29,14 +33,18 @@ class View
     public function afterToHtml(
         \Magento\Sales\Block\Adminhtml\Order\View $subject,
         $result
-    ) {
+    )
+    {
         if ($subject->getNameInLayout() == 'sales_order_edit') {
             try {
-                $customBlockHtml = $subject->getLayout()->createBlock(
-                    \DiamondNexus\Multipay\Block\Adminhtml\Order\AddPaymentModalBox::class,
+                /** @var AddPaymentModalBox $blockHtml */
+                $blockHtml = $subject->getLayout()->createBlock(
+                    AddPaymentModalBox::class,
                     $subject->getNameInLayout() . '_modal_box_payment'
-                )->setOrder($subject->getOrder())
-                    ->setTemplate('DiamondNexus_Multipay::order/add_payment_modalbox.phtml')
+                );
+                $order = $subject->getOrder();
+                $customBlockHtml = $blockHtml->setData('order', $order)
+                    ->setTemplate(self::TEMPLATE)
                     ->toHtml();
                 return $result . $customBlockHtml;
             } catch (LocalizedException $e) {

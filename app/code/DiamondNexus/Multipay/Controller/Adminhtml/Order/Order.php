@@ -31,7 +31,7 @@ class Order extends AdminOrder implements HttpPostActionInterface
     /**
      * @var Transaction
      */
-    protected $transactionResource;
+    protected $resource;
 
     public function __construct(
         Action\Context $context,
@@ -45,8 +45,9 @@ class Order extends AdminOrder implements HttpPostActionInterface
         OrderManagementInterface $orderManagement,
         OrderRepositoryInterface $orderRepository,
         LoggerInterface $logger,
-        Transaction $transactionResource
-    ) {
+        Transaction $resource
+    )
+    {
         parent::__construct(
             $context,
             $coreRegistry,
@@ -60,7 +61,7 @@ class Order extends AdminOrder implements HttpPostActionInterface
             $orderRepository,
             $logger
         );
-        $this->transactionResource = $transactionResource;
+        $this->resource = $resource;
     }
 
     /**
@@ -75,8 +76,10 @@ class Order extends AdminOrder implements HttpPostActionInterface
             /** @var Http $request */
             $request = $this->getRequest();
             $post = $request->getPostValue();
-            $this->transactionResource->createNewTransaction($order->getEntityId(), $post);
-            $resultRedirect->setPath('sales/order/view', ['order_id' => $order->getId()]);
+            $orderId = $order->getEntityId();
+            $this->resource->createNewTransaction($orderId, $post);
+            $orderArray = ['order_id' => $orderId];
+            $resultRedirect->setPath('sales/order/view', $orderArray);
             return $resultRedirect;
         }
         $resultRedirect->setPath('sales/*/');

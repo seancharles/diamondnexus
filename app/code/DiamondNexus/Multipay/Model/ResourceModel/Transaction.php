@@ -47,7 +47,8 @@ class Transaction extends AbstractDb
         TransactionFactory $transactionFactory,
         Logger $logger,
         $connectionName = null
-    ) {
+    )
+    {
         parent::__construct($context, $connectionName);
         $this->transactionFactory = $transactionFactory;
         $this->logger = $logger;
@@ -71,26 +72,30 @@ class Transaction extends AbstractDb
     public function getAllTransactionsByOrderId($orderId)
     {
         $connection = $this->getConnection();
-        $select = $connection->select()->from($this->getMainTable())->where('order_id = ?', $orderId);
+        $select = $connection->select()
+            ->from($this->getMainTable())
+            ->where('order_id = ?', $orderId);
         return $connection->fetchAll($select);
     }
 
     /**
      * @param int|string $orderId
-     * @param array $additionalInformation
+     * @param array $information
      */
-    public function createNewTransaction($orderId, $additionalInformation)
+    public function createNewTransaction($orderId, $information)
     {
         $transaction = $this->transactionFactory->create();
-        $transaction->setData([
+        $transaction->setData(
+            [
             'order_id' => $orderId,
-            'transaction_type' => $additionalInformation[Constant::PAYMENT_METHOD_DATA],
-            'payment_method' => $additionalInformation[Constant::OPTION_TOTAL_DATA],
-            'amount' => $additionalInformation[Constant::OPTION_PARTIAL_DATA],
-            'tendered' => $additionalInformation[Constant::CASH_TENDERED_DATA],
-            'change' => $additionalInformation[Constant::CHANGE_DUE_DATA],
+            'transaction_type' => $information[Constant::PAYMENT_METHOD_DATA],
+            'payment_method' => $information[Constant::OPTION_TOTAL_DATA],
+            'amount' => $information[Constant::OPTION_PARTIAL_DATA],
+            'tendered' => $information[Constant::CASH_TENDERED_DATA],
+            'change' => $information[Constant::CHANGE_DUE_DATA],
             'transaction_timestamp' => time(),
-        ]);
+            ]
+        );
         try {
             $this->save($transaction);
         } catch (AlreadyExistsException $e) {

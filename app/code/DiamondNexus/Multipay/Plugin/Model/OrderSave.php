@@ -23,7 +23,7 @@ class OrderSave
     /**
      * @var Transaction
      */
-    protected $transactionResource;
+    protected $resource;
 
     /**
      * @var Logger
@@ -32,12 +32,13 @@ class OrderSave
 
     /**
      * OrderSave constructor.
-     * @param Transaction $transactionResource
+     * @param Transaction $resource
      */
     public function __construct(
-        Transaction $transactionResource
-    ) {
-        $this->transactionResource = $transactionResource;
+        Transaction $resource
+    )
+    {
+        $this->resource = $resource;
     }
 
     /**
@@ -52,24 +53,23 @@ class OrderSave
     public function afterSave(
         OrderRepositoryInterface $subject,
         OrderInterface $order
-    ) {
+    )
+    {
         $payment = $order->getPayment();
         $methodInstance = $payment->getMethod();
-        $additionalInformation = $payment->getAdditionalInformation();
-        $method = $additionalInformation[Constant::PAYMENT_METHOD_DATA];
-        $amount = $additionalInformation[Constant::AMOUNT_DUE_DATA];
+        $information = $payment->getAdditionalInformation();
+        $method = $information[Constant::PAYMENT_METHOD_DATA];
 
         if ($methodInstance === Constant::MULTIPAY_METHOD) {
             switch ($method) {
                 case Constant::MULTIPAY_CREDIT_METHOD:
                 case Constant::MULTIPAY_CASH_METHOD:
                 case Constant::MULTIPAY_AFFIRM_OFFLINE_METHOD:
-                    $this->saveMultipayTransaction($order->getId(), $additionalInformation);
+                    $id = $order->getId();
+                $this->saveMultipayTransaction($id, $information);
                     break;
                 case Constant::MULTIPAY_QUOTE_METHOD:
-                    // we don't really do anything with quotes yet
-                    // update the amount paid on the order
-                    // set the order status to quote
+
                     break;
             }
         }
@@ -77,16 +77,16 @@ class OrderSave
     }
 
     /**
-     * @param $orderId
+     * @param $id
      * @param $additionalInformation
      * @throws LocalizedException
      */
-    protected function saveMultipayTransaction($orderId, $additionalInformation)
+    protected function saveMultipayTransaction($id, $additionalInformation)
     {
-        $otherTransactions = $this->transactionResource->getAllTransactionsByOrderId($orderId);
+        $otherTransactions = $this->resource->getAllTransactionsByOrderId($id);
         if ($otherTransactions !== null && count($otherTransactions) > 0) {
             return;
         }
-        $this->transactionResource->createNewTransaction($orderId, $additionalInformation);
+        $this->resource->createNewTransaction($id, $additionalInformation);
     }
 }

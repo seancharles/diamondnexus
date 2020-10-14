@@ -63,7 +63,6 @@ class Index extends \Magento\Framework\App\Action\Action
     {
         try {
             $post = $this->getRequest()->getParams();
-            $this->test->transformProductSelect(12707);
             $bundleId = $post['product'];
             $dynamicId = $post['dynamic_bundled_item_id'];
             $options = $post['options'];

@@ -4,7 +4,8 @@ define(
     ],
     function (Component) {
         'use strict';
-        return Component.extend({
+        return Component.extend(
+            {
             defaults: {
                 template: 'DiamondNexus_Multipay/payment/multipay'
             },
@@ -14,6 +15,7 @@ define(
             getInstructions: function () {
                 return window.checkoutConfig.payment.instructions[this.item.method];
             },
-        });
+            }
+        );
     }
 );

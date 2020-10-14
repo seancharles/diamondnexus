@@ -7,7 +7,6 @@
 <?php
 $code = 'multipay';
 ?>
-<script> alert(getCode());</script>
 <div class="payment-method" data-bind="css: {'_active': (getCode() == isChecked())}">
 
     <fieldset class="admin__fieldset payment-method" id="payment_form_multipay" style="display:none;">
@@ -17,35 +16,40 @@ $code = 'multipay';
 
             <div class="admin__field-option _required">
                 <input id="multipay_method_cc" class="admin__control-radio" value="1" type="radio"
-                       name="payment[multipay_payment_method]"/>
+                       name="payment[multipay_payment_method]"
+                       data-validate="{'required-entry':true}"/>
                 <label class="admin__field-label" for="multipay_method_cc">
                     <span><?= $block->escapeHtml(__('Credit Card')) ?></span>
                 </label>
             </div>
             <div class="admin__field-option _required">
                 <input id="multipay_method_cash" class="admin__control-radio" value="2" type="radio"
-                       name="payment[multipay_payment_method]"/>
+                       name="payment[multipay_payment_method]"
+                       data-validate="{'required-entry':true}"/>
                 <label class="admin__field-label" for="multipay_method_cash">
                     <span><?= $block->escapeHtml(__('Cash')) ?></span>
                 </label>
             </div>
             <div class="admin__field-option _required">
                 <input id="multipay_method_quote" class="admin__control-radio" value="3" type="radio"
-                       name="payment[multipay_payment_method]"/>
+                       name="payment[multipay_payment_method]"
+                       data-validate="{'required-entry':true}"/>
                 <label class="admin__field-label" for="multipay_method_quote">
                     <span><?= $block->escapeHtml(__('Quote')) ?></span>
                 </label>
             </div>
             <div class="admin__field-option _required">
                 <input id="multipay_method_paypal_offline" class="admin__control-radio" value="6" type="radio"
-                       name="multipay_payment_method"/>
+                       name="payment[multipay_payment_method]"
+                       data-validate="{'required-entry':true}"/>
                 <label class="label" for="multipay_method_paypal_offline">
                     <span><?= $block->escapeHtml(__('Paypal (offline)')) ?></span>
                 </label>
             </div>
             <div class="admin__field-option _required">
                 <input id="multipay_method_pl" class="admin__control-radio" value="7" type="radio"
-                       name="payment[multipay_payment_method]"/>
+                       name="payment[multipay_payment_method]"
+                       data-validate="{'required-entry':true}"/>
                 <label class="admin__field-label" for="multipay_method_pl">
                     <span><?= $block->escapeHtml(__('Progressive Leasing (offline)')) ?></span>
                 </label>
@@ -56,14 +60,16 @@ $code = 'multipay';
         <fieldset class="admin__fieldset payment-method-options multipay-fieldset" id="payment_form_multipay_amount">
             <div class="admin__field-option _required">
                 <input id="multipay_method_total_balance" class="admin__control-radio" value="1" type="radio"
-                       name="payment[multipay_option_total]"/>
+                       name="payment[multipay_option_total]"
+                       data-validate="{'required-entry':true}"/>
                 <label class="label admin__field-label" for="multipay_method_total_balance">
                     <span><?= $block->escapeHtml(__('Total Amount')) ?></span>
                 </label>
             </div>
             <div class="admin__field-option _required">
                 <input id="multipay_method_partial_balance" class="admin__control-radio" value="2" type="radio"
-                       name="payment[multipay_option_total]"/>
+                       name="payment[multipay_option_total]"
+                       data-validate="{'required-entry':true}"/>
                 <label class="label admin__field-label" for="multipay_method_partial_balance">
                     <span><?= $block->escapeHtml(__('Partial Amount')) ?></span>
                 </label>

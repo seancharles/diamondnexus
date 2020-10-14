@@ -16,7 +16,7 @@ class AddPaymentModalBox extends Template
     /**
      * @var Transaction
      */
-    protected $transactionResource;
+    protected $resource;
 
     /**
      * AddPaymentModalBox constructor.
@@ -28,9 +28,10 @@ class AddPaymentModalBox extends Template
         Context $context,
         Transaction $transactionResource,
         array $data = []
-    ) {
+    )
+    {
         parent::__construct($context, $data);
-        $this->transactionResource = $transactionResource;
+        $this->resource = $transactionResource;
     }
 
     /**
@@ -46,14 +47,14 @@ class AddPaymentModalBox extends Template
      */
     public function getBalanceAmount()
     {
-        $orderId = $this->getData('order')->getId();
+        $id = $this->getData('order')->getId();
         try {
-            $allTransactions = $this->transactionResource->getAllTransactionsByOrderId($orderId);
+            $transactions = $this->resource->getAllTransactionsByOrderId($id);
         } catch (LocalizedException $e) {
             return '';
         }
         $amount = $this->getData('order')->getGrandTotal();
-        foreach ($allTransactions as $transaction) {
+        foreach ($transactions as $transaction) {
             $amount -= $transaction['amount'];
         }
         return $amount;
@@ -68,8 +69,10 @@ class AddPaymentModalBox extends Template
         if ($this->hasData('order')) {
             $orderId = $this->getData('order')->getId();
         }
-        return $this->getUrl('diamondnexus/order/order', [
+        return $this->getUrl(
+            'diamondnexus/order/order', [
             'order_id' => $orderId
-        ]);
+            ]
+        );
     }
 }
