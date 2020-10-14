@@ -6,6 +6,7 @@
 declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Controller\Adminhtml\Map;
+
 use ForeverCompanies\Salesforce\Controller\Adminhtml\Map as MapController;
 
 

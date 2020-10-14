@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace ForeverCompanies\Salesforce\Model;
 
 use Magento\Directory\Model\Country;
-use Magento\Tests\NamingConvention\true\string;
 
 /**
  * Class Data

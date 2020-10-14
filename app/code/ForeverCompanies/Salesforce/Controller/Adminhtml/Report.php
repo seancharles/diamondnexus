@@ -6,6 +6,7 @@
 declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Controller\Adminhtml;
+
 use ForeverCompanies\Salesforce\Model\ReportFactory;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;

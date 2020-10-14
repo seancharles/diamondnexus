@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace ForeverCompanies\Salesforce\Block\Adminhtml\Map\Edit;
 
 use \Magento\Backend\Block\Widget\Form\Generic;
-use \Magento\Backend\Block\Widget\Tab\TabInterface;
+use Magento\Backend\Block\Widget\Tab\TabInterface;
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\Registry;
 use Magento\Framework\Data\FormFactory;

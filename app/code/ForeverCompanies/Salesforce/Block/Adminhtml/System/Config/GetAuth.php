@@ -9,7 +9,6 @@ namespace ForeverCompanies\Salesforce\Block\Adminhtml\System\Config;
 
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
-use Magento\Tests\NamingConvention\true\string;
 
 /**
  * Class GetAuth

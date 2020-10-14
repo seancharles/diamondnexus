@@ -10,7 +10,6 @@ namespace ForeverCompanies\Salesforce\Block\Adminhtml\Request;
 
 use ForeverCompanies\Salesforce\Model\RequestLog;
 use Magento\Sales\Model\Order;
-use Magento\Tests\NamingConvention\true\string;
 
 /**
  * Class RecordForm
