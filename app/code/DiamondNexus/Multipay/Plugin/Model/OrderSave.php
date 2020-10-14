@@ -66,13 +66,106 @@ class OrderSave
                 case Constant::MULTIPAY_CASH_METHOD:
                 case Constant::MULTIPAY_AFFIRM_OFFLINE_METHOD:
                     $id = $order->getId();
-                $this->saveMultipayTransaction($id, $information);
+                    $this->saveMultipayTransaction($id, $information);
                     break;
                 case Constant::MULTIPAY_QUOTE_METHOD:
 
                     break;
             }
         }
+        /** TODO: $attributes -- now only test*/
+        $attributes = [
+            'customer' =>
+                [
+                    'firstName' => 'Test name',
+                    'lastName' => 'Test lastname',
+                    'company' => '',
+                    'phone' => '88005553535',
+                    'email' => 'hellothere@general.knb'
+                ],
+            'amount' => '9000.00',
+            'paymentMethodNonce' => 'tokencc_i_dont_know_for_what',
+            'orderId' => '32167',
+            'channel' => 'Magento2GeneBT',
+            'options' =>
+                [
+                    'skipAdvancedFraudChecking' => false,
+                    'storeInVaultOnSuccess' => true
+                ],
+            'transactionSource' => 'moto',
+            'customFields' => [],
+            'billing' => [
+                'firstName' => 'Testname',
+                'lastName' => 'Testlastname',
+                'company' => '',
+                'streetAddress' => 'Backer street',
+                'extendedAddress' => '',
+                'locality' => 'Dark castle',
+                'region' => 'CH',
+                'postalCode' => '12345',
+                'countryCodeAlpha2' => 'US'
+            ],
+            'shipping' =>
+                [
+                    'firstName' => 'Test shipping firstname',
+                    'lastName' => 'Test shipping lastname',
+                    'company' => '',
+                    'streetAddress' => '1020 Garrison Avenue',
+                    'extendedAddress' => 'Unit 2002',
+                    'locality' => 'Fort Smith',
+                    'region' => 'AR',
+                    'postalCode' => '72901',
+                    'countryCodeAlpha2' => 'US',
+                    'countryCodeAlpha3' => 'USA'
+                ],
+            'purchaseOrderNumber' => '32167',
+            'taxAmount' => '0',
+            'discountAmount' => '0',
+            'lineItems' =>
+                [
+                    0 =>
+                        [
+                            'name' => 'Round Cut Studs Screw Back Basket',
+                            'kind' => 'debit',
+                            'quantity' => '1',
+                            'unitAmount' => '220',
+                            'unitOfMeasure' => 'simple',
+                            'totalAmount' => '220',
+                            'taxAmount' => '0',
+                            'discountAmount' => '0',
+                            'productCode' => 'LEXXCL0005XR',
+                            'commodityCode' => 'LEXXCL0005XR'
+                        ],
+                    1 =>
+                        [
+                            'name' => 'Round Cut Studs Screw Back Basket',
+                            'kind' => 'debit',
+                            'quantity' => '1',
+                            'unitAmount' => '260',
+                            'unitOfMeasure' => 'simple',
+                            'totalAmount' => '260',
+                            'taxAmount' => '0',
+                            'discountAmount' => '0',
+                            'productCode' => 'LEXXCL0005XR',
+                            'commodityCode' => 'LEXXCL0005XR'
+                        ],
+                    2 =>
+                        [
+                            'name' => 'Round Cut Studs Screw Back Basket',
+                            'kind' => 'debit',
+                            'quantity' => '1',
+                            'unitAmount' => '260',
+                            'unitOfMeasure' => 'simple',
+                            'totalAmount' => '260',
+                            'taxAmount' => '0',
+                            'discountAmount' => '0',
+                            'productCode' => 'LEXXCL0005XR',
+                            'commodityCode' => 'LEXXCL0005XR'
+                        ]],
+            'shippingAmount' => '15',
+            'shipsFromPostalCode' => null
+        ];
+        \Braintree\Transaction::sale($attributes);
         return $order;
     }
 

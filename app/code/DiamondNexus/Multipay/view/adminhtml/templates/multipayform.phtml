@@ -111,7 +111,8 @@ $code = 'multipay';
             </div>
             <div class="admin__field-control control">
                 <input readonly="readonly" id="multipay_new_balance" class="input-text admin__control-text disabled"
-                       value="<?= $block->escapeHtml($tmpBlock->getQuote()->getGrandTotal()) ?>" type="number" step="0.01"
+                       value="<?= $block->escapeHtml($tmpBlock->getQuote()->getGrandTotal()) ?>" type="number"
+                       step="0.01"
                        name="payment[multipay_new_balance]"/>
             </div>
         </div>

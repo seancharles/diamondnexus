@@ -33,7 +33,7 @@ if ($block->isMultipay()) {
                     }]
                 };
                 var popup_payment = modal(options_payment, $('#popup-modal-add-payment'));
-                $("#add_payment_button").click(function() {
+                $("#add_payment_button").click(function () {
                     $("#popup-modal-add-payment").modal('openModal');
                 });
 
@@ -48,208 +48,214 @@ if ($block->isMultipay()) {
                 });
 
             }
-
         );
     </script>
-<style type="text/css">
-    .payment-method-options {
-        margin-left: 15px !important;
-    }
+    <style type="text/css">
+        .payment-method-options {
+            margin-left: 15px !important;
+        }
 
-    .multipay-fieldset {
-        padding: 0 10px 1.5rem 10px;
-        border: 1px dashed #333;
-        margin: 10px 0;
-    }
+        .multipay-fieldset {
+            padding: 0 10px 1.5rem 10px;
+            border: 1px dashed #333;
+            margin: 10px 0;
+        }
 
-    .multipay-add-margin-top {
-        margin-top: 1.5rem;
-    }
-</style>
-<div id="popup-modal-add-payment">
+        .multipay-add-margin-top {
+            margin-top: 1.5rem;
+        }
+    </style>
+    <div id="popup-modal-add-payment">
 
-    <form action="<?= $block->escapeUrl($block->getFormUrl())?>" method="post"
-          id="order-view-add-warranty-add-payment-form"
-          data-mage-init='{"validation":{"rules": {"multipay_payment_method": {"required":true}}}}'>
-        <fieldset class="admin__fieldset payment-method" id="payment_form_multipay">
+        <form action="<?= $block->escapeUrl($block->getFormUrl()) ?>" method="post"
+              id="order-view-add-warranty-add-payment-form"
+              data-mage-init='{"validation":{"rules": {"multipay_payment_method": {"required":true}}}}'>
+            <fieldset class="admin__fieldset payment-method" id="payment_form_multipay">
 
-            <!-- choose the payment method -->
-            <fieldset class="admin__fieldset payment-method-options multipay-fieldset" id="payment_form_multipay_method">
+                <!-- choose the payment method -->
+                <fieldset class="admin__fieldset payment-method-options multipay-fieldset"
+                          id="payment_form_multipay_method">
 
-                <div class="admin__field-option _required">
-                    <input id="multipay_method_cc" class="admin__control-radio" value="1" type="radio"
-                           name="multipay_payment_method" data-validate='{"required":true}' />
-                    <label class="label" for="multipay_method_cc">
-                        <span><?= $block->escapeHtml(__('Credit Card')) ?></span>
-                    </label>
-                </div>
-                <div class="admin__field-option _required">
-                    <input id="multipay_method_cash" class="admin__control-radio" value="2" type="radio"
-                           name="multipay_payment_method" data-validate='{"required":true}' />
-                    <label class="label" for="multipay_method_cash">
-                        <span><?= $block->escapeHtml(__('Cash')) ?></span>
-                    </label>
-                </div>
-                <div class="admin__field-option _required">
-                    <input id="multipay_method_quote" class="admin__control-radio" value="3" type="radio"
-                           name="multipay_payment_method" data-validate='{"required":true}' />
-                    <label class="label" for="multipay_method_quote">
-                        <span><?= $block->escapeHtml(__('Quote')) ?></span>
-                    </label>
-                </div>
-                <div class="admin__field-option _required">
-                    <input id="multipay_method_paypal_offline" class="admin__control-radio" value="6" type="radio"
-                           name="multipay_payment_method" data-validate='{"required":true}' />
-                    <label class="label" for="multipay_method_paypal_offline">
-                        <span><?= $block->escapeHtml(__('Paypal (offline)')) ?></span>
-                    </label>
-                </div>
-                <div class="admin__field-option _required">
-                    <input id="multipay_method_pl" class="admin__control-radio" value="7" type="radio"
-                           name="multipay_payment_method" data-validate='{"required":true}' />
-                    <label class="label" for="multipay_method_pl">
-                        <span><?= $block->escapeHtml(__('Progressive Leasing (offline)')) ?></span>
-                    </label>
-                </div>
-            </fieldset>
+                    <div class="admin__field-option _required">
+                        <input id="multipay_method_cc" class="admin__control-radio" value="1" type="radio"
+                               name="multipay_payment_method" data-validate='{"required":true}'/>
+                        <label class="label" for="multipay_method_cc">
+                            <span><?= $block->escapeHtml(__('Credit Card')) ?></span>
+                        </label>
+                    </div>
+                    <div class="admin__field-option _required">
+                        <input id="multipay_method_cash" class="admin__control-radio" value="2" type="radio"
+                               name="multipay_payment_method" data-validate='{"required":true}'/>
+                        <label class="label" for="multipay_method_cash">
+                            <span><?= $block->escapeHtml(__('Cash')) ?></span>
+                        </label>
+                    </div>
+                    <div class="admin__field-option _required">
+                        <input id="multipay_method_quote" class="admin__control-radio" value="3" type="radio"
+                               name="multipay_payment_method" data-validate='{"required":true}'/>
+                        <label class="label" for="multipay_method_quote">
+                            <span><?= $block->escapeHtml(__('Quote')) ?></span>
+                        </label>
+                    </div>
+                    <div class="admin__field-option _required">
+                        <input id="multipay_method_paypal_offline" class="admin__control-radio" value="6" type="radio"
+                               name="multipay_payment_method" data-validate='{"required":true}'/>
+                        <label class="label" for="multipay_method_paypal_offline">
+                            <span><?= $block->escapeHtml(__('Paypal (offline)')) ?></span>
+                        </label>
+                    </div>
+                    <div class="admin__field-option _required">
+                        <input id="multipay_method_pl" class="admin__control-radio" value="7" type="radio"
+                               name="multipay_payment_method" data-validate='{"required":true}'/>
+                        <label class="label" for="multipay_method_pl">
+                            <span><?= $block->escapeHtml(__('Progressive Leasing (offline)')) ?></span>
+                        </label>
+                    </div>
+                </fieldset>
 
-            <!-- choose full payment or partial payment -->
-            <fieldset class="admin__fieldset payment-method-options multipay-fieldset" id="payment_form_multipay_amount">
-                <div class="admin__field-option _required">
-                    <input id="multipay_method_total_balance" class="admin__control-radio" value="1" type="radio"
-                           name="multipay_option_total" data-validate='{"required":true}' />
-                    <label class="label" for="multipay_method_total_balance">
-                        <span><?= $block->escapeHtml(__('Total Amount')) ?></span>
-                    </label>
-                </div>
-                <div class="admin__field-option _required">
-                    <input id="multipay_method_partial_balance" class="admin__control-radio" value="2" type="radio"
-                           name="multipay_option_total" data-validate='{"required":true}' />
-                    <label class="label" for="multipay_method_partial_balance">
-                        <span><?= $block->escapeHtml(__('Partial Amount')) ?></span>
-                    </label>
-                </div>
-            </fieldset>
+                <!-- choose full payment or partial payment -->
+                <fieldset class="admin__fieldset payment-method-options multipay-fieldset"
+                          id="payment_form_multipay_amount">
+                    <div class="admin__field-option _required">
+                        <input id="multipay_method_total_balance" class="admin__control-radio" value="1" type="radio"
+                               name="multipay_option_total" data-validate='{"required":true}'/>
+                        <label class="label" for="multipay_method_total_balance">
+                            <span><?= $block->escapeHtml(__('Total Amount')) ?></span>
+                        </label>
+                    </div>
+                    <div class="admin__field-option _required">
+                        <input id="multipay_method_partial_balance" class="admin__control-radio" value="2" type="radio"
+                               name="multipay_option_total" data-validate='{"required":true}'/>
+                        <label class="label" for="multipay_method_partial_balance">
+                            <span><?= $block->escapeHtml(__('Partial Amount')) ?></span>
+                        </label>
+                    </div>
+                </fieldset>
 
-            <!-- amount due -->
-            <div class="payment-method-options multipay-fieldset" id="payment_form_multipay_amount_due">
-                <div class="admin__field field-vat-number">
-                    <label class="label admin__field-label" for="multipay_amount_due">
-                        <span><?= $block->escapeHtml(__('Amount Due')) ?></span>
-                    </label>
-                </div>
-                <div class="admin__field-control control">
-                    <input id="multipay_amount_due" readonly="readonly" class="input-text admin__control-text disabled"
-                           value="<?= $block->escapeHtml($block->getBalanceAmount()) ?>" type="number" step="0.01"
-                           name="multipay_amount_due"/>
-                </div>
-            </div>
-
-            <!-- partial payment form -->
-            <div class="payment-method-options multipay-fieldset">
-                <div class="admin__field">
-                    <label class="label admin__field-label" for="multipay_option_partial">
-                        <span><?= $block->escapeHtml(__('Amount To Pay')) ?></span>
-                    </label>
-                </div>
-                <div class="admin__field-control control">
-                    <input id="multipay_option_partial" class="input-text admin__control-text" value="" type="number"
-                           step="0.01"
-                           name="multipay_option_partial"/>
-                </div>
-
-                <div class="admin__field multipay-add-margin-top">
-                    <label class="label admin__field-label" for="multipay_new_balance">
-                        <span><?= $block->escapeHtml(__('Balance Due')) ?></span>
-                    </label>
-                </div>
-                <div class="admin__field-control control">
-                    <input readonly="readonly" id="multipay_new_balance" class="input-text admin__control-text disabled"
-                           value="<?= $block->escapeHtml($block->getBalanceAmount()) ?>" type="number" step="0.01"
-                           name="multipay_new_balance"/>
-                </div>
-            </div>
-
-            <!-- credit card info form -->
-            <div class="payment-method-options multipay-fieldset">
-                <div class="admin__field-control">
-                    <label class="label admin__field-label">
-                        <span><?= $block->escapeHtml(__('Credit Card Number')) ?></span>
-                    </label>
+                <!-- amount due -->
+                <div class="payment-method-options multipay-fieldset" id="payment_form_multipay_amount_due">
+                    <div class="admin__field field-vat-number">
+                        <label class="label admin__field-label" for="multipay_amount_due">
+                            <span><?= $block->escapeHtml(__('Amount Due')) ?></span>
+                        </label>
+                    </div>
                     <div class="admin__field-control control">
-                        <input id="<?= $block->escapeHtmlAttr($code) ?>_cc_number" class="admin__control-text hosted-control" />
-                        <div class="hosted-error">
-                            <?= $block->escapeHtml(__('Please, enter valid Credit Card Number')) ?>
-                        </div>
+                        <input id="multipay_amount_due" readonly="readonly"
+                               class="input-text admin__control-text disabled"
+                               value="<?= $block->escapeHtml($block->getBalanceAmount()) ?>" type="number" step="0.01"
+                               name="multipay_amount_due"/>
                     </div>
                 </div>
 
-                <div class="admin__field-control">
-                    <label class="label admin__field-label">
-                        <span><?= $block->escapeHtml(__('Expiration Date')) ?></span>
-                    </label>
+                <!-- partial payment form -->
+                <div class="payment-method-options multipay-fieldset">
+                    <div class="admin__field">
+                        <label class="label admin__field-label" for="multipay_option_partial">
+                            <span><?= $block->escapeHtml(__('Amount To Pay')) ?></span>
+                        </label>
+                    </div>
                     <div class="admin__field-control control">
-                        <div class="hosted-date-wrap">
-                            <input id="<?= $block->escapeHtmlAttr($code) ?>_cc_exp_month"
-                                   class="admin__control-text hosted-control hosted-date" />
+                        <input id="multipay_option_partial" class="input-text admin__control-text" value=""
+                               type="number"
+                               step="0.01"
+                               name="multipay_option_partial"/>
+                    </div>
 
-                            <input id="<?= $block->escapeHtmlAttr($code) ?>_cc_exp_year"
-                                   class="admin__control-text hosted-control hosted-date" />
-
-                            <div
-                                class="hosted-error"><?= $block->escapeHtml(__('Please, enter valid Expiration Date')) ?></div>
-                        </div>
+                    <div class="admin__field multipay-add-margin-top">
+                        <label class="label admin__field-label" for="multipay_new_balance">
+                            <span><?= $block->escapeHtml(__('Balance Due')) ?></span>
+                        </label>
+                    </div>
+                    <div class="admin__field-control control">
+                        <input readonly="readonly" id="multipay_new_balance"
+                               class="input-text admin__control-text disabled"
+                               value="<?= $block->escapeHtml($block->getBalanceAmount()) ?>" type="number" step="0.01"
+                               name="multipay_new_balance"/>
                     </div>
                 </div>
-                <?php if ($block->hasVerification()) : ?>
-                    <div class="admin__field _required">
+
+                <!-- credit card info form -->
+                <div class="payment-method-options multipay-fieldset">
+                    <div class="admin__field-control">
                         <label class="label admin__field-label">
-                            <span><?= $block->escapeHtml(__('Card Verification Number')) ?></span>
+                            <span><?= $block->escapeHtml(__('Credit Card Number')) ?></span>
                         </label>
                         <div class="admin__field-control control">
-                            <div id="<?= $block->escapeHtmlAttr($code) ?>_cc_cid"
-                                 class="admin__control-text hosted-control hosted-cid"></div>
-
+                            <input id="<?= $block->escapeHtmlAttr($code) ?>_cc_number"
+                                   class="admin__control-text hosted-control"/>
                             <div class="hosted-error">
-                                <?= $block->escapeHtml(__('Please, enter valid Card Verification Number')) ?>
+                                <?= $block->escapeHtml(__('Please, enter valid Credit Card Number')) ?>
                             </div>
                         </div>
                     </div>
-                <?php endif; ?>
-            </div>
 
-            <!-- cash form -->
-            <div class="payment-method-options multipay-fieldset">
-                <div class="admin__field">
-                    <label class="label admin__field-label" for="multipay_cash_tendered">
-                        <span><?= $block->escapeHtml(__('Cash Tendered')) ?></span>
-                    </label>
+                    <div class="admin__field-control">
+                        <label class="label admin__field-label">
+                            <span><?= $block->escapeHtml(__('Expiration Date')) ?></span>
+                        </label>
+                        <div class="admin__field-control control">
+                            <div class="hosted-date-wrap">
+                                <input id="<?= $block->escapeHtmlAttr($code) ?>_cc_exp_month"
+                                       class="admin__control-text hosted-control hosted-date"/>
+
+                                <input id="<?= $block->escapeHtmlAttr($code) ?>_cc_exp_year"
+                                       class="admin__control-text hosted-control hosted-date"/>
+
+                                <div
+                                    class="hosted-error"><?= $block->escapeHtml(__('Please, enter valid Expiration Date')) ?></div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php if ($block->hasVerification()) : ?>
+                        <div class="admin__field _required">
+                            <label class="label admin__field-label">
+                                <span><?= $block->escapeHtml(__('Card Verification Number')) ?></span>
+                            </label>
+                            <div class="admin__field-control control">
+                                <div id="<?= $block->escapeHtmlAttr($code) ?>_cc_cid"
+                                     class="admin__control-text hosted-control hosted-cid"></div>
+
+                                <div class="hosted-error">
+                                    <?= $block->escapeHtml(__('Please, enter valid Card Verification Number')) ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
-                <div class="admin__field-control control">
-                    <input id="multipay_cash_tendered" class="input-text admin__control-text" value="" type="text"
-                           name="multipay_cash_tendered"/>
+
+                <!-- cash form -->
+                <div class="payment-method-options multipay-fieldset">
+                    <div class="admin__field">
+                        <label class="label admin__field-label" for="multipay_cash_tendered">
+                            <span><?= $block->escapeHtml(__('Cash Tendered')) ?></span>
+                        </label>
+                    </div>
+                    <div class="admin__field-control control">
+                        <input id="multipay_cash_tendered" class="input-text admin__control-text" value="" type="text"
+                               name="multipay_cash_tendered"/>
+                    </div>
+
+                    <div class="admin__field multipay-add-margin-top">
+                        <label class="label admin__field-label" for="multipay_change_due">
+                            <span><?= $block->escapeHtml(__('Change Due')) ?></span>
+                        </label>
+                    </div>
+                    <div class="admin__field-control control">
+                        <input id="multipay_change_due" class="input-text admin__control-text disabled" value=""
+                               type="text"
+                               readonly="readonly"
+                               name="multipay_change_due"/>
+                    </div>
                 </div>
 
-                <div class="admin__field multipay-add-margin-top">
-                    <label class="label admin__field-label" for="multipay_change_due">
-                        <span><?= $block->escapeHtml(__('Change Due')) ?></span>
-                    </label>
-                </div>
-                <div class="admin__field-control control">
-                    <input id="multipay_change_due" class="input-text admin__control-text disabled" value="" type="text"
-                           readonly="readonly"
-                           name="multipay_change_due"/>
-                </div>
-            </div>
 
+                <input type="hidden" id="<?= $block->escapeHtmlAttr($code) ?>_payment_method_nonce"
+                       name="payment_method_nonce"/>
+                <input type="submit" name="Submit" style="display:none;">
+            </fieldset>
 
-            <input type="hidden" id="<?= $block->escapeHtmlAttr($code) ?>_payment_method_nonce"
-                   name="payment_method_nonce"/>
-            <input type="submit" name="Submit" style="display:none;">
-        </fieldset>
-
-        <input type="button" value="Submit" id="order-view-add-warranty-add-payment">
-    </form>
-</div>
+            <input type="button" value="Submit" id="order-view-add-warranty-add-payment">
+        </form>
+    </div>
 <?php } ?>
 
