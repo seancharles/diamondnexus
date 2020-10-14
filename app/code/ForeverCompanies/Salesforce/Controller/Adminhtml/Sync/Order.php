@@ -48,7 +48,7 @@ class Order extends Action
           if ($orderIncrementId){
               $this->order->sync($orderIncrementId);
               $this->messageManager->addSuccess(
-                  __('Order is synced successfullys')
+                  __('Order is synced successfull')
               );
           } else {
               $this->messageManager->addNotice(

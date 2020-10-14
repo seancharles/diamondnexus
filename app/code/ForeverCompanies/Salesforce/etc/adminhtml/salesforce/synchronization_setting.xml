@@ -14,14 +14,14 @@
                    type="select" sortOrder="10"
                    showInDefault="1" showInWebsite="1"
                    showInStore="1">
-                    <label>Enable</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <tooltip><![CDATA[Synchronize to Orders when:
+                <label>Enable</label>
+                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                <tooltip><![CDATA[Synchronize to Orders when:
                         <ol>
                         <li>Customer place order</li>
                         <li>Admin create an order</li>
                         </ol>]]></tooltip>
-                    <config_path>salesforcecrm/sync/order</config_path>
+                <config_path>salesforcecrm/sync/order</config_path>
             </field>
             <field id="sync_mode"
                    translate="label"
@@ -30,33 +30,19 @@
                    showInDefault="1"
                    showInWebsite="1"
                    showInStore="1">
-                    <label>Sync Mode</label>
-                    <source_model>ForeverCompanies\Salesforce\Model\Config\Source\SyncMode</source_model>
-                    <config_path>salesforcecrm/sync/order_mode</config_path>
-                    <depends>
-                        <field id="enable">1</field>
-                    </depends>
-                    <validate>required-entry</validate>
-            </field>
-            <field id="cron_time" translate="label"
-                   type="select" sortOrder="17"
-                   showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Queue Auto Sync Time</label>
-                    <source_model>ForeverCompanies\Salesforce\Model\Config\Source\CronTime</source_model>
-                    <config_path>salesforcecrm/sync/order_time</config_path>
-                    <depends>
-                        <field id="sync_mode">1</field>
-                        <field id="enable">1</field>
-                    </depends>
-                    <validate>required-entry</validate>
+                <label>Sync Mode</label>
+                <source_model>ForeverCompanies\Salesforce\Model\Config\Source\SyncMode</source_model>
+                <config_path>salesforcecrm/sync/order_mode</config_path>
+                <depends>
+                    <field id="enable">1</field>
+                </depends>
+                <validate>required-entry</validate>
             </field>
             <field id="salesforce_sync_orders" translate="button_label" sortOrder="20"
-                    showInDefault="1" showInWebsite="0" showInStore="0">
-                    <button_label>Sync All Orders Now</button_label>
-                    <attribute type="button_url">salesforce/queue/order</attribute>
-                    <frontend_model>
-                        ForeverCompanies\Salesforce\Block\System\Config\Form\Button\Button
-                    </frontend_model>
+                   showInDefault="1" showInWebsite="0" showInStore="0">
+                <button_label>Sync All Orders Now</button_label>
+                <attribute type="button_url">salesforce/queue/order</attribute>
+                <frontend_model>ForeverCompanies\Salesforce\Block\System\Config\Form\Button\Button</frontend_model>
             </field>
         </group>
     </group>

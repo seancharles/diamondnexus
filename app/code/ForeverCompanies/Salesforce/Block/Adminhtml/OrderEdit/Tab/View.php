@@ -5,7 +5,7 @@
  */
 declare(strict_types=1);
 
-namespace ForeverCompanies\Salesforce\Block\Adminhtml\Connection;
+namespace ForeverCompanies\Salesforce\Block\Adminhtml\OrderEdit\Tab;
 
 use ForeverCompanies\Salesforce\Model\Connector;
 

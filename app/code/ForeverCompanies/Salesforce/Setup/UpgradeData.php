@@ -12,6 +12,7 @@ use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Sales\Setup\SalesSetupFactory;
 use Magento\Eav\Setup\EavSetupFactory;
+use Magento\Sales\Model\Order;
 
 /**
  * @codeCoverageIgnore

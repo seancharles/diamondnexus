@@ -2,7 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <tab id="forevecompanies" translate="label" sortOrder="200">
+        <tab id="forevercompanies" translate="label" sortOrder="200">
             <label>ForeverCompanies</label>
         </tab>
         <section id="salesforcecrm"
@@ -14,11 +14,10 @@
                  showInStore="1">
                     <class>separator-top</class>
                     <label>SalesforceCRM Config</label>
-                    <tab>forevecompanies</tab>
+                    <tab>forevercompanies</tab>
                     <resource>ForeverCompanies_Salesforce::config_salesforce</resource>
              <include path="ForeverCompanies_Salesforce::salesforce/application.xml"/>
              <include path="ForeverCompanies_Salesforce::salesforce/synchronization_setting.xml"/>
-             <include path="ForeverCompanies_Salesforce::salesforce/synchronize.xml"/>
         </section>
     </system>
 </config>
