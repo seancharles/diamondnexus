@@ -6,7 +6,7 @@
         </tab>
         <section id="quote_cleaner" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label">
             <label>Quote Cleaner</label>
-            <tab>ForeverCompanies</tab>
+            <tab>forevercompanies</tab>
             <resource>ForeverCompanies_QuoteCleaner::config_ForeverCompanies_quotecleaner</resource>
             <group id="quote_cleaner" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label">
                 <label>Quote Cleaner</label>
