@@ -2,6 +2,7 @@
 
 namespace DiamondNexus\Multipay\Controller\Adminhtml\Order;
 
+use DiamondNexus\Multipay\Helper\Data;
 use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
@@ -33,6 +34,27 @@ class Order extends AdminOrder implements HttpPostActionInterface
      */
     protected $resource;
 
+    /**
+     * @var Data
+     */
+    private $helper;
+
+    /**
+     * Order constructor.
+     * @param Context $context
+     * @param Registry $coreRegistry
+     * @param FileFactory $fileFactory
+     * @param InlineInterface $translateInline
+     * @param PageFactory $resultPageFactory
+     * @param JsonFactory $resultJsonFactory
+     * @param LayoutFactory $resultLayoutFactory
+     * @param RawFactory $resultRawFactory
+     * @param OrderManagementInterface $orderManagement
+     * @param OrderRepositoryInterface $orderRepository
+     * @param LoggerInterface $logger
+     * @param Transaction $resource
+     * @param Data $helper
+     */
     public function __construct(
         Action\Context $context,
         Registry $coreRegistry,
@@ -45,7 +67,8 @@ class Order extends AdminOrder implements HttpPostActionInterface
         OrderManagementInterface $orderManagement,
         OrderRepositoryInterface $orderRepository,
         LoggerInterface $logger,
-        Transaction $resource
+        Transaction $resource,
+        Data $helper
     )
     {
         parent::__construct(
@@ -62,6 +85,7 @@ class Order extends AdminOrder implements HttpPostActionInterface
             $logger
         );
         $this->resource = $resource;
+        $this->helper = $helper;
     }
 
     /**
@@ -77,6 +101,7 @@ class Order extends AdminOrder implements HttpPostActionInterface
             $request = $this->getRequest();
             $post = $request->getPostValue();
             $orderId = $order->getEntityId();
+            $this->helper->sendToBraintree($order);
             $this->resource->createNewTransaction($orderId, $post);
             $orderArray = ['order_id' => $orderId];
             $resultRedirect->setPath('sales/order/view', $orderArray);

@@ -284,7 +284,7 @@ class TransformMultiselect extends AbstractCommand
             $this->helper->transformProductSelect((int)$item->getData('entity_id'));
         }
         $this->moduleDataSetup->getConnection()->endSetup();
-        $output->writeln('Transformation is complete! Please execute bin/magento indexer:reindex');
+        $output->writeln('Transformation is complete! Please execute bin/magento cache:clean');
     }
 
     /**

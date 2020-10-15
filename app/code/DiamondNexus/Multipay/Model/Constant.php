@@ -45,6 +45,12 @@ class Constant
     const OPTION_TOTAL_DATA = 'multipay_option_total';
     const PAYMENT_METHOD_DATA = 'multipay_payment_method';
     const NEW_BALANCE_DATA = 'multipay_new_balance';
+
+    const CC_NUMBER_DATA = 'multipay_cc_number';
+    const EXP_MONTH_DATA = 'multipay_cc_exp_month';
+    const EXP_YEAR_DATA = 'multipay_cc_exp_year';
+    const CVV_NUMBER_DATA = 'multipay_cvv_number';
+
     const AMOUNT_DUE_DATA = 'multipay_amount_due';
     const PAYMENT_METHOD_NONCE = 'payment_method_nonce';
 
@@ -57,5 +63,9 @@ class Constant
         self::PAYMENT_METHOD_NONCE,
         self::NEW_BALANCE_DATA,
         self::AMOUNT_DUE_DATA,
+        self::CC_NUMBER_DATA,
+        self::EXP_MONTH_DATA,
+        self::EXP_YEAR_DATA,
+        self::CVV_NUMBER_DATA,
     ];
 }

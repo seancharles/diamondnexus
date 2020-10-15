@@ -10,6 +10,7 @@ namespace DiamondNexus\Multipay\Observer;
 use DiamondNexus\Multipay\Model\Constant;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class PreparePaymentMethod
@@ -19,7 +20,7 @@ class PreparePaymentMethod implements ObserverInterface
 {
     protected $logger;
 
-    public function __construct(\Psr\Log\LoggerInterface $loggerInterface)
+    public function __construct(LoggerInterface $loggerInterface)
     {
         $this->logger = $loggerInterface;
     }
