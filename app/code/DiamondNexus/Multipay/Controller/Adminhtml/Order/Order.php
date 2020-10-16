@@ -69,8 +69,7 @@ class Order extends AdminOrder implements HttpPostActionInterface
         LoggerInterface $logger,
         Transaction $resource,
         Data $helper
-    )
-    {
+    ) {
         parent::__construct(
             $context,
             $coreRegistry,

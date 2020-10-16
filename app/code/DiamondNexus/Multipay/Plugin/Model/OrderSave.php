@@ -2,6 +2,7 @@
 
 namespace DiamondNexus\Multipay\Plugin\Model;
 
+use Braintree\Result\Error;
 use DiamondNexus\Multipay\Helper\Data;
 use DiamondNexus\Multipay\Model\Constant;
 use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
@@ -37,8 +38,7 @@ class OrderSave
     public function __construct(
         Transaction $resource,
         Data $helper
-    )
-    {
+    ) {
         $this->resource = $resource;
         $this->helper = $helper;
     }
@@ -55,8 +55,7 @@ class OrderSave
     public function afterSave(
         OrderRepositoryInterface $subject,
         OrderInterface $order
-    )
-    {
+    ) {
         $payment = $order->getPayment();
         $methodInstance = $payment->getMethod();
         $information = $payment->getAdditionalInformation();
@@ -71,7 +70,6 @@ class OrderSave
                     $this->saveMultipayTransaction($id, $information);
                     break;
                 case Constant::MULTIPAY_QUOTE_METHOD:
-
                     break;
             }
         }
@@ -90,16 +88,19 @@ class OrderSave
     public function beforeSave(
         OrderRepositoryInterface $subject,
         OrderInterface $order
-    )
-    {
+    ) {
         $payment = $order->getPayment();
         $methodInstance = $payment->getMethod();
         $information = $payment->getAdditionalInformation();
         $method = $information[Constant::PAYMENT_METHOD_DATA];
-
+        if ($methodInstance === Constant::MULTIPAY_METHOD && $method != Constant::MULTIPAY_QUOTE_METHOD) {
+            if ($information[Constant::OPTION_TOTAL_DATA] == null) {
+                throw new ValidatorException(__('You need choose Amount option - total or partial '));
+            }
+        }
         if ($methodInstance === Constant::MULTIPAY_METHOD && $method == Constant::MULTIPAY_CREDIT_METHOD) {
             $result = $this->helper->sendToBraintree($order);
-            if ($result instanceOf \Braintree\Result\Error) {
+            if ($result instanceof Error) {
                 throw new ValidatorException(__('Credit card failed verification'));
             }
         }

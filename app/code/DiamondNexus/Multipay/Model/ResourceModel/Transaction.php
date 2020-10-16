@@ -47,8 +47,7 @@ class Transaction extends AbstractDb
         TransactionFactory $transactionFactory,
         Logger $logger,
         $connectionName = null
-    )
-    {
+    ) {
         parent::__construct($context, $connectionName);
         $this->transactionFactory = $transactionFactory;
         $this->logger = $logger;
@@ -84,15 +83,30 @@ class Transaction extends AbstractDb
      */
     public function createNewTransaction($orderId, $information)
     {
+        $amount = 0;
+        $change = $information[Constant::CHANGE_DUE_DATA];
+        if ((int) $information[Constant::PAYMENT_METHOD_DATA] == 1) {
+            $amount = $information[Constant::OPTION_PARTIAL_DATA];
+        }
+        if ((int) $information[Constant::PAYMENT_METHOD_DATA] == 2) {
+            $amount = $information[Constant::CASH_TENDERED_DATA];
+            if ($change == 0 && $amount > $information[Constant::AMOUNT_DUE_DATA]) {
+                $change = $amount - $information[Constant::AMOUNT_DUE_DATA];
+            }
+        }
+        if ((int)$information[Constant::OPTION_TOTAL_DATA] == 1) {
+            $amount = $information[Constant::AMOUNT_DUE_DATA];
+            $change = 0;
+        }
         $transaction = $this->transactionFactory->create();
         $transaction->setData(
             [
             'order_id' => $orderId,
             'transaction_type' => $information[Constant::PAYMENT_METHOD_DATA],
             'payment_method' => $information[Constant::OPTION_TOTAL_DATA],
-            'amount' => $information[Constant::OPTION_PARTIAL_DATA],
+            'amount' => $amount,
             'tendered' => $information[Constant::CASH_TENDERED_DATA],
-            'change' => $information[Constant::CHANGE_DUE_DATA],
+            'change' => $change,
             'transaction_timestamp' => time(),
             ]
         );

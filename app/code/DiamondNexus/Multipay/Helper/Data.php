@@ -6,12 +6,13 @@ namespace DiamondNexus\Multipay\Helper;
 
 use Braintree\Result\Error;
 use Braintree\Result\Successful;
+use DiamondNexus\Multipay\Model\Constant;
 use League\ISO3166\ISO3166;
 use Magento\Braintree\Model\Adapter\BraintreeAdapter;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
+use Magento\Framework\Exception\ValidatorException;
 use Magento\Sales\Api\Data\OrderInterface;
-
 
 class Data extends AbstractHelper
 {
@@ -35,8 +36,7 @@ class Data extends AbstractHelper
         Context $context,
         BraintreeAdapter $braintreeAdapter,
         ISO3166 $iso3166
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->brainTreeAdapter = $braintreeAdapter;
         $this->iso3166 = $iso3166;
@@ -45,9 +45,21 @@ class Data extends AbstractHelper
     /**
      * @param OrderInterface $order
      * @return Error|Successful
+     * @throws ValidatorException
      */
     public function sendToBraintree(OrderInterface $order)
     {
+        $shippingAddress = $order->getShippingAddress();
+        $additionalInformation = $order->getPayment()->getAdditionalInformation();
+        $billingAddress = $order->getBillingAddress();
+        $amount = $additionalInformation[Constant::OPTION_PARTIAL_DATA];
+        if ((int)$additionalInformation[Constant::OPTION_TOTAL_DATA] == 1) {
+            $amount = $additionalInformation[Constant::AMOUNT_DUE_DATA];
+        } else {
+            if ($additionalInformation[Constant::AMOUNT_DUE_DATA] < $amount) {
+                throw new ValidatorException(__('You can\'t pay more than order total price'));
+            }
+        }
         $items = [];
         foreach ($order->getItems() as $orderItem) {
             $items[] = [
@@ -63,9 +75,6 @@ class Data extends AbstractHelper
                 'commodityCode' => substr($orderItem->getSku(), 0, 12)
             ];
         }
-        $shippingAddress = $order->getShippingAddress();
-        $additionalInformation = $order->getPayment()->getAdditionalInformation();
-        $billingAddress = $order->getBillingAddress();
         $attributes = [
             'customer' =>
                 [
@@ -75,12 +84,12 @@ class Data extends AbstractHelper
                     'phone' => $shippingAddress->getTelephone() ?? '',
                     'email' => $order->getCustomerEmail()
                 ],
-            'amount' => $additionalInformation['multipay_option_partial'],
+            'amount' => $amount,
             'creditCard' => [
-                'cvv' => $additionalInformation['multipay_cvv_number'],
-                'expirationMonth' => $additionalInformation['multipay_cc_exp_month'],
-                'expirationYear' => $additionalInformation['multipay_cc_exp_year'],
-                'number' => $additionalInformation['multipay_cc_number']
+                'cvv' => $additionalInformation[Constant::CVV_NUMBER_DATA],
+                'expirationMonth' => $additionalInformation[Constant::EXP_MONTH_DATA],
+                'expirationYear' => $additionalInformation[Constant::EXP_YEAR_DATA],
+                'number' => $additionalInformation[Constant::CC_NUMBER_DATA]
             ],
             'orderId' => $order->getId(),
             'channel' => 'Magento2GeneBT',

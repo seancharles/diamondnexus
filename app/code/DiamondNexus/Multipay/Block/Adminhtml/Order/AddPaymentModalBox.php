@@ -28,8 +28,7 @@ class AddPaymentModalBox extends Template
         Context $context,
         Transaction $transactionResource,
         array $data = []
-    )
-    {
+    ) {
         parent::__construct($context, $data);
         $this->resource = $transactionResource;
     }
@@ -70,7 +69,8 @@ class AddPaymentModalBox extends Template
             $orderId = $this->getData('order')->getId();
         }
         return $this->getUrl(
-            'diamondnexus/order/order', [
+            'diamondnexus/order/order',
+            [
             'order_id' => $orderId
             ]
         );

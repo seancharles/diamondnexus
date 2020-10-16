@@ -17,8 +17,7 @@ class View
     public function beforeSetLayout(
         \Magento\Sales\Block\Adminhtml\Order\View $subject,
         $layout
-    )
-    {
+    ) {
         $subject->addButton(
             'add_payment_button',
             [
@@ -33,8 +32,7 @@ class View
     public function afterToHtml(
         \Magento\Sales\Block\Adminhtml\Order\View $subject,
         $result
-    )
-    {
+    ) {
         if ($subject->getNameInLayout() == 'sales_order_edit') {
             try {
                 /** @var AddPaymentModalBox $blockHtml */
