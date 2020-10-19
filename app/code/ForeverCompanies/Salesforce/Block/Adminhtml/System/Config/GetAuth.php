@@ -22,14 +22,14 @@ class GetAuth extends Field
      *
      * @var string
      */
-    protected $email = 'salesforcecrm_config_email';
+    protected $email = 'salesforcecrm_salesforceconfig_email';
 
     /**
      * Password
      *
      * @var string
      */
-    protected $password = 'salesforcecrm_config_passwd';
+    protected $password = 'salesforcecrm_salesforceconfig_passwd';
 
     /**
      * Get Auth Token Label

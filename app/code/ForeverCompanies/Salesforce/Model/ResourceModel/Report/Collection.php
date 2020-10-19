@@ -13,7 +13,7 @@ use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
  * Class Collection
  * @package ForeverCompanies\Salesforce\Model\ResourceModel\Report
  */
-class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
+class Collection extends AbstractCollection
 {
     /**
      * ID Field name

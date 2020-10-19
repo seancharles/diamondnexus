@@ -27,7 +27,18 @@ class DataGetter
     }
 
     /**
-     * Return an array of pricebook entries on Salesforce
+     * Return an array of accounts on Salesforce
+     * @return array|mixed|string
+     */
+    public function getAllSalesforceAccounts()
+    {
+        $query = 'SELECT id, Name FROM Account';
+        $result = $this->job->sendBatchRequest('query', 'Account', $query);
+        return $result;
+    }
+
+    /**
+     * Return an array of orders on Salesforce
      * @return mixed|string
      */
     public function getAllSalesforceOrders()

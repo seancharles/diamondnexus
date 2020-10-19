@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="customer_register_success">
+        <observer name="salesforce_register" instance="ForeverCompanies\Salesforce\Observer\Customer\Register"/>
+    </event>
+    <event name="customer_address_save_after">
+        <observer name="salesforce_update_customer" instance="ForeverCompanies\Salesforce\Observer\Customer\Register"/>
+    </event>
+    <event name="sales_order_save_commit_after">
+        <observer name="salesforce_syncorder" instance="ForeverCompanies\Salesforce\Observer\Order\Create"/>
+    </event>
+</config>

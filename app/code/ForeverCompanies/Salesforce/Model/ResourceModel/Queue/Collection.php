@@ -7,7 +7,10 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Model\ResourceModel\Queue;
 
-class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
+use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+
+
+class Collection extends AbstractCollection
 {
     /**
      * Initialize resource collection

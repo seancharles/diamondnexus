@@ -81,6 +81,6 @@ class Order extends \Magento\Backend\App\Action
 
     protected function _isAllowed()
     {
-        return $this->_authorization->isAllowed('ForeverCompanies_Salesforce::config_salesforce');
+        return $this->_authorization->isAllowed('ForeverCompanies_Salesforce::config_salesforcecrm');
     }
 }

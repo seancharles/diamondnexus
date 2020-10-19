@@ -2,7 +2,7 @@
 /** @var ForeverCompanies\Salesforce\Block\Adminhtml\Request\TodayRequestForm $block */
 $restRequest = $block->getTodayRestRequest();
 $bulkRequest = $block->getTodayBulkRequest();
-$orderRequest = $block->getTodayOrderRequest();
+//$orderRequest = $block->getTodayOrderRequest();
 
 $noRequestMessage = 'No request has been made today';
 ?>
@@ -30,7 +30,7 @@ $noRequestMessage = 'No request has been made today';
             </div>
         </div>
 
-        <div class="admin__page-section-item order-information">
+        <!-- <div class="admin__page-section-item order-information">
             <div class="admin__page-section-item-title">
                 <span class="title"><?php echo __('Detail') ?></span>
             </div>
@@ -39,11 +39,11 @@ $noRequestMessage = 'No request has been made today';
                     <tbody>
                     <tr>
                         <td><?php /* @escapeNotVerified */
-                            echo __('Orders:') ?></td>
-                        <td><?php echo $orderRequest ? $orderRequest : $noRequestMessage ?></td>
+                            //echo __('Orders:') ?></td>
+                        <td><?php //echo $orderRequest ? $orderRequest : $noRequestMessage ?></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div> -->
 </section>

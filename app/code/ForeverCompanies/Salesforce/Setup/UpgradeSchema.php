@@ -15,7 +15,7 @@ use Magento\Framework\DB\Ddl\Table;
 
 /**
  * Class UpgradeSchema
- * @package Magenest\Salesforce\Setup
+ * @package ForeverCompanies\Salesforce\Setup
  */
 class UpgradeSchema implements UpgradeSchemaInterface
 {

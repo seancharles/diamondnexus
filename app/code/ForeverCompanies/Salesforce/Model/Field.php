@@ -144,7 +144,10 @@ class Field extends AbstractModel
      */
     public function getAllTable()
     {
-        $table = ['Order' => 'order'];
+        $table = [
+            'Account'  => 'customer',
+            'Order' => 'order'
+        ];
         return $table;
     }
 
@@ -178,7 +181,7 @@ class Field extends AbstractModel
     {
         $this->setSalesforceFields($this->salesType);
         $data = [
-            'type' => $this->salesType,
+            'type'       => $this->salesType,
             'salesforce' => $this->salesField,
             'magento'    => $this->mageType,
             'status'     => 1,
@@ -219,8 +222,48 @@ class Field extends AbstractModel
     {
         $orderFields = [];
         switch ($table) {
+            case 'customer':
+                $m_fields = [
+                    'entity_id'       => 'ID',
+                    'email'           => 'Email',
+                    'created_at'      => 'Created At',
+                    'update_at'       => 'Updated At',
+                    'is_active'       => 'is Active',
+                    'created_in'      => 'Created in',
+                    'prefix'          => 'Prefix',
+                    'firstname'       => 'First name',
+                    'middlename'      => 'Middle Name/Initial',
+                    'lastname'        => 'Last name',
+                    'taxvat'          => 'Tax/VAT Number',
+                    'gender'          => 'Gender',
+                    'dob'             => 'Date of Birth',
+                    'bill_firstname'  => 'Billing First Name',
+                    'bill_middlename' => 'Billing Middle Name',
+                    'bill_lastname'   => 'Billing Last Name',
+                    'bill_company'    => 'Billing Company',
+                    'bill_street'     => 'Billing Street',
+                    'bill_city'       => 'Billing City',
+                    'bill_region'     => 'Billing State/Province',
+                    'bill_country_id' => 'Billing Country',
+                    'bill_postcode'   => 'Billing Zip/Postal Code',
+                    'bill_telephone'  => 'Billing Telephone',
+                    'bill_fax'        => 'Billing Fax',
+                    'ship_firstname'  => 'Shipping First Name',
+                    'ship_middlename' => 'Shipping Middle Name',
+                    'ship_lastname'   => 'Shipping Last Name',
+                    'ship_company'    => 'Shipping Company',
+                    'ship_street'     => 'Shipping Street',
+                    'ship_city'       => 'Shipping City',
+                    'ship_region'     => 'Shipping State/Province',
+                    'ship_country_id' => 'Shipping Country',
+                    'ship_postcode'   => 'Shipping Zip/Postal Code',
+                    'ship_telephone'  => 'Shipping Telephone',
+                    'ship_fax'        => 'Shipping Fax',
+                    'vat_id'          => 'VAT number',
+                ];
+                break;
             case 'order':
-                $orderFields = [
+                $m_fields = [
                     'entity_id'                => 'ID',
                     'state'                    => 'State',
                     'status'                   => 'Status',
@@ -267,7 +310,9 @@ class Field extends AbstractModel
                     'remote_ip'                => 'Remote IP',
                 ];
                 break;
+            default:
+                break;
         }
-        $this->mageField = $orderFields;
+        $this->mageField = $m_fields;
     }
 }

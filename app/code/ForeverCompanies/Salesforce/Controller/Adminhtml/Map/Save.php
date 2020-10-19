@@ -10,10 +10,12 @@ namespace ForeverCompanies\Salesforce\Controller\Adminhtml\Map;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Registry;
 use ForeverCompanies\Salesforce\Model\MapFactory;
-use Magento\Cms\Model\PageFactory;
-use ForeverCompanies\Salesforce\Model\ResourceModel\Map\Collection as MapCollectionFactory;
+use Magento\Framework\View\Result\PageFactory;
+use ForeverCompanies\Salesforce\Model\ResourceModel\Map\CollectionFactory as MapCollectionFactory;
 use ForeverCompanies\Salesforce\Controller\Adminhtml\Map as MapController;
 use Magento\Framework\Exception\LocalizedException;
+
+
 /**
  * Class Save
  *

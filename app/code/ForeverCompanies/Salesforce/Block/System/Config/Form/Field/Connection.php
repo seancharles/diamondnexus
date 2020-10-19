@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Block\System\Config\Form\Field;
 
-use Magento\Framework\Data\Form\Element\AbstractElement;
 use Magento\Config\Block\System\Config\Form\Field as ConfigFormField;
 use ForeverCompanies\Salesforce\Block\Adminhtml\Connection\Status as ConnectionStatus;
 

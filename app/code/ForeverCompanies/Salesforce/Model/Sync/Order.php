@@ -26,6 +26,11 @@ class Order extends Connector
     protected $orderFactory;
 
     /**
+     * @var \ForeverCompanies\Salesforce\Model\Sync\Account
+     */
+    protected $account;
+
+    /**
      * @var Job
      */
     protected $job;
@@ -57,6 +62,7 @@ class Order extends Connector
      * @param Data $data
      * @param Job $job
      * @param OrderFactory $orderFactory
+     * @param Account $account
      * @param DataGetter $dataGetter
      * @param QueueFactory $queueFactory
      * @param RequestLogFactory $requestLogFactory
@@ -71,6 +77,7 @@ class Order extends Connector
         QueueFactory $queueFactory,
         RequestLogFactory $requestLogFactory,
         OrderFactory $orderFactory,
+        Account $account,
         DataGetter $dataGetter
     )
     {
@@ -83,6 +90,7 @@ class Order extends Connector
         $this->data   = $data;
         $this->job = $job;
         $this->dataGetter = $dataGetter;
+        $this->account = $account;
     }
 
     /**
@@ -96,59 +104,56 @@ class Order extends Connector
         $model = $this->orderFactory->create()->loadByIncrementId($increment_id);
         $customerId = $model->getCustomerId();
         $date =  date('Y-m-d', strtotime($model->getCreatedAt()));
-        //$email = $model->getCustomerEmail();
+        $email = $model->getCustomerEmail();
         if ($model->getData(self::SALESFORCE_ORDER_ATTRIBUTE_CODE)){
             return '';
         }
+
         if ($customerId){
-           // $accountId = $this->account->sync($customerId);
-           // $this->contact->sync($customerId);
+            $accountId = $this->account->sync($customerId);
         } else {
-            //$accountId = $this->account->syncByEmail($email);
-            // $data      = [
-            //     'Email'     => $email,
-            //     'FirstName' => $model->getCustomerFirstname(),
-            //      'LastName'  => $model->getCustomerLastname(),
-            //  ];
-            //  $this->contact->syncByEmail($data);
-            $params = $this->data->getOrder($model, $this->_type);
-          //  $pricebookId = $this->searchRecords('Pricebook2','Name','Standard Price Book');
-            $params += [
-               // 'AccountId' => $accountId,
+            $accountId = $this->account->syncByEmail($email);
+        }
+
+        $params = $this->data->getOrder($model, $this->_type);
+        $pricebookId = $this->searchRecords('Pricebook2','Name','Standard Price Book');
+        $params += [
+                'AccountId' => $accountId,
                 'EffectiveDate' => $date,
                 'Status' => 'Draft',
-                //'Pricebook2Id' => $pricebookId,
+                'Pricebook2Id' => $pricebookId,
             ];
-             // Create new Order
-            $orderId = $this->createRecords($this->_type, $params, $model->getIncrementId());
-            $this->saveAttribute($model, $orderId);
 
-            // Add new record to OrderItem need:
-            foreach ($model->getAllItems() as $item){
-                $productId = $item->getProductId();
-                $qty = $item->getQtyOrdered();
-                $price  = $item->getPrice() - $item->getDiscountAmount() / $qty;
-                if ($price > 0){
-                    //$pricebookEntryId = $this->searchRecords('PricebookEntry','Product2Id', $productId);
-                    $output = [
-                        //'PricebookEntryId' => $pricebookEntryId,
+        // Create new Order
+        $orderId = $this->createRecords($this->_type, $params, $model->getIncrementId());
+        $this->saveAttribute($model, $orderId);
+
+        // Add new record to OrderItem need:
+        foreach ($model->getAllItems() as $item){
+            $productId = $item->getProductId();
+            $qty = $item->getQtyOrdered();
+            $price  = $item->getPrice() - $item->getDiscountAmount() / $qty;
+            if ($price > 0){
+                    $pricebookEntryId = $this->searchRecords('PricebookEntry','Product2Id', $productId);
+                $output = [
+                        'PricebookEntryId' => $pricebookEntryId,
                         'OrderId'          => $orderId,
                         'Quantity'         => $qty,
                         'UnitPrice'        => $price,
                     ];
-                    $this->createRecords('OrderItem', $output, $productId);
+                $this->createRecords('OrderItem', $output, $productId);
                 }
             }
 
-            if ($taxInfo = $this->getTaxItemInfo($model, $orderId)){
+        if ($taxInfo = $this->getTaxItemInfo($model, $orderId)){
                 $this->createRecords('OrderItem', $taxInfo, 'TAX');
-            }
-            if ($shippingInfo = $this->getShippingItemInfo($model, $orderId)){
-                $this->createRecords('OrderItem', $shippingInfo, 'SHIPPING');
-            }
-
-            return $orderId;
         }
+        if ($shippingInfo = $this->getShippingItemInfo($model, $orderId)){
+                $this->createRecords('OrderItem', $shippingInfo, 'SHIPPING');
+        }
+
+       return $orderId;
+
     }
 
     public function syncAllOrders()
@@ -208,19 +213,28 @@ class Order extends Connector
     {
         $params = [];
         $pricebookId = $this->searchRecords('Pricebook2', 'Name', 'Standard Price Book');
+
         /** @var \Magento\Sales\Model\Order $order */
         foreach ($this->createOrderIds as $id){
             $order = $this->orderFactory->create()->loadByIncrementId($id['mid']);
-            //$customer = $order->getCustomer();
+            $customer = $order->getCustomer();
             $date = date('Y-m-d', strtotime($order->getCreatedAt()));
-           // $email = $order->getCustomerEmail();
+            $email = $order->getCustomerEmail();
+
+            if ($customer && $customer->getData(Account::SALESFORCE_ACCOUNT_ATTRIBUTE_CODE)){
+                $accountId = $customer->getData(Account::SALESFORCE_ACCOUNT_ATTRIBUTE_CODE);
+            } elseif($customer && $customer->getId()){
+                $accountId = $this->account->sync($customer->getId());
+            } else {
+                $accountId = $this->account->sync($email);
+            }
 
             $info = $this->data->getOrder($order, $this->_type);
             $info += [
                 'EffectiveDate' => $date,
                 'Status' => 'Draft',
-                'Pricebook2Id' => $pricebookId
-                //'AccountId' => $accountId
+                'Pricebook2Id' => $pricebookId,
+                'AccountId' => $accountId
             ];
             $params[] = $info;
         }

@@ -9,7 +9,6 @@ namespace ForeverCompanies\Salesforce\Observer;
 
 use ForeverCompanies\Salesforce\Model\QueueFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Event\Observer as EventObserver;
 use Magento\Framework\Event\ObserverInterface;
 
 abstract class SyncObserver implements ObserverInterface
@@ -46,6 +45,8 @@ abstract class SyncObserver implements ObserverInterface
     {
         return $this->scopeConfig->getValue($path);
     }
+
+
 
     public function addToQueue($type, $entityId)
     {

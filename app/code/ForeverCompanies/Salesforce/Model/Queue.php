@@ -17,6 +17,7 @@ use Magento\Framework\Model\AbstractModel;
  */
 class Queue extends AbstractModel
 {
+    const TYPE_ACCOUNT = 'Account';
     const TYPE_ORDER = 'Order';
 
     protected function _construct()

@@ -32,7 +32,7 @@ class Index extends \Magento\Backend\App\Action
 
     public function execute()
     {
-        $resultPage = $this->resultFactory->create();
+        $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu('ForeverCompanies_Salesforce::salesforce');
         $resultPage->getConfig()->getTitle()->prepend(__('Request Report'));
         return $resultPage;

@@ -15,8 +15,42 @@
             <config_path>salesforcecrm/salesforceconfig/is_connected</config_path>
             <frontend_model>ForeverCompanies\Salesforce\Block\System\Config\Form\Field\Connection</frontend_model>
         </field>
-        <field id="email" translate="label comment"
+        <field id="host"
+               translate="label comment" type="text" sortOrder="9"
+               showInDefault="1" showInWebsite="0" showInStore="0">
+            <label>Host</label>
+            <config_path>salesforcecrm/salesforceconfig/host</config_path>
+            <tooltip>
+                <![CDATA[
+                        Host of Salesforce ]]></tooltip>
+            <depends>
+                <field id="is_connected">0</field>
+            </depends>
+        </field>
+        <field id="client_id"
+               translate="label comment"
                type="text" sortOrder="10"
+               showInDefault="1" showInWebsite="0" showInStore="0">
+            <label>Client ID</label>
+            <tooltip>Enter Consumer key of connect app</tooltip>
+            <config_path>salesforcecrm/salesforceconfig/client_id</config_path>
+            <depends>
+                <field id="is_connected">0</field>
+            </depends>
+        </field>
+        <field id="client_secret"
+               translate="label comment"
+               type="text" sortOrder="11"
+               showInDefault="1" showInWebsite="0" showInStore="0">
+            <label>Client Secret</label>
+            <tooltip>Enter Consumer secret of connect app</tooltip>
+            <config_path>salesforcecrm/salesforceconfig/client_secret</config_path>
+            <depends>
+                <field id="is_connected">0</field>
+            </depends>
+        </field>
+        <field id="email" translate="label comment"
+               type="text" sortOrder="12"
                showInDefault="1" showInWebsite="0"
                showInStore="0">
             <label>Email</label>
@@ -33,49 +67,13 @@
             </depends>
         </field>
         <field id="passwd" translate="label comment"
-               type="text" sortOrder="20"
+               type="text" sortOrder="13"
                showInDefault="1" showInWebsite="0"
                showInStore="0">
             <label>Password</label>
             <frontend_model>ForeverCompanies\Salesforce\Block\System\Config\Form\Field\Password</frontend_model>
             <tooltip>Enter Password of SalesforceCRM account</tooltip>
             <config_path>salesforcecrm/salesforceconfig/passwd</config_path>
-            <depends>
-                <field id="is_connected">0</field>
-            </depends>
-        </field>
-        <field id="client_id"
-               translate="label comment"
-               type="text" sortOrder="30"
-               showInDefault="1" showInWebsite="0" showInStore="0">
-            <label>Consumer Key</label>
-            <tooltip>Enter Consumer key of connect app</tooltip>
-            <config_path>salesforcecrm/salesforceconfig/client_id</config_path>
-            <depends>
-                <field id="is_connected">0</field>
-            </depends>
-        </field>
-        <field id="client_secret"
-               translate="label comment"
-               type="text" sortOrder="40"
-               showInDefault="1" showInWebsite="0" showInStore="0">
-            <label>Consumer Secret</label>
-            <tooltip>Enter Consumer secret of connect app</tooltip>
-            <config_path>salesforcecrm/salesforceconfig/client_secret</config_path>
-            <depends>
-                <field id="is_connected">0</field>
-            </depends>
-        </field>
-        <field id="security_token"
-               translate="label comment" type="text" sortOrder="50"
-               showInDefault="1" showInWebsite="0" showInStore="0">
-            <label>Security Token</label>
-            <config_path>salesforcecrm/salesforceconfig/security_token</config_path>
-            <tooltip>
-                <![CDATA[
-                        Receive security token via email.</br>
-                        Steps to reset in Salesforce:<br/>
-                        My settings > Personal > Reset My Security Token > Reset Securty Token]]></tooltip>
             <depends>
                 <field id="is_connected">0</field>
             </depends>

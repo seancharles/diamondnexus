@@ -5,7 +5,7 @@
  */
 declare(strict_types=1);
 
-namespace ForeverCompanies\Salesforce\Block\Adminhtml\Map\Edit;
+namespace ForeverCompanies\Salesforce\Block\Adminhtml\Map\Edit\Tab;
 
 use \Magento\Backend\Block\Widget\Form\Generic;
 use Magento\Backend\Block\Widget\Tab\TabInterface;
@@ -71,8 +71,8 @@ class Main extends Generic implements TabInterface
         /** @var $model \ForeverCompanies\Salesforce\Model\Map */
         $model = $this->_coreRegistry->registry('mapping');
         $isElementDisabled = false;
-        $model = $this->fieldFactory->create();
-        $type = $model->changeFields();
+        $_model = $this->fieldFactory->create();
+        $type = $_model->changeFields();
 
         /**
          * @var \Magento\Framework\Data\Form $form
@@ -83,12 +83,11 @@ class Main extends Generic implements TabInterface
         $form->setHtmlIdPrefix('page_');
         $fieldset = $form->addFieldset('base_fieldset',
             ['legend' => __('Mapping Information')]);
-
         if ($model->getId()){
             $type = $model->getType();
-            $model->setType($type);
-            $salesforceFields = $model->getSalesforceFields();
-            $magentoFields = $model->getMagentoFields();
+            $_model->setType($type);
+            $salesforceFields = $_model->getSalesforceFields();
+            $magentoFields = $_model->getMagentoFields();
             $fieldset->addField('id', 'hidden', ['name' => 'id']);
             $isElementDisabled = true;
         }

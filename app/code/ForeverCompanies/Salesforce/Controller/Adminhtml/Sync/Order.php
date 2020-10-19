@@ -23,7 +23,7 @@ class Order extends Action
     /**
      * @var Sync\Order
      */
-    protected $order;
+    protected $_order;
 
     /**
      * Customer constructor
@@ -34,7 +34,7 @@ class Order extends Action
         Context $context,
         Sync\Order $order
     ) {
-        $this->order = $order;
+        $this->_order = $order;
         parent::__construct($context);
     }
 
@@ -46,7 +46,7 @@ class Order extends Action
         try{
           $orderIncrementId = $this->getRequest()->getParam('id');
           if ($orderIncrementId){
-              $this->order->sync($orderIncrementId);
+              $this->_order->sync($orderIncrementId);
               $this->messageManager->addSuccess(
                   __('Order is synced successfull')
               );
@@ -68,7 +68,7 @@ class Order extends Action
     protected function _isAllowed()
     {
        return $this->_authorization->isAllowed(
-           'ForeverCompanies_Salesforce::config_salesforce'
+           'ForeverCompanies_Salesforce::config_salesforcecrm'
        );
     }
 }

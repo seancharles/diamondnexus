@@ -12,9 +12,9 @@ use Magento\Framework\Registry;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Ui\Component\MassAction\Filter;
 use ForeverCompanies\Salesforce\Controller\Adminhtml\Map as MapController;
-use Magento\Cms\Model\PageFactory;
+use Magento\Framework\View\Result\PageFactory;
 use ForeverCompanies\Salesforce\Model\MapFactory;
-use ForeverCompanies\Salesforce\Model\ResourceModel\Map\Collection
+use ForeverCompanies\Salesforce\Model\ResourceModel\Map\CollectionFactory
     as MapCollectionFactory;
 
 

@@ -23,15 +23,17 @@ class Connector
      *#@+
      * Constants
      */
-    const XML_PATH_SALESFORCE_IS_CONNECTED = 'salesforcecrm/config/is_connected';
-    const XML_PATH_SALESFORCE_EMAIL = 'salesforcecrm/config/email';
-    const XML_PATH_SALESFORCE_PASSWD = 'salesforcecrm/config/passwrd';
-    const XML_PATH_SALESFORCE_CLIENT_ID = 'salesforcecrm/config/client_id';
-    const XML_PATH_SALESFORCE_CLIENT_SECRET = 'salesforcecrm/config/client_secret';
-    const XML_PATH_SALESFORCE_SECURITY_TOKEN = 'salesforcecrm/config/security_token';
-    const XML_PATH_SALESFORCE_ACCESS_TOKEN = 'salesforcecrm/config/access_token';
-    const XML_PATH_SALESFORCE_INSTANCE_URL = 'salesforcecrm/config/instance_url';
+    const XML_PATH_SALESFORCE_IS_CONNECTED = 'salesforcecrm/salesforceconfig/is_connected';
+    const XML_PATH_SALESFORCE_CLIENT_HOST = 'salesforcecrm/salesforceconfig/host';
+    const XML_PATH_SALESFORCE_CLIENT_ID = 'salesforcecrm/salesforceconfig/client_id';
+    const XML_PATH_SALESFORCE_CLIENT_SECRET = 'salesforcecrm/salesforceconfig/client_secret';
+    const XML_PATH_SALESFORCE_EMAIL = 'salesforcecrm/salesforceconfig/email';
+    const XML_PATH_SALESFORCE_PASSWD = 'salesforcecrm/salesforceconfig/passwd';
+   // const XML_PATH_SALESFORCE_SECURITY_TOKEN = 'salesforcecrm/salesforceconfig/security_token';
+    const XML_PATH_SALESFORCE_ACCESS_TOKEN = 'salesforcecrm/salesforceconfig/access_token';
+    const XML_PATH_SALESFORCE_INSTANCE_URL = 'salesforcecrm/salesforceconfig/instance_url';
     const XML_PATH_SALESFORCE_ORDER_ENABLE = 'salesforcecrm/sync/order';
+    const XML_PATH_SALESFORCE_ACCOUNT_ENABLE = 'salesforcecrm/sync/account';
 
     /**
      * Core store config
@@ -104,33 +106,36 @@ class Connector
     {
         try {
             if (!empty($data) && $update){
+                $host = $data['host'];
                 $username = $data['username'];
                 $password = $data['password'];
                 $client_id = $data['client_id'];
                 $client_secret = $data['client_secret'];
-                $security_token = $data['security_token'];
+               // $security_token = $data['security_token'];
             } else {
+                $host  = $this->_scopeConfig->getValue(
+                    self::XML_PATH_SALESFORCE_CLIENT_HOST
+                );
                 $username  = $this->_scopeConfig->getValue(
                     self::XML_PATH_SALESFORCE_EMAIL
                 );
                 $password = $this->_scopeConfig->getValue(self::XML_PATH_SALESFORCE_PASSWD);
                 $client_id = $this->_scopeConfig->getValue(self::XML_PATH_SALESFORCE_CLIENT_ID);
                 $client_secret = $this->_scopeConfig->getValue(self::XML_PATH_SALESFORCE_CLIENT_SECRET);
-                $security_token = $this->_scopeConfig->getValue(self::XML_PATH_SALESFORCE_SECURITY_TOKEN);
             }
 
-            if (!$username || !$password || !$client_id || !$client_secret || !$security_token) {
+            if (!$username || !$password || !$client_id || !$client_secret) {
                 throw new \InvalidArgumentException('Field not setup !');
             }
 
-            $base_url = 'https://login.salesforce.com/';
+            $base_url = $host;
             $url = $base_url . 'services/oauth2/token';
             $params =[
                 'grant_type' => 'password',
                 'client_id' => $client_id,
                 'client_secret' => $client_secret,
                 'username' => $username,
-                'password' => $password . $security_token
+                'password' => $password
             ];
             $response = $this->makeRequest(\Zend_Http_Client::POST, $url, [], $params);
             $response = \GuzzleHttp\json_decode($response, true);
@@ -233,6 +238,23 @@ class Connector
     }
 
     /**
+     * Create new Account in Salesforce
+     */
+    public function createAccount($table, $parameter, $mid = null)
+    {
+        $path = "/services/apexrest/createAccount";
+        $response = $this->sendRequest(\Zend_Http_Client::POST, $path, $parameter);
+        if (isset($response["acctId"])){
+            $id = $response["acctId"];
+            $this->saveReport($id, 'create', $table, 1, null, $mid);
+            return $response;
+        }
+
+        return false;
+    }
+
+
+    /**
      * Delete a record in salesforce
      *
      * @param string $table
@@ -246,16 +268,16 @@ class Connector
     }
 
     /**
-     * Update a record in salesforce
+     * Update a account in Salesforce
      *
      * @param string $table
      * @param string $id
      * @param array $parameter
      */
-    public function updateRecords($table, $id, $parameter, $mid = null)
+    public function updateAccount($table, $id, $parameter, $mid = null)
     {
-        $path = "/services/data/v34.0/sobjects/" . $table . "/" . $id;
-        $this->sendRequest(\Zend_Http_Client::PATCH,$path, $parameter);
+        $path = "/services/apexrest/updateAccount";
+        $this->sendRequest(\Zend_Http_Client::PUT,$path, $parameter);
         $this->saveReport($id, 'update', $table, 1 , null, $mid);
     }
 

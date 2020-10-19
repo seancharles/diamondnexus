@@ -23,7 +23,9 @@ class RequestLog extends AbstractModel
     {
         $type = strtolower($type);
         $column = $type . '_request';
+
         /** @var \ForeverCompanies\Salesforce\Model\RequestLog $request */
+
         $request = $this->getCollection()
             ->addFieldToSelect('*')
             ->addFieldToFilter('date', date('Y-m-d'))

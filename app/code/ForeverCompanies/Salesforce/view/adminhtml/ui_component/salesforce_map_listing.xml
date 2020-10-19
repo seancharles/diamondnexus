@@ -234,8 +234,7 @@
         </column>
         <column name="status">
             <argument name="data" xsi:type="array">
-                <item name="options" xsi:type="object">
-                    ForeverCompanies\Salesforce\Model\Status
+                    <item name="options" xsi:type="object">ForeverCompanies\Salesforce\Model\Status</item>
                     <item name="config" xsi:type="array">
                         <item name="filter" xsi:type="string">select</item>
                         <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>

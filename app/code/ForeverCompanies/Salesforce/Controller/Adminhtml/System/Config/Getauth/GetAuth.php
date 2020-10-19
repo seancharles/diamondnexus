@@ -48,8 +48,7 @@ class GetAuth extends Action
             if (empty($data['username']) ||
                 empty($data['password']) ||
                 empty($data['client_id'])||
-                empty($data['client_secret']) ||
-                empty($data['security_token'])) {
+                empty($data['client_secret'])) {
                 $result['error']       = 1;
                 $result['description'] = "Please enter all information";
                 echo json_encode($result);
@@ -65,12 +64,6 @@ class GetAuth extends Action
             } else {
                 $result = $response;
                 $result['error'] = 0;
-                try {
-                    //$this->syncProduct->syncShippingProduct();
-                    //$this->syncProduct->syncTaxProduct();
-                } catch (\Exception $e) {
-                    $result['message'] = $e->getMessage();
-                }
                 echo json_encode($result);
                 return;
             }

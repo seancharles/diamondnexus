@@ -6,6 +6,7 @@
 declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Model\ResourceModel\Map;
+
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 
 class Collection extends AbstractCollection

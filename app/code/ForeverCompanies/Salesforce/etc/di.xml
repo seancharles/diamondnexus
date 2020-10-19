@@ -20,29 +20,31 @@
         <arguments>
             <argument name="collections" xsi:type="array">
                 <item name="salesforce_map_listing_data_source" xsi:type="string">
-                    ForeverCompanies\Salesforce\Model\ResourceModel\Map\Collection
+                    ForeverCompanies\Salesforce\Model\ResourceModel\Map\Grid\Collection
                 </item>
                 <item name="salesforce_report_listing_data_source" xsi:type="string">
-                    ForeverCompanies\Salesforce\Model\ResourceModel\Report\Collection
+                    ForeverCompanies\Salesforce\Model\ResourceModel\Report\Grid\Collection
                 </item>
                 <item name="salesforce_queue_listing_data_source" xsi:type="string">
-                    ForeverCompanies\Salesforce\Model\ResourceModel\Queue\Collection
+                    ForeverCompanies\Salesforce\Model\ResourceModel\Queue\Grid\Collection
                 </item>
             </argument>
         </arguments>
     </type>
-    <virtualType name="ForeverCompanies\Salesforce\Model\ResourceModel\Report\Collection"
+    <virtualType name="ForeverCompanies\Salesforce\Model\ResourceModel\Report\Grid\Collection"
                  type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
         <arguments>
             <argument name="mainTable" xsi:type="string">forevercompanies_salesforce_report</argument>
             <argument name="resourceModel" xsi:type="string">ForeverCompanies\Salesforce\Model\ResourceModel\Report</argument>
         </arguments>
     </virtualType>
-    <virtualType name="ForeverCompanies\Salesforce\Model\ResourceModel\Queue\Collection"
+    <virtualType name="ForeverCompanies\Salesforce\Model\ResourceModel\Queue\Grid\Collection"
                  type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
         <arguments>
             <argument name="mainTable" xsi:type="string">forevercompanies_salesforce_queue</argument>
             <argument name="resourceModel" xsi:type="string">ForeverCompanies\Salesforce\Model\ResourceModel\Queue</argument>
         </arguments>
     </virtualType>
+    <preference for="ForeverCompanies\Salesforce\Api\OrderSalesforceInterface" type="ForeverCompanies\Salesforce\Model\OrderSalesforce"/>
+    <preference for="ForeverCompanies\Salesforce\Api\CustomerSalesforceInterface" type="ForeverCompanies\Salesforce\Model\CustomerSalesforce"/>
 </config>

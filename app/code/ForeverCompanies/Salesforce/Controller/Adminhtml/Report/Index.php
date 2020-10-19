@@ -5,25 +5,57 @@
  */
 declare(strict_types=1);
 
-namespace ForeverCompanies\Salesforce\Controller\Adminhtml\Request;
+namespace ForeverCompanies\Salesforce\Controller\Adminhtml\Report;
 
-use ForeverCompanies\Salesforce\Controller\Adminhtml\Report as ReportController;
-
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\View\Result\PageFactory;
 /**
- * Class Index
+ * Class Index Controller
  *
  * @package ForeverCompanies\Salesforce\Controller\Adminhtml\Report
  */
-class Index extends ReportController
+class Index extends \Magento\Backend\App\Action
 {
     /**
-     * execute the action
+     * @var PageFactory
+     */
+    protected $resultPageFactory;
+
+    /**
+     * Index constructor.
+     * @param Context $context
+     * @param PageFactory $resultPageFactory
+     */
+    public function __construct(
+        Context $context,
+        PageFactory $resultPageFactory
+    ) {
+        parent::__construct($context);
+        $this->resultPageFactory = $resultPageFactory;
+    }
+
+
+    /**
+     * Init actions
      *
-     * @return \Magento\Backend\Model\View\Result\Page|\Magento\Framework\View\Result\Page
+     * @return \Magento\Backend\Model\View\Result\Page
      */
     public function execute()
     {
-        $this->_setPageData();
-        return $this->getResultPage();
+        /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
+        $resultPage = $this->resultPageFactory->create();
+        $resultPage->setActiveMenu('ForeverCompanies_Salesforce::report')
+            ->addBreadcrumb(__('View Report'), __('View Report'));
+        return $resultPage;
+    }
+
+    /**
+     * Check ACL
+     *
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('ForeverCompanies_Salesforce::report');
     }
 }

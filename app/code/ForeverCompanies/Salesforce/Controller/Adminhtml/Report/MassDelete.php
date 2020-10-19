@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Controller\Adminhtml\Report;
 
-use ForeverCompanies\Salesforce\Controller\Adminhtml\Report as ReportController;
+use ForeverCompanies\Salesforce\Controller\Adminhtml\Report as  ReportController;
 use Magento\Backend\App\Action\Context;
 use Magento\Backend\Model\View\Result\Page;
 use Magento\Framework\Registry;
@@ -23,7 +23,7 @@ use ForeverCompanies\Salesforce\Model\ResourceModel\Report\CollectionFactory as 
 /**
  * Class MassDelete
  *
- * @package Magenest\Salesforce\Controller\Adminhtml\Report
+ * @package ForeverCompanies\Salesforce\Controller\Adminhtml\Report
  */
 class MassDelete extends ReportController
 {

@@ -3,7 +3,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
         <add id="ForeverCompanies_Salesforce::salesforce"
-             title="Integration"
+             title="Salesforce Integration"
              translate="title"
              module="ForeverCompanies_Salesforce"
              sortOrder="60"
@@ -31,14 +31,6 @@
              parent="ForeverCompanies_Salesforce::integration"
              action="salesforce/report/index"
              resource="ForeverCompanies_Salesforce::report"/>
-
-        <add id="ForeverCompanies_Salesforce::refresh"
-             title="Refresh Access Token"
-             module="ForeverCompanies_Salesforce"
-             sortOrder="30"
-             parent="ForeverCompanies_Salesforce::integration"
-             action="salesforce/map/refresh"
-             resource="ForeverCompanies_Salesforce::refresh"/>
 
         <add id="ForeverCompanies_Salesforce::queue"
              title="Queue"

@@ -9,10 +9,10 @@ namespace ForeverCompanies\Salesforce\Controller\Adminhtml;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Magento\Cms\Model\PageFactory;
 use Magento\Framework\Registry;
 use ForeverCompanies\Salesforce\Model\MapFactory;
-use ForeverCompanies\Salesforce\Model\ResourceModel\Map\Collection;
+use ForeverCompanies\Salesforce\Model\ResourceModel\Map\CollectionFactory as MapCollectionFactory;
+use Magento\Framework\View\Result\PageFactory;
 
 /**
  * Reviews admin controller
@@ -30,14 +30,14 @@ abstract class Map extends Action
     /**
      * Map model factory
      *
-     * @var MapFactory
+     * @var \ForeverCompanies\Salesforce\Model\MapFactory
      */
     protected $mapFactory;
 
     /**
      * Map Collection factory
      *
-     * @var   Collection
+     * @var   \ForeverCompanies\Salesforce\Model\MapFactory
      */
     protected $collectionFactory;
 
@@ -54,18 +54,18 @@ abstract class Map extends Action
     protected $resultPage;
 
     /**
-     * @param Context              $context
-     * @param Registry             $coreRegistry
-     * @param PageFactory          $resultPageFactory
-     * @param MapFactory           $mapFactory
-     * @param Collection           $collectionFactory
+     * @param Context                $context
+     * @param Registry               $coreRegistry
+     * @param PageFactory            $resultPageFactory
+     * @param MapFactory             $mapFactory
+     * @param MapCollectionFactory   $collectionFactory
      */
     public function __construct(
         Context $context,
         Registry $coreRegistry,
         PageFactory $resultPageFactory,
         MapFactory  $mapFactory,
-        Collection $collectionFactory
+        MapCollectionFactory $collectionFactory
     ) {
         $this->_context           = $context;
         $this->coreRegistry       = $coreRegistry;
@@ -73,6 +73,7 @@ abstract class Map extends Action
         $this->collectionFactory = $collectionFactory;
         $this->resultPageFactory  = $resultPageFactory;
         parent::__construct($context);
+
     }
 
     /**
@@ -85,7 +86,7 @@ abstract class Map extends Action
         /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
         $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu('ForeverCompanies_Salesforce::mapping')
-                   ->addBreadcrumb(__('Manage Mapping'), -_('Manage Mapping'));
+                   ->addBreadcrumb(__('Manage Mapping'), __('Manage Mapping'));
         return $resultPage;
     }
 

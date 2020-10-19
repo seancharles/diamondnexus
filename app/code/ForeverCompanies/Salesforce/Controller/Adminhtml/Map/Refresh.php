@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace Magenest\Salesforce\Controller\Adminhtml\Map;
 
 use Magento\Backend\App\Action\Context;
-use Magento\Cms\Model\PageFactory;
+use Magento\Framework\View\Result\PageFactory;
 use Magento\Backend\App\Action;
 use ForeverCompanies\Salesforce\Model\Connector;
 

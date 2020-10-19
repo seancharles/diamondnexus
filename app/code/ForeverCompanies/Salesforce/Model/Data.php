@@ -59,7 +59,7 @@ class Data
     public function getMapping($data, $type){
 
         $model = $this->mapFactory->create();
-        $collection = $model->getResourceCollection()
+        $collection = $model->getCollection()
             ->addFieldToFilter('type', $type)
             ->addFieldToFilter('status', 1);
         $map = [];
@@ -94,6 +94,50 @@ class Data
     }
 
     /**
+     * Get all data of Customer
+     *
+     * @param  \Magento\Customer\Model\Customer $model
+     * @param  string                           $type
+     * @return array
+     */
+    public function getCustomer($model, $type)
+    {
+        $this->field->setType($type);
+        $magento_fields = $this->field->getMagentoFields();
+        $data = [];
+        foreach ($magento_fields as $key => $item){
+            $sub = substr($key, 0 , 5);
+            if ($sub == 'bill_' && $model->getDefaultBillingAddress()){
+                $value      = substr($key, 5);
+                $billing    = $model->getDefaultBillingAddress();
+                $data[$key] = $billing->getData($value);
+            } elseif($sub == 'ship_' && $model->getDefaultShippingAddress()){
+                $value = substr($key,  5);
+                $shipping = $model->getDefaultShippingAddress();
+                $data[$key] = $shipping->getData($value);
+            }
+            else {
+                $data[$key] = $model->getData($key);
+            }
+        }
+
+        if (!empty($data['bill_country_id'])){
+            $country_id = $data['bill_country_id'];
+            $data['bill_country_id'] = $this->getCountryName($country_id);
+        }
+
+        if (!empty($data['ship_country_id'])){
+            $country_id = $data['ship_country_id'];
+            $data['ship_country_id'] = $this->getCountryName($country_id);
+        }
+
+        // Mapping data
+       // $params = $this->getMapping($data, $type);
+
+        return $data;
+    }
+
+    /**
      * Pass data of Order to array and return mapping
      *
      * @param  \Magento\Sales\Model\Order $model
@@ -113,6 +157,7 @@ class Data
                 $data[$key] = $billing->getData(substr($key,5));
             } elseif($sub == 'ship_'){
                 $shipping = $model->getShippingAddress();
+                $data[$key] = $shipping->getData(substr($key, 5));
             } else {
                 $data[$key] = $model->getData($key);
             }
@@ -129,8 +174,8 @@ class Data
         }
 
         // Mapping data
-        $params = $this->getMapping($data, $type);
-        return $params;
+        //$params = $this->getMapping($data, $type);
+        return $data;
 
     }
 }

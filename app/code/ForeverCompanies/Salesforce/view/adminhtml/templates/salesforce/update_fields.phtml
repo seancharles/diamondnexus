@@ -1,24 +1,44 @@
 <script>
     require([
         "jquery",
-        "getSalesFields",
         "domReady!"
-    ], function ($, Fields) {
-        var fields = new Fields({url: '<?php echo $this->getUpdateUrl(); ?>'});
-        $("button[data-ui-id='salesforce-map-edit-updateallfields-button']").click(
-            function() {
-                var url = '<?php echo $this->getUpdateAllFields() ?>';
-                jQuery.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: {
-                        form_key: FORM_KEY
-                    },
-                    showLoader: true,
-                    success: function(){
-                        alert('Update success');
-                    }
-                });
+    ], function ($) {
+
+        $("button[data-ui-id='salesforce-map-edit-updateallfields-button']").click(function(){
+            var url = '<?php echo $this->getUpdateAllFields() ?>';
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: {
+                    form_key: FORM_KEY
+                },
+                showLoader: true,
+                success: function(){
+                    alert('Update success');
+                }
             });
         });
+
+        $("select[data-ui-id='map-edit-tab-main-fieldset-element-select-type']").change(
+                function () {
+                    var type = $(this).val();
+                    var data = {'type' : type};
+                    var url = '<?php echo $this->getUpdateUrl()?>';
+                    $.ajax(
+                        {
+                            type: "POST",
+                            url: url,
+                            data: data,
+                            showLoader: true,
+                            success: function (response) {
+                                var responseObj = JSON.parse(response);
+                                console.log(response);
+                                $('select[data-ui-id="map-edit-tab-main-fieldset-element-select-magento"]').html(responseObj.magento_options);
+                                $('select[data-ui-id="map-edit-tab-main-fieldset-element-select-salesforce"]').html(responseObj.salesforce_options);
+                            }
+                        }
+                    );
+                }
+            );
+    });
 </script>

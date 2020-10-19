@@ -7,52 +7,55 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Controller\Adminhtml\Map;
 
-use ForeverCompanies\Salesforce\Controller\Adminhtml\Map as MapController;
-
-
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\View\Result\PageFactory;
 /**
  * Class Index Controller
  *
  * @package ForeverCompanies\Salesforce\Controller\Adminhtml\Map
  */
-class Index extends MapController
+class Index extends \Magento\Backend\App\Action
 {
     /**
-     * execute the action
+     * @var PageFactory
+     */
+    protected $resultPageFactory;
+
+    /**
+     * Index constructor.
+     * @param Context $context
+     * @param PageFactory $resultPageFactory
+     */
+    public function __construct(
+        Context $context,
+        PageFactory $resultPageFactory
+    ) {
+        parent::__construct($context);
+        $this->resultPageFactory = $resultPageFactory;
+    }
+
+
+    /**
+     * Init actions
      *
-     * @return
-     *  \Magento\Backend\Model\View\Result\Page|\Magento\Framework\View\Result\Page
+     * @return \Magento\Backend\Model\View\Result\Page
      */
     public function execute()
     {
-        $this->_setPageData();
-        return $this->getResultPage();
+        /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
+        $resultPage = $this->resultPageFactory->create();
+        $resultPage->setActiveMenu('ForeverCompanies_Salesforce::mapping')
+            ->addBreadcrumb(__('Manage Mapping'), __('Manage Mapping'));
+        return $resultPage;
     }
 
     /**
-     * Instantiate result page object
+     * Check ACL
      *
-     * @return
-     *  \Magento\Backend\Model\View\Result\Page|\Magento\Framework\View\Result\Page
+     * @return bool
      */
-    public function getResultPage()
+    protected function _isAllowed()
     {
-        if (is_null($this->resultPage)){
-            $this->resultPage = $this->resultPageFactory->create();
-        }
-
-        return $this->resultPage;
-    }
-
-    /**
-     * Set page data
-     *
-     * @return $this
-     */
-    protected function _setPageData()
-    {
-        $resultPage = $this->getResultPage();
-        $resultPage->getConfig()->getTitle()->prepend((__('Manage Mapping')));
-        return $this;
+        return $this->_authorization->isAllowed('ForeverCompanies_Salesforce::mapping');
     }
 }
