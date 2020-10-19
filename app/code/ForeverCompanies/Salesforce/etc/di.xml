@@ -45,6 +45,4 @@
             <argument name="resourceModel" xsi:type="string">ForeverCompanies\Salesforce\Model\ResourceModel\Queue</argument>
         </arguments>
     </virtualType>
-    <preference for="ForeverCompanies\Salesforce\Api\OrderSalesforceInterface" type="ForeverCompanies\Salesforce\Model\OrderSalesforce"/>
-    <preference for="ForeverCompanies\Salesforce\Api\CustomerSalesforceInterface" type="ForeverCompanies\Salesforce\Model\CustomerSalesforce"/>
 </config>
