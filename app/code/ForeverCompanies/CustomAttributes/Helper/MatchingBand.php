@@ -46,7 +46,8 @@ class MatchingBand extends AbstractHelper
         Context $context,
         Config $eavConfig,
         CrossSell $crossSellResource
-    ) {
+    )
+    {
         parent::__construct($context);
         $this->eavConfig = $eavConfig;
         $this->crossSellResource = $crossSellResource;

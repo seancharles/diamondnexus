@@ -52,7 +52,8 @@ class Link extends AbstractHelper
         ProductRepository $productRepository,
         BundlePriceUse $bundlePriceHelper,
         Logger $logger
-    ) {
+    )
+    {
         parent::__construct($context);
         $this->linkFactory = $linkFactory;
         $this->productRepository = $productRepository;

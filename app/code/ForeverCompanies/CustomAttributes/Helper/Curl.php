@@ -26,7 +26,8 @@ class Curl extends AbstractHelper
     public function __construct(
         Context $context,
         \Magento\Framework\HTTP\Adapter\Curl $curl
-    ) {
+    )
+    {
         parent::__construct($context);
         $this->curl = $curl;
     }

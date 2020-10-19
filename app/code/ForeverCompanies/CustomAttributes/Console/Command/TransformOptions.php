@@ -32,7 +32,8 @@ class TransformOptions extends AbstractCommand
     protected function execute(
         InputInterface $input,
         OutputInterface $output
-    ) {
+    )
+    {
         $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_GLOBAL);
         $output->writeln("Get products for option transformation...");
         $productCollection = $this->helper->getProductsAfterTransformCollection();

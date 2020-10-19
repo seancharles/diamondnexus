@@ -16,14 +16,14 @@ class ProductGalleryChangeTemplate extends OriginalObserver implements ObserverI
 
     /**
      * @param Observer $observer
-     * @return ProductGalleryChangeTemplate
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @return ProductGalleryChangeTemplate
      */
     public function execute(Observer $observer)
     {
         if (!$this->configuration->isEnabled()) {
             return $this;
         }
-        $observer->getBlock()->setTemplate(Content::TEMPLATE_GALLERY_PHTML);
+        return $observer->getData('block')->setTemplate(Content::TEMPLATE_GALLERY_PHTML);
     }
 }

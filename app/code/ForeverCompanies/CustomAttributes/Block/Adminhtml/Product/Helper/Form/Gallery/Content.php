@@ -60,7 +60,8 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
         Media $mediaHelper,
         Json $jsonHelper,
         array $data = []
-    ) {
+    )
+    {
         parent::__construct(
             $context,
             $jsonEncoder,

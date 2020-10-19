@@ -86,7 +86,8 @@ class DeleteByCsv extends Action
         ProductRepository $productRepository,
         Logger $logger,
         File $fileSystem
-    ) {
+    )
+    {
         parent::__construct($context);
         $this->messageManager = $messageManager;
         $this->csv = $csv;

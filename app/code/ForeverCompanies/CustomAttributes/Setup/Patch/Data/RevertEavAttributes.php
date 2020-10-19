@@ -55,7 +55,8 @@ class RevertEavAttributes implements DataPatchInterface
         ModuleDataSetupInterface $moduleDataSetup,
         EavSetupFactory $eavSetupFactory,
         AddIsTransformedProductAttribute $addIsTransformedProductAttribute
-    ) {
+    )
+    {
         $this->moduleDataSetup = $moduleDataSetup;
         $this->eavSetupFactory = $eavSetupFactory;
         $this->previousSetup = $addIsTransformedProductAttribute;

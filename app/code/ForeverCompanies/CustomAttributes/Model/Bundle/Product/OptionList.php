@@ -29,9 +29,11 @@ class OptionList extends \Magento\Bundle\Model\Product\OptionList
                 OptionInterface::class
             );
             $optionDataObject->setOptionId($option->getOptionId())
-                ->setTitle($option->getTitle() === null ?
+                ->setTitle(
+                    $option->getTitle() === null ?
                     $option->getData('default_title')
-                    : $option->getTitle())
+                    : $option->getTitle()
+                )
                 ->setData('default_title', $option->getData('default_title'))
                 ->setSku($product->getSku())
                 ->setData('bundle_customization_type', $option->getData('bundle_customization_type'))

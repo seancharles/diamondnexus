@@ -2,7 +2,9 @@
 
 namespace ForeverCompanies\CustomAttributes\Observer;
 
+use Magento\Bundle\Model\Product\Type;
 use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\ProductRepository;
 use Magento\Eav\Model\Config;
 use Magento\Framework\Event\Observer as EventObserver;
 use Magento\Framework\Event\ObserverInterface;
@@ -15,10 +17,18 @@ class UpdateProductOptionAttributes implements ObserverInterface
      */
     protected $eavConfig;
 
+    /**
+     * @var ProductRepository
+     */
+    protected $productRepository;
+
     public function __construct(
-        Config $eavConfig
-    ) {
+        Config $eavConfig,
+        ProductRepository $productRepository
+    )
+    {
         $this->eavConfig = $eavConfig;
+        $this->productRepository = $productRepository;
     }
 
     /**
@@ -31,38 +41,38 @@ class UpdateProductOptionAttributes implements ObserverInterface
     public function execute(EventObserver $observer)
     {
         /** @var Product $product */
-        $product = $observer->getEvent()->getData('data_object');
+        $product = $observer->getData('data_object');
+        $oldProductOptions = $this->productRepository->getById($product->getId())->getOptions();
         foreach ($product->getOptions() as $option) {
+            foreach ($oldProductOptions as $key => $oldProductOption) {
+                if ($option->getTitle() == $oldProductOption->getTitle()) {
+                    unset($oldProductOptions[$key]);
+                }
+            }
             $attribute = $option->getData('customization_type');
             $source = $this->eavConfig->getAttribute(Product::ENTITY, $attribute)->getSource();
-            $value = $product->getData($attribute);
-            $stringFlag = 0;
-            if (!is_array($value)) {
-                $value = explode(',', $value);
-                $stringFlag = 1;
-            }
+            $value = [];
             $optionValues = $option->getValues() ?? $option->getData('values');
             foreach ($optionValues as $optionValue) {
-                $isSetBefore = false;
                 $setValue = $source->getOptionId($optionValue['title']);
                 if ($setValue == null && $optionValue['title'] == 'Round Brilliant') {
                     $setValue = $source->getOptionId('Round');
                 }
-                if ($value !== null) {
-                    foreach ($value as $item) {
-                        if ($item == $setValue) {
-                            $isSetBefore = true;
-                        }
-                    }
-                }
-                if (!$isSetBefore) {
-                    $value[] = $setValue;
-                }
+                $value[] = $setValue;
             }
-            if ($stringFlag == 1) {
-                $value = implode(',', $value);
+            $product->setData($attribute, implode(',', $value));
+        }
+        foreach ($oldProductOptions as $oldProductOption) {
+            $attribute = $oldProductOption->getData('customization_type');
+            $product->setData($attribute, '');
+        }
+        if ($product->getTypeId() == Type::TYPE_CODE) {
+            $source = $this->eavConfig->getAttribute(Product::ENTITY, 'matching_band')->getSource();
+            if (count($product->getTypeInstance()->getChildrenIds($product->getId())) > 0) {
+                $product->setData('matching_band', $source->getOptionId('Yes'));
+            } else {
+                $product->setData('matching_band', $source->getOptionId('None'));
             }
-            $product->setData($attribute, $value);
         }
     }
 }

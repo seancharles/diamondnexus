@@ -35,7 +35,8 @@ class AddIsTransformedProductAttribute implements DataPatchInterface, PatchRever
     public function __construct(
         ModuleDataSetupInterface $moduleDataSetup,
         EavSetupFactory $eavSetupFactory
-    ) {
+    )
+    {
         $this->moduleDataSetup = $moduleDataSetup;
         $this->eavSetupFactory = $eavSetupFactory;
     }

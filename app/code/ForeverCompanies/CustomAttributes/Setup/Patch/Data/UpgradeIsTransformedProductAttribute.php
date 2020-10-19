@@ -44,7 +44,8 @@ class UpgradeIsTransformedProductAttribute implements DataPatchInterface, PatchR
         ModuleDataSetupInterface $moduleDataSetup,
         EavSetupFactory $eavSetupFactory,
         AddIsTransformedProductAttribute $addIsTransformedProductAttribute
-    ) {
+    )
+    {
         $this->moduleDataSetup = $moduleDataSetup;
         $this->eavSetupFactory = $eavSetupFactory;
         $this->previousSetup = $addIsTransformedProductAttribute;

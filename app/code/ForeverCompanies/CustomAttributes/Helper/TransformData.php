@@ -195,7 +195,8 @@ class TransformData extends AbstractHelper
         Media $media,
         Serialize $serializer,
         Selection $bundleSelection
-    ) {
+    )
+    {
         parent::__construct($context);
         $this->eav = $config;
         $this->productCollectionFactory = $collectionFactory;
@@ -618,6 +619,7 @@ class TransformData extends AbstractHelper
         switch ($title) {
             case 'Precious Metal':
             case 'Metal Type':
+            case 'Metal':
                 return CustomizationType::OPTIONS['Metal Type'];
             default:
                 return CustomizationType::OPTIONS[$title];

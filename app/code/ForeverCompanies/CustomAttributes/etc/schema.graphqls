@@ -9,3 +9,22 @@ interface MediaGalleryInterface {
     @doc(description: "The role of the product image or video.")
     @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\MediaGallery\\UiRole")
 }
+
+interface ProductInterface {
+    metal_type: [String]
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    chain_length: [String]
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    chain_size: [String]
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    ring_size: [String]
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    certified_stone: [String]
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    color: [String]
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    cut_type: [String]
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    shape: [String]
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+}
