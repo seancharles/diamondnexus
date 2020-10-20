@@ -94,48 +94,51 @@ class Account extends Connector
     }
 
     /**
-     * Update or create new a record
+     * Create or update new Account in Salesforce
      *
      * @param  int     $id
-     * @param  boolean $update
+     * @param  string  $salesforceId
      * @return string
      */
-    public function sync($id, $update = false)
+    public function sync($id, $salesforceId)
     {
         $customer = $this->customerFactory->create()->load($id);
-        $email =  $customer->getEmail();
-        $id  = $this->searchRecords($this->_type, 'Name', $email);
-        $name =  $customer->getData('firstname');
-        $phone =  $customer->getData('mobilephone');
+        $data  = $this->data->getCustomer($customer, $this->_type);
+        $params = [
+            'Web_Account_Id__c' => $data['entity_id'],
+            'FirstName' => $data['firstname'],
+            'LastName' => $data['lastname'],
+            'PersonEmail' => $data['email'],
+            'BillingCity' => $data['bill_city'],
+            'BillingState' => $data['bill_region'],
+            'BillingCountry' => $data['bill_country_id'],
+            'BillingPostalCode' => $data['bill_postcode'],
+            'BillingStreet' => $data['bill_street'],
+            'Phone' => $data['bill_telephone'],
+            'PersonBirthdate' => $data['dob'],
+            'ShippingStreet' => $data['ship_street'],
+            'ShippingCity' => $data['ship_city'],
+            'ShippingState' => $data['ship_region'],
+            'ShippingCountry' => $data['ship_country_id'],
+            'ShippingPostalCode' => $data['ship_postcode']
+        ];
 
-        if (!$id || ($update && $id)) {
-            // Pass data of customer to array
-            $data  = $this->data->getCustomer($customer, $this->_type);
-            $bill_city = $data['bill_city'] == null ? "" : $data['bill_city'];
-            $bill_street = $data['bill_street'] == null ? "" : $data['bill_street'];
-            $bill_state = $data['bill_region'] == null ? "" : $data['bill_region'];
-            $bill_postalcode = $data['bill_postcode'] == null ? "" : $data['bill_postcode'];
-            $bill_countrycode = $data['bill_country_id'] == null ? "" : $data['bill_country_id'];
-            $params = [
-                'Name' => $name,
-                "Web_Account_Id__c" => "786abcMn7",
-                "Phone" => $phone,
-                "BillingCity" => $bill_city ,
-                "BillingStreet" =>  $bill_street ,
-                "BillingState" =>     $bill_state,
-                "BillingPostalCode" =>  $bill_postalcode,
-                "BillingCountryCode" => $bill_countrycode
+        if (!$salesforceId && $id) {
 
-            ];
-            $params = ['acct' => $params];
-            if ($update && $id){
-                $this->updateAccount($this->_type, $id, $params, $customer->getId());
-            } else {
-                $response = $this->createAccount($this->_type, $params, $customer->getId());
-                $id =  $response["acctId"];
-            }
+           $params = ['acct' => $params];
+           $response = $this->createAccount($this->_type, $params, $customer->getId());
+           $id =  $response["acctId"];
+           $this->saveAttribute($customer,$id);
+
         }
-        $this->saveAttribute($customer, $id);
+        else if ($salesforceId){
+
+            $params += ['Id' => $salesforceId];
+            $params = ['acct' => $params];
+            $this->updateAccount($this->_type, $salesforceId, $params, $customer->getId());
+            $this->saveAttribute($customer, $salesforceId);
+        }
+
         return $id;
     }
 
@@ -147,7 +150,7 @@ class Account extends Connector
      */
     public function syncByEmail($email)
     {
-        $id = $this->searchRecords($this->_type, 'Name', $email);
+        $id = $this->searchRecord($this->_type, 'Name', $email);
         if (!$id){
             $params = ['Name' => $email];
             $id = $this->createRecords($this->_type, $params);

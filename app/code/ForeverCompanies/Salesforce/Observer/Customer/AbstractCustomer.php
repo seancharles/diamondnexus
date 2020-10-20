@@ -14,6 +14,7 @@ use ForeverCompanies\Salesforce\Model\Sync\Account;
 use Magento\Customer\Model\Data\Customer;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Event\ObserverInterface;
+use Magento\Customer\Api\CustomerRepositoryInterface;
 
 
 abstract class AbstractCustomer implements ObserverInterface
@@ -31,19 +32,35 @@ abstract class AbstractCustomer implements ObserverInterface
     protected $scopeConfig;
 
     /**
-     * @var \ForeverCompanies\Salesforce\Model\Sync\Account
+     * @var Account
      */
     protected $_account;
+
+    /**
+     * @var CustomerRepositoryInterface
+     */
+    protected $customerRepositoryInterface;
+
+    /**
+     * AbstractCustomer constructor.
+     * @param QueueFactory $queueFactory
+     * @param ScopeConfigInterface $config
+     * @param Account $account
+     * @param CustomerRepositoryInterface $customerRepositoryInterface
+     */
 
     public function __construct(
         QueueFactory $queueFactory,
         ScopeConfigInterface $config,
-        Account $account
+        Account $account,
+        CustomerRepositoryInterface $customerRepositoryInterface
+
     ) {
 
         $this->_account     = $account;
         $this->queueFactory = $queueFactory;
         $this->scopeConfig  = $config;
+        $this->customerRepositoryInterface = $customerRepositoryInterface;
     }
 
     public function getEnableConfig($type){
@@ -71,7 +88,17 @@ abstract class AbstractCustomer implements ObserverInterface
        }else {
                 /** auto sync mode */
                 $id = $customer->getId();
-                $this->_account->sync($id, true);
+                $customer = $this->customerRepositoryInterface->getById($id);
+                $customerAttributeData = $customer->__toArray();
+                $empty = empty($customerAttributeData['custom_attributes']['sf_acctid']['value']);
+                if ($empty){
+                    $this->_account->sync($id, "");
+                }else {
+                    $salesforceId = $customerAttributeData['custom_attributes']['sf_acctid']['value'];
+                    $this->_account->sync($id,$salesforceId);
+                }
+
+
        }
 
     }

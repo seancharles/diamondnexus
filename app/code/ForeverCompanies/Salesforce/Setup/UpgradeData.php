@@ -72,11 +72,13 @@ class UpgradeData implements UpgradeDataInterface
             'sf_orderid',
             [
                 'type' => 'text',
-                'visible' => false,
+                'visible' => true,
                 'required' => false,
-                'user_defined' => false,
+                'user_defined' => true,
                 'label' => 'Salesforce Order ID',
                 'system' => false,
+                'is_used_in_grid'       => true,
+                'is_visible_in_grid'    => true,
             ]
         );
 
@@ -85,11 +87,13 @@ class UpgradeData implements UpgradeDataInterface
             'sf_order_itemid',
             [
                 'type' => 'text',
-                'visible' => false,
+                'visible' => true,
                 'required' => false,
-                'user_defined' => false,
+                'user_defined' => true,
                 'label' => 'Salesforce Order Line Item ID',
                 'system' => false,
+                'is_used_in_grid'       => true,
+                'is_visible_in_grid'    => true,
             ]
         );
     }
@@ -117,6 +121,9 @@ class UpgradeData implements UpgradeDataInterface
                 'user_defined' => true,
                 'position' =>999,
                 'system' => 0,
+                'is_used_in_grid'       => true,
+                'is_visible_in_grid'    => true,
+
             ]
         );
 

@@ -46,7 +46,7 @@ class Order extends Action
         try{
           $orderIncrementId = $this->getRequest()->getParam('id');
           if ($orderIncrementId){
-              $this->_order->sync($orderIncrementId);
+              $this->_order->sync("",$orderIncrementId);
               $this->messageManager->addSuccess(
                   __('Order is synced successfull')
               );

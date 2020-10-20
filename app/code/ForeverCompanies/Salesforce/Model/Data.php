@@ -131,9 +131,6 @@ class Data
             $data['ship_country_id'] = $this->getCountryName($country_id);
         }
 
-        // Mapping data
-       // $params = $this->getMapping($data, $type);
-
         return $data;
     }
 
@@ -152,29 +149,20 @@ class Data
 
         foreach ($magentoFields as $key => $item){
             $sub = substr($key, 0 , 5);
-            if ($sub == 'bill_'){
-                $billing = $model->getBillingAddress();
-                $data[$key] = $billing->getData(substr($key,5));
-            } elseif($sub == 'ship_'){
+            if ($sub == 'bill_' && $model->getBillingAddress()){
+                $value      = substr($key, 5);
+                $billing    = $model->getBillingAddress();
+                $data[$key] = $billing->getData($value);
+            } elseif($sub == 'ship_' && $model->getShippingAddress()){
+                $value = substr($key,  5);
                 $shipping = $model->getShippingAddress();
-                $data[$key] = $shipping->getData(substr($key, 5));
-            } else {
+                $data[$key] = $shipping->getData($value);
+            }
+            else {
                 $data[$key] = $model->getData($key);
             }
         }
 
-        if (!empty($data['bill_country_id'])){
-            $country_id = $data['bill_country_id'];
-            $data['bill_country_id'] = $this->getCountryName($country_id);
-        }
-
-        if (!empty($data['ship_country_id'])){
-            $country_id = $data['ship_country_id'];
-            $data['ship_country_id'] = $this->getCountryName($country_id);
-        }
-
-        // Mapping data
-        //$params = $this->getMapping($data, $type);
         return $data;
 
     }

@@ -29,7 +29,6 @@ class Connector
     const XML_PATH_SALESFORCE_CLIENT_SECRET = 'salesforcecrm/salesforceconfig/client_secret';
     const XML_PATH_SALESFORCE_EMAIL = 'salesforcecrm/salesforceconfig/email';
     const XML_PATH_SALESFORCE_PASSWD = 'salesforcecrm/salesforceconfig/passwd';
-   // const XML_PATH_SALESFORCE_SECURITY_TOKEN = 'salesforcecrm/salesforceconfig/security_token';
     const XML_PATH_SALESFORCE_ACCESS_TOKEN = 'salesforcecrm/salesforceconfig/access_token';
     const XML_PATH_SALESFORCE_INSTANCE_URL = 'salesforcecrm/salesforceconfig/instance_url';
     const XML_PATH_SALESFORCE_ORDER_ENABLE = 'salesforcecrm/sync/order';
@@ -111,7 +110,6 @@ class Connector
                 $password = $data['password'];
                 $client_id = $data['client_id'];
                 $client_secret = $data['client_secret'];
-               // $security_token = $data['security_token'];
             } else {
                 $host  = $this->_scopeConfig->getValue(
                     self::XML_PATH_SALESFORCE_CLIENT_HOST
@@ -140,6 +138,7 @@ class Connector
             $response = $this->makeRequest(\Zend_Http_Client::POST, $url, [], $params);
             $response = \GuzzleHttp\json_decode($response, true);
 
+
             if (isset($response['access_token']) && isset($response['instance_url'])) {
                 $this->_resourceConfig->saveConfig(
                     self::XML_PATH_SALESFORCE_INSTANCE_URL,
@@ -159,6 +158,7 @@ class Connector
                     'default',
                     0
                 );
+                //$response['account_id'] = $response['id'];
                 unset($response['id']);
                 unset($response['token_type']);
                 unset($response['signature']);
@@ -238,6 +238,56 @@ class Connector
     }
 
     /**
+     * Create new Order in Salesforce
+     */
+    public function createOrder($table, $parameter, $mid = null)
+    {
+        $path = "/services/apexrest/createOrder";
+        $response = $this->sendRequest(\Zend_Http_Client::POST, $path, $parameter);
+        if (isset($response["orderId"])){
+            $id = $response["orderId"];
+            $this->saveReport($id, 'create', $table, 1, null, $mid);
+            return $id;
+        }
+
+        return false;
+    }
+
+    /**
+     * Create new Order in Salesforce
+     */
+    public function createGuestOrder($table, $parameter, $mid = null)
+    {
+        $path = "/services/apexrest/createGuestOrder";
+        $response = $this->sendRequest(\Zend_Http_Client::POST, $path, $parameter);
+        if (isset($response["orderId"])){
+            $id = $response["orderId"];
+            $this->saveReport($id, 'create', $table, 1, null, $mid);
+            return $id;
+        }
+
+        return false;
+    }
+
+    /**
+     * Update new Order in Salesforce
+     */
+    public function updateOrder($table, $parameter, $mid = null)
+    {
+        $path = "/services/apexrest/updateOrder";
+        $response = $this->sendRequest(\Zend_Http_Client::PUT, $path, $parameter);
+        if (isset($response["status"])){
+            $status = $response["status"];
+            if ($status == "success"){
+                $this->saveReport($mid, 'create', $table, 1, null, $mid);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Create new Account in Salesforce
      */
     public function createAccount($table, $parameter, $mid = null)
@@ -282,27 +332,30 @@ class Connector
     }
 
     /**
-     * Search recordId in Salesforce
+     * Search records in Salesforce
      *
      * @param string $table
      * @param string $field
      * @param string $value
      * @return string or false
      */
-    public function searchRecords($table, $field, $value)
+    public function searchRecord($table, $field, $value)
     {
         $query = "SELECT Id FROM $table WHERE $field = '$value'";
         $query .= 'LIMIT 1';
         $path = '/services/data/v34.0/query?q=' . urlencode($query);
 
         $response = $this->sendRequest(\Zend_Http_Client::GET, $path);
-        if (isset($response['totalSize']) && $response['totalSize'] == 1) {
-            $id = $response['records']['0']['Id'];
+        if (isset($response['accountId']) ) {
+            $id = $response['accountId'];
             return $id;
         }
 
         return false;
     }
+
+    /**
+
 
     /**
      * Get All Field of a table in Salesforce

@@ -7,9 +7,9 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Observer\Customer;
 
-use ForeverCompanies\Salesforce\Observer\Customer\AbstractCustomer;
 use ForeverCompanies\Salesforce\Model\QueueFactory;
 use ForeverCompanies\Salesforce\Model\Sync\Account;
+use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfigInterface;
 /**
@@ -22,13 +22,15 @@ class Register extends AbstractCustomer
      * @param QueueFactory $queueFactory
      * @param ScopeConfigInterface $config
      * @param Account $account
+     * @param CustomerRepositoryInterface $customerRepositoryInterface
      */
     public function __construct(
         QueueFactory $queueFactory,
         ScopeConfigInterface $config,
-        Account $account
+        Account $account,
+        CustomerRepositoryInterface $customerRepositoryInterface
     ) {
-        parent::__construct($queueFactory, $config, $account);
+        parent::__construct($queueFactory, $config, $account,$customerRepositoryInterface);
     }
 
     /**

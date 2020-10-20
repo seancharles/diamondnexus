@@ -220,7 +220,7 @@ class Field extends AbstractModel
      */
     public function setMagentoFields($table)
     {
-        $orderFields = [];
+        $m_fields = [];
         switch ($table) {
             case 'customer':
                 $m_fields = [
