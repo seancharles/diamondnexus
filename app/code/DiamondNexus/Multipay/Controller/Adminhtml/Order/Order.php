@@ -3,6 +3,7 @@
 namespace DiamondNexus\Multipay\Controller\Adminhtml\Order;
 
 use DiamondNexus\Multipay\Helper\Data;
+use DiamondNexus\Multipay\Model\Constant;
 use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
@@ -12,6 +13,7 @@ use Magento\Framework\App\Response\Http\FileFactory;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\Result\RawFactory;
+use Magento\Framework\Exception\ValidatorException;
 use Magento\Framework\Registry;
 use Magento\Framework\Translate\InlineInterface;
 use Magento\Framework\View\Result\LayoutFactory;
@@ -20,6 +22,7 @@ use Magento\Framework\View\Result\PageFactory;
 use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Controller\Adminhtml\Order as AdminOrder;
+use Magento\Sales\Model\Order as OrderModel;
 use Psr\Log\LoggerInterface;
 
 class Order extends AdminOrder implements HttpPostActionInterface
@@ -89,6 +92,7 @@ class Order extends AdminOrder implements HttpPostActionInterface
 
     /**
      * @inheritDoc
+     * @throws ValidatorException
      */
     public function execute()
     {
@@ -100,8 +104,11 @@ class Order extends AdminOrder implements HttpPostActionInterface
             $request = $this->getRequest();
             $post = $request->getPostValue();
             $orderId = $order->getEntityId();
-            $this->helper->sendToBraintree($order);
+            if ($post[Constant::PAYMENT_METHOD_DATA] == Constant::MULTIPAY_QUOTE_METHOD) {
+                $this->helper->sendToBraintree($order);
+            }
             $this->resource->createNewTransaction($orderId, $post);
+            $this->helper->updateOrderStatus($post, $order);
             $orderArray = ['order_id' => $orderId];
             $resultRedirect->setPath('sales/order/view', $orderArray);
             return $resultRedirect;

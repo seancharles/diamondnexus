@@ -84,7 +84,10 @@ class Transaction extends AbstractDb
     public function createNewTransaction($orderId, $information)
     {
         $amount = 0;
-        $change = $information[Constant::CHANGE_DUE_DATA];
+        $change = 0;
+        if (isset($information[Constant::CHANGE_DUE_DATA])) {
+            $change = $information[Constant::CHANGE_DUE_DATA];
+        }
         if ((int) $information[Constant::PAYMENT_METHOD_DATA] == 1) {
             $amount = $information[Constant::OPTION_PARTIAL_DATA];
         }
@@ -98,6 +101,10 @@ class Transaction extends AbstractDb
             $amount = $information[Constant::AMOUNT_DUE_DATA];
             $change = 0;
         }
+        $tendered = 0;
+        if (isset($information[Constant::CASH_TENDERED_DATA])) {
+            $tendered = $information[Constant::CASH_TENDERED_DATA];
+        }
         $transaction = $this->transactionFactory->create();
         $transaction->setData(
             [
@@ -105,7 +112,7 @@ class Transaction extends AbstractDb
             'transaction_type' => $information[Constant::PAYMENT_METHOD_DATA],
             'payment_method' => $information[Constant::OPTION_TOTAL_DATA],
             'amount' => $amount,
-            'tendered' => $information[Constant::CASH_TENDERED_DATA],
+            'tendered' => $tendered,
             'change' => $change,
             'transaction_timestamp' => time(),
             ]

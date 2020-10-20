@@ -12,6 +12,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\ValidatorException;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\Order;
 
 class OrderSave
 {
@@ -103,6 +104,17 @@ class OrderSave
             if ($result instanceof Error) {
                 throw new ValidatorException(__('Credit card failed verification'));
             }
+        }
+        if (isset($information[Constant::OPTION_TOTAL_DATA])) {
+            if ($methodInstance === Constant::MULTIPAY_METHOD && $information[Constant::OPTION_TOTAL_DATA] == 1) {
+                $order->setState(Order::STATE_PROCESSING)->setStatus(Order::STATE_PROCESSING);
+            }
+            if ($methodInstance === Constant::MULTIPAY_METHOD && $information[Constant::OPTION_TOTAL_DATA] == 2) {
+                $order->setState(Order::STATE_PENDING_PAYMENT)->setStatus(Order::STATE_PENDING_PAYMENT);
+            }
+        }
+        if ($methodInstance == Constant::MULTIPAY_METHOD && $method == Constant::MULTIPAY_QUOTE_METHOD) {
+            $order->setState('quote')->setStatus('quote');
         }
     }
 

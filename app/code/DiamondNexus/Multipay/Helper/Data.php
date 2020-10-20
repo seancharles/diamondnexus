@@ -13,6 +13,8 @@ use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Exception\ValidatorException;
 use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\Order as OrderModel;
 
 class Data extends AbstractHelper
 {
@@ -27,19 +29,27 @@ class Data extends AbstractHelper
     protected $iso3166;
 
     /**
+     * @var OrderRepositoryInterface
+     */
+    protected $orderRepository;
+
+    /**
      * Data constructor.
      * @param Context $context
      * @param BraintreeAdapter $braintreeAdapter
      * @param ISO3166 $iso3166
+     * @param OrderRepositoryInterface $orderRepository
      */
     public function __construct(
         Context $context,
         BraintreeAdapter $braintreeAdapter,
-        ISO3166 $iso3166
+        ISO3166 $iso3166,
+        OrderRepositoryInterface $orderRepository
     ) {
         parent::__construct($context);
         $this->brainTreeAdapter = $braintreeAdapter;
         $this->iso3166 = $iso3166;
+        $this->orderRepository = $orderRepository;
     }
 
     /**
@@ -50,13 +60,13 @@ class Data extends AbstractHelper
     public function sendToBraintree(OrderInterface $order)
     {
         $shippingAddress = $order->getShippingAddress();
-        $additionalInformation = $order->getPayment()->getAdditionalInformation();
+        $info = $order->getPayment()->getAdditionalInformation();
         $billingAddress = $order->getBillingAddress();
-        $amount = $additionalInformation[Constant::OPTION_PARTIAL_DATA];
-        if ((int)$additionalInformation[Constant::OPTION_TOTAL_DATA] == 1) {
-            $amount = $additionalInformation[Constant::AMOUNT_DUE_DATA];
+        $amount = $info[Constant::OPTION_PARTIAL_DATA];
+        if (isset ($info[Constant::OPTION_TOTAL_DATA]) && (int)$info[Constant::OPTION_TOTAL_DATA] == 1) {
+            $amount = $info[Constant::AMOUNT_DUE_DATA];
         } else {
-            if ($additionalInformation[Constant::AMOUNT_DUE_DATA] < $amount) {
+            if ($info[Constant::AMOUNT_DUE_DATA] < $amount) {
                 throw new ValidatorException(__('You can\'t pay more than order total price'));
             }
         }
@@ -86,10 +96,10 @@ class Data extends AbstractHelper
                 ],
             'amount' => $amount,
             'creditCard' => [
-                'cvv' => $additionalInformation[Constant::CVV_NUMBER_DATA],
-                'expirationMonth' => $additionalInformation[Constant::EXP_MONTH_DATA],
-                'expirationYear' => $additionalInformation[Constant::EXP_YEAR_DATA],
-                'number' => $additionalInformation[Constant::CC_NUMBER_DATA]
+                'cvv' => $info[Constant::CVV_NUMBER_DATA],
+                'expirationMonth' => $info[Constant::EXP_MONTH_DATA],
+                'expirationYear' => $info[Constant::EXP_YEAR_DATA],
+                'number' => $info[Constant::CC_NUMBER_DATA]
             ],
             'orderId' => $order->getId(),
             'channel' => 'Magento2GeneBT',
@@ -132,5 +142,26 @@ class Data extends AbstractHelper
             'shipsFromPostalCode' => null
         ];
         return $this->brainTreeAdapter->sale($attributes);
+    }
+
+    public function updateOrderStatus($post, $order)
+    {
+        $status = '';
+        if ($post[Constant::OPTION_TOTAL_DATA] == 1) {
+            $status = OrderModel::STATE_PROCESSING;
+        }
+        if ($post[Constant::OPTION_TOTAL_DATA] == 2) {
+            $status = OrderModel::STATE_PENDING_PAYMENT;
+            if ($post[Constant::OPTION_PARTIAL_DATA] == $post[Constant::AMOUNT_DUE_DATA]) {
+                $status = OrderModel::STATE_PROCESSING;
+            }
+        }
+        if ($post == Constant::MULTIPAY_QUOTE_METHOD) {
+            $status = 'quote';
+        }
+        if ($order->getStatus() !== $status) {
+            $order->setStatus($status)->setState($status);
+            $this->orderRepository->save($order);
+        }
     }
 }
