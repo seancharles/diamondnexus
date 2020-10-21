@@ -39,7 +39,7 @@ class UpdateAllFields extends Action
     public function execute()
     {
         $data = $this->getRequest()->getPostValue();
-        if ($data){
+        if ($data) {
             $model = $this->fieldFactory->create();
             $table = $model->getAllTable();
             foreach ($table as $s_table => $m_table) {

@@ -21,7 +21,9 @@ class Collection extends AbstractCollection
      */
     protected function _construct()
     {
-        $this->_init('ForeverCompanies\Salesforce\Model\RequestLog',
-        'ForeverCompanies\Salesforce\Model\ResourceModel\RequestLog');
+        $this->_init(
+            'ForeverCompanies\Salesforce\Model\RequestLog',
+            'ForeverCompanies\Salesforce\Model\ResourceModel\RequestLog'
+        );
     }
 }

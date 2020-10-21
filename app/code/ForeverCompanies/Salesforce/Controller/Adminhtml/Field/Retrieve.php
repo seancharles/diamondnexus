@@ -41,7 +41,7 @@ class Retrieve extends Action
     public function execute()
     {
         $data = $this->getRequest()->getPostValue();
-        if ($data){
+        if ($data) {
             $type = $data['type'];
             $out = [];
             $out['salesforce_options'] = '';
@@ -53,7 +53,7 @@ class Retrieve extends Action
 
                 $magentoOption = '';
 
-                if ($magentoFields){
+                if ($magentoFields) {
                     foreach ($magentoFields as $value => $label) {
                         $magentoOption .= "<option value ='$value' >".$label."</option>";
                     }
@@ -63,8 +63,8 @@ class Retrieve extends Action
                 $salesforceFields       = $model->getSalesforceFields();
                 $salesforceOption       = '';
 
-                if ($salesforceFields){
-                    foreach ($salesforceFields as $value => $label){
+                if ($salesforceFields) {
+                    foreach ($salesforceFields as $value => $label) {
                         $salesforceOption .= "<option value ='$value' >".$label."</option>";
                     }
                 }

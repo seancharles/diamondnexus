@@ -1,8 +1,6 @@
 <?php
 /** @var ForeverCompanies\Salesforce\Block\Adminhtml\Request\TodayRequestForm $block */
 $restRequest = $block->getTodayRestRequest();
-$bulkRequest = $block->getTodayBulkRequest();
-//$orderRequest = $block->getTodayOrderRequest();
 
 $noRequestMessage = 'No request has been made today';
 ?>
@@ -22,28 +20,8 @@ $noRequestMessage = 'No request has been made today';
                     echo __('REST API Request:') ?>
                     <?php /* @escapeNotVerified */
                     echo $restRequest ? $restRequest : $noRequestMessage ?></p>
-                <p style="font-size: 13pt;"><?php /* @escapeNotVerified */
-                    echo __('BULK API Request:') ?>
-                    <?php /* @escapeNotVerified */
-                    echo $bulkRequest ? $bulkRequest : $noRequestMessage ?></p>
-                </table>
             </div>
         </div>
 
-        <!-- <div class="admin__page-section-item order-information">
-            <div class="admin__page-section-item-title">
-                <span class="title"><?php echo __('Detail') ?></span>
-            </div>
-            <div class="admin__page-section-item-content">
-                <table class="admin__table-secondary">
-                    <tbody>
-                    <tr>
-                        <td><?php /* @escapeNotVerified */
-                            //echo __('Orders:') ?></td>
-                        <td><?php //echo $orderRequest ? $orderRequest : $noRequestMessage ?></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div> -->
+
 </section>

@@ -7,9 +7,8 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Block\Adminhtml\Map\Edit;
 
-
 /**
-  * Admin page left menu
+ * Admin page left menu
  */
 class Tabs extends \Magento\Backend\Block\Widget\Tabs
 {

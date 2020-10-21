@@ -8,39 +8,44 @@ declare(strict_types=1);
 namespace ForeverCompanies\Salesforce\Block\Adminhtml\Request;
 
 use ForeverCompanies\Salesforce\Model\RequestLog;
-use Magento\Sales\Model\Order;
+use ForeverCompanies\Salesforce\Model\ReportFactory;
+use ForeverCompanies\Salesforce\Model\RequestLogFactory;
+use Magento\Framework\App\DeploymentConfig\Reader;
+
+use Magento\Backend\Block\Template\Context;
+use Magento\Backend\Block\Widget;
 
 /**
  * Class TodayRequestForm
  * @package ForeverCompanies\Salesforce\Block\Adminhtml\Request
  */
-class TodayRequestForm extends \Magento\Backend\Block\Widget
+class TodayRequestForm extends Widget
 {
     /**
-     * @var \ForeverCompanies\Salesforce\Model\ReportFactory
+     * @var ReportFactory
      */
     protected $logFactory;
 
     /**
-     * @var \ForeverCompanies\Salesforce\Model\RequestLogFactory
+     * @var RequestLogFactory
      */
     protected $requestLogFactory;
 
     /**
-     * @var \Magento\Framework\App\DeploymentConfig\Reader
+     * @var Reader
      */
     protected $configReader;
 
     /**
      * Form constructor.
-     * @param \Magento\Backend\Block\Template\Context $context
+     * @param Context $context
      * @param array $data
      */
     public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
-        \ForeverCompanies\Salesforce\Model\ReportFactory $logFactory,
-        \ForeverCompanies\Salesforce\Model\RequestLogFactory $requestLogFactory,
-        \Magento\Framework\App\DeploymentConfig\Reader $configReader,
+        Context $context,
+        ReportFactory $logFactory,
+        RequestLogFactory $requestLogFactory,
+        Reader $configReader,
         array $data = []
     ) {
         $this->configReader = $configReader;
@@ -55,14 +60,6 @@ class TodayRequestForm extends \Magento\Backend\Block\Widget
     public function getTodayRestRequest()
     {
         return $this->getTodayRequest(RequestLog::REST_REQUEST_TYPE);
-    }
-
-    /**
-     * @return int
-     */
-    public function getTodayBulkRequest()
-    {
-        return $this->getTodayRequest(RequestLog::BULK_REQUEST_TYPE);
     }
 
     /**
@@ -96,5 +93,4 @@ class TodayRequestForm extends \Magento\Backend\Block\Widget
         }
         return false;
     }
-
 }

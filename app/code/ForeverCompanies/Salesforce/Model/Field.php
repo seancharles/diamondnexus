@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Model;
 
-
 use ForeverCompanies\Salesforce\Model\ResourceModel\Field as ResourceField;
 use ForeverCompanies\Salesforce\Model\ResourceModel\Field\Collection;
 use Magento\Framework\Model\AbstractModel;
@@ -88,7 +87,7 @@ class Field extends AbstractModel
     public function getSalesforceFields()
     {
         $salesFields = $this->getSalesforce();
-        if ($salesFields){
+        if ($salesFields) {
             return unserialize($salesFields);
         } else {
             $this->setSalesforceFields($this->salesType);
@@ -103,23 +102,24 @@ class Field extends AbstractModel
      */
     public function loadByTable($table, $update = false)
     {
-       $this->load($table, 'type');
-       if (!$this->getId() || $update){
-           $this->setType($table);
-           $this->saveFields($update);
-       } else {
-           $this->salesField = unserialize($this->getData('salesforce'));
-           $this->mageType = $this->getData('magento');
-       }
+        $this->load($table, 'type');
+        if (!$this->getId() || $update) {
+            $this->setType($table);
+            $this->saveFields($update);
+        } else {
+            $this->salesField = unserialize($this->getData('salesforce'));
+            $this->mageType = $this->getData('magento');
+        }
 
-       return $this;
+        return $this;
     }
 
     /**
      * @param $salesType
      * @return mixed
      */
-    public function setSalesforceFields($salesType){
+    public function setSalesforceFields($salesType)
+    {
         $this->salesField = $this->_connector->getFields($salesType);
     }
 
@@ -132,7 +132,7 @@ class Field extends AbstractModel
     {
         $this->salesType = $type;
         $table = $this->getAllTable();
-        if (!empty($table[$type])){
+        if (!empty($table[$type])) {
             $this->mageType = $table[$type];
         }
     }
@@ -160,12 +160,12 @@ class Field extends AbstractModel
     {
         $table = $this->getAllTable();
         $data  = ['' => '--- Select Option ---'];
-        foreach ($table as $key => $value){
+        foreach ($table as $key => $value) {
             $length = strlen($key);
             $subkey = substr($key, ($length -3), $length);
-            if ($subkey == '__c'){
+            if ($subkey == '__c') {
                 $data[$key] = substr($key, 0, ($length -3));
-            }else{
+            } else {
                 $data[$key] = $key;
             }
         }
@@ -186,10 +186,9 @@ class Field extends AbstractModel
             'magento'    => $this->mageType,
             'status'     => 1,
         ];
-        if ($this->getId() && $update){
+        if ($this->getId() && $update) {
             $this->addData($data);
-        }
-        else {
+        } else {
             $this->setData($data);
         }
 
@@ -205,7 +204,7 @@ class Field extends AbstractModel
      */
     public function getMagentoFields()
     {
-        if (is_null($this->mageField)){
+        if (is_null($this->mageField)) {
             $this->setMagentoFields($this->mageType);
         }
 

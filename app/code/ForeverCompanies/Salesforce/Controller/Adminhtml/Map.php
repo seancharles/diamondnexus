@@ -73,7 +73,6 @@ abstract class Map extends Action
         $this->collectionFactory = $collectionFactory;
         $this->resultPageFactory  = $resultPageFactory;
         parent::__construct($context);
-
     }
 
     /**

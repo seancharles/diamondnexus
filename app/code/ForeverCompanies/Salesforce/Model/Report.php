@@ -14,7 +14,6 @@ use Magento\Backend\Model\Auth\Session;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\Model\AbstractModel;
 
-
 /**
  * Class Report
  *
@@ -72,7 +71,7 @@ class Report extends AbstractModel
      */
     public function _construct()
     {
-       $this->_init('ForeverCompanies\Salesforce\Model\ResourceModel\Report');
+        $this->_init('ForeverCompanies\Salesforce\Model\ResourceModel\Report');
     }
 
     /**
@@ -88,10 +87,10 @@ class Report extends AbstractModel
         $datetime = $this->coreDate->gmtDate();
         $admin_user = $this->backendAuthSession->getUser();
         $current_user = $this->customerSession->getCustomer();
-        if ($admin_user){
+        if ($admin_user) {
             $name = $admin_user->getName();
             $email = $admin_user->getEmail();
-        } elseif ($current_user->getName()){
+        } elseif ($current_user->getName()) {
             $name = $current_user->getName();
             $email = $current_user->getEmail();
         } else {

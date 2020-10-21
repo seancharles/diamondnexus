@@ -141,9 +141,4 @@ class GetAuth extends Field
 
         return $this->_toHtml();
     }
-
-
-
-
-
 }

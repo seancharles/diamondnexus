@@ -11,7 +11,6 @@ use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfigInterface;
 use Magento\Config\Model\ResourceModel\Config as ResourceModelConfig;
 use Magento\Store\Model\ScopeInterface;
 
-
 /**
  * Class Connector
  *
@@ -104,7 +103,7 @@ class Connector
     public function getAccessToken(array $data = [], $update = false)
     {
         try {
-            if (!empty($data) && $update){
+            if (!empty($data) && $update) {
                 $host = $data['host'];
                 $username = $data['username'];
                 $password = $data['password'];
@@ -186,15 +185,17 @@ class Connector
     {
         if ($useFreshCredential) {
             $instance_url = $this->_scopeConfig->getValue(
-                self::XML_PATH_SALESFORCE_INSTANCE_URL, ScopeInterface::SCOPE_STORE
+                self::XML_PATH_SALESFORCE_INSTANCE_URL,
+                ScopeInterface::SCOPE_STORE
             );
             $access_token = $this->_scopeConfig->getValue(
-                self::XML_PATH_SALESFORCE_ACCESS_TOKEN, ScopeInterface::SCOPE_STORE
+                self::XML_PATH_SALESFORCE_ACCESS_TOKEN,
+                ScopeInterface::SCOPE_STORE
             );
         }
 
         try {
-            if (!isset($instance_url) || !isset($access_token) || $useFreshCredential){
+            if (!isset($instance_url) || !isset($access_token) || $useFreshCredential) {
                 $login = $this->getAccessToken();
                 $instance_url = $login['instance_url'];
                 $access_token = $login['access_token'];
@@ -211,7 +212,7 @@ class Connector
         $url = $instance_url . $path;
         $response = $this->makeRequest($method, $url, $headers, $parameter);
         $response = json_decode($response, true);
-        if (isset($response[0]['errorCode']) && $response[0]['errorCode'] == 'INVALID_SESSION_ID'){
+        if (isset($response[0]['errorCode']) && $response[0]['errorCode'] == 'INVALID_SESSION_ID') {
             $this->sendRequest($method, $path, $parameter, true);
         }
         return $response;
@@ -228,7 +229,7 @@ class Connector
     {
         $path = "/services/data/v34.0/sobjects" . $table . "/";
         $response = $this->sendRequest(\Zend_Http_Client::POST, $path, $parameter);
-        if (isset($response["id"])){
+        if (isset($response["id"])) {
             $id = $response["id"];
             $this->saveReport($id, 'create', $table, 1, null, $mid);
             return $id;
@@ -244,7 +245,7 @@ class Connector
     {
         $path = "/services/apexrest/createOrder";
         $response = $this->sendRequest(\Zend_Http_Client::POST, $path, $parameter);
-        if (isset($response["orderId"])){
+        if (isset($response["orderId"])) {
             $id = $response["orderId"];
             $this->saveReport($id, 'create', $table, 1, null, $mid);
             return $id;
@@ -260,7 +261,7 @@ class Connector
     {
         $path = "/services/apexrest/createGuestOrder";
         $response = $this->sendRequest(\Zend_Http_Client::POST, $path, $parameter);
-        if (isset($response["orderId"])){
+        if (isset($response["orderId"])) {
             $id = $response["orderId"];
             $this->saveReport($id, 'create', $table, 1, null, $mid);
             return $id;
@@ -276,9 +277,9 @@ class Connector
     {
         $path = "/services/apexrest/updateOrder";
         $response = $this->sendRequest(\Zend_Http_Client::PUT, $path, $parameter);
-        if (isset($response["status"])){
+        if (isset($response["status"])) {
             $status = $response["status"];
-            if ($status == "success"){
+            if ($status == "success") {
                 $this->saveReport($mid, 'create', $table, 1, null, $mid);
                 return true;
             }
@@ -294,7 +295,7 @@ class Connector
     {
         $path = "/services/apexrest/createAccount";
         $response = $this->sendRequest(\Zend_Http_Client::POST, $path, $parameter);
-        if (isset($response["acctId"])){
+        if (isset($response["acctId"])) {
             $id = $response["acctId"];
             $this->saveReport($id, 'create', $table, 1, null, $mid);
             return $response;
@@ -303,19 +304,6 @@ class Connector
         return false;
     }
 
-
-    /**
-     * Delete a record in salesforce
-     *
-     * @param string $table
-     * @param string $id
-     */
-    public function deleteRecords($table, $id, $mid = null)
-    {
-        $path = "/services/data/v34.0/sobjects" . $table . "/" . $id;
-        $this->sendRequest(\Zend_Http_Client::DELETE, $path);
-        $this->saveReport($id, 'delete', $table, 1, null, $mid);
-    }
 
     /**
      * Update a account in Salesforce
@@ -327,8 +315,8 @@ class Connector
     public function updateAccount($table, $id, $parameter, $mid = null)
     {
         $path = "/services/apexrest/updateAccount";
-        $this->sendRequest(\Zend_Http_Client::PUT,$path, $parameter);
-        $this->saveReport($id, 'update', $table, 1 , null, $mid);
+        $this->sendRequest(\Zend_Http_Client::PUT, $path, $parameter);
+        $this->saveReport($id, 'update', $table, 1, null, $mid);
     }
 
     /**
@@ -346,7 +334,7 @@ class Connector
         $path = '/services/data/v34.0/query?q=' . urlencode($query);
 
         $response = $this->sendRequest(\Zend_Http_Client::GET, $path);
-        if (isset($response['accountId']) ) {
+        if (isset($response['accountId'])) {
             $id = $response['accountId'];
             return $id;
         }
@@ -374,10 +362,10 @@ class Connector
             'datetime',
             'reference',
         ];
-        if (isset($response['fields'])){
-            foreach ($response['fields'] as $item => $value){
+        if (isset($response['fields'])) {
+            foreach ($response['fields'] as $item => $value) {
                 $type = $value['type'];
-                if ($value['permissionable'] == 1 && !in_array($type, $_type)){
+                if ($value['permissionable'] == 1 && !in_array($type, $_type)) {
                     $label = $value['label'];
                     $name = $value['name'];
                     $data[$name] = $label;
@@ -407,35 +395,6 @@ class Connector
     }
 
     /**
-     *
-     * Save reports
-     *
-     * @param $action
-     * @param $table
-     * @param $response
-     * @param $magentoIds
-     */
-    public function saveReports($action, $table, $response, $magentoIds)
-    {
-        if (is_array($response)){
-            for ($i = 0; $i < count($response); $i++){
-                if (isset($response[$i]['success']) && $response[$i]['success']){
-                    $magentoId = isset($magentoIds[$i]['mid']) ? $magentoIds[$i]['mid'] : null;
-                    $this->saveReport($response[$i]['id'], $action, $table, 1 , null, $magentoId);
-                } elseif (isset($response[$i]['errors'][0])){
-                    $message = 'ERROR ';
-                    foreach ($response[$i]['errors'] as $error) {
-                        $message .= $error['message'] . ';';
-                    }
-                    $this->saveReport(null, $action, $table, 2, $message);
-                } else {
-                    $this->saveReport(null, $action, $table, 2 , serialize($response));
-                }
-            }
-        }
-    }
-
-    /**
      * @param $method
      * @param $url
      * @param array $headers
@@ -447,7 +406,7 @@ class Connector
     {
         $client = new \Zend_Http_Client($url);
         $client->setHeaders($headers);
-        if ($method != \Zend_Http_Client::GET){
+        if ($method != \Zend_Http_Client::GET) {
             $client->setParameterPost($params);
             if (isset($headers['Content-Type']) && $headers['Content-Type'] == 'application/json') {
                 $client->setEncType('application/json');
@@ -460,38 +419,4 @@ class Connector
         return $response;
     }
 
-    public function syncAllQueue()
-    {
-        $type = $this->_type;
-        if ($type == 'Product2') {
-            $type = 'Products';
-        }
-        $queueCollection = $this->_queueFactory->create()
-            ->getCollection()
-            ->addFieldToFilter('type', rtrim($type, 's'));
-
-        $lastId = (int)$queueCollection->getLastItem()->getId();
-        $count = 0;
-        $response = [];
-        /** @var \ForeverCompanies\Salesforce\Model\Queue $queue */
-        foreach ($queueCollection as $queue){
-            $entityId = $queue->getEntityId();
-            $this->addRecord($entityId);
-            $this->_queueFactory->create()->load($queue->getId())->delete();
-            $count++;
-            if ($count >= 9500 || $queue->getId() == $lastId) {
-                $response += $this->syncQueue();
-            }
-        }
-        return $response;
-    }
-
-    public function addRecord($entityId)
-    {
-    }
-
-    public function syncQueue()
-    {
-        return null;
-    }
 }

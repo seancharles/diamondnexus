@@ -12,7 +12,6 @@ use Magento\Framework\Model\AbstractModel;
 class RequestLog extends AbstractModel
 {
     const REST_REQUEST_TYPE = 'rest';
-    const BULK_REQUEST_TYPE = 'bulk';
 
     protected function _construct()
     {
@@ -30,7 +29,7 @@ class RequestLog extends AbstractModel
             ->addFieldToSelect('*')
             ->addFieldToFilter('date', date('Y-m-d'))
             ->getLastItem();
-        if (!$request->getId()){
+        if (!$request->getId()) {
             $this->setData('date', date('Y-m-d'));
             $this->setData($column, 1);
             $this->save();

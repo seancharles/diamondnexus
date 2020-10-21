@@ -42,6 +42,4 @@ class Index extends \Magento\Backend\App\Action
     {
         return $this->_authorization->isAllowed('ForeverCompanies_Salesforce::request');
     }
-
 }
-

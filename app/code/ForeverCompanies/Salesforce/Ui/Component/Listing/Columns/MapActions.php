@@ -48,10 +48,10 @@ class MapActions extends Column
      */
     public function prepareDataSource(array $dataSource)
     {
-        if (isset($dataSource['data']['items'])){
+        if (isset($dataSource['data']['items'])) {
             $storeId = $this->context->getFilterParam('store_id');
 
-            foreach($dataSource['data']['items'] as &$item){
+            foreach ($dataSource['data']['items'] as &$item) {
                 $item[$this->getData('name')]['edit'] = [
                     'href'   => $this->urlBuilder->getUrl(
                         'salesforce/map/edit',

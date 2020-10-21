@@ -46,7 +46,7 @@ class Refresh extends Action
     {
         $response = $this->connector->getAccessToken();
 
-        if (!empty($response['access_token'])){
+        if (!empty($response['access_token'])) {
             $this->messageManager->addSuccess('Refresh access token of SalesforceCRM success !');
             $this->getResponse()->setRedirect($this->_redirect->getRedirectUrl($this->getUrl('*')));
             return;

@@ -93,7 +93,6 @@ abstract class Report extends Action
             $this->resultPage = $this->resultPageFactory->create();
         }
         return $this->resultPage;
-
     }
 
     /**

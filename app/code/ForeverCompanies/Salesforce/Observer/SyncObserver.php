@@ -57,7 +57,7 @@ abstract class SyncObserver implements ObserverInterface
             ->addFieldToFilter('entity_id', $entityId)
             ->getFirstItem();
 
-        if ($queue->getId()){
+        if ($queue->getId()) {
 
             /** Creditmemo existed in queue */
             $queue = $this->queueFactory->create()->load($queue->getId());

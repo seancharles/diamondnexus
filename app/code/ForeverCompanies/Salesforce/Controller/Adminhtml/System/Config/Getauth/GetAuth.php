@@ -44,10 +44,10 @@ class GetAuth extends Action
     public function execute()
     {
         $data = $this->getRequest()->getPostValue();
-        if ($data){
+        if ($data) {
             if (empty($data['username']) ||
                 empty($data['password']) ||
-                empty($data['client_id'])||
+                empty($data['client_id']) ||
                 empty($data['client_secret'])) {
                 $result['error']       = 1;
                 $result['description'] = "Please enter all information";
@@ -56,7 +56,7 @@ class GetAuth extends Action
             }
 
             $response = $this->connector->getAccessToken($data, true);
-            if (!empty($response['error'])){
+            if (!empty($response['error'])) {
                 $result['error'] = 1;
                 $result['description'] = $response['error_description'];
                 echo json_encode($result);
@@ -69,5 +69,4 @@ class GetAuth extends Action
             }
         }
     }
-
 }

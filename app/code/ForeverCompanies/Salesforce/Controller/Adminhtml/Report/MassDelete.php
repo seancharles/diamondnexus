@@ -54,8 +54,13 @@ class MassDelete extends ReportController
     ) {
         $this->filter            = $filter;
         $this->collectionFactory = $collectionFactory;
-        parent::__construct($context, $reportFactory,
-            $layoutFactory, $resultPageFactory, $resultForwardFactory);
+        parent::__construct(
+            $context,
+            $reportFactory,
+            $layoutFactory,
+            $resultPageFactory,
+            $resultForwardFactory
+        );
     }
 
     /**
@@ -67,7 +72,7 @@ class MassDelete extends ReportController
     {
         $collection = $this->filter->getCollection($this->collectionFactory->create());
         $delete = 0;
-        foreach ($collection as $item){
+        foreach ($collection as $item) {
             /** @var \ForeverCompanies\Salesforce\Model\Map $item */
             $item->delete();
             $delete++;

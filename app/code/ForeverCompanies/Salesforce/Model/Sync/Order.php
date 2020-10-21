@@ -16,7 +16,6 @@ use ForeverCompanies\Salesforce\Model\Connector;
 use ForeverCompanies\Salesforce\Model\Data;
 use Magento\Sales\Model\OrderFactory;
 
-
 class Order extends Connector
 {
     const SALESFORCE_ORDER_ATTRIBUTE_CODE = 'sf_orderid';
@@ -57,13 +56,14 @@ class Order extends Connector
         RequestLogFactory $requestLogFactory,
         OrderFactory $orderFactory,
         Account $account
-    )
-    {
-        parent::__construct($scopeConfig,
+    ) {
+        parent::__construct(
+            $scopeConfig,
             $resourceConfig,
             $reportFactory,
             $queueFactory,
-            $requestLogFactory);
+            $requestLogFactory
+        );
         $this->orderFactory  = $orderFactory;
         $this->data   = $data;
         $this->_type = 'Order';
@@ -107,15 +107,15 @@ class Order extends Connector
         ];
 
         // Create new Order
-        if ($guest){
+        if ($guest) {
             $orderItemId = $this->createGuestOrder($this->_type, $params, $order->getIncrementId());
             $this->saveOrderItemIdAttribute($order, $orderItemId);
         } else {
-            if ($salesforceOrderId){
+            if ($salesforceOrderId) {
                 $data += ['Id' => $salesforceOrderId];
                 $result = ['order' => $data];
                 $this->updateOrder($this->_type, $result, $order->getIncrementId());
-            }else{
+            } else {
                 $data += ['AccountId' => $salesforceCustomerId];
                 $result = ['order' => $data];
                 $orderId = $this->createOrder($this->_type, $result, $order->getIncrementId());
@@ -124,7 +124,6 @@ class Order extends Connector
 
         }
         return false;
-
     }
 
     /**
@@ -134,11 +133,10 @@ class Order extends Connector
      */
     protected function saveOrderAttribute($order, $orderId)
     {
-        if($orderId){
+        if ($orderId) {
             $order->setData(self::SALESFORCE_ORDER_ATTRIBUTE_CODE, $orderId);
             $order->save();
         }
-
     }
 
     /**
@@ -148,10 +146,9 @@ class Order extends Connector
      */
     protected function saveOrderItemIdAttribute($order, $orderItemId)
     {
-        if($orderItemId){
+        if ($orderItemId) {
             $order->setData(self::SALESFORCE_ORDER_ATTRIBUTE_CODE_ITEM_ID, $orderItemId);
             $order->save();
         }
-
     }
 }

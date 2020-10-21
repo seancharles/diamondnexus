@@ -49,37 +49,6 @@ class Data
         $this->country    = $country;
     }
 
-    /**
-     * Select mapping
-     *
-     * @param string $data
-     * @param string $type
-     * @return array
-     */
-    public function getMapping($data, $type){
-
-        $model = $this->mapFactory->create();
-        $collection = $model->getCollection()
-            ->addFieldToFilter('type', $type)
-            ->addFieldToFilter('status', 1);
-        $map = [];
-        $result = [];
-
-        /** @var Map $value */
-        foreach ($collection as $key => $value){
-            $salesforce  = $value->getSalesforce();
-            $magento = $value->getMagento();
-            $map[$salesforce] = $magento;
-        }
-
-        /** @var string $value */
-        foreach($map as $key => $value){
-            if ($data[$value]){
-                $result[$key] = $data[$value];
-            }
-        }
-        return $result;
-    }
 
     /**
      * Get Country Name
@@ -105,28 +74,27 @@ class Data
         $this->field->setType($type);
         $magento_fields = $this->field->getMagentoFields();
         $data = [];
-        foreach ($magento_fields as $key => $item){
-            $sub = substr($key, 0 , 5);
-            if ($sub == 'bill_' && $model->getDefaultBillingAddress()){
+        foreach ($magento_fields as $key => $item) {
+            $sub = substr($key, 0, 5);
+            if ($sub == 'bill_' && $model->getDefaultBillingAddress()) {
                 $value      = substr($key, 5);
                 $billing    = $model->getDefaultBillingAddress();
                 $data[$key] = $billing->getData($value);
-            } elseif($sub == 'ship_' && $model->getDefaultShippingAddress()){
-                $value = substr($key,  5);
+            } elseif ($sub == 'ship_' && $model->getDefaultShippingAddress()) {
+                $value = substr($key, 5);
                 $shipping = $model->getDefaultShippingAddress();
                 $data[$key] = $shipping->getData($value);
-            }
-            else {
+            } else {
                 $data[$key] = $model->getData($key);
             }
         }
 
-        if (!empty($data['bill_country_id'])){
+        if (!empty($data['bill_country_id'])) {
             $country_id = $data['bill_country_id'];
             $data['bill_country_id'] = $this->getCountryName($country_id);
         }
 
-        if (!empty($data['ship_country_id'])){
+        if (!empty($data['ship_country_id'])) {
             $country_id = $data['ship_country_id'];
             $data['ship_country_id'] = $this->getCountryName($country_id);
         }
@@ -147,23 +115,21 @@ class Data
         $magentoFields = $this->field->getMagentoFields();
         $data = [];
 
-        foreach ($magentoFields as $key => $item){
-            $sub = substr($key, 0 , 5);
-            if ($sub == 'bill_' && $model->getBillingAddress()){
+        foreach ($magentoFields as $key => $item) {
+            $sub = substr($key, 0, 5);
+            if ($sub == 'bill_' && $model->getBillingAddress()) {
                 $value      = substr($key, 5);
                 $billing    = $model->getBillingAddress();
                 $data[$key] = $billing->getData($value);
-            } elseif($sub == 'ship_' && $model->getShippingAddress()){
-                $value = substr($key,  5);
+            } elseif ($sub == 'ship_' && $model->getShippingAddress()) {
+                $value = substr($key, 5);
                 $shipping = $model->getShippingAddress();
                 $data[$key] = $shipping->getData($value);
-            }
-            else {
+            } else {
                 $data[$key] = $model->getData($key);
             }
         }
 
         return $data;
-
     }
 }

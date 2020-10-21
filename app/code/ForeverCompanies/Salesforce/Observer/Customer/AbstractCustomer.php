@@ -16,7 +16,6 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 
-
 abstract class AbstractCustomer implements ObserverInterface
 {
     const XML_SETTING_PATH = 'salesforcecrm/sync/';
@@ -54,7 +53,6 @@ abstract class AbstractCustomer implements ObserverInterface
         ScopeConfigInterface $config,
         Account $account,
         CustomerRepositoryInterface $customerRepositoryInterface
-
     ) {
 
         $this->_account     = $account;
@@ -63,13 +61,15 @@ abstract class AbstractCustomer implements ObserverInterface
         $this->customerRepositoryInterface = $customerRepositoryInterface;
     }
 
-    public function getEnableConfig($type){
+    public function getEnableConfig($type)
+    {
 
         $path = self::XML_SETTING_PATH . $type;
         return $this->scopeConfig->getValue($path);
     }
 
-    public function getSyncModeConfig($type){
+    public function getSyncModeConfig($type)
+    {
 
         $path = self::XML_SETTING_PATH . $type . '_mode';
         return $this->scopeConfig->getValue($path);
@@ -80,30 +80,30 @@ abstract class AbstractCustomer implements ObserverInterface
      */
     public function syncAccount(Customer $customer)
     {
-       if ($this->getEnableConfig('account')) {
-           if ($this->getSyncModeConfig('account') == 1) {
-               /** add to queue mode */
-               $this->addToQueue(Queue::TYPE_ACCOUNT, $customer->getId());
-           }
-       }else {
+        if ($this->getEnableConfig('account')) {
+            if ($this->getSyncModeConfig('account') == 1) {
+                /** add to queue mode */
+                $this->addToQueue(Queue::TYPE_ACCOUNT, $customer->getId());
+            }
+        } else {
                 /** auto sync mode */
                 $id = $customer->getId();
                 $customer = $this->customerRepositoryInterface->getById($id);
                 $customerAttributeData = $customer->__toArray();
                 $empty = empty($customerAttributeData['custom_attributes']['sf_acctid']['value']);
-                if ($empty){
-                    $this->_account->sync($id, "");
-                }else {
-                    $salesforceId = $customerAttributeData['custom_attributes']['sf_acctid']['value'];
-                    $this->_account->sync($id,$salesforceId);
-                }
+            if ($empty) {
+                $this->_account->sync($id, "");
+            } else {
+                $salesforceId = $customerAttributeData['custom_attributes']['sf_acctid']['value'];
+                $this->_account->sync($id, $salesforceId);
+            }
 
 
-       }
-
+        }
     }
 
-    public function addToQueue($type, $entityId){
+    public function addToQueue($type, $entityId)
+    {
 
         /** add to queue mode */
         $queue = $this->queueFactory->create()
@@ -111,7 +111,7 @@ abstract class AbstractCustomer implements ObserverInterface
             ->addFieldToFilter('type', $type)
             ->addFieldToFilter('entity_id', $entityId)
             ->getFirstItem();
-        if ($queue->getId()){
+        if ($queue->getId()) {
             /** Creditmemo existed in queue */
             $queue =  $this->queueFactory->create()->load($queue->getId());
             $queue->setEnqueueTime(time());
@@ -127,6 +127,4 @@ abstract class AbstractCustomer implements ObserverInterface
         $queue->setData($data);
         $queue->save();
     }
-
-
 }

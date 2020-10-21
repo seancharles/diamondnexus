@@ -22,7 +22,7 @@ class Queue extends AbstractModel
 
     protected function _construct()
     {
-       $this->_init('ForeverCompanies\Salesforce\Model\ResourceModel\Queue');
+        $this->_init('ForeverCompanies\Salesforce\Model\ResourceModel\Queue');
     }
 
     public function queueExisted($type, $entityId)
@@ -31,7 +31,7 @@ class Queue extends AbstractModel
             ->addFieldToFilter('type', $type)
             ->addFieldToFilter('entity_id', $entityId)
             ->getFirstItem();
-        if ($existedQueue->getId()){
+        if ($existedQueue->getId()) {
             /** existed in queue */
             $queue = $this->load($existedQueue->getId());
             $queue->setEnqueueTime(time());

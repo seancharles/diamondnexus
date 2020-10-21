@@ -81,9 +81,11 @@ class Main extends Generic implements TabInterface
         $salesforceFields = [];
         $magentoFields = [];
         $form->setHtmlIdPrefix('page_');
-        $fieldset = $form->addFieldset('base_fieldset',
-            ['legend' => __('Mapping Information')]);
-        if ($model->getId()){
+        $fieldset = $form->addFieldset(
+            'base_fieldset',
+            ['legend' => __('Mapping Information')]
+        );
+        if ($model->getId()) {
             $type = $model->getType();
             $_model->setType($type);
             $salesforceFields = $_model->getSalesforceFields();

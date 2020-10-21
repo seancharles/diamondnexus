@@ -13,6 +13,6 @@ class RequestLog extends AbstractDb
 {
     protected function _construct()
     {
-       $this->_init('forevercompanies_salesforce_request', 'id');
+        $this->_init('forevercompanies_salesforce_request', 'id');
     }
 }

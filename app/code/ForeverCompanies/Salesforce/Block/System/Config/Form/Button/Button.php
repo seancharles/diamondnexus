@@ -47,7 +47,7 @@ class Button extends ConfirmFormField
     protected function _prepareLayout()
     {
         parent::_prepareLayout();
-        if (!$this->getTemplate()){
+        if (!$this->getTemplate()) {
             $this->setTemplate('system/config/button/button.phtml');
         }
         return $this;

@@ -23,4 +23,3 @@ class Connection extends ConfigFormField
         return $element->getElementHtml() . $connectionHtml;
     }
 }
-

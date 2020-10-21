@@ -26,9 +26,9 @@ class InstallSchema implements InstallSchemaInterface
     {
         $installer = $setup;
         $installer->startSetup();
-      ;
+        ;
         $table = $installer->getConnection()->newTable(
-            $installer->getTable('forevercompanies_safesforce_map')
+            $installer->getTable('forevercompanies_salesforce_map')
         )->addColumn(
             'id',
             Table::TYPE_INTEGER,
@@ -76,7 +76,6 @@ class InstallSchema implements InstallSchemaInterface
 
         $table = $installer->getConnection()->newTable(
             $installer->getTable('forevercompanies_salesforce_field')
-
         )->addColumn(
             'id',
             Table::TYPE_INTEGER,
@@ -173,5 +172,4 @@ class InstallSchema implements InstallSchemaInterface
         $installer->getConnection()->createTable($table);
         $installer->endSetup();
     }
-
 }

@@ -7,13 +7,11 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Observer\Order;
 
-
 use ForeverCompanies\Salesforce\Model\QueueFactory;
 use ForeverCompanies\Salesforce\Observer\SyncObserver;
 use ForeverCompanies\Salesforce\Model\Sync\Order;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Event\Observer;
-
 
 /**
  * Class Create
@@ -48,23 +46,24 @@ class Create extends SyncObserver
      */
     public function execute(Observer $observer)
     {
-                /** @var \Magento\Sales\Model\Order $order */
-            $order = $observer->getEvent()->getOrder();
-            $salesforceId = $order->getData('customer_sf_acctid');
-            $orderSalesforceId = $order->getData('sf_orderid');
-            $orderSalesforceGuestId = $order->getData('sf_order_itemid');
-            $increment_id = $order->getIncrementId();
-            if ($salesforceId){
+        /** @var \Magento\Sales\Model\Order $order */
 
-                 if(!$orderSalesforceId && $orderSalesforceId == null){
-                       $this->order->sync($salesforceId,$increment_id,false,"");
-                 }else if ($orderSalesforceId && !$orderSalesforceGuestId){
-                       $this->order->sync($salesforceId,$increment_id,false,$orderSalesforceId);
-                 }
+        $order = $observer->getEvent()->getOrder();
+        $salesforceId = $order->getData('customer_sf_acctid');
+        $orderSalesforceId = $order->getData('sf_orderid');
+        $orderSalesforceGuestId = $order->getData('sf_order_itemid');
+        $increment_id = $order->getIncrementId();
 
-            }else if(!$orderSalesforceGuestId && $orderSalesforceGuestId == null && !$orderSalesforceId){
-                $this->order->sync($salesforceId,$increment_id,true,"");
+        if ($salesforceId) {
+
+            if (!$orderSalesforceId && $orderSalesforceId == null) {
+                     $this->order->sync($salesforceId, $increment_id, false, "");
+            } elseif ($orderSalesforceId && !$orderSalesforceGuestId) {
+                      $this->order->sync($salesforceId, $increment_id, false, $orderSalesforceId);
             }
 
+        } elseif (!$orderSalesforceGuestId && $orderSalesforceGuestId == null && !$orderSalesforceId) {
+            $this->order->sync($salesforceId, $increment_id, true, "");
+        }
     }
 }

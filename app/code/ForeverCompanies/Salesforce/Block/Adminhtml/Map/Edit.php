@@ -11,7 +11,6 @@ use Magento\Backend\Block\Widget\Form\Container;
 use Magento\Backend\Block\Widget\Context;
 use Magento\Framework\Registry;
 
-
 /**
  * Class Edit
  *
@@ -69,14 +68,14 @@ class Edit extends Container
             ],
             -100
         );
-      $this->buttonList->add(
-          'updateallfields',
-          [
+        $this->buttonList->add(
+            'updateallfields',
+            [
               'label' => __('Refresh Fields'),
-          ],
-          -90
-      );
-      $this->buttonList->update('delete', 'label', __('Delete'));
+            ],
+            -90
+        );
+        $this->buttonList->update('delete', 'label', __('Delete'));
     }
 
     /**
@@ -86,7 +85,7 @@ class Edit extends Container
      */
     public function getHeaderText()
     {
-        if ($this->coreRegistry->registry('mapping')->getId()){
+        if ($this->coreRegistry->registry('mapping')->getId()) {
             return __("Edit Mapping '%1'", $this->escapeHtml($this->coreRegistry->registry('mapping')->getType()));
         } else {
             return __('New Mapping');

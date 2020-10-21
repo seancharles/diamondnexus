@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace ForeverCompanies\Salesforce\Model;
 
 use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
+
 /**
  * Class Status
  *

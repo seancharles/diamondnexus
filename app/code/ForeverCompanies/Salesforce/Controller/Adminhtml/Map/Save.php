@@ -15,12 +15,11 @@ use ForeverCompanies\Salesforce\Model\ResourceModel\Map\CollectionFactory as Map
 use ForeverCompanies\Salesforce\Controller\Adminhtml\Map as MapController;
 use Magento\Framework\Exception\LocalizedException;
 
-
 /**
  * Class Save
  *
  * @package ForeverCompanies\Salesforce\Controller\Adminhtml\Map
-*/
+ */
 class Save extends MapController
 {
     /**
@@ -37,10 +36,13 @@ class Save extends MapController
         MapFactory  $mapFactory,
         MapCollectionFactory $collectionFactory
     ) {
-        parent::__construct($context, $coreRegistry,
+        parent::__construct(
+            $context,
+            $coreRegistry,
             $resultPageFactory,
             $mapFactory,
-            $collectionFactory);
+            $collectionFactory
+        );
     }
 
     /**
@@ -54,12 +56,12 @@ class Save extends MapController
         $data = $this->getRequest()->getPostValue();
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
-        if ($data){
+        if ($data) {
             $model = $this->mapFactory->create();
             $id = $this->getRequest()->getParam('id');
-            if ($id){
+            if ($id) {
                 $model->load($id);
-                if ($id != $model->getId()){
+                if ($id != $model->getId()) {
                     throw new LocalizedException(__('Wrong mapping rule.'));
                 }
             }

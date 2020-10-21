@@ -25,5 +25,4 @@ class Report extends AbstractDb
     {
         $this->_init('forevercompanies_salesforce_report', 'id');
     }
-
 }

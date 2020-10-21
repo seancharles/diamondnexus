@@ -9,7 +9,6 @@ namespace ForeverCompanies\Salesforce\Model\ResourceModel\Queue;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 
-
 class Collection extends AbstractCollection
 {
     /**
@@ -19,7 +18,9 @@ class Collection extends AbstractCollection
      */
     protected function _construct()
     {
-        $this->_init('ForeverCompanies\Salesforce\Model\Queue',
-        'ForeverCompanies\Salesforce\Model\ResourceModel\Queue');
+        $this->_init(
+            'ForeverCompanies\Salesforce\Model\Queue',
+            'ForeverCompanies\Salesforce\Model\ResourceModel\Queue'
+        );
     }
 }

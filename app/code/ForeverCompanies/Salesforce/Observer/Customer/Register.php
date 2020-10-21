@@ -12,6 +12,7 @@ use ForeverCompanies\Salesforce\Model\Sync\Account;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfigInterface;
+
 /**
  * Class Register
  */
@@ -30,7 +31,7 @@ class Register extends AbstractCustomer
         Account $account,
         CustomerRepositoryInterface $customerRepositoryInterface
     ) {
-        parent::__construct($queueFactory, $config, $account,$customerRepositoryInterface);
+        parent::__construct($queueFactory, $config, $account, $customerRepositoryInterface);
     }
 
     /**

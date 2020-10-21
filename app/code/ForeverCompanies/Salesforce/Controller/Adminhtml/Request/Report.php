@@ -55,11 +55,11 @@ class Report extends Action
         $startDate = '';
         $endDate = '';
         $params = $this->getRequest()->getParams();
-        foreach ($params as $key => $param){
-            if ($key == 'start_date'){
+        foreach ($params as $key => $param) {
+            if ($key == 'start_date') {
                 $startDate = $param;
             }
-            if ($key == 'end_date'){
+            if ($key == 'end_date') {
                 $endDate = $param;
             }
         }
@@ -128,7 +128,7 @@ class Report extends Action
      */
     protected function mergeLog($logs, $failedLogs)
     {
-        foreach ($logs as &$log){
+        foreach ($logs as &$log) {
             foreach ($failedLogs as $failedLog) {
                 if (isset($log['salesforce_table']) &&
                     isset($failedLog['salesforce_table']) &&

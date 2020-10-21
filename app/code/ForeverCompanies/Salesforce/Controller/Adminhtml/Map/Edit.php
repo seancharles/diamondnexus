@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Controller\Adminhtml\Map;
 
-
 use ForeverCompanies\Salesforce\Controller\Adminhtml\Map as MapController;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Registry;
@@ -58,9 +57,9 @@ class Edit extends MapController
     {
         $id = $this->getRequest()->getParam('id');
         $model = $this->mapFactory->create();
-        if ($id){
+        if ($id) {
             $model->load($id);
-            if (!$model->getId()){
+            if (!$model->getId()) {
                 $this->messageManager->addError(__('This mapping no longer exists.'));
             }
             $resultRedirect = $this->resultPageFactory->create();
@@ -69,7 +68,7 @@ class Edit extends MapController
 
 
         $data = $this->_objectManager->get('Magento\Backend\Model\Session')->getFormData(true);
-        if (!empty($data)){
+        if (!empty($data)) {
             $model->setData($data);
         }
 

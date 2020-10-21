@@ -9,26 +9,30 @@ declare(strict_types=1);
 namespace ForeverCompanies\Salesforce\Block\Adminhtml\Request;
 
 use ForeverCompanies\Salesforce\Model\RequestLog;
-use Magento\Sales\Model\Order;
+use ForeverCompanies\Salesforce\Model\ReportFactory;
+use ForeverCompanies\Salesforce\Model\RequestLogFactory;
+use Magento\Framework\App\DeploymentConfig\Reader;
+use Magento\Backend\Block\Widget;
+use Magento\Backend\Block\Template\Context;
 
 /**
  * Class RecordForm
  * @package ForeverCompanies\Salesforce\Block\Adminhtml\Request
  */
-class RecordForm extends \Magento\Backend\Block\Widget
+class RecordForm extends Widget
 {
     /**
-     * @var \ForeverCompanies\Salesforce\Model\ReportFactory
+     * @var ReportFactory
      */
     protected $logFactory;
 
     /**
-     * @var \ForeverCompanies\Salesforce\Model\RequestLogFactory
+     * @var RequestLogFactory
      */
     protected $requestLogFactory;
 
     /**
-     * @var \Magento\Framework\App\DeploymentConfig\Reader
+     * @var Reader
      */
     protected $configReader;
 
@@ -44,14 +48,14 @@ class RecordForm extends \Magento\Backend\Block\Widget
 
     /**
      * QueryForm constructor.
-     * @param \Magento\Backend\Block\Template\Context $context
+     * @param Context $context
      * @param array $data
      */
     public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
-        \ForeverCompanies\Salesforce\Model\ReportFactory $logFactory,
-        \ForeverCompanies\Salesforce\Model\RequestLogFactory $requestLogFactory,
-        \Magento\Framework\App\DeploymentConfig\Reader $configReader,
+        Context $context,
+        ReportFactory $logFactory,
+        RequestLogFactory $requestLogFactory,
+        Reader $configReader,
         array $data = []
     ) {
         $this->configReader = $configReader;
@@ -95,15 +99,6 @@ class RecordForm extends \Magento\Backend\Block\Widget
         return $this->getRequestRecord(RequestLog::REST_REQUEST_TYPE, $this->getLowestRequestDay());
     }
 
-    public function getHighestBulkRequest()
-    {
-        return $this->getRequestRecord(RequestLog::BULK_REQUEST_TYPE, $this->getHighestRequestDay());
-    }
-
-    public function getLowestBulkRequest()
-    {
-        return $this->getRequestRecord(RequestLog::BULK_REQUEST_TYPE, $this->getLowestRequestDay());
-    }
 
     protected function getRequestRecord($type, $date)
     {

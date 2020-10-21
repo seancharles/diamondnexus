@@ -65,9 +65,9 @@ class Order extends \Magento\Backend\App\Action
     {
         $orders = $this->orderFactory->create()->getCollection();
         /** $var \Magento\Sales\Model\Order $order */
-        foreach ($orders as $order){
+        foreach ($orders as $order) {
             $queue = $this->queueFactory->create();
-            if (!$queue->queueExisted($this->type, $order->getIncrementId())){
+            if (!$queue->queueExisted($this->type, $order->getIncrementId())) {
                 $queue->enqueue($this->type, $order->getIncrementId());
             }
         }

@@ -32,8 +32,9 @@ class Collection extends AbstractCollection
      */
     protected function _construct()
     {
-        $this->_init('ForeverCompanies\Salesforce\Model\Field',
-            'ForeverCompanies\Salesforce\Model\ResourceModel\Field');
+        $this->_init(
+            'ForeverCompanies\Salesforce\Model\Field',
+            'ForeverCompanies\Salesforce\Model\ResourceModel\Field'
+        );
     }
 }
-

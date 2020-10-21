@@ -41,7 +41,7 @@ class Disconnect extends Field
     protected function _prepareLayout()
     {
         parent::_prepareLayout();
-        if (!$this->getTemplate()){
+        if (!$this->getTemplate()) {
             $this->setTemplate('system/config/connection/disconnect.phtml');
         }
 

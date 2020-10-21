@@ -24,9 +24,9 @@ class Status extends Column
      */
     public function prepareDataSource(array $dataSource)
     {
-        if (isset($dataSource['data']['items'])){
-            foreach ($dataSource['data']['items'] as &$item){
-                if ($item['status'] && $item['status'] == LogStatus::SUCCESS_STATUS){
+        if (isset($dataSource['data']['items'])) {
+            foreach ($dataSource['data']['items'] as &$item) {
+                if ($item['status'] && $item['status'] == LogStatus::SUCCESS_STATUS) {
                     $class = 'notice';
                     $label = 'Success';
                 } else {

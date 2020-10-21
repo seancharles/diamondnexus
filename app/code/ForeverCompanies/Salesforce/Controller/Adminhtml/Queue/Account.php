@@ -9,6 +9,7 @@ namespace ForeverCompanies\Salesforce\Controller\Adminhtml\Request;
 
 use ForeverCompanies\Salesforce\Model\Queue;
 use ForeverCompanies\Salesforce\Model\QueueFactory;
+use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Customer\Model\CustomerFactory;
 use Magento\Framework\Controller\ResultFactory;
@@ -19,7 +20,7 @@ use Magento\Config\Model\ResourceModel\Config;
  * Class Account
  * @package ForeverCompanies\Salesforce\Controller\Adminhtml\Queue
  */
-class Account extends \Magento\Backend\App\Action
+class Account extends Action
 {
     /**
      * @var CustomerFactory
@@ -82,9 +83,9 @@ class Account extends \Magento\Backend\App\Action
         $customers = $this->customerFactory->create()
             ->getCollection();
         /** @var \Magento\Customer\Model\Customer $customer */
-        foreach ($customers as $customer){
+        foreach ($customers as $customer) {
             $queue = $this->queueFactory->create();
-            if (!$queue->queueExisted($this->type, $customer->getId())){
+            if (!$queue->queueExisted($this->type, $customer->getId())) {
                 $queue->enqueue($this->type, $customer->getId());
             }
         }

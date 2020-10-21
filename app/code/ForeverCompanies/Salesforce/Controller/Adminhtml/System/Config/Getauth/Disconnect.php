@@ -34,9 +34,9 @@ class Disconnect extends Action
 
     public function execute()
     {
-        $this->configModel->setDataByPath(Connector::XML_PATH_SALESFORCE_IS_CONNECTED,0);
+        $this->configModel->setDataByPath(Connector::XML_PATH_SALESFORCE_IS_CONNECTED, 0);
         $this->configModel->save();
-        $this->configModel->setDataByPath(Connector::XML_PATH_SALESFORCE_ACCESS_TOKEN,null);
+        $this->configModel->setDataByPath(Connector::XML_PATH_SALESFORCE_ACCESS_TOKEN, null);
         $this->configModel->save();
         $this->configModel->setDataByPath(Connector::XML_PATH_SALESFORCE_INSTANCE_URL, null);
         $this->configModel->save();

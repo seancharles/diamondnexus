@@ -17,7 +17,6 @@ use ForeverCompanies\Salesforce\Model\MapFactory;
 use ForeverCompanies\Salesforce\Model\ResourceModel\Map\CollectionFactory
     as MapCollectionFactory;
 
-
 /**
  * Class MassDelete Controller
  *
@@ -69,7 +68,7 @@ class MassDelete extends MapController
     {
         $collection = $this->filter->getCollection($this->collectionFactory->create());
         $delete = 0;
-        foreach ($collection as $item){
+        foreach ($collection as $item) {
             /** @var \ForeverCompanies\Salesforce\Model\Map $item */
             $item->delete();
             $delete++;
@@ -79,5 +78,4 @@ class MassDelete extends MapController
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         return $resultRedirect->setPath('*/*/');
     }
-
 }

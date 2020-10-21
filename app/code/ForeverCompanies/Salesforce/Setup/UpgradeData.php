@@ -53,9 +53,10 @@ class UpgradeData implements UpgradeDataInterface
         $this->salesSetupFactory = $salesSetupFactory;
     }
 
-    public function upgrade(ModuleDataSetupInterface  $setup,
-        ModuleContextInterface  $context)
-    {
+    public function upgrade(
+        ModuleDataSetupInterface  $setup,
+        ModuleContextInterface  $context
+    ) {
         $setup->startSetup();
         $this->createCustomerAttribute($setup);
         $this->createOrdersAttribute($setup);
@@ -135,6 +136,5 @@ class UpgradeData implements UpgradeDataInterface
             ]);
 
         $attribute->save();
-
     }
 }

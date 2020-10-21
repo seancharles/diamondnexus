@@ -17,14 +17,12 @@
             var client_secret = jQuery('[data-ui-id="text-groups-config-fields-client-secret-value"]').val();
             var username = jQuery('[data-ui-id="text-groups-config-fields-email-value"]').val();
             var password = jQuery('[data-ui-id="system-config-form-field-password-0-password-groups-config-fields-passwd-value"]').val();
-           // var security_token =  jQuery('[data-ui-id="text-groups-config-fields-security-token-value"]').val();
             var data = {
                 host: host,
                 client_id : client_id,
                 client_secret : client_secret,
                 username: username,
                 password : password,
-             //   security_token : security_token,
                 form_key: FORM_KEY
             };
             var url = '<?php echo $block->getUrl('salesforce/system_config_getauth/getAuth'); ?>';

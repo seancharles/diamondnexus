@@ -24,6 +24,6 @@ class Field extends AbstractDb
      */
     protected function _construct()
     {
-        $this->_init('forevercompanies_salesforce_field','id');
+        $this->_init('forevercompanies_salesforce_field', 'id');
     }
 }
