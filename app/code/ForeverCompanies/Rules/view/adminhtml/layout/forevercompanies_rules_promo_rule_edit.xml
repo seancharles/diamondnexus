@@ -16,6 +16,7 @@
                     <argument name="block" xsi:type="string">promo_rule_edit_tab_conditions</argument>
                 </action>
 
+
             </block>
         </referenceContainer>
         <referenceContainer name="content">

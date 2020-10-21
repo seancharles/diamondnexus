@@ -1,8 +1,16 @@
 <?php
+/**
+ * Copyright ©  All rights reserved.
+ * See COPYING.txt for license details.
+ */
+declare(strict_types=1);
+
 
 namespace ForeverCompanies\Rules\Block\Adminhtml\Promo\Rule;
 
-class Edit extends \Magento\Backend\Block\Widget\Form\Container
+use Magento\Backend\Block\Widget\Form\Container;
+
+class Edit extends Container
 {
     /**
      * Core registry

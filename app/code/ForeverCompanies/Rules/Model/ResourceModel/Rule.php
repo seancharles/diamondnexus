@@ -1,8 +1,15 @@
 <?php
+/**
+ * Copyright ©  All rights reserved.
+ * See COPYING.txt for license details.
+ */
 
 namespace ForeverCompanies\Rules\Model\ResourceModel;
 
-class Rule extends \Magento\Rule\Model\ResourceModel\AbstractResource
+use Magento\Rule\Model\ResourceModel\AbstractResource;
+
+
+class Rule extends AbstractResource
 {
 
     /**

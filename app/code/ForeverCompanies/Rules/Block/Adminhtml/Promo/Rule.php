@@ -1,8 +1,16 @@
 <?php
+/**
+ * Copyright ©  All rights reserved.
+ * See COPYING.txt for license details.
+ */
+declare(strict_types=1);
+
 
 namespace ForeverCompanies\Rules\Block\Adminhtml\Promo;
 
-class Rule extends \Magento\Backend\Block\Widget\Grid\Container
+use Magento\Backend\Block\Widget\Grid\Container;
+
+class Rule extends Container
 {
     /**
      * Constructor

@@ -1,8 +1,11 @@
 <?php
+/**
+ * Copyright ©  All rights reserved.
+ * See COPYING.txt for license details.
+ */
 
 namespace ForeverCompanies\Rules\Model;
 
-use Magento\Quote\Model\Quote\Address;
 use Magento\Rule\Model\AbstractModel;
 
 /**
@@ -31,10 +34,23 @@ class Rule extends AbstractModel
     protected $_eventObject = 'rule';
 
     /** @var \Magento\SalesRule\Model\Rule\Condition\CombineFactory */
+
     protected $condCombineFactory;
 
     /** @var \Magento\SalesRule\Model\Rule\Condition\Product\CombineFactory */
+
     protected $condProdCombineF;
+
+    /**
+     * @var \Magento\Catalog\Model\ResourceModel\Eav\Attribute
+     */
+    protected $eavModel;
+
+    /**
+     * @var \Magento\Catalog\Model\Product\Attribute\Repository
+     */
+
+    protected $productAttributeRepository;
 
     /**
      * Store already validated addresses and validation results
@@ -50,6 +66,8 @@ class Rule extends AbstractModel
      * @param \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate
      * @param \Magento\SalesRule\Model\Rule\Condition\CombineFactory $condCombineFactory
      * @param \Magento\SalesRule\Model\Rule\Condition\Product\CombineFactory $condProdCombineF
+     * @param \Magento\Catalog\Model\ResourceModel\Eav\Attribute $eavModel,
+     * @param \Magento\Catalog\Model\Product\Attribute\Repository $productAttributeRepository;
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb $resourceCollection
      * @param array $data
@@ -62,12 +80,16 @@ class Rule extends AbstractModel
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate,
         \Magento\SalesRule\Model\Rule\Condition\CombineFactory $condCombineFactory,
         \Magento\SalesRule\Model\Rule\Condition\Product\CombineFactory $condProdCombineF,
+        \Magento\Catalog\Model\ResourceModel\Eav\Attribute $eavModel,
+        \Magento\Catalog\Model\Product\Attribute\Repository $productAttributeRepository,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->condCombineFactory = $condCombineFactory;
         $this->condProdCombineF = $condProdCombineF;
+        $this->eavModel = $eavModel;
+        $this->productAttributeRepository = $productAttributeRepository;
         parent::__construct($context, $registry, $formFactory, $localeDate, $resource, $resourceCollection, $data);
     }
 
@@ -104,55 +126,25 @@ class Rule extends AbstractModel
     }
 
     /**
-     * Check cached validation result for specific address
-     *
-     * @param Address $address
-     * @return bool
+     * @return array
      */
-    public function hasIsValidForAddress($address)
+    public function getDatesForShipperHq()
     {
-        $addressId = $this->_getAddressId($address);
-        return isset($this->validatedAddresses[$addressId]) ? true : false;
-    }
 
-    /**
-     * Set validation result for specific address to results cache
-     *
-     * @param Address $address
-     * @param bool $validationResult
-     * @return $this
-     */
-    public function setIsValidForAddress($address, $validationResult)
-    {
-        $addressId = $this->_getAddressId($address);
-        $this->validatedAddresses[$addressId] = $validationResult;
-        return $this;
-    }
+        $attributeId = 404;
+        $this->eavModel->load($attributeId);
+        $attributeCode = $this->eavModel->getAttributeCode();
+        $options = $this->productAttributeRepository->get($attributeCode)->getOptions();
+        $result = [];
 
-    /**
-     * Get cached validation result for specific address
-     *
-     * @param Address $address
-     * @return bool
-     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
-     */
-    public function getIsValidForAddress($address)
-    {
-        $addressId = $this->_getAddressId($address);
-        return isset($this->validatedAddresses[$addressId]) ? $this->validatedAddresses[$addressId] : false;
-    }
-
-    /**
-     * Return id for address
-     *
-     * @param Address $address
-     * @return string
-     */
-    private function _getAddressId($address)
-    {
-        if ($address instanceof Address) {
-            return $address->getId();
+        foreach ($options as $option)
+        {
+            $result[] = [
+                'value' => $option->getValue(),
+                'label' => __($option->getLabel())
+            ];
         }
-        return $address;
+
+        return $result;
     }
 }
