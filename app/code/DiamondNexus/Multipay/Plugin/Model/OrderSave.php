@@ -110,7 +110,7 @@ class OrderSave
                 $order->setState(Order::STATE_PROCESSING)->setStatus(Order::STATE_PROCESSING);
             }
             if ($methodInstance === Constant::MULTIPAY_METHOD && $information[Constant::OPTION_TOTAL_DATA] == 2) {
-                $order->setState(Order::STATE_PENDING_PAYMENT)->setStatus(Order::STATE_PENDING_PAYMENT);
+                $order->setState('pending')->setStatus('pending');
             }
         }
         if ($methodInstance == Constant::MULTIPAY_METHOD && $method == Constant::MULTIPAY_QUOTE_METHOD) {

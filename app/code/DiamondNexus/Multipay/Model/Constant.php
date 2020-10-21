@@ -68,4 +68,6 @@ class Constant
         self::EXP_YEAR_DATA,
         self::CVV_NUMBER_DATA,
     ];
+
+    const CLIENT_XML = 'diamondnexus_multipay/general/client_id';
 }

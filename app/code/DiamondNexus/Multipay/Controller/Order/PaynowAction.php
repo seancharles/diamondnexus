@@ -71,17 +71,8 @@ class PaynowAction extends Action
         $order = $this->orderRepository->get($params['order_id']);
         $order->getPayment()->setAdditionalData($this->serializer->serialize($params));
         $order->getPayment()->setAdditionalInformation($params);
-        try {
-            /*$result = $this->helper->sendToBraintree($order);
-            if ($result instanceof Error) {
-                throw new ValidatorException(__('Credit card failed verification'));
-            }*/
-            $this->transaction->createNewTransaction($params['order_id'], $params);
-            $this->helper->updateOrderStatus($params, $order);
-        } catch (ValidatorException $e) {
-            $this->messageManager->addErrorMessage($e->getMessage());
-            return $resultRedirect->setPath('customer/account');
-        }
+        $this->transaction->createNewTransaction($params['order_id'], $params);
+        $this->helper->updateOrderStatus($params, $order);
         $this->cache->clean();
         return $resultRedirect->setPath('sales/order/history');
     }

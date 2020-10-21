@@ -32,5 +32,21 @@
 				</field>
 			</group>
 		</section>
+        <tab id="diamondnexus" sortOrder="2021">
+            <label>Diamond Nexus</label>
+        </tab>
+        <section id="diamondnexus_multipay" translate="label" type="text" sortOrder="100" showInDefault="1"
+                 showInWebsite="1" showInStore="0">
+            <label>Multipay</label>
+            <tab>diamondnexus</tab>
+            <resource>DiamondNexus_Multipay::config</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+                <label>General</label>
+                <field id="client_id" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="60" translate="label" type="text">
+                    <label>Client ID</label>
+                </field>
+            </group>
+        </section>
 	</system>
 </config>

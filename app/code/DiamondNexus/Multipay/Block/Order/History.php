@@ -4,6 +4,7 @@ namespace DiamondNexus\Multipay\Block\Order;
 
 use DiamondNexus\Multipay\Model\Constant;
 use Magento\Sales\Model\Order;
+use Magento\Sales\Model\ResourceModel\Order\Collection;
 
 /**
  * Sales order history block
@@ -28,6 +29,10 @@ class History extends \Magento\Sales\Block\Order\History
         return $method == Constant::MULTIPAY_METHOD && $order->getStatus() !== Order::STATE_PROCESSING;
     }
 
+    /**
+     * @param $id
+     * @return string
+     */
     public function getPayNowUrl($id)
     {
         return $this->getUrl('diamondnexus/order/paynow', ['order_id' => $id]);

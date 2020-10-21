@@ -151,7 +151,7 @@ class Data extends AbstractHelper
             $status = OrderModel::STATE_PROCESSING;
         }
         if ($post[Constant::OPTION_TOTAL_DATA] == 2) {
-            $status = OrderModel::STATE_PENDING_PAYMENT;
+            $status = 'pending';
             if ($post[Constant::OPTION_PARTIAL_DATA] == $post[Constant::AMOUNT_DUE_DATA]) {
                 $status = OrderModel::STATE_PROCESSING;
             }
