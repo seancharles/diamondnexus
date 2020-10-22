@@ -1,18 +1,16 @@
 <?php
+
 use DiamondNexus\Multipay\Block\Order\Paypal;
 
 /** @var Paypal $block */
 # get the order id from the url
-
 $orderId = $block->getData('order_id');
-
-# load the order
+# load the increment id
 $incrementId = $block->getIncrementId();
-
 # get the amount due
 $amountDue = $block->getBalanceAmount();
-
 $paypalClientId = $block->getClientId();
+$beginSrc = 'https://www.paypal.com/sdk/js?client-id=';
 ?>
 
 <style type="text/css">
@@ -109,7 +107,7 @@ $paypalClientId = $block->getClientId();
         background-image: -o-linear-gradient(top, #f86e3d, #db5321);
         background-image: linear-gradient(to bottom, #f86e3d, #db5321);
         background-repeat: repeat-x;
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f86e3d', endColorstr='#db5321', GradientType=0);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f86e3d', endColorstr='#db5321');
         border-color: #db5321 #db5321 #db5321;
         border-color: rgba(219, 83, 33, 0.1) rgba(219, 83, 33, 0.1) rgba(219, 83, 33, 0.25);
         *background-color: #db5321;
@@ -169,20 +167,20 @@ $paypalClientId = $block->getClientId();
 
 </style>
 <script
-    src="https://www.paypal.com/sdk/js?client-id=<?= $paypalClientId; ?>&currency=USD&disable-funding=credit&integration-date=2020-10-01"
+    src="<?= $beginSrc . $paypalClientId; ?>&currency=USD&disable-funding=credit&integration-date=2020-10-01"
     data-order-id="<?= $incrementId; ?>"></script>
-<form action="<?= $this->getUrl('multipay/makePayment/'); ?>" method="post">
+<form action="<?= $block->escapeUrl($block->getPaypalUrl()) ?>" method="post">
     <input type="hidden" name="order_id" value="<?= $orderId; ?>"/>
     <div class="my-account">
         <div class="dashboard">
             <div id="logo">
-                <img src="<?= $this->getSkinUrl(Mage::getStoreConfig('design/header/logo_src')); ?>" width="240"
+                <img src="<?= $block->getPaypalLogo() ?>" width="240"
                      border="0" alt=""/>
             </div>
             <div class="page-title">
                 <h1>Payment for order #<?= $incrementId; ?></h1>
             </div>
-            <?php if (Mage::getSingleton('core/session')->getErrors()): ?>
+            <?php if ($block->getErrors()): ?>
                 <ul class="errors">
                     <?php foreach (Mage::getSingleton('core/session')->getErrors() as $error): ?>
                         <li><?= $error ?></li>
@@ -205,21 +203,21 @@ $paypalClientId = $block->getClientId();
 
                                 <script>
 
-                                    jQuery(".paypal-guest-option").on("click", function () {
-                                        jQuery('#paypal-in-context-checkout-guest .paypal-button-widget').trigger('click');
+                                    $(".paypal-guest-option").on("click", function () {
+                                        $('#paypal-in-context-checkout-guest .paypal-button-widget').trigger('click');
                                         return;
                                     });
 
-                                    jQuery(".paypal-standard-option").on("click", function () {
-                                        jQuery('#paypal-in-context-checkout .paypal-button-widget').trigger('click');
+                                    $(".paypal-standard-option").on("click", function () {
+                                        $('#paypal-in-context-checkout .paypal-button-widget').trigger('click');
                                         return;
                                     });
 
                                     function sendPayment(details) {
 
-                                        jQuery.fancybox.showLoading();
+                                        $.fancybox.showLoading();
 
-                                        jQuery.ajax({
+                                        $.ajax({
                                             method: "POST",
                                             dataType: "JSON",
                                             url: "<?= $this->getUrl('multipay/makePayment/process/'); ?>",
@@ -229,10 +227,10 @@ $paypalClientId = $block->getClientId();
                                             }
                                         }).done(function (response) {
                                             if (response.success == true) {
-                                                location.href = "<?= $this->getUrl('multipay/makePayment/paymentComplete', array('_secure' => true, 'order_id' => $orderId)); ?>";
+                                                location.href = "<?= $this->getUrl('multipay/makePayment/paymentComplete', ['_secure' => true, 'order_id' => $orderId]); ?>";
                                             } else {
                                                 alert("There was an error processing your payment. Please call customer service.");
-                                                jQuery.fancybox.hideLoading();
+                                                $.fancybox.hideLoading();
                                             }
                                         });
 
@@ -264,7 +262,7 @@ $paypalClientId = $block->getClientId();
                                             });
                                         },
                                         onCancel: function () {
-                                            jQuery.fancybox.hideLoading();
+                                            $.fancybox.hideLoading();
                                         }
                                     }).render('#paypal-button-container');
                                 </script>

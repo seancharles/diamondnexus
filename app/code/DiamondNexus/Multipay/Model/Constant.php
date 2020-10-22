@@ -37,6 +37,9 @@ class Constant
     const MULTIPAY_REFUND_ACTION = 2;
     const MULTIPAY_CANCEL_ACTION = 3;
 
+    const MULTIPAY_TOTAL_AMOUNT = 1;
+    const MULTIPAY_PARTIAL_AMOUNT = 2;
+
     const STATE_QUOTE = 'quote';
 
     const CASH_TENDERED_DATA = 'multipay_cash_tendered';

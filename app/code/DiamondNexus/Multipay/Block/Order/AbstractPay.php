@@ -75,6 +75,10 @@ abstract class AbstractPay extends Template
         return $this->orderRepository->get($this->getData('order_id'))->getIncrementId();
     }
 
+    /**
+     * @param $where
+     * @return string
+     */
     protected function getUrlAction($where)
     {
         $orderId = false;

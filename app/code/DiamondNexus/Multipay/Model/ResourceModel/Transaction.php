@@ -89,7 +89,9 @@ class Transaction extends AbstractDb
             $change = $information[Constant::CHANGE_DUE_DATA];
         }
         if ((int) $information[Constant::PAYMENT_METHOD_DATA] == 1) {
-            $amount = $information[Constant::OPTION_PARTIAL_DATA];
+            if (isset($information[Constant::OPTION_PARTIAL_DATA])) {
+                $amount = $information[Constant::OPTION_PARTIAL_DATA];
+            }
         }
         if ((int) $information[Constant::PAYMENT_METHOD_DATA] == 2) {
             $amount = $information[Constant::CASH_TENDERED_DATA];
@@ -109,8 +111,8 @@ class Transaction extends AbstractDb
         $transaction->setData(
             [
             'order_id' => $orderId,
-            'transaction_type' => $information[Constant::PAYMENT_METHOD_DATA],
-            'payment_method' => $information[Constant::OPTION_TOTAL_DATA],
+            'transaction_type' => Constant::MULTIPAY_SALE_ACTION,
+            'payment_method' => $information[Constant::PAYMENT_METHOD_DATA],
             'amount' => $amount,
             'tendered' => $tendered,
             'change' => $change,
@@ -124,5 +126,26 @@ class Transaction extends AbstractDb
         } catch (Exception $e) {
             $this->logger->error($e->getMessage());
         }
+    }
+
+    /**
+     * @param int $orderId
+     * @return float|int
+     */
+    public function getPaidPart($orderId)
+    {
+        $paidPart = 0;
+        try {
+            $transactions = $this->getAllTransactionsByOrderId($orderId);
+            foreach ($transactions as $transaction) {
+                $paidPart += (float)$transaction['amount'];
+                if ($transaction['amount'] == 0) {
+                    $paidPart += (float)$transaction['tendered'];
+                }
+            }
+        } catch (LocalizedException $e) {
+            return 0;
+        }
+        return $paidPart;
     }
 }
