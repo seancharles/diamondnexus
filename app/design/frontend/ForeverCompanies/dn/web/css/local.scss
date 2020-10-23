@@ -146,7 +146,6 @@ https://www.smashingmagazine.com/2019/03/robust-layouts-container-units-css/
     --color-success: #42be65;
 }
 
-<<<<<<< HEAD
 /*------------fontcss-------------*/
 
 
@@ -193,20 +192,13 @@ https://www.smashingmagazine.com/2019/03/robust-layouts-container-units-css/
 }
 
 
-=======
->>>>>>> [DN: Style Default Magento Cart] Update DN theme
 html,
 body {
     height: 100%;
     margin: 0;
     padding: 0;
-<<<<<<< HEAD
     font-family: 'Gotham Light';
     font-weight: bold;
-=======
-    font-family: var(--sans-serif);
-    font-weight: var(--normal);
->>>>>>> [DN: Style Default Magento Cart] Update DN theme
     color: var(--color-black);
     font-size: 16px;
     line-height: 1.5;
@@ -214,11 +206,8 @@ body {
     -webkit-text-size-adjust: 100%; //fix for iOS
 }
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> [DN: Style Default Magento Cart] Update DN theme
 body {
     position: relative;
     min-height: 100vh;
@@ -296,7 +285,6 @@ p {
         line-height: 1.2em;
         letter-spacing: 0.15em;
         @include break_1025 {
-<<<<<<< HEAD
             font-size: 30px;
         }
     }
@@ -1412,58 +1400,10 @@ p {
         color:black;
     }
     .cart-summary > .title{
-=======
-            font-size: 30px;
-        }
-    }
-}
-.h2, , .page-title h1 {
-    font-family: var(--serif);
-    font-weight: var(--weight-light);
-    font-size: 32px;
-    line-height: 40px;
-    @include break_1025 {
-        font-size: 40px;
-        line-height: 48px; /*44px*/
-    }
-}
-.h3 {
-    font-family: var(--serif);
-    font-weight: var(--weight-light);
-    font-size: 24px;
-    line-height: 32px;
-    @include break_1025 {
-        font-size: 32px;
-        line-height: 40px;
-    }
-}
-.h4 {
-    font-weight: var(--weight-regular);
-    font-size: 20px;
-    line-height: 28px;
-}
-.h5 {
-    font-size: 16px;
-    line-height: 22px;
-    font-weight: var(--weight-bold);
-}
-.h6 {
-    font-size: 12px;
-    line-height: 20px;
-    font-weight: var(--weight-bold);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-}
-
-// checkout/cart
-@media (max-width: 690px) {
-    .cart-summary > .title {
->>>>>>> [DN: Style Default Magento Cart] Update DN theme
         font-size: 20px;
         display: none;
         font-weight: 300;
         margin: 12px 0;
-<<<<<<< HEAD
         font-family: 'Didot';
     }
 
@@ -1693,164 +1633,6 @@ p {
 
     .cart-summary > .title {
         font-size: 24px;
-=======
-    }
-
-    #block-shipping-heading {
-        font-weight: var(--weight-regular);
-        font-size: 16px;
-        line-height: 28px;
-    }
-
-    .action.primary.checkout {
-        background: #000;
-        display: inline-block;
-        padding: 7px 15px;
-        border: 0;
-        color: #FFF;
-        font-size: 12px;
-        font-weight: normal;
-        font-family: var(--serif);
-        line-height: 19px;
-        text-align: center;
-        vertical-align: middle;
-    }
-
-    .action.primary.checkout span {
-        font-size: 20px;
-    }
-
-    .block-cart-failed .actions.main .continue,
-    .block-cart-failed .actions.main .clear,
-    .cart-container .form-cart .actions.main .continue,
-    .cart-container .form-cart .actions.main .clear {
-        display: none;
-    }
-    #block-giftcard {
-        display: none;
-    }
-    #gift-options-cart {
-        display: none;
-    }
-    .cart.table-wrapper .cart > .item {
-        border-bottom: none;
-    }
-
-    .cart-container .form-cart .actions.main {
-        text-align: right;
-        border-bottom: 1px solid #cccccc;
-        padding-bottom: 30px;
-    }
-
-    .cart-totals .grand .mark{
-        font-size: 20px;
-    }
-    .cart-totals .grand .amount{
-        font-size: 20px;
-    }
-
-    #affirmfinance {
-        font-size: 14px;
-        text-align: right;
-        padding: 0 0 3px;
-        padding-bottom: 3px;
-        text-align: center;
-        padding-bottom: 25px;
-    }
-    #affirmfinance a {
-        display: inline-block;
-        font-size: 10px;
-        text-transform: uppercase;
-        text-decoration: underline;
-        color: #000;
-        margin-left: 3px;
-    }
-    #affirmfinance a:hover {
-        color: #b59d74;
-    }
-
-    .__affirm-logo {
-        /* use !important to prevent issues with browser extensions that change fonts */
-        font-family: 'affirm' !important;
-        speak: none;
-        font-style: normal;
-        font-weight: normal;
-        font-variant: normal;
-        text-transform: none;
-        line-height: 1;
-        position: relative;
-        white-space: nowrap;
-        /* Enable Ligatures ================ */
-        letter-spacing: 0;
-        -ms-font-feature-settings: "liga" 1;
-        -webkit-font-feature-settings: "liga";
-        font-feature-settings: "liga";
-        -webkit-font-variant-ligatures: discretionary-ligatures;
-        font-variant-ligatures: discretionary-ligatures;
-        /* Better Font Rendering =========== */
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        font-size: 0.8em;
-        -webkit-text-size-adjust: 100%;
-        -moz-text-size-adjust: 100%;
-        -ms-text-size-adjust: 100%;
-        text-size-adjust: 100%;
-    }
-
-    .page-main .block{
-        margin-bottom: 0px;
-    }
-
-    .cart-discount {
-        width: 71%;
-        float: left;
-        -ms-flex-order: 1;
-        -webkit-order: 1;
-        order: 1;
-        border: 0;
-        border-bottom-color: currentcolor;
-        border-bottom-style: none;
-        border-bottom-width: 0px;
-        box-sizing: border-box;
-        padding-right: 4%;
-    }
-    .cart-discount .block > .title strong {
-        font-size: 18px;
-        color: black;
-        font-weight: 400;
-    }
-
-    .action.continue {
-        margin-top: 39px;
-        text-decoration: underline;
-        font-size: 19px;
-        font-style: normal;
-        font-weight: bold;
-        color: black;
-    }
-
-    .cart-discount .block > .title strong{
-        color: black;
-        font-weight: 400;
-        font-size: 20px;
-    }
-
-    .action.update {
-        background: white;
-        font-size: 17px;
-        font-weight: bold;
-    }
-
-    .cart.table-wrapper .col.price .price-excluding-tax{
-        color:black;
-        font-size: 22px;
-    }
-
-}
-@media (min-width: 768px) {
-    .cart-summary > .title {
-        font-size: 20px;
->>>>>>> [DN: Style Default Magento Cart] Update DN theme
         display: none;
         font-weight: 300;
         margin: 12px 0;
@@ -1874,19 +1656,12 @@ p {
         line-height: 19px;
         text-align: center;
         vertical-align: middle;
-<<<<<<< HEAD
         font-family: 'Gotham Light';
     }
 
     .action.primary.checkout span {
         font-size: 16px;
         font-weight: bolder;
-=======
-    }
-
-    .action.primary.checkout span {
-        font-size: 20px;
->>>>>>> [DN: Style Default Magento Cart] Update DN theme
     }
 
     .block-cart-failed .actions.main .continue,
@@ -1912,17 +1687,10 @@ p {
     }
 
     .cart-totals .grand .mark{
-<<<<<<< HEAD
         font-size: 18px;
     }
     .cart-totals .grand .amount{
         font-size: 18px;
-=======
-        font-size: 20px;
-    }
-    .cart-totals .grand .amount{
-        font-size: 20px;
->>>>>>> [DN: Style Default Magento Cart] Update DN theme
     }
 
     #affirmfinance {
@@ -1991,18 +1759,13 @@ p {
         padding-right: 4%;
     }
     .cart-discount .block > .title strong {
-<<<<<<< HEAD
         font-size: 16px !important;
-=======
-        font-size: 18px;
->>>>>>> [DN: Style Default Magento Cart] Update DN theme
         color: black;
         font-weight: 400;
     }
 
     .action.continue {
         margin-top: 39px;
-<<<<<<< HEAD
         text-align: left;
         text-decoration: underline;
         font: normal normal bolder 14px/46px 'Gotham Light';
@@ -2027,28 +1790,16 @@ p {
         margin: 0 10px 5px 0;
         font-size: 12px;
         font-weight: bold;
-=======
-        text-decoration: underline;
-        font-size: 19px;
-        font-style: normal;
-        font-weight: bold;
-        color: black;
->>>>>>> [DN: Style Default Magento Cart] Update DN theme
     }
 
     .cart-discount .block > .title strong{
         color: black;
         font-weight: 400;
-<<<<<<< HEAD
         font-size: 16px !important;
-=======
-        font-size: 20px;
->>>>>>> [DN: Style Default Magento Cart] Update DN theme
     }
 
     .action.update {
         background: white;
-<<<<<<< HEAD
         font-size: 12px;
         font-weight: bold;
         font-family: 'Gotham Light';
@@ -2065,16 +1816,6 @@ p {
     }
 }
 
-=======
-        font-size: 17px;
-        font-weight: bold;
-    }
-
-}
-
-
-
->>>>>>> [DN: Style Default Magento Cart] Update DN theme
 /*Buttons*/
 .btn {
     cursor: pointer;
