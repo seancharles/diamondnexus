@@ -14,6 +14,7 @@ https://www.smashingmagazine.com/2019/03/robust-layouts-container-units-css/
 */
 @import url(//db.onlinewebfonts.com/c/251039e6849ad977a8bfc40b564dce89?family=Didot);
 @import url(//db.onlinewebfonts.com/c/84693c6ac1f359fe8a4ac49b69f492dd?family=Gotham+Light);
+@import url(//db.onlinewebfonts.com/c/5d6f50ed2dde0e4ad455448f896c09f0?family=Gotham);
 :root {
   --grid-width: 346;
   --grid-column-width: 64;
@@ -70,9 +71,14 @@ https://www.smashingmagazine.com/2019/03/robust-layouts-container-units-css/
 
 /*------------fontcss-------------*/
 @font-face {
+  font-family: "Gotham Bold";
+  src: url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.eot");
+  src: url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.eot?#iefix") format("embedded-opentype"), url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.woff2") format("woff2"), url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.woff") format("woff"), url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.ttf") format("truetype"), url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.svg#Gotham") format("svg"); }
+
+@font-face {
   font-family: "Gotham Light";
-  src: url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.eot");
-  src: url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.eot?#iefix") format("embedded-opentype"), url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.woff2") format("woff2"), url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.woff") format("woff"), url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.ttf") format("truetype"), url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.svg#Gotham Book") format("svg"); }
+  src: url("//db.onlinewebfonts.com/t/84693c6ac1f359fe8a4ac49b69f492dd.eot");
+  src: url("//db.onlinewebfonts.com/t/84693c6ac1f359fe8a4ac49b69f492dd.eot?#iefix") format("embedded-opentype"), url("//db.onlinewebfonts.com/t/84693c6ac1f359fe8a4ac49b69f492dd.woff2") format("woff2"), url("//db.onlinewebfonts.com/t/84693c6ac1f359fe8a4ac49b69f492dd.woff") format("woff"), url("//db.onlinewebfonts.com/t/84693c6ac1f359fe8a4ac49b69f492dd.ttf") format("truetype"), url("//db.onlinewebfonts.com/t/84693c6ac1f359fe8a4ac49b69f492dd.svg#Gotham Light") format("svg"); }
 
 @font-face {
   font-family: "Didot";
@@ -84,8 +90,8 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: 'Gotham Light';
-  font-weight: bold;
+  font-family: var(--sans-serif);
+  font-weight: var(--normal);
   color: var(--color-black);
   font-size: 16px;
   line-height: 1.5;
@@ -203,597 +209,115 @@ p {
   letter-spacing: 0.1em;
   text-transform: uppercase; }
 
-@media (max-width: 760px) {
-  .cart-discount .block.discount {
-    width: auto;
-    margin-bottom: 5px;
-    border-bottom: 1px solid #cccccc; }
-  .we-accept {
-    clear: left;
-    float: left; }
-  .we-accept-cards {
-    background: transparent url("/pub/static/frontend/ForeverCompanies/dn/en_US/images/cards.png") 0% 0% no-repeat padding-box; }
-  thead {
-    font-size: 14px;
-    text-align: left; }
-  #block-shipping {
-    display: none; }
-  .cart.table-wrapper .item-options dt {
-    clear: left;
-    float: left;
-    margin: 0 10px 5px 0;
-    font-size: 14px;
-    font-weight: bold; }
-  .cart.table-wrapper .item-options dd {
-    clear: right;
-    float: right;
-    margin: 0 10px 5px 0;
-    font-size: 14px;
-    font-weight: bold; }
-  .opc-wrapper .action-show-popup {
-    margin: 0 0 20px;
-    background: white;
-    font-family: 'Gotham Light';
-    font-weight: 900;
-    font-size: 17px; }
-  .product-item-name > a, .product.name a > a {
-    color: black;
-    text-decoration: none;
-    text-align: left;
-    font-size: 16px;
-    font-weight: bold; }
-  .cart.table-wrapper .col.subtotal .price-excluding-tax .price {
-    font-size: 14px;
-    color: black; }
-  .cart-summary > .title {
-    font-size: 24px;
-    display: none;
-    font-weight: 300;
-    margin: 12px 0;
-    font-family: 'Didot'; }
-  .page-main > .page-title-wrapper .page-title {
-    display: inline-block;
-    font-family: 'Didot';
-    font-size: 24px;
-    text-align: left; }
-  .totals.sub {
-    font-size: 16px; }
-  .opc-wrapper .shipping-address-item.selected-item {
-    border-color: #c0a374 !important; }
+@media (max-width: 690px) {
   .actions-toolbar {
-    display: none; }
-  .action.multicheckout {
-    display: none; }
-  .action-continue {
-    margin-top: 20px; }
-  .action-continue a {
-    text-decoration: none;
-    color: black;
-    text-transform: capitalize;
-    font-size: 16px;
-    padding-left: 10px; }
-  .checkout-payment-method .payment-method-title {
-    padding: 20px 0;
-    margin: 0;
-    font-family: 'Gotham Light';
-    font-weight: bold; }
-  .opc-wrapper .step-title {
-    border-bottom: 1px solid #cccccc;
-    margin-bottom: 15px;
-    font-family: 'Didot';
-    font-size: 25px;
-    font-weight: bold; }
-  .product-item {
-    font-size: 11px;
-    line-height: normal;
-    letter-spacing: normal; }
-  .opc-wrapper .form-login .fieldset .field .label {
-    font-weight: bold; }
-  .opc-wrapper .form-login {
-    padding-bottom: 0px;
-    border-bottom: 0; }
-  .methods-shipping .actions-toolbar .action.primary {
-    line-height: 2.2rem;
-    font-size: 20px;
-    color: white;
-    background: black; }
-  .opc-wrapper .form-login {
-    border-bottom: 0;
-    padding-bottom: 0px; }
-  .opc-progress-bar-item._active > span {
-    color: #333333;
-    font-family: 'Gotham Light';
-    font-weight: bold;
-    font-size: 20px; }
-  .opc-progress-bar-item > span {
-    display: inline-block;
-    font-family: 'Gotham Light';
-    font-weight: bold;
-    width: 100%;
-    word-wrap: break-word;
-    color: #666666;
-    font-weight: 300;
-    font-size: 20px !important; }
-  .opc-wrapper .form-shipping-address .fieldset .field .label {
-    font-family: 'Gotham Light';
-    font-weight: bold; }
-  .opc-block-summary > .title {
-    display: block;
-    font-size: 22px;
-    font-family: 'Didot'; }
-  .opc-block-summary .items-in-cart > .title strong {
-    display: block;
-    font-size: 18px;
-    font-family: 'Gotham Light';
-    font-weight: bold; }
-  .opc-block-shipping-information .shipping-information-title {
-    display: block;
-    font-size: 22px;
-    font-family: 'Didot'; }
-  .opc-block-summary .product-item .subtotal {
-    display: block;
-    text-align: right; }
-  .minicart-items .product.options .toggle > span {
-    display: none; }
-  .minicart-items .product-item-details .price-excluding-tax {
-    margin: 5px 0;
-    font-size: 1px; }
-  .opc-block-summary .product-item .product-item-name-block {
-    display: block;
-    text-align: left; }
-  .opc-block-summary .product-item .product-item-inner {
-    display: flex; }
-  .opc-block-summary .product-item .price {
-    font-size: 20px;
-    font-weight: 400; }
-  .opc-block-summary .table-totals .grand .mark {
-    font-size: 20px;
-    border-top: 1px solid #cccccc;
-    padding-right: 10px; }
-  .opc-progress-bar-item > span {
-    font-size: 20px; }
-  .opc-progress-bar-item > span {
-    display: inline-block;
-    padding-top: 45px;
-    width: 100%;
-    word-wrap: break-word;
-    color: #666666;
-    font-weight: 300;
-    font-size: 20px; }
-  .opc-progress-bar-item._active > span::before {
-    backround: #D19F4E !important;
-    border-color: #D19F4E !important; }
-  .opc-progress-bar-item._active > span::after {
-    border-color: #D19F4E !important; }
-  .checkout-payment-method .payment-method-title {
-    padding: 20px 0;
-    margin: 0;
-    font-family: 'Gotham Light';
-    font-weight: bold; }
-  .checkout-payment-method .actions-toolbar .primary {
-    float: left;
-    margin: 0;
-    font-family: 'Gotham Light';
-    font-weight: bold; }
-  .opc-block-summary .table-totals .grand strong {
-    font-size: 20px; }
-  .opc-block-summary .table-totals .grand .amount {
-    font-size: 20px; }
-  .checkout-payment-method .actions-toolbar .primary {
-    float: left;
-    margin: 0;
-    margin-top: 10px; }
-  /* Inline #12 | http://forevercompanies.docker.aitom.cz/checkout/#payment */
-  .payment-option._collapsible.opc-payment-additional.discount-code {
-    display: none; }
-  #giftcardaccount-placer {
-    display: none; }
-  .opc-block-shipping-information .shipping-information-title .action-edit {
-    top: 0px;
-    display: inline-block;
-    text-decoration: none;
-    position: absolute;
-    right: 3px;
-    border: 1px solid #ccc;
-    font-size: 21px;
     padding-right: 20px;
-    text-align: center;
-    padding-left: 20px;
-    color: black;
-    font-family: 'Gotham'; }
-  .action-continue {
-    margin-top: 20px;
-    margin-right: 10px; }
-  .action-continue a {
-    text-decoration: none;
-    color: black;
-    text-transform: capitalize;
-    font-size: 16px; }
-  .totals-tax {
-    display: none; }
-  .checkout-payment-method .payment-method-title {
-    padding: 20px 0;
-    margin: 0;
+    padding-top: 20px; }
+  #checkout-payment-method-load {
+    padding-left: 20px; }
+  .items {
+    list-style: none none;
     font-family: 'Gotham Light';
-    font-weight: bold; }
-  .opc-wrapper .step-title {
-    border-bottom: 1px solid #cccccc;
-    margin-bottom: 15px;
-    font-family: 'Didot';
-    font-size: 25px;
-    font-weight: bold; }
-  .product-item {
-    font-size: 11px;
-    line-height: normal;
-    letter-spacing: normal; }
-  .opc-wrapper .form-login .fieldset .field .label {
-    font-weight: bold; }
-  .opc-wrapper .form-login {
-    padding-bottom: 0px;
-    border-bottom: 0; }
-  .methods-shipping .actions-toolbar .action.primary {
-    line-height: 2.2rem;
-    font-size: 20px;
-    color: white;
-    background: black; }
-  .opc-wrapper .form-login {
-    border-bottom: 0;
-    padding-bottom: 0px; }
-  .opc-progress-bar-item._active > span {
-    color: #333333;
-    font-weight: bold;
-    font-family: 'Gotham Light';
-    font-size: 20px; }
-  .opc-progress-bar-item > span {
-    display: inline-block;
-    font-weight: bold;
-    font-family: 'Gotham Light';
-    padding-top: 45px;
-    width: 100%;
-    word-wrap: break-word;
-    color: #666666;
-    font-weight: 300;
-    font-size: 20px !important; }
-  .opc-wrapper .form-shipping-address .fieldset .field .label {
-    font-weight: bold; }
-  .opc-block-summary > .title {
-    display: block;
-    font-size: 22px;
-    font-family: 'Didot'; }
-  .opc-block-summary .items-in-cart > .title strong {
-    display: block;
-    font-size: 18px;
-    font-family: 'Gotham Light';
-    font-weight: bold; }
-  .opc-block-shipping-information .shipping-information-title {
-    display: block;
-    font-size: 22px;
-    font-family: 'Didot'; }
-  .opc-block-summary .product-item .subtotal {
-    display: block;
-    text-align: right; }
-  .minicart-items .product.options .toggle > span {
-    display: none; }
-  .minicart-items .product-item-details .price-excluding-tax {
-    margin: 5px 0;
-    font-size: 1px; }
-  .opc-block-summary .product-item .product-item-name-block {
-    display: block;
-    text-align: left; }
-  .opc-block-summary .product-item .product-item-inner {
-    display: flex; }
-  .opc-block-summary .product-item .price {
-    font-size: 20px;
-    font-weight: 400; }
-  .opc-block-summary .table-totals .grand .mark {
-    font-size: 20px;
-    border-top: 1px solid #cccccc;
-    padding-right: 10px; }
-  .opc-progress-bar-item > span {
-    font-size: 20px; }
-  .opc-progress-bar-item > span {
-    display: inline-block;
-    padding-top: 45px;
-    width: 100%;
-    word-wrap: break-word;
-    color: #666666;
-    font-weight: 300;
-    font-size: 20px; }
-  .opc-progress-bar-item._active > span::before {
-    backround: #D19F4E !important;
-    border-color: #D19F4E !important; }
-  .opc-progress-bar-item._active > span::after {
-    border-color: #D19F4E !important; }
-  .checkout-payment-method .actions-toolbar .primary {
-    float: left;
-    margin: 0;
-    font-family: 'Gotham Light';
-    font-weight: bold; }
-  .opc-block-summary .table-totals .grand strong {
-    font-size: 20px; }
-  .opc-block-summary .table-totals .grand .amount {
-    font-size: 20px; }
-  /* Inline #12 | http://forevercompanies.docker.aitom.cz/checkout/#payment */
-  .payment-option._collapsible.opc-payment-additional.discount-code {
-    display: none; }
-  #giftcardaccount-placer {
-    display: none; }
-  .opc-block-shipping-information .shipping-information-title .action-edit {
-    top: 0px;
-    display: inline-block;
-    text-decoration: none;
-    position: absolute;
-    right: 3px;
-    border: 1px solid #ccc;
-    font-size: 21px;
-    padding-right: 20px;
-    text-align: center;
-    padding-left: 20px;
-    color: black;
-    font-family: 'Gotham'; }
-  .cart-summary > .title {
-    font-size: 20px;
-    display: none;
-    font-weight: 300;
-    margin: 12px 0; }
-  #block-shipping-heading {
-    font-weight: var(--weight-regular);
-    font-size: 16px;
-    line-height: 28px; }
-  .action.primary.checkout {
-    background: #000;
-    display: inline-block;
-    padding: 7px 15px;
-    border: 0;
-    color: #FFF;
-    font-size: 12px;
-    font-weight: normal;
-    font-family: var(--serif);
-    line-height: 19px;
-    text-align: center;
-    vertical-align: middle;
+    font-size: 14px; }
+  #checkout-shipping-method-load {
     font-family: 'Gotham Light'; }
-  .action.primary.checkout span {
-    font-size: 16px;
-    font-weight: bolder; }
-  .block-cart-failed .actions.main .continue,
-  .block-cart-failed .actions.main .clear,
-  .cart-container .form-cart .actions.main .continue,
-  .cart-container .form-cart .actions.main .clear {
-    display: none; }
-  #block-giftcard {
-    display: none; }
-  #gift-options-cart {
-    display: none; }
-  .cart.table-wrapper .cart > .item {
-    border-bottom: none; }
-  .cart-container .form-cart .actions.main {
-    text-align: right;
-    border-bottom: 1px solid #cccccc;
-    padding-bottom: 30px; }
-  .cart-totals .grand .mark {
-    font-size: 18px; }
-  .cart-totals .grand .amount {
-    font-size: 18px; }
-  #affirmfinance {
-    font-size: 14px;
-    text-align: right;
-    padding: 0 0 3px;
-    padding-bottom: 3px;
-    text-align: center;
-    padding-bottom: 25px; }
-  #affirmfinance a {
-    display: inline-block;
-    font-size: 10px;
-    text-transform: uppercase;
-    text-decoration: underline;
-    color: #000;
-    margin-left: 3px; }
-  #affirmfinance a:hover {
-    color: #b59d74; }
-  .__affirm-logo {
-    /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: 'affirm' !important;
-    speak: none;
-    font-style: normal;
-    font-weight: normal;
-    font-variant: normal;
-    text-transform: none;
-    line-height: 1;
-    position: relative;
-    white-space: nowrap;
-    /* Enable Ligatures ================ */
-    letter-spacing: 0;
-    -ms-font-feature-settings: "liga" 1;
-    -webkit-font-feature-settings: "liga";
-    font-feature-settings: "liga";
-    -webkit-font-variant-ligatures: discretionary-ligatures;
-    font-variant-ligatures: discretionary-ligatures;
-    /* Better Font Rendering =========== */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-size: 0.8em;
-    -webkit-text-size-adjust: 100%;
-    -moz-text-size-adjust: 100%;
-    -ms-text-size-adjust: 100%;
-    text-size-adjust: 100%; }
-  .page-main .block {
-    margin-bottom: 0px; }
-  .cart-discount {
-    width: 100%;
-    float: left;
-    -ms-flex-order: 1;
-    -webkit-order: 1;
-    order: 1;
-    border: 0;
-    border-bottom-color: currentcolor;
-    border-bottom-style: none;
-    border-bottom-width: 0px;
-    box-sizing: border-box;
-    padding-right: 4%; }
-  .cart-discount .block > .title {
-    border-top: none; }
-  .action.continue {
-    margin-top: 39px;
-    text-align: left;
-    text-decoration: underline;
-    font: normal normal bolder 14px/46px 'Gotham Light';
+  .action.action-show-popup {
+    background: white;
+    font-family: 'Gotham Bold';
+    font-size: 12px;
     font-weight: bolder;
-    letter-spacing: 0px;
-    color: #000000;
-    text-transform: uppercase;
-    opacity: 1;
-    padding-right: 10px; }
-  .cart-discount .block > .title strong {
-    color: black;
-    font-weight: 400;
-    font-size: 16px !important; }
-  .action.update {
-    background: white;
-    font-size: 12px;
-    font-weight: bold;
-    font-family: 'Gotham Light';
-    margin-right: 28%;
-    font-style: initial;
+    width: 109%;
     text-transform: uppercase; }
-  .action-continue div {
-    padding-left: 37px;
-    padding-top: 10px; }
-  .cart.table-wrapper .col.price .price-excluding-tax {
-    color: black;
-    font-size: 16px;
-    line-height: 1;
-    white-space: nowrap;
-    font-weight: bold;
-    font-family: 'Gotham Light';
-    padding-top: 6px; } }
-
-@media (min-width: 768px) {
-  .cart-discount .block.discount {
-    width: 100% !important;
-    margin-bottom: 5px;
-    border-bottom: 1px solid #cccccc;
-    border-top: none; }
-  .action-continue a {
-    text-decoration: none;
-    color: black;
-    text-transform: capitalize;
-    font-size: 16px; }
-  .cart-discount .block.discount {
-    width: 100%;
-    margin-bottom: 5px;
-    border-bottom: 1px solid #cccccc; }
-  .we-accept {
-    clear: left;
-    float: left; }
-  .we-accept-cards {
-    background: transparent url("/pub/static/frontend/ForeverCompanies/dn/en_US/images/cards.png") 0% 0% no-repeat padding-box; }
-  thead {
-    font-size: 14px;
-    text-align: left; }
-  #block-shipping {
-    display: none; }
-  .cart.table-wrapper .item-options dt {
-    clear: left;
-    float: left;
-    margin: 0 10px 5px 0;
-    font-size: 12px;
-    font-weight: bold; }
-  .opc-wrapper .action-show-popup {
-    margin: 0 0 20px;
-    background: white;
-    font-family: 'Gotham Light';
-    font-weight: 900;
-    font-size: 17px; }
-  .product-item-name > a, .product.name a > a {
-    color: black;
-    text-decoration: none;
-    font-size: 18px;
-    font-weight: bold; }
-  .cart.table-wrapper .col.subtotal .price-excluding-tax .price {
-    font-size: 14px;
-    color: black; }
-  .cart-summary > .title {
-    font-size: 20px;
-    display: none;
-    font-weight: 300;
-    margin: 12px 0;
-    font-family: 'Didot'; }
-  .page-main > .page-title-wrapper .page-title {
-    display: inline-block;
-    font-size: 32px;
-    text-align: left;
-    font-family: 'Didot'; }
-  .actions-toolbar {
-    display: none; }
-  .action.multicheckout {
-    display: none; }
-  .totals-tax {
-    display: none; }
+  .table-checkout-shipping-method tbody .col-price {
+    font-weight: 600;
+    font-family: 'Gotham Bold'; }
   .checkout-payment-method .payment-method-title {
     padding: 20px 0;
     margin: 0;
     font-family: 'Gotham Light';
     font-weight: bold; }
-  .checkout-payment-method .checkout-billing-address .billing-address-details {
-    line-height: 27px;
-    padding: 0 0 0 23px;
-    font-family: 'Gotham Light';
-    font-weight: bold; }
   .opc-wrapper .step-title {
-    border-bottom: 1px solid #cccccc;
     margin-bottom: 15px;
     font-family: 'Didot';
-    font-size: 25px;
+    font-size: 24px;
     font-weight: bold; }
+  .opc-wrapper .form-login .fieldset .note {
+    font-family: 'Gotham Light'; }
   .product-item {
-    font-size: 11px;
+    font-size: 14px;
     line-height: normal;
     letter-spacing: normal; }
-  .opc-wrapper .form-login .fieldset .field .label {
-    font-weight: bold; }
+  .opc-wrapper .fieldset .field .label {
+    font-weight: bold !important;
+    font-size: 14px; }
   .opc-wrapper .form-login {
     padding-bottom: 0px;
     border-bottom: 0; }
   .methods-shipping .actions-toolbar .action.primary {
     line-height: 2.2rem;
-    font-size: 20px;
+    font-size: 14px;
     color: white;
-    background: black; }
+    background: black;
+    width: 100%;
+    text-transform: uppercase;
+    text-decoration: none; }
+  .minicart-wrapper .action.showcart .counter.qty {
+    background: #D19F4E;
+    color: #ffffff;
+    height: 24px;
+    line-height: 24px;
+    border-radius: 2px;
+    display: inline-block;
+    margin: 3px 0 0;
+    min-width: 18px;
+    overflow: hidden;
+    padding: 0 3px;
+    text-align: center;
+    white-space: normal; }
   .opc-wrapper .form-login {
     border-bottom: 0;
     padding-bottom: 0px; }
   .opc-progress-bar-item._active > span {
     color: #333333;
     font-family: 'Gotham Light';
-    font-weight: bold;
-    font-size: 20px; }
+    font-weight: bold !important;
+    font-size: 16px !important; }
   .opc-progress-bar-item > span {
     display: inline-block;
-    padding-top: 45px;
+    font-family: 'Gotham Light';
+    font-weight: bold;
     width: 100%;
     word-wrap: break-word;
-    color: #666666;
-    font-weight: 300;
-    font-size: 20px !important; }
+    color: black !important;
+    font-size: 16px !important; }
   .opc-wrapper .form-shipping-address .fieldset .field .label {
-    font-weight: bold; }
+    font-family: 'Gotham Bold'; }
+  .opc-block-summary {
+    background: #f5f5f5;
+    margin: 0 0 20px;
+    padding: 22px 30px;
+    font-family: 'Gotham Light' !important;
+    font-size: 14px; }
   .opc-block-summary > .title {
     display: block;
-    font-size: 22px;
+    font-size: 24px;
     font-family: 'Didot'; }
   .opc-block-summary .items-in-cart > .title strong {
     display: block;
-    font-size: 18px;
+    font-size: 16px;
     font-family: 'Gotham Light';
     font-weight: bold; }
   .opc-block-shipping-information .shipping-information-title {
     display: block;
-    font-size: 22px;
+    font-size: 24px;
     font-family: 'Didot'; }
   .opc-block-summary .product-item .subtotal {
     display: block;
     text-align: right; }
+  .opc-block-shipping-information .shipping-information-content {
+    line-height: 27px;
+    font-family: 'Gotham Light';
+    font-size: 14px; }
   .minicart-items .product.options .toggle > span {
     display: none; }
   .minicart-items .product-item-details .price-excluding-tax {
@@ -801,11 +325,12 @@ p {
     font-size: 1px; }
   .opc-block-summary .product-item .product-item-name-block {
     display: block;
+    padding-right: 30px;
     text-align: left; }
   .opc-block-summary .product-item .product-item-inner {
     display: flex; }
   .opc-block-summary .product-item .price {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 400; }
   .opc-block-summary .table-totals .grand .mark {
     font-size: 20px;
@@ -816,31 +341,40 @@ p {
   .opc-progress-bar-item > span {
     display: inline-block;
     padding-top: 45px;
+    font-family: 'Gotham Light';
     width: 100%;
     word-wrap: break-word;
     color: #666666;
     font-weight: 300;
     font-size: 20px; }
+  .opc-wrapper .shipping-address-item {
+    font-size: 14px;
+    font-family: 'Gotham Light'; }
+  .opc-wrapper .shipping-address-item.selected-item {
+    border-color: #D19F4E; }
   .opc-progress-bar-item._active > span::before {
-    backround: #D19F4E !important;
-    border-color: #D19F4E !important; }
+    backround: #D19F4E;
+    border-color: #D19F4E; }
   .opc-progress-bar-item._active > span::after {
-    border-color: #D19F4E !important; }
-  .checkout-payment-method .actions-toolbar .primary {
-    float: left;
+    border-color: #D19F4E; }
+  .checkout-payment-method .payment-method-title {
+    padding: 20px 0;
     margin: 0;
     font-family: 'Gotham Light';
     font-weight: bold; }
+  .checkout-payment-method .actions-toolbar .primary {
+    float: left;
+    margin: 0;
+    font-family: 'Gotham Bold';
+    width: 100%;
+    padding-bottom: 20px;
+    text-transform: uppercase; }
   .opc-block-summary .table-totals .grand strong {
-    font-size: 20px; }
+    font-size: 18px; }
   .opc-block-summary .table-totals .grand .amount {
     font-size: 20px; }
-  .checkout-payment-method .actions-toolbar .primary {
-    float: left;
-    margin: 0;
-    margin-top: 10px;
-    font-family: 'Gotham Light';
-    font-weight: bold; }
+  .table-checkout-shipping-method .row {
+    font-size: 14px; }
   /* Inline #12 | http://forevercompanies.docker.aitom.cz/checkout/#payment */
   .payment-option._collapsible.opc-payment-additional.discount-code {
     display: none; }
@@ -858,24 +392,145 @@ p {
     text-align: center;
     padding-left: 20px;
     color: black;
+    font-family: 'Gotham'; }
+  .checkout-payment-method .payment-method-title {
+    padding: 20px 0;
+    margin: 0;
     font-family: 'Gotham Light';
     font-weight: bold; }
-  .field-error {
-    color: #e02b27;
-    font-size: 13px;
-    font-family: 'Gotham Light';
+  .opc-wrapper .step-title {
+    margin-bottom: 15px;
+    font-family: 'Didot';
+    font-size: 25px;
     font-weight: bold; }
-  .action-continue {
-    margin-top: 20px; }
-  .action-continue a {
-    text-decoration: none;
-    color: black;
-    text-transform: capitalize;
-    font-size: 16px; }
-  .totals-tax {
-    display: none; }
-  .cart-summary > .title {
+  .product-item {
+    font-size: 14px;
+    line-height: normal;
+    letter-spacing: normal; }
+  .opc-wrapper .fieldset .field .label {
+    font-weight: bold !important;
+    font-size: 14px; }
+  .opc-wrapper .form-login {
+    padding-bottom: 0px;
+    border-bottom: 0; }
+  .methods-shipping .actions-toolbar .action.primary {
+    line-height: 2.2rem;
+    font-size: 14px;
+    color: white;
+    background: black;
+    width: 100%;
+    text-transform: uppercase;
+    text-decoration: none; }
+  .opc-wrapper .form-login {
+    border-bottom: 0;
+    padding-bottom: 0px; }
+  .opc-progress-bar-item._active > span {
+    color: #333333;
+    font-weight: bold;
+    font-family: 'Gotham Light';
+    font-size: 16px !important; }
+  .opc-progress-bar-item > span {
+    display: inline-block;
+    font-weight: bold;
+    font-family: 'Gotham Light';
+    padding-top: 45px;
+    width: 100%;
+    word-wrap: break-word;
+    color: #666666;
+    font-weight: 300;
+    font-size: 16px !important; }
+  .opc-wrapper .form-shipping-address .fieldset .field .label {
+    font-family: 'Gotham Bold'; }
+  .opc-block-summary {
+    background: #f5f5f5;
+    margin: 0 0 20px;
+    padding: 22px 30px;
+    font-family: 'Gotham Light' !important; }
+  .opc-block-summary > .title {
+    display: block;
     font-size: 24px;
+    font-family: 'Didot'; }
+  .opc-block-summary .items-in-cart > .title strong {
+    display: block;
+    font-size: 16px;
+    font-family: 'Gotham Light';
+    font-weight: bold; }
+  .opc-block-shipping-information .shipping-information-title {
+    display: block;
+    font-size: 24px;
+    font-family: 'Didot'; }
+  .opc-block-summary .product-item .subtotal {
+    display: block;
+    text-align: right; }
+  .opc-block-shipping-information .shipping-information-content {
+    line-height: 27px;
+    font-family: 'Gotham Light';
+    font-size: 14px; }
+  .minicart-items .product.options .toggle > span {
+    display: none; }
+  .minicart-items .product-item-details .price-excluding-tax {
+    margin: 5px 0;
+    font-size: 1px; }
+  .opc-block-summary .product-item .product-item-name-block {
+    display: block;
+    padding-right: 30px;
+    text-align: left; }
+  .opc-block-summary .product-item .product-item-inner {
+    display: flex; }
+  .opc-block-summary .product-item .price {
+    font-size: 16px;
+    font-weight: 400; }
+  .opc-block-summary .table-totals .grand .mark {
+    font-size: 20px;
+    border-top: 1px solid #cccccc;
+    padding-right: 10px; }
+  .action.action-show-popup {
+    background: white;
+    font-family: 'Gotham Bold';
+    font-size: 12px;
+    font-weight: bolder;
+    width: 109%;
+    text-transform: uppercase; }
+  .opc-progress-bar-item > span {
+    font-size: 20px; }
+  .opc-progress-bar-item > span {
+    display: inline-block;
+    padding-top: 45px;
+    font-family: 'Gotham Light';
+    width: 100%;
+    word-wrap: break-word;
+    color: #666666;
+    font-weight: 300;
+    font-size: 16px; }
+  .opc-progress-bar-item._active > span::before {
+    backround: #D19F4E;
+    border-color: #D19F4E; }
+  .opc-progress-bar-item._active > span::after {
+    border-color: #D19F4E; }
+  .opc-block-summary .table-totals .grand strong {
+    font-size: 18px; }
+  .opc-block-summary .table-totals .grand .amount {
+    font-size: 20px; }
+  /* Inline #12 | http://forevercompanies.docker.aitom.cz/checkout/#payment */
+  .payment-option._collapsible.opc-payment-additional.discount-code {
+    display: none; }
+  #giftcardaccount-placer {
+    display: none; }
+  .opc-block-shipping-information .shipping-information-title .action-edit {
+    top: 0px;
+    display: inline-block;
+    text-decoration: none;
+    position: absolute;
+    right: 3px;
+    border: 1px solid #ccc;
+    font-size: 21px;
+    padding-right: 20px;
+    text-align: center;
+    padding-left: 20px;
+    color: black;
+    font-family: 'Gotham'; }
+  .cart-summary > .title {
+    font-size: 20px;
     display: none;
     font-weight: 300;
     margin: 12px 0; }
@@ -891,14 +546,16 @@ p {
     color: #FFF;
     font-size: 12px;
     font-weight: normal;
-    font-family: var(--serif);
     line-height: 19px;
     text-align: center;
     vertical-align: middle;
-    font-family: 'Gotham Light'; }
+    font-family: 'Gotham Bold';
+    text-transform: uppercase; }
   .action.primary.checkout span {
-    font-size: 16px;
-    font-weight: bolder; }
+    font-size: 14px; }
+  #billing-address-same-as-shipping-progressive_gateway span {
+    font-family: 'Gotham Light';
+    font-size: 14px; }
   .block-cart-failed .actions.main .continue,
   .block-cart-failed .actions.main .clear,
   .cart-container .form-cart .actions.main .continue,
@@ -915,9 +572,9 @@ p {
     border-bottom: 1px solid #cccccc;
     padding-bottom: 30px; }
   .cart-totals .grand .mark {
-    font-size: 18px; }
+    font-size: 20px; }
   .cart-totals .grand .amount {
-    font-size: 18px; }
+    font-size: 20px; }
   #affirmfinance {
     font-size: 14px;
     text-align: right;
@@ -975,48 +632,403 @@ p {
     box-sizing: border-box;
     padding-right: 4%; }
   .cart-discount .block > .title strong {
-    font-size: 16px !important;
+    font-size: 18px;
     color: black;
     font-weight: 400; }
   .action.continue {
     margin-top: 39px;
-    text-align: left;
     text-decoration: underline;
-    font: normal normal bolder 14px/46px 'Gotham Light';
-    font-weight: bolder;
-    letter-spacing: 0px;
-    color: #000000;
-    text-transform: uppercase;
-    opacity: 1; }
-  .cart.table-wrapper .item-options dt {
-    clear: left;
-    float: left;
-    margin: 0 10px 5px 0;
-    font-size: 12px;
-    font-weight: bold; }
-  .cart.table-wrapper .item-options dd {
-    clear: right;
-    float: right;
-    margin: 0 10px 5px 0;
-    font-size: 12px;
-    font-weight: bold; }
+    font-size: 19px;
+    font-style: normal;
+    font-weight: bold;
+    color: black; }
   .cart-discount .block > .title strong {
     color: black;
     font-weight: 400;
-    font-size: 16px !important; }
+    font-size: 20px; }
   .action.update {
     background: white;
-    font-size: 12px;
-    font-weight: bold;
-    font-family: 'Gotham Light'; }
+    font-size: 17px;
+    font-weight: bold; }
   .cart.table-wrapper .col.price .price-excluding-tax {
     color: black;
-    font-size: 14px;
-    line-height: 1;
-    white-space: nowrap;
-    font-weight: bold;
+    font-size: 22px; }
+  .field-error, div.mage-error[generated] {
+    font-size: 12px !important;
     font-family: 'Gotham Light';
-    padding-top: 6px; } }
+    font-weight: bold; }
+  .opc-progress-bar-item._active::before {
+    background: #b59d74 !important;
+    border-color: #b59d74 !important; }
+  .opc-progress-bar-item._active > span::before {
+    background: #b59d74 !important;
+    border-color: #b59d74 !important; }
+  .opc-progress-bar-item._active > span::after {
+    border-color: #b59d74 !important;
+    content: '\e610';
+    font-family: 'luma-icons'; }
+  .opc-progress-bar-item > span::after {
+    background: #ffffff;
+    height: 26px;
+    margin-left: -13px;
+    top: 6px;
+    width: 26px;
+    content: counter(i);
+    counter-increment: i;
+    color: #333333;
+    font-weight: 600;
+    font-size: 20px !important; }
+  .opc-wrapper .shipping-address-item.selected-item::after {
+    background: #b59d74 !important;
+    color: #ffffff;
+    content: '\e610';
+    font-family: 'luma-icons';
+    height: 27px;
+    width: 29px;
+    font-size: 19px;
+    line-height: 21px;
+    padding-top: 2px;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0; } }
+
+@media (min-width: 768px) {
+  .opc-wrapper .shipping-address-item.selected-item::after {
+    background: #b59d74 !important;
+    color: #ffffff;
+    content: '\e610';
+    font-family: 'luma-icons';
+    height: 27px;
+    width: 29px;
+    font-size: 19px;
+    line-height: 21px;
+    padding-top: 2px;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0; }
+  .opc-progress-bar-item > span::after {
+    background: #ffffff;
+    height: 26px;
+    margin-left: -13px;
+    top: 6px;
+    width: 26px;
+    content: counter(i);
+    counter-increment: i;
+    color: #333333;
+    font-weight: 600;
+    font-size: 20px !important; }
+  .opc-progress-bar-item._active::before {
+    background: #b59d74 !important;
+    border-color: #b59d74 !important; }
+  .opc-progress-bar-item._active > span::before {
+    background: #b59d74 !important;
+    border-color: #b59d74 !important; }
+  .opc-progress-bar-item._active > span::after {
+    border-color: #b59d74 !important;
+    content: '\e610';
+    font-family: 'luma-icons'; }
+  .table-checkout-shipping-method tbody .col-price {
+    font-weight: 600;
+    font-family: 'Gotham Bold'; }
+  .field-error, div.mage-error[generated] {
+    font-size: 12px !important;
+    font-family: 'Gotham Light';
+    font-weight: bold; }
+  .opc-wrapper .form-login .fieldset .note {
+    font-family: 'Gotham Light'; }
+  .items {
+    list-style: none none;
+    font-family: 'Gotham Light';
+    font-size: 14px; }
+  #checkout-shipping-method-load {
+    font-family: 'Gotham Light'; }
+  .action.action-show-popup {
+    background: white;
+    font-family: 'Gotham Light';
+    font-size: 12px;
+    font-weight: bolder; }
+  .opc-wrapper .shipping-address-item {
+    font-size: 14px;
+    font-family: 'Gotham Light'; }
+  .opc-wrapper .shipping-address-item.selected-item {
+    border-color: #D19F4E; }
+  .checkout-payment-method .payment-method-title {
+    padding: 20px 0;
+    margin: 0;
+    font-family: 'Gotham Light';
+    font-weight: bold; }
+  .checkout-payment-method .checkout-billing-address .billing-address-details {
+    line-height: 27px;
+    padding: 0 0 0 23px;
+    font-family: 'Gotham Light';
+    font-weight: bold; }
+  .opc-wrapper .step-title {
+    border-bottom: 1px solid #cccccc;
+    margin-bottom: 15px;
+    font-family: 'Didot';
+    font-size: 32px;
+    font-weight: bold; }
+  .product-item {
+    font-size: 14px;
+    line-height: normal;
+    letter-spacing: normal; }
+  .opc-wrapper .fieldset .field .label {
+    font-weight: bold !important;
+    font-size: 14px; }
+  .opc-wrapper .form-login {
+    padding-bottom: 0px;
+    border-bottom: 0; }
+  .methods-shipping .actions-toolbar .action.primary {
+    line-height: 2.2rem;
+    font-size: 14px;
+    color: white;
+    background: black;
+    width: 100px;
+    text-transform: uppercase;
+    text-decoration: none; }
+  .table-checkout-shipping-method .row {
+    font-size: 14px; }
+  .opc-wrapper .form-login {
+    border-bottom: 0;
+    padding-bottom: 0px; }
+  .opc-progress-bar-item._active > span {
+    color: #333333;
+    font-family: 'Gotham Light';
+    font-weight: bold !important;
+    font-size: 16px !important; }
+  .opc-progress-bar-item > span {
+    display: inline-block;
+    font-family: 'Gotham Light';
+    padding-top: 45px;
+    width: 100%;
+    word-wrap: break-word;
+    color: #666666;
+    font-weight: 300;
+    font-size: 16px !important; }
+  .opc-wrapper .form-shipping-address .fieldset .field .label {
+    font-weight: bold; }
+  .opc-block-summary {
+    background: #f5f5f5;
+    margin: 0 0 20px;
+    padding: 22px 30px;
+    font-family: 'Gotham Light' !important; }
+  .opc-block-summary > .title {
+    display: block;
+    font-size: 24px;
+    font-family: 'Didot'; }
+  .opc-block-summary .items-in-cart > .title strong {
+    display: block;
+    font-size: 16px;
+    font-family: 'Gotham Light';
+    font-weight: bold; }
+  .opc-block-shipping-information .shipping-information-title {
+    display: block;
+    font-size: 24px;
+    font-family: 'Didot'; }
+  .opc-wrapper .shipping-address-item {
+    font-size: 14px;
+    font-family: 'Gotham Light'; }
+  .opc-wrapper .shipping-address-item.selected-item {
+    border-color: #D19F4E; }
+  .opc-block-summary .product-item .subtotal {
+    display: block;
+    text-align: right; }
+  .opc-block-shipping-information .shipping-information-content {
+    line-height: 27px;
+    font-family: 'Gotham Light';
+    font-size: 14px; }
+  .minicart-items .product.options .toggle > span {
+    display: none; }
+  .minicart-items .product-item-details .price-excluding-tax {
+    margin: 5px 0;
+    font-size: 1px; }
+  .opc-block-summary .product-item .product-item-name-block {
+    display: block;
+    padding-right: 30px;
+    text-align: left; }
+  .opc-block-summary .product-item .product-item-inner {
+    display: flex; }
+  .opc-block-summary .product-item .price {
+    font-size: 16px;
+    font-weight: 400; }
+  .opc-block-summary .table-totals .grand .mark {
+    font-size: 20px;
+    border-top: 1px solid #cccccc;
+    padding-right: 10px; }
+  .opc-progress-bar-item > span {
+    font-size: 20px; }
+  .opc-progress-bar-item > span {
+    display: inline-block;
+    padding-top: 45px;
+    width: 100%;
+    word-wrap: break-word;
+    color: #666666;
+    font-weight: 300;
+    font-size: 20px; }
+  .checkout-payment-method .actions-toolbar .primary {
+    float: left;
+    margin: 0;
+    font-family: 'Gotham Bold';
+    width: 100%;
+    padding-bottom: 20px;
+    text-transform: uppercase; }
+  .opc-block-summary .table-totals .grand strong {
+    font-size: 18px; }
+  .opc-block-summary .table-totals .grand .amount {
+    font-size: 20px; }
+  .checkout-payment-method .actions-toolbar .primary {
+    float: left;
+    margin: 0;
+    margin-top: 10px;
+    font-family: 'Gotham Bold';
+    width: 100%; }
+  /* Inline #12 | http://forevercompanies.docker.aitom.cz/checkout/#payment */
+  .payment-option._collapsible.opc-payment-additional.discount-code {
+    display: none; }
+  #giftcardaccount-placer {
+    display: none; }
+  .opc-block-shipping-information .shipping-information-title .action-edit {
+    top: 0px;
+    display: inline-block;
+    text-decoration: none;
+    position: absolute;
+    right: 3px;
+    border: 1px solid #ccc;
+    font-size: 21px;
+    padding-right: 20px;
+    text-align: center;
+    padding-left: 20px;
+    color: black;
+    font-family: 'Gotham Light';
+    font-weight: bold; }
+  .field-error {
+    color: #e02b27;
+    font-size: 13px;
+    font-family: 'Gotham Light';
+    font-weight: bold; }
+  .cart-summary > .title {
+    font-size: 20px;
+    display: none;
+    font-weight: 300;
+    margin: 12px 0; }
+  #block-shipping-heading {
+    font-weight: var(--weight-regular);
+    font-size: 16px;
+    line-height: 28px; }
+  .action.primary.checkout {
+    background: #000;
+    display: inline-block;
+    padding: 7px 15px;
+    border: 0;
+    color: #FFF;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 19px;
+    text-align: center;
+    vertical-align: middle;
+    font-family: 'Gotham Bold';
+    text-transform: uppercase; }
+  .action.primary.checkout span {
+    font-size: 14px; }
+  #billing-address-same-as-shipping-progressive_gateway span {
+    font-family: 'Gotham Light';
+    font-size: 14px; }
+  .block-cart-failed .actions.main .continue,
+  .block-cart-failed .actions.main .clear,
+  .cart-container .form-cart .actions.main .continue,
+  .cart-container .form-cart .actions.main .clear {
+    display: none; }
+  #block-giftcard {
+    display: none; }
+  #gift-options-cart {
+    display: none; }
+  .cart.table-wrapper .cart > .item {
+    border-bottom: none; }
+  .cart-container .form-cart .actions.main {
+    text-align: right;
+    border-bottom: 1px solid #cccccc;
+    padding-bottom: 30px; }
+  .cart-totals .grand .mark {
+    font-size: 20px; }
+  .cart-totals .grand .amount {
+    font-size: 20px; }
+  #affirmfinance {
+    font-size: 14px;
+    text-align: right;
+    padding: 0 0 3px;
+    padding-bottom: 3px;
+    text-align: center;
+    padding-bottom: 25px; }
+  #affirmfinance a {
+    display: inline-block;
+    font-size: 10px;
+    text-transform: uppercase;
+    text-decoration: underline;
+    color: #000;
+    margin-left: 3px; }
+  #affirmfinance a:hover {
+    color: #b59d74; }
+  .__affirm-logo {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'affirm' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    position: relative;
+    white-space: nowrap;
+    /* Enable Ligatures ================ */
+    letter-spacing: 0;
+    -ms-font-feature-settings: "liga" 1;
+    -webkit-font-feature-settings: "liga";
+    font-feature-settings: "liga";
+    -webkit-font-variant-ligatures: discretionary-ligatures;
+    font-variant-ligatures: discretionary-ligatures;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 0.8em;
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%; }
+  .page-main .block {
+    margin-bottom: 0px; }
+  .cart-discount {
+    width: 71%;
+    float: left;
+    -ms-flex-order: 1;
+    -webkit-order: 1;
+    order: 1;
+    border: 0;
+    border-bottom-color: currentcolor;
+    border-bottom-style: none;
+    border-bottom-width: 0px;
+    box-sizing: border-box;
+    padding-right: 4%; }
+  .cart-discount .block > .title strong {
+    font-size: 18px;
+    color: black;
+    font-weight: 400; }
+  .action.continue {
+    margin-top: 39px;
+    text-decoration: underline;
+    font-size: 19px;
+    font-style: normal;
+    font-weight: bold;
+    color: black; }
+  .cart-discount .block > .title strong {
+    color: black;
+    font-weight: 400;
+    font-size: 20px; }
+  .action.update {
+    background: white;
+    font-size: 17px;
+    font-weight: bold; } }
 
 /*Buttons*/
 .btn {
