@@ -33,8 +33,7 @@ class TransformMedia extends AbstractCommand
     protected function execute(
         InputInterface $input,
         OutputInterface $output
-    )
-    {
+    ) {
         $this->state->setAreaCode(Area::AREA_GLOBAL);
         $output->writeln("Get products for media-transformation...");
         $productCollection = $this->helper->getProductsForMediaTransformCollection();

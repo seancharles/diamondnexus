@@ -55,8 +55,7 @@ class Media extends AbstractHelper
         ResourceConnection $resourceConnection,
         ProductRepositoryInterface $productRepository,
         Config $eavConfig
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->resourceConnection = $resourceConnection;
         $this->productRepository = $productRepository;

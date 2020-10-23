@@ -29,8 +29,7 @@ class DeleteByTags extends Field
         Context $context,
         TransformData $helper,
         array $data = []
-    )
-    {
+    ) {
         parent::__construct($context, $data);
         $this->helper = $helper;
     }

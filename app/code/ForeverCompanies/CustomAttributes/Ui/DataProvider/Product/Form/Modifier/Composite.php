@@ -30,8 +30,7 @@ class Composite extends \Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\Co
         ProductRepositoryInterface $productRepository,
         Logger $logger,
         array $modifiers = []
-    )
-    {
+    ) {
         parent::__construct($locator, $objectManager, $optionsRepository, $productRepository, $modifiers);
         $this->logger = $logger;
     }

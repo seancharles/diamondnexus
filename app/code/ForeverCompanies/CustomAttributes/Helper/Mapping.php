@@ -196,8 +196,7 @@ class Mapping extends AbstractHelper
         Link $linkHelper,
         ProductFunctional $productFunctionalHelper,
         Logger $logger
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->productAttributeRepository = $productAttributeRepository;
         $this->productRepository = $productRepository;

@@ -42,8 +42,7 @@ class BundlePriceUse extends AbstractHelper
         ProductRepositoryInterface $productRepository,
         ProductType $productTypeHelper,
         Logger $logger
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->productRepository = $productRepository;
         $this->productTypeHelper = $productTypeHelper;

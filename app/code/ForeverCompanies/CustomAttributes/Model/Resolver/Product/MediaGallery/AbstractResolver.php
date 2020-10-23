@@ -28,8 +28,7 @@ abstract class AbstractResolver
      */
     public function __construct(
         Media $mediaHelper
-    )
-    {
+    ) {
         $this->mediaHelper = $mediaHelper;
     }
 
@@ -42,8 +41,7 @@ abstract class AbstractResolver
         ResolveInfo $info,
         array $value = null,
         array $args = null
-    )
-    {
+    ) {
         if (!isset($value['image_type']) && !isset($value['file'])) {
             throw new LocalizedException(__('"image_type" value should be specified'));
         }

@@ -26,8 +26,7 @@ class UiRole extends AbstractResolver implements ResolverInterface
         ResolveInfo $info,
         array $value = null,
         array $args = null
-    )
-    {
+    ) {
         $options = parent::resolve($field, $context, $info, $value, $args);
         return $options['ui_role'] ?? '';
     }

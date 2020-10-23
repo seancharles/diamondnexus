@@ -85,8 +85,7 @@ class ProductType extends AbstractHelper
         Logger $logger,
         AttributeSetRepositoryInterface $attributeSetRepository,
         Config $eavConfig
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->productRepository = $productRepository;
         $this->logger = $logger;

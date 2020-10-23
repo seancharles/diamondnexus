@@ -30,8 +30,7 @@ class Multiselect implements ResolverInterface
      */
     public function __construct(
         Config $eavConfig
-    )
-    {
+    ) {
         $this->eavConfig = $eavConfig;
     }
 
@@ -44,8 +43,7 @@ class Multiselect implements ResolverInterface
         ResolveInfo $info,
         array $value = null,
         array $args = null
-    )
-    {
+    ) {
         if (!isset($value['model'])) {
             throw new LocalizedException(__('"model" value should be specified'));
         }

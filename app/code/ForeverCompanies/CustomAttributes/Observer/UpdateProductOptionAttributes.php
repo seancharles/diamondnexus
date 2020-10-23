@@ -25,8 +25,7 @@ class UpdateProductOptionAttributes implements ObserverInterface
     public function __construct(
         Config $eavConfig,
         ProductRepository $productRepository
-    )
-    {
+    ) {
         $this->eavConfig = $eavConfig;
         $this->productRepository = $productRepository;
     }
@@ -42,6 +41,9 @@ class UpdateProductOptionAttributes implements ObserverInterface
     {
         /** @var Product $product */
         $product = $observer->getData('data_object');
+        if ($product->getId() == null) {
+            return;
+        }
         $oldProductOptions = $this->productRepository->getById($product->getId())->getOptions();
         foreach ($product->getOptions() as $option) {
             foreach ($oldProductOptions as $key => $oldProductOption) {

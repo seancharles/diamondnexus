@@ -22,8 +22,7 @@ class CustomOptions
      */
     public function __construct(
         CustomizationType $customizationType
-    )
-    {
+    ) {
         $this->customizationType = $customizationType;
     }
 
@@ -35,8 +34,7 @@ class CustomOptions
     public function afterModifyMeta(
         \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\CustomOptions $subject,
         $meta
-    )
-    {
+    ) {
         $meta['custom_options']['children']['options']['children']['record']['children']['container_option']
         ['children']['container_common']['children']['customization_type'] =
             $this->getCustomizationTypeFieldConfig(

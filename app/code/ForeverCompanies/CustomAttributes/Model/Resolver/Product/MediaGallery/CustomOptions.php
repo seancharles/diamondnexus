@@ -26,8 +26,7 @@ class CustomOptions extends AbstractResolver implements ResolverInterface
         ResolveInfo $info,
         array $value = null,
         array $args = null
-    )
-    {
+    ) {
         $options = parent::resolve($field, $context, $info, $value, $args);
         if ($options['option_title_value'] !== '' && $options['type_title_value']) {
             return $options['option_title_value'] . '--' . $options['type_title_value'];

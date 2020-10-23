@@ -35,8 +35,7 @@ abstract class AbstractCommand extends Command
     public function __construct(
         State $state,
         TransformData $helper
-    )
-    {
+    ) {
         $this->state = $state;
         $this->helper = $helper;
         parent::__construct($this->name);

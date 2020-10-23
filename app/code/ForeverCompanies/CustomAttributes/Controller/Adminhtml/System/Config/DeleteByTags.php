@@ -37,8 +37,7 @@ class DeleteByTags extends Action
         JsonFactory $resultJsonFactory,
         TransformData $helper,
         Logger $logger
-    )
-    {
+    ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->helper = $helper;
         $this->logger = $logger;

@@ -34,8 +34,7 @@ class DisableRequiredProductAttributes implements DataPatchInterface
     public function __construct(
         ModuleDataSetupInterface $moduleDataSetup,
         CategorySetupFactory $categorySetupFactory
-    )
-    {
+    ) {
         $this->moduleDataSetup = $moduleDataSetup;
         $this->categorySetupFactory = $categorySetupFactory;
     }

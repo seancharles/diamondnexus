@@ -32,8 +32,7 @@ class TransformAttributes extends AbstractCommand
     protected function execute(
         InputInterface $input,
         OutputInterface $output
-    )
-    {
+    ) {
         $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_GLOBAL);
         $output->writeln("Get products for transformation...");
         $productCollection = $this->helper->getProductsForTransformCollection();

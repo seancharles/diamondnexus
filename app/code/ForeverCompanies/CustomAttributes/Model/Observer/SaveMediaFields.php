@@ -23,8 +23,7 @@ class SaveMediaFields implements ObserverInterface
      */
     public function __construct(
         Media $helper
-    )
-    {
+    ) {
         $this->helper = $helper;
     }
 

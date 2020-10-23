@@ -58,8 +58,7 @@ class TransformMultiselect extends AbstractCommand
         TransformData $helper,
         ModuleDataSetupInterface $moduleDataSetup,
         EavSetupFactory $eavSetupFactory
-    )
-    {
+    ) {
         parent::__construct($state, $helper);
         $this->moduleDataSetup = $moduleDataSetup;
         $this->eavSetupFactory = $eavSetupFactory;
@@ -72,8 +71,7 @@ class TransformMultiselect extends AbstractCommand
     protected function execute(
         InputInterface $input,
         OutputInterface $output
-    )
-    {
+    ) {
         $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_GLOBAL);
         $output->writeln("Prepare attributes for transformation to multiselectable fields...");
         $this->moduleDataSetup->getConnection()->startSetup();

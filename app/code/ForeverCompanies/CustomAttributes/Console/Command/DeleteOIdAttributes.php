@@ -80,8 +80,7 @@ class DeleteOIdAttributes extends AbstractCommand
         TransformData $helper,
         CategorySetupFactory $categorySetupFactory,
         ModuleDataSetupInterface $moduleDataSetup
-    )
-    {
+    ) {
         parent::__construct($state, $helper);
         $this->categorySetupFactory = $categorySetupFactory;
         $this->moduleDataSetup = $moduleDataSetup;
@@ -94,8 +93,7 @@ class DeleteOIdAttributes extends AbstractCommand
     protected function execute(
         InputInterface $input,
         OutputInterface $output
-    )
-    {
+    ) {
         $this->state->setAreaCode(Area::AREA_GLOBAL);
         $output->writeln("Delete old attributes...");
         $eavSetup = $this->categorySetupFactory->create(['setup' => $this->moduleDataSetup]);

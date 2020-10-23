@@ -74,8 +74,7 @@ class Converter extends AbstractHelper
         LinkInterfaceFactory $linkInterfaceFactory,
         Config $eavConfig,
         MatchingBand $matchingBand
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->productCustomOptionInterfaceFactory = $productCustomOptionInterfaceFactory;
         $this->optionInterfaceFactory = $optionInterfaceFactory;

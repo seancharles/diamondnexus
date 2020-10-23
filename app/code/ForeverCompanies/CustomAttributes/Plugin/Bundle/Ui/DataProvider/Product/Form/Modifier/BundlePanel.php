@@ -23,8 +23,7 @@ class BundlePanel
      */
     public function __construct(
         BundleCustomizationType $customizationType
-    )
-    {
+    ) {
         $this->customizationType = $customizationType;
     }
 
@@ -36,8 +35,7 @@ class BundlePanel
     public function afterModifyMeta(
         \Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePanel $subject,
         $meta
-    )
-    {
+    ) {
         $meta['bundle-items']['children']['bundle_options']['children']['record']['children']
         ['product_bundle_container']['children']['option_info']['children'][self::FIELD_CUSTOMIZATION_TYPE] =
             $this->getCustomizationTypeFieldConfig(

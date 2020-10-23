@@ -195,8 +195,7 @@ class TransformData extends AbstractHelper
         Media $media,
         Serialize $serializer,
         Selection $bundleSelection
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->eav = $config;
         $this->productCollectionFactory = $collectionFactory;
