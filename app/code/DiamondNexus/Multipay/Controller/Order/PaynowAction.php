@@ -53,8 +53,7 @@ class PaynowAction extends Action
         Transaction $transaction,
         Cache\Type $cache,
         PageFactory $pageFactory
-    )
-    {
+    ) {
         $this->_pageFactory = $pageFactory;
         $this->helper = $helper;
         $this->orderRepository = $orderRepository;
@@ -71,7 +70,7 @@ class PaynowAction extends Action
         $order = $this->orderRepository->get($params['order_id']);
         $order->getPayment()->setAdditionalData($this->serializer->serialize($params));
         $order->getPayment()->setAdditionalInformation($params);
-        $this->transaction->createNewTransaction($params['order_id'], $params);
+        $this->transaction->createNewTransaction($order, $params);
         $this->helper->updateOrderStatus($params, $order);
         $this->cache->clean();
         return $resultRedirect->setPath('sales/order/history');

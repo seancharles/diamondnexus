@@ -5,6 +5,9 @@ namespace DiamondNexus\Multipay\Controller\Order;
 use DiamondNexus\Multipay\Logger\Logger;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
 
 class Paypal extends Action
@@ -29,8 +32,7 @@ class Paypal extends Action
     public function __construct(
         Context $context,
         PageFactory $pageFactory
-    )
-    {
+    ) {
         $this->_pageFactory = $pageFactory;
         return parent::__construct($context);
     }
@@ -47,7 +49,7 @@ class Paypal extends Action
     }
 
     /**
-     * Index action method
+     * @return ResponseInterface|ResultInterface|Page
      */
     public function execute()
     {
@@ -59,13 +61,19 @@ class Paypal extends Action
         return $page;
     }
 
+    /**
+     * @return ResponseInterface|ResultInterface|Page
+     */
     public function paymentAddedAction()
     {
-        $this->execute();
+        return $this->execute();
     }
 
+    /**
+     * @return ResponseInterface|ResultInterface|Page
+     */
     public function paymentCompleteAction()
     {
-        $this->execute();
+        return $this->execute();
     }
 }

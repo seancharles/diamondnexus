@@ -8,46 +8,14 @@ $orderId = $block->getData('order_id');
 # load the increment id
 $incrementId = $block->getIncrementId();
 # get the amount due
-$amountDue = $block->getBalanceAmount();
+$amount = $block->getBalanceAmount();
 $paypalClientId = $block->getClientId();
-$beginSrc = 'https://www.paypal.com/sdk/js?client-id=';
+$buttonWidget = $block->escapeHtml('.paypal-button-widget');
+$errorAlert = "There was an error processing your payment. Please call customer service.";
+$src = $block->escapeHtml('https://www.paypal.com/sdk/js?client-id=' . $paypalClientId);
 ?>
 
 <style type="text/css">
-    html {
-        -webkit-font-smoothing: antialiased;
-        text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.004);
-    }
-
-    body {
-        background-color: #111;
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 12px;
-        margin: 0;
-        padding: 0;
-    }
-
-    #logo {
-        padding-bottom: 15px;
-        border-bottom: 1px solid #ccc;
-    }
-
-    h1 {
-        font-size: 22px;
-    }
-
-    a,
-    a:link,
-    a:visited,
-    a:active {
-        color: #008ea3;
-    }
-
-    .my-account {
-        background-color: #fff;
-        padding: 15px;
-    }
-
     .payment dl {
         width: 460px;
     }
@@ -71,13 +39,6 @@ $beginSrc = 'https://www.paypal.com/sdk/js?client-id=';
         list-style-type: disc;
         margin: 0 0 0 15px;
         padding: 0 0 15px 0;
-    }
-
-    #copyright {
-        color: #ccc;
-        text-align: center;
-        font-size: 11px;
-        margin: 15px 0
     }
 
     /*
@@ -167,23 +128,24 @@ $beginSrc = 'https://www.paypal.com/sdk/js?client-id=';
 
 </style>
 <script
-    src="<?= $beginSrc . $paypalClientId; ?>&currency=USD&disable-funding=credit&integration-date=2020-10-01"
-    data-order-id="<?= $incrementId; ?>"></script>
+    src="<?= /** @noEscape */
+    $src ?>&currency=USD&disable-funding=credit&integration-date=2020-10-01"
+    data-order-id="<?= $block->escapeHtml($incrementId); ?>"></script>
 <form action="<?= $block->escapeUrl($block->getPaypalUrl()) ?>" method="post">
-    <input type="hidden" name="order_id" value="<?= $orderId; ?>"/>
+    <input type="hidden" name="order_id" value="<?= $block->escapeHtml($orderId); ?>"/>
     <div class="my-account">
         <div class="dashboard">
             <div id="logo">
-                <img src="<?= $block->getPaypalLogo() ?>" width="240"
+                <img src="<?= $block->escapeHtml($block->getPaypalLogo()) ?>" width="240"
                      border="0" alt=""/>
             </div>
             <div class="page-title">
-                <h1>Payment for order #<?= $incrementId; ?></h1>
+                <h1>Payment for order #<?= $block->escapeHtml($incrementId); ?></h1>
             </div>
-            <?php if ($block->getErrors()): ?>
+            <?php if ($block->getErrors()) : ?>
                 <ul class="errors">
-                    <?php foreach (Mage::getSingleton('core/session')->getErrors() as $error): ?>
-                        <li><?= $error ?></li>
+                    <?php foreach ($block->getErrors() as $error) : ?>
+                        <li><?= $block->escapeHtml($error) ?></li>
                     <?php endforeach ?>
                 </ul>
             <?php endif ?>
@@ -193,7 +155,7 @@ $beginSrc = 'https://www.paypal.com/sdk/js?client-id=';
                     <div class="payment" id="paymentStandard">
                         <dl>
                             <dt><label>Amount Due:</label></dt>
-                            <dd><?= number_format($amountDue, 2); ?></dd>
+                            <dd><?= $block->escapeHtml(number_format($amount, 2)); ?></dd>
                         </dl>
                         <div style="clear:both;"></div>
                         <dl style="border-top: 1px solid #ccc; padding-top: 15px;">
@@ -202,72 +164,73 @@ $beginSrc = 'https://www.paypal.com/sdk/js?client-id=';
                                 <div id="paypal-button-container"></div>
 
                                 <script>
-
-                                    $(".paypal-guest-option").on("click", function () {
-                                        $('#paypal-in-context-checkout-guest .paypal-button-widget').trigger('click');
-                                        return;
-                                    });
-
-                                    $(".paypal-standard-option").on("click", function () {
-                                        $('#paypal-in-context-checkout .paypal-button-widget').trigger('click');
-                                        return;
-                                    });
-
-                                    function sendPayment(details) {
-
-                                        $.fancybox.showLoading();
-
-                                        $.ajax({
-                                            method: "POST",
-                                            dataType: "JSON",
-                                            url: "<?= $this->getUrl('multipay/makePayment/process/'); ?>",
-                                            data: {
-                                                order_id: <?= $orderId; ?>,
-                                                details: details
-                                            }
-                                        }).done(function (response) {
-                                            if (response.success == true) {
-                                                location.href = "<?= $this->getUrl('multipay/makePayment/paymentComplete', ['_secure' => true, 'order_id' => $orderId]); ?>";
-                                            } else {
-                                                alert("There was an error processing your payment. Please call customer service.");
-                                                $.fancybox.hideLoading();
-                                            }
+                                    require([
+                                        'jquery'
+                                    ], function ($) {
+                                        $(".paypal-guest-option").on("click", function () {
+                                            $('#paypal-in-context-checkout-guest <?=$buttonWidget?>').trigger('click');
+                                            return;
+                                        });
+                                        $(".paypal-standard-option").on("click", function () {
+                                            $('#paypal-in-context-checkout <?=$buttonWidget?>').trigger('click');
+                                            return;
                                         });
 
-                                    }
+                                        function sendPayment(details) {
 
-                                    paypal.Buttons({
-                                        createOrder: function (data, actions) {
-                                            // This function sets up the details of the transaction, including the amount and line item details.
-                                            return actions.order.create({
-                                                purchase_units: [{
-                                                    amount: {
-                                                        value: <?= $amountDue; ?>
-                                                    },
-                                                    invoice_id: "<?= $incrementId; ?>"
-                                                }],
-                                                application_context: {
-                                                    shipping_preference: 'NO_SHIPPING'
+                                            $.fancybox.showLoading();
+
+                                            $.ajax({
+                                                method: "POST",
+                                                dataType: "JSON",
+                                                url: "<?= $block->getPaypalActionUrl(); ?>",
+                                                data: {
+                                                    order_id: <?= $orderId; ?>,
+                                                    details: details
                                                 }
-                                            });
-                                        },
-                                        onApprove: function (data, actions) {
-                                            // This function captures the funds from the transaction.
-                                            return actions.order.capture().then(function (details) {
-                                                if (details.intent == "CAPTURE" && details.status == "COMPLETED" && details.purchase_units[0].amount.value == <?= $amountDue; ?>) {
-                                                    sendPayment(details);
+                                            }).done(function (response) {
+                                                if (response.success == true) {
+                                                    location.href = "<?= $block->getPaypalUrl($orderId) ?>";
                                                 } else {
-                                                    alert("There was an error processing your payment. Please call customer service.");
+                                                    alert('<?=$errorAlert ?>');
+                                                    $.fancybox.hideLoading();
                                                 }
                                             });
-                                        },
-                                        onCancel: function () {
-                                            $.fancybox.hideLoading();
-                                        }
-                                    }).render('#paypal-button-container');
-                                </script>
 
-                                <!--<button type="submit" class="button btn" title="Make Payment"><span><span>Make Payment</span></span></button>-->
+                                        }
+
+                                        paypal.Buttons({
+                                            createOrder: function (data, actions) {
+                                                return actions.order.create({
+                                                    purchase_units: [{
+                                                        amount: {
+                                                            value: <?= $amount; ?>
+                                                        },
+                                                        invoice_id: "<?= $incrementId; ?>"
+                                                    }],
+                                                    application_context: {
+                                                        shipping_preference: 'NO_SHIPPING'
+                                                    }
+                                                });
+                                            },
+                                            onApprove: function (data, actions) {
+                                                // This function captures the funds from the transaction.
+                                                return actions.order.capture().then(function (details) {
+                                                    if (details.intent == "CAPTURE"
+                                                        && details.status == "COMPLETED"
+                                                        && details.purchase_units[0].amount.value == <?= $amount; ?>) {
+                                                        sendPayment(details);
+                                                    } else {
+                                                        alert('<?=$errorAlert ?>');
+                                                    }
+                                                });
+                                            },
+                                            onCancel: function () {
+                                                $.fancybox.hideLoading();
+                                            }
+                                        }).render('#paypal-button-container');
+                                    })
+                                </script>
                             </dd>
                         </dl>
                         <div style="clear:both;"></div>
@@ -277,8 +240,3 @@ $beginSrc = 'https://www.paypal.com/sdk/js?client-id=';
         </div>
     </div>
 </form>
-<div id="copyright">
-    <?= Mage::getStoreConfig('design/footer/copyright') ?>
-</div>
-</body>
-</html>

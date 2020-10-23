@@ -15,6 +15,7 @@ use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\Model\ResourceModel\Db\Context;
+use Magento\Sales\Model\Order;
 
 /**
  * Class Transaction
@@ -78,22 +79,23 @@ class Transaction extends AbstractDb
     }
 
     /**
-     * @param int|string $orderId
+     * @param Order $order
      * @param array $information
      */
-    public function createNewTransaction($orderId, $information)
+    public function createNewTransaction(Order $order, $information)
     {
         $amount = 0;
         $change = 0;
+        $orderId = $order->getId();
         if (isset($information[Constant::CHANGE_DUE_DATA])) {
             $change = $information[Constant::CHANGE_DUE_DATA];
         }
-        if ((int) $information[Constant::PAYMENT_METHOD_DATA] == 1) {
+        if ((int) $information[Constant::PAYMENT_METHOD_DATA] == Constant::MULTIPAY_TOTAL_AMOUNT) {
             if (isset($information[Constant::OPTION_PARTIAL_DATA])) {
                 $amount = $information[Constant::OPTION_PARTIAL_DATA];
             }
         }
-        if ((int) $information[Constant::PAYMENT_METHOD_DATA] == 2) {
+        if ((int) $information[Constant::PAYMENT_METHOD_DATA] == Constant::MULTIPAY_PARTIAL_AMOUNT) {
             $amount = $information[Constant::CASH_TENDERED_DATA];
             if ($change == 0 && $amount > $information[Constant::AMOUNT_DUE_DATA]) {
                 $change = $amount - $information[Constant::AMOUNT_DUE_DATA];
@@ -120,6 +122,7 @@ class Transaction extends AbstractDb
             ]
         );
         try {
+            $order->setTotalPaid($order->getTotalPaid() + $amount);
             $this->save($transaction);
         } catch (AlreadyExistsException $e) {
             $this->logger->error($e->getMessage());

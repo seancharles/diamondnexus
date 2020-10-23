@@ -37,5 +37,4 @@ class History extends \Magento\Sales\Block\Order\History
     {
         return $this->getUrl('diamondnexus/order/paynow', ['order_id' => $id]);
     }
-
 }

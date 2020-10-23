@@ -77,8 +77,7 @@ class PaypalAction extends Action
         MessageFactory $messageFactory,
         Sendmail $sendmail,
         Logger $logger
-    )
-    {
+    ) {
         $this->_pageFactory = $pageFactory;
         $this->orderRepository = $orderRepository;
         $this->transaction = $transaction;
@@ -113,31 +112,30 @@ class PaypalAction extends Action
             'success' => true,
             'message' => ''
         ];
-		if ($orderId > 0) {
-			try {
+        if ($orderId > 0) {
+            try {
                 $order = $this->orderRepository->get($orderId);
                 $amountDue = $order->getGrandTotal() - $this->transaction->getPaidPart($orderId);
                 $customerId = $this->customerSession->getCustomer()->getId();
                 // make sure the current customer owns the order
-                if($order->getCustomerId() == $customerId) {
-                    $this->transaction->createNewTransaction($orderId, [
+                if ($order->getCustomerId() == $customerId) {
+                    $this->transaction->createNewTransaction($order, [
                         Constant::PAYMENT_METHOD_DATA => Constant::MULTIPAY_PAYPAL_OFFLINE_METHOD,
                         Constant::OPTION_TOTAL_DATA => Constant::MULTIPAY_TOTAL_AMOUNT,
                         Constant::AMOUNT_DUE_DATA => $amountDue
                     ]);
-					// update the order paid amount to the grand total
-					// Send salesperson an email
-					$this->sendSalesPersonEmail($order, $amountDue);
-
-				} else {
+                    // update the order paid amount to the grand total
+                    // Send salesperson an email
+                    $this->sendSalesPersonEmail($order, $amountDue);
+                } else {
                     $result['success'] = false;
                 }
             } catch (\Exception $e) {
                 $result['success'] = false;
             }
-		}
-		return $result;
-	}
+        }
+        return $result;
+    }
 
     /**
      * @param $order
@@ -160,7 +158,7 @@ class PaypalAction extends Action
         $mail->setBody($message);
         $mail->setFrom('sales@diamondnexus.com', 'Diamond Nexus Sales');
         $mail->setSubject('Payment applied for order #' . $order->getIncrementId().' '.$storeId);
-        if ( strlen($salesPersonEmail) > 0 ) {
+        if (strlen($salesPersonEmail) > 0) {
             $salesPerson = $salesPersonResult[0]['firstname'].' '.$salesPersonResult[0]['lastname'];
             $salesPersonEmail = $salesPersonResult[0]['email'];
             $mail->addTo($salesPersonEmail, $salesPerson);

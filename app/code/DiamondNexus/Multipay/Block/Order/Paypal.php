@@ -4,6 +4,7 @@ namespace DiamondNexus\Multipay\Block\Order;
 
 use DiamondNexus\Multipay\Model\Constant;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Message\MessageInterface;
 use Magento\Store\Model\ScopeInterface;
 
 class Paypal extends AbstractPay
@@ -36,12 +37,10 @@ class Paypal extends AbstractPay
     }
 
     /**
-     * @return \Magento\Framework\Message\MessageInterface|\Magento\Framework\Message\MessageInterface[]
+     * @return MessageInterface|MessageInterface[]
      */
     public function getErrors()
-        /** TODO MESSAGE MANAGER */
     {
         return $this->messageManager->getMessages()->getErrors();
     }
-
 }

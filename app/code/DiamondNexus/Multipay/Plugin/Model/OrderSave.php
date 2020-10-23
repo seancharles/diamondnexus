@@ -67,8 +67,7 @@ class OrderSave
                 case Constant::MULTIPAY_CREDIT_METHOD:
                 case Constant::MULTIPAY_CASH_METHOD:
                 case Constant::MULTIPAY_AFFIRM_OFFLINE_METHOD:
-                    $id = $order->getId();
-                    $this->saveMultipayTransaction($id, $information);
+                    $this->saveMultipayTransaction($order, $information);
                     break;
                 case Constant::MULTIPAY_QUOTE_METHOD:
                     break;
@@ -123,12 +122,12 @@ class OrderSave
      * @param $additionalInformation
      * @throws LocalizedException
      */
-    protected function saveMultipayTransaction($id, $additionalInformation)
+    protected function saveMultipayTransaction($order, $additionalInformation)
     {
-        $otherTransactions = $this->resource->getAllTransactionsByOrderId($id);
+        $otherTransactions = $this->resource->getAllTransactionsByOrderId($order->getId());
         if ($otherTransactions !== null && count($otherTransactions) > 0) {
             return;
         }
-        $this->resource->createNewTransaction($id, $additionalInformation);
+        $this->resource->createNewTransaction($order, $additionalInformation);
     }
 }

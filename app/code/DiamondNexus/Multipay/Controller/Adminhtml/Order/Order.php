@@ -104,10 +104,10 @@ class Order extends AdminOrder implements HttpPostActionInterface
             $request = $this->getRequest();
             $post = $request->getPostValue();
             $orderId = $order->getEntityId();
-            if ($post[Constant::PAYMENT_METHOD_DATA] == Constant::MULTIPAY_QUOTE_METHOD) {
+            if ($post[Constant::PAYMENT_METHOD_DATA] !== Constant::MULTIPAY_QUOTE_METHOD) {
                 $this->helper->sendToBraintree($order);
             }
-            $this->resource->createNewTransaction($orderId, $post);
+            $this->resource->createNewTransaction($order, $post);
             $this->helper->updateOrderStatus($post, $order);
             $orderArray = ['order_id' => $orderId];
             $resultRedirect->setPath('sales/order/view', $orderArray);

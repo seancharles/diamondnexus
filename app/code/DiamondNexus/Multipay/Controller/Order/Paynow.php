@@ -14,8 +14,8 @@ class Paynow extends Action
 
     public function __construct(
         Context $context,
-        PageFactory $pageFactory)
-    {
+        PageFactory $pageFactory
+    ) {
         $this->_pageFactory = $pageFactory;
         return parent::__construct($context);
     }

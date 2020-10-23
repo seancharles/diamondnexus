@@ -4,6 +4,7 @@ use DiamondNexus\Multipay\Block\Order\Paynow;
 /** @var Paynow $block */
 
 $code = 'multipay';
+$orderId = $block->getData('order_id');
 ?>
 
 <div id="popup-modal-add-payment">
@@ -27,7 +28,7 @@ $code = 'multipay';
                 <div class="admin__field-option _required">
                     <input id="multipay_method_paypal_offline" class="admin__control-radio" value="6" type="radio"
                            name="multipay_payment_method" data-validate='{"required":true}'
-                           onclick="location.href = ""
+                           onclick="location.href = '<?= $block->escapeHtml($block->getPaypalUrl($orderId)); ?>'"
                     />
                     <label class="label" for="multipay_method_paypal_offline">
                         <span><?= $block->escapeHtml(__('Paypal')) ?></span>
@@ -141,6 +142,6 @@ $code = 'multipay';
         </fieldset>
 
         <input type="submit" value="Submit" id="order-view-add-warranty-add-payment">
-        <input type="hidden" name="order_id" value="<?= $block->getData('order_id') ?>">
+        <input type="hidden" name="order_id" value="<?= $block->escapeHtml($orderId) ?>">
     </form>
 </div>

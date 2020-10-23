@@ -20,15 +20,21 @@ abstract class AbstractPay extends Template
      */
     protected $transaction;
 
+    /**
+     * @var \Magento\Framework\Message\ManagerInterface
+     */
+    protected $messageManager;
+
     public function __construct(
         Context $context,
         OrderRepositoryInterface $orderRepository,
-        Transaction $transaction
-    )
-    {
+        Transaction $transaction,
+        \Magento\Framework\Message\ManagerInterface $messageManager
+    ) {
         parent::__construct($context);
         $this->orderRepository = $orderRepository;
         $this->transaction = $transaction;
+        $this->messageManager = $messageManager;
     }
 
     /**
@@ -39,9 +45,21 @@ abstract class AbstractPay extends Template
         return $this->getUrlAction('paynowAction');
     }
 
-    public function getPaypalUrl()
+    /**
+     * @param bool $orderId
+     * @return string
+     */
+    public function getPaypalUrl($orderId = false)
     {
-        return $this->getUrlAction('paypal');
+        return $this->getUrlAction('paypal', $orderId);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaypalActionUrl()
+    {
+        return $this->getUrlAction('paypalAction');
     }
 
     /**
@@ -55,13 +73,13 @@ abstract class AbstractPay extends Template
         $payedPart = 0;
         try {
             $transactions = $this->transaction->getAllTransactionsByOrderId($this->getData('order_id'));
-        foreach ($transactions as $transaction) {
-            $payedPart += (float)$transaction['amount'];
-            if ($transaction['amount'] == 0) {
-                $payedPart += (float)$transaction['tendered'];
+            foreach ($transactions as $transaction) {
+                $payedPart += (float)$transaction['amount'];
+                if ($transaction['amount'] == 0) {
+                    $payedPart += (float)$transaction['tendered'];
+                }
             }
-        }
-        return $fullPrice - $payedPart;
+            return $fullPrice - $payedPart;
         } catch (LocalizedException $e) {
             return 0;
         }
@@ -77,11 +95,11 @@ abstract class AbstractPay extends Template
 
     /**
      * @param $where
+     * @param int|bool $orderId
      * @return string
      */
-    protected function getUrlAction($where)
+    protected function getUrlAction($where, $orderId = false)
     {
-        $orderId = false;
         if ($this->hasData('order_id')) {
             $orderId = $this->getData('order_id');
         }
