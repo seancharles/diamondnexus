@@ -18,27 +18,13 @@ if (trim($block->getPageHeading())) {
 }
 ?>
 <?php if ($titleHtml) : ?>
-<<<<<<< HEAD
-    <div class="page-title-wrapper<?= $block->escapeHtmlAttr($cssClass) ?> <?php if (strip_tags($titleHtml) == "Customer Login"){?>customer-login<?php } ?>">
-=======
     <div class="page-title-wrapper<?= $block->escapeHtmlAttr($cssClass) ?>">
->>>>>>> [DN: Style Default Magento Cart] Update DN theme
         <h1 class="page-title"
             <?php if ($block->getId()) : ?> id="<?= $block->escapeHtmlAttr($block->getId()) ?>" <?php endif; ?>
             <?php if ($block->getAddBaseAttributeAria()) : ?>
                 aria-labelledby="<?= $block->escapeHtmlAttr($block->getAddBaseAttributeAria()) ?>"
             <?php endif; ?>>
-<<<<<<< HEAD
-            <?php
-            if (strip_tags($titleHtml) == "My Account"){
-                echo 'My Dashboard';
-            } else {
-                echo $titleHtml;
-            }
-             ?>
-=======
             <?= /* @noEscape */ $titleHtml ?>
->>>>>>> [DN: Style Default Magento Cart] Update DN theme
         </h1>
         <?= $block->getChildHtml() ?>
     </div>
