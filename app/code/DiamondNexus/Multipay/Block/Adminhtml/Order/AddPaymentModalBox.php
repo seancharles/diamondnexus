@@ -11,39 +11,11 @@ use Magento\Framework\Exception\LocalizedException;
  * Class AddPaymentModalBox
  * @package DiamondNexus\Multipay\Block\Adminhtml\Order
  */
-class AddPaymentModalBox extends Template
+class AddPaymentModalBox extends AbstractPayment
 {
-    /**
-     * @var Transaction
-     */
-    protected $resource;
-
-    /**
-     * AddPaymentModalBox constructor.
-     * @param Context $context
-     * @param Transaction $transactionResource
-     * @param array $data
-     */
-    public function __construct(
-        Context $context,
-        Transaction $transactionResource,
-        array $data = []
-    ) {
-        parent::__construct($context, $data);
-        $this->resource = $transactionResource;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isMultipay()
-    {
-        return $this->getData('order')->getPayment()->getMethod() == 'multipay';
-    }
-
-    /**
-     * @return float|string
-     */
+        /**
+         * @return float|string
+         */
     public function getBalanceAmount()
     {
         $id = $this->getData('order')->getId();

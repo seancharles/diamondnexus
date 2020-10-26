@@ -1,0 +1,17 @@
+<?php
+
+use DiamondNexus\Multipay\Block\Adminhtml\Order\View\Payments;
+
+/**
+ * @var $block Payments
+ */
+if ($block->isMultipay()) {
+    ?>
+    <div class="rating-summary"><?php
+    foreach ($block->getTransactions() as $info) {
+        ?><br/>      <span class="label"><?= /** @noEscape */
+            $block->transactionToHtml($info) ?></span>
+        <?php
+    }
+    ?> </div> <?php
+}

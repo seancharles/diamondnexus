@@ -10,9 +10,11 @@ $incrementId = $block->getIncrementId();
 # get the amount due
 $amount = $block->getBalanceAmount();
 $paypalClientId = $block->getClientId();
-$buttonWidget = $block->escapeHtml('.paypal-button-widget');
+$btn = $block->escapeHtml('.paypal-button-widget');
 $errorAlert = "There was an error processing your payment. Please call customer service.";
 $src = $block->escapeHtml('https://www.paypal.com/sdk/js?client-id=' . $paypalClientId);
+$jsCheckoutGuest = "$('#paypal-in-context-checkout-guest ";
+$jsCheckout = "$('#paypal-in-context-checkout ";
 ?>
 
 <style type="text/css">
@@ -168,11 +170,11 @@ $src = $block->escapeHtml('https://www.paypal.com/sdk/js?client-id=' . $paypalCl
                                         'jquery'
                                     ], function ($) {
                                         $(".paypal-guest-option").on("click", function () {
-                                            $('#paypal-in-context-checkout-guest <?=$buttonWidget?>').trigger('click');
+                                            <?= /** @noEscape */ $jsCheckoutGuest . $btn?>').trigger('click');
                                             return;
                                         });
                                         $(".paypal-standard-option").on("click", function () {
-                                            $('#paypal-in-context-checkout <?=$buttonWidget?>').trigger('click');
+                                            <?= /** @noEscape */ $jsCheckout . $btn?>').trigger('click');
                                             return;
                                         });
 
@@ -181,9 +183,9 @@ $src = $block->escapeHtml('https://www.paypal.com/sdk/js?client-id=' . $paypalCl
                                             $.fancybox.showLoading();
 
                                             $.ajax({
-                                                method: "POST",
+                                                method: "<?= $block->escapeHtml('POST') ?>",
                                                 dataType: "JSON",
-                                                url: "<?= $block->getPaypalActionUrl(); ?>",
+                                                url: "<?=  $block->escapeHtml($block->getPaypalActionUrl()); ?>",
                                                 data: {
                                                     order_id: <?= $orderId; ?>,
                                                     details: details
