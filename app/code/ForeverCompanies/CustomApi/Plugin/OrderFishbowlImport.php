@@ -7,23 +7,33 @@ use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderExtensionFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\Data\OrderSearchResultInterface;
+use ShipperHQ\Shipper\Helper\CarrierGroup;
+use ShipperHQ\Shipper\Model\Order\GridDetail;
 
 class OrderFishbowlImport
 {
     /**
      * @var OrderExtensionFactory
      */
-    private $orderExtensionFactory;
+    protected $orderExtensionFactory;
+
+    /**
+     * @var CarrierGroup
+     */
+    protected $carrierGroup;
 
     /**
      * Init plugin
      *
      * @param OrderExtensionFactory $orderExtensionFactory
+     * @param CarrierGroup $carrierGroup
      */
     public function __construct(
-        OrderExtensionFactory $orderExtensionFactory
+        OrderExtensionFactory $orderExtensionFactory,
+        CarrierGroup $carrierGroup
     ) {
         $this->orderExtensionFactory = $orderExtensionFactory;
+        $this->carrierGroup = $carrierGroup;
     }
 
     /**
@@ -43,11 +53,12 @@ class OrderFishbowlImport
         if ($extensionAttributes === null) {
             $extensionAttributes = $this->orderExtensionFactory->create();
         }
-
+        /** @var GridDetail $carrierData */
+        $carrierData = $this->carrierGroup->loadOrderGridDetailByOrderId($order->getEntityId())->getFirstItem();
         $extensionAttributes->setFlagFishbowlImport($order->getData('flag_fishbowl_import'));
         $extensionAttributes->setShippingMethod($order->getShippingMethod());
-        $extensionAttributes->setAnticipatedShipdate($order->getData('anticipated_shipdate'));
-        $extensionAttributes->setDeliveryDate($order->getData('delivery_date'));
+        $extensionAttributes->setAnticipatedShipdate($carrierData->getDispatchDate());
+        $extensionAttributes->setDeliveryDate($carrierData->getDeliveryDate());
         $extensionAttributes->setSalesPersonId($order->getData('sales_person_id'));
         $order->setExtensionAttributes($extensionAttributes);
 

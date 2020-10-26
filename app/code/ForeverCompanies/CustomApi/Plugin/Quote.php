@@ -19,6 +19,9 @@ class Quote
      */
     protected $orderResource;
 
+    /**
+     * @var string[]
+     */
     protected $checkingFields = [
         'anticipated_shipdate',
         'delivery_date'

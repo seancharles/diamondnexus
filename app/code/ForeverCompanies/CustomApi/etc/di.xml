@@ -26,4 +26,8 @@
     </type>
     <preference for="ForeverCompanies\CustomApi\Api\ExtSalesOrderUpdateManagementInterface"
                 type="ForeverCompanies\CustomApi\Model\ExtSalesOrderUpdateManagement"/>
+    <type name="Magento\Sales\Block\Adminhtml\Order\View">
+        <plugin name="ForeverCompanies_CustomApi_Plugin_Adminhtml_Order_View" sortOrder="10"
+                type="ForeverCompanies\CustomApi\Plugin\Adminhtml\Order\View"/>
+    </type>
 </config>

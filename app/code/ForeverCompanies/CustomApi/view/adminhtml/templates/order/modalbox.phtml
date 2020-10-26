@@ -1,0 +1,71 @@
+<?php
+
+use ForeverCompanies\CustomApi\Block\Adminhtml\Order\AsdAndDeliveryModalBox;
+
+/** @var $block AsdAndDeliveryModalBox */
+?>
+<div id="popup-modal">
+
+    <form action="<?= $block->escapeUrl($block->getFormUrl()) ?>" method="post"
+          id="order-view-add-warranty-form">
+        Dispatch Date <input
+            name="dispatch_date"
+            type="date"
+            data-date-format="Month dd yyyy"
+            min="<?= $block->escapeHtml(date('Y-m-d')) ?>"
+            value="<?= $block->escapeHtml($block->getData('order')->getExtensionAttributes()->getAnticipatedShipdate()) ?>"
+        >
+        Delivery Date <input
+            name="delivery_date"
+            type="date"
+            min="<?= $block->escapeHtml(date('Y-m-d')) ?>"
+            value="<?= $block->escapeHtml($block->getData('order')->getExtensionAttributes()->getDeliveryDate()) ?>"
+        >
+
+        <input type="button" value="Submit" id="order-view-add-warranty">
+    </form>
+</div>
+
+<script>
+    require(
+        [
+            'jquery',
+            'Magento_Ui/js/modal/modal'
+        ],
+        function (
+            $,
+            modalA
+        ) {
+            var options = {
+                type: 'popup',
+                responsive: true,
+                innerScroll: true,
+                title: 'Modify ASD & Delivery Date',
+                modalClass: 'custom-modal',
+                buttons: [{
+                    text: $.mage.__('Close'),
+                    class: '',
+                    click: function () {
+                        this.closeModal();
+                    }
+                }]
+            };
+
+            var popup = modalA(options, $('#popup-modal'));
+            $("#sendordersms").click(function () {
+                $("#popup-modal").modal('openModal');
+            });
+
+            $('#order-view-add-warranty').click(function () {
+                $('#order-view-add-warranty-form').append($('<input>', {
+                    'name': 'form_key',
+                    'value': window.FORM_KEY,
+                    'type': 'hidden'
+                }));
+                $('#order-view-add-warranty-form').submit();
+
+            });
+
+        }
+    );
+</script>

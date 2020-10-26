@@ -15,4 +15,11 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+    <route method="PUT" url="/V1/forevercompanies-customapi/extsalesorderupdate/:orderId">
+        <service class="ForeverCompanies\CustomApi\Api\ExtSalesOrderUpdateManagementInterface"
+                 method="putExtSalesOrderUpdate"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 </routes>

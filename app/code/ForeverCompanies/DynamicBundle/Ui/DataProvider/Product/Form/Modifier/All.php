@@ -9,47 +9,47 @@ class All extends AbstractModifier implements \Magento\Ui\DataProvider\Modifier\
    /**
     * @var PoolInterface
     */
-   protected $pool;
+    protected $pool;
 
    /**
     * @var array
     */
-   protected $meta = [];
+    protected $meta = [];
 
    /**
     * @param PoolInterface $pool
     */
-   public function __construct(
-       PoolInterface $pool
-   ) {
-       $this->pool = $pool;
-   }
+    public function __construct(
+        PoolInterface $pool
+    ) {
+        $this->pool = $pool;
+    }
 
    /**
     * {@inheritdoc}
     */
-   public function modifyData(array $data)
-   {
-       /** @var \Magento\Ui\DataProvider\Modifier\ModifierInterface $modifier */
-       foreach ($this->pool->getModifiersInstances() as $modifier) {
-           $data = $modifier->modifyData($data);
-       }
+    public function modifyData(array $data)
+    {
+        /** @var \Magento\Ui\DataProvider\Modifier\ModifierInterface $modifier */
+        foreach ($this->pool->getModifiersInstances() as $modifier) {
+            $data = $modifier->modifyData($data);
+        }
 
-       return $data;
-   }
+        return $data;
+    }
 
    /**
     * {@inheritdoc}
     */
-   public function modifyMeta(array $meta)
-   {
-       $this->meta = $meta;
+    public function modifyMeta(array $meta)
+    {
+        $this->meta = $meta;
 
-       /** @var \Magento\Ui\DataProvider\Modifier\ModifierInterface $modifier */
-       foreach ($this->pool->getModifiersInstances() as $modifier) {
-           $this->meta = $modifier->modifyMeta($this->meta);
-       }
+        /** @var \Magento\Ui\DataProvider\Modifier\ModifierInterface $modifier */
+        foreach ($this->pool->getModifiersInstances() as $modifier) {
+            $this->meta = $modifier->modifyMeta($this->meta);
+        }
 
-       return $this->meta;
-   }
+        return $this->meta;
+    }
 }

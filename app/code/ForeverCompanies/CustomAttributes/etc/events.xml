@@ -5,4 +5,7 @@
         <observer name="forevercompanies_customattributes_save_options"
                   instance="ForeverCompanies\CustomAttributes\Observer\UpdateProductOptionAttributes"/>
     </event>
+    <event name="catalog_product_load_after">
+        <observer name="product_lock_attributes" instance="ForeverCompanies\CustomAttributes\Observer\LockAttributes"/>
+    </event>
 </config>

@@ -10,5 +10,5 @@ use Magento\Framework\App\Helper\AbstractHelper;
 
 class Configuration extends \Magento\Catalog\Helper\Product\Configuration
 {
-	
+    
 }

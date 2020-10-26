@@ -1,0 +1,22 @@
+{
+    "name": "diamondnexus/module-multipay",
+    "description": "Accept multiple payments for a single order.",
+    "type": "magento2-module",
+    "license": "OSL-3.0",
+    "authors": [
+        {
+            "email": "info@mage2gen.com",
+            "name": "Mage2Gen"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "DiamondNexus\\Multipay\\": ""
+        }
+    }
+}

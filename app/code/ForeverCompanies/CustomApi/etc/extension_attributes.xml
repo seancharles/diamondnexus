@@ -7,6 +7,10 @@
         <attribute code="shipping_method" type="string" />
         <attribute code="sales_person_id" type="string" />
 	</extension_attributes>
+    <extension_attributes for="Magento\Quote\Api\Data\CartInterface">
+        <attribute code="flag_fishbowl_import" type="string" />
+        <attribute code="sales_person_id" type="string" />
+    </extension_attributes>
     <extension_attributes for="Magento\Sales\Api\Data\OrderItemInterface">
         <attribute code="flag_loose_stone" type="string" />
     </extension_attributes>

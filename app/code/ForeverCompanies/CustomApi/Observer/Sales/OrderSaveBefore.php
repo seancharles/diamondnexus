@@ -25,7 +25,8 @@ class OrderSaveBefore implements ObserverInterface
         'shipping_address_id',
         'anticipated_shipdate',
         'delivery_date',
-        'status_histories'
+        'status_histories',
+        'customer_email'
     ];
 
     /**
@@ -45,7 +46,7 @@ class OrderSaveBefore implements ObserverInterface
     public function execute(Observer $observer)
     {
         /** @var Order $order */
-        $order = $observer->getOrder();
+        $order = $observer->getData('order');
         //order is new
         if (!$order->getId()) {
             return $this;

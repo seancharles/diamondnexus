@@ -1,0 +1,18 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:DataObject/etc/fieldset.xsd">
+    <scope id="global">
+        <fieldset id="sales_convert_quote">
+            <field name="flag_fishbowl_import">
+                <aspect name="to_order"/>
+            </field>
+            <field name="sales_person_id">
+                <aspect name="to_order"/>
+            </field>
+        </fieldset>
+        <fieldset id="quote_convert_item">
+            <field name="flag_loose_stone">
+                <aspect name="to_order_item"/>
+            </field>
+        </fieldset>
+    </scope>
+</config>

@@ -23,7 +23,12 @@ class LinkManagement extends \Magento\Bundle\Model\LinkManagement
         $parentProductId
     ) {
 
-        $selectionModel = parent::mapProductLinkToSelectionModel($selectionModel, $productLink, $linkedProductId, $parentProductId);
+        $selectionModel = parent::mapProductLinkToSelectionModel(
+            $selectionModel,
+            $productLink,
+            $linkedProductId,
+            $parentProductId
+        );
         if ($productLink->getOptionSku() !== null) {
             $selectionModel->setOptionSku($productLink->getOptionSku());
         }

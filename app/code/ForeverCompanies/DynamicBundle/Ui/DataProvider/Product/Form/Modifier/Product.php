@@ -7,15 +7,14 @@ use Magento\Ui\Component\Form\Fieldset;
 class Example extends AbstractModifier
 {
     /**
-    * @param array $meta
-    *
-    * @return array
-    */
+     * @param array $meta
+     *
+     * @return array
+     */
     public function modifyMeta(array $meta): array
     {
-		
-	}
-	
+    }
+    
     /**
      * {@inheritdoc}
      */
@@ -23,5 +22,4 @@ class Example extends AbstractModifier
     {
         return $data;
     }
-	
 }

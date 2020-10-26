@@ -4,9 +4,13 @@
     <table name="sales_order">
         <column comment="Fishbowl Import Flag" xsi:type="smallint" name="flag_fishbowl_import"
                 unsigned="false" nullable="true" identity="false" default="0"/>
+        <column comment="Sales Rep ID" xsi:type="int" name="sales_person_id"
+                unsigned="false" nullable="true" identity="false" default="0"/>
     </table>
     <table name="sales_order_grid">
         <column comment="Fishbowl Import Flag" xsi:type="smallint" name="flag_fishbowl_import"
+                unsigned="false" nullable="true" identity="false" default="0"/>
+        <column comment="Sales Rep ID" xsi:type="int" name="sales_person_id"
                 unsigned="false" nullable="true" identity="false" default="0"/>
     </table>
     <table name="sales_order_item">

@@ -8,4 +8,3 @@ class Color extends AbstractEav
 {
     protected $eq = 'string';
 }
-

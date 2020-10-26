@@ -18,6 +18,16 @@
                     ForeverCompanies\CustomAttributes\Console\Command\DeleteOIdAttributes
                 </item>
             </argument>
+            <argument name="commands" xsi:type="array">
+                <item name="TransformOptions" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\TransformOptions
+                </item>
+            </argument>
+            <argument name="commands" xsi:type="array">
+                <item name="TransformMultiselect" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\TransformMultiselect
+                </item>
+            </argument>
         </arguments>
     </type>
     <type name="ForeverCompanies\CustomAttributes\Logger\Handler">

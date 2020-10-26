@@ -23,6 +23,11 @@ class ExtSalesOrderUpdateManagement implements ExtSalesOrderUpdateManagementInte
      */
     protected $helper;
 
+    /**
+     * ExtSalesOrderUpdateManagement constructor.
+     * @param ResourceModel\ExtSalesOrderUpdate $resourceModel
+     * @param ExtOrder $helper
+     */
     public function __construct(
         \ForeverCompanies\CustomApi\Model\ResourceModel\ExtSalesOrderUpdate $resourceModel,
         ExtOrder $helper
@@ -35,16 +40,13 @@ class ExtSalesOrderUpdateManagement implements ExtSalesOrderUpdateManagementInte
      * {@inheritdoc}
      * @throws LocalizedException
      */
-    public function getExtSalesOrderUpdate($flagFishbowlUpdate)
+    public function getExtSalesOrderUpdate(bool $flagFishbowlUpdate)
     {
-        if ($flagFishbowlUpdate !== 'true' && $flagFishbowlUpdate !== 'false') {
-            return 'Write param flag_fishbowl_update "true" or "false", please';
-        }
         $flag = ($flagFishbowlUpdate == 'true') ? 1 : 0;
         $connection = $this->resourceModel->getConnection();
         $mainTable = $this->resourceModel->getMainTable();
         $select = $connection->select()
-            ->from($mainTable, ['order_id', 'updated_at', 'updated_fields', 'flag_fishbowl_update'])
+            ->from($mainTable, ['entity_id', 'order_id', 'updated_at', 'updated_fields', 'flag_fishbowl_update'])
             ->where('flag_fishbowl_update = ?', $flag);
         return $connection->fetchAll($select);
     }
@@ -56,5 +58,13 @@ class ExtSalesOrderUpdateManagement implements ExtSalesOrderUpdateManagementInte
     {
         $this->helper->createNewExtSalesOrder($orderId, $updatedFields, $flagFishbowlUpdate);
         return 'Success';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function putExtSalesOrderUpdate(int $orderId, bool $flagFishbowlUpdate)
+    {
+        return $this->helper->updateExtSalesOrder($orderId, $flagFishbowlUpdate);
     }
 }

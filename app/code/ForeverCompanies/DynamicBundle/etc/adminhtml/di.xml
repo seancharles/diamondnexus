@@ -3,10 +3,10 @@
 	<virtualType name="Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Pool">
 		<arguments>
 			<argument name="modifiers" xsi:type="array">
-				<item name="dynamic" xsi:type="array">
+				<!-- <item name="dynamic" xsi:type="array">
 					<item name="class" xsi:type="string">ForeverCompanies\DynamicBundle\Ui\DataProvider\Product\Form\Modifier\Composite</item>
 					<item name="sortOrder" xsi:type="number">180</item>
-				</item>
+				</item>-->
 				<item name="bundle_stock_data" xsi:type="array">
 					<item name="class" xsi:type="string">ForeverCompanies\DynamicBundle\Ui\DataProvider\Product\Form\Modifier\StockData</item>
 					<item name="sortOrder" xsi:type="number">190</item>
@@ -14,7 +14,7 @@
 			</argument>
 		</arguments>
 	</virtualType>
-	<type name="ForeverCompanies\DynamicBundle\Ui\DataProvider\Product\Form\Modifier\Composite">
+	<!--<type name="ForeverCompanies\DynamicBundle\Ui\DataProvider\Product\Form\Modifier\Composite">
 		<arguments>
 			<argument name="modifiers" xsi:type="array">
 				<item name="bundleSku" xsi:type="string">Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundleSku</item>
@@ -26,7 +26,7 @@
 				<item name="bundleCustomOptions" xsi:type="string">Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundleCustomOptions</item>
 			</argument>
 		</arguments>
-	</type>
+	</type>-->
 	<!--
 	<type name="Magento\Catalog\Block\Adminhtml\Product\Edit\Tabs\Plugin">
 		<plugin name="product-form-decorator" type="ForeverCompanies\DynamicBundle\Block\Adminhtml\Product\Edit\Tabs\Plugin" />
@@ -57,10 +57,7 @@
 		</arguments>
 	</virtualType>
 	-->
-	<type name="Magento\Catalog\Model\Product">
-		<plugin name="plugin_for_product_name" type="ForeverCompanies\DynamicBundle\Plugins\Product" />
-	</type>
-	
+
    <virtualType name="Magento\CatalogStaging\Ui\DataProvider\Product\Form\Modifier\Pool" type="Magento\Ui\DataProvider\Modifier\Pool">
        <arguments>
            <argument name="modifiers" xsi:type="array">
@@ -103,15 +100,16 @@
        </arguments>
    </virtualType>
 
-    <preference for="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\Composite" type="ForeverCompanies\DynamicBundle\Ui\DataProvider\Product\Form\Modifier\Composite" />
-    <preference for="Magento\Bundle\Model\Product\OptionList" type="ForeverCompanies\DynamicBundle\Model\Bundle\Product\OptionList"/>
+    <!--<preference for="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\Composite" type="ForeverCompanies\DynamicBundle\Ui\DataProvider\Product\Form\Modifier\Composite" />-->
+    <!-- @see \ForeverCompanies\CustomAttributes\Model\Bundle\Product\OptionList -->
+    <!--<preference for="Magento\Bundle\Model\Product\OptionList" type="ForeverCompanies\DynamicBundle\Model\Bundle\Product\OptionList"/>-->
     <preference for="Magento\Bundle\Model\LinkManagement" type="ForeverCompanies\DynamicBundle\Model\LinkManagement" />
-	
-	<preference for="ShipperHQ\Shipper\Model\Carrier\Shipper" type="ForeverCompanies\DynamicBundle\Model\Carrier\Shipper" />
+    <!-- @see \ForeverCompanies\CustomAttributes\Plugin\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePanel -->
+    <!--<type name="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePanel">
 
     <type name="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePanel">
         <plugin name="bundle_option_sku" type="ForeverCompanies\DynamicBundle\Plugins\Catalog\Ui\DataProvider\Product\Form\Modifier\BundlePanel" sortOrder="1000"/>
-    </type>
+    </type>-->
 
     <type name="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundleCustomOptions">
         <plugin

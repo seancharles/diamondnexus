@@ -93,20 +93,22 @@ class Converter extends AbstractHelper
         foreach ($options as &$option) {
             $option['is_require'] = 0;
         }
-        foreach ($optionsData['simple'] as $optionData) {
-            /** @var Option $option */
-            $option = $this->productCustomOptionInterfaceFactory->create();
-            $option->setData(
-                [
-                    'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
-                    'title' => $optionData['title'],
-                    'type' => ProductCustomOptionInterface::OPTION_TYPE_DROP_DOWN,
-                    'is_require' => 0,
-                    'values' => $optionsData['options'][$optionData['title']],
-                    'product_sku' => $product->getSku(),
-                ]
-            );
-            $options[] = $option;
+        if (count($optionsData['options']) > 0) {
+            foreach ($optionsData['simple'] as $optionData) {
+                /** @var Option $option */
+                $option = $this->productCustomOptionInterfaceFactory->create();
+                $option->setData(
+                    [
+                        'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
+                        'title' => $optionData['title'],
+                        'type' => ProductCustomOptionInterface::OPTION_TYPE_DROP_DOWN,
+                        'is_require' => 0,
+                        'values' => $optionsData['options'][$optionData['title']],
+                        'product_sku' => $product->getSku(),
+                    ]
+                );
+                $options[] = $option;
+            }
         }
         $product->setOptions($options);
     }
@@ -127,6 +129,9 @@ class Converter extends AbstractHelper
             /** @var Option $option */
             $option = $this->productCustomOptionInterfaceFactory->create();
             $attributeId = $this->getAttributeIdFromProductOptions($productOptions, $optionData['title']);
+            if (!isset($optionsData['options'][$attributeId])) {
+                continue;
+            }
             $option->setData(
                 [
                     'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,

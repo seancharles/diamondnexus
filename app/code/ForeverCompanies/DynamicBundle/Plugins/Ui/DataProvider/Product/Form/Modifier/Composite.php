@@ -17,12 +17,12 @@ class Composite
     protected $selection;
 
     /**
-    * @param LocatorInterface $locator
-    * @param Selection $selection
-    */
+     * @param LocatorInterface $locator
+     * @param Selection $selection
+     */
     public function __construct(
-    LocatorInterface $locator,
-    Selection $selection
+        LocatorInterface $locator,
+        Selection $selection
     ) {
         $this->locator = $locator;
         $this->selection = $selection;
@@ -47,5 +47,4 @@ class Composite
     }
 
     // ...
-
 }
