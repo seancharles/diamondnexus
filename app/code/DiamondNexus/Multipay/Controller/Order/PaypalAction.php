@@ -2,6 +2,7 @@
 
 namespace DiamondNexus\Multipay\Controller\Order;
 
+use DiamondNexus\Multipay\Helper\EmailSender;
 use DiamondNexus\Multipay\Logger\Logger;
 use DiamondNexus\Multipay\Model\Constant;
 use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
@@ -13,6 +14,7 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\Order;
 use Magento\User\Model\ResourceModel\User;
 use Zend\Mail\Message;
 use Zend\Mail\MessageFactory;
@@ -67,6 +69,11 @@ class PaypalAction extends Action
      */
     protected $logger;
 
+    /**
+     * @var EmailSender
+     */
+    protected $emailSender;
+
     public function __construct(
         Context $context,
         PageFactory $pageFactory,
@@ -76,6 +83,7 @@ class PaypalAction extends Action
         User $userResource,
         MessageFactory $messageFactory,
         Sendmail $sendmail,
+        EmailSender $emailSender,
         Logger $logger
     ) {
         $this->_pageFactory = $pageFactory;
@@ -85,6 +93,7 @@ class PaypalAction extends Action
         $this->userResource = $userResource;
         $this->messageFactory = $messageFactory;
         $this->sendmail = $sendmail;
+        $this->emailSender = $emailSender;
         $this->logger = $logger;
         return parent::__construct($context);
     }
@@ -114,6 +123,7 @@ class PaypalAction extends Action
         ];
         if ($orderId > 0) {
             try {
+                /** @var Order $order */
                 $order = $this->orderRepository->get($orderId);
                 $amountDue = $order->getGrandTotal() - $this->transaction->getPaidPart($orderId);
                 $customerId = $this->customerSession->getCustomer()->getId();
@@ -126,7 +136,9 @@ class PaypalAction extends Action
                     ]);
                     // update the order paid amount to the grand total
                     // Send salesperson an email
-                    $this->sendSalesPersonEmail($order, $amountDue);
+                    /*$template = $this->emailSender->mappingTemplate('- new order');
+                    $this->emailSender->sendEmail($template, $order->getCustomerEmail(), ['order' => $order]);*/
+                    //$this->sendSalesPersonEmail($order, $amountDue);
                 } else {
                     $result['success'] = false;
                 }
@@ -140,10 +152,14 @@ class PaypalAction extends Action
     /**
      * @param $order
      * @param $amount
+     * @deprecated
      * @throws LocalizedException
      */
     protected function sendSalesPersonEmail($order, $amount)
     {
+        /**
+         * There os old functional, maybe don't need delete that all
+         */
         $salesPersonId = (int)$order->getData('sales_person_id');
         $storeId = (int)$order->getData('store_id');
         $salesPersonSql = $this->userResource->getConnection()

@@ -4,7 +4,7 @@ use DiamondNexus\Multipay\Block\Order\Paypal;
 
 /** @var Paypal $block */
 # get the order id from the url
-$orderId = $block->getData('order_id');
+$id = $block->getData('order_id');
 # load the increment id
 $incrementId = $block->getIncrementId();
 # get the amount due
@@ -13,8 +13,8 @@ $paypalClientId = $block->getClientId();
 $btn = $block->escapeHtml('.paypal-button-widget');
 $errorAlert = "There was an error processing your payment. Please call customer service.";
 $src = $block->escapeHtml('https://www.paypal.com/sdk/js?client-id=' . $paypalClientId);
-$jsCheckoutGuest = "$('#paypal-in-context-checkout-guest ";
-$jsCheckout = "$('#paypal-in-context-checkout ";
+$jsCheckoutGuest = "$('#paypal-in-context-checkout-guest " . $btn;
+$jsCheckout = "$('#paypal-in-context-checkout " . $btn;
 ?>
 
 <style type="text/css">
@@ -134,7 +134,7 @@ $jsCheckout = "$('#paypal-in-context-checkout ";
     $src ?>&currency=USD&disable-funding=credit&integration-date=2020-10-01"
     data-order-id="<?= $block->escapeHtml($incrementId); ?>"></script>
 <form action="<?= $block->escapeUrl($block->getPaypalUrl()) ?>" method="post">
-    <input type="hidden" name="order_id" value="<?= $block->escapeHtml($orderId); ?>"/>
+    <input type="hidden" name="order_id" value="<?= $block->escapeHtml($id); ?>"/>
     <div class="my-account">
         <div class="dashboard">
             <div id="logo">
@@ -170,11 +170,17 @@ $jsCheckout = "$('#paypal-in-context-checkout ";
                                         'jquery'
                                     ], function ($) {
                                         $(".paypal-guest-option").on("click", function () {
-                                            <?= /** @noEscape */ $jsCheckoutGuest . $btn?>').trigger('click');
+                                            <?= /** @noEscape */ $jsCheckoutGuest ?>
+                                            ').trigger('
+                                            click
+                                            ');
                                             return;
                                         });
                                         $(".paypal-standard-option").on("click", function () {
-                                            <?= /** @noEscape */ $jsCheckout . $btn?>').trigger('click');
+                                            <?= /** @noEscape */ $jsCheckout ?>
+                                            ').trigger('
+                                            click
+                                            ');
                                             return;
                                         });
 
@@ -187,14 +193,14 @@ $jsCheckout = "$('#paypal-in-context-checkout ";
                                                 dataType: "JSON",
                                                 url: "<?=  $block->escapeHtml($block->getPaypalActionUrl()); ?>",
                                                 data: {
-                                                    order_id: <?= $orderId; ?>,
+                                                    order_id: <?= /** @noEscape */ $id; ?>,
                                                     details: details
                                                 }
                                             }).done(function (response) {
                                                 if (response.success == true) {
-                                                    location.href = "<?= $block->getPaypalUrl($orderId) ?>";
+                                                    location.href = "<?= /** @noEscape */ $block->getPaypalUrl($id) ?>";
                                                 } else {
-                                                    alert('<?=$errorAlert ?>');
+                                                    alert('<?=/** @noEscape */ $errorAlert ?>');
                                                     $.fancybox.hideLoading();
                                                 }
                                             });
@@ -206,9 +212,9 @@ $jsCheckout = "$('#paypal-in-context-checkout ";
                                                 return actions.order.create({
                                                     purchase_units: [{
                                                         amount: {
-                                                            value: <?= $amount; ?>
+                                                            value: <?= /** @noEscape */ $amount; ?>
                                                         },
-                                                        invoice_id: "<?= $incrementId; ?>"
+                                                        invoice_id: "<?= /** @noEscape */ $incrementId; ?>"
                                                     }],
                                                     application_context: {
                                                         shipping_preference: 'NO_SHIPPING'

@@ -4,6 +4,7 @@ namespace DiamondNexus\Multipay\Plugin\Model;
 
 use Braintree\Result\Error;
 use DiamondNexus\Multipay\Helper\Data;
+use DiamondNexus\Multipay\Helper\EmailSender;
 use DiamondNexus\Multipay\Model\Constant;
 use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
 use DiamondNexus\Multipay\Model\TransactionFactory;
@@ -32,16 +33,24 @@ class OrderSave
     protected $helper;
 
     /**
+     * @var EmailSender
+     */
+    protected $emailSender;
+
+    /**
      * OrderSave constructor.
      * @param Transaction $resource
      * @param Data $helper
+     * @param EmailSender $emailSender
      */
     public function __construct(
         Transaction $resource,
-        Data $helper
+        Data $helper,
+        EmailSender $emailSender
     ) {
         $this->resource = $resource;
         $this->helper = $helper;
+        $this->emailSender = $emailSender;
     }
 
     /**
@@ -70,6 +79,7 @@ class OrderSave
                     $this->saveMultipayTransaction($order, $information);
                     break;
                 case Constant::MULTIPAY_QUOTE_METHOD:
+                    $this->emailSender->sendEmail('new quote', $order->getCustomerEmail(), ['order' => $order]);
                     break;
             }
         }
