@@ -293,9 +293,9 @@ class TransformData extends AbstractHelper
             }
             $this->productRepository->save($entity);
         } catch (NoSuchEntityException $e) {
-            $this->_logger->error('Can\'t transform product select for ' . $entity->getId() . ': ' .$e->getMessage());
+            $this->_logger->error('Can\'t transform product select for ' . $entity->getId() . ': ' . $e->getMessage());
         } catch (LocalizedException $e) {
-            $this->_logger->error('Can\'t transform product select for ' . $entity->getId() . ': ' .$e->getMessage());
+            $this->_logger->error('Can\'t transform product select for ' . $entity->getId() . ': ' . $e->getMessage());
         }
     }
 
