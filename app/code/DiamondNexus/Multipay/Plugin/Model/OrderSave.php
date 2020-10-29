@@ -60,6 +60,9 @@ class OrderSave
         $payment = $order->getPayment();
         $methodInstance = $payment->getMethod();
         $information = $payment->getAdditionalInformation();
+        if (!isset($information[Constant::PAYMENT_METHOD_DATA])) {
+            return $order;
+        }
         $method = $information[Constant::PAYMENT_METHOD_DATA];
 
         if ($methodInstance === Constant::MULTIPAY_METHOD) {
@@ -92,6 +95,9 @@ class OrderSave
         $payment = $order->getPayment();
         $methodInstance = $payment->getMethod();
         $information = $payment->getAdditionalInformation();
+        if (!isset($information[Constant::PAYMENT_METHOD_DATA])) {
+            return;
+        }
         $method = $information[Constant::PAYMENT_METHOD_DATA];
         if ($methodInstance === Constant::MULTIPAY_METHOD && $method != Constant::MULTIPAY_QUOTE_METHOD) {
             if ($information[Constant::OPTION_TOTAL_DATA] == null) {
