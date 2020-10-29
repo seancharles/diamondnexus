@@ -21,6 +21,7 @@ use Magento\Catalog\Api\Data\ProductExtension;
 use Magento\Catalog\Api\Data\ProductExtensionFactory;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\TierPriceInterface;
+use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Gallery\GalleryManagement;
@@ -29,6 +30,7 @@ use Magento\Catalog\Model\Product\Option\Value;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\CatalogInventory\Model\Stock\Item;
+use Magento\CatalogInventory\Model\StockRegistry;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Model\Config;
 use Magento\Framework\Api\Data\ImageContentInterfaceFactory;
@@ -43,6 +45,9 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\StateException;
 use Magento\Framework\Serialize\Serializer\Serialize;
+use Magento\Framework\Validation\ValidationException;
+use Magento\InventoryApi\Api\Data\SourceItemInterfaceFactory;
+use Magento\InventoryApi\Api\SourceItemsSaveInterface;
 use Magento\MediaStorage\Model\ResourceModel\File\Storage\File;
 use Magento\ProductVideo\Model\Product\Attribute\Media\ExternalVideoEntryConverter;
 use Magento\Store\Model\StoreManagerInterface;
@@ -54,6 +59,36 @@ class TransformData extends AbstractHelper
      * @var CollectionFactory
      */
     protected $productCollectionFactory;
+
+    /**
+     * @var \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory
+     */
+    protected $categoryCollectionFactory;
+
+    /**
+     * @var Category
+     */
+    protected $category;
+
+    /**
+     * @var \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory
+     */
+    protected $attributeSetCollectionFactory;
+
+    /**
+     * @var StockRegistry
+     */
+    protected $stockRegistry;
+
+    /**
+     * @var SourceItemsSaveInterface
+     */
+    protected $sourceItemsSaveInterface;
+
+    /**
+     * @var SourceItemInterfaceFactory
+     */
+    protected $sourceItemFactory;
 
     /**
      * @var Config
@@ -158,6 +193,12 @@ class TransformData extends AbstractHelper
      * @param Context $context
      * @param Config $config
      * @param CollectionFactory $collectionFactory
+     * @param \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory
+     * @param \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory $attributeSetCollectionFactory
+     * @param StockRegistry $stockRegistry
+     * @param SourceItemsSaveInterface $sourceItemsSaveInterface
+     * @param SourceItemInterfaceFactory $sourceItemFactory
+     * @param Category $category
      * @param ProductRepository $productRepository
      * @param ProductType $productTypeHelper
      * @param ExternalVideoEntryConverter $videoEntryConverter
@@ -179,6 +220,12 @@ class TransformData extends AbstractHelper
         Context $context,
         Config $config,
         CollectionFactory $collectionFactory,
+        \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
+        \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory $attributeSetCollectionFactory,
+        StockRegistry $stockRegistry,
+        SourceItemsSaveInterface $sourceItemsSaveInterface,
+        SourceItemInterfaceFactory $sourceItemFactory,
+        Category $category,
         ProductRepository $productRepository,
         ProductType $productTypeHelper,
         ExternalVideoEntryConverter $videoEntryConverter,
@@ -199,6 +246,12 @@ class TransformData extends AbstractHelper
         parent::__construct($context);
         $this->eav = $config;
         $this->productCollectionFactory = $collectionFactory;
+        $this->categoryCollectionFactory = $categoryCollectionFactory;
+        $this->category = $category;
+        $this->attributeSetCollectionFactory = $attributeSetCollectionFactory;
+        $this->stockRegistry = $stockRegistry;
+        $this->sourceItemsSaveInterface = $sourceItemsSaveInterface;
+        $this->sourceItemFactory = $sourceItemFactory;
         $this->productRepository = $productRepository;
         $this->productTypeHelper = $productTypeHelper;
         $this->externalVideoEntryConverter = $videoEntryConverter;
@@ -226,6 +279,48 @@ class TransformData extends AbstractHelper
         $attr = 'dev_tag';
         $where = 'like "%Removed as part of%"';
         return $this->getProductCollection($table, $attr, $where);
+    }
+
+    /**
+     * @param string $sku
+     */
+    public function updateStock($sku)
+    {
+        try {
+            $stock = $this->stockRegistry->getStockItemBySku($sku);
+            $stock->setQty(999999);
+            $this->stockRegistry->updateStockItemBySku($sku, $stock);
+            $sourceItem = $this->sourceItemFactory->create();
+            $sourceItem->setSourceCode('default');
+            $sourceItem->setSku((string)$sku);
+            $sourceItem->setQuantity(999999);
+            $sourceItem->setStatus(1);
+            $this->sourceItemsSaveInterface->execute([$sourceItem]);
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->error('Can\'t update stocks for product SKU = ' . $sku . ': ' . $e->getMessage());
+        } catch (CouldNotSaveException $e) {
+            $this->_logger->error('Can\'t update stocks for product SKU = ' . $sku . ': ' . $e->getMessage());
+        } catch (InputException $e) {
+            $this->_logger->error('Can\'t update stocks for product SKU = ' . $sku . ': ' . $e->getMessage());
+        } catch (ValidationException $e) {
+            $this->_logger->error('Can\'t update stocks for product SKU = ' . $sku . ': ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getProductsForChangeStocks()
+    {
+        $categories = $this->getCategoriesAndSubcategories('Clearance');
+        $attributeSetId = $this->getAttributeSetId('Migration_Loose Diamonds');
+        $collection = $this->productCollectionFactory->create();
+        $collection->addAttributeToSelect('*');
+        $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
+        $collection->addAttributeToFilter('attribute_set_id', ['neq' => $attributeSetId]);
+        $collection->addCategoriesFilter(['nin' => $categories]);
+        //only filter in stock product
+        return $collection;
     }
 
     /**
@@ -574,6 +669,33 @@ class TransformData extends AbstractHelper
 
         $media = $this->externalVideoEntryConverter->convertTo($product, $videoData);
         $this->galleryManagement->create($product->getSku(), $media);
+    }
+
+    /**
+     * @param string $category
+     * @return array
+     */
+    protected function getCategoriesAndSubcategories(string $category)
+    {
+        try {
+            $collection = $this->categoryCollectionFactory->create()->addAttributeToFilter('name', $category);
+
+            /** @var Category $needCategory */
+            $needCategory = $collection->getFirstItem();
+            return $needCategory->getAllChildren(true);
+        } catch (LocalizedException $e) {
+            return [];
+        }
+    }
+
+    /**
+     * @param string $setName
+     * @return array|mixed|null
+     */
+    protected function getAttributeSetId(string $setName)
+    {
+        $set = $this->attributeSetCollectionFactory->create()->addFieldToFilter('attribute_set_name', $setName);
+        return $set->getFirstItem()->getData('attribute_set_id');
     }
 
     /**

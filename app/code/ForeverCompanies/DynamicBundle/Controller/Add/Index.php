@@ -37,8 +37,8 @@ class Index extends \Magento\Framework\App\Action\Action
         \Magento\Catalog\Model\ProductFactory $productloader,
         \Magento\Quote\Model\ResourceModel\Quote\Item\Option\CollectionFactory $optioncollection,
         \Magento\Quote\Model\Quote\Item\Option $itemoption,
-        \ShipperHQ\Shipper\Helper\LogAssist $shipperLogger,
-        \ForeverCompanies\CustomAttributes\Helper\TransformData $test
+        \ShipperHQ\Shipper\Helper\LogAssist $shipperLogger/*,
+        \ForeverCompanies\CustomAttributes\Helper\TransformData $test*/
     ) {
         parent::__construct($context);
         $this->eventManager = $eventManager;
@@ -52,7 +52,7 @@ class Index extends \Magento\Framework\App\Action\Action
         $this->optioncollection = $optioncollection;
         $this->itemoption = $itemoption;
         $this->shipperLogger = $shipperLogger;
-        $this->test = $test;
+        //$this->test = $test;
     }
 
 
