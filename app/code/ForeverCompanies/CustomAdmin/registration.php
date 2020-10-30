@@ -8,5 +8,6 @@ use Magento\Framework\Component\ComponentRegistrar;
 
 ComponentRegistrar::register(
     ComponentRegistrar::MODULE,
-    'ForeverCompanies_CustomAdmin', __DIR__
+    'ForeverCompanies_CustomAdmin',
+    __DIR__
 );

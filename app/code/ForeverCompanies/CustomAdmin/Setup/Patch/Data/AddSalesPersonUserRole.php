@@ -58,8 +58,7 @@ class AddSalesPersonUserRole implements DataPatchInterface, PatchRevertableInter
         RulesFactory $rulesFactory, /* Instance of Rule */
         Role $roleResource,
         \Magento\Authorization\Model\ResourceModel\Rules $rulesResource
-    )
-    {
+    ) {
         $this->roleFactory = $roleFactory;
         $this->rulesFactory = $rulesFactory;
         $this->roleResource = $roleResource;
@@ -73,7 +72,7 @@ class AddSalesPersonUserRole implements DataPatchInterface, PatchRevertableInter
      */
     public function apply()
     {
-        $role=$this->roleFactory->create();
+        $role = $this->roleFactory->create();
         $role->setData('role_name', 'Sales Person')
         ->setData('parent_id', 0) //set parent role id of your role
         ->setRoleType(Group::ROLE_TYPE)
@@ -84,7 +83,7 @@ class AddSalesPersonUserRole implements DataPatchInterface, PatchRevertableInter
         $select = $connection->select()->from($mainTable)->order('role_id desc')->limit(1);
         $roleRow = $connection->fetchRow($select);
         /* Now we set that which resources we allow to this role */
-        $resource=[
+        $resource = [
             'Magento_Backend::admin',
             'Magento_Sales::sales',
             'Magento_Sales::sales_order',
