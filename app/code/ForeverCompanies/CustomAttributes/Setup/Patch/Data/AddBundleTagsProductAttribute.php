@@ -10,6 +10,7 @@ namespace ForeverCompanies\CustomAttributes\Setup\Patch\Data;
 use Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface;
 use Magento\Eav\Setup\EavSetup;
 use Magento\Eav\Setup\EavSetupFactory;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\Patch\PatchRevertableInterface;
@@ -48,37 +49,49 @@ class AddBundleTagsProductAttribute implements DataPatchInterface, PatchRevertab
         $this->moduleDataSetup->getConnection()->startSetup();
         /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $eavSetup->addAttribute(
-            \Magento\Catalog\Model\Product::ENTITY,
-            'bundle_tags',
-            [
-                'type' => 'varchar',
-                'label' => 'Bundle tags',
-                'input' => 'text',
-                'source' => '',
-                'frontend' => '',
-                'required' => false,
-                'backend' => '',
-                'sort_order' => '30',
-                'global' => ScopedAttributeInterface::SCOPE_STORE,
-                'default' => null,
-                'visible' => true,
-                'user_defined' => true,
-                'searchable' => true,
-                'filterable' => false,
-                'comparable' => false,
-                'visible_on_front' => true,
-                'unique' => false,
-                'apply_to' => '',
-                'group' => 'General',
-                'used_in_product_listing' => false,
-                'is_used_in_grid' => true,
-                'is_visible_in_grid' => false,
-                'is_filterable_in_grid' => false,
-                'option' => ['values' => [""]]
-            ]
-        );
-
+        $attribute = $eavSetup->getAttribute(\Magento\Catalog\Model\Product::ENTITY, 'bundle_tags');
+        if ($attribute) {
+            $eavSetup->removeAttribute(
+                \Magento\Catalog\Model\Product::ENTITY,
+                'bundle_tags'
+            );
+        }
+        try {
+            $eavSetup->addAttribute(
+                \Magento\Catalog\Model\Product::ENTITY,
+                'bundle_tags',
+                [
+                    'type' => 'varchar',
+                    'label' => 'Bundle tags',
+                    'input' => 'text',
+                    'source' => '',
+                    'frontend' => '',
+                    'required' => false,
+                    'backend' => '',
+                    'sort_order' => '30',
+                    'global' => ScopedAttributeInterface::SCOPE_STORE,
+                    'default' => null,
+                    'visible' => true,
+                    'user_defined' => true,
+                    'searchable' => true,
+                    'filterable' => false,
+                    'comparable' => false,
+                    'visible_on_front' => true,
+                    'unique' => false,
+                    'apply_to' => '',
+                    'group' => 'General',
+                    'used_in_product_listing' => false,
+                    'is_used_in_grid' => true,
+                    'is_visible_in_grid' => false,
+                    'is_filterable_in_grid' => false,
+                    'option' => ['values' => [""]]
+                ]
+            );
+        } catch (LocalizedException $e) {
+            return;
+        } catch (\Zend_Validate_Exception $e) {
+            return;
+        }
         $this->moduleDataSetup->getConnection()->endSetup();
     }
 
