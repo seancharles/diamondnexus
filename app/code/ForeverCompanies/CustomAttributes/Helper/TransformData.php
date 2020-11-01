@@ -372,7 +372,7 @@ class TransformData extends AbstractHelper
     public function transformProductOptions(int $entityId)
     {
         $missingOptions = [];
-        
+
         try {
             $product = $this->getCurrentProduct($entityId, false);
             if ($product == null) {
@@ -408,13 +408,13 @@ class TransformData extends AbstractHelper
             if (sizeof($missingOptions) > 0) {
                 $msg = "Missing options SKU: " . $product->getSku() . " | ID: " . $product->getId() . " | Options: {" . implode("|", $missingOptions) . "}\n";
                 file_put_contents(
-                    '/home/admin/html/var/log/forevercompanies_options_errors_by_sku.log',
+                    __DIR__ . '/../../../../var/log/forevercompanies_options_errors_by_sku.log',
                     $msg,
                     FILE_APPEND
                 );
                 foreach($missingOptions as $opt) {
                     file_put_contents(
-                        '/home/admin/html/var/log/forevercompanies_options_errors_by_option.log',
+                        __DIR__ . '/../../../../var/log/forevercompanies_options_errors_by_option.log',
                         $opt,
                         FILE_APPEND
                     );
