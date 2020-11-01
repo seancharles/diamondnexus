@@ -388,7 +388,7 @@ class TransformData extends AbstractHelper
                         $missingOptions[] = $option->getTitle();
                         $customizationType = '';
                     }
-+                   $option['customization_type'] = $customizationType;
+                   $option['customization_type'] = $customizationType;
                 }
                 $product->setOptions($options);
             }
