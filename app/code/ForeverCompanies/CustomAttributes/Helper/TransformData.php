@@ -371,6 +371,8 @@ class TransformData extends AbstractHelper
 
     public function transformProductOptions(int $entityId)
     {
+        $missingOptions = [];
+        
         try {
             $product = $this->getCurrentProduct($entityId, false);
             if ($product == null) {
