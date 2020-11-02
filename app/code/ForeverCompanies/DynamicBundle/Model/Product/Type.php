@@ -1324,4 +1324,12 @@ class Type extends \Magento\Catalog\Model\Product\Type\AbstractType
 
         return $selections;
     }
+
+    /**
+     * @param \Magento\Catalog\Model\Product $product
+     */
+    public function deleteTypeSpecificData(\Magento\Catalog\Model\Product $product)
+    {
+        // TODO: Implement deleteTypeSpecificData() method.
+    }
 }
