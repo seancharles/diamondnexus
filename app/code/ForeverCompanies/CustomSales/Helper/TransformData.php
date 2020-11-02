@@ -22,6 +22,7 @@ class TransformData extends AbstractHelper
      * @var string[]
      */
     protected $statusesForDelete = [
+        'cancelled' => 'canceled',
         'canceled_buyer' => 'canceled',
         'fraud' => 'canceled',
         'canceled_invalid' => 'canceled',
