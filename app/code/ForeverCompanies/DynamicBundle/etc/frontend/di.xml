@@ -5,11 +5,13 @@
 		<plugin name="plugin_for_product_name" type="ForeverCompanies\DynamicBundle\Plugins\Product" />
 	</type>
 	-->
-	
+
+    <!--
 	<type name="Magento\Quote\Model\Quote\Item">
 		<plugin name="cart_item_plugin" type="ForeverCompanies\DynamicBundle\Plugins\Quote" />
 	</type>
-	
+	-->
+    
 	<!--
 	<type name="Magento\Quote\Model\Quote\Address\Total\Subtotal">
 		<plugin name="cart_total_plugin" type="ForeverCompanies\DynamicBundle\Plugins\Total" />
