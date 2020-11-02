@@ -371,6 +371,8 @@ class TransformData extends AbstractHelper
 
     public function transformProductOptions(int $entityId)
     {
+        $missingOptions = [];
+
         try {
             $product = $this->getCurrentProduct($entityId, false);
             if ($product == null) {
@@ -383,7 +385,12 @@ class TransformData extends AbstractHelper
             }
             if ($options !== null) {
                 foreach ($options as &$option) {
-                    $option['customization_type'] = $this->setCustomizationTypeToOption($option->getTitle());
+                    $customizationType = $this->setCustomizationTypeToOption($option->getTitle());
+                    if ($customizationType == -1) {
+                        $missingOptions[] = $option->getTitle();
+                        $customizationType = '';
+                    }
+                   $option['customization_type'] = $customizationType;
                 }
                 $product->setOptions($options);
             }
@@ -391,9 +398,27 @@ class TransformData extends AbstractHelper
                 $bundleOptions = $product->getExtensionAttributes()->getBundleProductOptions();
                 foreach ($bundleOptions as &$bundleData) {
                     $title = $bundleData->getTitle();
-                    $bundleData['bundle_customization_type'] = BundleCustomizationType::OPTIONS[$title];
+                    $bundleData['bundle_customization_type'] = BundleCustomizationType::OPTIONS[
+                        BundleCustomizationType::TITLE_MAPPING[$title]
+                    ];
                 }
                 $product->setData('bundle_options_data', $bundleOptions);
+            }
+
+            if (sizeof($missingOptions) > 0) {
+                $msg = "Missing options SKU: " . $product->getSku() . " | ID: " . $product->getId() . " | Options: {" . implode("|", $missingOptions) . "}\n";
+                file_put_contents(
+                    __DIR__ . '/../../../../../var/log/forevercompanies_options_errors_by_sku.log',
+                    $msg,
+                    FILE_APPEND
+                );
+                foreach($missingOptions as $opt) {
+                    file_put_contents(
+                        __DIR__ . '/../../../../../var/log/forevercompanies_options_errors_by_option.log',
+                        $opt,
+                        FILE_APPEND
+                    );
+                }
             }
 
             $this->productRepository->save($product);
@@ -621,7 +646,12 @@ class TransformData extends AbstractHelper
             case 'Metal':
                 return CustomizationType::OPTIONS['Metal Type'];
             default:
-                return CustomizationType::OPTIONS[$title];
+                if (!array_key_exists(trim($title), CustomizationType::TITLE_MAPPING)) {
+                    return -1;
+                }
+                return CustomizationType::OPTIONS[
+                    CustomizationType::TITLE_MAPPING[trim($title)]
+                ];
         }
     }
 

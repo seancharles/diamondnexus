@@ -48,9 +48,13 @@ class AddDefaultImageAttribute implements DataPatchInterface
     {
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
 
-        /**
-         * Install eav entity types to the eav/entity_type table
-         */
+        $attribute = $eavSetup->getAttribute(Product::ENTITY, 'default_image');
+        if ($attribute) {
+            $eavSetup->removeAttribute(
+                Product::ENTITY,
+                'default_image'
+            );
+        }
 
         $eavSetup->addAttribute(
             Product::ENTITY,
