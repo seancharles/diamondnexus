@@ -6,6 +6,7 @@
         <attribute code="delivery_date" type="string" />
         <attribute code="shipping_method" type="string" />
         <attribute code="sales_person_id" type="string" />
+        <attribute code="sales_person_username" type="string" />
 	</extension_attributes>
     <extension_attributes for="Magento\Quote\Api\Data\CartInterface">
         <attribute code="flag_fishbowl_import" type="string" />
