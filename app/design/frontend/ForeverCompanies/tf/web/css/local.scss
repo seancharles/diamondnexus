@@ -1,0 +1,1680 @@
+/*For mixin /scss variable page*/
+/*Media query sizes - bottom of that size*/
+$break_380: 380px; /*m*/
+$break_640: 640px; /*sm*/
+$break_768: 768px; /*t*/
+$break_1025: 1025px; /*md*/
+$break_1260: 1260px; /*pg*/
+$break_1440: 1440px; /*lg*/
+$break_1920: 1920px; /*xl*/
+
+@mixin break_380 {
+    @media (min-width: #{$break_380}) {
+        @content;
+    }
+}
+@mixin break_640 {
+    @media (min-width: #{$break_640}) {
+        @content;
+    }
+}
+@mixin break_768 {
+    @media (min-width: #{$break_768}) {
+        @content;
+    }
+}
+@mixin break_1025 {
+    @media (min-width: #{$break_1025}) {
+        @content;
+    }
+}
+@mixin break_1260 {
+    @media (min-width: #{$break_1260}) {
+        @content;
+    }
+}
+@mixin break_1440 {
+    @media (min-width: #{$break_1440}) {
+        @content;
+    }
+}
+
+@mixin break_1920 {
+    @media (min-width: #{$break_1920}) {
+        @content;
+    }
+}
+
+/*General styles*/
+
+//   @function columns($i) {
+//     @return calc(#{$i} * var(--column-unit));
+//   }
+
+//   @function gutters($i) {
+//     @return calc(#{$i} * var(--gutter-unit));
+//   }
+
+//   @function column-spans($i) {
+//     @return calc(#{$i} * var(--column-and-gutter-unit) - var(--gutter-unit));
+//   }
+
+//   @function gutter-spans($i) {
+//     @return calc(#{$i} * var(--column-and-gutter-unit) - var(--column-unit));
+//   }
+
+//   @function mix-units($columns, $gutters: $columns) {
+//     @return calc((#{$columns} * var(--column-unit)) + (#{$gutters} * var(--gutter-unit)));
+//   }
+/*
+check this out for more info on the columns set up
+https://www.smashingmagazine.com/2019/03/robust-layouts-container-units-css/
+*/
+:root {
+    // Grid proportions
+    --grid-width: 346;
+    --grid-column-width: 64;
+    --grid-columns: 4;
+
+    // Grid logic
+    --grid-gutters: calc(var(--grid-columns) - 1);
+
+    // Grid proportion logic
+    --column-proportion: calc(var(--grid-column-width) / var(--grid-width));
+    --gutter-proportion: calc(
+        (1 - (var(--grid-columns) * var(--column-proportion))) / var(--grid-gutters)
+    );
+
+    // Container Units
+    --column-unit: calc(var(--column-proportion) * var(--container-width));
+    --gutter-unit: calc(var(--gutter-proportion) * var(--container-width));
+    --column-and-gutter-unit: calc(var(--column-unit) + var(--gutter-unit));
+
+    // Container Width
+    --container-width: 91.1vw;
+    // --container-column-width: 18.5;
+    @media (min-width: 768px) {
+        --grid-width: 708;
+        --grid-column-width: 52;
+        --grid-columns: 9;
+
+        --container-width: 92.19vw;
+        //   --container-column-width: 7.34;
+    }
+
+    @media (min-width: 1024px) {
+        --grid-width: 930;
+        --grid-column-width: 50;
+        --grid-columns: 12;
+
+        --container-width: 90.08vw;
+        // --container-column-width: 7;
+    }
+
+    @media (min-width: 1440px) {
+        --grid-width: 1110;
+        --grid-column-width: 65;
+        --grid-columns: 12;
+
+        --container-width: 1110px;
+        //   --container-column-width: 5.86;
+    }
+
+    /*Fonts*/
+    --weight-light: 300;
+    --weight-normal: 400;
+    --weight-bold: 600;
+    --sans-serif: "Gotham SSm A", "Gotham SSm B", sans-serif;
+    --serif: "Didot 06 A", "Didot 06 B", serif;
+
+    /*Brand Colors*/
+    --color-bronze: #bfa374;
+    --color-lightgold: #e5c99b;
+    --color-black: #000000;
+    --color-white: #ffffff;
+    --color-gold: #d19f4e;
+
+    /*Other Brand Colors*/
+    --color-rosegold: #ddbaab;
+    --color-palerose: #ede5e1;
+    --color-nilla: #f8f2ec;
+    --color-gunmetal: #383838;
+    --color-slate: #818181;
+    --color-concrete: #bcbcbc;
+    --color-cloud: #efefef;
+    --color-error: #da1e28;
+    --color-success: #42be65;
+}
+
+/*------------fontcss-------------*/
+@import url(//db.onlinewebfonts.com/c/251039e6849ad977a8bfc40b564dce89?family=Didot);
+@import url(//db.onlinewebfonts.com/c/84693c6ac1f359fe8a4ac49b69f492dd?family=Gotham+Light);
+
+@font-face {font-family: "Gotham Light";
+    src: url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.eot");
+    src: url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.eot?#iefix")
+    format("embedded-opentype"),
+    url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.woff2")
+    format("woff2"),
+    url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.woff")
+    format("woff"),
+    url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.ttf")
+    format("truetype"),
+    url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.svg#Gotham Book")
+    format("svg"); }
+@font-face {
+    font-family: "Didot";
+    src: url("//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.eot");
+    src: url("//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.eot?#iefix")
+    format("embedded-opentype"),
+    url("//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.woff2")
+    format("woff2"),
+    url("//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.woff")
+    format("woff"),
+    url("//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.ttf")
+    format("truetype"),
+    url("//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.svg#Didot")
+    format("svg");
+}
+
+@font-face {
+    font-family: "Gotham Bold";
+    src: url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.eot");
+    src: url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.eot?#iefix")
+    format("embedded-opentype"),
+    url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.woff2")
+    format("woff2"),
+    url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.woff")
+    format("woff"),
+    url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.ttf")
+    format("truetype"),
+    url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.svg#Gotham")
+    format("svg");
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Gotham Light';
+    font-weight: bold;
+    color: var(--color-black);
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: normal;
+    -webkit-text-size-adjust: 100%; //fix for iOS
+}
+
+
+
+body {
+    position: relative;
+    min-height: 100vh;
+}
+
+.standard-font-margins {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .h1,
+    .h2,
+    .h3,
+    .h4,
+    .h5,
+    .h6 {
+        margin: 0 0 0.25em;
+    }
+    p {
+        margin: 0 0 0.5em;
+    }
+    ul,
+    ol {
+        margin-bottom: 0.5em;
+    }
+}
+
+.flexbox {
+    display: -webkit-flex;
+    display: flex;
+}
+
+/*Wraps*/
+.margin-wrap-bottom {
+    margin-bottom: 20px;
+    @include break_768 {
+        margin-bottom: 30px;
+    }
+    @include break_1025 {
+        margin-bottom: 40px;
+    }
+}
+
+/*Type*/
+.uppercase {
+    text-transform: uppercase;
+}
+.bold {
+    font-weight: var(--weight-bold);
+}
+p {
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: 0.016em;
+    &.p-small {
+        font-size: 14px;
+    }
+}
+.h1{
+    font-family: var(--serif);
+    font-weight: var(--weight-light);
+    font-size: 40px;
+    line-height: 48px;
+    @include break_1025 {
+        font-size: 52px;
+        line-height: 60px;
+    }
+    &.sans-serif {
+        font-family: var(--sans-serif);
+        font-weight: var(--weight-bold);
+        text-transform: uppercase;
+        font-size: 24px;
+        line-height: 1.2em;
+        letter-spacing: 0.15em;
+        @include break_1025 {
+            font-size: 30px;
+        }
+    }
+}
+.h2, , .page-title h1 {
+           font-family: var(--serif);
+           font-weight: var(--weight-light);
+           font-size: 32px;
+           line-height: 40px;
+           @include break_1025 {
+               font-size: 40px;
+               line-height: 48px; /*44px*/
+           }
+       }
+.h3 {
+    font-family: var(--serif);
+    font-weight: var(--weight-light);
+    font-size: 24px;
+    line-height: 32px;
+    @include break_1025 {
+        font-size: 32px;
+        line-height: 40px;
+    }
+}
+.h4 {
+    font-weight: var(--weight-regular);
+    font-size: 20px;
+    line-height: 28px;
+}
+.h5 {
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: var(--weight-bold);
+}
+.h6 {
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+// checkout/cart
+@media (max-width: 760px) {
+
+    .cart-discount .block.discount {
+        width: auto;
+        margin-bottom: 5px;
+        border-bottom: 1px solid #cccccc;
+    }
+
+    .we-accept{
+        clear: left;
+        float: left;
+    }
+
+    .we-accept-cards{
+       // background: transparent url('/pub/static/frontend/ForeverCompanies/dn/en_US/images/cards.png') 0% 0% no-repeat padding-box;
+    }
+
+    .we-accept div {
+        padding-top: 10px;
+    }
+
+    .cart-discount .actions-toolbar .action.primary:not(:focus){
+        background: white;
+        font-size: 12px;
+        font-weight: bold;
+        font-family: 'Gotham Bold';
+    }
+
+    thead {
+        font-size: 14px;
+        text-align: left;
+    }
+    #block-shipping {
+        display: none;
+    }
+    .cart.table-wrapper .item-options dt{
+        clear: left;
+        float: left;
+        margin: 0 10px 5px 0;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .cart.table-wrapper .item-options dd{
+        clear: right;
+        float: right;
+        margin: 0 10px 5px 0;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+
+
+    .opc-wrapper .action-show-popup {
+        margin: 0 0 20px;
+        background: white;
+        font-family: 'Gotham Light';
+        font-weight: 900;
+        font-size: 17px;
+    }
+
+    .product-item-name > a, .product.name a > a {
+        color: black;
+        text-decoration: none;
+        text-align: left;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    .cart.table-wrapper .col.subtotal .price-excluding-tax .price{
+        font-size: 16px;
+        color:black;
+    }
+
+    .cart.table-wrapper .col.qty .input-text{
+        margin-top: 0px;
+    }
+    .cart-summary > .title{
+        font-size: 24px;
+        display: none;
+        font-weight: 300;
+        margin: 12px 0;
+        font-family: 'Didot';
+    }
+    .page-main > .page-title-wrapper .page-title {
+        display: inline-block;
+        font-family: 'Gotham Bold';
+        font-size: 24px;
+        text-align: left;
+        text-transform: uppercase;
+    }
+
+    .totals.sub {
+        font-size: 16px;
+    }
+    .opc-wrapper .shipping-address-item.selected-item {
+        border-color: #c0a374 !important;
+    }
+
+    .actions-toolbar {
+        display: none;
+    }
+
+    .action.multicheckout {
+        display: none;
+    }
+
+    .action-continue {
+        margin-top: 20px;
+    }
+    .action-continue  a {
+        text-decoration: none;
+        color: black;
+        text-transform: capitalize;
+        font-size: 16px;
+        padding-left: 10px;
+    }
+
+    //checkout
+    .checkout-payment-method .payment-method-title {
+        padding: 20px 0;
+        margin: 0;
+        font-family: 'Gotham Light';
+        font-weight: bold;
+    }
+    .opc-wrapper .step-title {
+        border-bottom: 1px solid #cccccc;
+        margin-bottom: 15px;
+        font-family: 'Didot';
+        font-size: 25px;
+        font-weight: bold;
+    }
+    .product-item {
+        font-size: 11px;
+        line-height: normal;
+        letter-spacing: normal;
+    }
+    .opc-wrapper .form-login .fieldset .field .label{
+        font-weight: bold;
+    }
+    .opc-wrapper .form-login{
+        padding-bottom: 0px;
+        border-bottom: 0;
+    }
+    .methods-shipping .actions-toolbar .action.primary{
+        line-height: 2.2rem;
+        font-size: 20px;
+        color: white;
+        background: black;
+    }
+    .opc-wrapper .form-login{
+        border-bottom: 0;
+        padding-bottom: 0px;
+    }
+    .opc-progress-bar-item._active > span {
+        color: #333333;
+        font-family: 'Gotham Light';
+        font-weight: bold;
+        font-size: 20px;
+    }
+    .opc-progress-bar-item > span{
+        display: inline-block;
+        font-family: 'Gotham Light';
+        font-weight: bold;
+        width: 100%;
+        word-wrap: break-word;
+        color: #666666;
+        font-weight: 300;
+        font-size: 20px !important;
+    }
+    .opc-wrapper .form-shipping-address .fieldset .field .label{
+        font-family: 'Gotham Light';
+        font-weight: bold;
+    }
+    .opc-block-summary > .title {
+        display: block;
+        font-size: 22px;
+        font-family: 'Didot';
+    }
+    .opc-block-summary .items-in-cart > .title strong {
+        display: block;
+        font-size: 18px;
+        font-family: 'Gotham Light';
+        font-weight: bold;
+    }
+    .opc-block-shipping-information .shipping-information-title{
+        display: block;
+        font-size: 22px;
+        font-family: 'Didot';
+    }
+
+    .opc-block-summary .product-item .subtotal {
+        display: block;
+        text-align: right;
+    }
+    .minicart-items .product.options .toggle > span{
+        display: none;
+    }
+    .minicart-items .product-item-details .price-excluding-tax {
+        margin: 5px 0;
+        font-size: 1px;
+    }
+    .opc-block-summary .product-item .product-item-name-block {
+        display: block;
+        text-align: left;
+    }
+    .opc-block-summary .product-item .product-item-inner {
+        display: flex;
+    }
+    .opc-block-summary .product-item .price {
+        font-size: 20px;
+        font-weight: 400;
+    }
+    .opc-block-summary .table-totals .grand .mark{
+        font-size: 20px;
+        border-top: 1px solid #cccccc;
+        padding-right: 10px;
+    }
+
+    .opc-progress-bar-item > span{
+        font-size: 20px;
+    }
+
+    .opc-progress-bar-item > span {
+        display: inline-block;
+        padding-top: 45px;
+        width: 100%;
+        word-wrap: break-word;
+        color: #666666;
+        font-weight: 300;
+        font-size: 20px;
+    }
+    .opc-progress-bar-item._active > span::before{
+        backround: #D19F4E !important;
+        border-color: #D19F4E !important;
+    }
+    .opc-progress-bar-item._active > span::after{
+
+        border-color: #D19F4E !important;
+    }
+    .checkout-payment-method .payment-method-title {
+        padding: 20px 0;
+        margin: 0;
+        font-family: 'Gotham Light';
+        font-weight: bold;
+    }
+
+    .checkout-payment-method .actions-toolbar .primary{
+        float: left;
+        margin: 0;
+        font-family: 'Gotham Light';
+        font-weight: bold;
+    }
+    .opc-block-summary .table-totals .grand strong{
+        font-size: 20px;
+    }
+    .opc-block-summary .table-totals .grand .amount{
+        font-size: 20px;
+    }
+
+    .checkout-payment-method .actions-toolbar .primary {
+        float: left;
+        margin: 0;
+        margin-top: 10px;
+    }
+
+
+    /* Inline #12 | http://forevercompanies.docker.aitom.cz/checkout/#payment */
+
+    .payment-option._collapsible.opc-payment-additional.discount-code {
+        display: none;
+    }
+
+    #giftcardaccount-placer {
+        display: none;
+    }
+    .opc-block-shipping-information .shipping-information-title .action-edit::before{
+
+    }
+    .opc-block-shipping-information .shipping-information-title .action-edit > span {
+
+    }
+    .opc-block-shipping-information .shipping-information-title .action-edit
+    {
+        top: 0px;
+        display: inline-block;
+        text-decoration: none;
+        position: absolute;
+        right: 3px;
+        border: 1px solid #ccc;
+        font-size: 21px;
+        padding-right: 20px;
+        text-align: center;
+        padding-left: 20px;
+        color: black;
+        font-family: 'Gotham';
+    }
+
+
+    //checkout
+    .action-continue {
+        margin-top: 20px;
+        margin-right: 10px;
+    }
+
+    .action-continue  a {
+        text-decoration: none;
+        color: black;
+        text-transform: capitalize;
+        font-size: 16px;
+    }
+    .totals-tax {
+        display: none;
+    }
+    .checkout-payment-method .payment-method-title {
+        padding: 20px 0;
+        margin: 0;
+        font-family: 'Gotham Light';
+        font-weight: bold;
+    }
+    .opc-wrapper .step-title {
+        border-bottom: 1px solid #cccccc;
+        margin-bottom: 15px;
+        font-family: 'Didot';
+        font-size: 25px;
+        font-weight: bold;
+    }
+    .product-item {
+        font-size: 11px;
+        line-height: normal;
+        letter-spacing: normal;
+    }
+    .opc-wrapper .form-login .fieldset .field .label{
+        font-weight: bold;
+    }
+    .opc-wrapper .form-login{
+        padding-bottom: 0px;
+        border-bottom: 0;
+    }
+    .methods-shipping .actions-toolbar .action.primary{
+        line-height: 2.2rem;
+        font-size: 20px;
+        color: white;
+        background: black;
+    }
+    .opc-wrapper .form-login{
+        border-bottom: 0;
+        padding-bottom: 0px;
+    }
+    .opc-progress-bar-item._active > span {
+        color: #333333;
+        font-weight: bold;
+        font-family: 'Gotham Light';
+        font-size: 20px;
+    }
+    .opc-progress-bar-item > span{
+        display: inline-block;
+        font-weight: bold;
+        font-family: 'Gotham Light';
+        padding-top: 45px;
+        width: 100%;
+        word-wrap: break-word;
+        color: #666666;
+        font-weight: 300;
+        font-size: 20px !important;
+    }
+    .opc-wrapper .form-shipping-address .fieldset .field .label{
+        font-weight: bold;
+    }
+    .opc-block-summary > .title {
+        display: block;
+        font-size: 22px;
+        font-family: 'Didot';
+    }
+    .opc-block-summary .items-in-cart > .title strong {
+        display: block;
+        font-size: 18px;
+        font-family: 'Gotham Light';
+        font-weight: bold;
+    }
+    .opc-block-shipping-information .shipping-information-title{
+        display: block;
+        font-size: 22px;
+        font-family: 'Didot';
+    }
+
+    .opc-block-summary .product-item .subtotal {
+        display: block;
+        text-align: right;
+    }
+    .minicart-items .product.options .toggle > span{
+        display: none;
+    }
+    .minicart-items .product-item-details .price-excluding-tax {
+        margin: 5px 0;
+        font-size: 1px;
+    }
+    .opc-block-summary .product-item .product-item-name-block {
+        display: block;
+        text-align: left;
+    }
+    .opc-block-summary .product-item .product-item-inner {
+        display: flex;
+    }
+    .opc-block-summary .product-item .price {
+        font-size: 20px;
+        font-weight: 400;
+    }
+    .opc-block-summary .table-totals .grand .mark{
+        font-size: 20px;
+        border-top: 1px solid #cccccc;
+        padding-right: 10px;
+    }
+
+    .opc-progress-bar-item > span{
+        font-size: 20px;
+    }
+
+    .opc-progress-bar-item > span {
+        display: inline-block;
+        padding-top: 45px;
+        width: 100%;
+        word-wrap: break-word;
+        color: #666666;
+        font-weight: 300;
+        font-size: 20px;
+    }
+    .opc-progress-bar-item._active > span::before{
+        backround: #D19F4E !important;
+        border-color: #D19F4E !important;
+    }
+    .opc-progress-bar-item._active > span::after{
+
+        border-color: #D19F4E !important;
+    }
+
+    .checkout-payment-method .actions-toolbar .primary{
+        float: left;
+        margin: 0;
+        font-family: 'Gotham Light';
+        font-weight: bold;
+    }
+    .opc-block-summary .table-totals .grand strong{
+        font-size: 20px;
+    }
+    .opc-block-summary .table-totals .grand .amount{
+        font-size: 20px;
+    }
+
+
+
+    /* Inline #12 | http://forevercompanies.docker.aitom.cz/checkout/#payment */
+
+    .payment-option._collapsible.opc-payment-additional.discount-code {
+        display: none;
+    }
+
+    #giftcardaccount-placer {
+        display: none;
+    }
+    .opc-block-shipping-information .shipping-information-title .action-edit::before{
+
+    }
+    .opc-block-shipping-information .shipping-information-title .action-edit > span {
+
+    }
+    .opc-block-shipping-information .shipping-information-title .action-edit
+    {
+        top: 0px;
+        display: inline-block;
+        text-decoration: none;
+        position: absolute;
+        right: 3px;
+        border: 1px solid #ccc;
+        font-size: 21px;
+        padding-right: 20px;
+        text-align: center;
+        padding-left: 20px;
+        color: black;
+        font-family: 'Gotham';
+    }
+
+    .cart-summary > .title {
+        font-size: 20px;
+        display: none;
+        font-weight: 300;
+        margin: 12px 0;
+    }
+
+    #block-shipping-heading {
+        font-weight: var(--weight-regular);
+        font-size: 16px;
+        line-height: 28px;
+    }
+
+    .action.primary.checkout {
+        background: #8E7171;
+        display: inline-block;
+        padding: 7px 15px;
+        border: 0;
+        color: #FFF;
+        font-size: 12px;
+        font-weight: normal;
+        font-family: var(--serif);
+        line-height: 19px;
+        text-align: center;
+        vertical-align: middle;
+        font-family: 'Gotham Light';
+    }
+
+    .action.primary.checkout span {
+        font-size: 16px;
+        font-weight: bolder;
+    }
+
+    .block-cart-failed .actions.main .continue,
+    .block-cart-failed .actions.main .clear,
+    .cart-container .form-cart .actions.main .continue,
+    .cart-container .form-cart .actions.main .clear {
+        display: none;
+    }
+    #block-giftcard {
+        display: none;
+    }
+    #gift-options-cart {
+        display: none;
+    }
+    .cart.table-wrapper .cart > .item {
+        border-bottom: none;
+    }
+
+    .cart-container .form-cart .actions.main {
+        text-align: right;
+        border-bottom: 1px solid #cccccc;
+        padding-bottom: 30px;
+    }
+
+    .cart-totals .grand .mark{
+        font-size: 18px;
+    }
+    .cart-totals .grand .amount{
+        font-size: 18px;
+    }
+
+    #affirmfinance {
+        font-size: 14px;
+        text-align: right;
+        padding: 0 0 3px;
+        padding-bottom: 3px;
+        text-align: center;
+        padding-bottom: 25px;
+    }
+    #affirmfinance a {
+        display: inline-block;
+        font-size: 10px;
+        text-transform: uppercase;
+        text-decoration: underline;
+        color: #000;
+        margin-left: 3px;
+    }
+    #affirmfinance a:hover {
+        color: #b59d74;
+    }
+
+    .__affirm-logo {
+        /* use !important to prevent issues with browser extensions that change fonts */
+        font-family: 'affirm' !important;
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        position: relative;
+        white-space: nowrap;
+        /* Enable Ligatures ================ */
+        letter-spacing: 0;
+        -ms-font-feature-settings: "liga" 1;
+        -webkit-font-feature-settings: "liga";
+        font-feature-settings: "liga";
+        -webkit-font-variant-ligatures: discretionary-ligatures;
+        font-variant-ligatures: discretionary-ligatures;
+        /* Better Font Rendering =========== */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-size: 0.8em;
+        -webkit-text-size-adjust: 100%;
+        -moz-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
+
+    .page-main .block{
+        margin-bottom: 0px;
+    }
+
+    .cart-discount {
+        width: 100%;
+        float: left;
+        -ms-flex-order: 1;
+        -webkit-order: 1;
+        order: 1;
+        border: 0;
+        border-bottom-color: currentcolor;
+        border-bottom-style: none;
+        border-bottom-width: 0px;
+        box-sizing: border-box;
+        padding-right: 4%;
+    }
+
+    .cart-discount .block > .title{
+        border-top: none;
+    }
+
+
+    .action.continue {
+        margin-top: 39px;
+        text-align: left;
+        text-decoration: underline;
+        font: normal normal bolder 14px/46px 'Gotham Bold';
+        font-weight: bolder;
+        letter-spacing: 0px;
+        color: #000000;
+        text-transform: uppercase;
+        opacity: 1;
+        padding-right: 10px;
+    }
+
+    .cart-discount .block > .title strong{
+        color: black;
+        font-weight: 400;
+        font-size: 16px !important;
+    }
+
+    .action.update {
+        background: white;
+        font-size: 12px;
+        font-weight: bold;
+        font-family: 'Gotham Bold';
+        margin-right: 28%;
+        font-style: initial;
+    }
+
+    .action-continue div {
+        padding-left: 37px;
+        padding-top: 10px;
+    }
+
+    .cart.table-wrapper .col.price .price-excluding-tax{
+        color: black;
+        font-size: 16px;
+        line-height: 1;
+        white-space: nowrap;
+        font-weight: bold;
+        font-family: 'Gotham Light';
+        padding-top: 6px;
+    }
+
+}
+@media (min-width: 768px) {
+
+    .cart.table-wrapper .col.price[data-th]::before{
+
+    }
+
+    .cart-discount .block.discount {
+        width: 100% !important;
+        margin-bottom: 5px;
+        border-bottom: 1px solid #cccccc;
+        border-top: none;
+    }
+
+    .action-continue  a {
+        text-decoration: none;
+        color: black;
+        text-transform: capitalize;
+        font-size: 16px;
+    }
+
+    .cart-discount  .block.discount {
+        width: 100%;
+        margin-bottom: 5px;
+        border-bottom: 1px solid #cccccc;
+    }
+
+    .we-accept{
+        clear: left;
+        float: left;
+    }
+    .we-accept-cards{
+        background: transparent url('/pub/static/frontend/ForeverCompanies/dn/en_US/images/cards.png') 0% 0% no-repeat padding-box;
+    }
+    thead {
+        font-size: 14px;
+        text-align: left;
+    }
+    #block-shipping {
+        display: none;
+    }
+
+    .cart.table-wrapper .item-options dt{
+        clear: left;
+        float: left;
+        margin: 0 10px 5px 0;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .opc-wrapper .action-show-popup {
+        margin: 0 0 20px;
+        background: white;
+        font-family: 'Gotham Light';
+        font-weight: 900;
+        font-size: 17px;
+    }
+
+
+    .product-item-name > a, .product.name a > a {
+        color: black;
+        text-decoration: none;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .cart.table-wrapper .col.subtotal .price-excluding-tax .price{
+        font-size: 16px;
+        color:black;
+    }
+    .cart-summary > .title{
+        font-size: 20px;
+        display: none;
+        font-weight: 300;
+        margin: 12px 0;
+        font-family: 'Didot';
+    }
+
+    .page-main > .page-title-wrapper .page-title {
+        display: inline-block;
+        font-size: 32px;
+        text-align: left;
+        font-family: 'Didot';
+    }
+
+    .actions-toolbar {
+        display: none;
+    }
+    //checkout
+    .action.multicheckout {
+        display: none;
+    }
+
+    .totals-tax {
+        display: none;
+    }
+    .checkout-payment-method .payment-method-title {
+        padding: 20px 0;
+        margin: 0;
+        font-family: 'Gotham Light';
+        font-weight: bold;
+    }
+    .checkout-payment-method .checkout-billing-address .billing-address-details{
+        line-height: 27px;
+        padding: 0 0 0 23px;
+        font-family: 'Gotham Light';
+        font-weight: bold;
+    }
+    .opc-wrapper .step-title {
+        border-bottom: 1px solid #cccccc;
+        margin-bottom: 15px;
+        font-family: 'Didot';
+        font-size: 25px;
+        font-weight: bold;
+    }
+    .product-item {
+        font-size: 11px;
+        line-height: normal;
+        letter-spacing: normal;
+    }
+    .opc-wrapper .form-login .fieldset .field .label{
+        font-weight: bold;
+    }
+    .opc-wrapper .form-login{
+        padding-bottom: 0px;
+        border-bottom: 0;
+    }
+    .methods-shipping .actions-toolbar .action.primary{
+        line-height: 2.2rem;
+        font-size: 20px;
+        color: white;
+        background: black;
+    }
+    .opc-wrapper .form-login{
+        border-bottom: 0;
+        padding-bottom: 0px;
+    }
+    .opc-progress-bar-item._active > span {
+        color: #333333;
+        font-family: 'Gotham Light';
+        font-weight: bold;
+        font-size: 20px;
+    }
+    .opc-progress-bar-item > span{
+        display: inline-block;
+        padding-top: 45px;
+        width: 100%;
+        word-wrap: break-word;
+        color: #666666;
+        font-weight: 300;
+        font-size: 20px !important;
+    }
+    .opc-wrapper .form-shipping-address .fieldset .field .label{
+        font-weight: bold;
+    }
+    .opc-block-summary > .title {
+        display: block;
+        font-size: 22px;
+        font-family: 'Didot';
+    }
+    .opc-block-summary .items-in-cart > .title strong {
+        display: block;
+        font-size: 18px;
+        font-family: 'Gotham Light';
+        font-weight: bold;
+    }
+    .opc-block-shipping-information .shipping-information-title{
+        display: block;
+        font-size: 22px;
+        font-family: 'Didot';
+    }
+
+    .opc-block-summary .product-item .subtotal {
+        display: block;
+        text-align: right;
+    }
+    .minicart-items .product.options .toggle > span{
+        display: none;
+    }
+    .minicart-items .product-item-details .price-excluding-tax {
+        margin: 5px 0;
+        font-size: 1px;
+    }
+    .opc-block-summary .product-item .product-item-name-block {
+        display: block;
+        text-align: left;
+    }
+    .opc-block-summary .product-item .product-item-inner {
+        display: flex;
+    }
+    .opc-block-summary .product-item .price {
+        font-size: 20px;
+        font-weight: 400;
+    }
+    .opc-block-summary .table-totals .grand .mark{
+        font-size: 20px;
+        border-top: 1px solid #cccccc;
+        padding-right: 10px;
+    }
+
+    .opc-progress-bar-item > span{
+        font-size: 20px;
+    }
+
+    .opc-progress-bar-item > span {
+        display: inline-block;
+        padding-top: 45px;
+        width: 100%;
+        word-wrap: break-word;
+        color: #666666;
+        font-weight: 300;
+        font-size: 20px;
+    }
+    .opc-progress-bar-item._active > span::before{
+        backround: #D19F4E !important;
+        border-color: #D19F4E !important;
+    }
+    .opc-progress-bar-item._active > span::after{
+
+        border-color: #D19F4E !important;
+    }
+
+    .checkout-payment-method .actions-toolbar .primary{
+        float: left;
+        margin: 0;
+        font-family: 'Gotham Light';
+        font-weight: bold;
+    }
+    .opc-block-summary .table-totals .grand strong{
+        font-size: 20px;
+    }
+    .opc-block-summary .table-totals .grand .amount{
+        font-size: 20px;
+    }
+
+    .checkout-payment-method .actions-toolbar .primary {
+        float: left;
+        margin: 0;
+        margin-top: 10px;
+        font-family: 'Gotham Light';
+        font-weight: bold;
+    }
+
+
+    /* Inline #12 | http://forevercompanies.docker.aitom.cz/checkout/#payment */
+
+    .payment-option._collapsible.opc-payment-additional.discount-code {
+        display: none;
+    }
+
+    #giftcardaccount-placer {
+        display: none;
+    }
+    .opc-block-shipping-information .shipping-information-title .action-edit::before{
+
+    }
+    .opc-block-shipping-information .shipping-information-title .action-edit > span {
+
+    }
+    .opc-block-shipping-information .shipping-information-title .action-edit
+    {
+        top: 0px;
+        display: inline-block;
+        text-decoration: none;
+        position: absolute;
+        right: 3px;
+        border: 1px solid #ccc;
+        font-size: 21px;
+        padding-right: 20px;
+        text-align: center;
+        padding-left: 20px;
+        color: black;
+        font-family: 'Gotham Light';
+        font-weight: bold;
+    }
+
+    .field-error {
+        color: #e02b27;
+        font-size: 13px;
+        font-family: 'Gotham Light';
+        font-weight: bold;
+    }
+
+
+    // checkout/cart
+    .action-continue {
+        margin-top: 10px;
+    }
+    .action-continue  a {
+        text-decoration: none;
+        color: black;
+        text-transform: capitalize;
+        font-size: 16px;
+    }
+    .totals-tax {
+        display: none;
+    }
+
+    .cart-summary > .title {
+        font-size: 24px;
+        display: none;
+        font-weight: 300;
+        margin: 12px 0;
+    }
+
+    #block-shipping-heading {
+        font-weight: var(--weight-regular);
+        font-size: 16px;
+        line-height: 28px;
+    }
+
+    .action.primary.checkout {
+        background: #8E7171;
+        display: inline-block;
+        padding: 7px 15px;
+        border: 0;
+        color: #FFF;
+        font-size: 12px;
+        font-weight: normal;
+        font-family: var(--serif);
+        line-height: 19px;
+        text-align: center;
+        vertical-align: middle;
+        font-family: 'Gotham Light';
+    }
+
+    .action.primary.checkout span {
+        font-size: 16px;
+        font-weight: bolder;
+    }
+
+    .block-cart-failed .actions.main .continue,
+    .block-cart-failed .actions.main .clear,
+    .cart-container .form-cart .actions.main .continue,
+    .cart-container .form-cart .actions.main .clear {
+        display: none;
+    }
+    #block-giftcard {
+        display: none;
+    }
+    #gift-options-cart {
+        display: none;
+    }
+    .cart.table-wrapper .cart > .item {
+        border-bottom: none;
+    }
+
+    .cart-container .form-cart .actions.main {
+        text-align: right;
+        border-bottom: 1px solid #cccccc;
+        padding-bottom: 30px;
+    }
+
+    .cart-totals .grand .mark{
+        font-size: 18px;
+    }
+    .cart-totals .grand .amount{
+        font-size: 18px;
+    }
+
+    #affirmfinance {
+        font-size: 14px;
+        text-align: right;
+        padding: 0 0 3px;
+        padding-bottom: 3px;
+        text-align: center;
+        padding-bottom: 25px;
+    }
+    #affirmfinance a {
+        display: inline-block;
+        font-size: 10px;
+        text-transform: uppercase;
+        text-decoration: underline;
+        color: #000;
+        margin-left: 3px;
+    }
+    #affirmfinance a:hover {
+        color: #b59d74;
+    }
+
+    .__affirm-logo {
+        /* use !important to prevent issues with browser extensions that change fonts */
+        font-family: 'affirm' !important;
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        position: relative;
+        white-space: nowrap;
+        /* Enable Ligatures ================ */
+        letter-spacing: 0;
+        -ms-font-feature-settings: "liga" 1;
+        -webkit-font-feature-settings: "liga";
+        font-feature-settings: "liga";
+        -webkit-font-variant-ligatures: discretionary-ligatures;
+        font-variant-ligatures: discretionary-ligatures;
+        /* Better Font Rendering =========== */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-size: 0.8em;
+        -webkit-text-size-adjust: 100%;
+        -moz-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
+
+    .page-main .block{
+        margin-bottom: 0px;
+    }
+
+    .cart-discount {
+        width: 71%;
+        float: left;
+        -ms-flex-order: 1;
+        -webkit-order: 1;
+        order: 1;
+        border: 0;
+        border-bottom-color: currentcolor;
+        border-bottom-style: none;
+        border-bottom-width: 0px;
+        box-sizing: border-box;
+        padding-right: 4%;
+    }
+    .cart-discount .block > .title strong {
+        font-size: 16px !important;
+        color: black;
+        font-weight: 400;
+    }
+
+    .action.continue {
+        margin-top: 39px;
+        text-align: left;
+        text-decoration: underline;
+        font: normal normal bolder 14px/46px 'Gotham Light';
+        font-weight: bolder;
+        letter-spacing: 0px;
+        color: #000000;
+        text-transform: uppercase;
+        opacity: 1;
+    }
+
+    .cart.table-wrapper .item-options dt{
+        clear: left;
+        float: left;
+        margin: 0 10px 5px 0;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .cart.table-wrapper .item-options dd{
+        clear: right;
+        float: right;
+        margin: 0 10px 5px 0;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .cart-discount .block > .title strong{
+        color: black;
+        font-weight: 400;
+        font-size: 16px !important;
+    }
+
+    .action.update {
+        background: white;
+        font-size: 12px;
+        font-weight: bold;
+        font-family: 'Gotham Bold';
+
+    }
+    .cart.table-wrapper .col.price .price-excluding-tax{
+        color: black;
+        font-size: 14px;
+        line-height: 1;
+        white-space: nowrap;
+        font-weight: bold;
+        font-family: 'Gotham Light';
+        padding-top: 6px;
+    }
+}
+
+/*Buttons*/
+.btn {
+    cursor: pointer;
+    font-family: var(--sans-serif);
+    display: inline-block;
+    text-align: center;
+    margin: auto;
+    background-color: transparent;
+    border: 2px solid var(--color-bronze);
+    letter-spacing: 0.1em;
+    line-height: 1;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 14px;
+    min-width: 191px;
+    padding: 16px 24px;
+    color: var(--color-bronze);
+    width: 100%;
+
+    @include break_640 {
+        width: auto;
+    }
+
+    &.btn-notfull {
+        width: auto;
+    }
+
+    &:hover {
+        background-color: var(--color-bronze);
+        color: var(--color-white);
+        border-color: var(--color-bronze);
+    }
+
+    &.btn-bronzesolid {
+        background-color: var(--color-bronze);
+        color: var(--color-white);
+
+        &:hover {
+            background-color: var(--color-lightgold);
+            border-color: var(--color-lightgold);
+        }
+    }
+
+    &.btn-blackline {
+        border-color: var(--color-black);
+        color: var(--color-black);
+
+        &:hover {
+            background-color: var(--color-black);
+            color: var(--color-white);
+        }
+    }
+
+    &.btn-blacksolid {
+        background-color: var(--color-black);
+        border-color: var(--color-black);
+        color: var(--color-white);
+
+        &:hover {
+            background-color: var(--color-gunmetal);
+        }
+    }
+}
+
+
+/*Links*/
+a {
+    text-decoration: none;
+    color: var(--color-bronze);
+    text-transform: capitalize;
+    font-size: 14px;
+
+    &:hover {
+        text-decoration: underline;
+    }
+    &.a-black-to-bronze {
+        color: var(--color-black);
+        &:hover {
+            color: var(--color-bronze);
+        }
+    }
+    &.a-bronze-to-black {
+        color: var(--color-bronze);
+        &:hover {
+            color: var(--color-black);
+        }
+    }
+    &.a-black {
+        color: var(--color-black);
+    }
+    &.a-arrow {
+        transition: transform 1s;
+        &::after {
+            content: " ";
+            display: inline-block;
+            padding: 2.2px;
+            margin-left: 5px;
+            vertical-align: middle;
+            border: solid;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            transform: rotate(-45deg);
+            -webkit-transform: rotate(-45deg);
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+    &.a-no-underline {
+        &:hover {
+            text-decoration: none;
+        }
+    }
+}
+
+/*ul and li*/
+ol,
+ul {
+    margin-left: 40px;
+    margin-block-start: 1em;
+}
+ul {
+    list-style: disc outside;
+}
+ol {
+    list-style-type: decimal;
+}
+li {
+    margin-bottom: 5px;
+}
+
+.hideat {
+    display: inline;
+    &--380 {
+        display: inline;
+        @include break_380 {
+            display: none;
+        }
+    }
+    &--768 {
+        display: inline;
+        @include break_768 {
+            display: none;
+        }
+    }
+    &--1025 {
+        display: inline;
+        @include break_1025 {
+            display: none;
+        }
+    }
+    &--1280 {
+        display: inline;
+        @include break_1260 {
+            display: none;
+        }
+    }
+    &--1440 {
+        display: inline;
+        @include break_1440 {
+            display: none;
+        }
+    }
+    &--1920 {
+        display: inline;
+        @include break_1920 {
+            display: none;
+        }
+    }
+}
+
+.showat {
+    display: none;
+    &--380 {
+        display: none;
+        @include break_380 {
+            display: inline;
+        }
+    }
+    &--768 {
+        display: none;
+        @include break_768 {
+            display: inline;
+        }
+    }
+    &--1025 {
+        display: none;
+        @include break_1025 {
+            display: inline;
+        }
+    }
+    &--1280 {
+        display: none;
+        @include break_1260 {
+            display: inline;
+        }
+    }
+    &--1440 {
+        display: none;
+        @include break_1440 {
+            display: inline;
+        }
+    }
+    &--1920 {
+        display: none;
+        @include break_1920 {
+            display: inline;
+        }
+    }
+}
