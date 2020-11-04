@@ -2,7 +2,8 @@
       layout="2columns-left"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
-        <css   src="css/local.css"/>
-        <link  src="js/script.js"/>
+        <css  src="css/local.css" />
+
+        <link src="js/script.js" />
     </head>
 </page>
