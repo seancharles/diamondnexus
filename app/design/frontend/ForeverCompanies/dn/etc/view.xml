@@ -317,8 +317,4 @@
         <item type="directory">Lib::mage/adminhtml</item>
         <item type="directory">Lib::mage/backend</item>
     </exclude>
-<<<<<<< HEAD
 </view>
-=======
-</view>
->>>>>>> [DN: My Account] Update DN theme
