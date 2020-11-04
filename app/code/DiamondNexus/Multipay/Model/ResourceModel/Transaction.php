@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace DiamondNexus\Multipay\Model\ResourceModel;
 
+use DiamondNexus\Multipay\Helper\EmailSender;
 use DiamondNexus\Multipay\Logger\Logger;
 use DiamondNexus\Multipay\Model\Constant;
 use DiamondNexus\Multipay\Model\TransactionFactory;
@@ -43,15 +44,22 @@ class Transaction extends AbstractDb
      */
     protected $logger;
 
+    /**
+     * @var EmailSender
+     */
+    protected $emailSender;
+
     public function __construct(
         Context $context,
         TransactionFactory $transactionFactory,
         Logger $logger,
+        EmailSender $emailSender,
         $connectionName = null
     ) {
         parent::__construct($context, $connectionName);
         $this->transactionFactory = $transactionFactory;
         $this->logger = $logger;
+        $this->emailSender = $emailSender;
     }
 
     /**
@@ -104,6 +112,10 @@ class Transaction extends AbstractDb
         if ((int)$information[Constant::OPTION_TOTAL_DATA] == 1) {
             $amount = $information[Constant::AMOUNT_DUE_DATA];
             $change = 0;
+            $template = $this->emailSender->mappingTemplate('- new order');
+            $this->emailSender->sendEmail($template, $order->getCustomerEmail(), ['order' => $order]);
+        } else {
+            $this->emailSender->sendEmail('Order Update', $order->getCustomerEmail(), ['order' => $order]);
         }
         $tendered = 0;
         if (isset($information[Constant::CASH_TENDERED_DATA])) {

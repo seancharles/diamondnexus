@@ -39,6 +39,7 @@ class UpdateProductOptionAttributes implements ObserverInterface
      */
     public function execute(EventObserver $observer)
     {
+        $errors = [];
         /** @var Product $product */
         $product = $observer->getData('data_object');
         if ($product->getId() == null) {
@@ -57,12 +58,18 @@ class UpdateProductOptionAttributes implements ObserverInterface
             $optionValues = $option->getValues() ?? $option->getData('values');
             foreach ($optionValues as $optionValue) {
                 $setValue = $source->getOptionId($optionValue['title']);
+                if ($setValue == null) {
+                    $errors[] = $optionValue['title'];
+                }
                 if ($setValue == null && $optionValue['title'] == 'Round Brilliant') {
                     $setValue = $source->getOptionId('Round');
                 }
                 $value[] = $setValue;
             }
             $product->setData($attribute, implode(',', $value));
+        }
+        if (count($errors) > 0) {
+            throw new LocalizedException(__('Can\'t save product attributes: ' . implode(', ', $errors)));
         }
         foreach ($oldProductOptions as $oldProductOption) {
             $attribute = $oldProductOption->getData('customization_type');

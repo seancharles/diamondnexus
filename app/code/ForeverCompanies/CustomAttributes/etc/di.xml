@@ -28,6 +28,11 @@
                     ForeverCompanies\CustomAttributes\Console\Command\TransformMultiselect
                 </item>
             </argument>
+            <argument name="commands" xsi:type="array">
+                <item name="UpdateStocks" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\UpdateStocks
+                </item>
+            </argument>
         </arguments>
     </type>
     <type name="ForeverCompanies\CustomAttributes\Logger\Handler">

@@ -1,0 +1,13 @@
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      layout="2columns-left"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="css/local.css" />
+        <link  src="js/script.js"/>
+        <link href="//db.onlinewebfonts.com/c/251039e6849ad977a8bfc40b564dce89?family=Didot" rel="stylesheet" type="text/css"/>
+        <link href="//db.onlinewebfonts.com/c/84693c6ac1f359fe8a4ac49b69f492dd?family=Gotham+Light" rel="stylesheet" type="text/css"/>
+        <link href="//db.onlinewebfonts.com/c/924ee4158324c02e3e0d62e54cafd14f?family=Gotham+Book" rel="stylesheet" type="text/css"/>
+        <link href="//db.onlinewebfonts.com/c/5d6f50ed2dde0e4ad455448f896c09f0?family=Gotham" rel="stylesheet" type="text/css"/>
+        <css src="https://use.fontawesome.com/releases/v5.7.1/css/all.css" src_type="url"/>
+    </head>
+</page>
