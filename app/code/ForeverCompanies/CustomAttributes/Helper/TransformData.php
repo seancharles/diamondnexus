@@ -21,6 +21,7 @@ use Magento\Catalog\Api\Data\ProductExtension;
 use Magento\Catalog\Api\Data\ProductExtensionFactory;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\TierPriceInterface;
+use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Gallery\GalleryManagement;
@@ -29,6 +30,7 @@ use Magento\Catalog\Model\Product\Option\Value;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\CatalogInventory\Model\Stock\Item;
+use Magento\CatalogInventory\Model\StockRegistry;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Model\Config;
 use Magento\Framework\Api\Data\ImageContentInterfaceFactory;
@@ -43,6 +45,9 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\StateException;
 use Magento\Framework\Serialize\Serializer\Serialize;
+use Magento\Framework\Validation\ValidationException;
+use Magento\InventoryApi\Api\Data\SourceItemInterfaceFactory;
+use Magento\InventoryApi\Api\SourceItemsSaveInterface;
 use Magento\MediaStorage\Model\ResourceModel\File\Storage\File;
 use Magento\ProductVideo\Model\Product\Attribute\Media\ExternalVideoEntryConverter;
 use Magento\Store\Model\StoreManagerInterface;
@@ -54,6 +59,36 @@ class TransformData extends AbstractHelper
      * @var CollectionFactory
      */
     protected $productCollectionFactory;
+
+    /**
+     * @var \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory
+     */
+    protected $categoryCollectionFactory;
+
+    /**
+     * @var Category
+     */
+    protected $category;
+
+    /**
+     * @var \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory
+     */
+    protected $attributeSetCollectionFactory;
+
+    /**
+     * @var StockRegistry
+     */
+    protected $stockRegistry;
+
+    /**
+     * @var SourceItemsSaveInterface
+     */
+    protected $sourceItemsSaveInterface;
+
+    /**
+     * @var SourceItemInterfaceFactory
+     */
+    protected $sourceItemFactory;
 
     /**
      * @var Config
@@ -158,6 +193,12 @@ class TransformData extends AbstractHelper
      * @param Context $context
      * @param Config $config
      * @param CollectionFactory $collectionFactory
+     * @param \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory
+     * @param \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory $attributeSetCollectionFactory
+     * @param StockRegistry $stockRegistry
+     * @param SourceItemsSaveInterface $sourceItemsSaveInterface
+     * @param SourceItemInterfaceFactory $sourceItemFactory
+     * @param Category $category
      * @param ProductRepository $productRepository
      * @param ProductType $productTypeHelper
      * @param ExternalVideoEntryConverter $videoEntryConverter
@@ -179,6 +220,12 @@ class TransformData extends AbstractHelper
         Context $context,
         Config $config,
         CollectionFactory $collectionFactory,
+        \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
+        \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory $attributeSetCollectionFactory,
+        StockRegistry $stockRegistry,
+        SourceItemsSaveInterface $sourceItemsSaveInterface,
+        SourceItemInterfaceFactory $sourceItemFactory,
+        Category $category,
         ProductRepository $productRepository,
         ProductType $productTypeHelper,
         ExternalVideoEntryConverter $videoEntryConverter,
@@ -199,6 +246,12 @@ class TransformData extends AbstractHelper
         parent::__construct($context);
         $this->eav = $config;
         $this->productCollectionFactory = $collectionFactory;
+        $this->categoryCollectionFactory = $categoryCollectionFactory;
+        $this->category = $category;
+        $this->attributeSetCollectionFactory = $attributeSetCollectionFactory;
+        $this->stockRegistry = $stockRegistry;
+        $this->sourceItemsSaveInterface = $sourceItemsSaveInterface;
+        $this->sourceItemFactory = $sourceItemFactory;
         $this->productRepository = $productRepository;
         $this->productTypeHelper = $productTypeHelper;
         $this->externalVideoEntryConverter = $videoEntryConverter;
@@ -226,6 +279,48 @@ class TransformData extends AbstractHelper
         $attr = 'dev_tag';
         $where = 'like "%Removed as part of%"';
         return $this->getProductCollection($table, $attr, $where);
+    }
+
+    /**
+     * @param string $sku
+     */
+    public function updateStock($sku)
+    {
+        try {
+            $stock = $this->stockRegistry->getStockItemBySku($sku);
+            $stock->setQty(999999);
+            $this->stockRegistry->updateStockItemBySku($sku, $stock);
+            $sourceItem = $this->sourceItemFactory->create();
+            $sourceItem->setSourceCode('default');
+            $sourceItem->setSku((string)$sku);
+            $sourceItem->setQuantity(999999);
+            $sourceItem->setStatus(1);
+            $this->sourceItemsSaveInterface->execute([$sourceItem]);
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->error('Can\'t update stocks for product SKU = ' . $sku . ': ' . $e->getMessage());
+        } catch (CouldNotSaveException $e) {
+            $this->_logger->error('Can\'t update stocks for product SKU = ' . $sku . ': ' . $e->getMessage());
+        } catch (InputException $e) {
+            $this->_logger->error('Can\'t update stocks for product SKU = ' . $sku . ': ' . $e->getMessage());
+        } catch (ValidationException $e) {
+            $this->_logger->error('Can\'t update stocks for product SKU = ' . $sku . ': ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getProductsForChangeStocks()
+    {
+        $categories = $this->getCategoriesAndSubcategories('Clearance');
+        $attributeSetId = $this->getAttributeSetId('Migration_Loose Diamonds');
+        $collection = $this->productCollectionFactory->create();
+        $collection->addAttributeToSelect('*');
+        $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
+        $collection->addAttributeToFilter('attribute_set_id', ['neq' => $attributeSetId]);
+        $collection->addCategoriesFilter(['nin' => $categories]);
+        //only filter in stock product
+        return $collection;
     }
 
     /**
@@ -293,9 +388,9 @@ class TransformData extends AbstractHelper
             }
             $this->productRepository->save($entity);
         } catch (NoSuchEntityException $e) {
-            $this->_logger->error('Can\'t transform product select for ' . $entity->getId() . ': ' .$e->getMessage());
+            $this->_logger->error('Can\'t transform product select for ' . $entity->getId() . ': ' . $e->getMessage());
         } catch (LocalizedException $e) {
-            $this->_logger->error('Can\'t transform product select for ' . $entity->getId() . ': ' .$e->getMessage());
+            $this->_logger->error('Can\'t transform product select for ' . $entity->getId() . ': ' . $e->getMessage());
         }
     }
 
@@ -371,6 +466,8 @@ class TransformData extends AbstractHelper
 
     public function transformProductOptions(int $entityId)
     {
+        $missingOptions = [];
+
         try {
             $product = $this->getCurrentProduct($entityId, false);
             if ($product == null) {
@@ -383,7 +480,12 @@ class TransformData extends AbstractHelper
             }
             if ($options !== null) {
                 foreach ($options as &$option) {
-                    $option['customization_type'] = $this->setCustomizationTypeToOption($option->getTitle());
+                    $customizationType = $this->setCustomizationTypeToOption($option->getTitle());
+                    if ($customizationType == -1) {
+                        $missingOptions[] = $option->getTitle();
+                        $customizationType = '';
+                    }
+                   $option['customization_type'] = $customizationType;
                 }
                 $product->setOptions($options);
             }
@@ -391,9 +493,27 @@ class TransformData extends AbstractHelper
                 $bundleOptions = $product->getExtensionAttributes()->getBundleProductOptions();
                 foreach ($bundleOptions as &$bundleData) {
                     $title = $bundleData->getTitle();
-                    $bundleData['bundle_customization_type'] = BundleCustomizationType::OPTIONS[$title];
+                    $bundleData['bundle_customization_type'] = BundleCustomizationType::OPTIONS[
+                        BundleCustomizationType::TITLE_MAPPING[$title]
+                    ];
                 }
                 $product->setData('bundle_options_data', $bundleOptions);
+            }
+
+            if (sizeof($missingOptions) > 0) {
+                $msg = "Missing options SKU: " . $product->getSku() . " | ID: " . $product->getId() . " | Options: {" . implode("|", $missingOptions) . "}\n";
+                file_put_contents(
+                    __DIR__ . '/../../../../../var/log/forevercompanies_options_errors_by_sku.log',
+                    $msg,
+                    FILE_APPEND
+                );
+                foreach($missingOptions as $opt) {
+                    file_put_contents(
+                        __DIR__ . '/../../../../../var/log/forevercompanies_options_errors_by_option.log',
+                        $opt,
+                        FILE_APPEND
+                    );
+                }
             }
 
             $this->productRepository->save($product);
@@ -577,6 +697,33 @@ class TransformData extends AbstractHelper
     }
 
     /**
+     * @param string $category
+     * @return array
+     */
+    protected function getCategoriesAndSubcategories(string $category)
+    {
+        try {
+            $collection = $this->categoryCollectionFactory->create()->addAttributeToFilter('name', $category);
+
+            /** @var Category $needCategory */
+            $needCategory = $collection->getFirstItem();
+            return $needCategory->getAllChildren(true);
+        } catch (LocalizedException $e) {
+            return [];
+        }
+    }
+
+    /**
+     * @param string $setName
+     * @return array|mixed|null
+     */
+    protected function getAttributeSetId(string $setName)
+    {
+        $set = $this->attributeSetCollectionFactory->create()->addFieldToFilter('attribute_set_name', $setName);
+        return $set->getFirstItem()->getData('attribute_set_id');
+    }
+
+    /**
      * @param Product $product
      * @throws NoSuchEntityException
      * @throws Exception
@@ -621,7 +768,12 @@ class TransformData extends AbstractHelper
             case 'Metal':
                 return CustomizationType::OPTIONS['Metal Type'];
             default:
-                return CustomizationType::OPTIONS[$title];
+                if (!array_key_exists(trim($title), CustomizationType::TITLE_MAPPING)) {
+                    return -1;
+                }
+                return CustomizationType::OPTIONS[
+                    CustomizationType::TITLE_MAPPING[trim($title)]
+                ];
         }
     }
 
