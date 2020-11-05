@@ -8,7 +8,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
-        <plugin name="mageworx_extended_orders_grid_add_data_to_orders_grid"
+        <plugin name="forevercompanies_customadmon_orders_grid_add_data_to_orders_grid"
                 type="ForeverCompanies\CustomAdmin\Plugin\AddDataToOrdersGrid" sortOrder="10"/>
     </type>
 </config>
