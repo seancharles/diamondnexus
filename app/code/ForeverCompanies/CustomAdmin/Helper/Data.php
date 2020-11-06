@@ -6,13 +6,20 @@ namespace ForeverCompanies\CustomAdmin\Helper;
 
 use Exception;
 use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Customer\Api\Data\CustomerInterfaceFactory;
+use Magento\Customer\Model\ResourceModel\AddressRepository;
 use Magento\Customer\Model\ResourceModel\Customer;
 use Magento\CustomerBalance\Model\BalanceFactory;
 use Magento\CustomerBalance\Model\ResourceModel\Balance;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
+use Magento\Framework\Exception\AlreadyExistsException;
+use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Exception\State\InputMismatchException;
 use Magento\Framework\Stdlib\DateTime;
 use Magento\GiftRegistry\Model\EntityFactory;
 use Magento\GiftRegistry\Model\ResourceModel\Entity;
@@ -25,6 +32,7 @@ use Magento\Quote\Model\QuoteRepository;
 use Magento\Reward\Model\ResourceModel\Reward;
 use Magento\Reward\Model\RewardFactory;
 use Magento\Rma\Model\RmaRepository;
+use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Item;
 use Magento\Sales\Model\OrderRepository;
@@ -129,6 +137,16 @@ class Data extends AbstractHelper
     protected $dateTime;
 
     /**
+     * @var CustomerInterfaceFactory
+     */
+    protected $customerFactory;
+
+    /**
+     * @var AddressRepository
+     */
+    protected $addressRepository;
+
+    /**
      * Data constructor.
      * @param Context $context
      * @param ToOrderItem $quoteToOrder
@@ -142,13 +160,16 @@ class Data extends AbstractHelper
      * @param QuoteRepository $quoteRepository
      * @param CustomerRepositoryInterface $customerRepository
      * @param RmaRepository $rmaRepository
+     * @param AddressRepository $addressRepository
      * @param SubscriberFactory $subscriberFactory
      * @param EntityFactory $giftFactory
      * @param BalanceFactory $balanceFactory
      * @param RewardFactory $rewardFactory
+     * @param CustomerInterfaceFactory $customerFactory
      * @param CollectionFactory $orderCollectionFactory
      * @param \Magento\Rma\Model\ResourceModel\Rma\CollectionFactory $rmaCollectionFactory
      * @param \Magento\Paypal\Model\ResourceModel\Billing\Agreement\CollectionFactory $billingAgreementCollectionFactory
+     * @param DateTime $dateTime
      */
     public function __construct(
         Context $context,
@@ -163,16 +184,17 @@ class Data extends AbstractHelper
         QuoteRepository $quoteRepository,
         CustomerRepositoryInterface $customerRepository,
         RmaRepository $rmaRepository,
+        AddressRepository $addressRepository,
         SubscriberFactory $subscriberFactory,
         EntityFactory $giftFactory,
         BalanceFactory $balanceFactory,
         RewardFactory $rewardFactory,
+        CustomerInterfaceFactory $customerFactory,
         CollectionFactory $orderCollectionFactory,
         \Magento\Rma\Model\ResourceModel\Rma\CollectionFactory $rmaCollectionFactory,
         \Magento\Paypal\Model\ResourceModel\Billing\Agreement\CollectionFactory $billingAgreementCollectionFactory,
         DateTime $dateTime
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->quoteToOrder = $quoteToOrder;
         $this->wishlist = $wishlist;
@@ -187,7 +209,9 @@ class Data extends AbstractHelper
         $this->orderRepository = $orderRepository;
         $this->quoteRepository = $quoteRepository;
         $this->customerRepository = $customerRepository;
+        $this->addressRepository = $addressRepository;
         $this->customerResource = $customerResource;
+        $this->customerFactory = $customerFactory;
         $this->rmaRepository = $rmaRepository;
         $this->orderCollectionFactory = $orderCollectionFactory;
         $this->rmaCollectionFactory = $rmaCollectionFactory;
@@ -212,38 +236,7 @@ class Data extends AbstractHelper
         if ($orders->getItems() !== null) {
             /** @var Order $order */
             foreach ($orders->getItems() as $order) {
-                /** @var Quote $quote */
-                $quote = $this->quoteRepository->get($order->getQuoteId());
-                $quote->setCustomer($toCustomer);
-                /** a. Also change the customer_email on the order to be Customer 1’s email. */
-                $quote->setCustomerEmail($toCustomer->getEmail());
-                $quote->collectTotals();
-                $this->quoteRepository->save($quote);
-                if ($quote->getItems() !== null) {
-                    foreach ($quote->getItems() as $quoteItem) {
-                        /** @var Item $orderItem */
-                        $orderItem = $this->quoteToOrder->convert($quoteItem);
-                        $origOrderItemNew = $order->getItemByQuoteItemId($quoteItem->getId());
-                        if ($origOrderItemNew) {
-                            $origOrderItemNew->addData($orderItem->getData());
-                        } else {
-                            if ($quoteItem->getParentItem()) {
-                                $quoteItemId = $orderItem->getParentItem()->getId();
-                                /** @var Item $item */
-                                $item = $order->getItemByQuoteItemId($quoteItemId);
-                                $orderItem->setParentItem($item);
-                            }
-                            $order->addItem($orderItem);
-                        }
-                    }
-                }
-                $order->setSubtotal($quote->getSubtotal())
-                    ->setBaseSubtotal($quote->getBaseSubtotal())
-                    ->setGrandTotal($quote->getGrandTotal())
-                    ->setBaseGrandTotal($quote->getBaseGrandTotal())
-                    ->setCustomerEmail($toCustomer->getEmail());
-                $this->quoteRepository->save($quote);
-                $this->orderRepository->save($order);
+                $this->changeOrder($order, $toCustomer);
             }
         }
         /**  2. Bring all addresses from Customer 2 to Customer 1 (leave Customer 1’s default addresses alone) */
@@ -355,6 +348,61 @@ class Data extends AbstractHelper
     }
 
     /**
+     * @param $data
+     * @throws InputException
+     * @throws InputMismatchException
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
+     * @throws AlreadyExistsException
+     * @throws CouldNotSaveException
+     */
+    public function splitCustomer($data)
+    {
+        try {
+            if ($this->customerRepository->get($data['email'])->getId() !== null) {
+                throw new LocalizedException(__('This email is created already'));
+            }
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->info('Createing new customer with email ' . $data['email']);
+        } catch (LocalizedException $e) {
+            $this->_logger->info('Creating new customer with email ' . $data['email']);
+        }
+
+        $customer = $this->customerFactory->create();
+        $customer->setEmail($data['email']);
+        $customer->setFirstname($data['firstname']);
+        $customer->setLastname($data['lastname']);
+        $this->customerRepository->save($customer);
+        $newCustomer = $this->customerRepository->get($data['email']);
+
+        if (isset($data['address'])) {
+            foreach ($data['address'] as $addressId) {
+                $address = $this->addressRepository->getById($addressId);
+                $address->setCustomerId($newCustomer->getId());
+                $this->addressRepository->save($address);
+            }
+        }
+
+        if (isset($data['order'])) {
+            foreach ($data['order'] as $orderId) {
+                $order = $this->orderRepository->get($orderId);
+                $this->changeOrder($order, $newCustomer);
+            }
+        }
+
+        if (isset($data['return'])) {
+            foreach ($data['return'] as $returnId) {
+                $rma = $this->rmaRepository->get($returnId);
+                $rma->setCustomerId($newCustomer->getId());
+                if ($rma->getCustomerCustomEmail() !== null) {
+                    $rma->setCustomerCustomEmail($newCustomer->getEmail());
+                }
+                $this->rmaRepository->save($rma);
+            }
+        }
+    }
+
+    /**
      * @param $customerId
      * @return array
      */
@@ -369,5 +417,50 @@ class Data extends AbstractHelper
             return [];
         }
         return $data;
+    }
+
+    /**
+     * @param Order|OrderInterface $order
+     * @param CustomerInterface $toCustomer
+     * @throws InputException
+     * @throws NoSuchEntityException
+     * @throws AlreadyExistsException
+     */
+    protected function changeOrder($order, CustomerInterface $toCustomer)
+    {
+        $quote = $this->quoteRepository->get($order->getQuoteId());
+        $quote->setCustomer($toCustomer);
+        /** a. Also change the customer_email on the order to be Customer 1’s email. */
+        $quote->setCustomerEmail($toCustomer->getEmail());
+        $quote->collectTotals();
+        $this->quoteRepository->save($quote);
+        if ($quote->getItems() !== null) {
+            foreach ($quote->getItems() as $quoteItem) {
+                /** @var Item $orderItem */
+                $orderItem = $this->quoteToOrder->convert($quoteItem);
+                $origOrderItemNew = $order->getItemByQuoteItemId($quoteItem->getId());
+                if ($origOrderItemNew) {
+                    $origOrderItemNew->addData($orderItem->getData());
+                } else {
+                    if ($quoteItem->getParentItem()) {
+                        /** @var \Magento\Sales\Model\Order\Item $quoteItemId */
+                        $parentItem = $orderItem->getParentItem();
+                        $quoteItemId = $parentItem->getId();
+                        /** @var Item $item */
+                        $item = $order->getItemByQuoteItemId($quoteItemId);
+                        $orderItem->setParentItem($item);
+                    }
+                    $order->addItem($orderItem);
+                }
+            }
+        }
+        $order->setSubtotal($quote->getSubtotal())
+            ->setBaseSubtotal($quote->getBaseSubtotal())
+            ->setGrandTotal($quote->getGrandTotal())
+            ->setBaseGrandTotal($quote->getBaseGrandTotal())
+            ->setCustomerEmail($toCustomer->getEmail())
+            ->setCustomerId($toCustomer->getId());
+        $this->quoteRepository->save($quote);
+        $this->orderRepository->save($order);
     }
 }

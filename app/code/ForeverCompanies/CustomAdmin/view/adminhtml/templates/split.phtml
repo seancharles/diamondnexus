@@ -1,0 +1,51 @@
+<?php
+
+use ForeverCompanies\CustomAdmin\Block\Adminhtml\Split;
+
+/** @var $block Split */
+?>
+<div id="split-customer">
+
+    <form action="<?= $block->escapeUrl($block->getSplitUrl()) ?>" method="post"
+          id="split-variable-form">
+        First Name <input
+            name="firstname"
+            id="firstname"
+            type="text"
+            class="admin__control-text"
+        ><br/>
+        Last Name <input
+            name="lastname"
+            id="lastname"
+            type="text"
+            class="admin__control-text"
+        ><br/>
+        Email <input
+            name="email"
+            id="email"
+            type="email"
+            class="validate-email required-entry input-text"
+        ><br/>
+        <b>Addresses to move to New Account: </b><br/>
+        <?php foreach ($block->getAddresses() as $id => $address) : ?>
+            <input type="checkbox" value="<?= /* @noEscape */
+            $id ?>" name="address[]"> <?= /* @noEscape */
+        $id ?> <br/>
+        <?php endforeach; ?>
+        <br/>
+        <b>Orders to move to New Account: </b><br/>
+        <?php foreach ($block->getOrders() as $orderId => $order) : ?>
+            <input type="checkbox" value="<?= /* @noEscape */
+            $orderId ?>" name="order[]"> <?= /* @noEscape */
+        $order ?> <br/>
+        <?php endforeach; ?>
+        <br/>
+        <b>Returns to move to New Account: </b><br/>
+        <?php foreach ($block->getReturns() as $returnId => $return) : ?>
+            <input type="checkbox" value="<?= /* @noEscape */
+            $returnId ?>" name="return[]"> <?= /* @noEscape */
+        $return ?> <br/>
+        <?php endforeach; ?>
+        <input type="submit" id="split-submit">
+    </form>
+</div>

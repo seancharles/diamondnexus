@@ -13,6 +13,10 @@
                 name="merge_customers"
                 class="ForeverCompanies\CustomAdmin\Block\Adminhtml\Customer\Edit\MergeCustomersButton"
             />
+            <button
+                name="split_customers"
+                class="ForeverCompanies\CustomAdmin\Block\Adminhtml\Customer\Edit\SplitCustomersButton"
+            />
         </buttons>
     </settings>
 </form>

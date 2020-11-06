@@ -1,6 +1,6 @@
 <?php
 
-namespace ForeverCompanies\CustomAdmin\Controller\Adminhtml\Merge;
+namespace ForeverCompanies\CustomAdmin\Controller\Adminhtml\Split;
 
 use ForeverCompanies\CustomAdmin\Helper\Data;
 use Magento\Backend\App\Action\Context;
@@ -11,7 +11,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Result\PageFactory;
 
-class Merge extends \Magento\Backend\App\Action
+class Split extends \Magento\Backend\App\Action
 {
 
     protected $resultPageFactory = false;
@@ -33,12 +33,10 @@ class Merge extends \Magento\Backend\App\Action
      * @param Data $helper
      */
     public function __construct(
-        PageFactory $resultPageFactory,
         Context $context,
         Data $helper
     ) {
         parent::__construct($context);
-        $this->resultPageFactory = $resultPageFactory;
         $this->context = $context;
         $this->helper = $helper;
     }
@@ -49,30 +47,22 @@ class Merge extends \Magento\Backend\App\Action
     public function execute()
     {
         $previousUrl = $this->_redirect->getRefererUrl();
-        $customerString = str_replace('customer_id/', '', stristr($previousUrl, 'customer_id'));
-        $customerId = str_replace('/', '', strstr($customerString, '/', true));
-        $mergedCustomerId = $this->getRequest()->getParam('id');
-        if ($customerId == $mergedCustomerId) {
-            $this->messageManager->addErrorMessage('You have selected the same customers');
-            $redirectResult = $this->resultRedirectFactory->create();
-            return $redirectResult->setPath($previousUrl);
-        }
         try {
-            $this->helper->mergeCustomer($mergedCustomerId, $customerId);
+            $this->helper->splitCustomer($this->getRequest()->getParams());
         } catch (NoSuchEntityException $e) {
-            $this->messageManager->addErrorMessage('We can\'t merge customers - ' . $e->getMessage());
+            $this->messageManager->addErrorMessage('We can\'t split customers - ' . $e->getMessage());
             $redirectResult = $this->resultRedirectFactory->create();
             return $redirectResult->setPath($previousUrl);
         } catch (LocalizedException $e) {
-            $this->messageManager->addErrorMessage('We can\'t merge customers - ' . $e->getMessage());
+            $this->messageManager->addErrorMessage('We can\'t split customers - ' . $e->getMessage());
             $redirectResult = $this->resultRedirectFactory->create();
             return $redirectResult->setPath($previousUrl);
         } catch (\Exception $e) {
-            $this->messageManager->addErrorMessage('We can\'t merge customers - ' . $e->getMessage());
+            $this->messageManager->addErrorMessage('We can\'t split customers - ' . $e->getMessage());
             $redirectResult = $this->resultRedirectFactory->create();
             return $redirectResult->setPath($previousUrl);
         }
-        $this->messageManager->addSuccessMessage('Customer success merged');
+        $this->messageManager->addSuccessMessage('Customer success split');
         $redirectResult = $this->resultRedirectFactory->create();
         return $redirectResult->setPath('customer/index');
     }
