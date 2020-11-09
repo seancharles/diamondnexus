@@ -19,5 +19,4 @@ class BundleCustomizationType extends AbstractCustomizationType
         'Matching Bands' => 'Matching Band',
         'Center Stone Size' => 'Center Stone Size',
     ];
-
 }
