@@ -8,6 +8,8 @@ declare(strict_types=1);
 namespace ForeverCompanies\CustomAttributes\Helper;
 
 use Exception;
+use ForeverCompanies\CustomAttributes\Logger\ErrorsByOption\Logger as LoggerByOptions;
+use ForeverCompanies\CustomAttributes\Logger\ErrorsBySku\Logger as LoggerBySku;
 use ForeverCompanies\CustomAttributes\Model\Config\Source\Product\BundleCustomizationType;
 use ForeverCompanies\CustomAttributes\Model\Config\Source\Product\CustomizationType;
 use Magento\Bundle\Api\Data\LinkInterface;
@@ -175,6 +177,16 @@ class TransformData extends AbstractHelper
      */
     protected $bundleSelection;
 
+    /**
+     * @var LoggerByOptions
+     */
+    protected $loggerByOptions;
+
+    /**
+     * @var LoggerBySku
+     */
+    protected $loggerBySku;
+
     protected $mimeTypes = [
         'png' => 'image/png',
         'jpe' => 'image/jpeg',
@@ -215,6 +227,8 @@ class TransformData extends AbstractHelper
      * @param Media $media
      * @param Serialize $serializer
      * @param Selection $bundleSelection
+     * @param LoggerByOptions $loggerByOptions
+     * @param LoggerBySku $loggerBySku
      */
     public function __construct(
         Context $context,
@@ -241,7 +255,9 @@ class TransformData extends AbstractHelper
         GalleryManagement $galleryManagement,
         Media $media,
         Serialize $serializer,
-        Selection $bundleSelection
+        Selection $bundleSelection,
+        LoggerByOptions $loggerByOptions,
+        LoggerBySku $loggerBySku
     ) {
         parent::__construct($context);
         $this->eav = $config;
@@ -268,6 +284,8 @@ class TransformData extends AbstractHelper
         $this->mediaHelper = $media;
         $this->serializer = $serializer;
         $this->bundleSelection = $bundleSelection;
+        $this->loggerByOptions = $loggerByOptions;
+        $this->loggerBySku = $loggerBySku;
     }
 
     /**
@@ -485,7 +503,7 @@ class TransformData extends AbstractHelper
                         $missingOptions[] = $option->getTitle();
                         $customizationType = '';
                     }
-                   $option['customization_type'] = $customizationType;
+                    $option['customization_type'] = $customizationType;
                 }
                 $product->setOptions($options);
             }
@@ -500,19 +518,14 @@ class TransformData extends AbstractHelper
                 $product->setData('bundle_options_data', $bundleOptions);
             }
 
-            if (sizeof($missingOptions) > 0) {
-                $msg = "Missing options SKU: " . $product->getSku() . " | ID: " . $product->getId() . " | Options: {" . implode("|", $missingOptions) . "}\n";
-                file_put_contents(
-                    __DIR__ . '/../../../../../var/log/forevercompanies_options_errors_by_sku.log',
-                    $msg,
-                    FILE_APPEND
-                );
-                foreach($missingOptions as $opt) {
-                    file_put_contents(
-                        __DIR__ . '/../../../../../var/log/forevercompanies_options_errors_by_option.log',
-                        $opt,
-                        FILE_APPEND
-                    );
+            if (count($missingOptions) > 0) {
+                $sku = $product->getSku();
+                $id = $product->getId();
+                $start = "Missing options SKU: ";
+                $msg = $start . $sku . " | ID: " . $id . " | Options: {" . implode("|", $missingOptions) . "}\n";
+                $this->loggerBySku->error($msg);
+                foreach ($missingOptions as $opt) {
+                    $this->loggerByOptions->error($opt);
                 }
             }
 

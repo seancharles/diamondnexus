@@ -36,5 +36,4 @@ class CustomizationType extends AbstractCustomizationType
         'Shape' => 'Shape',
         'Center Stone Cut' => 'Shape',
     ];
-
 }
