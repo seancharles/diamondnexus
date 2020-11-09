@@ -29,6 +29,11 @@
                 </item>
             </argument>
             <argument name="commands" xsi:type="array">
+                <item name="TransformValues" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\TransformValues
+                </item>
+            </argument>
+            <argument name="commands" xsi:type="array">
                 <item name="UpdateStocks" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\UpdateStocks
                 </item>
@@ -45,6 +50,33 @@
             <argument name="name" xsi:type="string">ForeverCompaniesLog</argument>
             <argument name="handlers" xsi:type="array">
                 <item name="system" xsi:type="object">ForeverCompanies\CustomAttributes\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="ForeverCompanies\CustomAttributes\Logger\ErrorsByOption\Handler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="ForeverCompanies\CustomAttributes\Logger\ErrorsByOption\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">ForeverCompaniesLogByOption</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">ForeverCompanies\CustomAttributes\Logger\ErrorsByOption\Handler</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="ForeverCompanies\CustomAttributes\Logger\ErrorsBySku\Handler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="ForeverCompanies\CustomAttributes\Logger\ErrorsBySku\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">ForeverCompaniesLogBySku</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">ForeverCompanies\CustomAttributes\Logger\ErrorsBySku\Handler</item>
             </argument>
         </arguments>
     </type>
