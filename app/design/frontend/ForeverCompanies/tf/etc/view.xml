@@ -318,8 +318,4 @@
         <item type="directory">Lib::mage/adminhtml</item>
         <item type="directory">Lib::mage/backend</item>
     </exclude>
-<<<<<<< HEAD
 </view>
-=======
-</view>
->>>>>>> [TF: My Account] - Update TF Theme
