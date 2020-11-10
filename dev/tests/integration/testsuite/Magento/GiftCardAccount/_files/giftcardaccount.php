@@ -9,7 +9,7 @@ $model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
     \Magento\GiftCardAccount\Model\Giftcardaccount::class
 );
 $model->setCode(
-    'giftcardaccount_fixture'
+    $giftCardCode ?? 'giftcardaccount_fixture'
 )->setStatus(
     \Magento\GiftCardAccount\Model\Giftcardaccount::STATUS_ENABLED
 )->setState(

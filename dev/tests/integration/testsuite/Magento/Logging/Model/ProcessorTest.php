@@ -5,6 +5,13 @@
  */
 namespace Magento\Logging\Model;
 
+use Magento\Backend\App\Area\FrontNameResolver;
+use Magento\Backend\Model\Auth;
+use Magento\Framework\Exception\AuthenticationException;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Sales\Model\Order;
+use Magento\TestFramework\Helper\Bootstrap;
+
 /**
  * Test Enterprise logging processor
  *
@@ -13,34 +20,34 @@ namespace Magento\Logging\Model;
 class ProcessorTest extends \Magento\TestFramework\TestCase\AbstractController
 {
     /**
+     * @var Auth
+     */
+    private $_auth;
+
+    /**
      * Test that configured admin actions are properly logged
      *
      * @param string $url
      * @param string $action
      * @param array $post
-     * @dataProvider adminActionDataProvider
-     * @magentoDataFixture Magento/Logging/_files/user_and_role.php
-     * @magentoDbIsolation enabled
+     * @param string $method
+     * @throws AuthenticationException
+     * @throws LocalizedException
      */
-    public function testLoggingProcessorLogsAction($url, $action, array $post = [])
+    public function loggingProcessorLogsAction($url, $action, array $post = [], $method = "POST")
     {
-        \Magento\TestFramework\Helper\Bootstrap::getInstance()
-            ->loadArea(\Magento\Backend\App\Area\FrontNameResolver::AREA_CODE);
-        $collection = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-            ->create(\Magento\Logging\Model\Event::class)->getCollection();
+        Bootstrap::getInstance()->loadArea(FrontNameResolver::AREA_CODE);
+        $collection = Bootstrap::getObjectManager()->create(Event::class)->getCollection();
         $eventCountBefore = count($collection);
-
-        $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-
+        $objectManager = Bootstrap::getObjectManager();
         $objectManager->get(\Magento\Backend\Model\UrlInterface::class)->turnOffSecretKey();
-
         $this->_auth = $objectManager->get(\Magento\Backend\Model\Auth::class);
         $this->_auth->login(
             \Magento\TestFramework\Bootstrap::ADMIN_NAME,
             \Magento\TestFramework\Bootstrap::ADMIN_PASSWORD
         );
 
-        $this->getRequest()->setMethod('POST');
+        $this->getRequest()->setMethod($method);
         $this->getRequest()->setPostValue(
             array_merge(
                 $post,
@@ -50,13 +57,59 @@ class ProcessorTest extends \Magento\TestFramework\TestCase\AbstractController
             )
         );
         $this->dispatch($url);
-        $collection = $objectManager->create(\Magento\Logging\Model\Event::class)->getCollection();
+        $collection = $objectManager->create(Event::class)->getCollection();
 
         // Number 2 means we have "login" event logged first and then the tested one.
         $eventCountAfter = $eventCountBefore + 2;
         $this->assertEquals($eventCountAfter, count($collection), $action . ' event wasn\'t logged');
         $lastEvent = $collection->getLastItem();
         $this->assertEquals($action, $lastEvent['action']);
+    }
+
+    /**
+     * Test that configured admin actions are properly logged
+     *
+     * @param string $url
+     * @param string $action
+     * @param array $post
+     * @param string $method
+     * @throws AuthenticationException
+     * @throws LocalizedException
+     * @dataProvider adminActionDataProvider
+     * @magentoDataFixture Magento/Logging/_files/user_and_role.php
+     * @magentoDbIsolation enabled
+     */
+    public function testLoggingProcessorLogsAction($url, $action, array $post = [], $method = "POST")
+    {
+        $this->loggingProcessorLogsAction($url, $action, $post, $method);
+    }
+
+    /**
+     * Test that configured shipment actions are properly logged
+     *
+     * @throws AuthenticationException
+     * @throws LocalizedException
+     * @magentoDataFixture Magento/Logging/_files/order.php
+     * @magentoDataFixture Magento/Logging/_files/user_and_role.php
+     * @magentoDbIsolation enabled
+     */
+    public function testLoggingProcessorLogsActionShipping()
+    {
+        /** @var Order $order */
+        $order = Bootstrap::getObjectManager()->create(Order::class);
+        $order->loadByIncrementId('100000001');
+        $orderItemId = 1;
+        $shipmentId = 1;
+        foreach ($order->getItemsCollection() as $item) {
+            $orderItemId = $item->getId();
+        }
+        foreach ($order->getShipmentsCollection() as $item) {
+            $shipmentId = $item->getId();
+        }
+        $url = 'backend/admin/order_shipment/view/shipment_id/' . $shipmentId . '/order_id/' . $order->getId();
+        $action = 'view';
+        $post['shipment']['items'] = [$orderItemId => 1];
+        $this->loggingProcessorLogsAction($url, $action, $post);
     }
 
     /**
@@ -95,7 +148,26 @@ class ProcessorTest extends \Magento\TestFramework\TestCase\AbstractController
                 'backend/tax/tax/ajaxSave',
                 'save',
                 ['class_id' => null, 'class_name' => 'test', 'class_type' => 'PRODUCT', 'isAjax' => true]
-            ]
+            ],
+            [
+                'backend/sales/order_status/save/status/teststatus',
+                'save',
+                ['status' => 'teststatus', 'label' => 'teststatus', 'store_labels' => [1 => '']]
+            ],
+            ['backend/cms/page/edit/page_id/1', 'view', [], 'GET'],
+            [
+                'backend/cms/page/save/back/edit',
+                'save',
+                [
+                    'title' => 'test',
+                    'is_active' => 1,
+                    'page_layout' => 'cms-full-width',
+                    'layout_update_selected' =>'_no_update_',
+                    'store_id' => [0],
+                    'content' => '<div>test</div>',
+                    'website_root' => 0
+                ]
+            ],
         ];
     }
 }

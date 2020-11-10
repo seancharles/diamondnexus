@@ -9,10 +9,11 @@ use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SortOrder;
 use Magento\Framework\Api\SortOrderBuilder;
-use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\GiftCardAccount\Model\Giftcardaccount;
 use Magento\TestFramework\Helper\Bootstrap;
+use PHPUnit\Framework\TestCase;
 
-class GiftCardAccountRepositoryInterfaceTest extends \PHPUnit\Framework\TestCase
+class GiftCardAccountRepositoryInterfaceTest extends TestCase
 {
     /**
      * @var GiftCardAccountRepositoryInterface
@@ -72,5 +73,35 @@ class GiftCardAccountRepositoryInterfaceTest extends \PHPUnit\Framework\TestCase
         $items = array_values($searchResult->getItems());
         $this->assertEquals(1, count($items));
         $this->assertEquals('gift_card_account_2', $items[0]['code']);
+    }
+
+    /**
+     * @magentoDataFixture Magento/GiftCardAccount/_files/expired_giftcard_account.php
+     */
+    public function testSaveExpiredWithFutureDate()
+    {
+        $model = $this->getGiftCardAccount('expired_giftcard_account');
+        $this->assertTrue($model->isExpired());
+        $this->assertEquals(Giftcardaccount::STATE_EXPIRED, $model->getState());
+        $model->setDateExpires(date('Y-m-d', strtotime('+2 day')));
+        $this->repository->save($model);
+        $model = $this->getGiftCardAccount('expired_giftcard_account');
+        $this->assertFalse($model->isExpired());
+        $this->assertEquals(Giftcardaccount::STATE_AVAILABLE, $model->getState());
+    }
+
+    /**
+     * Get gift card account by code
+     *
+     * @param string $code
+     * @return Giftcardaccount
+     */
+    private function getGiftCardAccount(string $code): Giftcardaccount
+    {
+        $objectManager = Bootstrap::getObjectManager();
+        /** * @var Giftcardaccount $model */
+        $model = $objectManager->create(Giftcardaccount::class);
+        $model->loadByCode($code);
+        return $model;
     }
 }

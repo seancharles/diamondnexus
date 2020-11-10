@@ -5,9 +5,9 @@
  */
 
 \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-    ->create(\Magento\CatalogPermissions\Model\Indexer\Category::class)
-    ->executeFull();
+    ->create(\Magento\CatalogPermissions\Model\Indexer\Category\Processor::class)
+    ->reindexAll();
 
 \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-    ->create(\Magento\CatalogPermissions\Model\Indexer\Product::class)
-    ->executeFull();
+    ->create(\Magento\CatalogPermissions\Model\Indexer\Product\Processor::class)
+    ->reindexAll();

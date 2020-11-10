@@ -8,6 +8,11 @@ namespace Magento\TargetRule\Model;
 class RuleTest extends \PHPUnit\Framework\TestCase
 {
     /**
+     * @var \Magento\Framework\ObjectManagerInterface
+     */
+    private $objectManager;
+
+    /**
      * @var \Magento\TargetRule\Model\Rule
      */
     protected $_model;
@@ -17,10 +22,8 @@ class RuleTest extends \PHPUnit\Framework\TestCase
      */
     protected function setUp()
     {
-        parent::setUp();
-        $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            \Magento\TargetRule\Model\Rule::class
-        );
+        $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
+        $this->_model = $this->objectManager->create(\Magento\TargetRule\Model\Rule::class);
     }
 
     /**
@@ -90,130 +93,84 @@ class RuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Test target rules with category rule conditions
      *
-     * @param array $products
-     * @param array $conditions
+     * @param string $operator
+     * @param int $categoryId
      * @param array $expectedProducts
-     * @magentoDataFixture Magento/Catalog/_files/categories_no_products.php
-     * @magentoDataFixture Magento/Catalog/_files/second_product_simple.php
-     * @magentoDataFixture Magento/TargetRule/_files/products.php
+     * @magentoDataFixture Magento/TargetRule/_files/products_with_attributes.php
      * @magentoDataFixture Magento/TargetRule/_files/related.php
      * @magentoAppIsolation enabled
      * @dataProvider categoryConditionDataProvider
      */
-    public function testCategoryCondition(array $products, array $conditions, array $expectedProducts)
+    public function testCategoryCondition(string $operator, int $categoryId, array $expectedProducts)
     {
-        /** @var \Magento\Catalog\Api\CategoryLinkManagementInterface $categoryLinkManagement */
         /** @var \Magento\Catalog\Model\ProductRepository $productRepository */
-        /** @var \Magento\CatalogInventory\Api\StockItemRepositoryInterface $stockItemRepository */
-        /** @var $targetRuleModel \Magento\TargetRule\Model\Rule */
-        /** @var $targetRuleIndexModel \Magento\TargetRule\Model\Index */
-        $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-        $categoryLinkManagement = $objectManager->get(\Magento\Catalog\Api\CategoryLinkManagementInterface::class);
-        $stockItemRepository = $objectManager->get(\Magento\CatalogInventory\Api\StockItemRepositoryInterface::class);
-        $productRepository = $objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
-        $targetRuleIndexModel = $objectManager->create(\Magento\TargetRule\Model\Index::class);
-        $targetRuleModel = $objectManager->create(\Magento\TargetRule\Model\Rule::class);
-        $actualProducts = [];
-        foreach ($products as $sku => $categories) {
-            $categoryLinkManagement->assignProductToCategories($sku, $categories);
-            /** @var \Magento\CatalogInventory\Model\Stock\Item $stockItem */
-            $stockItem = $objectManager->create(\Magento\CatalogInventory\Model\Stock\Item::class);
-            $product = $productRepository->get($sku);
-            $stockItem->setProduct($product);
-            $stockItem->load($product->getId(), 'product_id');
-            $stockItem->setUseConfigManageStock(1);
-            $stockItem->setQty(1000);
-            $stockItem->setIsQtyDecimal(0);
-            $stockItem->setIsInStock(1);
-            $stockItemRepository->save($stockItem);
-        }
+        $productRepository = $this->objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
+        /** @var \Magento\TargetRule\Model\Index $targetRuleIndexModel */
+        $targetRuleIndexModel = $this->objectManager->create(\Magento\TargetRule\Model\Index::class);
+        /** @var \Magento\TargetRule\Model\Rule $targetRuleModel */
+        $targetRuleModel = $this->objectManager->create(\Magento\TargetRule\Model\Rule::class);
 
         $targetRuleModel->load('related', 'name');
-        $data['actions'] = $conditions;
+        $data = [
+            'actions' => [
+                '1' => [
+                    'type' => \Magento\TargetRule\Model\Actions\Condition\Combine::class,
+                    'aggregator' => 'all',
+                    'value' => '1',
+                ],
+                '1--1' => [
+                    'type' => \Magento\TargetRule\Model\Actions\Condition\Product\Attributes::class,
+                    'attribute' => 'category_ids',
+                    'operator' => $operator,
+                    'value' => $categoryId,
+                    'is_value_processed' => false,
+                    'value_type' => 'constant',
+                ],
+                '1--2' => [
+                    'type' => \Magento\TargetRule\Model\Actions\Condition\Product\Attributes::class,
+                    'attribute' => 'sku',
+                    'operator' => '{}',
+                    'value' => 'simple',
+                    'is_value_processed' => false,
+                    'value_type' => 'constant',
+                ],
+            ],
+        ];
         $targetRuleModel->loadPost($data);
         $targetRuleModel->save();
         $targetRuleIndexModel->setType($targetRuleModel->getApplyTo());
-        $targetRuleIndexModel->setProduct($productRepository->get('simple2'));
+        $targetRuleIndexModel->setProduct($productRepository->get('child_simple'));
+
+        $actualProducts = [];
         foreach ($targetRuleIndexModel->getProductIds() as $sku) {
             $actualProducts[] = $productRepository->getById($sku)->getSku();
         }
         sort($expectedProducts);
         sort($actualProducts);
-        $this->assertEquals(array_values($expectedProducts), array_values($actualProducts));
+        $this->assertEquals($expectedProducts, $actualProducts);
     }
 
     /**
      * @return array
      */
-    public function categoryConditionDataProvider()
+    public function categoryConditionDataProvider(): array
     {
         return [
             'Product category does not contain 5 AND Product SKU contains "simple_product"' => [
-                'products' => [
-                    'simple_product_1' => [3, 4],
-                    'simple_product_2' => [3, 4, 5],
-                    'simple_product_3' => [3, 4, 5],
-                ],
-                'conditions' => [
-                    '1' => [
-                        'type' => 'Magento\TargetRule\Model\Actions\Condition\Combine',
-                        'aggregator' => 'all',
-                        'value' => '1',
-                    ],
-                    '1--1' => [
-                        'type' => 'Magento\TargetRule\Model\Actions\Condition\Product\Attributes',
-                        'attribute' => 'category_ids',
-                        'operator' => '!{}',
-                        'value' => 5,
-                        'is_value_processed' => false,
-                        'value_type' => 'constant',
-                    ],
-                    '1--2' => [
-                        'type' => 'Magento\TargetRule\Model\Actions\Condition\Product\Attributes',
-                        'attribute' => 'sku',
-                        'operator' => '{}',
-                        'value' => 'simple_product',
-                        'is_value_processed' => false,
-                        'value_type' => 'constant',
-                    ],
-                ],
+                'operator' => '!{}',
+                'categoryId' => 44,
                 'expectedProducts' => [
-                    'simple_product_1'
-                ]
+                    'simple1',
+                    'simple3',
+                ],
             ],
             'Product category contains 5 AND Product SKU contains "simple_product"' => [
-                'products' => [
-                    'simple_product_1' => [3, 4],
-                    'simple_product_2' => [3, 4, 5],
-                    'simple_product_3' => [3, 4, 5],
-                ],
-                'conditions' => [
-                    '1' => [
-                        'type' => 'Magento\TargetRule\Model\Actions\Condition\Combine',
-                        'aggregator' => 'all',
-                        'value' => '1',
-                    ],
-                    '1--1' => [
-                        'type' => 'Magento\TargetRule\Model\Actions\Condition\Product\Attributes',
-                        'attribute' => 'category_ids',
-                        'operator' => '{}',
-                        'value' => 5,
-                        'is_value_processed' => false,
-                        'value_type' => 'constant',
-                    ],
-                    '1--2' => [
-                        'type' => 'Magento\TargetRule\Model\Actions\Condition\Product\Attributes',
-                        'attribute' => 'sku',
-                        'operator' => '{}',
-                        'value' => 'simple_product',
-                        'is_value_processed' => false,
-                        'value_type' => 'constant',
-                    ],
-                ],
+                'operator' => '{}',
+                'categoryId' => 44,
                 'expectedProducts' => [
-                    'simple_product_2',
-                    'simple_product_3',
-                ]
+                    'simple2',
+                    'simple4',
+                ],
             ],
         ];
     }
