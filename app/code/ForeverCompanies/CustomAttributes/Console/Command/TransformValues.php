@@ -127,7 +127,7 @@ class TransformValues extends AbstractCommand
          * from catalog_product_entity_int where attribute_id = ? ;
          */
         try {
-            $columns = ['value_id', 'store_id', 'row_id', 'value', 'attribute_id'];
+            $columns = ['store_id', 'row_id', 'value', 'attribute_id'];
             $attributeId = $this->eavConfig->getAttribute(Product::ENTITY, $name)->getAttributeId();
             $select = $this->moduleDataSetup->getConnection()
                 ->select()
