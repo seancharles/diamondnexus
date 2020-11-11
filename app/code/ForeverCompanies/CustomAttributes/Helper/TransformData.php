@@ -552,6 +552,10 @@ class TransformData extends AbstractHelper
         if ($product == null) {
             return;
         }
+        if ($product->getName() == null) {
+            $this->_logger->error('Product ID = ' . $entityId . ' without name');
+            return;
+        }
         if ($product->getTypeId() == Configurable::TYPE_CODE) {
             if (strpos($product->getName(), 'Chelsa') === false) {
                 $this->convertConfigToBundle($product);
