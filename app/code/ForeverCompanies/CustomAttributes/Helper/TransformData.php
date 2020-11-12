@@ -679,6 +679,7 @@ class TransformData extends AbstractHelper
      */
     protected function addVideoToProduct($videoUrl, $product, $videoProvider = '')
     {
+        /** For all of that videos we will need create thumbs */
         $updiacam = strpos($videoUrl, 'up.diacam360');
         if ($updiacam) {
             throw new StateException(__('Cannot save video from up.diacam360 for product'));
@@ -689,6 +690,10 @@ class TransformData extends AbstractHelper
         }
         $stullercloud = strpos($videoUrl, 'assets.stullercloud');
         if ($stullercloud) {
+            /*$videoData = $this->getFileFromVimeoVideo($videoUrl, 'assets.stullercloud');
+            $media = $this->externalVideoEntryConverter->convertTo($product, $videoData);
+            $this->galleryManagement->create($product->getSku(), $media);
+            return;*/
             throw new StateException(__('Cannot save video from assets.stullercloud for product'));
         }
         $v360 = strpos($videoUrl, 'v360.in');
@@ -815,6 +820,29 @@ class TransformData extends AbstractHelper
             $imageType = substr(strrchr($fileUrl, "."), 1); //find the image extension
             $thumb = $this->curl->execute($fileUrl);
         }
+        /*if ($provider == 'assets.stullercloud') {
+            $id = substr(strrchr($url, "/"), 2);
+            $id = str_replace('.mp4', '', $id);
+            $contentFromVimeo = $this->curl->execute($url);
+            $generalMediaEntryData = [
+                ProductAttributeMediaGalleryEntryInterface::LABEL => 'Migrated video',
+                ProductAttributeMediaGalleryEntryInterface::CONTENT => '',
+                ProductAttributeMediaGalleryEntryInterface::DISABLED => false,
+                ProductAttributeMediaGalleryEntryInterface::FILE => ''
+            ];
+            $videoData = array_merge(
+                $generalMediaEntryData,
+                [
+                    VideoContentInterface::TITLE => 'Migrated Video',
+                    VideoContentInterface::DESCRIPTION => '',
+                    VideoContentInterface::PROVIDER => $provider,
+                    VideoContentInterface::METADATA => null,
+                    VideoContentInterface::URL => $url,
+                    VideoContentInterface::TYPE => ExternalVideoEntryConverter::MEDIA_TYPE_CODE,
+                ]
+            );
+            return $videoData;
+        }*/
         if ($provider == 'youtube') {
             $id = $url;
             $url = 'https://www.youtube.com/watch?v=' . $id;

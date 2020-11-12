@@ -42,7 +42,7 @@ class UpdateProductOptionAttributes implements ObserverInterface
         $errors = [];
         /** @var Product $product */
         $product = $observer->getData('data_object');
-        if ($product->getId() == null) {
+        if ($product->getId() == null || $product->getData('is_transformed') != 1) {
             return;
         }
         $oldProductOptions = $this->productRepository->getById($product->getId())->getOptions();
@@ -53,6 +53,9 @@ class UpdateProductOptionAttributes implements ObserverInterface
                 }
             }
             $attribute = $option->getData('customization_type');
+            if ($attribute == null) {
+                continue;
+            }
             $source = $this->eavConfig->getAttribute(Product::ENTITY, $attribute)->getSource();
             $value = [];
             $optionValues = $option->getValues() ?? $option->getData('values');
