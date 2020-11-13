@@ -107,6 +107,7 @@ class ProductType extends AbstractHelper
             $attributeSetName = $this->attrSetRepository->get($product->getAttributeSetId())->getAttributeSetName();
             $productType = $this->attributeSetToProductType($attributeSetName);
             $product->setCustomAttribute('product_type', $productType);
+            $product->setData('product_type', $productType);
             if ($product->getCustomAttribute('product_type') == 'Stone') {
                 $product->setCustomAttribute('allow_in_bundles', 1);
             }
