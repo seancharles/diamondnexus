@@ -571,7 +571,7 @@ class TransformData extends AbstractHelper
         }
         $product->setData('is_salable', true);
         $product->setData('on_sale', true);
-        $product->setData('is_transformed', true);
+        $product->setData('is_transformed', 1);
         /** Finally! */
         try {
             $this->productRepository->save($product);
@@ -695,6 +695,10 @@ class TransformData extends AbstractHelper
             $this->galleryManagement->create($product->getSku(), $media);
             return;*/
             throw new StateException(__('Cannot save video from assets.stullercloud for product'));
+        }
+        $storage = strpos($videoUrl, 'storage.solofordiamonds');
+        if ($storage) {
+            throw new StateException(__('Cannot save video from storage.solofordiamonds for product'));
         }
         $v360 = strpos($videoUrl, 'v360.in');
         if ($v360) {
