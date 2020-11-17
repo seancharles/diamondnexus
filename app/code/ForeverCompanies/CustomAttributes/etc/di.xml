@@ -14,8 +14,13 @@
                 </item>
             </argument>
             <argument name="commands" xsi:type="array">
-                <item name="TransformMedia" xsi:type="object">
-                    ForeverCompanies\CustomAttributes\Console\Command\DeleteOIdAttributes
+                <item name="DeleteOldAttributes" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\DeleteOldAttributes
+                </item>
+            </argument>
+            <argument name="commands" xsi:type="array">
+                <item name="DeleteByTags" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\DeleteByTags
                 </item>
             </argument>
             <argument name="commands" xsi:type="array">
@@ -91,6 +96,11 @@
         <plugin name="forevercompanies_customattributes_bundlecustom_option"
                 type="ForeverCompanies\CustomAttributes\Plugin\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePanel"
                 sortOrder="1"/>
+    </type>
+    <type name="Magento\Framework\Model\ActionValidator\RemoveAction">
+        <plugin name="forevercompanies_customattributes_framework_remove_is_allowed"
+                type="ForeverCompanies\CustomAttributes\Plugin\Framework\Model\ActionValidator\RemoveAction"
+                sortOrder="10"/>
     </type>
     <preference for="Magento\Bundle\Model\Product\OptionList"
                 type="ForeverCompanies\CustomAttributes\Model\Bundle\Product\OptionList"/>
