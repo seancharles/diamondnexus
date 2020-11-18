@@ -572,6 +572,12 @@ class TransformData extends AbstractHelper
         $product->setData('is_salable', true);
         $product->setData('on_sale', true);
         $product->setData('is_transformed', 1);
+        if ($product->getData('certified_stone') !== null) {
+            $certifiedSrc = $this->eav->getAttribute(Product::ENTITY, 'certified_stone')->getSource();
+            $optionText = $product->getData('certified_stone') ? 'Classic Stone' : 'Certified Stone';
+            $value = (int)$certifiedSrc->getOptionId($optionText);
+            $product->setData('certified_stone', $value);
+        }
         /** Finally! */
         try {
             $this->productRepository->save($product);
