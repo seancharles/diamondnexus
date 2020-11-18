@@ -271,19 +271,15 @@ class Mapping extends AbstractHelper
             }
         }
         foreach ($options as $attributeId => $option) {
-            try {
-                foreach ($option as $attribute => $index) {
-                    $customizableOption = [
-                        'title' => $index,
-                        'price' => 0,
-                        'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
-                        'sku' => $this->getSkuForOption($attributeId, $index),
-                        'product_sku' => $product->getSku(),
-                    ];
-                    $customizableOptions[$attributeId][] = $customizableOption;
-                }
-            } catch (NoSuchEntityException $e) {
-                $this->_logger->error($e->getMessage());
+            foreach ($option as $attribute => $index) {
+                $customizableOption = [
+                    'title' => $index,
+                    'price' => 0,
+                    'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
+                    'sku' => $this->getSkuForOption($attributeId, $index),
+                    'product_sku' => $product->getSku(),
+                ];
+                $customizableOptions[$attributeId][] = $customizableOption;
             }
         }
         return ['simple' => $simpleOptions, 'options' => $customizableOptions];
@@ -296,6 +292,7 @@ class Mapping extends AbstractHelper
 
     protected function prepareProductToBundle(Product $product, array $productOptions, Configurable $configurable)
     {
+        $classicStone = false;
         $product->setTypeId(Type::TYPE_BUNDLE);
         $bundleOptions = [];
         $options = [];
@@ -314,9 +311,6 @@ class Mapping extends AbstractHelper
                     }
                 } else {
                     /** @var ProductExtension $extensionAttributes */
-
-                    /** TODO when I can get attribute 'Total Carat Weight' */
-
                     $extensionAttributes = $product->getExtensionAttributes();
                     $configurableProductLinks = $extensionAttributes->getConfigurableProductLinks();
                     $basePrice = $product->getPriceInfo()->getPrice('base_price')->getValue();
@@ -331,6 +325,9 @@ class Mapping extends AbstractHelper
         foreach ($configurable->getConfigurableOptions($product) as $attributeId => $configurableOption) {
             foreach ($configurableOption as $dataOption) {
                 $options[$attributeId][$dataOption['value_index']] = $dataOption['option_title'];
+                if (substr($dataOption['sku'], 23, 1) == '0') {
+                    $classicStone = true;
+                }
             }
         }
         foreach ($options as $attributeId => $option) {
@@ -338,6 +335,7 @@ class Mapping extends AbstractHelper
                 /** @var Attribute $attribute */
                 $attribute = $this->productAttributeRepository->get($attributeId);
                 if ($attribute->getData(AttributeInterface::FRONTEND_LABEL) == 'Center Stone Size') {
+                    $product->setData('certified_stone', $classicStone);
                     continue;
                 }
                 foreach ($option as $index) {
@@ -416,14 +414,6 @@ class Mapping extends AbstractHelper
                 }
             }
         }
-        /*if (isset($data['links'])) {
-
-            foreach ($data['links'] as &$link) {
-                $link->setData('selection_price_value', $link->getPrice() - $price);
-            }
-        } else {
-            $product->setPrice($price);
-        }*/
         return $data;
     }
 
@@ -431,7 +421,7 @@ class Mapping extends AbstractHelper
      * @param Configurable\Attribute $option
      * @return array
      */
-    private function getOption(\Magento\ConfigurableProduct\Model\Product\Type\Configurable\Attribute $option)
+    private function getOption(Configurable\Attribute $option)
     {
         return [
             'title' => $option['label'],

@@ -96,8 +96,8 @@ class Converter extends AbstractHelper
         if (count($optionsData['options']) > 0) {
             foreach ($optionsData['simple'] as $optionData) {
                 /** @var Option $option */
-                $option = $this->productCustomOptionInterfaceFactory->create();
-                $option->setData(
+                $newOption = $this->productCustomOptionInterfaceFactory->create();
+                $newOption->setData(
                     [
                         'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
                         'title' => $optionData['title'],
@@ -107,7 +107,7 @@ class Converter extends AbstractHelper
                         'product_sku' => $product->getSku(),
                     ]
                 );
-                $options[] = $option;
+                $options[] = $newOption;
             }
         }
         $product->setOptions($options);
