@@ -600,7 +600,7 @@ class TransformData extends AbstractHelper
             $product = $this->productRepository->getById($productId, true, 0);
             $this->productRepository->delete($product);
         } catch (StateException $e) {
-            throw new StateException(__('Cannot get product ID = ' . $productId));
+            throw new StateException(__('Cannot get product ID = ' . $productId . ': ' . $e->getMessage()));
         } catch (NoSuchEntityException $e) {
             throw new NoSuchEntityException(__('Cannot delete product ID = ' . $productId));
         }
