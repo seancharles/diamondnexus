@@ -526,14 +526,7 @@ class TransformData extends AbstractHelper
                     $productLinks = $bundleData->getProductLinks();
                     if (count($productLinks) > 0) {
                         $matchingBand = true;
-                        if ($title == 'Center Stone Size' && isset($classicStone)) {
-                            foreach ($productLinks as $link) {
-                                if (substr($link['sku'], 23, 1) == '1') {
-                                    $classicStone = false;
-                                    break;
-                                }
-                            }
-                        }
+                        $classicStone = $this->checkClassicStone($title, $productLinks);
                     }
                     $bundleData['bundle_customization_type'] = BundleCustomizationType::OPTIONS[
                         BundleCustomizationType::TITLE_MAPPING[$title]
@@ -683,6 +676,23 @@ class TransformData extends AbstractHelper
     }
 
     /**
+     * @param $title
+     * @param $links
+     * @return bool
+     */
+    protected function checkClassicStone($title, $links)
+    {
+        if ($title == 'Center Stone Size' && isset($classicStone)) {
+            foreach ($links as $link) {
+                if (substr($link['sku'], 23, 1) == '1') {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
      * @param string $table
      * @param string $attr
      * @param string $where
@@ -750,7 +760,8 @@ class TransformData extends AbstractHelper
         }
         if ($videoProvider == 'youtube') {
             $videoProvider = 'youtube';
-        } else {
+        }
+        if ($videoProvider == 'vimeo') {
             $videoProvider = str_replace('https://', '', $videoUrl);
             $videoProvider = str_replace('http://', '', $videoProvider);
             $dotPosition = strpos($videoProvider, ".") ?? false;
@@ -759,11 +770,15 @@ class TransformData extends AbstractHelper
             }
             $videoProvider = substr($videoProvider, 0, $dotPosition);
         }
-        $videoData = $this->getFileFromVimeoVideo($videoUrl, $videoProvider);
-        // Convert video data array to video entry
+        if ($videoProvider == 'vimeo' || $videoProvider == 'youtube') {
+            $videoData = $this->getFileFromVimeoVideo($videoUrl, $videoProvider);
+            // Convert video data array to video entry
 
-        $media = $this->externalVideoEntryConverter->convertTo($product, $videoData);
-        $this->galleryManagement->create($product->getSku(), $media);
+            $media = $this->externalVideoEntryConverter->convertTo($product, $videoData);
+            $this->galleryManagement->create($product->getSku(), $media);
+        } else {
+            $this->_logger->error('Can\'t save video for ' . $product->getId() . ' from ' . $videoProvider);
+        }
     }
 
     /**

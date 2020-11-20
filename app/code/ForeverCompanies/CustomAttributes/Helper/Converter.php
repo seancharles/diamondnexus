@@ -13,6 +13,7 @@ use Magento\Catalog\Api\Data\ProductExtension;
 use Magento\Catalog\Api\Data\TierPriceInterface;
 use Magento\Catalog\Model\Product\Option;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable\Attribute;
+use Magento\ConfigurableProduct\Model\Product\Type\Configurable\OptionValue;
 use Magento\Eav\Model\Config;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
@@ -146,7 +147,7 @@ class Converter extends AbstractHelper
         }
         $product->setOptions($options);
         $bOptions = [];
-        if (isset($optionsData['links'])) {
+        if (isset($optionsData['links']) && count($optionsData['links'])) {
             $bOptions[] = $this->prepareBundleOpt('Center Stone Size', '1', $optionsData['links']);
         }
         $matchingBands = $this->matchingBand->getMatchingBands((int)$product->getId());
@@ -158,6 +159,39 @@ class Converter extends AbstractHelper
             $extensionAttributes->setBundleProductOptions($bOptions);
             $product->setExtensionAttributes($extensionAttributes);
         }
+    }
+
+    /**
+     * @param array $values
+     * @param $source
+     * @param string $sku
+     * @return Option
+     */
+    public function createTotalCaratWeight(array $values, $source, string $sku)
+    {
+        $optionValues = [];
+        /** @var OptionValue $value */
+        foreach ($values as $value) {
+            $optionValues[] = [
+                'title' => $source->getOptionText($value->getValueIndex()),
+                'price'=>0,
+                'price_type'=>"fixed",
+                'sku' => ''
+            ];
+        }
+        /** @var Option $option */
+        $option = $this->productCustomOptionInterfaceFactory->create();
+        $option->setData(
+            [
+                'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
+                'title' => 'Total Carat Weight',
+                'type' => ProductCustomOptionInterface::OPTION_TYPE_DROP_DOWN,
+                'is_require' => 0,
+                'values' => $optionValues,
+                'product_sku' => $sku,
+            ]
+        );
+        return $option;
     }
 
     /**
