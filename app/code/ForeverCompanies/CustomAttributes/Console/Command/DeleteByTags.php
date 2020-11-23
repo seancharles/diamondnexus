@@ -35,7 +35,6 @@ class DeleteByTags extends AbstractCommand
         foreach ($products as $product) {
                 $output->writeln("Deleting " . $product->getId());
                 $this->helper->deleteProduct((int)$product->getId());
-
         }
         $output->writeln('Delete is complete! Please execute bin/magento indexer:reindex');
     }
