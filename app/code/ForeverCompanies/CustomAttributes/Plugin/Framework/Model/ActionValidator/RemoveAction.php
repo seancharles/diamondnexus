@@ -2,10 +2,10 @@
 
 namespace ForeverCompanies\CustomAttributes\Plugin\Framework\Model\ActionValidator;
 
+use Magento\Catalog\Model\Product;
+
 class RemoveAction
 {
-
-
     /**
      * @param \Magento\Framework\Model\ActionValidator\RemoveAction $subject
      * @param $model
@@ -18,7 +18,7 @@ class RemoveAction
         bool $isAllowed,
         $model
     ) {
-        if ($model instanceof \Magento\Catalog\Model\Product && $model->getData('dev_tag') !== null) {
+        if ($model instanceof Product && $model->getData('dev_tag') !== null) {
             return true;
         }
         return $isAllowed;

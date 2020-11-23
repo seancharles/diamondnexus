@@ -176,6 +176,11 @@ class Mapping extends AbstractHelper
     protected $productFunctionalHelper;
 
     /**
+     * @var Converter
+     */
+    protected $converterHelper;
+
+    /**
      * @var Logger
      */
     protected $customLogger;
@@ -195,6 +200,7 @@ class Mapping extends AbstractHelper
         ProductRepositoryInterface $productRepository,
         Link $linkHelper,
         ProductFunctional $productFunctionalHelper,
+        Converter $converterHelper,
         Logger $logger
     ) {
         parent::__construct($context);
@@ -202,6 +208,7 @@ class Mapping extends AbstractHelper
         $this->productRepository = $productRepository;
         $this->linkHelper = $linkHelper;
         $this->productFunctionalHelper = $productFunctionalHelper;
+        $this->converterHelper = $converterHelper;
         $this->customLogger = $logger;
     }
 
@@ -310,6 +317,14 @@ class Mapping extends AbstractHelper
                         $product->setData('certified_stone', null);
                     }
                 } else {
+                    if ($productOption->getLabel() == 'Total Carat Weight') {
+                        $values = $productOption->getValues();
+                        $source = $productAttribute->getSource();
+                        $tcw = $this->converterHelper->createTotalCaratWeight($values, $source, $product->getSku());
+                        $options = $product->getOptions();
+                        $options[] = $tcw;
+                        $product->setOptions($options);
+                    }
                     /** @var ProductExtension $extensionAttributes */
                     $extensionAttributes = $product->getExtensionAttributes();
                     $configurableProductLinks = $extensionAttributes->getConfigurableProductLinks();
