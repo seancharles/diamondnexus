@@ -20,19 +20,12 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Cloning remote GIT repo
-      - echo clone
       - pwd
       - ls
-      - pip install dirsync
-      - cp -p -r --backup=numbered `find ~/ -name dirsync -a -type d` ./
-      - ls 
-      - mkdir ../temp
-      - mv buildspec.yml devspec.yml script.sh ../temp
-      - zip -qr source.zip ./ -x '.git/*'
-      - aws s3 cp source.zip s3://mag2-prod-codebuild/source.zip
-      - aws lambda update-function-code --function-name $FUNCTION_NAME --s3-bucket mag2-prod-codebuild --s3-key source.zip
+      - aws s3 rm s3://mag2-prod-codebuild/magento --recursive
       - sleep 3
-      #- aws sns publish {} topic
+      - aws s3 sync . s3://mag2-prod-codebuild/magento
+      - sleep 3
   post_build:
     commands:
       - echo Build completed on `date`
