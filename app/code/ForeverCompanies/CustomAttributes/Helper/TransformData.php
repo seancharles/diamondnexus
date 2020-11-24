@@ -386,12 +386,12 @@ class TransformData extends AbstractHelper
     }
 
     /**
-     * @param int $orderId
+     * @param int $productId
      */
-    public function transformProductSelect(int $orderId)
+    public function transformProductSelect(int $productId)
     {
         try {
-            $entity = $this->productRepository->getById($orderId);
+            $entity = $this->productRepository->getById($productId);
             /** @var Option $option */
             $entityOptions = $entity->getOptions();
             foreach ($entityOptions as $option) {
@@ -399,6 +399,10 @@ class TransformData extends AbstractHelper
                 $entity->unlockAttribute($attributeCode);
                 $data = [];
                 $eav = $this->eav->getAttribute(Product::ENTITY, $attributeCode);
+                if ($option->getValues() == null) {
+                    $this->loggerByOptions->error('Can\'t find options for Product ID = ' . $productId);
+                    continue;
+                }
                 foreach ($option->getValues() as $value) {
                     $data[] = $this->getDataForMultiselectable($value, $eav->getOptions());
                 }
@@ -497,6 +501,7 @@ class TransformData extends AbstractHelper
                 return;
             }
             if ($options !== null) {
+                $certifiedStone = true;
                 foreach ($options as &$option) {
                     $customizationType = $this->setCustomizationTypeToOption($option->getTitle());
                     if ($customizationType == -1) {
@@ -504,18 +509,49 @@ class TransformData extends AbstractHelper
                         $customizationType = '';
                     }
                     $option['customization_type'] = $customizationType;
+                    if ($option['title'] == 'Certified Stone') {
+                        $certifiedStone = false;
+                    }
                 }
                 $product->setOptions($options);
             }
             if ($isBundle == Type::TYPE_CODE) {
                 $bundleOptions = $product->getExtensionAttributes()->getBundleProductOptions();
+                if (isset($certifiedStone) && $certifiedStone === true) {
+                    $classicStone = true;
+                }
+                $matchingBand = false;
                 foreach ($bundleOptions as &$bundleData) {
                     $title = $bundleData->getTitle();
+                    $productLinks = $bundleData->getProductLinks();
+                    if (count($productLinks) > 0) {
+                        $matchingBand = true;
+                        if ($title == 'Center Stone Size' && isset($classicStone)) {
+                            foreach ($productLinks as $link) {
+                                if (substr($link['sku'], 23, 1) == '1') {
+                                    $classicStone = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                     $bundleData['bundle_customization_type'] = BundleCustomizationType::OPTIONS[
                         BundleCustomizationType::TITLE_MAPPING[$title]
                     ];
                 }
                 $product->setData('bundle_options_data', $bundleOptions);
+                if (isset($classicStone)) {
+                    $src = $this->eav->getAttribute(Product::ENTITY, 'certified_stone')->getSource();
+                    $optionText = $classicStone ? 'Classic Stone' : 'Certified Stone';
+                    $value = (int)$src->getOptionId($optionText);
+                    $product->setData('certified_stone', $value);
+                }
+                $matchingSrc = $this->eav->getAttribute(Product::ENTITY, 'matching_band')->getSource();
+                if ($matchingBand) {
+                    $product->setData('matching_band', (int)$matchingSrc->getOptionId('Yes'));
+                } else {
+                    $product->setData('matching_band', (int)$matchingSrc->getOptionId('None'));
+                }
             }
 
             if (count($missingOptions) > 0) {
@@ -536,6 +572,8 @@ class TransformData extends AbstractHelper
             $this->_logger->error('Error in transform options for ID = ' . $entityId . ': ' . $e->getMessage());
         } catch (StateException $e) {
             $this->_logger->error('Error in transform options for ID = ' . $entityId . ': ' . $e->getMessage());
+        } catch (LocalizedException $e) {
+            $this->loggerByOptions->error('Can\'t transform option for certificated product ID = ' . $entityId);
         }
     }
 
@@ -572,6 +610,12 @@ class TransformData extends AbstractHelper
         $product->setData('is_salable', true);
         $product->setData('on_sale', true);
         $product->setData('is_transformed', 1);
+        if ($product->getData('certified_stone') !== null) {
+            $certifiedSrc = $this->eav->getAttribute(Product::ENTITY, 'certified_stone')->getSource();
+            $optionText = $product->getData('certified_stone') ? 'Classic Stone' : 'Certified Stone';
+            $value = (int)$certifiedSrc->getOptionId($optionText);
+            $product->setData('certified_stone', $value);
+        }
         /** Finally! */
         try {
             $this->productRepository->save($product);
@@ -600,7 +644,7 @@ class TransformData extends AbstractHelper
             $product = $this->productRepository->getById($productId, true, 0);
             $this->productRepository->delete($product);
         } catch (StateException $e) {
-            throw new StateException(__('Cannot get product ID = ' . $productId));
+            throw new StateException(__('Cannot get product ID = ' . $productId . ': ' . $e->getMessage()));
         } catch (NoSuchEntityException $e) {
             throw new NoSuchEntityException(__('Cannot delete product ID = ' . $productId));
         }
