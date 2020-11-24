@@ -25,8 +25,8 @@ for issue in issues.json()["items"]:
 
 main_branch=origin/develop
 
-wordpress_extra_branches=(
-    $(list_issues ForeverCompanies/wordpress | sed 's|^|origin/pr/|;')
+magento2_extra_branches=(
+    $(list_issues ForeverCompanies/magento2 | sed 's|^|origin/pr/|;')
 )
 
 expected_life=360
