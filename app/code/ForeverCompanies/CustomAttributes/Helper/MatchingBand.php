@@ -70,4 +70,23 @@ class MatchingBand extends AbstractHelper
             $this->_logger->critical('Can\'t get matching bands for product ID = ' . $entityId);
         }
     }
+
+    /**
+     * @param int $entityId
+     * @return array
+     */
+    public function getEnhancers(int $entityId)
+    {
+        try {
+            $attributeId = $this->eavConfig->getAttribute(Product::ENTITY, 'sku')->getAttributeId();
+            $select = $this->crossSellResource->getCrossSellSelect();
+            $select->where('main_table.parent_id = ?', $entityId)
+                ->where('entity_varchar.attribute_id = ?', $attributeId)
+                ->where('entity_varchar.value = ?', 'LRENOR0115X')
+                ->columns(['main_table.product_id', 'entity_varchar.value', 'entity.sku']);
+            return $select->getConnection()->fetchAll($select);
+        } catch (LocalizedException $e) {
+            $this->_logger->critical('Can\'t get enhancers for product ID = ' . $entityId);
+        }
+    }
 }

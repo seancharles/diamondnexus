@@ -155,6 +155,13 @@ class Converter extends AbstractHelper
             $optionsData['matching_bands'] = $this->prepareMatchingBandLinks($matchingBands);
             $bOptions[] = $this->prepareBundleOpt('Matching Bands', '0', $optionsData['matching_bands']);
         }
+        if ($product->getSku() == 'LRENSL0091X') {
+            $enhancers = $this->matchingBand->getEnhancers((int)$product->getId());
+            if (count($matchingBands) > 0) {
+                $optionsData['enhancers'] = $this->prepareMatchingBandLinks($enhancers);
+                $bOptions[] = $this->prepareBundleOpt('Enhancers', '0', $optionsData['enhancers']);
+            }
+        }
         if (count($bOptions) > 0) {
             $extensionAttributes->setBundleProductOptions($bOptions);
             $product->setExtensionAttributes($extensionAttributes);

@@ -258,7 +258,8 @@ class TransformData extends AbstractHelper
         Selection $bundleSelection,
         LoggerByOptions $loggerByOptions,
         LoggerBySku $loggerBySku
-    ) {
+    )
+    {
         parent::__construct($context);
         $this->eav = $config;
         $this->productCollectionFactory = $collectionFactory;
@@ -528,9 +529,7 @@ class TransformData extends AbstractHelper
                         $matchingBand = true;
                         $classicStone = $this->checkClassicStone($title, $productLinks);
                     }
-                    $bundleData['bundle_customization_type'] = BundleCustomizationType::OPTIONS[
-                        BundleCustomizationType::TITLE_MAPPING[$title]
-                    ];
+                    $bundleData['bundle_customization_type'] = BundleCustomizationType::OPTIONS[BundleCustomizationType::TITLE_MAPPING[$title]];
                 }
                 $product->setData('bundle_options_data', $bundleOptions);
                 if (isset($classicStone)) {
@@ -714,6 +713,7 @@ class TransformData extends AbstractHelper
                     ['value']
                 )->where('eav_table.value ' . $where)
                 ->where('sku is not null');
+            $productCollection->addAttributeToFilter('status', Status::STATUS_ENABLED);
             return $productCollection;
         } catch (LocalizedException $e) {
             $this->_logger->critical($e->getMessage());
@@ -815,7 +815,7 @@ class TransformData extends AbstractHelper
      */
     protected function convertConfigToBundle(Product $product)
     {
-        $this->transformIncludedProductsFirst($product->getId());
+        $this->transformIncludedProductsFirst($product->getId(), $product->getSku());
         $product->setData('price_type', TierPriceInterface::PRICE_TYPE_FIXED);
         $this->transformOptionsToBundle($product);
         $this->editProductsFromConfigurable($product);
@@ -856,9 +856,7 @@ class TransformData extends AbstractHelper
                 if (!array_key_exists(trim($title), CustomizationType::TITLE_MAPPING)) {
                     return -1;
                 }
-                return CustomizationType::OPTIONS[
-                    CustomizationType::TITLE_MAPPING[trim($title)]
-                ];
+                return CustomizationType::OPTIONS[CustomizationType::TITLE_MAPPING[trim($title)]];
         }
     }
 
@@ -1037,24 +1035,35 @@ class TransformData extends AbstractHelper
 
     /**
      * @param $entityId
+     * @param $sku
      */
-    private function transformIncludedProductsFirst($entityId)
+    private function transformIncludedProductsFirst($entityId, $sku)
     {
-        $products = $this->matchingBand->getMatchingBands((int)$entityId);
-        if (count($products) > 0) {
-            foreach ($products as $product) {
-                try {
+        try {
+            $products = $this->matchingBand->getMatchingBands((int)$entityId);
+            if (count($products) > 0) {
+                foreach ($products as $product) {
                     $this->transformProduct((int)$product['product_id']);
-                } catch (InputException $e) {
-                    $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
-                } catch (NoSuchEntityException $e) {
-                    $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
-                } catch (StateException $e) {
-                    $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
-                } catch (LocalizedException $e) {
-                    $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
+
                 }
             }
+            if ($sku == 'LRENSL0091X') {
+                $products = $this->matchingBand->getEnhancers((int)$entityId);
+                if (count($products) > 0) {
+                    foreach ($products as $product) {
+                        $this->transformProduct((int)$product['product_id']);
+
+                    }
+                }
+            }
+        } catch (InputException $e) {
+            $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
+        } catch (StateException $e) {
+            $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
+        } catch (LocalizedException $e) {
+            $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
         }
     }
 }
