@@ -85,6 +85,46 @@ class Converter extends AbstractHelper
     }
 
     /**
+     * @param array $data
+     * @param string $attribute
+     * @return array
+     */
+    public function getValues(array $data, string $attribute)
+    {
+        $values = [];
+        try {
+            $source = $this->eavConfig->getAttribute(Product::ENTITY, $attribute)->getSource();
+        foreach ($data as $optionId) {
+            $values[] = $source->getOptionText($optionId);
+        }
+        } catch (LocalizedException $e) {
+            $this->_logger->error('Can\'t get source and attributes for ' . $attribute);
+            return [];
+        }
+        return $values;
+    }
+
+    /**
+     * @param array $data
+     * @param string $attribute
+     * @return array
+     */
+    public function getOptions(array $data, string $attribute)
+    {
+        $options = [];
+        try {
+            $source = $this->eavConfig->getAttribute(Product::ENTITY, $attribute)->getSource();
+            foreach ($data as $text) {
+                $options[] = $source->getOptionId($text);
+            }
+        } catch (LocalizedException $e) {
+            $this->_logger->error('Can\'t get source and attributes for ' . $attribute);
+            return [];
+        }
+        return $options;
+    }
+
+    /**
      * @param Product $product
      * @param $optionsData
      */
@@ -157,7 +197,7 @@ class Converter extends AbstractHelper
         }
         if ($product->getSku() == 'LRENSL0091X') {
             $enhancers = $this->matchingBand->getEnhancers((int)$product->getId());
-            if (count($matchingBands) > 0) {
+            if (count($enhancers) > 0) {
                 $optionsData['enhancers'] = $this->prepareMatchingBandLinks($enhancers);
                 $bOptions[] = $this->prepareBundleOpt('Enhancers', '0', $optionsData['enhancers']);
             }

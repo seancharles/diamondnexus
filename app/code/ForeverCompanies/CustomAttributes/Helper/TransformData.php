@@ -501,10 +501,16 @@ class TransformData extends AbstractHelper
             if ($options == null && $isBundle != Type::TYPE_CODE) {
                 return;
             }
+            $oldAttributes = ['metal_type' => 'filter_metal', 'shape' => 'filter_shape', 'color' => 'filter_color'];
             if ($options !== null) {
                 $certifiedStone = true;
                 foreach ($options as &$option) {
                     $customizationType = $this->setCustomizationTypeToOption($option->getTitle());
+                    foreach ($oldAttributes as $attribute => $bool) {
+                        if ($customizationType == $attribute) {
+                            unset($oldAttributes[$attribute]);
+                        }
+                    }
                     if ($customizationType == -1) {
                         $missingOptions[] = $option->getTitle();
                         $customizationType = '';
@@ -515,6 +521,27 @@ class TransformData extends AbstractHelper
                     }
                 }
                 $product->setOptions($options);
+            }
+            foreach ($oldAttributes as $attribute => $filter) {
+                $data = $product->getData($filter);
+                if ($data == null) {
+                    continue;
+                }
+                $newValues = $this->converter->getValues(explode(',', $data), $filter);
+                if (count($newValues) > 0) {
+                    $newOptionsId = $this->converter->getOptions($newValues, $attribute);
+                    $newValue = implode(',', $newOptionsId);
+                    if ($newValue == $product->getData($attribute)) {
+                        continue;
+                    }
+                    if ($product->getData($attribute) == '' || $product->getData($attribute) == null) {
+                        $allOptions = $newValue;
+                    } else {
+                        $allOptions = $product->getData($attribute) . ',' . $newValue;
+                    }
+                    $product->setData($attribute, $allOptions);
+                }
+
             }
             if ($isBundle == Type::TYPE_CODE) {
                 $bundleOptions = $product->getExtensionAttributes()->getBundleProductOptions();

@@ -78,11 +78,10 @@ class MatchingBand extends AbstractHelper
     public function getEnhancers(int $entityId)
     {
         try {
-            $attributeId = $this->eavConfig->getAttribute(Product::ENTITY, 'sku')->getAttributeId();
+            $attributeId = $this->eavConfig->getAttribute(Product::ENTITY, 'name')->getAttributeId();
             $select = $this->crossSellResource->getCrossSellSelect();
             $select->where('main_table.parent_id = ?', $entityId)
                 ->where('entity_varchar.attribute_id = ?', $attributeId)
-                ->where('entity_varchar.value = ?', 'LRENOR0115X')
                 ->columns(['main_table.product_id', 'entity_varchar.value', 'entity.sku']);
             return $select->getConnection()->fetchAll($select);
         } catch (LocalizedException $e) {

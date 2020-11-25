@@ -181,6 +181,11 @@ class Mapping extends AbstractHelper
     protected $converterHelper;
 
     /**
+     * @var MatchingBand
+     */
+    protected $matchingBandHelper;
+
+    /**
      * @var Logger
      */
     protected $customLogger;
@@ -192,6 +197,8 @@ class Mapping extends AbstractHelper
      * @param ProductRepositoryInterface $productRepository
      * @param Link $linkHelper
      * @param ProductFunctional $productFunctionalHelper
+     * @param Converter $converterHelper
+     * @param MatchingBand $matchingBandHelper
      * @param Logger $logger
      */
     public function __construct(
@@ -201,6 +208,7 @@ class Mapping extends AbstractHelper
         Link $linkHelper,
         ProductFunctional $productFunctionalHelper,
         Converter $converterHelper,
+        MatchingBand $matchingBandHelper,
         Logger $logger
     ) {
         parent::__construct($context);
@@ -209,6 +217,7 @@ class Mapping extends AbstractHelper
         $this->linkHelper = $linkHelper;
         $this->productFunctionalHelper = $productFunctionalHelper;
         $this->converterHelper = $converterHelper;
+        $this->matchingBandHelper = $matchingBandHelper;
         $this->customLogger = $logger;
     }
 
@@ -222,7 +231,7 @@ class Mapping extends AbstractHelper
         /** @var Configurable $configurable */
         $configurable = $product->getTypeInstance();
         $data = [];
-        $type = $this->getTypeOfProduct($productOptions);
+        $type = $this->getTypeOfProduct($productOptions, $product);
         if (!$type) {
             $this->customLogger->error('Product ID = ' . $product->getId() . ' can\'t transform to bundle');
             return false;
@@ -376,24 +385,32 @@ class Mapping extends AbstractHelper
 
     /**
      * @param $productOptions
+     * @param Product $product
      * @return false|string
      */
-    protected function getTypeOfProduct($productOptions)
+    protected function getTypeOfProduct($productOptions, $product)
     {
         $type = Type::TYPE_SIMPLE;
+        if ($product->getSku() == 'LRENSL0091X') {
+            return Type::TYPE_BUNDLE;
+        }
+        if (count($this->matchingBandHelper->getMatchingBands((int)$product->getId())) > 0) {
+            return Type::TYPE_BUNDLE;
+        }
         foreach ($productOptions as $productOption) {
             try {
                 $productAttribute = $this->productAttributeRepository->get($productOption->getAttributeId());
                 $label = $productAttribute->getData('frontend_label');
 
                 if ($label == 'Center Stone Size') {
-                    $type = Type::TYPE_BUNDLE;
+                    return Type::TYPE_BUNDLE;
                 }
             } catch (NoSuchEntityException $e) {
                 $this->_logger->critical($e->getMessage());
                 return false;
             }
         }
+
         return $type;
     }
 
