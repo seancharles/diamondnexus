@@ -96,7 +96,7 @@ class UpdateProductOptionAttributes implements ObserverInterface
         }
         if ($product->getTypeId() == Type::TYPE_CODE) {
             $childrenIds = $product->getTypeInstance()->getChildrenIds($product->getId());
-            $childrenIds = array_filter($childrenIds, function($element) {
+            $childrenIds = array_filter($childrenIds, function ($element) {
                 return !empty($element);
             });
             $source = $this->eavConfig->getAttribute(Product::ENTITY, 'matching_band')->getSource();

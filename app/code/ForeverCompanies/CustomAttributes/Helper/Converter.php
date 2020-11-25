@@ -13,6 +13,7 @@ use Magento\Catalog\Api\Data\ProductExtension;
 use Magento\Catalog\Api\Data\TierPriceInterface;
 use Magento\Catalog\Model\Product\Option;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable\Attribute;
+use Magento\ConfigurableProduct\Model\Product\Type\Configurable\OptionValue;
 use Magento\Eav\Model\Config;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
@@ -84,6 +85,46 @@ class Converter extends AbstractHelper
     }
 
     /**
+     * @param array $data
+     * @param string $attribute
+     * @return array
+     */
+    public function getValues(array $data, string $attribute)
+    {
+        $values = [];
+        try {
+            $source = $this->eavConfig->getAttribute(Product::ENTITY, $attribute)->getSource();
+        foreach ($data as $optionId) {
+            $values[] = $source->getOptionText($optionId);
+        }
+        } catch (LocalizedException $e) {
+            $this->_logger->error('Can\'t get source and attributes for ' . $attribute);
+            return [];
+        }
+        return $values;
+    }
+
+    /**
+     * @param array $data
+     * @param string $attribute
+     * @return array
+     */
+    public function getOptions(array $data, string $attribute)
+    {
+        $options = [];
+        try {
+            $source = $this->eavConfig->getAttribute(Product::ENTITY, $attribute)->getSource();
+            foreach ($data as $text) {
+                $options[] = $source->getOptionId($text);
+            }
+        } catch (LocalizedException $e) {
+            $this->_logger->error('Can\'t get source and attributes for ' . $attribute);
+            return [];
+        }
+        return $options;
+    }
+
+    /**
      * @param Product $product
      * @param $optionsData
      */
@@ -146,7 +187,7 @@ class Converter extends AbstractHelper
         }
         $product->setOptions($options);
         $bOptions = [];
-        if (isset($optionsData['links'])) {
+        if (isset($optionsData['links']) && count($optionsData['links'])) {
             $bOptions[] = $this->prepareBundleOpt('Center Stone Size', '1', $optionsData['links']);
         }
         $matchingBands = $this->matchingBand->getMatchingBands((int)$product->getId());
@@ -154,10 +195,50 @@ class Converter extends AbstractHelper
             $optionsData['matching_bands'] = $this->prepareMatchingBandLinks($matchingBands);
             $bOptions[] = $this->prepareBundleOpt('Matching Bands', '0', $optionsData['matching_bands']);
         }
+        if ($product->getSku() == 'LRENSL0091X') {
+            $enhancers = $this->matchingBand->getEnhancers((int)$product->getId());
+            if (count($enhancers) > 0) {
+                $optionsData['enhancers'] = $this->prepareMatchingBandLinks($enhancers);
+                $bOptions[] = $this->prepareBundleOpt('Enhancers', '0', $optionsData['enhancers']);
+            }
+        }
         if (count($bOptions) > 0) {
             $extensionAttributes->setBundleProductOptions($bOptions);
             $product->setExtensionAttributes($extensionAttributes);
         }
+    }
+
+    /**
+     * @param array $values
+     * @param $source
+     * @param string $sku
+     * @return Option
+     */
+    public function createTotalCaratWeight(array $values, $source, string $sku)
+    {
+        $optionValues = [];
+        /** @var OptionValue $value */
+        foreach ($values as $value) {
+            $optionValues[] = [
+                'title' => $source->getOptionText($value->getValueIndex()),
+                'price'=>0,
+                'price_type'=>"fixed",
+                'sku' => ''
+            ];
+        }
+        /** @var Option $option */
+        $option = $this->productCustomOptionInterfaceFactory->create();
+        $option->setData(
+            [
+                'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
+                'title' => 'Total Carat Weight',
+                'type' => ProductCustomOptionInterface::OPTION_TYPE_DROP_DOWN,
+                'is_require' => 0,
+                'values' => $optionValues,
+                'product_sku' => $sku,
+            ]
+        );
+        return $option;
     }
 
     /**

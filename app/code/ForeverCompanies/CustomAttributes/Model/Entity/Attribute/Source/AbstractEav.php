@@ -21,17 +21,7 @@ abstract class AbstractEav extends Table implements SpecificSourceInterface
      */
     public function getOptionsFor(CustomAttributesDataInterface $entity): array
     {
-        /** @var Product $entity */
-        $options = $this->getAllOptions(true, true);
-        /** @var Option $option */
-        /*$entityOptions = $entity->getOptions();
-        foreach ($entityOptions as $option) {
-            if ($option->getData('customization_type') == $this->getAttribute()->getAttributeCode()) {
-                $options = $this->unsetOptions($option->getValues(), $options, $this->eq);
-                return $options;
-            }
-        }*/
-        return $options;
+        return $this->getAllOptions(true, true);
     }
 
     /**
