@@ -94,9 +94,9 @@ class Converter extends AbstractHelper
         $values = [];
         try {
             $source = $this->eavConfig->getAttribute(Product::ENTITY, $attribute)->getSource();
-        foreach ($data as $optionId) {
-            $values[] = $source->getOptionText($optionId);
-        }
+            foreach ($data as $optionId) {
+                $values[] = $source->getOptionText($optionId);
+            }
         } catch (LocalizedException $e) {
             $this->_logger->error('Can\'t get source and attributes for ' . $attribute);
             return [];
@@ -152,6 +152,7 @@ class Converter extends AbstractHelper
             }
         }
         $product->setOptions($options);
+        $this->checkOptions($product);
     }
 
     /**
@@ -186,6 +187,7 @@ class Converter extends AbstractHelper
             $options[] = $option;
         }
         $product->setOptions($options);
+        $this->checkOptions($product);
         $bOptions = [];
         if (isset($optionsData['links']) && count($optionsData['links'])) {
             $bOptions[] = $this->prepareBundleOpt('Center Stone Size', '1', $optionsData['links']);
@@ -221,8 +223,8 @@ class Converter extends AbstractHelper
         foreach ($values as $value) {
             $optionValues[] = [
                 'title' => $source->getOptionText($value->getValueIndex()),
-                'price'=>0,
-                'price_type'=>"fixed",
+                'price' => 0,
+                'price_type' => "fixed",
                 'sku' => ''
             ];
         }
@@ -239,6 +241,20 @@ class Converter extends AbstractHelper
             ]
         );
         return $option;
+    }
+
+    /**
+     * @param $product
+     */
+    protected function checkOptions($product)
+    {
+        $options = [];
+        foreach ($product->getOptions() as $option) {
+            if ($option->getValues() !== null) {
+                $options[] = $option;
+            }
+        }
+        $product->setOptions($options);
     }
 
     /**

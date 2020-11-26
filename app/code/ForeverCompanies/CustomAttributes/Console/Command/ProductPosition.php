@@ -31,8 +31,7 @@ class ProductPosition extends Command
         State $state,
         CategoryProduct $categoryProductResource,
         string $name = null
-    )
-    {
+    ) {
         $this->state = $state;
         $this->categoryProductResource = $categoryProductResource;
         parent::__construct($name);
@@ -50,8 +49,7 @@ class ProductPosition extends Command
     protected function execute(
         InputInterface $input,
         OutputInterface $output
-    )
-    {
+    ) {
         $this->state->setAreaCode(Area::AREA_GLOBAL);
         $output->writeln("Get categories for change product's position...");
         $categories = $this->getCategories();
@@ -87,7 +85,7 @@ class ProductPosition extends Command
         try {
             $select = $connection->select()->from($this->categoryProductResource->getMainTable(), 'category_id')
                 ->group('category_id');
-        return $connection->fetchAll($select);
+            return $connection->fetchAll($select);
         } catch (LocalizedException $e) {
             return [];
         }
