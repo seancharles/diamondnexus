@@ -25,5 +25,8 @@
                 name="DiamondNexus_Multipay_Plugin_Block_Adminhtml_Order_View" sortOrder="10"
                 type="DiamondNexus\Multipay\Plugin\Block\Adminhtml\Order\View"/>
     </type>
+    <type name="Magento\Sales\Api\OrderRepositoryInterface">
+        <plugin name="multipay_transactions" type="DiamondNexus\Multipay\Plugin\Model\OrderGet"/>
+    </type>
     <preference for="Magento\Sales\Block\Order\History" type="DiamondNexus\Multipay\Block\Order\History"/>
 </config>

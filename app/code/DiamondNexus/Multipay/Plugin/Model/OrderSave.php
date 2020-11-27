@@ -134,7 +134,7 @@ class OrderSave
     }
 
     /**
-     * @param $id
+     * @param $order
      * @param $additionalInformation
      * @throws LocalizedException
      */
