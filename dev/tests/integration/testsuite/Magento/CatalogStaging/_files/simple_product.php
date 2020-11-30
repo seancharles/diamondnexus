@@ -15,8 +15,6 @@ $indexer->reindexAll();
 $product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\Catalog\Model\Product::class);
 $product->setTypeId(
     \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE
-)->setId(
-    1
 )->setAttributeSetId(
     4
 )->setWebsiteIds(
@@ -27,6 +25,8 @@ $product->setTypeId(
     'simple'
 )->setPrice(
     10
+)->setQty(
+    100
 )->setDescription(
     'Description with <b>html tag</b>'
 )->setMetaTitle(

@@ -12,7 +12,7 @@ $repo = $objectManager->create(\Magento\GiftCardAccount\Api\GiftCardAccountRepos
 /** @var \Magento\Framework\Api\SearchCriteriaBuilder $criteriaBuilder */
 $criteriaBuilder = $objectManager->get(\Magento\Framework\Api\SearchCriteriaBuilder::class);
 $accounts = $repo->getList(
-    $criteriaBuilder->addFilter('code', 'giftcardaccount_fixture')->setPageSize(1)->create()
+    $criteriaBuilder->addFilter('code', $giftCardCode ?? 'giftcardaccount_fixture')->setPageSize(1)->create()
 )->getItems();
 $account = array_pop($accounts);
 if ($account) {

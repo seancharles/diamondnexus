@@ -14,7 +14,7 @@
         "cloudinary/cloudinary-magento2": "^1.11",
         "gene/module-braintree": "3.4.4",
         "magento/data-migration-tool": "2.3.4",
-        "magento/product-enterprise-edition": "2.3.4",
+        "magento/product-enterprise-edition": "2.3.6",
         "mageplaza/module-smtp": "^1.4",
         "run-as-root/magento2-prometheus-exporter": "^1.2",
         "shipperhq/module-address-autocomplete": "^20.3",
@@ -68,7 +68,7 @@
             "Magento\\TestFramework\\Utility\\": "dev/tests/static/framework/Magento/TestFramework/Utility/"
         }
     },
-    "version": "2.3.4",
+    "version": "2.3.6",
     "minimum-stability": "stable",
     "repositories": [
         {

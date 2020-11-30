@@ -55,8 +55,7 @@ class AbstractTest extends \PHPUnit\Framework\TestCase
         )->method(
             'where'
         )->with(
-            $this->equalTo($expectedWhere),
-            $this->equalTo($website)
+            $this->equalTo($expectedWhere)
         )->will(
             $this->returnSelf()
         );
@@ -69,6 +68,9 @@ class AbstractTest extends \PHPUnit\Framework\TestCase
 
     public function limitByStoreWebsiteDataProvider()
     {
-        return [[1], [new \Zend_Db_Expr(1)]];
+        return [
+            [1],
+            [new \Zend_Db_Expr(1)]
+        ];
     }
 }
