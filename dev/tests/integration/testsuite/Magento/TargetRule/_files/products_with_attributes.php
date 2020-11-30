@@ -134,3 +134,7 @@ $product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_SIMPLE)
     ->setCategoryIds([111])
     ->setStockData(['use_config_manage_stock' => 1, 'qty' => 100, 'is_qty_decimal' => 0, 'is_in_stock' => 1])
     ->save();
+
+$productIds[] = $product->getId();
+$indexerProcessor = $objectManager->get(\Magento\Catalog\Model\Indexer\Product\Price\Processor::class);
+$indexerProcessor->reindexList($productIds);

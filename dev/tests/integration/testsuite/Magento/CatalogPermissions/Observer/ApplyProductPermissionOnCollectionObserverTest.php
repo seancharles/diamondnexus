@@ -44,17 +44,7 @@ class ApplyProductPermissionOnCollectionObserverTest extends \PHPUnit\Framework\
         $indexerRegistry = $objectManager->create(IndexerRegistry::class);
         $indexerRegistry->get(Category::INDEXER_ID)->reindexAll();
         $indexerRegistry->get(Product::INDEXER_ID)->reindexAll();
-
-        if ($this->isSearchEngineElasticsearch()) {
-            /*
-             * Need to perform a fulltext reindex as Elasticsearch fetches permissions from the catalogpermissions index
-             * and stores them in the fulltext index.
-             *
-             * This condition should be removed once the issue is fixed via MC-21664
-             */
-            $indexerRegistry->get(Fulltext::INDEXER_ID)->reindexAll();
-        }
-
+        $indexerRegistry->get(Fulltext::INDEXER_ID)->reindexAll();
         $this->collection = $objectManager->create(SearchLayer::class)->getProductCollection();
         $this->session = $objectManager->get(Session::class);
     }

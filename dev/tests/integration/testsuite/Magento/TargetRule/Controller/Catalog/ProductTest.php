@@ -75,6 +75,25 @@ class ProductTest extends \Magento\TestFramework\TestCase\AbstractController
     }
 
     /**
+     * Checks if related products are displayed and confirms that out of stock products are included
+     *
+     * @magentoDbIsolation disabled
+     * @magentoDataFixture Magento/TargetRule/_files/products.php
+     * @magentoDataFixture Magento/TargetRule/_files/related.php
+     * @magentoConfigFixture default_store cataloginventory/options/show_out_of_stock 1
+     * @return void
+     */
+    public function testProductViewActionRelatedOutOfStockShowOutOfStockEnabled(): void
+    {
+        $productId = $this->productResource->getIdBySku('simple_product_1');
+        $this->dispatch('catalog/product/view/id/' . $productId);
+        $content = $this->getResponse()->getBody();
+        $this->assertContains('<div class="block related"', $content);
+        $this->assertContains('Simple Product 2 Name', $content);
+        $this->assertContains('Simple Product 3 Name', $content);
+    }
+
+    /**
      * Covers Magento/TargetRule/view/frontend/catalog/product/list/upsell.html
      * Checks if up-sell products are displayed
      *

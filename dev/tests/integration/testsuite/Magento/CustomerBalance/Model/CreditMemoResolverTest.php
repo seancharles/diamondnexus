@@ -132,6 +132,15 @@ class CreditMemoResolverTest extends TestCase
                 'rewardRefunded' => null,
                 'expected' => true
             ],
+            [
+                'totalInvoiced' => 20,
+                'balanceInvoiced' => 0,
+                'rewardInvoiced' => 0,
+                'totalRefunded' => 10,
+                'balanceRefunded' => 10,
+                'rewardRefunded' => 0,
+                'expected' => true
+            ],
         ];
     }
 }

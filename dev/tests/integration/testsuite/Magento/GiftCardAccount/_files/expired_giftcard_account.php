@@ -4,14 +4,26 @@
  * See COPYING.txt for license details.
  */
 
-/** @var $model \Magento\GiftCardAccount\Model\Giftcardaccount */
-$model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-    \Magento\GiftCardAccount\Model\Giftcardaccount::class
-);
-$model->loadByCode('giftcardaccount_fixture');
-$model->setDateExpires(date('Y-m-d', strtotime('-1 day')));
+use Magento\GiftCardAccount\Model\Giftcardaccount;
+use Magento\TestFramework\Helper\Bootstrap;
+
+$giftCardCode = 'expired_giftcard_account';
+// phpcs:ignore Magento2.Security.IncludeFile
+require 'giftcardaccount.php';
+
+$objectManager = Bootstrap::getObjectManager();
+/** @var $model Giftcardaccount */
 /** @var \Magento\GiftCardAccount\Model\ResourceModel\Giftcardaccount $resourceModel */
-$resourceModel = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
+$resourceModel = $objectManager->get(
     \Magento\GiftCardAccount\Model\ResourceModel\Giftcardaccount::class
 );
-$resourceModel->load($model, 'giftcardaccount_fixture');
+$resourceModel->getConnection()->update(
+    $resourceModel->getMainTable(),
+    [
+        'date_expires' => date('Y-m-d', strtotime('-2 day')),
+        'state' => Giftcardaccount::STATE_EXPIRED
+    ],
+    [
+        'code=?' => $giftCardCode
+    ]
+);

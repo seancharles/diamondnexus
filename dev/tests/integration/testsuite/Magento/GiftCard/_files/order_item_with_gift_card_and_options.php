@@ -41,7 +41,12 @@ $orderItem->setBasePrice($product->getPrice());
 $orderItem->setPrice($product->getPrice());
 $orderItem->setRowTotal($product->getPrice());
 $orderItem->setProductType($product->getTypeId());
-$orderItem->setProductOptions(['info_buyRequest' => $requestInfo]);
+$orderItem->setProductOptions(
+    [
+        'info_buyRequest' => $requestInfo,
+        'giftcard_created_codes' => ['05ZYDFS71QCY', '06YT5LGEV1DH']
+    ]
+);
 
 /** @var \Magento\Sales\Model\Order $order */
 $order = $objectManager->create(\Magento\Sales\Model\Order::class);

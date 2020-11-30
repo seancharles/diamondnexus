@@ -23,13 +23,19 @@ $conditions = [
     'value' => '1',
     'aggregator' => 'all',
     'conditions' => [
-        'type' => \Magento\Reminder\Model\Rule\Condition\Cart::class,
-        'aggregator' => 'all',
-        'conditions' => [
-            'type' => \Magento\Reminder\Model\Rule\Condition\Cart\Amount::class,
-            'attribute' => 'subtotal',
-            'operator' => '>',
-            'value' => '9',
+        [
+            'type' => \Magento\Reminder\Model\Rule\Condition\Cart::class,
+            'aggregator' => 'all',
+            'operator' => '==',
+            'conditions' => [
+                [
+
+                    'type' => \Magento\Reminder\Model\Rule\Condition\Cart\Amount::class,
+                    'attribute' => 'subtotal',
+                    'operator' => '>',
+                    'value' => '9',
+                ],
+            ],
         ],
     ],
 ];
