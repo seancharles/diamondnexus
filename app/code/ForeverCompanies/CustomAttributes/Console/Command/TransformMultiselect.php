@@ -55,7 +55,7 @@ class TransformMultiselect extends AbstractCommand
         'metal_type' => MetalType::class,
         'ring_size' => RingSize::class,
         'certified_stone' => CertifiedStone::class,
-        'color'=> Color::class,
+        'color' => Color::class,
         'cut_type' => CutType::class,
         'shape' => Shape::class,
         'gemstone' => Gemstone::class,

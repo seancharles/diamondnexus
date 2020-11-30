@@ -10,7 +10,7 @@ namespace ForeverCompanies\CustomAttributes\Helper;
 use Exception;
 use ForeverCompanies\CustomAttributes\Logger\ErrorsByOption\Logger as LoggerByOptions;
 use ForeverCompanies\CustomAttributes\Logger\ErrorsBySku\Logger as LoggerBySku;
-use ForeverCompanies\CustomAttributes\Model\Config\Source\Product\BundleCustomizationType;
+use ForeverCompanies\CustomAttributes\Model\Config\Source\Product\BundleCustomizationType as BType;
 use ForeverCompanies\CustomAttributes\Model\Config\Source\Product\CustomizationType;
 use Magento\Bundle\Api\Data\LinkInterface;
 use Magento\Bundle\Api\Data\LinkInterfaceFactory;
@@ -258,8 +258,7 @@ class TransformData extends AbstractHelper
         Selection $bundleSelection,
         LoggerByOptions $loggerByOptions,
         LoggerBySku $loggerBySku
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->eav = $config;
         $this->productCollectionFactory = $collectionFactory;
@@ -541,7 +540,6 @@ class TransformData extends AbstractHelper
                     }
                     $product->setData($attribute, $allOptions);
                 }
-
             }
             if ($isBundle == Type::TYPE_CODE) {
                 $bundleOptions = $product->getExtensionAttributes()->getBundleProductOptions();
@@ -549,14 +547,19 @@ class TransformData extends AbstractHelper
                     $classicStone = true;
                 }
                 $matchingBand = false;
-                foreach ($bundleOptions as &$bundleData) {
-                    $title = $bundleData->getTitle();
-                    $productLinks = $bundleData->getProductLinks();
-                    if (count($productLinks) > 0) {
-                        $matchingBand = true;
-                        $classicStone = $this->checkClassicStone($title, $productLinks);
+                if ($bundleOptions !== null) {
+                    foreach ($bundleOptions as &$bundleData) {
+                        $title = $bundleData->getTitle();
+                        $productLinks = $bundleData->getProductLinks();
+                        if (count($productLinks) > 0) {
+                            $matchingBand = true;
+                            $classicStone = $this->checkClassicStone($title, $productLinks);
+                        }
+                        if ($title == 'Ring Size:') {
+                            $title = 'Ring Size';
+                        }
+                        $bundleData['bundle_customization_type'] = BType::OPTIONS[BType::TITLE_MAPPING[$title]];
                     }
-                    $bundleData['bundle_customization_type'] = BundleCustomizationType::OPTIONS[BundleCustomizationType::TITLE_MAPPING[$title]];
                 }
                 $product->setData('bundle_options_data', $bundleOptions);
                 if (isset($classicStone)) {
@@ -629,6 +632,9 @@ class TransformData extends AbstractHelper
         $product->setData('is_salable', true);
         $product->setData('on_sale', true);
         $product->setData('is_transformed', 1);
+        $product->setData('sku_type', 1);
+        $product->setData('weight_type', 1);
+        $product->setData('price_type', 1);
         if ($product->getData('certified_stone') !== null) {
             $certifiedSrc = $this->eav->getAttribute(Product::ENTITY, 'certified_stone')->getSource();
             $optionText = $product->getData('certified_stone') ? 'Classic Stone' : 'Certified Stone';
@@ -1071,7 +1077,6 @@ class TransformData extends AbstractHelper
             if (count($products) > 0) {
                 foreach ($products as $product) {
                     $this->transformProduct((int)$product['product_id']);
-
                 }
             }
             if ($sku == 'LRENSL0091X') {
@@ -1079,7 +1084,6 @@ class TransformData extends AbstractHelper
                 if (count($products) > 0) {
                     foreach ($products as $product) {
                         $this->transformProduct((int)$product['product_id']);
-
                     }
                 }
             }
