@@ -553,7 +553,9 @@ class TransformData extends AbstractHelper
                         $productLinks = $bundleData->getProductLinks();
                         if (count($productLinks) > 0) {
                             $matchingBand = true;
-                            $classicStone = $this->checkClassicStone($title, $productLinks);
+                            if (isset($classicStone)) {
+                                $classicStone = $this->checkClassicStone($title, $productLinks, $classicStone);
+                            }
                         }
                         if ($title == 'Ring Size:') {
                             $title = 'Ring Size';
@@ -710,18 +712,19 @@ class TransformData extends AbstractHelper
     /**
      * @param $title
      * @param $links
+     * @param bool $classicStone
      * @return bool
      */
-    protected function checkClassicStone($title, $links)
+    protected function checkClassicStone($title, $links, $classicStone)
     {
-        if ($title == 'Center Stone Size' && isset($classicStone)) {
+        if ($title == 'Center Stone Size') {
             foreach ($links as $link) {
                 if (substr($link['sku'], 23, 1) == '1') {
                     return false;
                 }
             }
         }
-        return true;
+        return $classicStone;
     }
 
     /**
