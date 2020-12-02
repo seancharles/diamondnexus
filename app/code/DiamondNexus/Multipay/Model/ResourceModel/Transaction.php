@@ -12,6 +12,7 @@ use DiamondNexus\Multipay\Logger\Logger;
 use DiamondNexus\Multipay\Model\Constant;
 use DiamondNexus\Multipay\Model\TransactionFactory;
 use Exception;
+use ForeverCompanies\CustomApi\Helper\ExtOrder;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
@@ -49,17 +50,24 @@ class Transaction extends AbstractDb
      */
     protected $emailSender;
 
+    /**
+     * @var ExtOrder
+     */
+    protected $extOrderHelper;
+
     public function __construct(
         Context $context,
         TransactionFactory $transactionFactory,
         Logger $logger,
         EmailSender $emailSender,
+        ExtOrder $extOrderHelper,
         $connectionName = null
     ) {
         parent::__construct($context, $connectionName);
         $this->transactionFactory = $transactionFactory;
         $this->logger = $logger;
         $this->emailSender = $emailSender;
+        $this->extOrderHelper = $extOrderHelper;
     }
 
     /**
@@ -136,6 +144,7 @@ class Transaction extends AbstractDb
         try {
             $order->setTotalPaid($order->getTotalPaid() + $amount);
             $this->save($transaction);
+            $this->extOrderHelper->createNewExtSalesOrder($orderId, ['payment']);
         } catch (AlreadyExistsException $e) {
             $this->logger->error($e->getMessage());
         } catch (Exception $e) {
