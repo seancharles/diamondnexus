@@ -35,5 +35,4 @@ class Choose extends \Magento\Backend\App\Action
         ]);
         return $resultRedirect;
     }
-
 }

@@ -5,7 +5,7 @@ namespace ForeverCompanies\CustomSales\Controller\Adminhtml\Order;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 
-class Grid extends \Magento\Backend\App\Action
+class Change extends \Magento\Backend\App\Action
 {
 
     protected $resultPageFactory = false;
@@ -35,7 +35,7 @@ class Grid extends \Magento\Backend\App\Action
     public function execute()
     {
         $resultPage = $this->resultPageFactory->create();
-        $resultPage->getConfig()->getTitle()->prepend(__('Choose admin user for setting to sales person'));
+        $resultPage->getConfig()->getTitle()->prepend(__('Choose admin user for change sales person'));
         return $resultPage;
     }
 }

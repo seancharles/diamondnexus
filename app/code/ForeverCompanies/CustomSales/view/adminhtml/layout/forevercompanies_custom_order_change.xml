@@ -115,7 +115,7 @@
                                 <item name="edit_action" xsi:type="array">
                                     <item name="caption" xsi:type="string" translate="true">Choose</item>
                                     <item name="url" xsi:type="array">
-                                        <item name="base" xsi:type="string">*/*/choose</item>
+                                        <item name="base" xsi:type="string">*/*/changeperson</item>
                                     </item>
                                     <item name="field" xsi:type="string">id</item>
                                     <item name="confirm" xsi:type="string" translate="true">Update sales person ?</item>

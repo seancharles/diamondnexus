@@ -1,9 +1,20 @@
 <?php
 
 use ForeverCompanies\CustomSales\Block\Adminhtml\Order\View\LoggedUser;
+use Magento\Framework\Exception\LocalizedException;
 
 /** @var LoggedUser $block */
 ?>
 <div class="admin__page-section-title">
     <span class="title"><?= $block->escapeHtml('Logged User: ' . $block->getLoggedUser()) ?></span>
+</div>
+<div class="admin__page-section-title">
+    <span class="title"><?= $block->escapeHtml('Sales Person: ' . $block->getSalesPerson()) ?></span>
+    <?php if ($block->isAllowed()) { ?>
+        <form action="<?= $block->escapeUrl($block->getFormUrl()) ?>" method="post"
+              id="order-create-change-salesperson-form">
+            <input type="submit" value="Change" id="order-view-add-warranty">
+            <input type="hidden" value="<?=$block->escapeHtml($block->getOrderId()) ?>" name="order_id">
+        </form>
+    <?php } ?>
 </div>

@@ -19,9 +19,9 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCr
     protected $authSession;
 
     /**
-     * @var User
+     * @var \ForeverCompanies\CustomSales\Helper\SalesPerson
      */
-    protected $userResource;
+    protected $salesPersonHelper;
 
     /**
      * SalesPerson constructor.
@@ -30,7 +30,7 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCr
      * @param Create $orderCreate
      * @param PriceCurrencyInterface $priceCurrency
      * @param Session $authSession
-     * @param User $userResource
+     * @param \ForeverCompanies\CustomSales\Helper\SalesPerson $salesPersonHelper
      * @param array $data
      */
     public function __construct(
@@ -39,13 +39,12 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCr
         Create $orderCreate,
         PriceCurrencyInterface $priceCurrency,
         Session $authSession,
-        User $userResource,
+        \ForeverCompanies\CustomSales\Helper\SalesPerson $salesPersonHelper,
         array $data = []
-    )
-    {
+    ) {
         parent::__construct($context, $sessionQuote, $orderCreate, $priceCurrency, $data);
         $this->authSession = $authSession;
-        $this->userResource = $userResource;
+        $this->salesPersonHelper = $salesPersonHelper;
     }
 
     /**
@@ -55,14 +54,7 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCr
     {
         $salesPersonId = $this->getRequest()->getParam('sales_person_id');
         if ($salesPersonId !== null) {
-            $connection = $this->userResource->getConnection();
-            try {
-                $select = $connection->select()->from($this->userResource->getMainTable())->where('user_id=:id');
-            } catch (LocalizedException $e) {
-                return '';
-            }
-            $binds = ['id' => $salesPersonId];
-            return $connection->fetchRow($select, $binds)['username'];
+            return $this->salesPersonHelper->getSalesPersonInfo($salesPersonId, 'username');
         }
         return $this->authSession->getUser()->getUserName();
     }
@@ -72,9 +64,7 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCr
      */
     public function getFormUrl()
     {
-        return $this->getUrl('forevercompanies_custom/order/user', [
-            'quote' => $this->getQuote()
-        ]);
+        return $this->getUrl('forevercompanies_custom/order/user');
     }
 
     /**
@@ -82,6 +72,6 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCr
      */
     public function isAllowed()
     {
-        return $this->authSession->isAllowed('ForeverCompanies_CustomSales::sales_rep');
+        return $this->salesPersonHelper->isAllowed();
     }
 }
