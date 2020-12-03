@@ -12,6 +12,7 @@ use Magento\Catalog\Api\Data\ProductCustomOptionInterface;
 use Magento\Catalog\Api\Data\ProductExtension;
 use Magento\Catalog\Api\Data\TierPriceInterface;
 use Magento\Catalog\Model\Product\Option;
+use Magento\Catalog\Model\ProductRepository;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable\Attribute;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable\OptionValue;
 use Magento\Eav\Model\Config;
@@ -21,6 +22,7 @@ use Magento\Catalog\Api\Data\ProductCustomOptionInterfaceFactory;
 use Magento\Catalog\Model\Product;
 use Magento\Bundle\Api\Data\OptionInterfaceFactory;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 class Converter extends AbstractHelper
 {
@@ -50,6 +52,11 @@ class Converter extends AbstractHelper
     protected $matchingBand;
 
     /**
+     * @var ProductRepository
+     */
+    protected $productRepository;
+
+    /**
      * @var string[]
      */
     protected $matchingBandWhere = [
@@ -67,6 +74,7 @@ class Converter extends AbstractHelper
      * @param LinkInterfaceFactory $linkInterfaceFactory
      * @param Config $eavConfig
      * @param MatchingBand $matchingBand
+     * @param ProductRepository $productRepository
      */
     public function __construct(
         Context $context,
@@ -74,7 +82,8 @@ class Converter extends AbstractHelper
         OptionInterfaceFactory $optionInterfaceFactory,
         LinkInterfaceFactory $linkInterfaceFactory,
         Config $eavConfig,
-        MatchingBand $matchingBand
+        MatchingBand $matchingBand,
+        ProductRepository $productRepository
     ) {
         parent::__construct($context);
         $this->productCustomOptionInterfaceFactory = $productCustomOptionInterfaceFactory;
@@ -82,6 +91,7 @@ class Converter extends AbstractHelper
         $this->linkFactory = $linkInterfaceFactory;
         $this->eavConfig = $eavConfig;
         $this->matchingBand = $matchingBand;
+        $this->productRepository = $productRepository;
     }
 
     /**
@@ -215,17 +225,32 @@ class Converter extends AbstractHelper
      * @param $source
      * @param string $sku
      * @return Option
+     * @throws NoSuchEntityException
      */
     public function createTotalCaratWeight(array $values, $source, string $sku)
     {
         $optionValues = [];
+        $products = [];
+        $productLinks = $this->productRepository->get($sku)->getExtensionAttributes()->getConfigurableProductLinks();
+        foreach ($productLinks as $id) {
+            $products[] = $this->productRepository->getById($id);
+        }
         /** @var OptionValue $value */
         foreach ($values as $value) {
+            $skuLink = '';
+            $priceLink = 0;
+            foreach ($products as $product) {
+                if ($value->getValueIndex() == $product->getData('gemstone')) {
+                    $skuLink = $product->getSku();
+                    $priceLink = $product->getPrice();
+                    continue;
+                }
+            }
             $optionValues[] = [
                 'title' => $source->getOptionText($value->getValueIndex()),
-                'price' => 0,
+                'price' => $priceLink,
                 'price_type' => "fixed",
-                'sku' => ''
+                'sku' => $skuLink
             ];
         }
         /** @var Option $option */
@@ -250,7 +275,7 @@ class Converter extends AbstractHelper
     {
         $options = [];
         foreach ($product->getOptions() as $option) {
-            if ($option->getValues() !== null) {
+            if ($option->getData('values') !== null) {
                 $options[] = $option;
             }
         }
