@@ -114,6 +114,9 @@ class OrderFishbowlImport
         if ($extensionAttributes->getDeliveryDate() !== null) {
             $entity->setData('delivery_date', $extensionAttributes->getDeliveryDate());
         }
+        if ($extensionAttributes->getDispatchDate() !== null) {
+            $entity->setData('dispatch_date', $extensionAttributes->getDeliveryDate());
+        }
         if ($extensionAttributes->getShippingMethod() !== null) {
             $entity->setData('shipping_method', $extensionAttributes->getShippingMethod());
         }

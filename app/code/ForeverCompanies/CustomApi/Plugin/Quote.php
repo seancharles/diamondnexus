@@ -24,7 +24,8 @@ class Quote
      */
     protected $checkingFields = [
         'anticipated_shipdate',
-        'delivery_date'
+        'delivery_date',
+        'dispatch_date'
     ];
 
     /**

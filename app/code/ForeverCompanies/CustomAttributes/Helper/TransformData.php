@@ -542,39 +542,10 @@ class TransformData extends AbstractHelper
                 }
             }
             if ($isBundle == Type::TYPE_CODE) {
-                $bundleOptions = $product->getExtensionAttributes()->getBundleProductOptions();
-                if (isset($certifiedStone) && $certifiedStone === true) {
-                    $classicStone = true;
-                }
-                $matchingBand = false;
-                if ($bundleOptions !== null) {
-                    foreach ($bundleOptions as &$bundleData) {
-                        $title = $bundleData->getTitle();
-                        $productLinks = $bundleData->getProductLinks();
-                        if (count($productLinks) > 0) {
-                            $matchingBand = true;
-                            if (isset($classicStone)) {
-                                $classicStone = $this->checkClassicStone($title, $productLinks, $classicStone);
-                            }
-                        }
-                        if ($title == 'Ring Size:') {
-                            $title = 'Ring Size';
-                        }
-                        $bundleData['bundle_customization_type'] = BType::OPTIONS[BType::TITLE_MAPPING[$title]];
-                    }
-                }
-                $product->setData('bundle_options_data', $bundleOptions);
-                if (isset($classicStone)) {
-                    $src = $this->eav->getAttribute(Product::ENTITY, 'certified_stone')->getSource();
-                    $optionText = $classicStone ? 'Classic Stone' : 'Certified Stone';
-                    $value = (int)$src->getOptionId($optionText);
-                    $product->setData('certified_stone', $value);
-                }
-                $matchingSrc = $this->eav->getAttribute(Product::ENTITY, 'matching_band')->getSource();
-                if ($matchingBand) {
-                    $product->setData('matching_band', (int)$matchingSrc->getOptionId('Yes'));
+                if (isset($certifiedStone)) {
+                    $this->bundleOptions($product, $certifiedStone);
                 } else {
-                    $product->setData('matching_band', (int)$matchingSrc->getOptionId('None'));
+                    $this->bundleOptions($product);
                 }
             }
 
@@ -725,6 +696,57 @@ class TransformData extends AbstractHelper
             }
         }
         return $classicStone;
+    }
+
+    /**
+     * @param $product
+     * @param bool|null $certifiedStone
+     */
+    protected function bundleOptions($product, $certifiedStone = null)
+    {
+        $bundleOptions = $product->getExtensionAttributes()->getBundleProductOptions();
+        if ($certifiedStone !== null && $certifiedStone === true) {
+            $classicStone = true;
+        }
+        $matchingBand = false;
+        if ($bundleOptions !== null) {
+            foreach ($bundleOptions as &$bundleData) {
+                $title = $bundleData->getTitle();
+                $productLinks = $bundleData->getProductLinks();
+                if (count($productLinks) > 0) {
+                    $matchingBand = true;
+                    if (isset($classicStone)) {
+                        $classicStone = $this->checkClassicStone($title, $productLinks, $classicStone);
+                    }
+                }
+                if ($title == 'Ring Size:') {
+                    $title = 'Ring Size';
+                }
+                $bundleData['bundle_customization_type'] = BType::OPTIONS[BType::TITLE_MAPPING[$title]];
+            }
+        }
+        $product->setData('bundle_options_data', $bundleOptions);
+        if (isset($classicStone)) {
+            try {
+                $src = $this->eav->getAttribute(Product::ENTITY, 'certified_stone')->getSource();
+                $optionText = $classicStone ? 'Classic Stone' : 'Certified Stone';
+                $value = (int)$src->getOptionId($optionText);
+                $product->setData('certified_stone', $value);
+            } catch (LocalizedException $e) {
+                $this->_logger->error($e->getMessage());
+            }
+        }
+        try {
+            $matchingSrc = $this->eav->getAttribute(Product::ENTITY, 'matching_band')->getSource();
+
+            if ($matchingBand) {
+                $product->setData('matching_band', (int)$matchingSrc->getOptionId('Yes'));
+            } else {
+                $product->setData('matching_band', (int)$matchingSrc->getOptionId('None'));
+            }
+        } catch (LocalizedException $e) {
+            $this->_logger->error($e->getMessage());
+        }
     }
 
     /**

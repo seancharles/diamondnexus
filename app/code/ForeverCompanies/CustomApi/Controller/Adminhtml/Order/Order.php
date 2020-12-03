@@ -2,6 +2,7 @@
 
 namespace ForeverCompanies\CustomApi\Controller\Adminhtml\Order;
 
+use ForeverCompanies\CustomApi\Helper\ExtOrder;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpPostActionInterface;
@@ -35,6 +36,11 @@ class Order extends AdminOrder implements HttpPostActionInterface
     protected $shipperResourceModel;
 
     /**
+     * @var ExtOrder
+     */
+    protected $extOrder;
+
+    /**
      * Order constructor.
      * @param Context $context
      * @param Registry $coreRegistry
@@ -48,6 +54,7 @@ class Order extends AdminOrder implements HttpPostActionInterface
      * @param OrderRepositoryInterface $orderRepository
      * @param LoggerInterface $logger
      * @param GridDetail $shipperResourceModel
+     * @param ExtOrder $extOrder
      */
     public function __construct(
         Action\Context $context,
@@ -61,8 +68,10 @@ class Order extends AdminOrder implements HttpPostActionInterface
         OrderManagementInterface $orderManagement,
         OrderRepositoryInterface $orderRepository,
         LoggerInterface $logger,
-        GridDetail $shipperResourceModel
-    ) {
+        GridDetail $shipperResourceModel,
+        ExtOrder $extOrder
+    )
+    {
         parent::__construct(
             $context,
             $coreRegistry,
@@ -77,6 +86,7 @@ class Order extends AdminOrder implements HttpPostActionInterface
             $logger
         );
         $this->shipperResourceModel = $shipperResourceModel;
+        $this->extOrder = $extOrder;
     }
 
     /**
@@ -97,11 +107,29 @@ class Order extends AdminOrder implements HttpPostActionInterface
             if ((strtotime($dispatchDate) > strtotime($deliveryDate))) {
                 $this->messageManager->addErrorMessage('Dispatch date must be lower than delivery date!');
             } else {
+                $connection = $this->shipperResourceModel->getConnection();
+                $select = $connection->select()->from($this->shipperResourceModel->getMainTable())
+                    ->where('order_id = ?', $order->getEntityId())
+                    ->order('id desc')
+                    ->limit(1);
+                $data = $connection->fetchRow($select);
+                $changes = [];
+                if ($data != false) {
+                    if ($data['dispatch_date'] != $dispatchDate) {
+                        $changes[] = 'dispatch_date';
+                    }
+                    if ($data['delivery_date'] != $deliveryDate) {
+                        $changes[] = 'delivery_date';
+                    }
+                } else {
+                    $changes = ['dispatch_date', 'delivery_date'];
+                }
                 $this->shipperResourceModel->getConnection()->update(
                     $this->shipperResourceModel->getMainTable(),
                     ['dispatch_date' => $dispatchDate, 'delivery_date' => $deliveryDate],
                     'order_id = ' . $order->getEntityId()
                 );
+                $this->extOrder->createNewExtSalesOrder($order->getEntityId(), $changes);
             }
             $resultRedirect->setPath('sales/order/view', ['order_id' => $order->getId()]);
             return $resultRedirect;
