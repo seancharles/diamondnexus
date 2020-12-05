@@ -62,8 +62,7 @@ class Transaction extends AbstractDb
         EmailSender $emailSender,
         ExtOrder $extOrderHelper,
         $connectionName = null
-    )
-    {
+    ) {
         parent::__construct($context, $connectionName);
         $this->transactionFactory = $transactionFactory;
         $this->logger = $logger;

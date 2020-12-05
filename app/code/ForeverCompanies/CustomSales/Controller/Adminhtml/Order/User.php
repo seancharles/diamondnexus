@@ -29,8 +29,12 @@ class User extends AdminOrder implements HttpPostActionInterface
      */
     public function execute()
     {
+        $params = [];
+        if ($this->getRequest()->getParam('status') !== null) {
+            $params['status'] = $this->getRequest()->getParam('status');
+        }
         $resultRedirect = $this->resultRedirectFactory->create();
-        $resultRedirect->setPath('forevercompanies_custom/order/grid');
+        $resultRedirect->setPath('forevercompanies_custom/order/grid', $params);
         return $resultRedirect;
     }
 }

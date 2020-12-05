@@ -64,7 +64,11 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCr
      */
     public function getFormUrl()
     {
-        return $this->getUrl('forevercompanies_custom/order/user');
+        $params = [];
+        if ($this->getRequest()->getParam('status') !== null) {
+            $params['status'] = $this->getRequest()->getParam('status');
+        }
+        return $this->getUrl('forevercompanies_custom/order/user', $params);
     }
 
     /**

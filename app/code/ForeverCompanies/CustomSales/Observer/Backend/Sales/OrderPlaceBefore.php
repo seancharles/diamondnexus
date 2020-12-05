@@ -62,8 +62,8 @@ class OrderPlaceBefore implements ObserverInterface
             $order->setData('loggeduser', $user->getUserName());
         }
         $salesPersonId = $order->getData('sales_person_id');
+        $refererUrl = $this->redirect->getRefererUrl();
         if ($salesPersonId == null || $salesPersonId == 0) {
-            $refererUrl = $this->redirect->getRefererUrl();
             $salesPersonString = stristr($refererUrl, 'sales_person_id/');
             $salesPersonString = str_replace('sales_person_id/', '', $salesPersonString);
             if ($salesPersonString == false) {

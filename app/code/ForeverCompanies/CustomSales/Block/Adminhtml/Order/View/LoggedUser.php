@@ -89,4 +89,28 @@ class LoggedUser extends AbstractOrder
             return '';
         }
     }
+
+    /**
+     * @return false|string|null
+     */
+    public function getOrderStatus()
+    {
+        try {
+            return $this->getOrder()->getStatus();
+        } catch (LocalizedException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getOrderExpirationDate()
+    {
+        try {
+            return $this->getOrder()->getData('quote_expiration_date');
+        } catch (LocalizedException $e) {
+            return '';
+        }
+    }
 }
