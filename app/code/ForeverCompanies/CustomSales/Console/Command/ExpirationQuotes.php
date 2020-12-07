@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomSales\Console\Command;
 
+use ForeverCompanies\CustomSales\Cron\ExpirationDate;
 use ForeverCompanies\CustomSales\Helper\TransformData;
 use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
@@ -15,35 +16,34 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class TransformStatuses extends Command
+class ExpirationQuotes extends Command
 {
-
-    /**
-     * @var TransformData
-     */
-    protected $helper;
-
     /**
      * @var State
      */
     protected $state;
 
     /**
+     * @var ExpirationDate
+     */
+    protected $expirationDate;
+
+    /**
      * @var string
      */
-    protected $name = 'forevercompanies:transform-orders';
+    protected $name = 'forevercompanies:expiration-quotes';
 
     /**
      * TransformAttributes constructor.
      * @param State $state
-     * @param TransformData $helper
+     * @param ExpirationDate $expirationDate
      */
     public function __construct(
         State $state,
-        TransformData $helper
+        ExpirationDate $expirationDate
     ) {
         $this->state = $state;
-        $this->helper = $helper;
+        $this->expirationDate = $expirationDate;
         parent::__construct($this->name);
     }
 
@@ -56,17 +56,13 @@ class TransformStatuses extends Command
     {
         try {
             $this->state->setAreaCode(Area::AREA_GLOBAL);
-
-            $output->writeln("Starting change orders statuses...");
-
-            foreach ($this->helper->getStatusesForDelete() as $old => $new) {
-                $output->writeln("Change status '$old' to '$new' ...");
-                $this->helper->changeOrderStatus($old, $new);
-            }
-            $this->helper->deleteStatuses();
-            $output->writeln("Done! Please execute command 'bin/magento indexer:reindex'");
+            $output->writeln("Starting archive quotes with expiration date...");
+            $this->expirationDate->execute();
+            $output->writeln("Done! Please execute command 'bin/magento cache:flush'");
         } catch (LocalizedException $e) {
             $output->writeln($e->getMessage());
+        } catch (\Exception $e) {
+            $output->writeln('Can\'t move to archive quotes: ' . $e->getMessage());
         }
     }
 }

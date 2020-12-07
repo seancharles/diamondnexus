@@ -48,7 +48,7 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCr
     }
 
     /**
-     * @return mixed|string|null
+     * @return string|null
      */
     public function getSalesPerson()
     {

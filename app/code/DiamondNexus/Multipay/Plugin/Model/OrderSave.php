@@ -102,6 +102,9 @@ class OrderSave
         OrderRepositoryInterface $subject,
         OrderInterface $order
     ) {
+        if ($order->getStatus() == Order::STATE_CANCELED) {
+            return;
+        }
         if ($order->getState() == 'quote' && $order->getStatus() == 'quote') {
             $requiredQuote = true;
         }
