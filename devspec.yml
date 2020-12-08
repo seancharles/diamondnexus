@@ -14,14 +14,32 @@ phases:
       - export FUNCTION_NAME="$LAMBDA_TO_UPDATE"
       - export username="$GITUSER"
       - export pass="$GITPASSWORD"
+      - export bucket="$BUCKETPATH"
+      - export oauth="$GITOAUTH"
       - echo "BRANCH $BRANCH"
       - echo "SOURCE_VERSION $SOURCE_VERSION"
+      - echo "username $GITUSER"
   build:
     commands:
       - echo Build started on `date`
-      - chmod +x script.sh
-      - bash script.sh
+      - pwd
+      - rm -rf *
+      - ls
+      - pwd
+      - git clone https://$username:$pass@github.com/ForeverCompanies/magento2.git --branch develop
+      - ls
+      - cd magento2
+      - git config --global --add remote.origin.fetch "+refs/pull/*/head:refs/remotes/origin/pr/*"
+      - chmod +x auto-repo-merge.sh
+      - bash auto-repo-merge.sh
+      - ls
+      - ls
       - sleep 3
+      - aws s3 rm s3://mag2-dev-codebuild/magento --recursive
+      - sleep 3
+      - aws s3 sync . s3://mag2-dev-codebuild/magento
+      - sleep 3
+      
   post_build:
     commands:
       - echo Build completed on `date`
