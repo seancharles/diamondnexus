@@ -5,6 +5,14 @@ use Magento\Framework\Exception\LocalizedException;
 
 /** @var LoggedUser $block */
 ?>
+<?php
+if ($block->getOrderStatus() == 'quote') {
+    ?>
+    <div class="admin__page-section-title">
+        <span><?= $block->escapeHtml('Expiration Date: ' . $block->getOrderExpirationDate()) ?></span>
+    </div> <?php
+}
+?>
 <div class="admin__page-section-title">
     <span class="title"><?= $block->escapeHtml('Logged User: ' . $block->getLoggedUser()) ?></span>
 </div>
@@ -14,7 +22,7 @@ use Magento\Framework\Exception\LocalizedException;
         <form action="<?= $block->escapeUrl($block->getFormUrl()) ?>" method="post"
               id="order-create-change-salesperson-form">
             <input type="submit" value="Change" id="order-view-add-warranty">
-            <input type="hidden" value="<?=$block->escapeHtml($block->getOrderId()) ?>" name="order_id">
+            <input type="hidden" value="<?= $block->escapeHtml($block->getOrderId()) ?>" name="order_id">
         </form>
     <?php } ?>
 </div>

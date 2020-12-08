@@ -102,6 +102,12 @@ class OrderSave
         OrderRepositoryInterface $subject,
         OrderInterface $order
     ) {
+        if ($order->getStatus() == Order::STATE_CANCELED) {
+            return;
+        }
+        if ($order->getState() == 'quote' && $order->getStatus() == 'quote') {
+            $requiredQuote = true;
+        }
         $payment = $order->getPayment();
         $methodInstance = $payment->getMethod();
         $information = $payment->getAdditionalInformation();
@@ -130,6 +136,10 @@ class OrderSave
         }
         if ($methodInstance == Constant::MULTIPAY_METHOD && $method == Constant::MULTIPAY_QUOTE_METHOD) {
             $order->setState('quote')->setStatus('quote');
+        }
+        if (isset($requiredQuote) && $requiredQuote == true) {
+            $order->setStatus('quote');
+            $order->setState('quote');
         }
     }
 

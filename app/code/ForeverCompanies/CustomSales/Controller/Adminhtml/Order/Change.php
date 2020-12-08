@@ -8,6 +8,9 @@ use Magento\Framework\View\Result\PageFactory;
 class Change extends \Magento\Backend\App\Action
 {
 
+    /**
+     * @var bool|PageFactory
+     */
     protected $resultPageFactory = false;
 
     /**
