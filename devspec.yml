@@ -30,6 +30,8 @@ phases:
       - ls
       - cd magento2
       - git config --global --add remote.origin.fetch "+refs/pull/*/head:refs/remotes/origin/pr/*"
+      - git config --global user.email "webdevlive@diamondnexus.com"
+      - git config --global user.name "CI CD build"
       - chmod +x auto-repo-merge.sh
       - bash auto-repo-merge.sh
       - ls
