@@ -4,6 +4,7 @@
             "flag_fishbowl_import": true,
             "anticipated_shipdate": true,
             "delivery_date": true,
+            "dispatch_date": true,
             "shipping_method": true,
             "sales_person_id": true
         }

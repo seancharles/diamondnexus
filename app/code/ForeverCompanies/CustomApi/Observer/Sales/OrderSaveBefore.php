@@ -25,6 +25,7 @@ class OrderSaveBefore implements ObserverInterface
         'shipping_address_id',
         'anticipated_shipdate',
         'delivery_date',
+        'dispatch_date',
         'status_histories',
         'customer_email'
     ];
@@ -56,7 +57,11 @@ class OrderSaveBefore implements ObserverInterface
             $data = $order->getData($key);
             if ($data !== null) {
                 if ($order->dataHasChangedFor($key)) {
-                    $changes[] = $key;
+                    if ($key == 'shipping_address_id') {
+                        $changes[] = 'shipping_address';
+                    } else {
+                        $changes[] = $key;
+                    }
                 }
             }
         }
