@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	<table name="fc_form" resource="default" engine="innodb"
+			   comment="Forever Companies Forms">
+		<column xsi:type="int" name="form_id" padding="10" unsigned="true" nullable="false" identity="true" default="0" comment="Form ID"/>
+		<column xsi:type="smallint" name="store_id" padding="5" unsigned="true" nullable="false" identity="false" default="0" comment="Store ID"/>
+		<column xsi:type="tinyint" name="active" unsigned="true" nullable="true" identity="false" default="0" comment="Active"/>
+		<column xsi:type="json" name="fields_json" nullable="true" identity="false" default="0" comment=""/>
+		<constraint xsi:type="primary" referenceId="PRIMARY">
+			<column name="form_id"/>
+		</constraint>
+	</table>
+	<table name="fc_form_submit" resource="default" engine="innodb"
+			   comment="Forever Companies Form Submissions">
+		<column xsi:type="int" name="form_id" padding="10" unsigned="true" nullable="false" identity="true" default="0" comment="Form ID"/>
+		<column xsi:type="smallint" name="store_id" padding="5" unsigned="true" nullable="false" identity="false" default="0" comment="Store ID"/>
+		<column xsi:type="json" name="form_post_json" nullable="false" identity="false" default="0" comment="Form Post JSON"/>
+		<column xsi:type="datetime" name="created_at" on_update="false" nullable="true" comment="Date"/>
+		<constraint xsi:type="primary" referenceId="PRIMARY">
+			<column name="form_id"/>
+		</constraint>
+	</table>
+</schema>
