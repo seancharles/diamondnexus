@@ -15,7 +15,7 @@ class ReturnsTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     protected $_customerSession;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
@@ -31,7 +31,7 @@ class ReturnsTest extends \Magento\TestFramework\TestCase\AbstractController
         $this->_customerSession->setCustomerDataAsLoggedIn($customer);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->_customerSession->logout();
         $this->_customerSession = null;
@@ -55,7 +55,7 @@ class ReturnsTest extends \Magento\TestFramework\TestCase\AbstractController
         $this->getRequest()->setParam('entity_id', $rma->getEntityId());
 
         $this->dispatch($uri);
-        $this->assertContains($content, $this->getResponse()->getBody());
+        $this->assertStringContainsString($content, $this->getResponse()->getBody());
     }
 
     public function isResponseContainDataProvider()

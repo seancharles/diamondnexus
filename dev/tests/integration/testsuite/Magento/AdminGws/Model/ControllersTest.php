@@ -16,26 +16,26 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
     protected $model;
 
     /**
-     * @var \Magento\AdminGws\Model\Role|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Magento\AdminGws\Model\Role|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $roleMock;
 
     /**
-     * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $registryMock;
 
     /**
-     * @var \Magento\Store\Model\StoreManager|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Magento\Store\Model\StoreManager|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var \Magento\Framework\App\Request\Http|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Magento\Framework\App\Request\Http|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $requestMock;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -55,7 +55,7 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
         );
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->roleMock = null;
         $this->registryMock = null;
@@ -70,8 +70,8 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testValidateSystemConfigValidStoreCodeWithStoreAccess()
     {
-        $this->requestMock->expects($this->any())->method('getParam')->with('store')->will(
-            $this->returnValue('testStore')
+        $this->requestMock->expects($this->any())->method('getParam')->with('store')->willReturn(
+            'testStore'
         );
 
         $storeMock = $this->getMockBuilder(\Magento\Store\Model\Store::class)
@@ -80,15 +80,15 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
             ->getMock();
         $storeMock->expects($this->any())
             ->method('getId')
-            ->will($this->returnValue(1));
+            ->willReturn(1);
 
         $this->storeManagerMock->expects($this->any())
             ->method('getStore')
-            ->will($this->returnValue($storeMock));
+            ->willReturn($storeMock);
 
         $this->roleMock->expects($this->any())
             ->method('hasStoreAccess')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $this->model->validateSystemConfig();
     }
@@ -98,12 +98,12 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testValidateSystemConfigValidWebsiteCodeWithWebsiteAccess()
     {
-        $this->requestMock->expects($this->at(0))->method('getParam')->with('store')->will(
-            $this->returnValue(null)
+        $this->requestMock->expects($this->at(0))->method('getParam')->with('store')->willReturn(
+            null
         );
 
-        $this->requestMock->expects($this->at(1))->method('getParam')->with('website')->will(
-            $this->returnValue('testWebsite')
+        $this->requestMock->expects($this->at(1))->method('getParam')->with('website')->willReturn(
+            'testWebsite'
         );
 
         $websiteMock = $this->getMockBuilder(\Magento\Store\Model\Website::class)
@@ -112,15 +112,15 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
             ->getMock();
         $websiteMock->expects($this->any())
             ->method('getId')
-            ->will($this->returnValue(1));
+            ->willReturn(1);
 
         $this->storeManagerMock->expects($this->any())
             ->method('getWebsite')
-            ->will($this->returnValue($websiteMock));
+            ->willReturn($websiteMock);
 
         $this->roleMock->expects($this->any())
             ->method('hasWebsiteAccess')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $this->model->validateSystemConfig();
     }
@@ -130,8 +130,8 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testValidateSystemConfigRedirectToWebsite()
     {
-        $this->requestMock->expects($this->any())->method('getParam')->will(
-            $this->returnValue(null)
+        $this->requestMock->expects($this->any())->method('getParam')->willReturn(
+            null
         );
 
         $websiteMock = $this->getMockBuilder(\Magento\Store\Model\Website::class)
@@ -140,7 +140,7 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
             ->getMock();
         $websiteMock->expects($this->any())
             ->method('getCode')
-            ->will($this->returnValue('default'));
+            ->willReturn('default');
 
         $storeMock = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
@@ -148,15 +148,15 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
             ->getMock();
         $storeMock->expects($this->any())
             ->method('getWebsite')
-            ->will($this->returnValue($websiteMock));
+            ->willReturn($websiteMock);
 
         $this->storeManagerMock->expects($this->any())
             ->method('getDefaultStoreView')
-            ->will($this->returnValue($storeMock));
+            ->willReturn($storeMock);
 
         $this->roleMock->expects($this->any())
             ->method('getWebsiteIds')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $this->model->validateSystemConfig();
         $this->assertRedirect();
@@ -167,8 +167,8 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testValidateSystemConfigRedirectToStore()
     {
-        $this->requestMock->expects($this->any())->method('getParam')->will(
-            $this->returnValue(null)
+        $this->requestMock->expects($this->any())->method('getParam')->willReturn(
+            null
         );
 
         $websiteMock = $this->getMockBuilder(\Magento\Store\Model\Website::class)
@@ -177,7 +177,7 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
             ->getMock();
         $websiteMock->expects($this->any())
             ->method('getCode')
-            ->will($this->returnValue('default'));
+            ->willReturn('default');
 
         $storeMock = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
@@ -185,26 +185,26 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
             ->getMock();
         $storeMock->expects($this->any())
             ->method('getWebsite')
-            ->will($this->returnValue($websiteMock));
+            ->willReturn($websiteMock);
         $storeMock->expects($this->any())
             ->method('getCode')
-            ->will($this->returnValue('base'));
+            ->willReturn('base');
         $storeMock->expects($this->any())
             ->method('getId')
-            ->will($this->returnValue(1));
+            ->willReturn(1);
 
         $this->storeManagerMock->expects($this->any())
             ->method('getDefaultStoreView')
-            ->will($this->returnValue($storeMock));
+            ->willReturn($storeMock);
 
         $this->roleMock->expects($this->any())
             ->method('getWebsiteIds')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $this->roleMock->expects($this->any())
             ->method('hasStoreAccess')
             ->with(1)
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $this->model->validateSystemConfig();
         $this->assertRedirect();
@@ -215,8 +215,8 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testValidateSystemConfigRedirectToDenied()
     {
-        $this->requestMock->expects($this->any())->method('getParam')->will(
-            $this->returnValue(null)
+        $this->requestMock->expects($this->any())->method('getParam')->willReturn(
+            null
         );
 
         $websiteMock = $this->getMockBuilder(\Magento\Store\Model\Website::class)
@@ -225,7 +225,7 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
             ->getMock();
         $websiteMock->expects($this->any())
             ->method('getCode')
-            ->will($this->returnValue('default'));
+            ->willReturn('default');
 
         $storeMock = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
@@ -233,29 +233,29 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
             ->getMock();
         $storeMock->expects($this->any())
             ->method('getWebsite')
-            ->will($this->returnValue($websiteMock));
+            ->willReturn($websiteMock);
         $storeMock->expects($this->any())
             ->method('getCode')
-            ->will($this->returnValue('base'));
+            ->willReturn('base');
         $storeMock->expects($this->any())
             ->method('getId')
-            ->will($this->returnValue(1));
+            ->willReturn(1);
 
         $this->storeManagerMock->expects($this->any())
             ->method('getDefaultStoreView')
-            ->will($this->returnValue($storeMock));
+            ->willReturn($storeMock);
         $this->storeManagerMock->expects($this->any())
             ->method('getStores')
             ->willReturn([$storeMock]);
 
         $this->roleMock->expects($this->any())
             ->method('getWebsiteIds')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $this->roleMock->expects($this->any())
             ->method('hasStoreAccess')
             ->with(1)
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $this->model->validateSystemConfig();
         $this->assertRedirect($this->stringContains('admin/noroute'));
@@ -268,7 +268,7 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->registryMock->expects($this->any())
             ->method('registry')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
         $this->model->validateSystemStore();
     }
 
@@ -279,16 +279,16 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->registryMock->expects($this->any())
             ->method('registry')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('getActionName')
-            ->will($this->returnValue('save'));
+            ->willReturn('save');
         $this->requestMock->expects($this->any())
             ->method('getParams')
-            ->will($this->returnValue(['website' => 'testWebsite']));
+            ->willReturn(['website' => 'testWebsite']);
         $this->requestMock->expects($this->any())
             ->method('setActionName')
-            ->will($this->returnSelf());
+            ->willReturnSelf();
         $this->model->validateSystemStore();
     }
 
@@ -299,19 +299,19 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->registryMock->expects($this->any())
             ->method('registry')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('getActionName')
-            ->will($this->returnValue('save'));
+            ->willReturn('save');
         $this->requestMock->expects($this->any())
             ->method('getParams')
-            ->will($this->returnValue(['website' => null, 'store' => 'testStore']));
+            ->willReturn(['website' => null, 'store' => 'testStore']);
         $this->roleMock->expects($this->any())
             ->method('getWebsiteIds')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('setActionName')
-            ->will($this->returnSelf());
+            ->willReturnSelf();
         $this->model->validateSystemStore();
     }
 
@@ -322,13 +322,13 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->registryMock->expects($this->any())
             ->method('registry')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('getActionName')
-            ->will($this->returnValue('newWebsite'));
+            ->willReturn('newWebsite');
         $this->requestMock->expects($this->any())
             ->method('setActionName')
-            ->will($this->returnSelf());
+            ->willReturnSelf();
         $this->model->validateSystemStore();
     }
 
@@ -339,16 +339,16 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->registryMock->expects($this->any())
             ->method('registry')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('getActionName')
-            ->will($this->returnValue('newGroup'));
+            ->willReturn('newGroup');
         $this->roleMock->expects($this->any())
             ->method('getWebsiteIds')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('setActionName')
-            ->will($this->returnSelf());
+            ->willReturnSelf();
         $this->model->validateSystemStore();
     }
 
@@ -359,16 +359,16 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->registryMock->expects($this->any())
             ->method('registry')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('getActionName')
-            ->will($this->returnValue('newStore'));
+            ->willReturn('newStore');
         $this->roleMock->expects($this->any())
             ->method('getWebsiteIds')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('setActionName')
-            ->will($this->returnSelf());
+            ->willReturnSelf();
         $this->model->validateSystemStore();
     }
 
@@ -379,16 +379,16 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->registryMock->expects($this->any())
             ->method('registry')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('getActionName')
-            ->will($this->returnValue('editWebsite'));
+            ->willReturn('editWebsite');
         $this->requestMock->expects($this->any())
             ->method('setActionName')
-            ->will($this->returnSelf());
+            ->willReturnSelf();
         $this->roleMock->expects($this->any())
             ->method('hasWebsiteAccess')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->model->validateSystemStore();
     }
 
@@ -399,16 +399,16 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->registryMock->expects($this->any())
             ->method('registry')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('getActionName')
-            ->will($this->returnValue('editGroup'));
+            ->willReturn('editGroup');
         $this->requestMock->expects($this->any())
             ->method('setActionName')
-            ->will($this->returnSelf());
+            ->willReturnSelf();
         $this->roleMock->expects($this->any())
             ->method('hasStoreGroupAccess')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->model->validateSystemStore();
     }
 
@@ -419,16 +419,16 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->registryMock->expects($this->any())
             ->method('registry')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('getActionName')
-            ->will($this->returnValue('editStore'));
+            ->willReturn('editStore');
         $this->requestMock->expects($this->any())
             ->method('setActionName')
-            ->will($this->returnSelf());
+            ->willReturnSelf();
         $this->roleMock->expects($this->any())
             ->method('hasStoreAccess')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->model->validateSystemStore();
     }
 
@@ -439,13 +439,13 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->registryMock->expects($this->any())
             ->method('registry')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('getActionName')
-            ->will($this->returnValue('deleteWebsite'));
+            ->willReturn('deleteWebsite');
         $this->requestMock->expects($this->any())
             ->method('setActionName')
-            ->will($this->returnSelf());
+            ->willReturnSelf();
         $this->model->validateSystemStore();
     }
 
@@ -456,13 +456,13 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->registryMock->expects($this->any())
             ->method('registry')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('getActionName')
-            ->will($this->returnValue('deleteWebsitePost'));
+            ->willReturn('deleteWebsitePost');
         $this->requestMock->expects($this->any())
             ->method('setActionName')
-            ->will($this->returnSelf());
+            ->willReturnSelf();
         $this->model->validateSystemStore();
     }
 
@@ -473,13 +473,13 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->registryMock->expects($this->any())
             ->method('registry')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('getActionName')
-            ->will($this->returnValue('deleteGroup'));
+            ->willReturn('deleteGroup');
         $this->requestMock->expects($this->any())
             ->method('setActionName')
-            ->will($this->returnSelf());
+            ->willReturnSelf();
         $this->model->validateSystemStore();
     }
 
@@ -490,23 +490,23 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->registryMock->expects($this->any())
             ->method('registry')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('getActionName')
-            ->will($this->returnValue('deleteGroupPost'));
+            ->willReturn('deleteGroupPost');
         $groupMock = $this->getMockBuilder(\Magento\Store\Model\Group::class)
             ->disableOriginalConstructor()
             ->setMethods(['getWebsiteId'])
             ->getMock();
         $groupMock->expects($this->any())
             ->method('getWebsiteId')
-            ->will($this->returnValue('testWebsite'));
+            ->willReturn('testWebsite');
         $this->roleMock->expects($this->any())
             ->method('getGroup')
-            ->will($this->returnValue($groupMock));
+            ->willReturn($groupMock);
         $this->roleMock->expects($this->any())
             ->method('hasWebsiteAccess')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
         $this->model->validateSystemStore();
     }
 
@@ -517,29 +517,29 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->registryMock->expects($this->any())
             ->method('registry')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('getActionName')
-            ->will($this->returnValue('deleteGroupPost'));
+            ->willReturn('deleteGroupPost');
         $groupMock = $this->getMockBuilder(\Magento\Store\Model\Group::class)
             ->disableOriginalConstructor()
             ->setMethods(['getWebsiteId'])
             ->getMock();
         $groupMock->expects($this->any())
             ->method('getWebsiteId')
-            ->will($this->returnValue('testWebsite'));
+            ->willReturn('testWebsite');
         $this->roleMock->expects($this->any())
             ->method('getGroup')
-            ->will($this->returnValue($groupMock));
+            ->willReturn($groupMock);
         $this->roleMock->expects($this->any())
             ->method('getGroup')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
         $this->roleMock->expects($this->any())
             ->method('hasWebsiteAccess')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
         $this->requestMock->expects($this->any())
             ->method('setActionName')
-            ->will($this->returnSelf());
+            ->willReturnSelf();
         $this->model->validateSystemStore();
     }
 
@@ -550,13 +550,13 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->registryMock->expects($this->any())
             ->method('registry')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('getActionName')
-            ->will($this->returnValue('deleteStore'));
+            ->willReturn('deleteStore');
         $this->requestMock->expects($this->any())
             ->method('setActionName')
-            ->will($this->returnSelf());
+            ->willReturnSelf();
         $this->model->validateSystemStore();
     }
 
@@ -567,23 +567,23 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->registryMock->expects($this->any())
             ->method('registry')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('getActionName')
-            ->will($this->returnValue('deleteStorePost'));
+            ->willReturn('deleteStorePost');
         $storeMock = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
             ->setMethods(['getWebsiteId'])
             ->getMock();
         $storeMock->expects($this->any())
             ->method('getWebsiteId')
-            ->will($this->returnValue('testWebsite'));
+            ->willReturn('testWebsite');
         $this->storeManagerMock->expects($this->any())
             ->method('getStore')
-            ->will($this->returnValue($storeMock));
+            ->willReturn($storeMock);
         $this->roleMock->expects($this->any())
             ->method('hasWebsiteAccess')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
         $this->model->validateSystemStore();
     }
 
@@ -594,26 +594,26 @@ class ControllersTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->registryMock->expects($this->any())
             ->method('registry')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $this->requestMock->expects($this->any())
             ->method('getActionName')
-            ->will($this->returnValue('deleteStorePost'));
+            ->willReturn('deleteStorePost');
         $storeMock = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
             ->setMethods(['getWebsiteId'])
             ->getMock();
         $storeMock->expects($this->any())
             ->method('getWebsiteId')
-            ->will($this->returnValue('testWebsite'));
+            ->willReturn('testWebsite');
         $this->storeManagerMock->expects($this->any())
             ->method('getStore')
-            ->will($this->returnValue($storeMock));
+            ->willReturn($storeMock);
         $this->roleMock->expects($this->any())
             ->method('hasWebsiteAccess')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
         $this->requestMock->expects($this->any())
             ->method('setActionName')
-            ->will($this->returnSelf());
+            ->willReturnSelf();
         $this->model->validateSystemStore();
     }
 }

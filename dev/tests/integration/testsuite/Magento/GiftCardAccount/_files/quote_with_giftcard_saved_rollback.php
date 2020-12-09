@@ -8,10 +8,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-global $fixtureBaseDir;
+Resolver::getInstance()->requireDataFixture('Magento/Checkout/_files/quote_with_address_saved_rollback.php');
 
-require $fixtureBaseDir . '/Magento/Checkout/_files/quote_with_address_saved_rollback.php';
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 $giftCardAccount = $objectManager->create(\Magento\GiftCardAccount\Model\Giftcardaccount::class);
 $giftCardAccount->loadByCode('giftcardaccount_fixture')->delete();

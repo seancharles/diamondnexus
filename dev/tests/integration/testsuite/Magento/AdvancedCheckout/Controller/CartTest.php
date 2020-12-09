@@ -15,7 +15,7 @@ class CartTest extends \Magento\TestFramework\TestCase\AbstractController
     /**
      * Bootstrap application before any test
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->productRepository = $this->_objectManager->create(

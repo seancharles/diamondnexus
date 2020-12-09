@@ -3,8 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+use Magento\TestFramework\Helper\Bootstrap;
+use Magento\Eav\Model\Config;
+use Magento\Catalog\Model\Product;
 
-require 'customer_custom_attribute.php';
+Resolver::getInstance()->requireDataFixture(
+    'Magento/CustomerCustomAttributes/_files/customer_custom_attribute.php'
+);
+$objectManager = Bootstrap::getObjectManager();
+$eavConfig = $objectManager->get(Config::class);
+$select = $eavConfig->getAttribute('customer', 'test_select_code');
+$eavConfig = $objectManager->get(Config::class);
+$multiSelect = $eavConfig->getAttribute('customer', 'multi_select_attribute_code');
+/** @var $entityType \Magento\Eav\Model\Entity\Type */
+$entityType = $objectManager
+    ->create(\Magento\Eav\Model\Config::class)
+    ->getEntityType('customer');
 
 $selectOptions = [];
 foreach ($select->getOptions() as $option) {
@@ -20,7 +35,7 @@ foreach ($multiSelect->getOptions() as $option) {
     }
 }
 
-$customer = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+$customer = $objectManager
     ->create(\Magento\Customer\Model\Customer::class);
 $customer->setWebsiteId(1)
     ->setEntityId(1)
@@ -40,7 +55,7 @@ $customer->isObjectNew(true);
 
 
 // Create address
-$address = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\Customer\Model\Address::class);
+$address = $objectManager->create(\Magento\Customer\Model\Address::class);
 //  default_billing and default_shipping information would not be saved, it is needed only for simple check
 $address->addData(
     [
@@ -66,7 +81,5 @@ $customer->setDefaultBilling($address->getId());
 $customer->setDefaultShipping($address->getId());
 $customer->save();
 
-/** @var $objectManager \Magento\TestFramework\ObjectManager */
-$objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 $objectManager->get(\Magento\Framework\Registry::class)->unregister('_fixture/Magento_ImportExport_Customer');
 $objectManager->get(\Magento\Framework\Registry::class)->register('_fixture/Magento_ImportExport_Customer', $customer);

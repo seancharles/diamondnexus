@@ -12,7 +12,7 @@ use Magento\TestFramework\Helper\Bootstrap;
 
 class MassAddTest extends \Magento\TestFramework\TestCase\AbstractBackendController
 {
-    public function setUp()
+    protected function setUp(): void
     {
         $this->resource = 'Magento_SalesArchive::add';
         $this->uri = 'backend/sales/archive/massadd';

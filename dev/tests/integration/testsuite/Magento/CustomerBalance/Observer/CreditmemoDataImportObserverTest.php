@@ -31,7 +31,7 @@ class CreditmemoDataImportObserverTest extends TestCase
      */
     private $observer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->observer = $this->objectManager->create(CreditmemoDataImportObserver::class);

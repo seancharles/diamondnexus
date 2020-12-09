@@ -55,7 +55,7 @@ class RowsTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->permissionIndex = $this->objectManager->get(PermissionIndex::class);
@@ -67,7 +67,7 @@ class RowsTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if ($this->category != null && !empty($this->category->getId())) {
             $this->categoryRepository->delete($this->category);

@@ -6,11 +6,14 @@
 
 use Magento\Rma\Api\RmaRepositoryInterface;
 use Magento\Rma\Model\Rma;
+use Magento\Sales\Api\Data\OrderInterfaceFactory;
 use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-global $fixtureBaseDir;
+Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/order.php');
 
-include $fixtureBaseDir . '/Magento/Sales/_files/order.php';
+$objectManager = Bootstrap::getObjectManager();
+$order = $objectManager->get(OrderInterfaceFactory::class)->create()->loadByIncrementId('100000001');
 
 $comments = [
     [
@@ -46,11 +49,11 @@ $comments = [
 ];
 
 /** @var RmaRepositoryInterface $rmaRepository */
-$rmaRepository = Bootstrap::getObjectManager()->get(RmaRepositoryInterface::class);
+$rmaRepository = $objectManager->get(RmaRepositoryInterface::class);
 
 foreach ($comments as $data) {
     /** @var $rma Rma */
-    $rma = Bootstrap::getObjectManager()->create(Rma::class);
+    $rma = $objectManager->create(Rma::class);
     $rma->setOrderId($order->getId());
     $rma->setStatus($data['status']);
     $rma->setIncrementId($data['increment_id']);

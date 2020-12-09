@@ -17,7 +17,7 @@ class ConverterTest extends \PHPUnit\Framework\TestCase
      */
     protected $_converter;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->_loggingDom = new \DOMDocument();
         $this->_loggingDom->load(__DIR__ . '/_files/logging.xml');

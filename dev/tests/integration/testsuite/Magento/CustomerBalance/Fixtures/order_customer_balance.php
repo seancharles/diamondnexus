@@ -5,6 +5,8 @@
  */
 declare(strict_types=1);
 
+use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Customer\Model\CustomerRegistry;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Address;
@@ -13,20 +15,25 @@ use Magento\Sales\Model\Order\Payment;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\ObjectManager;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
 /**
  * @var \Magento\Catalog\Model\Product $product
  * @var \Magento\Customer\Model\Customer $customer
  */
-
-require __DIR__ . '/../../../Magento/Catalog/_files/product_simple.php';
-require __DIR__ . '/../../../Magento/Customer/_files/customer.php';
+Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple.php');
+Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer.php');
 
 $addressData = include __DIR__ . '/../../../Magento/Sales/_files/address_data.php';
 
 /** @var ObjectManager $objectManager */
 $objectManager = Bootstrap::getObjectManager();
-
+/** @var CustomerRegistry $customerRegistry */
+$customerRegistry = Bootstrap::getObjectManager()->create(CustomerRegistry::class);
+$customer = $customerRegistry->retrieve(1);
+/** @var ProductRepositoryInterface $productRepository */
+$productRepository = Bootstrap::getObjectManager()->create(ProductRepositoryInterface::class);
+$product = $productRepository->get('simple');
 $billingAddress = $objectManager->create(Address::class, ['data' => $addressData]);
 $billingAddress->setAddressType('billing');
 

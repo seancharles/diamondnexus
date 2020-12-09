@@ -3,8 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-//Create custom attributes
-require 'address_custom_attribute.php';
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+use Magento\TestFramework\Helper\Bootstrap;
+use Magento\Eav\Model\Config;
+
+Resolver::getInstance()->requireDataFixture('Magento/CustomerCustomAttributes/_files/address_custom_attribute.php');
+/** @var Config $eavConfig */
+$eavConfig = Bootstrap::getObjectManager()->get(Config::class);
+$select = $eavConfig->getAttribute('customer_address', 'test_select_code');
+$eavConfig = Bootstrap::getObjectManager()->get(Config::class);
+$multiSelect = $eavConfig->getAttribute('customer_address', 'multi_select_attribute_code');
 //Create customer
 $customer = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
     ->create(\Magento\Customer\Model\Customer::class);

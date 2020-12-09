@@ -15,7 +15,7 @@ class ReadEntityVersionTest extends \PHPUnit\Framework\TestCase
      */
     private $model;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->model = Bootstrap::getObjectManager()
             ->create(\Magento\Staging\Model\ResourceModel\Db\ReadEntityVersion::class);

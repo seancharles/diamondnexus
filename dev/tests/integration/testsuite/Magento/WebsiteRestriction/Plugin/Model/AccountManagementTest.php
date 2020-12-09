@@ -43,7 +43,7 @@ class AccountManagementTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->customerRepository = $this->objectManager->get(CustomerRepositoryInterface::class);
@@ -56,7 +56,7 @@ class AccountManagementTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         try {
             $customer = $this->customerRepository->get('email321@example.com');

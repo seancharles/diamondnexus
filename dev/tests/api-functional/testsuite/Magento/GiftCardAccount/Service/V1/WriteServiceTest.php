@@ -19,7 +19,7 @@ class WriteServiceTest extends WebapiAbstract
      */
     protected $objectManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
     }
@@ -90,6 +90,6 @@ class WriteServiceTest extends WebapiAbstract
         $result = $this->_webApiCall($serviceInfo, $requestData);
         $this->assertTrue($result);
         $quote->load('test_order_1', 'reserved_order_id');
-        $this->assertContains('giftcardaccount_fixture', $quote->getGiftCards());
+        $this->assertStringContainsString('giftcardaccount_fixture', $quote->getGiftCards());
     }
 }

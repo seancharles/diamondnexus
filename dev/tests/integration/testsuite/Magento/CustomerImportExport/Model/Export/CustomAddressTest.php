@@ -17,7 +17,7 @@ class CustomAddressTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->entityAdapter = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(Address::class);
     }

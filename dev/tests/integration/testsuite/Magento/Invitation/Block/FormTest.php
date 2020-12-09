@@ -45,7 +45,7 @@ class FormTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->mutableConfig = $this->objectManager->get(MutableScopeConfigInterface::class);

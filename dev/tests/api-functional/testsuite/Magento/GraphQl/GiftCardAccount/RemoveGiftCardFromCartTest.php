@@ -24,7 +24,7 @@ class RemoveGiftCardFromCartTest extends GraphQlAbstract
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->getMaskedQuoteIdByReservedOrderId = $objectManager->get(GetMaskedQuoteIdByReservedOrderId::class);
@@ -93,11 +93,12 @@ class RemoveGiftCardFromCartTest extends GraphQlAbstract
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/guest/create_empty_cart.php
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/add_simple_product.php
      * @magentoApiDataFixture Magento/GiftCardAccount/_files/giftcardaccount.php
-     * @expectedException \Exception
-     * @expectedExceptionMessage The gift card couldn't be deleted from the quote.
      */
     public function testRemoveNonExistingGiftCardFromCart()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('The gift card couldn\'t be deleted from the quote.');
+
         $giftCardCode ='giftcardaccount_fixture';
         $maskedQuoteId = $this->getMaskedQuoteIdByReservedOrderId->execute('test_quote');
         $applyQuery = $this->applyGiftCardToCartQuery($maskedQuoteId, $giftCardCode);

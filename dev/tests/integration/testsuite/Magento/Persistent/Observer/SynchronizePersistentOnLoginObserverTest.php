@@ -3,6 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
+
 namespace Magento\Persistent\Observer;
 
 use DateTime;
@@ -42,6 +44,7 @@ class SynchronizePersistentOnLoginObserverTest extends TestCase
      * @var \Magento\Customer\Model\Session
      */
     protected $_customerSession;
+
     /**
      * @var CustomerInterface
      */
@@ -50,7 +53,7 @@ class SynchronizePersistentOnLoginObserverTest extends TestCase
     /**
      * @inheritDoc
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->_objectManager = Bootstrap::getObjectManager();
         $this->_persistentSession = $this->_objectManager->get(\Magento\Persistent\Helper\Session::class);

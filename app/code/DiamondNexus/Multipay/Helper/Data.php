@@ -8,7 +8,7 @@ use Braintree\Result\Error;
 use Braintree\Result\Successful;
 use DiamondNexus\Multipay\Model\Constant;
 use League\ISO3166\ISO3166;
-use Magento\Braintree\Model\Adapter\BraintreeAdapter;
+use Paypal\Braintree\Model\Adapter\BraintreeAdapter;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Exception\ValidatorException;

@@ -3,8 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require __DIR__ . '/../../../Magento/Invitation/_files/invitation.php';
+Resolver::getInstance()->requireDataFixture('Magento/Invitation/_files/invitation.php');
 
 $invitation2 = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
     ->create(\Magento\Invitation\Model\Invitation::class);

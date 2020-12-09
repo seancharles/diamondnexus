@@ -4,11 +4,17 @@
  * See COPYING.txt for license details.
  */
 
-require __DIR__ . '/../../../Magento/Sales/_files/default_rollback.php';
-require __DIR__ . '/../../../Magento/Catalog/_files/product_simple.php';
+use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+
+Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/default_rollback.php');
+Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple.php');
 /** @var \Magento\Catalog\Model\Product $product */
 $addressData = include __DIR__ . '/../../../Magento/Sales/_files/address_data.php';
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
+/** @var ProductRepositoryInterface $productRepository */
+$productRepository = $objectManager->create(ProductRepositoryInterface::class);
+$product = $productRepository->get('simple');
 $billingAddress = $objectManager->create(\Magento\Sales\Model\Order\Address::class, ['data' => $addressData]);
 $billingAddress->setAddressType('billing');
 $shippingAddress = clone $billingAddress;

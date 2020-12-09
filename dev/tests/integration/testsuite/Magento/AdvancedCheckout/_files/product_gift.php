@@ -3,6 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
 /** @var $product \Magento\Catalog\Model\Product */
 $product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\Catalog\Model\Product::class);
@@ -61,4 +62,4 @@ $requestInfo = new \Magento\Framework\DataObject(
     ]
 );
 
-require __DIR__ . '/../../../Magento/Checkout/_files/cart.php';
+Resolver::getInstance()->requireDataFixture('Magento/Checkout/_files/cart.php');

@@ -12,7 +12,7 @@ namespace Magento\AdminGws\Model;
  */
 class BlocksTest extends \Magento\TestFramework\TestCase\AbstractController
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         /** @var $auth \Magento\Backend\Model\Auth */
@@ -21,7 +21,7 @@ class BlocksTest extends \Magento\TestFramework\TestCase\AbstractController
         $auth->login('admingws_user', 'admingws_password1');
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         /** @var $auth \Magento\Backend\Model\Auth */
         $auth = $this->_objectManager->get(\Magento\Backend\Model\Auth::class);
@@ -39,8 +39,8 @@ class BlocksTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->dispatch('backend/catalog/category/edit/id/3');
         $result = $this->getResponse()->getBody();
-        $this->assertContains('category_permissions_3', $result);
-        $this->assertContains('limited_website_ids', $result);
+        $this->assertStringContainsString('category_permissions_3', $result);
+        $this->assertStringContainsString('limited_website_ids', $result);
     }
 
     /**
@@ -51,7 +51,7 @@ class BlocksTest extends \Magento\TestFramework\TestCase\AbstractController
     public function testValidateCatalogPermissionsStoreGroups()
     {
         $this->dispatch('backend/catalog/category/edit/id/3');
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '/title=\\\"New Permission\\\"\s*type=\\\"button\\\"\s*' .
             'class=\\\".*disabled.*\\\"\s*disabled=\\\"disabled\\\"/',
             $this->getResponse()->getBody()

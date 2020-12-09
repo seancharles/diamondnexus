@@ -14,7 +14,7 @@ class OperationTest extends \Magento\TestFramework\TestCase\AbstractBackendContr
      */
     protected $_httpXRequestedWith;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -23,7 +23,7 @@ class OperationTest extends \Magento\TestFramework\TestCase\AbstractBackendContr
         }
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if ($this->_httpXRequestedWith !== null) {
             $_SERVER['HTTP_X_REQUESTED_WITH'] = $this->_httpXRequestedWith;
@@ -94,7 +94,7 @@ class OperationTest extends \Magento\TestFramework\TestCase\AbstractBackendContr
         $this->dispatch('backend/admin/scheduled_operation/edit/id/' . $operation->getId());
 
         foreach ($expectedContains as $expectedFieldName) {
-            $this->assertContains($expectedFieldName, $this->getResponse()->getBody());
+            $this->assertStringContainsString($expectedFieldName, $this->getResponse()->getBody());
         }
     }
 
@@ -157,6 +157,6 @@ class OperationTest extends \Magento\TestFramework\TestCase\AbstractBackendContr
 
         $this->dispatch('backend/admin/scheduled_operation/getFilter/entity/' . $entityType);
 
-        $this->assertContains('<div id="export_filter_grid"', $this->getResponse()->getBody());
+        $this->assertStringContainsString('<div id="export_filter_grid"', $this->getResponse()->getBody());
     }
 }

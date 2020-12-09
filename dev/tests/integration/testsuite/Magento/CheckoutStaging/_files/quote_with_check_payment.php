@@ -6,8 +6,9 @@
 
 use Magento\Framework\App\ResourceConnection;
 use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require __DIR__ . '/../../Checkout/_files/quote_with_check_payment.php';
+Resolver::getInstance()->requireDataFixture('Magento/Checkout/_files/quote_with_check_payment.php');
 
 if (!defined('STAGING_UPDATE_FIXTURE_ID')) {
     define('STAGING_UPDATE_FIXTURE_ID', 214748);

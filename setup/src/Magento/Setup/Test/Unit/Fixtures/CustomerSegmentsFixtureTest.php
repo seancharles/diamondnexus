@@ -14,7 +14,7 @@ use \Magento\Setup\Fixtures\CustomerSegmentsFixture;
 class CustomerSegmentsFixtureTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Setup\Fixtures\FixtureModel
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Setup\Fixtures\FixtureModel
      */
     private $fixtureModelMock;
 
@@ -24,16 +24,16 @@ class CustomerSegmentsFixtureTest extends \PHPUnit\Framework\TestCase
     private $model;
 
     /**
-     * @var \Magento\SalesRule\Model\RuleFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Magento\SalesRule\Model\RuleFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $ruleFactoryMock;
 
     /**
-     * @var \Magento\CustomerSegment\Model\SegmentFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Magento\CustomerSegment\Model\SegmentFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $segmentFactoryMock;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->fixtureModelMock = $this->createMock(\Magento\Setup\Fixtures\FixtureModel::class);
         $this->ruleFactoryMock = $this->createPartialMock(\Magento\SalesRule\Model\RuleFactory::class, ['create']);
@@ -62,36 +62,36 @@ class CustomerSegmentsFixtureTest extends \PHPUnit\Framework\TestCase
         );
         $abstractDbMock->expects($this->once())
             ->method('getAllChildren')
-            ->will($this->returnValue([1]));
+            ->willReturn([1]);
 
         $storeMock = $this->createMock(\Magento\Store\Model\Store::class);
         $storeMock->expects($this->once())
             ->method('getRootCategoryId')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
 
         $websiteMock = $this->createMock(\Magento\Store\Model\Website::class);
         $websiteMock->expects($this->once())
             ->method('getGroups')
-            ->will($this->returnValue([$storeMock]));
+            ->willReturn([$storeMock]);
         $websiteMock->expects($this->once())
             ->method('getId')
-            ->will($this->returnValue('website_id'));
+            ->willReturn('website_id');
 
         $storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManager::class);
         $storeManagerMock->expects($this->once())
             ->method('getWebsites')
-            ->will($this->returnValue([$websiteMock]));
+            ->willReturn([$websiteMock]);
 
         $categoryMock = $this->createMock(\Magento\Catalog\Model\Category::class);
         $categoryMock->expects($this->once())
             ->method('getResource')
-            ->will($this->returnValue($abstractDbMock));
+            ->willReturn($abstractDbMock);
         $categoryMock->expects($this->once())
             ->method('getPath')
-            ->will($this->returnValue('path/to/file'));
+            ->willReturn('path/to/file');
         $categoryMock->expects($this->once())
             ->method('getId')
-            ->will($this->returnValue('category_id'));
+            ->willReturn('category_id');
 
         $ruleModelMock = $this->createMock(\Magento\SalesRule\Model\Rule::class);
         $this->ruleFactoryMock->expects($this->once())
@@ -110,10 +110,10 @@ class CustomerSegmentsFixtureTest extends \PHPUnit\Framework\TestCase
         $objectManagerMock = $this->createMock(\Magento\Framework\ObjectManager\ObjectManager::class);
         $objectManagerMock->expects($this->once())
             ->method('create')
-            ->will($this->returnValue($storeManagerMock));
+            ->willReturn($storeManagerMock);
         $objectManagerMock->expects($this->any())
             ->method('get')
-            ->will($this->returnValueMap($objectValueMap));
+            ->willReturnMap($objectValueMap);
 
         $valueMap = [
             ['customer_segment_rules', 0, 1],
@@ -124,11 +124,11 @@ class CustomerSegmentsFixtureTest extends \PHPUnit\Framework\TestCase
         $this->fixtureModelMock
             ->expects($this->any())
             ->method('getValue')
-            ->will($this->returnValueMap($valueMap));
+            ->willReturnMap($valueMap);
         $this->fixtureModelMock
             ->expects($this->any())
             ->method('getObjectManager')
-            ->will($this->returnValue($objectManagerMock));
+            ->willReturn($objectManagerMock);
 
         $this->model->execute();
     }
@@ -158,12 +158,11 @@ class CustomerSegmentsFixtureTest extends \PHPUnit\Framework\TestCase
 
     public function testGenerateCustomerSegments()
     {
-        $segmentModelMock = $this->createPartialMock(
-            \Magento\CustomerSegment\Model\Segment::class,
-            [
-                'getSegmentId', 'save', 'getApplyTo', 'matchCustomers', 'loadPost'
-            ]
-        );
+        $segmentModelMock = $this->getMockBuilder(\Magento\CustomerSegment\Model\Segment::class)
+            ->disableOriginalConstructor()
+            ->addMethods(['getSegmentId', 'getApplyTo'])
+            ->setMethods(['save', 'matchCustomers', 'loadPost'])
+            ->getMock();
 
         $data1 = [
             'name'          => 'Customer Segment 0',
@@ -213,7 +212,7 @@ class CustomerSegmentsFixtureTest extends \PHPUnit\Framework\TestCase
         $this->fixtureModelMock
             ->expects($this->any())
             ->method('getValue')
-            ->will($this->returnValueMap($valueMap));
+            ->willReturnMap($valueMap);
 
         $reflection = new \ReflectionClass($this->model);
         $reflectionProperty = $reflection->getProperty('customerSegmentsCount');
@@ -229,7 +228,7 @@ class CustomerSegmentsFixtureTest extends \PHPUnit\Framework\TestCase
             'type'      => \Magento\SalesRule\Model\Rule\Condition\Product::class,
             'attribute' => 'category_ids',
             'operator'  => '==',
-            'value'     => null,
+            'value'     => 0,
         ];
 
         $secondCondition = [
@@ -276,7 +275,7 @@ class CustomerSegmentsFixtureTest extends \PHPUnit\Framework\TestCase
         $reflectionProperty = $reflection->getProperty('customerSegmentsCount');
         $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($this->model, 1);
-        $result = $this->model->generateSegmentCondition(0, [0]);
+        $result = $this->model->generateSegmentCondition(0, [[0]]);
         $this->assertSame($expected, $result);
     }
 

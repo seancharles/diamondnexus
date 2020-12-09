@@ -30,7 +30,7 @@ class DuplicateProductsByUrlSectionTest extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->model = Bootstrap::getObjectManager()->create(DuplicateProductsByUrlSection::class);
         $this->eavConfig = Bootstrap::getObjectManager()->get(\Magento\Eav\Model\Config::class);

@@ -44,7 +44,7 @@ class CreditmemoSaveAfterTest extends \PHPUnit\Framework\TestCase
      */
     private $objectManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->creditmemoSaveAfter = $this->objectManager->create(CreditmemoSaveAfter::class);
@@ -158,7 +158,7 @@ class CreditmemoSaveAfterTest extends \PHPUnit\Framework\TestCase
         self::assertEquals($expectedMessages, count($historyComments));
 
         foreach ($historyComments as $i => $comment) {
-            self::assertContains(
+            self::assertStringContainsString(
                 'We refunded $' . $expectedAmount[$i] . ' to Store Credit from Gift Card',
                 $comment
             );

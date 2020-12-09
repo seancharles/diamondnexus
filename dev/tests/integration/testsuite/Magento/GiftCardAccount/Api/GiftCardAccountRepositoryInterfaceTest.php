@@ -13,6 +13,9 @@ use Magento\GiftCardAccount\Model\Giftcardaccount;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class to test Gift Card Account Repository
+ */
 class GiftCardAccountRepositoryInterfaceTest extends TestCase
 {
     /**
@@ -20,7 +23,10 @@ class GiftCardAccountRepositoryInterfaceTest extends TestCase
      */
     private $repository;
 
-    protected function setUp()
+    /**
+     * @inheritdoc
+     */
+    protected function setUp(): void
     {
         $this->repository = Bootstrap::getObjectManager()->create(GiftCardAccountRepositoryInterface::class);
     }
@@ -71,7 +77,7 @@ class GiftCardAccountRepositoryInterfaceTest extends TestCase
         $searchResult = $this->repository->getList($searchCriteria);
 
         $items = array_values($searchResult->getItems());
-        $this->assertEquals(1, count($items));
+        $this->assertCount(1, $items);
         $this->assertEquals('gift_card_account_2', $items[0]['code']);
     }
 

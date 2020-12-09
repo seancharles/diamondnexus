@@ -20,7 +20,7 @@ class ElementTest extends \PHPUnit\Framework\TestCase
      */
     private $block;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->block = Bootstrap::getObjectManager()->get(LayoutInterface::class)
             ->createBlock(Element::class);
@@ -36,8 +36,8 @@ class ElementTest extends \PHPUnit\Framework\TestCase
         $html = $this->block->getCalendarDateHtml('date_name', 'date_id', $value, $formatType);
         $dateFormat = Bootstrap::getObjectManager()->get(TimezoneInterface::class)
             ->getDateFormat($formatType);
-        $this->assertContains('dateFormat: "' . $dateFormat . '",', $html);
-        $this->assertContains('value=""', $html);
+        $this->assertStringContainsString('dateFormat: "' . $dateFormat . '",', $html);
+        $this->assertStringContainsString('value=""', $html);
     }
 
     /**

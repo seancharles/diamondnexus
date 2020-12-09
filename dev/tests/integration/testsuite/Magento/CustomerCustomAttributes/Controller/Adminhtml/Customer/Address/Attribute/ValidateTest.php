@@ -7,32 +7,14 @@ declare(strict_types=1);
 
 namespace Magento\CustomerCustomAttributes\Controller\Adminhtml\Customer\Address\Attribute;
 
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\Serialize\SerializerInterface;
 use Magento\TestFramework\TestCase\AbstractBackendController;
+use Magento\Framework\Data\Form\FormKey;
 
 /**
- * Checks validate action
- *
- * @see \Magento\CustomerCustomAttributes\Controller\Adminhtml\Customer\Address\Attribute\Validate
- *
  * @magentoAppArea adminhtml
  */
 class ValidateTest extends AbstractBackendController
 {
-    /** @var SerializerInterface */
-    private $json;
-
-    /**
-     * @inheritdoc
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->json = $this->_objectManager->get(SerializerInterface::class);
-    }
-
     /**
      * Tests that controller validate file extensions.
      *
@@ -40,14 +22,34 @@ class ValidateTest extends AbstractBackendController
      */
     public function testFileExtensions(): void
     {
-        $this->dispatchWithPostParams([
+        $params = $this->getRequestNewAttributeData();
+        $request = $this->getRequest();
+        $request->setMethod('POST');
+        $request->setPostValue($params);
+
+        $this->dispatch('backend/admin/customer_address_attribute/validate');
+
+        $this->assertEquals(
+            '{"error":true,"message":"Please correct the value for file extensions."}',
+            $this->getResponse()->getBody()
+        );
+    }
+
+    /**
+     * Gets request params.
+     *
+     * @return array
+     */
+    private function getRequestNewAttributeData(): array
+    {
+        return [
             'attribute_code' => 'new_file',
             'frontend_label' => ['new_file'],
             'frontend_input' => 'file',
             'file_extensions' => 'php',
             'sort_order' => 1,
-        ]);
-        $this->assertErrorMessage('Please correct the value for file extensions.');
+            'form_key' => $this->_objectManager->get(FormKey::class)->getFormKey(),
+        ];
     }
 
     /**
@@ -55,9 +57,27 @@ class ValidateTest extends AbstractBackendController
      *
      * @return void
      */
-    public function testUniqueOption(): void
+    public function testUniqueOption()
     {
-        $this->dispatchWithPostParams([
+        $params = $this->getRequestNewAttributeDataWithNotUniqueOptions();
+        $request = $this->getRequest();
+        $request->setMethod('POST');
+        $request->setPostValue($params);
+
+        $this->dispatch('backend/admin/customer_address_attribute/validate');
+
+        $this->assertEquals(
+            '{"error":true,"message":"The value of Admin must be unique."}',
+            $this->getResponse()->getBody()
+        );
+    }
+
+    /**
+     * @return array
+     */
+    private function getRequestNewAttributeDataWithNotUniqueOptions(): array
+    {
+        return [
             'attribute_code' => 'test_dropdown',
             'frontend_label' => ['test_dropdown'],
             'frontend_input' => 'select',
@@ -65,8 +85,7 @@ class ValidateTest extends AbstractBackendController
             'serialized_options' => '["option%5Border%5D%5Boption_0%5D=1&option%5Bvalue%5D%5Boption_0%5D%5B0%5D=1&option%5Bvalue%5D%5Boption_0%5D%5B1%5D=1&option%5Bdelete%5D%5Boption_0%5D=","option%5Border%5D%5Boption_1%5D=2&option%5Bvalue%5D%5Boption_1%5D%5B0%5D=1&option%5Bvalue%5D%5Boption_1%5D%5B1%5D=1&option%5Bdelete%5D%5Boption_1%5D="]',
             //@codingStandardsIgnoreEnd
             'sort_order' => 1,
-        ]);
-        $this->assertErrorMessage('The value of Admin must be unique.');
+        ];
     }
 
     /**
@@ -74,9 +93,27 @@ class ValidateTest extends AbstractBackendController
      *
      * @return void
      */
-    public function testEmptyOption(): void
+    public function testEmptyOption()
     {
-        $this->dispatchWithPostParams([
+        $params = $this->getRequestNewAttributeDataWithEmptyOption();
+        $request = $this->getRequest();
+        $request->setMethod('POST');
+        $request->setPostValue($params);
+
+        $this->dispatch('backend/admin/customer_address_attribute/validate');
+
+        $this->assertEquals(
+            '{"error":true,"message":"The value of Admin scope can\'t be empty."}',
+            $this->getResponse()->getBody()
+        );
+    }
+
+    /**
+     * @return array
+     */
+    private function getRequestNewAttributeDataWithEmptyOption(): array
+    {
+        return [
             'attribute_code' => 'test_dropdown',
             'frontend_label' => ['test_dropdown'],
             'frontend_input' => 'select',
@@ -84,48 +121,6 @@ class ValidateTest extends AbstractBackendController
             'serialized_options' => '["option%5Border%5D%5Boption_0%5D=1&option%5Bvalue%5D%5Boption_0%5D%5B0%5D=&option%5Bvalue%5D%5Boption_0%5D%5B1%5D=&option%5Bdelete%5D%5Boption_0%5D="]',
             //@codingStandardsIgnoreEnd
             'sort_order' => 1,
-        ]);
-        $this->assertErrorMessage('The value of Admin scope can\'t be empty.');
-    }
-
-    /**
-     * @return void
-     */
-    public function testSuccess(): void
-    {
-        $this->dispatchWithPostParams([
-            'attribute_code' => 'test_dropdown',
-            'frontend_label' => ['test_dropdown'],
-            'frontend_input' => 'text',
-            'sort_order' => 1,
-        ]);
-        $response = $this->json->unserialize($this->getResponse()->getBody());
-        $this->assertFalse($response['error']);
-    }
-
-    /**
-     * Dispatch request with params
-     *
-     * @param array $params
-     * @return void
-     */
-    private function dispatchWithPostParams(array $params): void
-    {
-        $this->getRequest()->setMethod(Http::METHOD_POST)->setPostValue($params);
-        $this->dispatch('backend/admin/customer_address_attribute/validate');
-    }
-
-    /**
-     * Assert that response error message match expected value
-     *
-     * @param string $expectedMessage
-     * @return void
-     */
-    private function assertErrorMessage(string $expectedMessage): void
-    {
-        $response = $this->json->unserialize($this->getResponse()->getBody());
-        $this->assertNotEmpty($response);
-        $this->assertTrue($response['error']);
-        $this->assertEquals((string)__($expectedMessage), $response['message']);
+        ];
     }
 }

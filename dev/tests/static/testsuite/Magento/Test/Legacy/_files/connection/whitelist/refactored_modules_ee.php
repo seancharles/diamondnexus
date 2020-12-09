@@ -21,7 +21,6 @@ return [
     'Magento_CustomerCustomAttributes',
     'Magento_CustomerFinance',
     'Magento_CustomerSegment',
-    'Magento_Cybersource',
     'Magento_Doc',
     'Magento_EncryptionKey',
     'Magento_Enterprise',
@@ -48,5 +47,4 @@ return [
     'Magento_TargetRule',
     'Magento_VersionsCms',
     'Magento_WebsiteRestriction',
-    'Magento_Worldpay',
 ];

@@ -10,7 +10,6 @@ namespace Magento\VersionsCms\Block\Adminhtml\Cms\Hierarchy\Edit;
 use Magento\Catalog\Block\Product\AbstractProduct;
 use Magento\Framework\Registry;
 use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\View\Element\Template\Context;
 use Magento\Framework\View\LayoutInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\VersionsCms\Block\Adminhtml\Cms\Hierarchy\Edit\Form\Grid;
@@ -42,7 +41,7 @@ class FormTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_layout = Bootstrap::getObjectManager()->get(
@@ -63,16 +62,7 @@ class FormTest extends TestCase
     public function testGetGridJsObject(): void
     {
         $parentName = 'parent';
-        $mockClass = $this->getMockClass(
-            AbstractProduct::class,
-            ['_prepareLayout'],
-            [
-                Bootstrap::getObjectManager()->create(
-                    Context::class
-                )
-            ]
-        );
-        $this->_layout->createBlock($mockClass, $parentName);
+        $this->_layout->createBlock(AbstractProduct::class, $parentName);
         $this->_layout->setChild($parentName, $this->_block->getNameInLayout(), '');
 
         $pageGrid = $this->_layout->addBlock(
@@ -101,7 +91,7 @@ class FormTest extends TestCase
             ->getMock();
         $cmsHierarchyMock->expects($this->any())
             ->method('isMetadataEnabled')
-            ->will($this->returnValue($isMetadataEnabled));
+            ->willReturn($isMetadataEnabled);
         $block = $objectManager->create(
             Form::class,
             ['cmsHierarchy' =>$cmsHierarchyMock]

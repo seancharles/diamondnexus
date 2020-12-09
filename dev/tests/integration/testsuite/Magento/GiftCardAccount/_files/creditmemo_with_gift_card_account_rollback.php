@@ -3,4 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-require 'order_with_gift_card_account_rollback.php';
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+
+Resolver::getInstance()->requireDataFixture(
+    'Magento/GiftCardAccount/_files/order_with_gift_card_account_rollback.php'
+);

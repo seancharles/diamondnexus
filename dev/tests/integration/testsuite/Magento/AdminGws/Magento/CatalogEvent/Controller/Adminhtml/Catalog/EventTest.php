@@ -28,7 +28,7 @@ class EventTest extends \Magento\TestFramework\TestCase\AbstractBackendControlle
     {
         $this->dispatch('backend/admin/catalog_event/index/');
         $body = $this->getResponse()->getBody();
-        $this->assertContains('Events', $body);
+        $this->assertStringContainsString('Events', $body);
         $this->assertEquals(
             1,
             \Magento\TestFramework\Helper\Xpath::getElementsCountForXpath(

@@ -5,13 +5,18 @@
  */
 declare(strict_types=1);
 
+use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require __DIR__ . '/../../../Magento/Sales/_files/order.php';
+Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/order.php');
 
+$objectManager = Bootstrap::getObjectManager();
 /** @var OrderRepositoryInterface $orderRepository */
 $orderRepository = $objectManager->create(OrderRepositoryInterface::class);
-$order = $orderRepository->get($order->getId());
+/** @var OrderInterface $order */
+$order = $objectManager->create(OrderInterface::class)->load('100000001', 'increment_id');
 
 $order->setData('reward_points_balance', 100)
     ->setData('reward_currency_amount', 15.1)

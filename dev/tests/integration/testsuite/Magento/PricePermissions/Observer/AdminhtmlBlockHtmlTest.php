@@ -13,7 +13,7 @@ class AdminhtmlBlockHtmlTest extends \PHPUnit\Framework\TestCase
     /** @var \Magento\Framework\View\LayoutInterface */
     protected $_layout = null;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(

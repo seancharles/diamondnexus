@@ -7,7 +7,7 @@ namespace Magento\SalesArchive\Controller\Adminhtml\Archive;
 
 class MassRemoveTest extends \Magento\TestFramework\TestCase\AbstractBackendController
 {
-    public function setUp()
+    protected function setUp(): void
     {
         $this->resource = 'Magento_SalesArchive::remove';
         $this->uri = 'backend/sales/archive/massremove';

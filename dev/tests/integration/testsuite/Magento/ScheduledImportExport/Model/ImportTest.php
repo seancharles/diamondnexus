@@ -16,11 +16,18 @@ use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\Indexer\TestCase;
 
 /**
+ * Test for schedule import
+ *
  * @magentoDbIsolation disabled
  */
 class ImportTest extends TestCase
 {
-    public static function setUpBeforeClass()
+    /**
+     * Setup before class
+     *
+     * @return void
+     */
+    public static function setUpBeforeClass(): void
     {
         $db = Bootstrap::getInstance()->getBootstrap()
             ->getApplication()
@@ -33,7 +40,12 @@ class ImportTest extends TestCase
         parent::setUpBeforeClass();
     }
 
-    public function testRunSchedule()
+    /**
+     * Test run schedule
+     *
+     * @return void
+     */
+    public function testRunSchedule(): void
     {
         $this->assertNull($this->getProduct('product_100500'));
         $this->doImport(
@@ -46,7 +58,12 @@ class ImportTest extends TestCase
         $this->assertNotNull($this->getProduct('product_100500'));
     }
 
-    public function testRunScheduleWithUTF8EncodedFile()
+    /**
+     * Test run schedule with utf8 encoded file
+     *
+     * @return void
+     */
+    public function testRunScheduleWithUTF8EncodedFile(): void
     {
         $this->assertNull($this->getProduct('product_100501'));
         $filePath = 'dev/tests/integration/testsuite/Magento/ScheduledImportExport/_files/product.csv';
@@ -92,11 +109,14 @@ class ImportTest extends TestCase
     }
 
     /**
+     * Get product by sku
+     *
      * @param string $sku
      * @return Product|null
      */
     private function getProduct(string $sku): ?Product
     {
+        parent::tearDown();
         /** @var ProductRepository $productRepository */
         $productRepository = Bootstrap::getObjectManager()->get(ProductRepository::class);
         try {

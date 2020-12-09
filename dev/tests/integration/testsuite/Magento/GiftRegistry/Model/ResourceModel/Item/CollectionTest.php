@@ -17,7 +17,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
      */
     protected $objectManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->_collection = $this->objectManager->create(
@@ -34,8 +34,8 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->_collection->addProductFilter(99);
         $where = $select->getPart(\Magento\Framework\DB\Select::WHERE);
         $this->assertArrayHasKey(0, $where);
-        $this->assertContains('product_id', $where[0]);
-        $this->assertContains('99', $where[0]);
+        $this->assertStringContainsString('product_id', $where[0]);
+        $this->assertStringContainsString('99', $where[0]);
     }
 
     public function testAddItemFilter()

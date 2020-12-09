@@ -14,7 +14,7 @@ class OperationTest extends \Magento\TestFramework\Indexer\TestCase
      */
     protected $model;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $db = Bootstrap::getInstance()->getBootstrap()
             ->getApplication()
@@ -30,7 +30,7 @@ class OperationTest extends \Magento\TestFramework\Indexer\TestCase
     /**
      * Set up before test
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\ScheduledImportExport\Model\Scheduled\Operation::class
@@ -56,6 +56,8 @@ class OperationTest extends \Magento\TestFramework\Indexer\TestCase
     public function testGetInstance($operationType)
     {
         $this->model->setOperationType($operationType);
+        $this->model->setFileInfo(['file_format' => 'csv'])
+            ->setEntityAttributes(['export_filter' => []]);
         $string = new \Magento\Framework\Stdlib\StringUtils();
         $this->assertInstanceOf(
             'Magento\ScheduledImportExport\Model\\' . $string->upperCaseWords($operationType),
@@ -66,10 +68,11 @@ class OperationTest extends \Magento\TestFramework\Indexer\TestCase
     /**
      * Test getHistoryFilePath() method in case when file info is not set
      *
-     * @expectedException \Magento\Framework\Exception\LocalizedException
      */
     public function testGetHistoryFilePathException()
     {
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
+
         $this->model->getHistoryFilePath();
     }
 
@@ -132,13 +135,5 @@ class OperationTest extends \Magento\TestFramework\Indexer\TestCase
 
         // Restore current working directory
         chdir($cwd);
-    }
-
-    /**
-     * teardown
-     */
-    public function tearDown()
-    {
-        parent::tearDown();
     }
 }

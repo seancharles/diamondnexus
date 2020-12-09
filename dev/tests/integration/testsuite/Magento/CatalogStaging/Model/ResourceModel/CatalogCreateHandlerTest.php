@@ -17,7 +17,7 @@ class CatalogCreateHandlerTest extends \PHPUnit\Framework\TestCase
     /** @var  \Magento\Framework\ObjectManagerInterface */
     private $objectManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->categoryFactory = $this->objectManager->get(CategoryFactory::class);

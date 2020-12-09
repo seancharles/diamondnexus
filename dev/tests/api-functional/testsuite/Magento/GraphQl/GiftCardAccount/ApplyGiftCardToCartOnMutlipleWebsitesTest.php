@@ -24,7 +24,7 @@ class ApplyGiftCardToCartOnMutlipleWebsitesTest extends GraphQlAbstract
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->getMaskedQuoteIdByReservedOrderId = $objectManager->get(GetMaskedQuoteIdByReservedOrderId::class);
@@ -63,12 +63,12 @@ class ApplyGiftCardToCartOnMutlipleWebsitesTest extends GraphQlAbstract
      * @magentoApiDataFixture Magento/GiftCardAccount/_files/giftcardaccount.php
      * @magentoApiDataFixture Magento/GiftCardAccount/_files/create_giftcardaccount_with_second_website_and_product.php
      *
-     * @expectedException \Exception
-     * @expectedExceptionMessage GraphQL response contains errors: The gift card code couldn't be added.
-     * Verify your information and try again.
      */
     public function testApplyFirstGiftCardToCartOnSecondWebsite()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('GraphQL response contains errors: The gift card code couldn\'t be added. Verify your information and try again.');
+
         $giftCardCode ='giftcardaccount_fixture';
 
         $quantity = 2;
@@ -120,12 +120,12 @@ class ApplyGiftCardToCartOnMutlipleWebsitesTest extends GraphQlAbstract
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/add_simple_product.php
      * @magentoApiDataFixture Magento/GiftCardAccount/_files/create_giftcardaccount_with_second_website_and_product.php
      *
-     * @expectedException \Exception
-     * @expectedExceptionMessage GraphQL response contains errors: The gift card code couldn't be added.
-     * Verify your information and try again.
      */
     public function testApplySecondGiftCardToCartOnDefaultWebsite()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('GraphQL response contains errors: The gift card code couldn\'t be added. Verify your information and try again.');
+
         $giftCardCode ='gift_card_account_two';
         $maskedQuoteId = $this->getMaskedQuoteIdByReservedOrderId->execute('test_quote');
 
@@ -140,11 +140,12 @@ class ApplyGiftCardToCartOnMutlipleWebsitesTest extends GraphQlAbstract
      * @magentoApiDataFixture Magento/GiftCardAccount/_files/giftcardaccount.php
      * @magentoApiDataFixture Magento/GiftCardAccount/_files/create_giftcardaccount_with_second_website_and_product.php
      *
-     * @expectedException \Exception
-     * @expectedExceptionMessage GraphQL response contains errors: Invalid gift card
      */
     public function testQueryFirstGiftCardAccountOnSecondWebsite()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('GraphQL response contains errors: Invalid gift card');
+
         $giftCardCode = 'giftcardaccount_fixture';
         $query = $this->getGiftCardAccountQuery($giftCardCode);
 
@@ -157,11 +158,12 @@ class ApplyGiftCardToCartOnMutlipleWebsitesTest extends GraphQlAbstract
      *
      * @magentoApiDataFixture Magento/GiftCardAccount/_files/create_giftcardaccount_with_second_website_and_product.php
      *
-     * @expectedException \Exception
-     * @expectedExceptionMessage GraphQL response contains errors: Invalid gift card
      */
     public function testQuerySecondGiftCardAccountOnDefaultWebsite()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('GraphQL response contains errors: Invalid gift card');
+
         $giftCardCode = 'gift_card_account_two';
         $query = $this->getGiftCardAccountQuery($giftCardCode);
 

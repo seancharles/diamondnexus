@@ -27,18 +27,19 @@ class GuestPaymentInformationManagementTest extends WebapiAbstract
      */
     private $objectManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
     }
 
     /**
      * @magentoApiDataFixture Magento/CheckoutStaging/_files/quote_with_check_payment.php
-     * @expectedException \Exception
-     * @expectedExceptionMessage The order can't be submitted in preview mode.
      */
     public function testSavePaymentInformationAndPlaceOrderWithException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('The order can\'t be submitted in preview mode.');
+
         if (TESTS_WEB_API_ADAPTER == self::ADAPTER_SOAP) {
             $this->markTestSkipped('Preview version should not works for SOAP Api');
         }

@@ -6,8 +6,9 @@
 
 use Magento\Framework\App\ResourceConnection;
 use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require __DIR__ . '/../../Checkout/_files/quote_with_check_payment_rollback.php';
+Resolver::getInstance()->requireDataFixture('Magento/Checkout/_files/quote_with_check_payment_rollback.php');
 
 /** @var ResourceConnection $resource */
 $resource = Bootstrap::getObjectManager()

@@ -37,7 +37,7 @@ class WrapperTest extends \PHPUnit\Framework\TestCase
         $layout->addOutputElement('customerbalance.wrapper');
         $html = $layout->getOutput();
 
-        $this->assertContains('<div class="storecredit">', $html);
+        $this->assertStringContainsString('<div class="storecredit">', $html);
         $format = '%A<div class="block block-balance">%A' .
             '<table id="customerbalance-history" class="data table table-balance-history">%A';
         $this->assertStringMatchesFormat($format, $html);

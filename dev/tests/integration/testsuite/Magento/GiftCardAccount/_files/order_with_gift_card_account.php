@@ -5,6 +5,7 @@
  */
 declare(strict_types=1);
 
+use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\GiftCardAccount\Api\Data\GiftCardAccountInterface;
 use Magento\GiftCardAccount\Api\GiftCardAccountRepositoryInterface;
 use Magento\GiftCardAccount\Helper\Data;
@@ -15,14 +16,17 @@ use Magento\Sales\Model\Order\Item;
 use Magento\Sales\Model\Order\Payment;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require __DIR__ . '/../../../Magento/Sales/_files/default_rollback.php';
-require __DIR__ . '/../../../Magento/Catalog/_files/product_simple.php';
+Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/default_rollback.php');
+Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple.php');
 /** @var \Magento\Catalog\Model\Product $product */
 $addressData = include __DIR__ . '/../../../Magento/Sales/_files/address_data.php';
 
 $objectManager = Bootstrap::getObjectManager();
-
+/** @var ProductRepositoryInterface $productRepository */
+$productRepository = $objectManager->create(ProductRepositoryInterface::class);
+$product = $productRepository->get('simple');
 $billingAddress = $objectManager->create(Address::class, ['data' => $addressData]);
 $billingAddress->setAddressType('billing');
 

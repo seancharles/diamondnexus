@@ -3,8 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require __DIR__ . '/../../../Magento/Customer/_files/customer.php';
+Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer.php');
 
 /** @var $reward \Magento\Reward\Model\Reward */
 $reward = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\Reward\Model\Reward::class);

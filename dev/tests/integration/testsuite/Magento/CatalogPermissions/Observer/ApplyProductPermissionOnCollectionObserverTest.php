@@ -36,7 +36,7 @@ class ApplyProductPermissionOnCollectionObserverTest extends \PHPUnit\Framework\
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = Bootstrap::getObjectManager();
 

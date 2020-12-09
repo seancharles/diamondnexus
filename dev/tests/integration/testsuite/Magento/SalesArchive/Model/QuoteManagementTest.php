@@ -7,12 +7,11 @@ declare(strict_types=1);
 
 namespace Magento\SalesArchive\Model;
 
-use Braintree\Result\Successful;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Model\Quote;
 use Magento\TestFramework\Helper\Bootstrap;
-use \PHPUnit_Framework_MockObject_MockObject as MockObject;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Class for testing QuoteManagement model with SalesArchive.
@@ -22,12 +21,12 @@ use \PHPUnit_Framework_MockObject_MockObject as MockObject;
 class QuoteManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Place order using payment action "Authorize and Capture" and check that this order
+     * Place order using payment action "Sale" and check that this order
      * is not present in order archive grid.
      *
      * @magentoConfigFixture current_store sales/magento_salesarchive/active 0
-     * @magentoConfigFixture current_store payment/braintree/active 1
-     * @magentoConfigFixture current_store payment/braintree/payment_action authorize_capture
+     * @magentoConfigFixture current_store payment/payflowpro/active 1
+     * @magentoConfigFixture current_store payment/payflowpro/payment_action Sale
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Sales/_files/quote_with_bundle.php
      *
@@ -39,11 +38,11 @@ class QuoteManagementTest extends \PHPUnit\Framework\TestCase
 
         $objectManager->addSharedInstance(
             $this->getHttpClientMock(),
-            \Magento\Braintree\Gateway\Http\Client\TransactionSale::class
+            \Magento\Paypal\Model\Payflow\Service\Gateway::class
         );
 
         $quote = $this->getQuote('test01');
-        $quote->getPayment()->setMethod('braintree');
+        $quote->getPayment()->setMethod(\Magento\Paypal\Model\Config::METHOD_PAYFLOWPRO);
 
         /** @var CartRepositoryInterface $quoteRepository */
         $quoteRepository = $objectManager->get(CartRepositoryInterface::class);
@@ -70,7 +69,6 @@ class QuoteManagementTest extends \PHPUnit\Framework\TestCase
             'Order must not be present in orders archive'
         );
     }
-
     /**
      * Retrieves quote by reserved order id.
      *
@@ -90,7 +88,6 @@ class QuoteManagementTest extends \PHPUnit\Framework\TestCase
 
         return array_pop($items);
     }
-
     /**
      * Get HTTP Client for payment.
      *
@@ -98,31 +95,37 @@ class QuoteManagementTest extends \PHPUnit\Framework\TestCase
      */
     private function getHttpClientMock(): MockObject
     {
-        $transaction = $this->getMockBuilder(\Braintree\Transaction::class)
+        $gatewayMock = $this->getMockBuilder(\Magento\Paypal\Model\Payflow\Service\Gateway::class)
             ->disableOriginalConstructor()
+            ->setMethods(['postRequest'])
             ->getMock();
-        $transaction->creditCardDetails = new \StdClass();
-        $transaction->creditCardDetails->token = null;
-        $transaction->status = 'submitted_for_settlement';
-        $transaction->id = 'AFDCVG';
-        $transaction->creditCard = [
-            'last4'           => '4444',
-            'expirationMonth' => '12',
-            'expirationYear'  => '2020',
-            'cardType'        => 'visa',
-        ];
-        $successTrue = new Successful();
-        $successTrue->success = true;
-        $successTrue->transaction = $transaction;
 
-        $response = [
-            'object' => $successTrue,
-        ];
-        $client = $this->getMockBuilder(\Magento\Braintree\Gateway\Http\Client\TransactionSale::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $client->method('placeRequest')->willReturn($response);
-
-        return $client;
+        $gatewayMock
+            ->method('postRequest')
+            ->willReturn(
+                new \Magento\Framework\DataObject(
+                    [
+                        'result' => '0',
+                        'pnref' => 'A70AAC2378BA',
+                        'respmsg' => 'Approved',
+                        'authcode' => '647PNI',
+                        'avsaddr' => 'Y',
+                        'avszip' => 'N',
+                        'hostcode' => 'A',
+                        'procavs' => 'A',
+                        'visacardlevel' => '12',
+                        'transtime' => '2019-06-24 10:12:03',
+                        'firstname' => 'John',
+                        'lastname' => 'Doe',
+                        'amt' => '14.99',
+                        'acct' => '1111',
+                        'expdate' => '0221',
+                        'cardtype' => '0',
+                        'iavs' => 'N',
+                        'result_code' => '0',
+                    ]
+                )
+            );
+        return $gatewayMock;
     }
 }

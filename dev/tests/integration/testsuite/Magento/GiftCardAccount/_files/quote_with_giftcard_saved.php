@@ -8,21 +8,46 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-require 'giftcardaccount.php';
 
-global $fixtureBaseDir;
+use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require $fixtureBaseDir . '/Magento/Customer/_files/customer.php';
-require $fixtureBaseDir . '/Magento/Customer/_files/customer_address.php';
-require $fixtureBaseDir  . '/Magento/Catalog/_files/products.php';
-$addressData = include $fixtureBaseDir  . '/Magento/Sales/_files/address_data.php';
+/** @var $model \Magento\GiftCardAccount\Model\Giftcardaccount */
+$model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
+    \Magento\GiftCardAccount\Model\Giftcardaccount::class
+);
+$model->setCode(
+    $giftCardCode ?? 'giftcardaccount_fixture'
+)->setStatus(
+    \Magento\GiftCardAccount\Model\Giftcardaccount::STATUS_ENABLED
+)->setState(
+    \Magento\GiftCardAccount\Model\Giftcardaccount::STATE_AVAILABLE
+)->setWebsiteId(
+    \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
+        \Magento\Store\Model\StoreManagerInterface::class
+    )->getWebsite()->getId()
+)->setIsRedeemable(
+    \Magento\GiftCardAccount\Model\Giftcardaccount::REDEEMABLE
+)->setBalance(
+    9.99
+)->setDateExpires(
+    date('Y-m-d', strtotime('+1 week'))
+)->save();
+
+Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer.php');
+Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer_address.php');
+Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/products.php');
+
+$addressData = include __DIR__ . '/../../../Magento/Sales/_files/address_data.php';
 
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
 /** @var \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository */
 $customerRepository = $objectManager->create(\Magento\Customer\Api\CustomerRepositoryInterface::class);
 $customer = $customerRepository->getById(1);
-
+/** @var ProductRepositoryInterface $productRepository */
+$productRepository = $objectManager->create(ProductRepositoryInterface::class);
+$product = $productRepository->get('simple');
 /** @var \Magento\Customer\Api\AddressRepositoryInterface $addressRepository */
 $addressRepository = $objectManager->create(\Magento\Customer\Api\AddressRepositoryInterface::class);
 

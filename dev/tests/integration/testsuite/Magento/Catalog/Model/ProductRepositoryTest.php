@@ -83,10 +83,16 @@ class ProductRepositoryTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
+        Bootstrap::getObjectManager()->configure([
+            'preferences' => [
+                \Magento\Catalog\Model\Product\Attribute\LayoutUpdateManager::class =>
+                    \Magento\TestFramework\Catalog\Model\ProductLayoutUpdateManager::class
+            ]
+        ]);
         $this->objectManager = Bootstrap::getObjectManager();
         $this->productRepository = $this->objectManager->get(ProductRepositoryInterface::class);
         $this->productRepository->cleanCache();
@@ -102,7 +108,7 @@ class ProductRepositoryTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         foreach ($this->productSkusToDelete as $productSku) {
             try {

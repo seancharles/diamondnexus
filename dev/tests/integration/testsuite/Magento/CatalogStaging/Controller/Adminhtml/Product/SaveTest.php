@@ -54,7 +54,7 @@ class SaveTest extends \Magento\TestFramework\TestCase\AbstractController
      *
      * @return void
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         \Magento\TestFramework\Helper\Bootstrap::getInstance()->getBootstrap()
@@ -68,7 +68,7 @@ class SaveTest extends \Magento\TestFramework\TestCase\AbstractController
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -95,7 +95,7 @@ class SaveTest extends \Magento\TestFramework\TestCase\AbstractController
         ];
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         $db = \Magento\TestFramework\Helper\Bootstrap::getInstance()->getBootstrap()
             ->getApplication()
@@ -111,7 +111,7 @@ class SaveTest extends \Magento\TestFramework\TestCase\AbstractController
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->auth->getAuthStorage()->destroy(['send_expire_cookie' => false]);
         $this->auth = null;
@@ -174,8 +174,8 @@ class SaveTest extends \Magento\TestFramework\TestCase\AbstractController
 
         $this->assertEquals(
             [
-                0 => ['store_id' => 0, 'value' => '10.0000'],
-                1 => ['store_id' => 0, 'value' => '7.0000'],
+                0 => ['store_id' => 0, 'value' => 10],
+                1 => ['store_id' => 0, 'value' => 7],
             ],
             $data
         );

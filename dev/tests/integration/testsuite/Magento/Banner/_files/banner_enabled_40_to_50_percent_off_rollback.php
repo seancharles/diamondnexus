@@ -5,8 +5,10 @@
  */
 declare(strict_types=1);
 
-require __DIR__ . '/../../../Magento/SalesRule/_files/cart_rule_40_percent_off_rollback.php';
-require __DIR__ . '/../../../Magento/SalesRule/_files/cart_rule_50_percent_off_rollback.php';
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+
+Resolver::getInstance()->requireDataFixture('Magento/SalesRule/_files/cart_rule_40_percent_off_rollback.php');
+Resolver::getInstance()->requireDataFixture('Magento/SalesRule/_files/cart_rule_50_percent_off_rollback.php');
 
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 $registry = $objectManager->get(\Magento\Framework\Registry::class);
