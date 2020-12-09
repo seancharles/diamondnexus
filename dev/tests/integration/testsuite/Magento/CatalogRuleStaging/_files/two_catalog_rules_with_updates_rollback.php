@@ -5,4 +5,6 @@
  */
 declare(strict_types=1);
 
-include 'catalog_rule_and_update_rollback.php';
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+
+Resolver::getInstance()->requireDataFixture('Magento/CatalogRuleStaging/_files/catalog_rule_and_update_rollback.php');

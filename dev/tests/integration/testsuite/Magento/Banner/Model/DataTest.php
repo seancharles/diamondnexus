@@ -14,7 +14,7 @@ class DataTest extends \PHPUnit\Framework\TestCase
      */
     private $bannersData;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->bannersData = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\Banner\Model\Banner\Data::class

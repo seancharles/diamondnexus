@@ -24,7 +24,7 @@ class RedeemGiftCardTest extends GraphQlAbstract
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = Bootstrap::getObjectManager();
 
@@ -54,11 +54,12 @@ class RedeemGiftCardTest extends GraphQlAbstract
 
     /**
      * @magentoApiDataFixture Magento/GiftCardAccount/_files/giftcardaccount.php
-     * @expectedException \Exception
-     * @expectedExceptionMessage Cannot find the customer to update balance
      */
     public function testRedeemAsGuestIsNotAllowed()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Cannot find the customer to update balance');
+
         $giftCardCode = "giftcardaccount_fixture";
         $query = $this->getRedeemGiftCardQuery($giftCardCode);
 
@@ -68,11 +69,12 @@ class RedeemGiftCardTest extends GraphQlAbstract
     /**
      * @magentoApiDataFixture Magento/Customer/_files/customer.php
      * @magentoApiDataFixture Magento/GiftCardAccount/_files/giftcardaccounts_for_search.php
-     * @expectedException \Exception
-     * @expectedExceptionMessage Gift card account is not redeemable.
      */
     public function testRedeemNonRedeemableCardIsNotAllowed()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Gift card account is not redeemable.');
+
         $giftCardCode = "gift_card_account_5";
         $customerToken = $this->customerTokenService->createCustomerAccessToken('customer@example.com', 'password');
 
@@ -86,11 +88,12 @@ class RedeemGiftCardTest extends GraphQlAbstract
      * @magentoApiDataFixture Magento/CustomerBalance/_files/disable_customer_balance.php
      * @magentoApiDataFixture Magento/Customer/_files/customer.php
      * @magentoApiDataFixture Magento/GiftCardAccount/_files/giftcardaccount.php
-     * @expectedException \Exception
-     * @expectedExceptionMessage You can't redeem a gift card now.
      */
     public function testRedeemIsNotAllowedWhenStoreCreditIsDisabled()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You can\'t redeem a gift card now.');
+
         $giftCardCode = "giftcardaccount_fixture";
         $customerToken = $this->customerTokenService->createCustomerAccessToken('customer@example.com', 'password');
 
@@ -102,11 +105,12 @@ class RedeemGiftCardTest extends GraphQlAbstract
 
     /**
      * @magentoApiDataFixture Magento/Customer/_files/customer.php
-     * @expectedException \Exception
-     * @expectedExceptionMessage Gift card not found
      */
     public function testRedeemNonExistentGiftCard()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Gift card not found');
+
         $giftCardCode = 'non-existent-giftcardaccount';
         $customerToken = $this->customerTokenService->createCustomerAccessToken('customer@example.com', 'password');
         $query = $this->getRedeemGiftCardQuery($giftCardCode);

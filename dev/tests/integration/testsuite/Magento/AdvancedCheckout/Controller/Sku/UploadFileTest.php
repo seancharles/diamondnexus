@@ -40,7 +40,7 @@ class UploadFileTest extends AbstractController
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -53,7 +53,7 @@ class UploadFileTest extends AbstractController
     /**
      * @inheritdoc
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->session->logout();
 
@@ -87,7 +87,7 @@ class UploadFileTest extends AbstractController
         $this->session->loginById(1);
         $this->dispatchRequestWithData($postData);
         $this->assertSessionMessages(
-            $this->contains((string)__('%1 product requires your attention.', 1))
+            $this->containsEqual((string)__('%1 product requires your attention.', 1))
         );
         $cartFailedItem = $this->getCartFailedItem();
         $this->assertNotNull(
@@ -167,7 +167,7 @@ class UploadFileTest extends AbstractController
         $this->dispatchRequestWithData([
             Data::REQUEST_PARAMETER_SKU_FILE_IMPORTED_FLAG => true,
         ]);
-        $this->assertSessionMessages($this->contains('Please upload the file in .csv format.'));
+        $this->assertSessionMessages($this->containsEqual((string)__('Please upload the file in .csv format.')));
     }
 
     /**
@@ -186,7 +186,9 @@ class UploadFileTest extends AbstractController
         $this->dispatchRequestWithData([
             Data::REQUEST_PARAMETER_SKU_FILE_IMPORTED_FLAG => true,
         ]);
-        $this->assertSessionMessages($this->contains((string)__('You added %1 products to your shopping cart.', 2)));
+        $this->assertSessionMessages(
+            $this->containsEqual((string)__('You added %1 products to your shopping cart.', 2))
+        );
         $this->assertRedirect($this->stringContains('checkout/cart'));
         $this->assertEquals($expectedItems, $this->getRequest()->getParam('items'));
     }
@@ -206,7 +208,9 @@ class UploadFileTest extends AbstractController
         ];
         $this->session->loginById(1);
         $this->dispatchRequestWithData($postData);
-        $this->assertSessionMessages($this->contains((string)__('You added %1 product to your shopping cart.', 1)));
+        $this->assertSessionMessages(
+            $this->containsEqual((string)__('You added %1 product to your shopping cart.', 1))
+        );
         $this->assertRedirect($this->stringContains('checkout/cart'));
     }
 

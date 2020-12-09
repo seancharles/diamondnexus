@@ -16,7 +16,7 @@ class AddTest extends \Magento\TestFramework\TestCase\AbstractBackendController
     /**
      * @inheritdoc
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->resource = 'Magento_SalesArchive::add';
         $this->uri = 'backend/sales/archive/add';

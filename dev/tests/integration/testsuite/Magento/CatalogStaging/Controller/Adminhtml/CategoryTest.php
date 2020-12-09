@@ -40,7 +40,7 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractController
      *
      * @return void
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         \Magento\TestFramework\Helper\Bootstrap::getInstance()->getBootstrap()
@@ -54,7 +54,7 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractController
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -85,7 +85,7 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractController
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->auth->getAuthStorage()->destroy(['send_expire_cookie' => false]);
         $this->auth = null;

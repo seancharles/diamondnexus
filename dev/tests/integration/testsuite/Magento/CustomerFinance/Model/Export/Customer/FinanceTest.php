@@ -13,7 +13,7 @@ use Magento\CustomerFinance\Model\ResourceModel\Customer\Attribute\Finance\Colle
  */
 class FinanceTest extends \PHPUnit\Framework\TestCase
 {
-    protected function tearDown()
+    protected function tearDown(): void
     {
         \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\Store\Model\StoreManagerInterface::class

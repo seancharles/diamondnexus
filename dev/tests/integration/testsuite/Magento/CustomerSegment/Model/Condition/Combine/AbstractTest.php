@@ -22,7 +22,7 @@ class AbstractTest extends \PHPUnit\Framework\TestCase
      */
     protected $_configShare;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\CustomerSegment\Model\Segment\Condition\Combine\Root::class
@@ -46,8 +46,8 @@ class AbstractTest extends \PHPUnit\Framework\TestCase
                 $this->arrayHasKey('store'),
                 $this->equalTo('main.store_id=store.store_id'),
                 $this->equalTo([])
-            )->will(
-                $this->returnSelf()
+            )->willReturnSelf(
+                
             );
         }
         $select->expects(
@@ -56,8 +56,8 @@ class AbstractTest extends \PHPUnit\Framework\TestCase
             'where'
         )->with(
             $this->equalTo($expectedWhere)
-        )->will(
-            $this->returnSelf()
+        )->willReturnSelf(
+            
         );
 
         $testMethod = new \ReflectionMethod($this->_model, '_limitByStoreWebsite');

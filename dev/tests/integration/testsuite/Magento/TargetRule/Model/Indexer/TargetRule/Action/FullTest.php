@@ -20,7 +20,7 @@ class FullTest extends \Magento\TestFramework\Indexer\TestCase
      */
     protected $_rule;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->_processor = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\TargetRule\Model\Indexer\TargetRule\Product\Rule\Processor::class
@@ -43,6 +43,6 @@ class FullTest extends \Magento\TestFramework\Indexer\TestCase
 
         $this->_processor->reindexAll();
         $this->_rule->load(1);
-        $this->assertEquals(2, count($this->_rule->getMatchingProductIds()));
+        $this->assertCount(2, $this->_rule->getMatchingProductIds());
     }
 }

@@ -36,7 +36,7 @@ class CreditmemoSaveAfterObserverTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->observer = $this->objectManager->create(CreditmemoSaveAfterObserver::class);
@@ -72,11 +72,12 @@ class CreditmemoSaveAfterObserverTest extends TestCase
      * Checks a case when the entered Customer Balance or Reward Points greater then allowed Balance.
      *
      * @return void
-     * @expectedException \Magento\Framework\Exception\LocalizedException
-     * @expectedExceptionMessage You can't use more store credit than the order amount.
      */
     public function testExecuteWithNotAllowedBalance(): void
     {
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
+        $this->expectExceptionMessage('You can\'t use more store credit than the order amount.');
+
         $maxAllowedBalance = 66.48;
         $customerBalance = 28.53;
         $rewardPoints = 10000;

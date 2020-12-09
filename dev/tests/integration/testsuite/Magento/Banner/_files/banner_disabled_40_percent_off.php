@@ -3,8 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require __DIR__ . '/../../../Magento/SalesRule/_files/cart_rule_40_percent_off.php';
+Resolver::getInstance()->requireDataFixture('Magento/SalesRule/_files/cart_rule_40_percent_off.php');
 
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 /** @var \Magento\SalesRule\Model\Rule $rule */

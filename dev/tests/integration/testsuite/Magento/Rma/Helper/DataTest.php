@@ -23,7 +23,7 @@ class DataTest extends TestCase
     /**
      * @inheritdoc
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->helper = $objectManager->create(Data::class);

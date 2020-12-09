@@ -26,7 +26,7 @@ class QuoteItemCollectionUpdaterTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->collection = Bootstrap::getObjectManager()->create(Collection::class);
     }

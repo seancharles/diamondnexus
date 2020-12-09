@@ -15,7 +15,7 @@ class ProductTest extends \Magento\TestFramework\TestCase\AbstractController
     /**
      * Bootstrap application before any test
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->productResource = $this->_objectManager->create(\Magento\Catalog\Model\ResourceModel\Product::class);
@@ -35,8 +35,8 @@ class ProductTest extends \Magento\TestFramework\TestCase\AbstractController
         $productId = $this->productResource->getIdBySku('simple_product_1');
         $this->dispatch('catalog/product/view/id/' . $productId);
         $content = $this->getResponse()->getBody();
-        $this->assertContains('<div class="block related"', $content);
-        $this->assertContains('Simple Product 2 Name', $content);
+        $this->assertStringContainsString('<div class="block related"', $content);
+        $this->assertStringContainsString('Simple Product 2 Name', $content);
     }
 
     /**
@@ -69,9 +69,9 @@ class ProductTest extends \Magento\TestFramework\TestCase\AbstractController
         $productId = $this->productResource->getIdBySku('simple_product_1');
         $this->dispatch('catalog/product/view/id/' . $productId);
         $content = $this->getResponse()->getBody();
-        $this->assertContains('<div class="block related"', $content);
-        $this->assertNotContains('Simple Product 2 Name', $content);
-        $this->assertContains('Simple Product 3 Name', $content);
+        $this->assertStringContainsString('<div class="block related"', $content);
+        $this->assertStringNotContainsString('Simple Product 2 Name', $content);
+        $this->assertStringContainsString('Simple Product 3 Name', $content);
     }
 
     /**
@@ -88,9 +88,9 @@ class ProductTest extends \Magento\TestFramework\TestCase\AbstractController
         $productId = $this->productResource->getIdBySku('simple_product_1');
         $this->dispatch('catalog/product/view/id/' . $productId);
         $content = $this->getResponse()->getBody();
-        $this->assertContains('<div class="block related"', $content);
-        $this->assertContains('Simple Product 2 Name', $content);
-        $this->assertContains('Simple Product 3 Name', $content);
+        $this->assertStringContainsString('<div class="block related"', $content);
+        $this->assertStringContainsString('Simple Product 2 Name', $content);
+        $this->assertStringContainsString('Simple Product 3 Name', $content);
     }
 
     /**
@@ -107,7 +107,7 @@ class ProductTest extends \Magento\TestFramework\TestCase\AbstractController
         $productId = $this->productResource->getIdBySku('simple_product_1');
         $this->dispatch('catalog/product/view/id/' . $productId);
         $content = $this->getResponse()->getBody();
-        $this->assertContains('<div class="block upsell"', $content);
-        $this->assertContains('Simple Product 2 Name', $content);
+        $this->assertStringContainsString('<div class="block upsell"', $content);
+        $this->assertStringContainsString('Simple Product 2 Name', $content);
     }
 }

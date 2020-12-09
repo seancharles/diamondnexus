@@ -47,7 +47,7 @@ class ModelsTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = Helper::getObjectManager();
         $this->customerRepository = $objectManager->get(CustomerRepositoryInterface::class);
@@ -63,11 +63,12 @@ class ModelsTest extends TestCase
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Store/_files/website.php
      * @magentoDataFixture Magento/Customer/_files/customer.php
-     * @expectedException \Magento\Framework\Exception\LocalizedException
-     * @expectedExceptionMessage More permissions are needed to save this item
      */
     public function testCustomerSave()
     {
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
+        $this->expectExceptionMessage('More permissions are needed to save this item');
+
         $customer = $this->customerRepository->get('customer@example.com');
 
         /** @var Role $role */

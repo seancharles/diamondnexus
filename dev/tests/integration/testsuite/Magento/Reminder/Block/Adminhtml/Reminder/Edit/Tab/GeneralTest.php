@@ -50,6 +50,6 @@ class GeneralTest extends \PHPUnit\Framework\TestCase
         }
         $element = $form->getElement('salesrule_id');
         $this->assertNotNull($element);
-        $this->assertRegExp('#http://[a-z\./sales_rule/promo_quote/chooser/.*]#', $element->getAfterElementHtml());
+        $this->assertMatchesRegularExpression('#http://[a-z\./sales_rule/promo_quote/chooser/.*]#', $element->getAfterElementHtml());
     }
 }

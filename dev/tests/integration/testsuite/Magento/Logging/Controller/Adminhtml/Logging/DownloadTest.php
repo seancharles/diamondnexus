@@ -7,7 +7,7 @@ namespace Magento\Logging\Controller\Adminhtml\Logging;
 
 class DownloadTest extends \Magento\TestFramework\TestCase\AbstractBackendController
 {
-    public function setUp()
+    protected function setUp(): void
     {
         $this->resource = 'Magento_Logging::backups';
         $this->uri = 'backend/admin/logging/download';

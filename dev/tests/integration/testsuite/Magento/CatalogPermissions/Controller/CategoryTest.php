@@ -35,7 +35,7 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractController
         $indexer->reindexAll();
         $this->dispatch("catalog/category/view/id/4");
         $responseBody = $this->getResponse()->getBody();
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             'catalog/category/view/id/4/?price=100-200',
             $responseBody,
             'Category page should not contain price filter link'
@@ -64,12 +64,12 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractController
         $indexer->reindexAll();
         $this->dispatch("catalog/category/view/id/4");
         $responseBody = $this->getResponse()->getBody();
-        $this->assertContains(
+        $this->assertStringContainsString(
             'catalog/category/view/id/4/?price=100-200',
             $responseBody,
             'Expected price filter links are absent on category page'
         );
-        $this->assertContains(
+        $this->assertStringContainsString(
             'catalog/category/view/id/4/?price=200-',
             $responseBody,
             'Expected price filter links are absent on category page'
@@ -109,7 +109,7 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractController
         $indexer->reindexAll();
         $this->dispatch("catalog/category/view/id/4");
         $responseBody = $this->getResponse()->getBody();
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             'catalog/category/view/id/4/?price=100-200',
             $responseBody,
             'Category page should not contain price filter link'
@@ -149,12 +149,12 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractController
         $indexer->reindexAll();
         $this->dispatch("catalog/category/view/id/4");
         $responseBody = $this->getResponse()->getBody();
-        $this->assertContains(
+        $this->assertStringContainsString(
             'catalog/category/view/id/4/?price=100-200',
             $responseBody,
             'Expected price filter links are absent on category page'
         );
-        $this->assertContains(
+        $this->assertStringContainsString(
             'catalog/category/view/id/4/?price=200-',
             $responseBody,
             'Expected price filter links are absent on category page'

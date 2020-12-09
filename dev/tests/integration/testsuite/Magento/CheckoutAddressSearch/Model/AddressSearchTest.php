@@ -21,7 +21,7 @@ class AddressSearchTest extends TestCase
     /** @var \Magento\CheckoutAddressSearch\Model\AddressSearch */
     private $addressSearch;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->addressSearch = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\CheckoutAddressSearch\Model\AddressSearch::class

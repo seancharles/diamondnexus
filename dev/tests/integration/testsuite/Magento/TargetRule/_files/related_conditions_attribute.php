@@ -10,8 +10,9 @@ use Magento\TargetRule\Model\Rule;
 use Magento\TargetRule\Model\Actions\Condition\Combine;
 use Magento\TargetRule\Model\Rule\Condition\Product\Attributes;
 use Magento\TargetRule\Model\ResourceModel\Rule as TargetRuleResourceModel;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-include __DIR__ . '/products_with_attributes.php';
+Resolver::getInstance()->requireDataFixture('Magento/TargetRule/_files/products_with_attributes.php');
 
 $objectManager = Bootstrap::getObjectManager();
 /** @var TargetRuleResourceModel $targetRuleResourceModel */

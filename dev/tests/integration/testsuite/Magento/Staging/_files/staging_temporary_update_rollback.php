@@ -5,4 +5,6 @@
  */
 declare(strict_types=1);
 
-include 'staging_update_rollback.php';
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+
+Resolver::getInstance()->requireDataFixture('Magento/Staging/_files/staging_update_rollback.php');

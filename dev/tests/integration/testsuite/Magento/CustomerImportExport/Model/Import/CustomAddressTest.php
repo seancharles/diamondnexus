@@ -27,7 +27,7 @@ class CustomAddressTest extends \PHPUnit\Framework\TestCase
     /**
      * Init new instance of address entity adapter
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->attributeManagement = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\Eav\Api\AttributeRepositoryInterface::class

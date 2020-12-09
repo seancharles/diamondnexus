@@ -5,6 +5,8 @@
  */
 declare(strict_types=1);
 
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 $registry = $objectManager->get(\Magento\Framework\Registry::class);
 $registry->unregister('isSecureArea');
@@ -19,5 +21,5 @@ if ($quote->getId()) {
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);
 
-require __DIR__ . '/../../Customer/_files/customer_address_rollback.php';
-require __DIR__ . '/../../Customer/_files/customer_rollback.php';
+Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer_rollback.php');
+Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer_address_rollback.php');

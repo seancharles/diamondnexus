@@ -11,8 +11,9 @@ use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Api\Data\ShipmentItemCreationInterface;
 use Magento\Sales\Api\ShipOrderInterface;
 use Magento\GiftCardAccount\Observer\RefundTest;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require 'invoice_with_gift_card_account.php';
+Resolver::getInstance()->requireDataFixture('Magento/GiftCardAccount/_files/invoice_with_gift_card_account.php');
 
 $objectManager = Bootstrap::getObjectManager();
 

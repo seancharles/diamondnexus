@@ -20,9 +20,8 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractBackendContro
     public function testEditCategoryAction()
     {
         $this->dispatch('backend/catalog/category/edit/id/3');
-        $this->assertContains(
-            'onclick="setLocation(' .
-                '&#039;http://localhost/index.php/backend/admin/catalog_event/new/category/1/category_id/',
+        $this->assertStringContainsString(
+            'setLocation(\'http://localhost/index.php/backend/admin/catalog_event/new/category/1/category_id/',
             $this->getResponse()->getBody()
         );
     }
@@ -36,8 +35,8 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractBackendContro
     public function testEditCategoryActionEditEvent()
     {
         $this->dispatch('backend/catalog/category/edit/id/3');
-        $this->assertContains(
-            'onclick="setLocation(&#039;http://localhost/index.php/backend/admin/catalog_event/edit/id/',
+        $this->assertStringContainsString(
+            'setLocation(\'http://localhost/index.php/backend/admin/catalog_event/edit/id/',
             $this->getResponse()->getBody()
         );
     }

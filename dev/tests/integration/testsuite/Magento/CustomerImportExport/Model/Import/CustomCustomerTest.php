@@ -27,7 +27,7 @@ class CustomCustomerTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->attributeManagement = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\Eav\Api\AttributeRepositoryInterface::class

@@ -17,7 +17,7 @@ class SalesruleTest extends \PHPUnit\Framework\TestCase
      */
     private $_block;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->_block = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\Framework\View\LayoutInterface::class
@@ -26,7 +26,7 @@ class SalesruleTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->_block = null;
     }

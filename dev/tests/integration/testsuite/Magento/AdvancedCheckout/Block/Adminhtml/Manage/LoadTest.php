@@ -16,7 +16,7 @@ class LoadTest extends \PHPUnit\Framework\TestCase
     /** @var \Magento\AdvancedCheckout\Block\Adminhtml\Manage\Load */
     protected $_block = null;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_layout = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(

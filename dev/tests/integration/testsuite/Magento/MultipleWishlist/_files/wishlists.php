@@ -3,14 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+use Magento\Customer\Model\CustomerRegistry;
+use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-include 'customer.php';
-include 'products.php';
+Resolver::getInstance()->requireDataFixture('Magento/MultipleWishlist/_files/customer.php');
+Resolver::getInstance()->requireDataFixture('Magento/MultipleWishlist/_files/products.php');
 
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
 $storeRepository = $objectManager->create(\Magento\Store\Api\StoreRepositoryInterface::class);
 $store = $storeRepository->get('default');
+/** @var CustomerRegistry $customerRegistry */
+$customerRegistry = Bootstrap::getObjectManager()->create(CustomerRegistry::class);
+$customer = $customerRegistry->retrieve(1);
 
 $productRepository = $objectManager->create(\Magento\Catalog\Api\ProductRepositoryInterface::class);
 for ($i = 1; $i <= 2; $i++) {

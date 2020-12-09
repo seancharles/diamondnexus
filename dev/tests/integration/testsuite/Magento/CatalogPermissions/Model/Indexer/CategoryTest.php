@@ -40,7 +40,7 @@ class CategoryTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->permissionIndex = $this->objectManager->create(
@@ -66,7 +66,7 @@ class CategoryTest extends \PHPUnit\Framework\TestCase
         $indexer->reindexAll();
 
         $this->assertEmpty($this->permissionIndex->getIndexForCategory(10));
-        $this->assertContains($this->getCategoryDataById(6), $this->permissionIndex->getIndexForCategory(6));
+        $this->assertContainsEquals($this->getCategoryDataById(6), $this->permissionIndex->getIndexForCategory(6));
     }
 
     /**
@@ -114,7 +114,7 @@ class CategoryTest extends \PHPUnit\Framework\TestCase
         $this->category->load(7);
         $this->category->move(6, null);
 
-        $this->assertContains($this->getCategoryDataById(7), $this->permissionIndex->getIndexForCategory(7));
+        $this->assertContainsEquals($this->getCategoryDataById(7), $this->permissionIndex->getIndexForCategory(7));
     }
 
     /**
@@ -140,7 +140,7 @@ class CategoryTest extends \PHPUnit\Framework\TestCase
             ->setPosition(3)
             ->save();
 
-        $this->assertContains($this->getCategoryDataById(13), $this->permissionIndex->getIndexForCategory(13));
+        $this->assertContainsEquals($this->getCategoryDataById(13), $this->permissionIndex->getIndexForCategory(13));
     }
 
     /**

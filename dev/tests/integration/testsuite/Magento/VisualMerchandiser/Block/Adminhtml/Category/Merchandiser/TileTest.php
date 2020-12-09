@@ -36,7 +36,7 @@ class TileTest extends \Magento\TestFramework\Indexer\TestCase
      */
     private $positionCache;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $db = \Magento\TestFramework\Helper\Bootstrap::getInstance()->getBootstrap()
             ->getApplication()
@@ -49,7 +49,7 @@ class TileTest extends \Magento\TestFramework\Indexer\TestCase
         parent::setUpBeforeClass();
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $layout = $this->objectManager->get(\Magento\Framework\View\LayoutInterface::class);

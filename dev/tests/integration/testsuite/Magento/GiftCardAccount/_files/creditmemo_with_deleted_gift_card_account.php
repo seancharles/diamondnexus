@@ -3,13 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-require 'creditmemo_with_gift_card_account.php';
 
 use Magento\GiftCardAccount\Api\GiftCardAccountRepositoryInterface;
 use Magento\GiftCardAccount\Model\Giftcardaccount;
 use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-$giftcardaccountRepository = Bootstrap::getObjectManager()->get(GiftCardAccountRepositoryInterface::class);
+Resolver::getInstance()->requireDataFixture(
+    'Magento/GiftCardAccount/_files/creditmemo_with_gift_card_account.php'
+);
+$objectManager = Bootstrap::getObjectManager();
+$giftcardaccountRepository = $objectManager->get(GiftCardAccountRepositoryInterface::class);
 
 $giftcardAccount = $objectManager->create(Giftcardaccount::class);
 $giftcardAccount2 = $objectManager->create(Giftcardaccount::class);

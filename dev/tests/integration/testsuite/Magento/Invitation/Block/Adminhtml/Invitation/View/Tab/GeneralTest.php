@@ -28,8 +28,8 @@ class GeneralTest extends \PHPUnit\Framework\TestCase
 
         $block = $objectManager->create(\Magento\Invitation\Block\Adminhtml\Invitation\View\Tab\General::class);
 
-        $this->assertContains("General", $block->getCustomerGroupCode(1));
-        $this->assertContains("Wholesale", $block->getCustomerGroupCode(2));
-        $this->assertContains("Retailer", $block->getCustomerGroupCode(3));
+        $this->assertStringContainsString("General", $block->getCustomerGroupCode(1));
+        $this->assertStringContainsString("Wholesale", $block->getCustomerGroupCode(2));
+        $this->assertStringContainsString("Retailer", $block->getCustomerGroupCode(3));
     }
 }

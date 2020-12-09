@@ -4,13 +4,10 @@
  * See COPYING.txt for license details.
  */
 
-/**
- * Adds existing catalog rule to banner
- */
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require __DIR__ . '/banner.php';
-require __DIR__ . '/../../../Magento/CatalogRule/_files/catalog_rule_10_off_not_logged.php';
-
+Resolver::getInstance()->requireDataFixture('Magento/Banner/_files/banner.php');
+Resolver::getInstance()->requireDataFixture('Magento/CatalogRule/_files/catalog_rule_10_off_not_logged.php');
 $catalogRule = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
     \Magento\CatalogRule\Model\Rule::class
 );

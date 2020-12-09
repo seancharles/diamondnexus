@@ -25,7 +25,7 @@ class MysqlProxyTest extends \PHPUnit\Framework\TestCase
     /**
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $config = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\Framework\App\DeploymentConfig::class
@@ -84,12 +84,13 @@ class MysqlProxyTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException \Zend_Db_Adapter_Exception
      *
      * @return void
      */
     public function testDBOperationWithNotValidSlaveConfig()
     {
+        $this->expectException(\Zend_Db_Adapter_Exception::class);
+
         $slaveConfig = $this->configArray['db']['connection']['default'];
         $slaveConfig['password'] = $slaveConfig['password'] . '_not_valid';
         $this->updateSlaveConfig($slaveConfig);
@@ -120,7 +121,7 @@ class MysqlProxyTest extends \PHPUnit\Framework\TestCase
     /**
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $writer = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\Framework\App\DeploymentConfig\Writer::class
