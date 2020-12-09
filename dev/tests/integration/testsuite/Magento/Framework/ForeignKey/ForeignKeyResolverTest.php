@@ -34,17 +34,17 @@ class ForeignKeyResolverTest extends \PHPUnit\Framework\TestCase
      */
     protected $relationProcessor;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         include __DIR__ . '/_files/entity_tables.php';
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         include __DIR__ . '/_files/entity_tables_rollback.php';
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         include __DIR__ . '/_files/entity_tables_values.php';
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
@@ -57,7 +57,7 @@ class ForeignKeyResolverTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         include __DIR__ . '/_files/entity_tables_values_rollback.php';
     }
@@ -201,7 +201,7 @@ class ForeignKeyResolverTest extends \PHPUnit\Framework\TestCase
 
         $select = $this->connection->select()->from($this->connection->getTableName('test_entity_two'));
         $data = $this->connection->fetchAll($select);
-        $this->assertEquals(0, count($data));
+        $this->assertCount(0, $data);
 
         $select = $this->connection->select()->from($this->connection->getTableName('test_entity_three'));
         $data = $this->connection->fetchAll($select);
@@ -228,10 +228,11 @@ class ForeignKeyResolverTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @magentoAppIsolation enabled
-     * @expectedException \Magento\Framework\Exception\LocalizedException
      */
     public function testSaveForeignKeyValidationThrowException()
     {
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
+
         $this->markTestSkipped('No stable behaviour in parallel run mode.');
         //invalid reference id
         $referenceFieldId = 1000;

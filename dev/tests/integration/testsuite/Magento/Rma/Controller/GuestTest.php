@@ -32,7 +32,7 @@ class GuestTest extends \Magento\TestFramework\TestCase\AbstractController
         $this->getRequest()->setMethod('POST');
 
         $this->dispatch($uri);
-        $this->assertContains($content, $this->getResponse()->getBody());
+        $this->assertStringContainsString($content, $this->getResponse()->getBody());
     }
 
     public function isResponseContainDataProvider()

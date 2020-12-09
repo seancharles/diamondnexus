@@ -37,7 +37,7 @@ class CoreCopyFieldsetCustomerAddressToQuoteAddressTest extends \PHPUnit\Framewo
      */
     private $target;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 

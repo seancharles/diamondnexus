@@ -1,6 +1,5 @@
 Magento\CmsStaging\Controller\Adminhtml\Page\Save\Plugin
 Magento\CmsStaging\Controller\Adminhtml\Page\Update\Save\Plugin
-Magento\Cybersource\Controller\Adminhtml\SilentOrder\TokenRequest
 Magento\GiftCardAccount\Controller\Adminhtml\Order\Edit\Plugin
 Magento\GiftCard\Controller\Adminhtml\Product\Initialization\Helper\Plugin\GiftCard
 Magento\PricePermissions\Controller\Adminhtml\Product\Initialization\Helper\Plugin\Handler\CustomOptions

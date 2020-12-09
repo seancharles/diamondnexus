@@ -3,8 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require __DIR__ . '/../../../Magento/Customer/_files/three_customers.php';
+Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/three_customers.php');
 
 /** @var $segmentFactory \Magento\CustomerSegment\Model\SegmentFactory */
 $segmentFactory = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
@@ -60,8 +61,4 @@ for ($i = 0; $i < 3; $i++) {
 
     $segment->loadPost($data);
     $segment->save();
-
-    if ($segment->getApplyTo() != \Magento\CustomerSegment\Model\Segment::APPLY_TO_VISITORS) {
-        $segment->matchCustomers();
-    }
 }

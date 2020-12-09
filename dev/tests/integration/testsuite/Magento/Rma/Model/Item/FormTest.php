@@ -12,7 +12,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
      */
     protected $_model;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\Rma\Model\Item\Form::class
@@ -23,7 +23,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     public function testGetAttributes()
     {
         $attributes = $this->_model->getAttributes();
-        $this->assertInternalType('array', $attributes);
+        $this->assertIsArray($attributes);
         $this->assertNotEmpty($attributes);
     }
 }

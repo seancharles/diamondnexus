@@ -20,7 +20,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
     /**
      * Remove not used websites
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\Store\Model\StoreManagerInterface::class

@@ -45,7 +45,7 @@ class UsageAttemptsManagerTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         /** @var ObjectManager $objectManager */
         $objectManager = Bootstrap::getObjectManager();
@@ -73,7 +73,7 @@ class UsageAttemptsManagerTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->loggedInManager->logout();
         $this->loggedInManager->clearStorage();
@@ -135,10 +135,11 @@ class UsageAttemptsManagerTest extends TestCase
      * @magentoConfigFixture default_store customer/captcha/failed_attempts_login 10
      * @magentoConfigFixture default_store customer/captcha/failed_attempts_ip 2
      *
-     * @expectedException \Magento\GiftCardAccount\Api\Exception\TooManyAttemptsException
      */
     public function testAboveLimitNotLoggedIn()
     {
+        $this->expectException(\Magento\GiftCardAccount\Api\Exception\TooManyAttemptsException::class);
+
         try {
             $this->manager->attempt($this->factory->create('fakeCode'));
             $this->manager->attempt($this->factory->create('fakeCode'));
@@ -158,10 +159,11 @@ class UsageAttemptsManagerTest extends TestCase
      *
      * @magentoDataFixture Magento/Customer/_files/customer.php
      *
-     * @expectedException \Magento\GiftCardAccount\Api\Exception\TooManyAttemptsException
      */
     public function testAboveLimitLoggedIn()
     {
+        $this->expectException(\Magento\GiftCardAccount\Api\Exception\TooManyAttemptsException::class);
+
         try {
             $this->loginCustomer(1);
             $this->manager->attempt($this->factory->create('fakeCode'));
@@ -183,10 +185,11 @@ class UsageAttemptsManagerTest extends TestCase
      *
      * @magentoDataFixture Magento/Customer/_files/customer.php
      *
-     * @expectedException \Magento\GiftCardAccount\Api\Exception\TooManyAttemptsException
      */
     public function testCustomerNotAllowedWithoutCode()
     {
+        $this->expectException(\Magento\GiftCardAccount\Api\Exception\TooManyAttemptsException::class);
+
         $this->loginCustomer(1);
         $this->manager->attempt($this->factory->create('fakeCode'));
     }
@@ -200,10 +203,11 @@ class UsageAttemptsManagerTest extends TestCase
      * @magentoConfigFixture default_store customer/captcha/failed_attempts_ip 10
      * @magentoConfigFixture default_store customer/captcha/mode always
      *
-     * @expectedException \Magento\GiftCardAccount\Api\Exception\TooManyAttemptsException
      */
     public function testGuestNotAllowedWithoutCode()
     {
+        $this->expectException(\Magento\GiftCardAccount\Api\Exception\TooManyAttemptsException::class);
+
         $this->manager->attempt($this->factory->create('fakeCode'));
     }
 
@@ -218,10 +222,11 @@ class UsageAttemptsManagerTest extends TestCase
      * @magentoDataFixture Magento/GiftCardAccount/_files/giftcardaccount.php
      * @magentoDataFixture Magento/Customer/_files/customer.php
      *
-     * @expectedException \Magento\GiftCardAccount\Api\Exception\TooManyAttemptsException
      */
     public function testLoggingOnlyInvalidCodes()
     {
+        $this->expectException(\Magento\GiftCardAccount\Api\Exception\TooManyAttemptsException::class);
+
         try {
             $this->loginCustomer(1);
             $this->manager->attempt(

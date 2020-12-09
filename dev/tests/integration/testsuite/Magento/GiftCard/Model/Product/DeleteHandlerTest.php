@@ -27,7 +27,7 @@ class DeleteHandlerTest extends \PHPUnit\Framework\TestCase
      */
     private $amountRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->productRepository = $objectManager->get(ProductRepositoryInterface::class);
@@ -52,7 +52,7 @@ class DeleteHandlerTest extends \PHPUnit\Framework\TestCase
         // Verify before delete
         /** @var GiftcardAmountInterface[] $giftCard10Amounts */
         $giftCard10Amounts = $giftCard10->getExtensionAttributes()->getGiftcardAmounts();
-        $this->assertEquals(1, count($giftCard10Amounts));
+        $this->assertCount(1, $giftCard10Amounts);
         $giftCard10AmountsId = $giftCard10Amounts[0]->getData('value_id');
         $amount = $this->amountRepository->get($giftCard10AmountsId);
         $this->assertEquals(10, $amount->getValue());
@@ -77,7 +77,7 @@ class DeleteHandlerTest extends \PHPUnit\Framework\TestCase
         // Verify before delete
         /** @var GiftcardAmountInterface[] $giftCardWithAmountsAmounts */
         $giftCardWithAmountsAmounts = $giftCardWithAmounts->getExtensionAttributes()->getGiftcardAmounts();
-        $this->assertEquals(2, count($giftCardWithAmountsAmounts));
+        $this->assertCount(2, $giftCardWithAmountsAmounts);
         foreach ($giftCardWithAmountsAmounts as $giftCardWithAmountsAmount) {
             $giftCardWithAmountsAmountsIds[] = $giftCardWithAmountsAmount->getData('value_id');
         }

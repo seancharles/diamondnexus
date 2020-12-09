@@ -6,8 +6,14 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../../CustomerSegment/_files/segment.php';
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
+Resolver::getInstance()->requireDataFixture('Magento/CustomerSegment/_files/segment.php');
+/** @var $segment \Magento\CustomerSegment\Model\Segment */
+$segment = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
+    \Magento\CustomerSegment\Model\Segment::class
+);
+$segment->load('Customer Segment 1', 'name');
 $applyTo = '2';
 $name = 'UpSell Rule';
 

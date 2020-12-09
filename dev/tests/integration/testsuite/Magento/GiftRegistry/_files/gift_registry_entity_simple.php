@@ -4,11 +4,23 @@
  * See COPYING.txt for license details.
  */
 
-require __DIR__ . '/../../../Magento/Customer/_files/customer_with_website.php';
+use Magento\Customer\Model\CustomerRegistry;
+use Magento\Store\Model\StoreManager;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+use Magento\TestFramework\Helper\Bootstrap;
+
+Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer_with_website.php');
 
 /** @var \Magento\Framework\ObjectManagerInterface  $objectManager */
-$objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-
+$objectManager = Bootstrap::getObjectManager();
+/** @var StoreManager $storeManager */
+$storeManager = $objectManager->get(StoreManager::class);
+/** @var CustomerRegistry $customerRegistry */
+$customerRegistry = $objectManager->create(CustomerRegistry::class);
+$customer = $customerRegistry->retrieveByEmail(
+    'john.doe@magento.com',
+    $storeManager->getDefaultStoreView()->getWebsiteId()
+);
 /** @var \Magento\GiftRegistry\Model\Entity $entity */
 $entity = $objectManager->create(
     \Magento\GiftRegistry\Model\Entity::class,

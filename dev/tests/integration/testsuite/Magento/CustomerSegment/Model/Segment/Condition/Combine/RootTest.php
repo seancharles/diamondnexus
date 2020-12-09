@@ -22,7 +22,7 @@ class RootTest extends \PHPUnit\Framework\TestCase
      */
     protected $_configShare;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\CustomerSegment\Model\Segment\Condition\Combine\Root::class
@@ -42,7 +42,7 @@ class RootTest extends \PHPUnit\Framework\TestCase
 
         $result = $testMethod->invoke($this->_model, $customer, $website);
         foreach ($expected as $part) {
-            $this->assertContains($part, (string)$result, '', true);
+            $this->assertStringContainsString($part, (string)$result, '');
         }
     }
 
@@ -52,10 +52,10 @@ class RootTest extends \PHPUnit\Framework\TestCase
             [
                 null,
                 new \Zend_Db_Expr(1),
-                ['`root`.`entity_id`', '`root`.`website_id`', 'where (website_id=1)'],
+                ['`root`.`entity_id`', '`root`.`website_id`', 'WHERE (website_id=1)'],
             ],
-            [null, 2, ['`root`.`entity_id`', '`root`.`website_id`', 'where (website_id=2)']],
-            [1, 3, ['select 1']]
+            [null, 2, ['`root`.`entity_id`', '`root`.`website_id`', 'WHERE (website_id=2)']],
+            [1, 3, ['SELECT 1']]
         ];
     }
 }

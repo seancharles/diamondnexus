@@ -27,8 +27,8 @@ class ProductTest extends \Magento\TestFramework\TestCase\AbstractController
         $this->getRequest()->setParam('options', \Magento\GiftRegistry\Block\Product\View::FLAG);
         $this->dispatch('catalog/product/view/id/' . $product->getId());
         $body = $this->getResponse()->getBody();
-        $this->assertContains('<span>Add to Gift Registry</span>', $body);
-        $this->assertContains(
+        $this->assertStringContainsString('<span>Add to Gift Registry</span>', $body);
+        $this->assertStringContainsString(
             'http\u003A\u002F\u002Flocalhost\u002Findex.php\u002Fgiftregistry\u002Findex\u002Fcart\u002F',
             $body
         );
@@ -48,9 +48,9 @@ class ProductTest extends \Magento\TestFramework\TestCase\AbstractController
         $this->getRequest()->setParam('options', \Magento\GiftRegistry\Block\Product\View::FLAG);
         $this->dispatch('catalog/product/view/id/' . $product->getId());
         $body = $this->getResponse()->getBody();
-        $this->assertContains('<span>Customize and Add to Gift Registry</span>', $body);
-        $this->assertContains('<span>Add to Gift Registry</span>', $body);
-        $this->assertContains(
+        $this->assertStringContainsString('<span>Customize and Add to Gift Registry</span>', $body);
+        $this->assertStringContainsString('<span>Add to Gift Registry</span>', $body);
+        $this->assertStringContainsString(
             'http\u003A\u002F\u002Flocalhost\u002Findex.php\u002Fgiftregistry\u002Findex\u002Fcart\u002F',
             $body
         );

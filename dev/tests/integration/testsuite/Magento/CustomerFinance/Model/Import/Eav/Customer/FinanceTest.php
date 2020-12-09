@@ -20,7 +20,7 @@ class FinanceTest extends \PHPUnit\Framework\TestCase
     /**
      * Remove test website
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         /** @var $testWebsite \Magento\Store\Model\Website */
         $testWebsite = Bootstrap::getObjectManager()->create(

@@ -23,7 +23,7 @@ class IndexTest extends \PHPUnit\Framework\TestCase
      */
     private $resourceModel;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->resourceModel = $this->objectManager->get(\Magento\TargetRule\Model\ResourceModel\Rule::class);
@@ -59,7 +59,7 @@ class IndexTest extends \PHPUnit\Framework\TestCase
         $index = $this->objectManager->create(\Magento\TargetRule\Model\Index::class)
             ->setType($ruleType)
             ->setProduct($product);
-        $productIds = $index->getProductIds();
+        $productIds = array_keys($index->getProductIds());
         $this->resourceModel->delete($model);
 
         $expectedProductIds = [];

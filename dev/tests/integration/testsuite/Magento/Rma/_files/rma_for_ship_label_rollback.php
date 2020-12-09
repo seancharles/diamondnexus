@@ -6,9 +6,10 @@
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Rma\Api\RmaRepositoryInterface;
 use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require __DIR__ . '/../../../Magento/Sales/_files/order_list_rollback.php';
-require __DIR__ . '/../../../Magento/Catalog/_files/product_simple_rollback.php';
+Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/order_list_rollback.php');
+Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple_rollback.php');
 
 /** @var RmaRepositoryInterface $rmaRepository */
 $rmaRepository = Bootstrap::getObjectManager()->get(RmaRepositoryInterface::class);

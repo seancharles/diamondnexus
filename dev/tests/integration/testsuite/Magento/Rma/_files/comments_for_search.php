@@ -6,13 +6,16 @@
 
 use Magento\Rma\Model\Rma;
 use Magento\Rma\Model\Rma\Status\History;
+use Magento\Sales\Api\Data\OrderInterfaceFactory;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\Rma\Api\RmaRepositoryInterface;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-global $fixtureBaseDir;
+Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/order.php');
 
-include $fixtureBaseDir . '/Magento/Sales/_files/order.php';
-
+$objectManager = Bootstrap::getObjectManager();
+/** @var \Magento\Sales\Model\Order $order */
+$order = $objectManager->get(OrderInterfaceFactory::class)->create()->loadByIncrementId('100000001');
 /** @var $rma Rma */
 $rma = Bootstrap::getObjectManager()->create(Rma::class);
 $rma->setOrderId($order->getId());

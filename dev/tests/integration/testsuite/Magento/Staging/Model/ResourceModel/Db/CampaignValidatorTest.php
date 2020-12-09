@@ -20,7 +20,7 @@ class CampaignValidatorTest extends \PHPUnit\Framework\TestCase
      */
     private $updateRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->model = Bootstrap::getObjectManager()
             ->create(CampaignValidator::class);

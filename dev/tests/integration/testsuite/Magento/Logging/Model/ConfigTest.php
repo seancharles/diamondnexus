@@ -17,7 +17,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
      */
     private $config;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->config = $objectManager->get(\Magento\Logging\Model\Config::class);

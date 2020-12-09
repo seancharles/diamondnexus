@@ -61,4 +61,7 @@ return [
         'Magento\PricePermissions\Test\Unit\Block\Adminhtml\ConfigurableProduct\Edit\Tab\Super',
         'Magento\PricePermissions\Test\Unit\Block\Adminhtml\ConfigurableProduct\Edit\Tab\Variations'
     ],
+    ['Magento\Cybersource'],
+    ['Magento\Eway'],
+    ['Magento\Worldpay'],
 ];

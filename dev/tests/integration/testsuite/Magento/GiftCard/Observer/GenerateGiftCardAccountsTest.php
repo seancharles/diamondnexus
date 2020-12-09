@@ -29,7 +29,7 @@ class GenerateGiftCardAccountsTest extends \PHPUnit\Framework\TestCase
      */
     private $objectManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
     }
@@ -118,18 +118,19 @@ class GenerateGiftCardAccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayHasKey('email_sent', $productOptions);
         $this->assertArrayHasKey('giftcard_created_codes', $productOptions);
         $this->assertEquals('1', $productOptions['email_sent']);
-        $this->assertEquals(2, count($productOptions['giftcard_created_codes']));
+        $this->assertCount(2, $productOptions['giftcard_created_codes']);
     }
 
     /**
-     * Tests that giftcard account codes are generated if payments action is "authorize_capture".
+     * Tests that giftcard account codes are generated if payments action is "Sale".
      *
      * @magentoDataFixture Magento/GiftCardAccount/_files/codes_pool.php
-     * @magentoConfigFixture current_store payment/braintree/active 1
-     * @magentoConfigFixture current_store payment/braintree/payment_action authorize_capture
-     * @magentoDataFixture Magento/GiftCard/Fixtures/order_invoice_braintree_with_gift_card.php
+     * @magentoConfigFixture current_store payment/payflowpro/active 1
+     * @magentoConfigFixture current_store payment/payflowpro_cc_vault/active 1
+     * @magentoConfigFixture current_store payment/payflowpro/payment_action Sale
+     * @magentoDataFixture Magento/GiftCard/Fixtures/order_invoice_payflowpro_with_gift_card.php
      */
-    public function testGiftcardGeneratorForAuthorizeCapture()
+    public function testGiftcardGeneratorForSale()
     {
         $order = $this->getOrder('100000002');
         /** @var ScopeConfigInterface $config */
@@ -147,7 +148,7 @@ class GenerateGiftCardAccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayHasKey('email_sent', $productOptions);
         $this->assertArrayHasKey('giftcard_created_codes', $productOptions);
         $this->assertEquals('1', $productOptions['email_sent']);
-        $this->assertEquals(2, count($productOptions['giftcard_created_codes']));
+        $this->assertCount(2, $productOptions['giftcard_created_codes']);
     }
 
     /**

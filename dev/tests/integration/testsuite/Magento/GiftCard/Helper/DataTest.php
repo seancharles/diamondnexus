@@ -14,7 +14,7 @@ class DataTest extends \PHPUnit\Framework\TestCase
      */
     private $helper;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->helper = Bootstrap::getObjectManager()->create(Data::class);
     }
@@ -24,6 +24,6 @@ class DataTest extends \PHPUnit\Framework\TestCase
         $result = $this->helper->getEmailGeneratedItemsBlock()
             ->getUrl('magento_giftcardaccount/customer', ['giftcard' => '0V6YN8ZUBIZF']);
 
-        $this->assertContains('/giftcard/customer/index/giftcard/0V6YN8ZUBIZF/', $result);
+        $this->assertStringContainsString('/giftcard/customer/index/giftcard/0V6YN8ZUBIZF/', $result);
     }
 }

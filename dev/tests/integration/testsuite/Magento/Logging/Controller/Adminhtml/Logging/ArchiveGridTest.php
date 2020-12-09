@@ -16,7 +16,7 @@ class ArchiveGridTest extends \Magento\TestFramework\TestCase\AbstractBackendCon
     /**
      * @inheritdoc
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->resource = 'Magento_Logging::backups';
         $this->uri = 'backend/admin/logging/archivegrid';

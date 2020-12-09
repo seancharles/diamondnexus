@@ -41,7 +41,7 @@ class GiftCardRedeemerInterfaceTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         /** @var ObjectManager $objectManager */
         $objectManager = Bootstrap::getObjectManager();
@@ -53,7 +53,7 @@ class GiftCardRedeemerInterfaceTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->loginManager->logout();
         $this->loginManager->clearStorage();
@@ -80,10 +80,11 @@ class GiftCardRedeemerInterfaceTest extends TestCase
      * Case when code is invalid.
      *
      * @magentoConfigFixture default_store customer/magento_customerbalance/is_enabled 1
-     * @expectedException \Magento\Framework\Exception\NoSuchEntityException
      */
     public function testRedeemWrongCode()
     {
+        $this->expectException(\Magento\Framework\Exception\NoSuchEntityException::class);
+
         $this->redeemer->redeem('fake_code', 1);
     }
 
@@ -92,10 +93,11 @@ class GiftCardRedeemerInterfaceTest extends TestCase
      *
      * @magentoDataFixture Magento/GiftCardAccount/_files/giftcardaccount.php
      * @magentoConfigFixture default_store customer/magento_customerbalance/is_enabled 1
-     * @expectedException \Magento\Framework\Exception\CouldNotSaveException
      */
     public function testRedeemInvalidCustomer()
     {
+        $this->expectException(\Magento\Framework\Exception\CouldNotSaveException::class);
+
         $this->redeemer->redeem('giftcardaccount_fixture', 1);
     }
 
@@ -105,10 +107,11 @@ class GiftCardRedeemerInterfaceTest extends TestCase
      * @magentoDataFixture Magento/GiftCardAccount/_files/giftcardaccount.php
      * @magentoDataFixture Magento/Customer/_files/customer.php
      * @magentoConfigFixture default_store customer/magento_customerbalance/is_enabled 1
-     * @expectedException \Magento\Framework\Exception\NoSuchEntityException
      */
     public function testRedeemTwice()
     {
+        $this->expectException(\Magento\Framework\Exception\NoSuchEntityException::class);
+
         try {
             $this->redeemer->redeem('giftcardaccount_fixture', 1);
         } catch (\Throwable $exception) {
@@ -126,10 +129,11 @@ class GiftCardRedeemerInterfaceTest extends TestCase
      * @magentoConfigFixture default_store customer/captcha/failed_attempts_login 1
      * @magentoConfigFixture default_store customer/captcha/failed_attempts_ip 1
      * @magentoConfigFixture default_store customer/magento_customerbalance/is_enabled 1
-     * @expectedException \Magento\GiftCardAccount\Api\Exception\TooManyAttemptsException
      */
     public function testRedeemTooMany()
     {
+        $this->expectException(\Magento\GiftCardAccount\Api\Exception\TooManyAttemptsException::class);
+
         $this->loginManager->loginById(1);
         try {
             $this->redeemer->redeem('fake_code', 1);
@@ -145,10 +149,11 @@ class GiftCardRedeemerInterfaceTest extends TestCase
      * @magentoConfigFixture default_store customer/magento_customerbalance/is_enabled 0
      * @magentoDataFixture Magento/GiftCardAccount/_files/giftcardaccount.php
      * @magentoDataFixture Magento/Customer/_files/customer.php
-     * @expectedException \Magento\Framework\Exception\CouldNotSaveException
      */
     public function testRedeemBalanceDisabled()
     {
+        $this->expectException(\Magento\Framework\Exception\CouldNotSaveException::class);
+
 
         $this->redeemer->redeem('giftcardaccount_fixture', 1);
     }

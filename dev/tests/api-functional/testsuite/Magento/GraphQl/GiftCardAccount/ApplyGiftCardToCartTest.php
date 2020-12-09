@@ -24,7 +24,7 @@ class ApplyGiftCardToCartTest extends GraphQlAbstract
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->getMaskedQuoteIdByReservedOrderId = $objectManager->get(GetMaskedQuoteIdByReservedOrderId::class);
@@ -72,11 +72,12 @@ class ApplyGiftCardToCartTest extends GraphQlAbstract
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/guest/create_empty_cart.php
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/add_simple_product.php
      * @magentoApiDataFixture Magento/GiftCardAccount/_files/giftcardaccount.php
-     * @expectedException \Exception
-     * @expectedExceptionMessage The gift card code couldn't be added. Verify your information and try again.
      */
     public function testApplySameGiftCardTwice()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('The gift card code couldn\'t be added. Verify your information and try again.');
+
         $giftCardCode ='giftcardaccount_fixture';
         $maskedQuoteId = $this->getMaskedQuoteIdByReservedOrderId->execute('test_quote');
         $query = $this->getQuery($maskedQuoteId, $giftCardCode);
@@ -145,11 +146,12 @@ class ApplyGiftCardToCartTest extends GraphQlAbstract
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/guest/create_empty_cart.php
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/add_simple_product.php
      * @magentoApiDataFixture Magento/GiftCardAccount/_files/giftcardaccount_with_zero_balance.php
-     * @expectedException \Exception
-     * @expectedExceptionMessage The gift card code couldn't be added. Verify your information and try again.
      */
     public function testApplyGiftCardWithZeroBalance()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('The gift card code couldn\'t be added. Verify your information and try again.');
+
         $giftCardCodeWithZeroBalance = 'giftcardaccount_with_zero_balance';
         $maskedQuoteId = $this->getMaskedQuoteIdByReservedOrderId->execute('test_quote');
         $query = $this->getQuery($maskedQuoteId, $giftCardCodeWithZeroBalance);

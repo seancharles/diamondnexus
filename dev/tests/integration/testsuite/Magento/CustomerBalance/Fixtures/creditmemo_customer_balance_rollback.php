@@ -9,6 +9,7 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\ObjectManager;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
 /** @var ObjectManager $objectManager */
 $objectManager = Bootstrap::getObjectManager();
@@ -27,4 +28,4 @@ foreach ($items as $item) {
     $repository->delete($item);
 }
 
-require __DIR__ . '/order_customer_balance_rollback.php';
+Resolver::getInstance()->requireDataFixture('Magento/CustomerBalance/Fixtures/order_customer_balance_rollback.php');

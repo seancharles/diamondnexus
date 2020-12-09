@@ -8,9 +8,6 @@ namespace Magento\Staging\Model\Update\Grid;
 use Magento\Staging\Model\Update\Source\Status;
 use Magento\TestFramework\Helper\Bootstrap;
 
-/**
- * Class SearchResultTest
- */
 class SearchResultTest extends \PHPUnit\Framework\TestCase
 {
     public function testAddOldUpdatesFilter()
@@ -29,7 +26,7 @@ class SearchResultTest extends \PHPUnit\Framework\TestCase
             SearchResult::class,
             ['dateTimeFactory' => $dateTimeFactoryMock]
         );
-        $this->assertContains(
+        $this->assertStringContainsString(
             "(rollbacks.start_time >= '{$time}') OR (rollbacks.start_time IS NULL)",
             $searchResult->getSelect()->assemble()
         );

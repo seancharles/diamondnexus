@@ -59,7 +59,7 @@ class PlaceOrderAfterApplyingStoreCreditTest extends GraphQlAbstract
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->registry = $objectManager->get(Registry::class);
@@ -516,7 +516,7 @@ QUERY;
     /**
      * @inheritdoc
      */
-    public function tearDown()
+    protected function tearDown(): void
     {
         $this->deleteQuote();
         $this->deleteOrder();

@@ -17,7 +17,7 @@ use Magento\Rma\Model\Shipping;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\ObjectManager;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject as MockObject;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 
 /**
  * @magentoAppArea adminhtml
@@ -42,7 +42,7 @@ class LabelServiceTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
 
@@ -58,7 +58,7 @@ class LabelServiceTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->objectManager->removeSharedInstance(ClientFactory::class);
     }
@@ -139,7 +139,7 @@ class LabelServiceTest extends TestCase
         self::assertTrue($this->service->createShippingLabel($rmaModel, $data));
 
         $rmaTracks = $this->getRmaTracks((int)$rmaModel->getEntityId());
-        self::assertEquals(2, count($rmaTracks));
+        self::assertCount(2, $rmaTracks);
 
         $actualNumbers = [];
         /** @var TrackInterface $track */

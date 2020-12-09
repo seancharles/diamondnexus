@@ -25,7 +25,7 @@ class ConfigFileTest extends \PHPUnit\Framework\TestCase
     /**
      * Set up schema file
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->_schemaFile = $this->objectManager->get(

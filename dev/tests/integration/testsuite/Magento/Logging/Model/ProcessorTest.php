@@ -5,11 +5,6 @@
  */
 namespace Magento\Logging\Model;
 
-use Magento\Backend\App\Area\FrontNameResolver;
-use Magento\Backend\Model\Auth;
-use Magento\Framework\Exception\AuthenticationException;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Sales\Model\Order;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
@@ -20,29 +15,22 @@ use Magento\TestFramework\Helper\Bootstrap;
 class ProcessorTest extends \Magento\TestFramework\TestCase\AbstractController
 {
     /**
-     * @var Auth
-     */
-    private $_auth;
-
-    /**
      * Test that configured admin actions are properly logged
      *
      * @param string $url
      * @param string $action
      * @param array $post
      * @param string $method
-     * @throws AuthenticationException
-     * @throws LocalizedException
      */
-    public function loggingProcessorLogsAction($url, $action, array $post = [], $method = "POST")
+    public function loggingProcessorLogsAction($url, $action, array $post = [], $method = 'POST')
     {
-        Bootstrap::getInstance()->loadArea(FrontNameResolver::AREA_CODE);
-        $collection = Bootstrap::getObjectManager()->create(Event::class)->getCollection();
+        Bootstrap::getInstance()->loadArea(\Magento\Backend\App\Area\FrontNameResolver::AREA_CODE);
+        $collection = Bootstrap::getObjectManager()->create(\Magento\Logging\Model\Event::class)->getCollection();
         $eventCountBefore = count($collection);
         $objectManager = Bootstrap::getObjectManager();
         $objectManager->get(\Magento\Backend\Model\UrlInterface::class)->turnOffSecretKey();
-        $this->_auth = $objectManager->get(\Magento\Backend\Model\Auth::class);
-        $this->_auth->login(
+        $auth = $objectManager->get(\Magento\Backend\Model\Auth::class);
+        $auth->login(
             \Magento\TestFramework\Bootstrap::ADMIN_NAME,
             \Magento\TestFramework\Bootstrap::ADMIN_PASSWORD
         );
@@ -57,7 +45,7 @@ class ProcessorTest extends \Magento\TestFramework\TestCase\AbstractController
             )
         );
         $this->dispatch($url);
-        $collection = $objectManager->create(Event::class)->getCollection();
+        $collection = $objectManager->create(\Magento\Logging\Model\Event::class)->getCollection();
 
         // Number 2 means we have "login" event logged first and then the tested one.
         $eventCountAfter = $eventCountBefore + 2;
@@ -73,13 +61,11 @@ class ProcessorTest extends \Magento\TestFramework\TestCase\AbstractController
      * @param string $action
      * @param array $post
      * @param string $method
-     * @throws AuthenticationException
-     * @throws LocalizedException
      * @dataProvider adminActionDataProvider
      * @magentoDataFixture Magento/Logging/_files/user_and_role.php
      * @magentoDbIsolation enabled
      */
-    public function testLoggingProcessorLogsAction($url, $action, array $post = [], $method = "POST")
+    public function testLoggingProcessorLogsAction($url, $action, array $post = [], $method = 'POST')
     {
         $this->loggingProcessorLogsAction($url, $action, $post, $method);
     }
@@ -87,16 +73,17 @@ class ProcessorTest extends \Magento\TestFramework\TestCase\AbstractController
     /**
      * Test that configured shipment actions are properly logged
      *
-     * @throws AuthenticationException
-     * @throws LocalizedException
+     * @param string $url
+     * @param string $action
+     * @param array $post
      * @magentoDataFixture Magento/Logging/_files/order.php
      * @magentoDataFixture Magento/Logging/_files/user_and_role.php
      * @magentoDbIsolation enabled
      */
     public function testLoggingProcessorLogsActionShipping()
     {
-        /** @var Order $order */
-        $order = Bootstrap::getObjectManager()->create(Order::class);
+        /** @var \Magento\Sales\Model\Order $order */
+        $order = Bootstrap::getObjectManager()->create(\Magento\Sales\Model\Order::class);
         $order->loadByIncrementId('100000001');
         $orderItemId = 1;
         $shipmentId = 1;
@@ -106,7 +93,7 @@ class ProcessorTest extends \Magento\TestFramework\TestCase\AbstractController
         foreach ($order->getShipmentsCollection() as $item) {
             $shipmentId = $item->getId();
         }
-        $url = 'backend/admin/order_shipment/view/shipment_id/' . $shipmentId . '/order_id/' . $order->getId();
+        $url = 'backend/admin/order_shipment/view/shipment_id/'. $shipmentId .'/order_id/' . $order->getId();
         $action = 'view';
         $post['shipment']['items'] = [$orderItemId => 1];
         $this->loggingProcessorLogsAction($url, $action, $post);

@@ -8,10 +8,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require __DIR__ . '/../../GiftCard/_files/gift_card_with_available_message.php';
-require __DIR__ . '/../../Customer/_files/customer.php';
-require __DIR__ . '/../../Customer/_files/customer_address.php';
+Resolver::getInstance()->requireDataFixture('Magento/GiftCard/_files/gift_card_with_available_message.php');
+Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer.php');
+Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer_address.php');
 
 /** @var  \Magento\Framework\ObjectManagerInterface $objectManager */
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();

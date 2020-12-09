@@ -5,6 +5,7 @@
  */
 
 use Magento\Quote\Model\Quote;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
@@ -36,4 +37,4 @@ foreach (['simple_one', 'simple_two'] as $sku) {
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);
 
-include 'two_roles_for_different_websites_rollback.php';
+Resolver::getInstance()->requireDataFixture('Magento/AdminGws/_files/two_roles_for_different_websites_rollback.php');

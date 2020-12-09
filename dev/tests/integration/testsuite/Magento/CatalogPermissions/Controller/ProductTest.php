@@ -45,12 +45,12 @@ class ProductTest extends \Magento\TestFramework\TestCase\AbstractController
         //Escape
         preg_replace('/<script\b[^>]*>\b(?:)<\\/script>/s', '', $responseBody);
         /* Product info */
-        $this->assertContains('Simple Product 1 Name', $responseBody);
-        $this->assertContains('Simple Product 1 Full Description', $responseBody);
-        $this->assertContains('Simple Product 1 Short Description', $responseBody);
+        $this->assertStringContainsString('Simple Product 1 Name', $responseBody);
+        $this->assertStringContainsString('Simple Product 1 Full Description', $responseBody);
+        $this->assertStringContainsString('Simple Product 1 Short Description', $responseBody);
         $responseBody = preg_replace("/<script.*<\\/script>/", "", $responseBody);
         /* Stock info */
-        $this->assertContains('In stock', $responseBody);
-        $this->assertNotContains('Add to Cart', $responseBody);
+        $this->assertStringContainsString('In stock', $responseBody);
+        $this->assertStringNotContainsString('Add to Cart', $responseBody);
     }
 }

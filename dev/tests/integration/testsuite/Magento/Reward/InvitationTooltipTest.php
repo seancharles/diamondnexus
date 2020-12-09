@@ -29,11 +29,11 @@ class InvitationTooltipTest extends \Magento\TestFramework\TestCase\AbstractCont
         $this->dispatch('invitation/index/index');
 
         $body = $this->getResponse()->getBody();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Send this invitation now and earn <strong>$invitationCustomerPoints</strong>",
             $body
         );
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Earn <strong>$invitationOrderPoints</strong> Reward points for purchases your invitees make",
             $body
         );

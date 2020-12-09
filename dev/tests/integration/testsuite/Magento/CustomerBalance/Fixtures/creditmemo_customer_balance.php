@@ -8,17 +8,21 @@ declare(strict_types=1);
 use Magento\Sales\Api\CreditmemoItemRepositoryInterface;
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
 use Magento\Sales\Api\Data\CreditmemoItemInterface;
+use Magento\Sales\Api\Data\OrderInterfaceFactory;
 use Magento\Sales\Api\Data\OrderItemInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order\Creditmemo;
 use Magento\Sales\Model\Order\CreditmemoFactory;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\ObjectManager;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require __DIR__ . '/order_customer_balance.php';
+Resolver::getInstance()->requireDataFixture('Magento/CustomerBalance/Fixtures/order_customer_balance.php');
 
 /** @var ObjectManager $objectManager */
 $objectManager = Bootstrap::getObjectManager();
-
+/** @var \Magento\Sales\Model\Order $order */
+$order = $objectManager->get(OrderInterfaceFactory::class)->create()->loadByIncrementId('100000002');
 /** @var CreditmemoFactory $creditMemoFactory */
 $creditMemoFactory = $objectManager->get(CreditmemoFactory::class);
 $creditMemo = $creditMemoFactory->createByOrder($order, $order->getData());
@@ -35,7 +39,7 @@ $orderItem = current($order->getAllItems());
 $orderItem->setName('Test item')
     ->setQtyRefunded(10)
     ->setQtyInvoiced(10);
-
+$grandTotal = 50.00;
 /** @var CreditmemoItemInterface $item */
 $item = $objectManager->create(CreditmemoItemInterface::class);
 $item->setParentId($creditMemo->getId())
@@ -51,4 +55,6 @@ $itemRepository->save($item);
 $order->setTotalPaid($grandTotal);
 $order->setBaseTotalPaid($grandTotal);
 $order->setBaseCustomerBalanceInvoiced($grandTotal);
+/** @var OrderRepositoryInterface $orderRepository */
+$orderRepository = $objectManager->get(OrderRepositoryInterface::class);
 $orderRepository->save($order);

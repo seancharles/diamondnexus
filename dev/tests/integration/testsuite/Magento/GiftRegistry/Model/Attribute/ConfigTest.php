@@ -22,18 +22,18 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
      */
     private $originalRenderer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->originalRenderer = Phrase::getRenderer();
         $translateRenderer = $this->createMock(\Magento\Framework\Phrase\RendererInterface::class);
         $translateRenderer->expects($this->any())->method('render')
-            ->will(
-                $this->returnCallback(
+            ->willReturnCallback(
+                
                     function ($input) {
                         return end($input) . ' (translated)';
                     }
-                )
+                
             );
         \Magento\Framework\Phrase::setRenderer($translateRenderer);
 
@@ -65,7 +65,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         Phrase::setRenderer($this->originalRenderer);
     }

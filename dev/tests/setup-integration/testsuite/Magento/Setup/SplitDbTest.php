@@ -39,7 +39,7 @@ class SplitDbTest extends SetupTestCase
      */
     private $deploymentConfig;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager= Bootstrap::getObjectManager();
         $this->cliCommand = $objectManager->get(CliCommand::class);
@@ -136,8 +136,8 @@ class SplitDbTest extends SetupTestCase
         $default = $this->describeTable->describeShard('default');
         self::assertCount(1, $checkout);
         self::assertCount(1, $default);
-        self::assertRegExp('/some_new_column/', reset($checkout));
-        self::assertRegExp('/Empty\scomment/', reset($checkout));
+        $this->assertMatchesRegularExpression('/some_new_column/', reset($checkout));
+        $this->assertMatchesRegularExpression('/Empty\scomment/', reset($checkout));
     }
 
     /**

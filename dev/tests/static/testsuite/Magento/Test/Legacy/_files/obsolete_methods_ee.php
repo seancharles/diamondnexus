@@ -679,4 +679,8 @@ return [
         'widgetCatalogEventCategoryEditButtons',
         'Magento\AdminGws\Model\Blocks'
     ],
+    [
+        'each',
+        'Magento\GiftWrapping\Block\Adminhtml\Giftwrapping\Edit',
+    ],
 ];

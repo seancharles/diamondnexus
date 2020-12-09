@@ -42,7 +42,7 @@ class RowsTest extends \PHPUnit\Framework\TestCase
         $items = $filtersSelect->query()->fetchAll();
 
         //test with save on schedule that prevents saving on save
-        $this->assertTrue(empty($items));
+        $this->assertEmpty($items);
 
         /** @var \Magento\AdvancedSalesRule\Model\Indexer\SalesRule\Action\Rows $action */
         $action = $objectManager->create(\Magento\AdvancedSalesRule\Model\Indexer\SalesRule\Action\Rows::class);

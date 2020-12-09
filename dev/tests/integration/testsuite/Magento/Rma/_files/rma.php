@@ -9,14 +9,19 @@ use Magento\Rma\Api\Data\ItemInterface;
 use Magento\Rma\Model\Rma;
 use Magento\Rma\Model\Rma\Status\History;
 use Magento\Rma\Model\Shipping;
+use Magento\Sales\Api\Data\OrderInterfaceFactory;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\Rma\Api\RmaRepositoryInterface;
 use Magento\Rma\Api\TrackRepositoryInterface;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-include __DIR__ . '/../../../Magento/Sales/_files/order.php';
+Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/order.php');
 
 $objectManager = Bootstrap::getObjectManager();
-
+/** @var \Magento\Sales\Model\Order $order */
+$order = $objectManager->get(OrderInterfaceFactory::class)->create()->loadByIncrementId('100000001');
+$orderItems = $order->getItems();
+$orderItem = reset($orderItems);
 /** @var $rma Rma */
 $rma = $objectManager->create(Rma::class);
 $rma->setOrderId($order->getId());

@@ -4,19 +4,23 @@
  * See COPYING.txt for license details.
  */
 
-require INTEGRATION_TESTS_DIR . '/testsuite/Magento/Store/_files/core_second_third_fixturestore.php';
-require INTEGRATION_TESTS_DIR . '/testsuite/Magento/Customer/_files/customer.php';
+use Magento\Customer\Model\CustomerRegistry;
+use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-$objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
+Resolver::getInstance()->requireDataFixture('Magento/Store/_files/core_second_third_fixturestore.php');
+Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer.php');
+
+$objectManager = Bootstrap::getObjectManager();
 /** @var \Magento\Store\Model\Website $mainWebsite */
 /** @var \Magento\Store\Model\Website $secondWebsite */
 $mainWebsite = $objectManager->create(\Magento\Store\Model\Website::class)->load('base');
 $secondWebsite = $objectManager->create(\Magento\Store\Model\Website::class)->load('secondwebsite');
 
 if (!isset($customer)) {
-    /** @var \Magento\Customer\Model\Customer $customerModel */
-    $customerModel = $objectManager->create(\Magento\Customer\Model\Customer::class);
-    $customer = $customerModel->loadByEmail('customer@example.com');
+    /** @var CustomerRegistry $customerRegistry */
+    $customerRegistry = Bootstrap::getObjectManager()->create(CustomerRegistry::class);
+    $customer = $customerRegistry->retrieve(1);
 }
 
 /** @var $segmentFactory \Magento\CustomerSegment\Model\SegmentFactory */

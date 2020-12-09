@@ -39,11 +39,12 @@ class GiftCardAccountQueryTest extends GraphQlAbstract
      * Test an error is returned when querying an inactive card
      *
      * @magentoApiDataFixture Magento/GiftCardAccount/_files/giftcardaccount_inactive.php
-     * @expectedException \Exception
-     * @expectedExceptionMessage GraphQL response contains errors: Invalid gift card
      */
     public function testQueryInactiveGiftCardAccount()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('GraphQL response contains errors: Invalid gift card');
+
         $giftCardCode = 'giftcardaccount_inactive';
         $query = $this->getGiftCardAccountQuery($giftCardCode);
         $this->graphQlQuery($query);
@@ -52,11 +53,12 @@ class GiftCardAccountQueryTest extends GraphQlAbstract
     /**
      * Test an error is returned when code does not exist
      *
-     * @expectedException \Exception
-     * @expectedExceptionMessage GraphQL response contains errors: No such entity
      */
     public function testQueryNonExistentGiftCardAccount()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('GraphQL response contains errors: No such entity');
+
         $giftCardCode = 'nonexistent_giftcard';
         $query = $this->getGiftCardAccountQuery($giftCardCode);
         $this->graphQlQuery($query);

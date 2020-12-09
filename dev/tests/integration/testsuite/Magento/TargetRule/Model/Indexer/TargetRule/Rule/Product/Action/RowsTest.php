@@ -20,7 +20,7 @@ class RowsTest extends \Magento\TestFramework\Indexer\TestCase
      */
     protected $_rule;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->_processor = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\TargetRule\Model\Indexer\TargetRule\Rule\Product\Processor::class
@@ -52,6 +52,6 @@ class RowsTest extends \Magento\TestFramework\Indexer\TestCase
 
         $this->_processor->reindexList([$this->_rule->getId()]);
 
-        $this->assertEquals(2, count($this->_rule->getMatchingProductIds()));
+        $this->assertCount(2, $this->_rule->getMatchingProductIds());
     }
 }

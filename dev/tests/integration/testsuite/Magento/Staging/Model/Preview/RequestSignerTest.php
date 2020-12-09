@@ -11,6 +11,7 @@ namespace Magento\Staging\Model\Preview;
 use Magento\Framework\App\DeploymentConfig;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Config\ConfigOptionsListConstants;
+use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Staging\Model\VersionManager;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -35,18 +36,29 @@ class RequestSignerTest extends TestCase
      */
     private $deploymentConfig;
 
-    protected function setUp()
+    /**
+     * @var EncryptorInterface|MockObject
+     */
+    private $encryptor;
+
+    protected function setUp(): void
     {
         $this->dateTime = $this->createMock(DateTime::class);
         $this->deploymentConfig = $this->createMock(DeploymentConfig::class);
         $this->deploymentConfig->method('get')
             ->willReturnMap([[ConfigOptionsListConstants::CONFIG_PATH_CRYPT_KEY, null, 'abc123']]);
 
+        $this->encryptor = ObjectManager::getInstance()->create(
+            EncryptorInterface::class,
+            [
+                'deploymentConfig' => $this->deploymentConfig
+            ]
+        );
         $this->requestSigner = ObjectManager::getInstance()->create(
             RequestSigner::class,
             [
                 'dateTime' => $this->dateTime,
-                'deploymentConfig' => $this->deploymentConfig
+                'encryptor' => $this->encryptor,
             ]
         );
     }
@@ -108,7 +120,7 @@ class RequestSignerTest extends TestCase
     public function testValidateUrl(string $url, bool $expected)
     {
         $this->dateTime->method('timestamp')
-        ->willReturn(self::FAKE_TIMESTAMP);
+            ->willReturn(self::FAKE_TIMESTAMP);
 
         $signed = $this->requestSigner->validateUrl($url);
 
@@ -116,11 +128,15 @@ class RequestSignerTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage URL does not contain required preview version param
+     * Tests signUrl() with invalid URL.
      */
     public function testExceptionForInvalidUrl()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage(
+            'URL does not contain required preview version param'
+        );
+
         $this->requestSigner->signUrl('http://test.local/foo/bar?foo=bar');
     }
 

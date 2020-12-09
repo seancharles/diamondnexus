@@ -48,7 +48,7 @@ class ProductLinkInGridTest extends \Magento\TestFramework\TestCase\AbstractBack
         $store = $this->_objectManager->get(StoreManagerInterface::class)
             ->getStore();
 
-        $this->assertContains(
+        $this->assertStringContainsString(
             'backend\/catalog\/product\/edit\/id\/' . $product->getId() . '\/store\/' . $store->getId(),
             $content,
             'Store id must be present in product link for user who doesn\'t have exclusive access to product'

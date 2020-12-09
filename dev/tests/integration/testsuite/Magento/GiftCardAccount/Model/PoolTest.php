@@ -12,7 +12,7 @@ class PoolTest extends \PHPUnit\Framework\TestCase
      */
     protected $_model;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\GiftCardAccount\Model\Pool::class
@@ -31,11 +31,12 @@ class PoolTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException \Magento\Framework\Exception\LocalizedException
-     * @expectedExceptionMessage No codes left in the pool
      */
     public function testShiftNoCodeLeft()
     {
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
+        $this->expectExceptionMessage('No codes left in the pool');
+
         $this->_model->shift();
     }
 }

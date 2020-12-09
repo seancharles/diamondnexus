@@ -28,7 +28,7 @@ class ShippingInformationManagementTest extends WebapiAbstract
      */
     private $objectManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
     }
@@ -76,7 +76,7 @@ class ShippingInformationManagementTest extends WebapiAbstract
         ];
         $result = $this->_webApiCall($serviceInfo, $requestData);
 
-        $this->assertEquals(1, count($result[PaymentDetailsInterface::PAYMENT_METHODS]));
+        $this->assertCount(1, $result[PaymentDetailsInterface::PAYMENT_METHODS]);
         $this->assertEquals($expected, current($result[PaymentDetailsInterface::PAYMENT_METHODS]));
     }
 
