@@ -6,32 +6,53 @@
 	use Magento\Framework\Controller\ResultFactory;
 	use Magento\Framework\App\Action\Context;
 
-	class Index extends \Magento\Framework\App\Action\Action
+	class Index extends \ForeverCompanies\Forms\Controller\ApiController
 	{
+		protected $formKeyValidator;
+		protected $storeManager;
 		protected $submissionFactory;
-		protected $resultFactory;
+		protected $formHelper;
 		
 		public function __construct(
 			\Magento\Framework\App\Action\Context $context,
+			\Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator,
+			\Magento\Store\Model\StoreManagerInterface $storeManager,
 			\ForeverCompanies\Forms\Model\SubmissionFactory  $submissionFactory,
-			\Magento\Framework\Controller\ResultFactory $resultFactory
+			\ForeverCompanies\Forms\Helper\Form $formHelper
 		) {
 			parent::__construct($context);
 			
+			$this->formKeyValidator = $formKeyValidator;
+			$this->storeManager = $storeManager;
 			$this->submissionFactory = $submissionFactory;
-			$this->resultFactory = $resultFactory;
+			$this->formHelper = $formHelper;
 		}
 
 		public function execute()
 		{
-			echo "Hello World";
+			if ($this->formKeyValidator->validate($this->getRequest()) == false) {
 			
-			$model = $this->submissionFactory->create();
-			$model->addData([
-				"store_id" => '1',
-				"form_post_json" => json_encode(['key'=>'hello world']),
-				"created_at" => date("Y-m-d h:i:s", time())
-			]);
-			$saveData = $model->save();
+				$storeId = $this->storeManager->getStore()->getId();
+				$formId = $this->formHelper->getSanitizedField('form_id');
+				
+				$model = $this->submissionFactory->create();
+				
+				$model->addData([
+					"store_id" => $storeId,
+					"form_id" => $formId,
+					"form_post_json" => json_encode(['key'=>'hello world']),
+					"created_at" => date("Y-m-d h:i:s", time())
+				]);
+				
+				$saveData = $model->save();
+				
+				echo json_encode(['success'=>true]);
+				
+			} else {
+				echo json_encode([
+					'success'=>false,
+					'message'=> 'Invalid Form Key'
+				]);
+			}
 		}
 	}
