@@ -417,6 +417,7 @@ return [
         'ForeverCompanies_Profile' => 1,
         'ForeverCompanies_QuoteCleaner' => 1,
         'ForeverCompanies_Rules' => 1,
+        'ForeverCompanies_Salesforce' => 1,
         'ForeverCompanies_SearchEngine' => 1,
         'Klarna_Core' => 1,
         'Klarna_Ordermanagement' => 1,
