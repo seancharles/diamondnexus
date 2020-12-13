@@ -1,0 +1,200 @@
+<?php
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_EditOrder
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+
+/** @var \Mageplaza\EditOrder\Block\Adminhtml\Logs\Order\Total $block */
+$order = $block->getOrder();
+$oldTotalData = $block->getOldTotalData();
+?>
+
+<?php if (count($oldTotalData)) : ?>
+    <div class="admin__page-section-item old-total-order order-payment-method">
+        <table class="data-table admin__table-secondary order-subtotal-table">
+            <caption><?= $block->escapeHtml(__('Old Information')) ?></caption>
+            <tfoot>
+                <tr class="col-0">
+                    <td class="label"><strong><?= /** @noEscape */ __('Grand Total') ?></strong></td>
+                    <td>
+                        <strong>
+                            <span class="price">
+                                <?= /** @noEscape */ $block->getFormatPrice($oldTotalData['grand_total']) ?>
+                            </span>
+                        </strong>
+                    </td>
+                </tr>
+                <tr class="col-1">
+                    <td class="label"><strong><?= /** @noEscape */ __('Total Paid') ?></strong></td>
+                    <td>
+                        <strong>
+                            <span class="price">
+                                <?= /** @noEscape */ $block->getFormatPrice($oldTotalData['total_paid']) ?>
+                            </span>
+                        </strong>
+                    </td>
+                </tr>
+                <tr class="col-2">
+                    <td class="label"><strong><?= /** @noEscape */ __('Total Refunded') ?></strong></td>
+                    <td>
+                        <strong>
+                            <span class="price">
+                                <?= /** @noEscape */ $block->getFormatPrice($oldTotalData['total_refund']) ?>
+                            </span>
+                        </strong>
+                    </td>
+                </tr>
+                <tr class="col-3">
+                    <td class="label"><strong><?= /** @noEscape */ __('Total Due') ?></strong></td>
+                    <td>
+                        <strong>
+                            <span class="price">
+                                <?= /** @noEscape */ $block->getFormatPrice($oldTotalData['total_due']) ?>
+                            </span>
+                        </strong>
+                    </td>
+                </tr>
+            </tfoot>
+
+            <tbody>
+                <tr class="col-0">
+                    <td class="label"><?= /** @noEscape */ __('Subtotal') ?></td>
+                    <td>
+                        <span class="price">
+                            <?= /** @noEscape */ $block->getFormatPrice($oldTotalData['subtotal']) ?>
+                        </span>
+                    </td>
+                </tr>
+                <tr class="col-1">
+                    <td class="label"><?= /** @noEscape */ __('Shipping &amp; Handling') ?></td>
+                    <td>
+                        <span class="price">
+                            <?= /** @noEscape */ $block->getFormatPrice($oldTotalData['shipping_amount']) ?>
+                        </span>
+                    </td>
+                </tr>
+                <tr class="col-2">
+                    <td class="label"><?= /** @noEscape */ __('Discount') ?></td>
+                    <td>
+                        <span class="price">
+                            <?= /** @noEscape */ $block->getFormatPrice($oldTotalData['discount_amount']) ?>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <div class="summary-collapse" tabindex="0"><?= /** @noEscape */ __('Tax') ?></div>
+                    </td>
+                    <td>
+                        <span class="price">
+                            <?= /** @noEscape */ $block->getFormatPrice($oldTotalData['tax_amount']) ?>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="admin__page-section-item update-total-order order-shipping-method order-shipping-address">
+        <table class="data-table admin__table-secondary order-subtotal-table">
+            <caption><?= $block->escapeHtml(__('Update Information')) ?></caption>
+            <tfoot>
+            <tr class="col-0">
+                <td class="label"><strong><?= /** @noEscape */ __('Grand Total') ?></strong></td>
+                <td>
+                    <strong>
+                        <span class="price">
+                            <?= /** @noEscape */ $block->getFormatPrice($order->getBaseGrandTotal()) ?>
+                        </span>
+                    </strong>
+                </td>
+            </tr>
+            <tr class="col-1">
+                <td class="label"><strong><?= /** @noEscape */ __('Total Paid') ?></strong></td>
+                <td>
+                    <strong>
+                        <span class="price">
+                            <?= /** @noEscape */ $block->getFormatPrice($order->getBaseTotalPaid()) ?>
+                        </span>
+                    </strong>
+                </td>
+            </tr>
+            <tr class="col-2">
+                <td class="label"><strong><?= /** @noEscape */ __('Total Refunded') ?></strong></td>
+                <td>
+                    <strong>
+                        <span class="price">
+                            <?= /** @noEscape */ $block->getFormatPrice($order->getBaseTotalRefunded()) ?>
+                        </span>
+                    </strong>
+                </td>
+            </tr>
+            <tr class="col-3">
+                <td class="label"><strong><?= /** @noEscape */ __('Total Due') ?></strong></td>
+                <td>
+                    <strong>
+                        <span class="price">
+                            <?= /** @noEscape */ $block->getFormatPrice($order->getBaseTotalDue()) ?>
+                        </span>
+                    </strong>
+                </td>
+            </tr>
+            </tfoot>
+
+            <tbody>
+            <tr class="col-0">
+                <td class="label"><?= /** @noEscape */ __('Subtotal') ?></td>
+                <td>
+                    <span class="price">
+                        <?= /** @noEscape */ $block->getFormatPrice($order->getBaseSubtotal()) ?>
+                    </span>
+                </td>
+            </tr>
+            <tr class="col-1">
+                <td class="label"><?= /** @noEscape */ __('Shipping &amp; Handling') ?></td>
+                <td>
+                    <span class="price">
+                        <?= /** @noEscape */ $block->getFormatPrice($order->getBaseShippingAmount()) ?>
+                    </span>
+                </td>
+            </tr>
+            <tr class="col-2">
+                <td class="label"><?= /** @noEscape */ __('Discount') ?></td>
+                <td>
+                        <span class="price">
+                            <?= /** @noEscape */ $block->getFormatPrice($order->getBaseDiscountAmount()) ?>
+                        </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">
+                    <div class="summary-collapse" tabindex="0"><?= /** @noEscape */ __('Tax') ?></div>
+                </td>
+                <td>
+                    <span class="price">
+                        <?= /** @noEscape */ $block->getFormatPrice($order->getTaxAmount()) ?>
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+<?php else : ?>
+    <table class="admin__table-secondary">
+        <caption class="title-no-update"><?= /** @noEscape */ __('There is no update.') ?></caption>
+    </table>
+<?php endif ?>

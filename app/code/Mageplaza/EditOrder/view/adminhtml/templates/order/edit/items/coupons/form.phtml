@@ -1,0 +1,45 @@
+<?php
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_EditOrder
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+
+/** @var \Magento\Sales\Block\Adminhtml\Order\Create\Coupons\Form $block*/
+?>
+<div class="admin__field field-apply-coupon-code">
+    <label class="admin__field-label"><span><?= /* @noEscape*/ __('Apply Coupon Code') ?></span></label>
+    <div class="admin__field-control">
+        <input type="text" class="admin__control-text" id="coupons:code" value="" name="coupon_code" />
+        <?= $block->getButtonHtml(__('Apply'), 'order.applyCoupon($F(\'coupons:code\'))') ?>
+        <?php if ($block->getCouponCode()) : ?>
+            <p class="added-coupon-code">
+                <input type="hidden" class="admin__control-text" id="mpeditorder_coupons"
+                       value="<?= $block->escapeHtml($block->getCouponCode()) ?>" name="mp_coupon_code" />
+                <span><?= $block->escapeHtml($block->getCouponCode()) ?></span>
+                <a href="#" onclick="order.applyCoupon(''); return false;" title="<?= /* @noEscape*/ __('Remove Coupon Code') ?>"
+                   class="action-remove"><span><?= /* @noEscape */ __('Remove') ?></span></a>
+            </p>
+        <?php endif; ?>
+        <script>
+            require(["Magento_Sales/order/create/form"], function(){
+                order.overlay('shipping-method-overlay', <?= !$block->getQuote()->isVirtual() ?>);
+                order.overlay('address-shipping-overlay', <?= !$block->getQuote()->isVirtual() ?>);
+            });
+        </script>
+    </div>
+</div>

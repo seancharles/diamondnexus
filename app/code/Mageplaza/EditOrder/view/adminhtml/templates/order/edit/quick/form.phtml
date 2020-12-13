@@ -1,0 +1,50 @@
+<?php
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_EditOrder
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+
+/** @var \Mageplaza\EditOrder\Block\Adminhtml\Order\Edit\QuickEdit $block */
+$isActive = 'false';
+?>
+
+<div class="mpeditorder-messages">
+    <div class="message message-error error mpeditorder-quick-edit-error" style="display: none"></div>
+</div>
+<?php if ($block->getTabs()) : ?>
+    <?php foreach ($block->getTabs() as $_tab) : ?>
+        <?php if ($_tab['id'] === 'mpeditorder-items') {
+            $isActive = 'true';
+        } ?>
+        <div class="config-nav-block admin__page-nav _collapsed mp_collapsible"
+             data-mage-init='{"collapsible":{"active": <?= /** @noEscape */ $isActive ?>,
+                 "openedState": "_show",
+                 "closedState": "_hide",
+                 "collapsible": true,
+                 "animate": 200}}'>
+            <div class="admin__page-nav-title title _collapsible title _collapsible-<?= /** @noEscape */ $_tab['id'] ?>"
+                 data-role="title">
+                <strong><?= /** @noEscape */ $_tab['label']?></strong>
+            </div>
+            <div class="<?= /** @noEscape */ $_tab['id'] ?> mp_collapsible_content" data-role="content">
+                <?= $block->getChildHtml($_tab['block']) ?>
+            </div>
+        </div>
+    <?php endforeach ?>
+<?php endif; ?>
+<?= $block->getChildHtml('mpeditorder.js') ?>

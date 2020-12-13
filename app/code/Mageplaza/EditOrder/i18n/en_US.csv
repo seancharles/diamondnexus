@@ -1,0 +1,133 @@
+Remove,Remove
+Add,Add
+"Associate to Website","Associate to Website"
+"Customer Email","Customer Email"
+"Name Prefix","Name Prefix"
+"First Name","First Name"
+"Middle Name/Initial","Middle Name/Initial"
+"Last Name","Last Name"
+"Name Suffix","Name Suffix"
+"Customer Group","Customer Group"
+"Date of Birth","Date of Birth"
+"Tax/VAT Number","Tax/VAT Number"
+Gender,Gender
+"Send Welcome Email From","Send Welcome Email From"
+"Vertex Customer Code","Vertex Customer Code"
+Percent,Percent
+"Fixed Amount","Fixed Amount"
+"Edit Order Information","Edit Order Information"
+"Edit Customer Information","Edit Customer Information"
+"Edit Billing Address","Edit Billing Address"
+"Edit Payment Method","Edit Payment Method"
+"Edit Shipping Address","Edit Shipping Address"
+"Edit Shipping Method","Edit Shipping Method"
+"Edit Items Ordered","Edit Items Ordered"
+ID,ID
+"Middle Name","Middle Name"
+Email,Email
+"Customer Group Id","Customer Group Id"
+"Website Id","Website Id"
+Prefix,Prefix
+Suffix,Suffix
+Dob,Dob
+"Tax Vat","Tax Vat"
+"Manage Logs","Manage Logs"
+"This request no longer exists.","This request no longer exists."
+"Log #%1","Log #%1"
+"This log no longer exists.","This log no longer exists."
+"There must always be items","There must always be items"
+"This order has been updated!","This order has been updated!"
+"Free Shipping","Free Shipping"
+"Quick Edit (all)","Quick Edit (all)"
+"Order Information","Order Information"
+"Customer Information","Customer Information"
+"Billing Address","Billing Address"
+"Shipping Address","Shipping Address"
+"Shipping Method","Shipping Method"
+"Payment Method","Payment Method"
+Items,Items
+"Edit Current Customer","Edit Current Customer"
+"Change Customer","Change Customer"
+"The increment id already exists","The increment id already exists"
+"Quick Edit","Quick Edit"
+View,View
+"Account Information","Account Information"
+"Old Account Information","Old Account Information"
+"Customer Name","Customer Name"
+"Update Account Information","Update Account Information"
+"There is no update.","There is no update."
+"Old Information","Old Information"
+"Update Information","Update Information"
+"Order Id","Order Id"
+"Order Date","Order Date"
+"Order Status","Order Status"
+Product,Product
+Price,Price
+Qty,Qty
+Subtotal,Subtotal
+"Tax (%)","Tax (%)"
+Discount,Discount
+"Row Subtotal","Row Subtotal"
+Action,Action
+"Old: %1","Old: %1"
+"Update: %1","Update: %1"
+"Payment Information","Payment Information"
+"The order was placed using %1.","The order was placed using %1."
+"Shipping &amp; Handling Information","Shipping &amp; Handling Information"
+"No method","No method"
+"Grand Total","Grand Total"
+"Total Paid","Total Paid"
+"Total Refunded","Total Refunded"
+"Total Due","Total Due"
+"Shipping &amp; Handling","Shipping &amp; Handling"
+Tax,Tax
+"Log Information","Log Information"
+"Order ID","Order ID"
+"Editor ","Editor "
+"Edit Date","Edit Date"
+"Editor IP Address","Editor IP Address"
+"Order & Account Information","Order & Account Information"
+"Address Information","Address Information"
+"Payment &amp; Shipping Method","Payment &amp; Shipping Method"
+"Items Ordered","Items Ordered"
+"Order Total","Order Total"
+Edit,Edit
+Select,Select
+"Save Information to Customer","Save Information to Customer"
+"Order Number","Order Number"
+"You can only change the order status in the same state","You can only change the order status in the same state"
+"Apply Coupon Code","Apply Coupon Code"
+Apply,Apply
+"Remove Coupon Code","Remove Coupon Code"
+"No ordered items","No ordered items"
+"Update Items and Quantities","Update Items and Quantities"
+"Total %1 product(s)","Total %1 product(s)"
+Subtotal:,Subtotal:
+SKU,SKU
+"Tier Pricing","Tier Pricing"
+"Custom Price","Custom Price"
+Custom,Custom
+"Please select","Please select"
+"Shipping Fee (excl. Tax)","Shipping Fee (excl. Tax)"
+"Discount (Fixed Amount)","Discount (Fixed Amount)"
+"Total Fee","Total Fee"
+"Sorry, no quotes are available for this order.","Sorry, no quotes are available for this order."
+"The Order has been updated!","The Order has been updated!"
+Update,Update
+"Order # ","Order # "
+"Mageplaza Edit Order","Mageplaza Edit Order"
+"Edit Order","Edit Order"
+General,General
+Enable,Enable
+"Select Yes to enable this module","Select Yes to enable this module"
+"Enable Quick Edit","Enable Quick Edit"
+"Auto Recalculate Shipping Fee","Auto Recalculate Shipping Fee"
+"Item Status","Item Status"
+"Original Price","Original Price"
+"Tax Amount","Tax Amount"
+"Tax Percent","Tax Percent"
+"Discount Amount","Discount Amount"
+"Row Total","Row Total"
+Editor,Editor
+"Edited Field","Edited Field"
+"Created Date","Created Date"

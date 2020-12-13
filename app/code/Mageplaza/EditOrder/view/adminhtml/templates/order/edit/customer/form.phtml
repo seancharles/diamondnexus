@@ -1,0 +1,56 @@
+<?php
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_EditOrder
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+
+/** @var \Mageplaza\EditOrder\Block\Adminhtml\Order\Edit\CustomerInfo $block */
+$order = $block->getCurrentOrder();
+?>
+<script>
+    window.mpCustomerData = <?= /** @noEscape */ $block->getCustomerData() ?>;
+</script>
+<div class="mpeditorder-messages">
+    <div class="message message-error error mpeditorder-customer-error" style="display: none"></div>
+</div>
+
+<fieldset class="fieldset admin__fieldset fieldset-wide" style="padding-bottom: 15px">
+    <div class="admin__field field field-modify-type">
+        <label class="label admin__field-label" for="mpeditorder-modify-type">
+            <span><?= /* @noEscape */ __('Select') ?></span>
+        </label>
+        <div class="admin__field-control control">
+            <select id="mpeditorder-modify-type" name="order[customer][modify-type]" class="select admin__control-select" >
+                <option value="edit"><?= /* @noEscape */ __('Edit Current Customer') ?></option>
+                <option value="change"><?= /* @noEscape */ __('Change Customer') ?></option>
+            </select>
+        </div>
+            <div id="mpeditorder-select-customer-grid"></div>
+    </div>
+    <div class="admin__field field admin__field-option" style="margin-left: 23.5%;">
+        <div class="admin__field-control">
+            <input id="mpeditorder-save-customer" type="checkbox" class="admin__control-checkbox"
+                   name="order[customer][save-customer]" value="0" />
+            <label for="mpeditorder-save-customer" class="admin__field-label">
+                <span><?= /* @noEscape */ __('Save Information to Customer') ?></span>
+            </label>
+        </div>
+    </div>
+</fieldset>
+
+<?= $block->getForm()->toHtml() ?>
