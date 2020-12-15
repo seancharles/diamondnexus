@@ -8,13 +8,12 @@ declare(strict_types=1);
 namespace ForeverCompanies\CustomAttributes\Helper;
 
 use ForeverCompanies\CustomAttributes\Logger\Logger;
-use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
+use Magento\CatalogStaging\Model\ResourceModel\ProductSequence;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
-use Magento\Bundle\Api\Data\LinkInterfaceFactory;
-use Magento\Bundle\Api\Data\LinkInterface;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -32,25 +31,43 @@ class BundlePriceUse extends AbstractHelper
      * @var Logger
      */
     protected $logger;
+
+    /**
+     * @var ResourceConnection
+     */
+    protected $resource;
+
     /**
      * @var ProductType
      */
     private $productTypeHelper;
 
+    /**
+     * BundlePriceUse constructor.
+     * @param Context $context
+     * @param ProductRepositoryInterface $productRepository
+     * @param ProductType $productTypeHelper
+     * @param ResourceConnection $resource
+     * @param Logger $logger
+     */
     public function __construct(
         Context $context,
         ProductRepositoryInterface $productRepository,
         ProductType $productTypeHelper,
+        ResourceConnection $resource,
         Logger $logger
     ) {
         parent::__construct($context);
         $this->productRepository = $productRepository;
         $this->productTypeHelper = $productTypeHelper;
+        $this->resource = $resource;
         $this->logger = $logger;
     }
 
     public function setBundlePrice(Product $product, float $price, string $originalSku)
     {
+        $tableName = $this->resource->getTableName(ProductSequence::SEQUENCE_TABLE);
+        $this->resource->getConnection()->insertOnDuplicate($tableName, ['sequence_value' => $product->getId()]);
         $sku = $product->getSku();
         if ($product->getData('bundle_price_use') == 0 || $product->getData('bundle_price_use') !== $price) {
             $product->setData('bundle_price_use', $price);
