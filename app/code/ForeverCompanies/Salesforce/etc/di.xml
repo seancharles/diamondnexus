@@ -33,11 +33,13 @@
             <argument name="resourceModel" xsi:type="string">ForeverCompanies\Salesforce\Model\ResourceModel\Report</argument>
         </arguments>
     </virtualType>
-    <virtualType name="ForeverCompanies\Salesforce\Model\ResourceModel\Queue\Grid\Collection"
-                 type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+    <type name="Magento\Framework\Console\CommandList">
         <arguments>
-            <argument name="mainTable" xsi:type="string">forevercompanies_salesforce_queue</argument>
-            <argument name="resourceModel" xsi:type="string">ForeverCompanies\Salesforce\Model\ResourceModel\Queue</argument>
+            <argument name="commands" xsi:type="array">
+                <item name="SalesforceSync" xsi:type="object">
+                    ForeverCompanies\Salesforce\Console\Command\SalesforceSync
+                </item>
+            </argument>
         </arguments>
-    </virtualType>
+    </type>
 </config>

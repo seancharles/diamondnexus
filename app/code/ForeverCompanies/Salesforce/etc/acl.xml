@@ -10,10 +10,8 @@
                                       title="Field Mapping" sortOrder="10" />
                             <resource id="ForeverCompanies_Salesforce::report"
                                       title="View Report" sortOrder="20" />
-                            <resource id="ForeverCompanies_Salesforce::queue"
+							<resource id="ForeverCompanies_Salesforce::debug"
                                       title="View Report" sortOrder="30" />
-                            <resource id="ForeverCompanies_Salesforce::request"
-                                      title="Request Daily Report" sortOrder="40"/>
                 </resource>
                 <resource id="Magento_Backend::stores">
                     <resource id="Magento_Backend::stores_settings">
