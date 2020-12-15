@@ -33,6 +33,7 @@ use Magento\Catalog\Model\ProductRepository;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\CatalogInventory\Model\Stock\Item;
 use Magento\CatalogInventory\Model\StockRegistry;
+use Magento\CatalogStaging\Model\ResourceModel\ProductSequence;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Model\Config;
 use Magento\Framework\Api\Data\ImageContentInterfaceFactory;
@@ -40,6 +41,7 @@ use Magento\Framework\Api\Data\VideoContentInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Exception\InputException;
@@ -178,6 +180,11 @@ class TransformData extends AbstractHelper
     protected $bundleSelection;
 
     /**
+     * @var ResourceConnection
+     */
+    protected $resource;
+
+    /**
      * @var LoggerByOptions
      */
     protected $loggerByOptions;
@@ -227,6 +234,7 @@ class TransformData extends AbstractHelper
      * @param Media $media
      * @param Serialize $serializer
      * @param Selection $bundleSelection
+     * @param ResourceConnection $resource
      * @param LoggerByOptions $loggerByOptions
      * @param LoggerBySku $loggerBySku
      */
@@ -256,6 +264,7 @@ class TransformData extends AbstractHelper
         Media $media,
         Serialize $serializer,
         Selection $bundleSelection,
+        ResourceConnection $resource,
         LoggerByOptions $loggerByOptions,
         LoggerBySku $loggerBySku
     ) {
@@ -284,6 +293,7 @@ class TransformData extends AbstractHelper
         $this->mediaHelper = $media;
         $this->serializer = $serializer;
         $this->bundleSelection = $bundleSelection;
+        $this->resource = $resource;
         $this->loggerByOptions = $loggerByOptions;
         $this->loggerBySku = $loggerBySku;
     }
@@ -417,29 +427,6 @@ class TransformData extends AbstractHelper
     }
 
     /**
-     * @param Value $value
-     * @param array $options
-     * @return mixed|string
-     */
-    protected function getDataForMultiselectable(Value $value, array $options)
-    {
-        /** @var \Magento\Eav\Model\Entity\Attribute\Option $option */
-        foreach ($options as $option) {
-            $title = $value->getTitle();
-            if ($title == $option['label']) {
-                return $option['value'];
-            }
-            if ($title == 'Round Brilliant') {
-                $title = 'Round';
-                if ($title == $option['label']) {
-                    return $option['value'];
-                }
-            }
-        }
-        return '';
-    }
-
-    /**
      * @param int $entityId
      */
     public function transformMediaProduct(int $entityId)
@@ -486,6 +473,9 @@ class TransformData extends AbstractHelper
         }
     }
 
+    /**
+     * @param int $entityId
+     */
     public function transformProductOptions(int $entityId)
     {
         $missingOptions = [];
@@ -589,6 +579,7 @@ class TransformData extends AbstractHelper
             $this->_logger->error('Product ID = ' . $entityId . ' without name');
             return;
         }
+        $this->addSequence($entityId);
         if ($product->getTypeId() == Configurable::TYPE_CODE) {
             if (strpos($product->getName(), 'Chelsa') === false) {
                 $this->convertConfigToBundle($product);
@@ -604,7 +595,7 @@ class TransformData extends AbstractHelper
         }
         $product->setData('is_salable', true);
         $product->setData('on_sale', true);
-        $product->setData('is_transformed', 1);
+        $product->setData('is_transformed', true);
         $product->setData('sku_type', 1);
         $product->setData('weight_type', 1);
         $product->setData('price_type', 1);
@@ -616,6 +607,10 @@ class TransformData extends AbstractHelper
         }
         /** Finally! */
         try {
+            foreach ($product->getProductLinks() as $link) {
+                $linkedProduct = $this->productRepository->get($link->getLinkedProductSku());
+                $this->addSequence($linkedProduct->getId());
+            }
             $this->productRepository->save($product);
             foreach (['youtube', 'video_url'] as $link) {
                 $videoUrl = $product->getData($link);
@@ -696,6 +691,38 @@ class TransformData extends AbstractHelper
             }
         }
         return $classicStone;
+    }
+
+    /**
+     * @param $id
+     */
+    protected function addSequence($id)
+    {
+        $tableName = $this->resource->getTableName(ProductSequence::SEQUENCE_TABLE);
+        $this->resource->getConnection()->insertOnDuplicate($tableName, ['sequence_value' => $id]);
+    }
+
+    /**
+     * @param Value $value
+     * @param array $options
+     * @return mixed|string
+     */
+    protected function getDataForMultiselectable(Value $value, array $options)
+    {
+        /** @var \Magento\Eav\Model\Entity\Attribute\Option $option */
+        foreach ($options as $option) {
+            $title = $value->getTitle();
+            if ($title == $option['label']) {
+                return $option['value'];
+            }
+            if ($title == 'Round Brilliant') {
+                $title = 'Round';
+                if ($title == $option['label']) {
+                    return $option['value'];
+                }
+            }
+        }
+        return '';
     }
 
     /**
