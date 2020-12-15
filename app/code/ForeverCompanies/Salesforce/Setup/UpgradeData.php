@@ -17,7 +17,6 @@ use Magento\Eav\Model\Entity\Attribute\Set as AttributeSet;
 use Magento\Eav\Model\Entity\Attribute\SetFactory as AttributeSetFactory;
 use Magento\Eav\Setup\EavSetupFactory;
 use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Item;
 
 /**
  * @codeCoverageIgnore
@@ -60,59 +59,7 @@ class UpgradeData implements UpgradeDataInterface
     ) {
         $setup->startSetup();
         $this->createCustomerAttribute($setup);
-        $this->createOrdersAttribute($setup);
         $setup->endSetup();
-    }
-
-    private function createOrdersAttribute($setup)
-    {
-        /** @var \Magento\Sales\Setup\SalesSetup $salesSetup */
-        $salesSetup = $this->salesSetupFactory->create(['setup' => $setup]);
-
-        $salesSetup->addAttribute(
-            Order::ENTITY,
-            'sf_orderid',
-            [
-                'type' => 'text',
-                'visible' => true,
-                'required' => false,
-                'user_defined' => true,
-                'label' => 'Salesforce Order ID',
-                'system' => false,
-                'is_used_in_grid'       => true,
-                'is_visible_in_grid'    => true,
-            ]
-        );
-		
-        $salesSetup->addAttribute(
-            Order::ENTITY,
-            'sf_sync_date',
-            [
-                'type' => 'date',
-                'visible' => true,
-                'required' => false,
-                'user_defined' => true,
-                'label' => 'Salesforce Sync Date',
-                'system' => false,
-                'is_used_in_grid'       => true,
-                'is_visible_in_grid'    => true,
-            ]
-        );
-
-        $salesSetup->addAttribute(
-            Item::ENTITY,
-            'sf_order_itemid',
-            [
-                'type' => 'text',
-                'visible' => true,
-                'required' => false,
-                'user_defined' => true,
-                'label' => 'Salesforce Order Line Item ID',
-                'system' => false,
-                'is_used_in_grid'       => true,
-                'is_visible_in_grid'    => true,
-            ]
-        );
     }
 
     private function createCustomerAttribute($setup)
@@ -157,7 +104,7 @@ class UpgradeData implements UpgradeDataInterface
             Customer::ENTITY,
             'sf_sync_date',
             [
-                'type' => 'date',
+                'type' => 'text',
                 'visible' => true,
                 'required' => false,
                 'user_defined' => true,

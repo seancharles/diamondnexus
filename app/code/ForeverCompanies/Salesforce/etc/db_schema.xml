@@ -1,0 +1,10 @@
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="sales_order" resource="sales" engine="innodb" comment="Sales Order Item">
+		<column xsi:type="int" name="sf_orderid" nullable="true" comment="Salesforce Order ID"/>
+        <column xsi:type="timestamp" name="sf_sync_date" nullable="true" comment="Last Salesforce Sync Date"/>
+    </table>
+    <table name="sales_order_item" resource="sales" engine="innodb" comment="Sales Order Item">
+        <column xsi:type="int" name="sf_order_itemid" nullable="true" comment="Salesforce Order Item ID"/>
+    </table>
+</schema>
