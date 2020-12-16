@@ -19,13 +19,20 @@
 		 */
 		protected $name = 'forevercompanies:salesforce:sync';
 
-		protected $orderCollectionFactory;
+		protected $orderFactory;
 		protected $customerFactory;
+		protected $customerRepositoryInterface;
+		protected $customer;
 		
 		protected $fcSyncAccount;
 		protected $fcSyncOrder;
 		
 		const PAGE_SIZE = 1000;
+		
+		const SF_CUSTOMER_ID_FIELD = 'sf_acctid';
+		const SF_ORDER_ID_FIELD = 'sf_orderid';
+		const SF_ORDER_ITEM_ID_FIELD = 'sf_order_itemid';
+		const SF_LAST_SYNC_FIELD = 'sf_sync_date';
 
 		/**
 		 * AbstractCustomer constructor.
@@ -34,13 +41,17 @@
 		 */
 
 		public function __construct(
-			\Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory,
+			\Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderFactory,
+			\Magento\Sales\Api\OrderRepositoryInterface $orderRepositoryInterface,
 			\Magento\Customer\Model\CustomerFactory $customerFactory,
+			\Magento\Customer\Api\CustomerRepositoryInterface $customerRepositoryInterface,
 			Account $fcSyncAccount,
 			Order $fcSyncOrder
 		) {
-			$this->orderCollectionFactory = $orderCollectionFactory;
+			$this->orderFactory = $orderFactory;
+			$this->orderRepositoryInterface = $orderRepositoryInterface;
 			$this->customerFactory = $customerFactory;
+			$this->customerRepositoryInterface = $customerRepositoryInterface;
 			
 			$this->fcSyncAccount = $fcSyncAccount;
 			$this->fcSyncOrder = $fcSyncOrder;
@@ -70,6 +81,13 @@
         {
 			echo "Sync started\n";
 			
+			// get recently modified customers
+			$customers = $this->getCustomersCollection();
+			
+			echo $customers->getSize() . " customers found\n";
+			
+			$this->processCustomers($customers);
+			
 			// get recently modified orders
 			$orders = $this->getOrderCollection();
 			
@@ -77,19 +95,12 @@
 			
 			$this->processOrders($orders);
 			
-			// get recently modified customers
-			$customers = $this->getCustomersCollection();
-			
-			echo $orders->getSize() . " customers found\n";
-			
-			$this->processCustomers($orders);
-			
 			echo "Sync completed\n";
         }
 		
 		protected function getOrderCollection()
 		{
-			return $this->orderCollectionFactory->create()
+			return $this->orderFactory->create()
 				->addAttributeToSelect('*')
 				->addFieldToFilter("updated_at", array('gt' => $this->getUpdatedAtFilterDate()))
 				->setPageSize(self::PAGE_SIZE)
@@ -106,9 +117,20 @@
 				
 				foreach($orders as $order)
 				{
-					echo "Sync order " . $order->getIncrementId() . "\n";
+					// load customer instance for updating
+					$orderInstance = $this->orderRepositoryInterface->get($order->getId());
 					
+					$sfOrderId = $this->fcSyncOrder->sync($order->getId());
 					
+					// new accounts return SF account id
+					if($sfOrderId) {
+						$orderInstance->setCustomAttribute(self::SF_ORDER_ID_FIELD, $sfOrderId);
+					}
+					
+					// always update the last sync time
+					$orderInstance->setCustomAttribute(self::SF_LAST_SYNC_FIELD, date("Y-m-d h:i:s"));
+					
+					$this->customerRepositoryInterface->save($customerInstance);
 				}
 			}
 		}
@@ -132,7 +154,20 @@
 				
 				foreach($customers as $customer)
 				{
-					echo "Sync customer " . $customer->getId() . "\n";
+					// load customer instance for updating
+					$customerInstance = $this->customerRepositoryInterface->getById($customer->getId());
+					
+					$sfAccountId = $this->fcSyncAccount->sync($customer->getId());
+					
+					// new accounts return SF account id
+					if($sfAccountId) {
+						$customerInstance->setCustomAttribute(self::SF_CUSTOMER_ID_FIELD, $sfAccountId);
+					}
+					
+					// always update the last sync time
+					$customerInstance->setCustomAttribute(self::SF_LAST_SYNC_FIELD, date("Y-m-d h:i:s"));
+					
+					$this->customerRepositoryInterface->save($customerInstance);
 				}
 			}
 		}

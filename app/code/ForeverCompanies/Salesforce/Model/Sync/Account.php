@@ -15,7 +15,6 @@ use ForeverCompanies\Salesforce\Model\Data;
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfigInterface;
 use Magento\Config\Model\ResourceModel\Config as ResourceModelConfig;
 use Magento\Customer\Model\CustomerFactory;
-use Magento\Customer\Model\Customer;
 
 class Account extends Connector
 {
@@ -70,9 +69,10 @@ class Account extends Connector
      * @param  string  $salesforceId
      * @return string
      */
-    public function sync($id, $salesforceId)
+    public function sync($id)
     {
-        $customer = $this->customerFactory->create()->load($id);
+		$customer = $this->customerFactory->create()->load($id);
+		$salesforceId = $customer->getData(self::SALESFORCE_ACCOUNT_ATTRIBUTE_CODE);
         $data  = $this->data->getCustomer($customer, $this->_type);
         $params = [
             'Web_Account_Id__c' => $data['entity_id'],
@@ -93,19 +93,17 @@ class Account extends Connector
             'ShippingPostalCode' => $data['ship_postcode']
         ];
 
-        if (!$salesforceId && $id) {
+        if (!$salesforceId) {
 
             $params = ['acct' => $params];
             $response = $this->createAccount($this->_type, $params, $customer->getId());
             $id =  $response["acctId"];
-            $this->saveAttribute($customer, $id);
 
         } elseif ($salesforceId) {
 
             $params += ['Id' => $salesforceId];
             $params = ['acct' => $params];
             $this->updateAccount($this->_type, $salesforceId, $params, $customer->getId());
-            $this->saveAttribute($customer, $salesforceId);
         }
 
         return $id;
