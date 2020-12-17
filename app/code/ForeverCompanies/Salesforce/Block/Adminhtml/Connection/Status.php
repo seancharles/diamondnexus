@@ -20,6 +20,6 @@ class Status extends Template
 
     public function isConnected()
     {
-        return $this->_scopeConfig->isSetFlag('salesforcecrm/config/is_connected');
+        return $this->_scopeConfig->isSetFlag('salesforcecrm/salesforceconfig/is_connected');
     }
 }
