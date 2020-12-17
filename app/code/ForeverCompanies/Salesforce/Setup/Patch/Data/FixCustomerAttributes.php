@@ -66,9 +66,10 @@ class FixCustomerAttributes implements DataPatchInterface
 		if($customAttribute) {
 			
 			$customAttribute->addData([
+				'backend_type' => 'varchar',
 				'attribute_set_id' => $attributeSetId,
 				'attribute_group_id' => $attributeGroupId,
-				'sort_order' => 110
+				'sort_order' => 150
 			]);
 			$customAttribute->save();
 		}
