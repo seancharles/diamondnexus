@@ -120,7 +120,11 @@
 					// load customer instance for updating
 					$orderInstance = $this->orderRepositoryInterface->get($order->getId());
 					
-					$sfOrderId = $this->fcSyncOrder->sync($order->getId());
+					echo "Sync " . $orderInstance->getIncrementId() . "\n";
+					
+					$sfOrderId = $this->fcSyncOrder->sync($order->getIncrementId());
+					
+					echo "sfOrderId = " . $sfOrderId . "\n";
 					
 					// new accounts return SF account id
 					if($sfOrderId) {
@@ -130,7 +134,7 @@
 					// always update the last sync time
 					$orderInstance->setCustomAttribute(self::SF_LAST_SYNC_FIELD, date("Y-m-d h:i:s"));
 					
-					$this->customerRepositoryInterface->save($customerInstance);
+					$this->orderRepositoryInterface->save($orderInstance);
 				}
 			}
 		}
@@ -157,7 +161,11 @@
 					// load customer instance for updating
 					$customerInstance = $this->customerRepositoryInterface->getById($customer->getId());
 					
+					echo "Sync " . $customerInstance->getEmail() . "\n";
+					
 					$sfAccountId = $this->fcSyncAccount->sync($customer->getId());
+					
+					echo "sfAccountId = " . $sfAccountId . "\n";
 					
 					// new accounts return SF account id
 					if($sfAccountId) {

@@ -67,7 +67,8 @@ class Order extends Connector
             $queueFactory,
             $requestLogFactory
         );
-        $this->orderFactory  = $orderFactory;
+        $this->orderFactory = $orderFactory;
+		$this->customerFactory = $customerFactory;
         $this->data   = $data;
         $this->_type = 'Order';
         $this->account = $account;
@@ -87,11 +88,17 @@ class Order extends Connector
         $order = $this->orderFactory->create()->loadByIncrementId($increment_id);
 		$salesforceOrderId = $order->getData(self::SALESFORCE_ORDER_ATTRIBUTE_CODE);
 		
+		echo "salesforceOrderId = " . $salesforceOrderId . "\n";
+		
 		// get the customer
 		if($order->getCustomerId()) {
-			$customer = $this->customerFactory->create()->loadById($order->getCustomerId());
+			$customer = $this->customerFactory->create()->load($order->getCustomerId());
 			$salesforceCustomerId = $customer->getData(self::SALESFORCE_ACCOUNT_ATTRIBUTE_CODE);
+		} else {
+			$salesforceCustomerId = null;
 		}
+		
+		echo "salesforceCustomerId = " . $salesforceCustomerId . "\n";
 		
         $params = $this->data->getOrder($order, $this->_type);
         $date = date('Y-m-d', time());
@@ -102,19 +109,19 @@ class Order extends Connector
             'BillingStreet' => $params['bill_street'],
             'BillingCity' => $params['bill_city'],
             'BillingState' => $params['bill_region'],
-            'BillingPostalCode' => $params['bill_postalcode'],
+            'BillingPostalCode' => '53132',//$params['bill_postalcode'],
             'ShippingStreet' => $params['ship_street'],
             'ShippingCity' => $params['ship_city'],
             'ShippingState' => $params['ship_region'],
-            'ShippingPostalCode' => $params['ship_postalcode'],
-            'Order_Subtotal__c' => $params['subtotal'],
-            'Discount_Amount__c' => $params['discount_amount'],
-            'Order_Total__c' => $params['grand_total'],
-            'Order_Status__c' => $params['status'],
-            'Ship_Method__c' => $params['shipping_description'],
-            'Store_Name__c' => $params['store_name'],
-            'Web_Order_Number__c' => $params['increment_id'],
-            'Tax_Amount__c' => $params['tax_amount']
+            'ShippingPostalCode' => '53132',//$params['ship_postalcode'],
+            'Order_Subtotal__c' => '100',//$params['subtotal'],
+            'Discount_Amount__c' => '10',//$params['discount_amount'],
+            'Order_Total__c' => '110',//$params['grand_total'],
+            'Order_Status__c' => 'processing',//$params['status'],
+            'Ship_Method__c' => 'Ground',//$params['shipping_description'],
+            'Store_Name__c' => 'Diamond Nexus',//$params['store_name'],
+            'Web_Order_Number__c' => '1000000001',//$params['increment_id'],
+            'Tax_Amount__c' => '10',//$params['tax_amount']
         ];
 
         // Create new Order
@@ -127,7 +134,9 @@ class Order extends Connector
 			$result = ['order' => $data];
 			return $this->createOrder($this->_type, $result, $order->getIncrementId());
 		} else {
-			return $this->createGuestOrder($this->_type, $params, $order->getIncrementId());
+			if(!$order->getCustomerId()) {
+				return $this->createGuestOrder($this->_type, $params, $order->getIncrementId());
+			}
 		}
 
         return false;

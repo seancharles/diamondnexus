@@ -72,6 +72,13 @@ class Account extends Connector
     public function sync($id)
     {
 		$customer = $this->customerFactory->create()->load($id);
+		
+		echo "" . $customer->getData('sf_acctid') . "\n";
+		echo "" . $customer->getData('lastsync_at') . "\n";
+		
+		//print_r($customer->toArray());
+		//exit;
+		
 		$salesforceId = $customer->getData(self::SALESFORCE_ACCOUNT_ATTRIBUTE_CODE);
         $data  = $this->data->getCustomer($customer, $this->_type);
         $params = [
@@ -92,6 +99,8 @@ class Account extends Connector
             'ShippingCountry' => $data['ship_country_id'],
             'ShippingPostalCode' => $data['ship_postcode']
         ];
+
+		echo "salesforceId = " . $salesforceId . "\n";
 
         if (!$salesforceId) {
 

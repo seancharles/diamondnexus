@@ -59,7 +59,44 @@ class UpgradeData implements UpgradeDataInterface
     ) {
         $setup->startSetup();
         $this->createCustomerAttribute($setup);
+        $this->createOrdersAttribute($setup);
         $setup->endSetup();
+    }
+
+    private function createOrdersAttribute($setup)
+    {
+        /** @var \Magento\Sales\Setup\SalesSetup $salesSetup */
+        $salesSetup = $this->salesSetupFactory->create(['setup' => $setup]);
+
+        $salesSetup->addAttribute(
+            Order::ENTITY,
+            'sf_orderid',
+            [
+                'type' => 'text',
+                'visible' => true,
+                'required' => false,
+                'user_defined' => true,
+                'label' => 'Salesforce Order ID',
+                'system' => false,
+                'is_used_in_grid'       => true,
+                'is_visible_in_grid'    => true,
+            ]
+        );
+
+        $salesSetup->addAttribute(
+            Order::ENTITY,
+            'sf_order_itemid',
+            [
+                'type' => 'text',
+                'visible' => true,
+                'required' => false,
+                'user_defined' => true,
+                'label' => 'Salesforce Order Line Item ID',
+                'system' => false,
+                'is_used_in_grid'       => true,
+                'is_visible_in_grid'    => true,
+            ]
+        );
     }
 
     private function createCustomerAttribute($setup)
@@ -90,32 +127,8 @@ class UpgradeData implements UpgradeDataInterface
 
             ]
         );
-		
+
         $attribute = $customerSetup->getEavConfig()->getAttribute(Customer::ENTITY, 'sf_acctid')
-            ->addData([
-                'attribute_set_id' => $attributeSetId,
-                'attribute_group_id' => $attributeGroupId,
-                'used_in_forms' => ['adminhtml_customer','customer_address_edit'],
-            ]);
-
-        $attribute->save();
-		
-        $customerSetup->addAttribute(
-            Customer::ENTITY,
-            'sf_sync_date',
-            [
-                'type' => 'text',
-                'visible' => true,
-                'required' => false,
-                'user_defined' => true,
-                'label' => 'Salesforce Sync Date',
-                'system' => false,
-                'is_used_in_grid'       => true,
-                'is_visible_in_grid'    => true,
-            ]
-        );
-
-        $attribute = $customerSetup->getEavConfig()->getAttribute(Customer::ENTITY, 'sf_sync_date')
             ->addData([
                 'attribute_set_id' => $attributeSetId,
                 'attribute_group_id' => $attributeGroupId,
