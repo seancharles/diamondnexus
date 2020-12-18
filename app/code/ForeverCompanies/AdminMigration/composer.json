@@ -1,0 +1,16 @@
+{
+    "name": "forevercompanies/module-adminmigration",
+    "description": "",
+    "type": "magento2-module",
+    "license": "OSL-3.0",
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "ForeverCompanies\\AdminMigration\\": ""
+        },
+        "files": [
+            "registration.php"
+        ]
+    }
+}
