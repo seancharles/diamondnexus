@@ -7,18 +7,18 @@ use DiamondNexus\Multipay\Logger\Logger;
 use DiamondNexus\Multipay\Model\Constant;
 use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
 use Magento\Customer\Model\Session;
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Mail\TransportInterfaceFactory;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\User\Model\ResourceModel\User;
-use Zend\Mail\Message;
-use Zend\Mail\MessageFactory;
-use Zend\Mail\Transport\Sendmail;
+use Magento\Framework\Mail\EmailMessage as Message;
+use Magento\Framework\Mail\EmailMessageFactory as MessageFactory;
 
 class PaypalAction extends Action
 {
@@ -60,7 +60,7 @@ class PaypalAction extends Action
     protected $messageFactory;
 
     /**
-     * @var Sendmail
+     * @var TransportInterfaceFactory
      */
     protected $sendmail;
 
@@ -82,7 +82,7 @@ class PaypalAction extends Action
         Session $customerSession,
         User $userResource,
         MessageFactory $messageFactory,
-        Sendmail $sendmail,
+        TransportInterfaceFactory $sendmail,
         EmailSender $emailSender,
         Logger $logger
     ) {
@@ -134,11 +134,8 @@ class PaypalAction extends Action
                         Constant::OPTION_TOTAL_DATA => Constant::MULTIPAY_TOTAL_AMOUNT,
                         Constant::AMOUNT_DUE_DATA => $amountDue
                     ]);
-                    // update the order paid amount to the grand total
                     // Send salesperson an email
-                    /*$template = $this->emailSender->mappingTemplate('- new order');
-                    $this->emailSender->sendEmail($template, $order->getCustomerEmail(), ['order' => $order]);*/
-                    //$this->sendSalesPersonEmail($order, $amountDue);
+                    $this->sendSalesPersonEmail($order, $amountDue);
                 } else {
                     $result['success'] = false;
                 }
@@ -152,7 +149,6 @@ class PaypalAction extends Action
     /**
      * @param $order
      * @param $amount
-     * @deprecated
      * @throws LocalizedException
      */
     protected function sendSalesPersonEmail($order, $amount)
@@ -166,22 +162,20 @@ class PaypalAction extends Action
             ->select()->from($this->userResource->getMainTable(), ['firstname','lastname', 'email'])
             ->where('user_id = ?', $salesPersonId);
         $salesPersonResult = $this->userResource->getConnection()->fetchRow($salesPersonSql);
-        $salesPerson = $salesPersonResult['firstname'].' '.$salesPersonResult['lastname'];
         $salesPersonEmail = $salesPersonResult['email'];
         $message = "A payment of $" . $amount ." was applied to order #{$order->getIncrementId()}";
         /** @var Message $mail */
         $mail = $this->messageFactory->create();
-        $mail->setBody($message);
-        $mail->setFrom('sales@diamondnexus.com', 'Diamond Nexus Sales');
         $mail->setSubject('Payment applied for order #' . $order->getIncrementId().' '.$storeId);
         if (strlen($salesPersonEmail) > 0) {
-            $salesPerson = $salesPersonResult[0]['firstname'].' '.$salesPersonResult[0]['lastname'];
             $salesPersonEmail = $salesPersonResult[0]['email'];
-            $mail->addTo($salesPersonEmail, $salesPerson);
-            $mail->addCc('jessica.nelson@diamondnexus.com', 'Jessica Nelson');
+            $mail->addTo($salesPersonEmail);
+            $mail->addCc('jessica.nelson@diamondnexus.com');
         } else {
-            $mail->addTo('jessica.nelson@diamondnexus.com', 'Jessica Nelson');
+            $mail->addTo('jessica.nelson@diamondnexus.com');
         }
-        $this->sendmail->send($mail);
+        $mail->setFromAddress('sales@diamondnexus.com', 'Diamond Nexus Sales');
+        $mail->setBodyText($message);
+        $this->sendmail->create(['message' => $mail])->sendMessage();
     }
 }
