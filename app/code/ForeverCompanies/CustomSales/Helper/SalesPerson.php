@@ -52,7 +52,7 @@ class SalesPerson extends AbstractHelper
             return '';
         }
         $binds = ['id' => $id];
-        return $connection->fetchRow($select, $binds)[$attribute];
+        return $connection->fetchOne($select, $binds, $attribute);
     }
 
     /**
