@@ -391,7 +391,7 @@ class TransformData extends AbstractHelper
     {
         $table = 'catalog_product_entity_int';
         $attr = 'is_media_transformed';
-        $where = 'is null';
+        $where = '= 0';
         return $this->getProductCollection($table, $attr, $where);
     }
 
