@@ -18,36 +18,20 @@
 
         <add id="ForeverCompanies_Salesforce::mapping"
              title="Field Mapping"
-             sortOrder="10"
+             sortOrder="20"
              module="ForeverCompanies_Salesforce"
              parent="ForeverCompanies_Salesforce::integration"
              action="salesforce/map/index"
              resource="ForeverCompanies_Salesforce::mapping"/>
 
-        <add id="ForeverCompanies_Salesforce::report"
-             title="View Report"
-             sortOrder="20"
-             module="ForeverCompanies_Salesforce"
-             parent="ForeverCompanies_Salesforce::integration"
-             action="salesforce/report/index"
-             resource="ForeverCompanies_Salesforce::report"/>
-
-        <add id="ForeverCompanies_Salesforce::queue"
-             title="Queue"
+        <add id="ForeverCompanies_Salesforce::debug"
+             title="Debug"
              module="ForeverCompanies_Salesforce"
              sortOrder="35"
              parent="ForeverCompanies_Salesforce::integration"
-             action="salesforce/queue/index"
-             resource="ForeverCompanies_Salesforce::queue"/>
-
-        <add id="ForeverCompanies_Salesforce::request"
-             title="Request Daily Report"
-             module="ForeverCompanies_Salesforce"
-             sortOrder="37"
-             parent="ForeverCompanies_Salesforce::integration"
-             action="salesforce/request/index"
-             resource="ForeverCompanies_Salesforce::request"/>
-
+             action="salesforce/debug/index"
+             resource="ForeverCompanies_Salesforce::debug"/>
+			 
         <add id="ForeverCompanies_Salesforce::config_salesforce"
              title="Configuration"
              module="ForeverCompanies_Salesforce"

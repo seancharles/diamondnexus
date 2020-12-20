@@ -125,8 +125,10 @@ class Connector
                 throw new \InvalidArgumentException('Field not setup !');
             }
 
-            $base_url = $host;
-            $url = $base_url . 'services/oauth2/token';
+            $url = parse_url($host);
+			
+            $apiUrl = 'https://' . $url['path'] . '/services/oauth2/token';
+			
             $params =[
                 'grant_type' => 'password',
                 'client_id' => $client_id,
@@ -134,9 +136,8 @@ class Connector
                 'username' => $username,
                 'password' => $password
             ];
-            $response = $this->makeRequest(\Zend_Http_Client::POST, $url, [], $params);
+            $response = $this->makeRequest(\Zend_Http_Client::POST, $apiUrl, [], $params);
             $response = \GuzzleHttp\json_decode($response, true);
-
 
             if (isset($response['access_token']) && isset($response['instance_url'])) {
                 $this->_resourceConfig->saveConfig(

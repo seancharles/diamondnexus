@@ -383,7 +383,7 @@ class TransformData extends AbstractHelper
     {
         $table = 'catalog_product_entity_int';
         $attr = 'is_media_transformed';
-        $where = 'is null';
+        $where = '= 0';
         return $this->getProductCollection($table, $attr, $where);
     }
 
@@ -408,6 +408,7 @@ class TransformData extends AbstractHelper
                 foreach ($option->getValues() as $value) {
                     $data[] = $this->getDataForMultiselectable($value, $eav->getOptions());
                 }
+                $data = array_unique($data);
                 $entity->setData($attributeCode, implode(',', $data));
             }
             $this->productRepository->save($entity);
