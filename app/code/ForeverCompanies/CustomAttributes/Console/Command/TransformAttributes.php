@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Console\Command;
 
-use ForeverCompanies\CustomAttributes\Helper\TransformData;
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;

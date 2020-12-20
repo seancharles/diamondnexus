@@ -9,7 +9,6 @@ namespace ForeverCompanies\CustomAttributes\Helper;
 
 use ForeverCompanies\CustomAttributes\Logger\Logger;
 use Magento\Catalog\Api\AttributeSetRepositoryInterface;
-use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Eav\Model\Config;

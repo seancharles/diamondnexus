@@ -180,11 +180,6 @@ class TransformData extends AbstractHelper
     protected $bundleSelection;
 
     /**
-     * @var ResourceConnection
-     */
-    protected $resource;
-
-    /**
      * @var LoggerByOptions
      */
     protected $loggerByOptions;
@@ -234,7 +229,6 @@ class TransformData extends AbstractHelper
      * @param Media $media
      * @param Serialize $serializer
      * @param Selection $bundleSelection
-     * @param ResourceConnection $resource
      * @param LoggerByOptions $loggerByOptions
      * @param LoggerBySku $loggerBySku
      */
@@ -264,7 +258,6 @@ class TransformData extends AbstractHelper
         Media $media,
         Serialize $serializer,
         Selection $bundleSelection,
-        ResourceConnection $resource,
         LoggerByOptions $loggerByOptions,
         LoggerBySku $loggerBySku
     ) {
@@ -293,7 +286,6 @@ class TransformData extends AbstractHelper
         $this->mediaHelper = $media;
         $this->serializer = $serializer;
         $this->bundleSelection = $bundleSelection;
-        $this->resource = $resource;
         $this->loggerByOptions = $loggerByOptions;
         $this->loggerBySku = $loggerBySku;
     }
@@ -421,9 +413,9 @@ class TransformData extends AbstractHelper
             }
             $this->productRepository->save($entity);
         } catch (NoSuchEntityException $e) {
-            $this->_logger->error('Can\'t transform product select for ' . $entity->getId() . ': ' . $e->getMessage());
+            $this->_logger->error('Can\'t transform product select for ' . $productId . ': ' . $e->getMessage());
         } catch (LocalizedException $e) {
-            $this->_logger->error('Can\'t transform product select for ' . $entity->getId() . ': ' . $e->getMessage());
+            $this->_logger->error('Can\'t transform product select for ' . $productId . ': ' . $e->getMessage());
         }
     }
 
@@ -580,7 +572,6 @@ class TransformData extends AbstractHelper
             $this->_logger->error('Product ID = ' . $entityId . ' without name');
             return;
         }
-        $this->addSequence($entityId);
         if ($product->getTypeId() == Configurable::TYPE_CODE) {
             if (strpos($product->getName(), 'Chelsa') === false) {
                 $this->convertConfigToBundle($product);
@@ -603,15 +594,12 @@ class TransformData extends AbstractHelper
         if ($product->getData('certified_stone') !== null) {
             $certifiedSrc = $this->eav->getAttribute(Product::ENTITY, 'certified_stone')->getSource();
             $optionText = $product->getData('certified_stone') ? 'Classic Stone' : 'Certified Stone';
-            $value = (int)$certifiedSrc->getOptionId($optionText);
+            $value = $certifiedSrc->getOptionId($optionText);
             $product->setData('certified_stone', $value);
+            $product->setCustomAttribute('certified_stone', $value);
         }
         /** Finally! */
         try {
-            foreach ($product->getProductLinks() as $link) {
-                $linkedProduct = $this->productRepository->get($link->getLinkedProductSku());
-                $this->addSequence($linkedProduct->getId());
-            }
             $this->productRepository->save($product);
             foreach (['youtube', 'video_url'] as $link) {
                 $videoUrl = $product->getData($link);
@@ -692,15 +680,6 @@ class TransformData extends AbstractHelper
             }
         }
         return $classicStone;
-    }
-
-    /**
-     * @param $id
-     */
-    protected function addSequence($id)
-    {
-        $tableName = $this->resource->getTableName(ProductSequence::SEQUENCE_TABLE);
-        $this->resource->getConnection()->insertOnDuplicate($tableName, ['sequence_value' => $id]);
     }
 
     /**

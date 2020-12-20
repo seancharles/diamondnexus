@@ -4,7 +4,6 @@ namespace ForeverCompanies\CustomAttributes\Controller\Adminhtml\System\Config;
 use ForeverCompanies\CustomAttributes\Logger\Logger;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use ForeverCompanies\CustomAttributes\Helper\TransformData;
 use Magento\Framework\Exception\InputException;
@@ -13,7 +12,9 @@ use Magento\Framework\Exception\StateException;
 
 class DeleteByTags extends Action
 {
-
+    /**
+     * @var JsonFactory
+     */
     protected $resultJsonFactory;
 
     /**
