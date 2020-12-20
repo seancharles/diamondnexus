@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <system>
+        <section id="forevercompanies_adminmigration" translate="label" type="text" sortOrder="100" showInDefault="1"
+                 showInWebsite="1" showInStore="0">
+            <label>Admin migration</label>
+            <tab>forevercompanies</tab>
+            <resource>ForeverCompanies_AdminMigration::config</resource>
+            <group id="tables" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+                <label>Tables from Magento 1</label>
+                <field id="role" translate="label comment" type="text" sortOrder="10" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Role table</label>
+                    <comment>
+                        Example: m1_admin_role
+                    </comment>
+                </field>
+                <field id="rule" translate="label comment" type="text" sortOrder="9" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Rule table</label>
+                    <comment>
+                        Example: m1_admin_rule
+                    </comment>
+                </field>
+                <field id="user" translate="label comment" type="text" sortOrder="8" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>User table</label>
+                    <comment>
+                        Example: m1_admin_user
+                    </comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

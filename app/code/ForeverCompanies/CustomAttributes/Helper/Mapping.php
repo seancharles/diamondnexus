@@ -332,17 +332,19 @@ class Mapping extends AbstractHelper
         return ['simple' => $simpleOptions, 'options' => $customizableOptions];
     }
 
-    private function getSkuForOption($attribute, $index)
-    {
-        return $this->mappingSku[$attribute][$index] ?? '';
-    }
-
+    /**
+     * @param Product $product
+     * @param array $productOptions
+     * @param Configurable $configurable
+     * @return array[]
+     */
     protected function prepareProductToBundle(Product $product, array $productOptions, Configurable $configurable)
     {
         $classicStone = false;
         $product->setTypeId(Type::TYPE_BUNDLE);
         $bundleOptions = [];
         $options = [];
+        $sku = $product->getSku();
         foreach ($productOptions as $productOption) {
             try {
                 $productAttribute = $this->productAttributeRepository->get($productOption->getAttributeId());
@@ -357,10 +359,11 @@ class Mapping extends AbstractHelper
                         $product->setData('certified_stone', null);
                     }
                 } else {
-                    if ($productOption->getLabel() == 'Total Carat Weight') {
+                    $optionLabel = $productOption->getLabel();
+                    if ($optionLabel == 'Total Carat Weight' || $optionLabel == 'Center Stone Size') {
                         $values = $productOption->getValues();
                         $source = $productAttribute->getSource();
-                        $tcw = $this->converterHelper->createTotalCaratWeight($values, $source, $product->getSku());
+                        $tcw = $this->converterHelper->createTotalCaratWeight($values, $source, $sku, $optionLabel);
                         $options = $product->getOptions();
                         $options[] = $tcw;
                         $product->setOptions($options);
@@ -369,7 +372,7 @@ class Mapping extends AbstractHelper
                     $extensionAttributes = $product->getExtensionAttributes();
                     $configurableProductLinks = $extensionAttributes->getConfigurableProductLinks();
                     $basePrice = $product->getPriceInfo()->getPrice('base_price')->getValue();
-                    $links = $this->prepareLinksForBundle($configurableProductLinks, $basePrice, $product->getSku());
+                    $links = $this->prepareLinksForBundle($configurableProductLinks, $basePrice, $sku);
                     $product->setData('carat_weight', null);
                 }
             } catch (NoSuchEntityException $e) {
@@ -399,7 +402,7 @@ class Mapping extends AbstractHelper
                         'price' => 0,
                         'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
                         'sku' => $this->mappingSku[$attribute->getData(AttributeInterface::FRONTEND_LABEL)][$index],
-                        'product_sku' => $product->getSku(),
+                        'product_sku' => $sku,
                     ];
                     $customizableOptions[$attributeId][] = $customizableOption;
                 }
@@ -550,5 +553,15 @@ class Mapping extends AbstractHelper
             }
         }
         return array_unique($skusForLikedProduct);
+    }
+
+    /**
+     * @param $attribute
+     * @param $index
+     * @return mixed|string
+     */
+    private function getSkuForOption($attribute, $index)
+    {
+        return $this->mappingSku[$attribute][$index] ?? '';
     }
 }

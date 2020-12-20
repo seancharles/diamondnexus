@@ -7,45 +7,32 @@
                 <item name="TransformAttributes" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\TransformAttributes
                 </item>
-            </argument>
-            <argument name="commands" xsi:type="array">
                 <item name="TransformMedia" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\TransformMedia
                 </item>
-            </argument>
-            <argument name="commands" xsi:type="array">
-                <item name="DeleteOldAttributes" xsi:type="object">
-                    ForeverCompanies\CustomAttributes\Console\Command\DeleteOldAttributes
-                </item>
-            </argument>
-            <argument name="commands" xsi:type="array">
                 <item name="DeleteByTags" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\DeleteByTags
                 </item>
-            </argument>
-            <argument name="commands" xsi:type="array">
-                <item name="TransformOptions" xsi:type="object">
-                    ForeverCompanies\CustomAttributes\Console\Command\TransformOptions
+                <item name="DeleteOldAttributes" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\DeleteOldAttributes
                 </item>
-            </argument>
-            <argument name="commands" xsi:type="array">
                 <item name="TransformMultiselect" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\TransformMultiselect
                 </item>
-            </argument>
-            <argument name="commands" xsi:type="array">
-                <item name="TransformValues" xsi:type="object">
-                    ForeverCompanies\CustomAttributes\Console\Command\TransformValues
-                </item>
-            </argument>
-            <argument name="commands" xsi:type="array">
                 <item name="UpdateStocks" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\UpdateStocks
                 </item>
-            </argument>
-            <argument name="commands" xsi:type="array">
+                <item name="TransformOptions" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\TransformOptions
+                </item>
+                <item name="TransformValues" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\TransformValues
+                </item>
                 <item name="ProductPosition" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\ProductPosition
+                </item>
+                <item name="RefreshPatchList" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\RefreshPatchList
                 </item>
             </argument>
         </arguments>

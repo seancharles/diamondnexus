@@ -1,8 +1,11 @@
 <?php
 namespace DiamondNexus\Multipay\Controller\Order;
 
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
 
 class Paynow extends Action
@@ -12,6 +15,11 @@ class Paynow extends Action
      */
     protected $_pageFactory;
 
+    /**
+     * Paynow constructor.
+     * @param Context $context
+     * @param PageFactory $pageFactory
+     */
     public function __construct(
         Context $context,
         PageFactory $pageFactory
@@ -20,6 +28,9 @@ class Paynow extends Action
         return parent::__construct($context);
     }
 
+    /**
+     * @return ResponseInterface|ResultInterface|Page
+     */
     public function execute()
     {
         $id = $this->getRequest()->getParam('order_id');

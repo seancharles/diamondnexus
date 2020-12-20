@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Helper;
 
-use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\App\Helper\AbstractHelper;
 
