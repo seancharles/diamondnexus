@@ -8,14 +8,6 @@ declare(strict_types=1);
 namespace ForeverCompanies\CustomAttributes\Console\Command;
 
 use ForeverCompanies\CustomAttributes\Helper\TransformData;
-use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\CertifiedStone;
-use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\ChainLength;
-use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\ChainSize;
-use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\Color;
-use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\CutType;
-use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\MetalType;
-use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\RingSize;
-use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\Shape;
 use Magento\Catalog\Model\Product;
 use Magento\Eav\Model\Config;
 use Magento\Eav\Model\Entity\Attribute\Backend\ArrayBackend;

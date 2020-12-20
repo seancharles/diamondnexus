@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Console\Command;
 
-use Codeception\Step\Meta;
 use ForeverCompanies\CustomAttributes\Helper\TransformData;
 use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\BandWidth;
 use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\CertifiedStone;

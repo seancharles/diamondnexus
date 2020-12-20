@@ -224,10 +224,11 @@ class Converter extends AbstractHelper
      * @param array $values
      * @param $source
      * @param string $sku
+     * @param string $label
      * @return Option
      * @throws NoSuchEntityException
      */
-    public function createTotalCaratWeight(array $values, $source, string $sku)
+    public function createTotalCaratWeight(array $values, $source, string $sku, $label)
     {
         $optionValues = [];
         $products = [];
@@ -258,7 +259,7 @@ class Converter extends AbstractHelper
         $option->setData(
             [
                 'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
-                'title' => 'Total Carat Weight',
+                'title' => $label,
                 'type' => ProductCustomOptionInterface::OPTION_TYPE_DROP_DOWN,
                 'is_require' => 0,
                 'values' => $optionValues,

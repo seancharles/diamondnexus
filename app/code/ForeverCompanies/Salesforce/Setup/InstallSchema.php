@@ -26,7 +26,6 @@ class InstallSchema implements InstallSchemaInterface
     {
         $installer = $setup;
         $installer->startSetup();
-        ;
         $table = $installer->getConnection()->newTable(
             $installer->getTable('forevercompanies_salesforce_map')
         )->addColumn(

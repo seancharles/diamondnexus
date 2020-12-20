@@ -2,6 +2,7 @@
 
 namespace DiamondNexus\Multipay\Plugin\Model;
 
+use DiamondNexus\Multipay\Model\Constant;
 use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\Data\OrderExtension;
@@ -55,6 +56,9 @@ class OrderGet
         /** @var OrderExtension $orderExtension */
         $orderExtension = $extensionAttributes ? $extensionAttributes : $this->orderExtensionFactory->create();
         $allTransactionsByOrderId = $this->transactionResource->getAllTransactionsByOrderId($resultOrder->getId());
+        foreach ($allTransactionsByOrderId as &$transaction) {
+            $transaction['payment_method'] = Constant::MULTIPAY_METHOD_LABEL[$transaction['payment_method']];
+        }
         if (count($allTransactionsByOrderId) > 0) {
             $orderExtension->setMultipayTransactions($allTransactionsByOrderId);
             $resultOrder->setExtensionAttributes($orderExtension);

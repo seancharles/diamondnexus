@@ -12,6 +12,7 @@ use Magento\Framework\Setup\UpgradeSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\DB\Ddl\Table;
+use Zend_Db_Exception;
 
 /**
  * Class UpgradeSchema
@@ -25,7 +26,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
      *
      * @param SchemaSetupInterface $setup
      * @param ModuleContextInterface $context
-     * @throws \Zend_Db_Exception
+     * @throws Zend_Db_Exception
      */
     public function upgrade(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
@@ -69,15 +70,18 @@ class UpgradeSchema implements UpgradeSchemaInterface
      */
     private function changeReportColumn($installer)
     {
-        $installer->getConnection()->changeColumn(
-            $installer->getTable('forevercompanies_salesforce_report'),
-            'id_magento',
-            'magento_id',
-            [
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                'comment' => 'Magento Id'
-            ]
-        );
+        $connection = $installer->getConnection();
+        if ($connection->tableColumnExists('forevercompanies_salesforce_report', 'id_magento')) {
+            $connection->changeColumn(
+                $installer->getTable('forevercompanies_salesforce_report'),
+                'id_magento',
+                'magento_id',
+                [
+                    'type' => Table::TYPE_TEXT,
+                    'comment' => 'Magento Id'
+                ]
+            );
+        }
     }
 
     /**
@@ -85,6 +89,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
      *
      * @param SetupInterface $installer
      * @return void
+     * @throws Zend_Db_Exception
      */
     private function createRequestTable($installer)
     {
@@ -136,6 +141,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
      *
      * @param SetupInterface $installer
      * @return void
+     * @throws Zend_Db_Exception
      */
     private function createQueueTable($installer)
     {
