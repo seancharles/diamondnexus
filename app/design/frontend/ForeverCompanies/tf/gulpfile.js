@@ -32,4 +32,4 @@ gulp.task('styles', function () {
 });
 
 // added this to avoid having to enter the terminal command every time like some kind of animal
-exports.default = watch(config.src, gulp.task('styles'));
+//exports.default = watch(config.src, gulp.task('styles'));

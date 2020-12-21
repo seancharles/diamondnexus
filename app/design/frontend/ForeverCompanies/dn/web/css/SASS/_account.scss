@@ -10,3 +10,19 @@ form {
         }
     }
 }
+
+.account .column.main .block:not(.widget) .block-title {
+    border-bottom:1px solid #BCBCBC;
+}
+
+.block-dashboard-info, .block-dashboard-addresses {
+    .action {
+        color:#000;
+        font-family: "Gotham Bold";
+        font-size:12px;
+        letter-spacing: 0px;
+        text-transform: uppercase;
+    }
+}
+
+.block-wishlist {display:none;}

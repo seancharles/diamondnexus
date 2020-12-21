@@ -39,12 +39,16 @@
         format("svg");
 }
 
+
+
+
+
 //  From typography.com. Don't forget to move fonts to server when in Production
 //  font-family: "Didot 06 A", "Didot 06 B";
 //  font-style: normal;
 //  font-weight: 300;
 
-.page-main > .page-title-wrapper .page-title {
+.page-main > .page-title-wrapper .page-title, .account .page-main .page-title-wrapper .page-title {
     font-family:'Didot';
     font-size:40px;
     letter-spacing: 0.32px;
@@ -81,7 +85,10 @@ input[type="text"], input[type="password"], input[type="url"], input[type="tel"]
     border:1px solid #BCBCBC;
 }
 
-.actions-toolbar > .primary .action {
+.actions-toolbar > .primary .action, .actions-toolbar > .primary .action:last-child  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color:#000;
     border-radius:0;
     height: 40px;
@@ -92,6 +99,14 @@ input[type="text"], input[type="password"], input[type="url"], input[type="tel"]
         font-weight:normal;
         font-size:14px;
         text-transform: uppercase;
+    }
+
+    @media screen and (max-width:768px) {
+        display: flex;
+    justify-content: center;
+    align-items: center;
+        height:56px;
+        margin-bottom:24px;
     }
 }
 

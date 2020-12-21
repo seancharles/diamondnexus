@@ -1,374 +1,3 @@
-/*For mixin /scss variable page*/
-/*Media query sizes - bottom of that size*/
-/*m*/
-/*sm*/
-/*t*/
-/*md*/
-/*pg*/
-/*lg*/
-/*xl*/
-/*General styles*/
-/*
-check this out for more info on the columns set up
-https://www.smashingmagazine.com/2019/03/robust-layouts-container-units-css/
-*/
-:root {
-  --grid-width: 346;
-  --grid-column-width: 64;
-  --grid-columns: 4;
-  --grid-gutters: calc(var(--grid-columns) - 1);
-  --column-proportion: calc(var(--grid-column-width) / var(--grid-width));
-  --gutter-proportion: calc((1 - (var(--grid-columns) * var(--column-proportion))) / var(--grid-gutters));
-  --column-unit: calc(var(--column-proportion) * var(--container-width));
-  --gutter-unit: calc(var(--gutter-proportion) * var(--container-width));
-  --column-and-gutter-unit: calc(var(--column-unit) + var(--gutter-unit));
-  --container-width: 91.1vw;
-  /*Fonts*/
-  --weight-light: 300;
-  --weight-normal: 400;
-  --weight-bold: 700;
-  --sans-serif: "Gotham SSm A","Gotham SSm B", sans-serif;
-  --serif: "Didot 06 A","Didot 06 B", serif;
-  /*Brand Colors*/
-  --color-bronze: #c0a374;
-  --color-gold: #D19F4E;
-  --color-lightgold: #E5C99B;
-  --color-black: #000000;
-  --color-white: #ffffff;
-  /*Other Brand Colors*/
-  --color-rosegold: #DDBAAB;
-  --color-palerose: #EDE5E1;
-  --color-nilla: #F8F2EC;
-  --color-gunmetal: #383838;
-  --color-slate: #818181;
-  --color-concrete: #BCBCBC;
-  --color-cloud: #EFEFEF;
-  --color-error: #da1e28;
-  --color-success: #42be65; }
-  @media (min-width: 768px) {
-    :root {
-      --grid-width: 708;
-      --grid-column-width: 52;
-      --grid-columns: 9;
-      --container-width: 92.19vw; } }
-  @media (min-width: 1024px) {
-    :root {
-      --grid-width: 930;
-      --grid-column-width: 50;
-      --grid-columns: 12;
-      --container-width: 90.08vw; } }
-  @media (min-width: 1440px) {
-    :root {
-      --grid-width: 1110;
-      --grid-column-width: 65;
-      --grid-columns: 12;
-      --container-width: 1110px; } }
-
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  font-family: var(--sans-serif);
-  font-weight: var(--normal);
-  color: var(--color-black);
-  font-size: 16px;
-  line-height: 1.5;
-  letter-spacing: normal;
-  -webkit-text-size-adjust: 100%; }
-
-body {
-  position: relative;
-  min-height: 100vh; }
-
-.standard-font-margins h1, .standard-font-margins h2, .standard-font-margins h3, .standard-font-margins h4, .standard-font-margins h5, .standard-font-margins h6, .standard-font-margins .h1, .standard-font-margins .h2, .standard-font-margins .h3, .standard-font-margins .h4, .standard-font-margins .h5, .standard-font-margins .h6 {
-  margin: 0 0 .25em; }
-
-.standard-font-margins p {
-  margin: 0 0 .5em; }
-
-.standard-font-margins ul, .standard-font-margins ol {
-  margin-bottom: .5em; }
-
-.flexbox {
-  display: -webkit-flex;
-  display: flex; }
-
-/*Wraps*/
-.max-wrap {
-  width: 90%;
-  margin: 20px auto;
-  max-width: 1260px; }
-  @media (min-width: 768px) {
-    .max-wrap {
-      width: 100%; } }
-
-.margin-wrap-bottom {
-  margin-bottom: 20px; }
-  @media (min-width: 768px) {
-    .margin-wrap-bottom {
-      margin-bottom: 30px; } }
-  @media (min-width: 1025px) {
-    .margin-wrap-bottom {
-      margin-bottom: 40px; } }
-
-/*Type*/
-.uppercase {
-  text-transform: uppercase; }
-
-.bold {
-  font-weight: var(--weight-bold); }
-
-p {
-  font-size: 16px;
-  line-height: 1.5;
-  letter-spacing: 0.016em; }
-  p.p-small {
-    font-size: 14px; }
-  p.serif {
-    font-family: var(--serif);
-    font-weight: var(--weight-light); }
-
-.h1 {
-  font-family: var(--serif);
-  font-weight: var(--weight-light);
-  font-size: 40px;
-  line-height: 48px; }
-  @media (min-width: 1025px) {
-    .h1 {
-      font-size: 52px;
-      line-height: 60px; } }
-  .h1.sans-serif {
-    font-family: var(--sans-serif);
-    font-weight: var(--weight-bold);
-    text-transform: uppercase;
-    font-size: 24px;
-    line-height: 1.2em;
-    letter-spacing: 0.15em; }
-    @media (min-width: 1025px) {
-      .h1.sans-serif {
-        font-size: 30px; } }
-
-.h2 {
-  font-family: var(--serif);
-  font-weight: var(--weight-light);
-  font-size: 32px;
-  line-height: 40px; }
-  @media (min-width: 1025px) {
-    .h2 {
-      font-size: 40px;
-      line-height: 48px;
-      /*44px*/ } }
-  .h2.sans-serif {
-    /*Jason will provide font sizes if they change*/
-    font-family: var(--sans-serif);
-    font-weight: var(--weight-bold); }
-
-.h3 {
-  font-family: var(--serif);
-  font-weight: var(--weight-light);
-  font-size: 24px;
-  line-height: 32px; }
-  @media (min-width: 1025px) {
-    .h3 {
-      font-size: 32px;
-      line-height: 40px; } }
-  .h3.sans-serif {
-    /*Jason will provide font sizes if they change*/
-    font-family: var(--sans-serif);
-    font-weight: var(--weight-bold); }
-
-.h4 {
-  font-weight: var(--weight-normal);
-  font-size: 20px;
-  line-height: 28px; }
-  .h4.serif {
-    /*Jason will provide font sizes if they change*/
-    font-family: var(--serif);
-    font-weight: var(--weight-light); }
-
-.h5 {
-  font-size: 16px;
-  line-height: 22px;
-  font-weight: var(--weight-bold); }
-  .h5.serif {
-    /*Jason will provide font sizes if they change*/
-    font-family: var(--serif);
-    font-weight: var(--weight-light); }
-
-.h6 {
-  font-size: 12px;
-  line-height: 20px;
-  font-weight: var(--weight-bold);
-  letter-spacing: 0.1em;
-  text-transform: uppercase; }
-  .h6.serif {
-    /*Jason will provide font sizes if they change*/
-    font-family: var(--serif);
-    font-weight: var(--weight-light);
-    text-transform: none; }
-
-/*Buttons*/
-.btn {
-  cursor: pointer;
-  font-family: var(--sans-serif);
-  display: inline-block;
-  text-align: center;
-  margin: auto;
-  background-color: transparent;
-  border: 2px solid var(--color-bronze);
-  letter-spacing: normal;
-  line-height: 1;
-  text-transform: uppercase;
-  font-weight: bold;
-  font-size: 14px;
-  min-width: 191px;
-  padding: 16px 24px;
-  color: var(--color-bronze);
-  width: 100%; }
-  @media (min-width: 640px) {
-    .btn {
-      width: auto; } }
-  .btn.btn-notfull {
-    width: auto; }
-  .btn:hover {
-    background-color: var(--color-bronze);
-    color: var(--color-white);
-    border-color: var(--color-bronze); }
-  .btn.btn-bronzesolid {
-    background-color: var(--color-bronze);
-    color: var(--color-white); }
-    .btn.btn-bronzesolid:hover {
-      background-color: var(--color-lightgold);
-      border-color: var(--color-lightgold); }
-  .btn.btn-blackline {
-    border-color: var(--color-black);
-    color: var(--color-black); }
-    .btn.btn-blackline:hover {
-      background-color: var(--color-black);
-      color: var(--color-white); }
-  .btn.btn-blacksolid {
-    background-color: var(--color-black);
-    border-color: var(--color-black);
-    color: var(--color-white); }
-    .btn.btn-blacksolid:hover {
-      background-color: var(--color-gunmetal); }
-
-/*Links*/
-a {
-  text-decoration: none;
-  color: var(--color-bronze);
-  text-transform: capitalize;
-  font-size: 14px; }
-  a:hover {
-    text-decoration: underline; }
-  a.a-black-to-bronze {
-    color: var(--color-black); }
-    a.a-black-to-bronze:hover {
-      color: var(--color-bronze); }
-  a.a-bronze-to-black {
-    color: var(--color-bronze); }
-    a.a-bronze-to-black:hover {
-      color: var(--color-black); }
-  a.a-black {
-    color: var(--color-black); }
-  a.a-arrow {
-    transition: transform 1s; }
-    a.a-arrow::after {
-      content: ' ';
-      display: inline-block;
-      padding: 2.2px;
-      margin-left: 5px;
-      vertical-align: middle;
-      border: solid;
-      border-width: 0 2px 2px 0;
-      display: inline-block;
-      transform: rotate(-45deg);
-      -webkit-transform: rotate(-45deg); }
-      a.a-arrow::after:hover {
-        text-decoration: none; }
-  a.a-no-underline:hover {
-    text-decoration: none; }
-
-/*ul and li*/
-ol, ul {
-  margin-left: 40px;
-  margin-block-start: 1em; }
-
-ul {
-  list-style: disc outside; }
-
-ol {
-  list-style-type: decimal; }
-
-li {
-  margin-bottom: 5px; }
-
-.hideat {
-  display: inline; }
-  .hideat--380 {
-    display: inline; }
-    @media (min-width: 380px) {
-      .hideat--380 {
-        display: none; } }
-  .hideat--768 {
-    display: inline; }
-    @media (min-width: 768px) {
-      .hideat--768 {
-        display: none; } }
-  .hideat--1025 {
-    display: inline; }
-    @media (min-width: 1025px) {
-      .hideat--1025 {
-        display: none; } }
-  .hideat--1280 {
-    display: inline; }
-    @media (min-width: 1260px) {
-      .hideat--1280 {
-        display: none; } }
-  .hideat--1440 {
-    display: inline; }
-    @media (min-width: 1440px) {
-      .hideat--1440 {
-        display: none; } }
-  .hideat--1920 {
-    display: inline; }
-    @media (min-width: 1920px) {
-      .hideat--1920 {
-        display: none; } }
-
-.showat {
-  display: none; }
-  .showat--380 {
-    display: none; }
-    @media (min-width: 380px) {
-      .showat--380 {
-        display: inline; } }
-  .showat--768 {
-    display: none; }
-    @media (min-width: 768px) {
-      .showat--768 {
-        display: inline; } }
-  .showat--1025 {
-    display: none; }
-    @media (min-width: 1025px) {
-      .showat--1025 {
-        display: inline; } }
-  .showat--1280 {
-    display: none; }
-    @media (min-width: 1260px) {
-      .showat--1280 {
-        display: inline; } }
-  .showat--1440 {
-    display: none; }
-    @media (min-width: 1440px) {
-      .showat--1440 {
-        display: inline; } }
-  .showat--1920 {
-    display: none; }
-    @media (min-width: 1920px) {
-      .showat--1920 {
-        display: inline; } }
-
 @font-face {
   font-family: "Gotham Light";
   src: url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.eot");
@@ -384,7 +13,7 @@ li {
   src: url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.eot");
   src: url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.eot?#iefix") format("embedded-opentype"), url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.woff2") format("woff2"), url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.woff") format("woff"), url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.ttf") format("truetype"), url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.svg#Gotham") format("svg"); }
 
-.page-main > .page-title-wrapper .page-title {
+.page-main > .page-title-wrapper .page-title, .account .page-main .page-title-wrapper .page-title {
   font-family: 'Didot';
   font-size: 40px;
   letter-spacing: 0.32px;
@@ -412,17 +41,27 @@ li {
 input[type="text"], input[type="password"], input[type="url"], input[type="tel"], input[type="search"], input[type="number"], input[type="datetime"], input[type="email"] {
   border: 1px solid #BCBCBC; }
 
-.actions-toolbar > .primary .action {
+.actions-toolbar > .primary .action, .actions-toolbar > .primary .action:last-child {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: #000;
   border-radius: 0;
   height: 40px;
   box-sizing: border-box;
   padding: 0 15px; }
-  .actions-toolbar > .primary .action span {
+  .actions-toolbar > .primary .action span, .actions-toolbar > .primary .action:last-child span {
     font-family: "Gotham Bold", Arial, serif;
     font-weight: normal;
     font-size: 14px;
     text-transform: uppercase; }
+  @media screen and (max-width: 768px) {
+    .actions-toolbar > .primary .action, .actions-toolbar > .primary .action:last-child {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 56px;
+      margin-bottom: 24px; } }
 
 .actions-toolbar > .secondary .action:last-child {
   font-family: "Gotham Bold", Arial, serif;
@@ -449,6 +88,11 @@ input[type="text"], input[type="password"], input[type="url"], input[type="tel"]
 .login-container .fieldset:after {
   font-size: 14px;
   font-weight: normal; }
+
+@media screen and (max-width: 768px) {
+  #send2 {
+    height: 56px;
+    margin-bottom: 24px; } }
 
 @media screen and (max-width: 768px) {
   .form-create-account .actions-toolbar .primary .action.submit.primary {
@@ -479,5 +123,15 @@ form .fieldset legend span {
   letter-spacing: 0.19px;
   color: #000000; }
 
-.page-footer .footer.content {
+.account .column.main .block:not(.widget) .block-title {
+  border-bottom: 1px solid #BCBCBC; }
+
+.block-dashboard-info .action, .block-dashboard-addresses .action {
+  color: #000;
+  font-family: "Gotham Bold";
+  font-size: 12px;
+  letter-spacing: 0px;
+  text-transform: uppercase; }
+
+.block-wishlist {
   display: none; }
