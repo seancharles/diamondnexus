@@ -2,8 +2,6 @@
 
 namespace ForeverCompanies\CustomApi\Block\Adminhtml\Order;
 
-use Magento\Backend\Block\Template\Context;
-
 /**
  * Class AsdAndDeliveryModalBox
  * @package ForeverCompanies\CustomApi\Block\Adminhtml\Order

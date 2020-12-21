@@ -70,8 +70,7 @@ class Order extends AdminOrder implements HttpPostActionInterface
         LoggerInterface $logger,
         GridDetail $shipperResourceModel,
         ExtOrder $extOrder
-    )
-    {
+    ) {
         parent::__construct(
             $context,
             $coreRegistry,

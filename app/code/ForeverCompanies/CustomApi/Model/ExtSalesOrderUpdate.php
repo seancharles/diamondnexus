@@ -4,7 +4,6 @@ namespace ForeverCompanies\CustomApi\Model;
 
 use ForeverCompanies\CustomApi\Api\Data\ExtSalesOrderUpdateInterface;
 use Magento\Framework\DataObject\IdentityInterface;
-use Magento\Framework\DB\Select;
 use Magento\Framework\Model\AbstractModel;
 
 class ExtSalesOrderUpdate extends AbstractModel implements IdentityInterface, ExtSalesOrderUpdateInterface
