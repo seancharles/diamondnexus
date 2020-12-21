@@ -76,7 +76,10 @@ class OrderFishbowlImport
                 ->select()->from($this->userResource->getMainTable(), ['username'])
                 ->where('user_id = ?', $order->getData('sales_person_id'));
             $salesPersonResult = $this->userResource->getConnection()->fetchRow($salesPersonSql);
-            $extensionAttributes->setSalesPersonUsername($salesPersonResult['username']);
+            $salesPerson = is_array($salesPersonResult) && array_key_exists('username', $salesPersonResult)
+                ? $salesPersonResult['username']
+                : '';
+            $extensionAttributes->setSalesPersonUsername($salesPerson);
         }
         $order->setExtensionAttributes($extensionAttributes);
 
