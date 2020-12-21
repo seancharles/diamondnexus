@@ -34,4 +34,6 @@
         <plugin name="ForeverCompanies_CustomApi_Plugin_Ui_DataProvider_Product_Modifier_Attributes" sortOrder="10"
                 type="ForeverCompanies\CustomApi\Plugin\Ui\DataProvider\Product\Modifier\Attributes"/>
     </type>
+    <preference for="ForeverCompanies\CustomApi\Api\Data\ExtSearchResultsInterface"
+                type="ForeverCompanies\CustomApi\Model\ExtSearchResults" />
 </config>
