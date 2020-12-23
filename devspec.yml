@@ -37,9 +37,8 @@ phases:
       - ls
       - ls
       - sleep 3
-      - aws s3 rm s3://mag2-dev-codebuild/magento --recursive
-      - sleep 3
-      - aws s3 sync . s3://mag2-dev-codebuild/magento
+      - aws s3 sync . s3://mag2-dev-codebuild/magento --exclude ".git/*"  --delete
+      - bash datasync.sh $task
       - sleep 3
       
   post_build:
