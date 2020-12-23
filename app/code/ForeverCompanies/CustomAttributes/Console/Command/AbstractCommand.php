@@ -9,7 +9,6 @@ namespace ForeverCompanies\CustomAttributes\Console\Command;
 
 use ForeverCompanies\CustomAttributes\Helper\TransformData;
 use Magento\Framework\App\State;
-use Magento\Framework\Exception\LocalizedException;
 use Symfony\Component\Console\Command\Command;
 
 abstract class AbstractCommand extends Command

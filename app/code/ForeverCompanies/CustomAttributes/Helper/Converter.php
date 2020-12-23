@@ -21,8 +21,11 @@ use Magento\Framework\App\Helper\Context;
 use Magento\Catalog\Api\Data\ProductCustomOptionInterfaceFactory;
 use Magento\Catalog\Model\Product;
 use Magento\Bundle\Api\Data\OptionInterfaceFactory;
+use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Exception\StateException;
 
 class Converter extends AbstractHelper
 {
@@ -57,6 +60,11 @@ class Converter extends AbstractHelper
     protected $productRepository;
 
     /**
+     * @var ProductType
+     */
+    protected $productType;
+
+    /**
      * @var string[]
      */
     protected $matchingBandWhere = [
@@ -75,6 +83,7 @@ class Converter extends AbstractHelper
      * @param Config $eavConfig
      * @param MatchingBand $matchingBand
      * @param ProductRepository $productRepository
+     * @param ProductType $productType
      */
     public function __construct(
         Context $context,
@@ -83,7 +92,8 @@ class Converter extends AbstractHelper
         LinkInterfaceFactory $linkInterfaceFactory,
         Config $eavConfig,
         MatchingBand $matchingBand,
-        ProductRepository $productRepository
+        ProductRepository $productRepository,
+        ProductType $productType
     ) {
         parent::__construct($context);
         $this->productCustomOptionInterfaceFactory = $productCustomOptionInterfaceFactory;
@@ -92,6 +102,7 @@ class Converter extends AbstractHelper
         $this->eavConfig = $eavConfig;
         $this->matchingBand = $matchingBand;
         $this->productRepository = $productRepository;
+        $this->productType = $productType;
     }
 
     /**
@@ -241,8 +252,21 @@ class Converter extends AbstractHelper
             $skuLink = '';
             $priceLink = 0;
             foreach ($products as $product) {
+                if ($product->getData('bundle_sku') == null || $product->getData('bundle_sku') == '') {
+                    $product->setCustomAttribute('bundle_sku', $sku);
+                    $product->setData('bundle_sku', $sku);
+                    try {
+                        $this->productRepository->save($product);
+                    } catch (CouldNotSaveException $e) {
+                        $this->_logger->error('Can\'t save bundle_sku ' . $product->getId() . ':' . $e->getMessage());
+                    } catch (InputException $e) {
+                        $this->_logger->error('Can\'t save bundle_sku ' . $product->getId() . ':' . $e->getMessage());
+                    } catch (StateException $e) {
+                        $this->_logger->error('Can\'t save bundle_sku ' . $product->getId() . ':' . $e->getMessage());
+                    }
+                }
                 if ($value->getValueIndex() == $product->getData('gemstone')) {
-                    $skuLink = $product->getSku();
+                    $skuLink = str_replace($sku, '', $product->getSku());
                     $priceLink = $product->getPrice();
                     continue;
                 }
@@ -276,7 +300,7 @@ class Converter extends AbstractHelper
     {
         $options = [];
         foreach ($product->getOptions() as $option) {
-            if ($option->getData('values') !== null) {
+            if ($option->getData('values') !== null || $option->getValues() !== null) {
                 $options[] = $option;
             }
         }

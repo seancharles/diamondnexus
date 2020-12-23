@@ -600,6 +600,9 @@ class TransformData extends AbstractHelper
         }
         /** Finally! */
         try {
+            if ($product->getTypeId() == Product\Type::TYPE_BUNDLE) {
+                $this->refreshOptions($product);
+            }
             $this->productRepository->save($product);
             foreach (['youtube', 'video_url'] as $link) {
                 $videoUrl = $product->getData($link);
@@ -662,6 +665,27 @@ class TransformData extends AbstractHelper
         } catch (InputException $e) {
             $this->_logger->error('Can\'t disable product ID = ' . $productId . ': ' . $e->getMessage());
         }
+    }
+
+    /**
+     * @param Product $product
+     */
+    protected function refreshOptions(Product $product)
+    {
+        $options = $product->getOptions();
+        /** @var ProductExtension $extensionAttributes */
+        $extensionAttributes = $product->getExtensionAttributes();
+        $bundleOptions = $extensionAttributes->getBundleProductOptions();
+        /** @var Option $option */
+        foreach ($options as $id => $option) {
+            /** @var \Magento\Bundle\Model\Option $bundleOption */
+            foreach ($bundleOptions as $bundleOption) {
+                if ($option->getTitle() == $bundleOption->getTitle()) {
+                    unset($options[$id]);
+                }
+            }
+        }
+        $product->setOptions($options);
     }
 
     /**
@@ -900,7 +924,7 @@ class TransformData extends AbstractHelper
         } catch (NoSuchEntityException $exception) {
             $this->_logger->warning('Product with ID = ' . $entityId . 'not found');
         }
-        if ($product->isDisabled() || $product->getData('is_transformed') == $transformed) {
+        if ($product->getData('is_transformed') == $transformed) {
             return;
         }
         return $product;
@@ -1109,6 +1133,12 @@ class TransformData extends AbstractHelper
             if (count($products) > 0) {
                 foreach ($products as $product) {
                     $this->transformProduct((int)$product['product_id']);
+                }
+            }
+            $products = $this->productRepository->get($sku)->getExtensionAttributes()->getConfigurableProductLinks();
+            if (count($products) > 0) {
+                foreach ($products as $product) {
+                    $this->transformProduct((int)$product);
                 }
             }
             if ($sku == 'LRENSL0091X') {

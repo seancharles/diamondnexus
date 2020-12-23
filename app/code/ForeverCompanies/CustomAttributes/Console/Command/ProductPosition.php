@@ -27,6 +27,12 @@ class ProductPosition extends Command
      */
     protected $categoryProductResource;
 
+    /**
+     * ProductPosition constructor.
+     * @param State $state
+     * @param CategoryProduct $categoryProductResource
+     * @param string|null $name
+     */
     public function __construct(
         State $state,
         CategoryProduct $categoryProductResource,

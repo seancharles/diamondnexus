@@ -29,6 +29,9 @@ class DeleteOldAttributes extends AbstractCommand
      */
     protected $name = 'forevercompanies:delete-old-attributes';
 
+    /**
+     * @var string[]
+     */
     protected $oldAttributes = [
         'deactivated_date',
         'default_category',
@@ -70,6 +73,13 @@ class DeleteOldAttributes extends AbstractCommand
      */
     protected $moduleDataSetup;
 
+    /**
+     * DeleteOldAttributes constructor.
+     * @param State $state
+     * @param TransformData $helper
+     * @param CategorySetupFactory $categorySetupFactory
+     * @param ModuleDataSetupInterface $moduleDataSetup
+     */
     public function __construct(
         State $state,
         TransformData $helper,

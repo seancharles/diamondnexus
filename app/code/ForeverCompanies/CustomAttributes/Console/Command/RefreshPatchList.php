@@ -13,10 +13,11 @@ use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\Patch\PatchHistory;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class RefreshPatchList extends \Symfony\Component\Console\Command\Command
+class RefreshPatchList extends Command
 {
 
     /**
@@ -34,6 +35,12 @@ class RefreshPatchList extends \Symfony\Component\Console\Command\Command
      */
     protected $resource;
 
+    /**
+     * RefreshPatchList constructor.
+     * @param State $state
+     * @param ResourceConnection $resourceConnection
+     * @param string|null $name
+     */
     public function __construct(
         State $state,
         ResourceConnection $resourceConnection,
