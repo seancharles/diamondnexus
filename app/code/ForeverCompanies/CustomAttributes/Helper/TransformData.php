@@ -588,6 +588,7 @@ class TransformData extends AbstractHelper
         $product->setData('is_salable', true);
         $product->setData('on_sale', true);
         $product->setData('is_transformed', true);
+        $product->setCustomAttribute('is_transformed', true);
         $product->setData('sku_type', 1);
         $product->setData('weight_type', 1);
         $product->setData('price_type', 1);
@@ -676,6 +677,9 @@ class TransformData extends AbstractHelper
         /** @var ProductExtension $extensionAttributes */
         $extensionAttributes = $product->getExtensionAttributes();
         $bundleOptions = $extensionAttributes->getBundleProductOptions();
+        if ($bundleOptions == null) {
+            return;
+        }
         /** @var Option $option */
         foreach ($options as $id => $option) {
             /** @var \Magento\Bundle\Model\Option $bundleOption */
@@ -924,7 +928,7 @@ class TransformData extends AbstractHelper
         } catch (NoSuchEntityException $exception) {
             $this->_logger->warning('Product with ID = ' . $entityId . 'not found');
         }
-        if ($product->getData('is_transformed') == $transformed) {
+        if ($product->getData('is_transformed') == $transformed || $product->isDisabled()) {
             return;
         }
         return $product;

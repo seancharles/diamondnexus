@@ -71,15 +71,15 @@ class Account extends Connector
      */
     public function sync($id)
     {
-		$customer = $this->customerFactory->create()->load($id);
-		
-		echo "" . $customer->getData('sf_acctid') . "\n";
-		echo "" . $customer->getData('lastsync_at') . "\n";
-		
-		//print_r($customer->toArray());
-		//exit;
-		
-		$salesforceId = $customer->getData(self::SALESFORCE_ACCOUNT_ATTRIBUTE_CODE);
+        $customer = $this->customerFactory->create()->load($id);
+        
+        echo "" . $customer->getData('sf_acctid') . "\n";
+        echo "" . $customer->getData('lastsync_at') . "\n";
+        
+        //print_r($customer->toArray());
+        //exit;
+        
+        $salesforceId = $customer->getData(self::SALESFORCE_ACCOUNT_ATTRIBUTE_CODE);
         $data  = $this->data->getCustomer($customer, $this->_type);
         $params = [
             'Web_Account_Id__c' => $data['entity_id'],
@@ -100,16 +100,13 @@ class Account extends Connector
             'ShippingPostalCode' => $data['ship_postcode']
         ];
 
-		echo "salesforceId = " . $salesforceId . "\n";
+        echo "salesforceId = " . $salesforceId . "\n";
 
         if (!$salesforceId) {
-
             $params = ['acct' => $params];
             $response = $this->createAccount($this->_type, $params, $customer->getId());
             $id =  $response["acctId"];
-
         } elseif ($salesforceId) {
-
             $params += ['Id' => $salesforceId];
             $params = ['acct' => $params];
             $this->updateAccount($this->_type, $salesforceId, $params, $customer->getId());

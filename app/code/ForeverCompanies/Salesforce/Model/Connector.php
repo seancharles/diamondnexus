@@ -126,9 +126,9 @@ class Connector
             }
 
             $url = parse_url($host);
-			
+            
             $apiUrl = 'https://' . $url['path'] . '/services/oauth2/token';
-			
+            
             $params =[
                 'grant_type' => 'password',
                 'client_id' => $client_id,
@@ -419,5 +419,4 @@ class Connector
         $this->_requestLogFactory->create()->addRequest(RequestLog::REST_REQUEST_TYPE);
         return $response;
     }
-
 }

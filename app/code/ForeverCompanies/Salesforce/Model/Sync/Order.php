@@ -20,7 +20,7 @@ use Magento\Customer\Model\CustomerFactory;
 class Order extends Connector
 {
     const SALESFORCE_ORDER_ATTRIBUTE_CODE = 'sf_orderid';
-	const SALESFORCE_ACCOUNT_ATTRIBUTE_CODE = 'sf_acctid';
+    const SALESFORCE_ACCOUNT_ATTRIBUTE_CODE = 'sf_acctid';
     const SALESFORCE_ORDER_ATTRIBUTE_CODE_ITEM_ID = 'sf_order_itemid';
 
     /**
@@ -57,7 +57,7 @@ class Order extends Connector
         QueueFactory $queueFactory,
         RequestLogFactory $requestLogFactory,
         OrderFactory $orderFactory,
-		CustomerFactory $customerFactory,
+        CustomerFactory $customerFactory,
         Account $account
     ) {
         parent::__construct(
@@ -68,7 +68,7 @@ class Order extends Connector
             $requestLogFactory
         );
         $this->orderFactory = $orderFactory;
-		$this->customerFactory = $customerFactory;
+        $this->customerFactory = $customerFactory;
         $this->data   = $data;
         $this->_type = 'Order';
         $this->account = $account;
@@ -86,20 +86,20 @@ class Order extends Connector
     public function sync($increment_id)
     {
         $order = $this->orderFactory->create()->loadByIncrementId($increment_id);
-		$salesforceOrderId = $order->getData(self::SALESFORCE_ORDER_ATTRIBUTE_CODE);
-		
-		echo "salesforceOrderId = " . $salesforceOrderId . "\n";
-		
-		// get the customer
-		if($order->getCustomerId()) {
-			$customer = $this->customerFactory->create()->load($order->getCustomerId());
-			$salesforceCustomerId = $customer->getData(self::SALESFORCE_ACCOUNT_ATTRIBUTE_CODE);
-		} else {
-			$salesforceCustomerId = null;
-		}
-		
-		echo "salesforceCustomerId = " . $salesforceCustomerId . "\n";
-		
+        $salesforceOrderId = $order->getData(self::SALESFORCE_ORDER_ATTRIBUTE_CODE);
+        
+        echo "salesforceOrderId = " . $salesforceOrderId . "\n";
+        
+        // get the customer
+        if ($order->getCustomerId()) {
+            $customer = $this->customerFactory->create()->load($order->getCustomerId());
+            $salesforceCustomerId = $customer->getData(self::SALESFORCE_ACCOUNT_ATTRIBUTE_CODE);
+        } else {
+            $salesforceCustomerId = null;
+        }
+        
+        echo "salesforceCustomerId = " . $salesforceCustomerId . "\n";
+        
         $params = $this->data->getOrder($order, $this->_type);
         $date = date('Y-m-d', time());
         $data = [
@@ -125,19 +125,19 @@ class Order extends Connector
         ];
 
         // Create new Order
-		if ($salesforceOrderId) {
-			$data += ['Id' => $salesforceOrderId];
-			$result = ['order' => $data];
-			$this->updateOrder($this->_type, $result, $order->getIncrementId());
-		} elseif($salesforceCustomerId) {
-			$data += ['AccountId' => $salesforceCustomerId];
-			$result = ['order' => $data];
-			return $this->createOrder($this->_type, $result, $order->getIncrementId());
-		} else {
-			if(!$order->getCustomerId()) {
-				return $this->createGuestOrder($this->_type, $params, $order->getIncrementId());
-			}
-		}
+        if ($salesforceOrderId) {
+            $data += ['Id' => $salesforceOrderId];
+            $result = ['order' => $data];
+            $this->updateOrder($this->_type, $result, $order->getIncrementId());
+        } elseif ($salesforceCustomerId) {
+            $data += ['AccountId' => $salesforceCustomerId];
+            $result = ['order' => $data];
+            return $this->createOrder($this->_type, $result, $order->getIncrementId());
+        } else {
+            if (!$order->getCustomerId()) {
+                return $this->createGuestOrder($this->_type, $params, $order->getIncrementId());
+            }
+        }
 
         return false;
     }

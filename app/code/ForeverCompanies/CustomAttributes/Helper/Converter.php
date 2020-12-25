@@ -75,6 +75,25 @@ class Converter extends AbstractHelper
     ];
 
     /**
+     * @var string[]
+     */
+    protected $chainLength = [
+        '12 in' => 'C',
+        '13 in' => 'D',
+        '14 in' => 'E',
+        '15 in' => 'F',
+        '16 in' => 'G',
+        '17 in' => 'H',
+        '18 in' => 'I',
+        '19 in' => 'J',
+        '20 in' => 'K',
+        '21 in' => 'L',
+        '22 in' => 'M',
+        '23 in' => 'N',
+        '24 in' => 'O'
+    ];
+
+    /**
      * Converter constructor.
      * @param Context $context
      * @param ProductCustomOptionInterfaceFactory $productCustomOptionInterfaceFactory
@@ -94,7 +113,8 @@ class Converter extends AbstractHelper
         MatchingBand $matchingBand,
         ProductRepository $productRepository,
         ProductType $productType
-    ) {
+    )
+    {
         parent::__construct($context);
         $this->productCustomOptionInterfaceFactory = $productCustomOptionInterfaceFactory;
         $this->optionInterfaceFactory = $optionInterfaceFactory;
@@ -159,16 +179,23 @@ class Converter extends AbstractHelper
             foreach ($optionsData['simple'] as $optionData) {
                 /** @var Option $option */
                 $newOption = $this->productCustomOptionInterfaceFactory->create();
+                $values = $optionsData['options'][$optionData['title']];
+                if ($optionData['title'] == 'Chain Length') {
+                    foreach ($values as &$value) {
+                        $value['sku'] = $this->chainLength[$value['title']];
+                    }
+                }
                 $newOption->setData(
                     [
                         'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
                         'title' => $optionData['title'],
                         'type' => ProductCustomOptionInterface::OPTION_TYPE_DROP_DOWN,
                         'is_require' => 0,
-                        'values' => $optionsData['options'][$optionData['title']],
+                        'values' => $values,
                         'product_sku' => $product->getSku(),
                     ]
                 );
+
                 $options[] = $newOption;
             }
         }
@@ -180,6 +207,7 @@ class Converter extends AbstractHelper
      * @param Product $product
      * @param $optionsData
      * @param $productOptions
+     * @throws NoSuchEntityException
      */
     public function toBundle(Product $product, $optionsData, $productOptions)
     {
@@ -216,7 +244,9 @@ class Converter extends AbstractHelper
         $matchingBands = $this->matchingBand->getMatchingBands((int)$product->getId());
         if (count($matchingBands) > 0) {
             $optionsData['matching_bands'] = $this->prepareMatchingBandLinks($matchingBands);
-            $bOptions[] = $this->prepareBundleOpt('Matching Bands', '0', $optionsData['matching_bands']);
+            if (count($optionsData['matching_bands'] ) > 0) {
+                $bOptions[] = $this->prepareBundleOpt('Matching Bands', '0', $optionsData['matching_bands']);
+            }
         }
         if ($product->getSku() == 'LRENSL0091X') {
             $enhancers = $this->matchingBand->getEnhancers((int)$product->getId());
@@ -326,12 +356,17 @@ class Converter extends AbstractHelper
     /**
      * @param array $matchingBands
      * @return array
+     * @throws NoSuchEntityException
      */
     protected function prepareMatchingBandLinks(array $matchingBands)
     {
         $links = [];
         foreach ($matchingBands as $matchingBand) {
-
+            /** @var Product $product */
+            $product = $this->productRepository->getById($matchingBand['entity_id']);
+            if ($product->isDisabled()) {
+                continue;
+            }
             /** @var \Magento\Bundle\Model\Link $link */
             $link = $this->linkFactory->create();
             $link->setSku($matchingBand['sku']);
@@ -353,10 +388,10 @@ class Converter extends AbstractHelper
         $bundleOption = $this->optionInterfaceFactory->create();
         $bundleOption->setData(
             [
-            'title' => $title,
-            'type' => 'select',
-            'required' => $required,
-            'product_links' => $links
+                'title' => $title,
+                'type' => 'select',
+                'required' => $required,
+                'product_links' => $links
             ]
         );
         return $bundleOption;

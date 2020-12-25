@@ -15,7 +15,7 @@ class RequestLog extends AbstractModel
 
     protected function _construct()
     {
-        $this->_init('ForeverCompanies\Salesforce\Model\ResourceModel\RequestLog');
+        $this->_init(\ForeverCompanies\Salesforce\Model\ResourceModel\RequestLog::class);
     }
 
     public function addRequest($type)
