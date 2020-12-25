@@ -13,7 +13,6 @@ use Magento\Catalog\Model\ProductRepository;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Bundle\Api\Data\LinkInterfaceFactory;
-use Magento\Bundle\Api\Data\LinkInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 
 class Link extends AbstractHelper

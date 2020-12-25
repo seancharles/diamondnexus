@@ -10,7 +10,6 @@ namespace ForeverCompanies\CustomAttributes\Console\Command;
 use ForeverCompanies\CustomAttributes\Helper\TransformData;
 use Magento\Catalog\Model\Product;
 use Magento\Eav\Model\Config;
-use Magento\Eav\Model\Entity\Attribute\Backend\ArrayBackend;
 use Magento\Eav\Setup\EavSetupFactory;
 use Magento\Framework\App\State;
 use Magento\Framework\DB\Adapter\AdapterInterface;

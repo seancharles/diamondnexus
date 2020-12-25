@@ -14,12 +14,12 @@ class Index extends Action
      * @var orderRepository
      */
     protected $orderRepository;
-	
+    
     /**
      * @var PageFactory
      */
     protected $resultPageFactory;
-	
+    
     /**
      * @var QueueFactory
      */
@@ -36,37 +36,37 @@ class Index extends Action
      * @param PageFactory $resultPageFactory
      */
     public function __construct(
-		\Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
-		QueueFactory $queueFactory,
-		Order $syncOrder,
+        \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
+        QueueFactory $queueFactory,
+        Order $syncOrder,
         Context $context
     ) {
-		$this->orderRepository = $orderRepository;
-		$this->queueFactory = $queueFactory;
-		$this->syncOrder  = $syncOrder;
+        $this->orderRepository = $orderRepository;
+        $this->queueFactory = $queueFactory;
+        $this->syncOrder  = $syncOrder;
         parent::__construct($context);
     }
 
     public function execute()
     {
-		//$this->addToQueue('sales/order', 526398);
-		
-		$order = $this->orderRepository->get(526398);
-		
+        //$this->addToQueue('sales/order', 526398);
+        
+        $order = $this->orderRepository->get(526398);
+        
         $salesforceId = $order->getData('customer_sf_acctid');
         $orderSalesforceId = $order->getData('sf_orderid');
         $orderSalesforceGuestId = $order->getData('sf_order_itemid');
         $increment_id = $order->getIncrementId();
 
-		echo $increment_id . "<br />";
+        echo $increment_id . "<br />";
 
-		//$orderId = $this->syncOrder->createOrder('Order', $result, $order->getIncrementId());
-		
-		$sfOrderId = $this->syncOrder->sync(null, '5000000010', true, null);
+        //$orderId = $this->syncOrder->createOrder('Order', $result, $order->getIncrementId());
+        
+        $sfOrderId = $this->syncOrder->sync(null, '5000000010', true, null);
 
-		echo $sfOrderId . "<br />";
+        echo $sfOrderId . "<br />";
 
-		/*
+        /*
         if ($salesforceId) {
 
             if (!$orderSalesforceId && $orderSalesforceId == null) {
@@ -78,15 +78,13 @@ class Index extends Action
         } elseif (!$orderSalesforceGuestId && $orderSalesforceGuestId == null && !$orderSalesforceId) {
             $this->syncOrder->sync($salesforceId, $increment_id, true, "");
         }
-		*/
-		
-		echo "Order Sent to SalesForce";
-		
-		
+        */
+        
+        echo "Order Sent to SalesForce";
     }
-	
-	public function addToQueue($type, $entityId)
-	{
+    
+    public function addToQueue($type, $entityId)
+    {
         /** add to queue mode */
         $queue = $this->queueFactory->create()
             ->getCollection()
@@ -112,7 +110,7 @@ class Index extends Action
         $queue->setData($data);
         $queue->save();
         return;
-	}
+    }
 
     protected function _isAllowed()
     {
