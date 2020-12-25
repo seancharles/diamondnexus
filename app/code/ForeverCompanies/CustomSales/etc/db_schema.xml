@@ -11,4 +11,12 @@
         <column comment="Quote Expiration Date" name="quote_expiration_date" nullable="true"
                 xsi:type="date"/>
     </table>
+    <table name="sales_shipment">
+        <column comment="Final Shipping Cost" length="255" name="final_shipping_cost" nullable="true" xsi:type="varchar"/>
+        <column comment="Actual Date of Delivery" name="delivery_date_actual" nullable="true" xsi:type="date"/>
+    </table>
+    <table name="sales_shipment_grid">
+        <column comment="Final Shipping Cost" length="255" name="final_shipping_cost" nullable="true" xsi:type="varchar"/>
+        <column comment="Actual Date of Delivery" name="delivery_date_actual" nullable="true" xsi:type="date"/>
+    </table>
 </schema>

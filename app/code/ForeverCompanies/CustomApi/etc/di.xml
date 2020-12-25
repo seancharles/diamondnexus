@@ -36,4 +36,6 @@
     </type>
     <preference for="ForeverCompanies\CustomApi\Api\Data\ExtSearchResultsInterface"
                 type="ForeverCompanies\CustomApi\Model\ExtSearchResults" />
+    <preference for="ForeverCompanies\CustomApi\Api\ReindexInterface"
+                type="ForeverCompanies\CustomApi\Model\Reindex"/>
 </config>

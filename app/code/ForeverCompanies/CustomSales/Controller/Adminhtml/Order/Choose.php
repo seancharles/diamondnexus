@@ -2,7 +2,9 @@
 
 namespace ForeverCompanies\CustomSales\Controller\Adminhtml\Order;
 
-class Choose extends \Magento\Backend\App\Action
+use Magento\Backend\App\Action;
+
+class Choose extends Action
 {
     /**
      * @inheritDoc

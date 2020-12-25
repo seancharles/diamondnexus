@@ -2,12 +2,15 @@
 
 namespace ForeverCompanies\CustomSales\Controller\Adminhtml\Order;
 
+use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 
-class Grid extends \Magento\Backend\App\Action
+class Grid extends Action
 {
-
+    /**
+     * @var bool|PageFactory
+     */
     protected $resultPageFactory = false;
 
     /**
