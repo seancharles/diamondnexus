@@ -13,7 +13,6 @@ use ForeverCompanies\CustomAttributes\Logger\ErrorsBySku\Logger as LoggerBySku;
 use ForeverCompanies\CustomAttributes\Model\Config\Source\Product\BundleCustomizationType as BType;
 use ForeverCompanies\CustomAttributes\Model\Config\Source\Product\CustomizationType;
 use Magento\Bundle\Api\Data\LinkInterface;
-use Magento\Bundle\Api\Data\LinkInterfaceFactory;
 use Magento\Bundle\Model\Product\Type;
 use Magento\Bundle\Model\ResourceModel\Selection;
 use Magento\Catalog\Api\AttributeSetRepositoryInterface;
@@ -678,6 +677,7 @@ class TransformData extends AbstractHelper
         $extensionAttributes = $product->getExtensionAttributes();
         $bundleOptions = $extensionAttributes->getBundleProductOptions();
         if ($bundleOptions == null) {
+            $product->setTypeId(Product\Type::TYPE_SIMPLE);
             return;
         }
         /** @var Option $option */
