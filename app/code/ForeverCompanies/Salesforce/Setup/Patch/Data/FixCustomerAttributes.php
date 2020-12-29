@@ -39,13 +39,13 @@ class FixCustomerAttributes implements DataPatchInterface
      * @param AttributeSetFactory $attributeSetFactory
      */
     public function __construct(
-		Config $eavConfig,
+        Config $eavConfig,
         EavSetupFactory $eavSetupFactory,
-		AttributeSetFactory $attributeSetFactory
+        AttributeSetFactory $attributeSetFactory
     ) {
         $this->eavConfig = $eavConfig;
         $this->eavSetupFactory = $eavSetupFactory;
-		$this->attributeSetFactory = $attributeSetFactory;
+        $this->attributeSetFactory = $attributeSetFactory;
     }
 
     /**
@@ -60,19 +60,19 @@ class FixCustomerAttributes implements DataPatchInterface
 
         $attributeSet = $this->attributeSetFactory->create();
         $attributeGroupId = $attributeSet->getDefaultGroupId($attributeSetId);
-		
-		$customAttribute = $this->eavConfig->getAttribute('customer', 'sf_acctid');
-		
-		if($customAttribute) {
-			
-			$customAttribute->addData([
-				'backend_type' => 'varchar',
-				'attribute_set_id' => $attributeSetId,
-				'attribute_group_id' => $attributeGroupId,
-				'sort_order' => 150
-			]);
-			$customAttribute->save();
-		}
+        
+        $customAttribute = $this->eavConfig->getAttribute('customer', 'sf_acctid');
+        
+        if($customAttribute) {
+            
+            $customAttribute->addData([
+                'backend_type' => 'varchar',
+                'attribute_set_id' => $attributeSetId,
+                'attribute_group_id' => $attributeGroupId,
+                'sort_order' => 150
+            ]);
+            $customAttribute->save();
+        }
     }
 
     /**
@@ -82,7 +82,7 @@ class FixCustomerAttributes implements DataPatchInterface
     {
         return [];
     }
-	
+    
     /**
      * {@inheritdoc}
      */

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <referenceContainer name="content">
+        <block class="ForeverCompanies\CustomSales\Block\Adminhtml\Order\Create\SalesPerson"
+               template="ForeverCompanies_CustomSales::order/create/sales_person.phtml"
+               name="sales_person"
+               />
+    </referenceContainer>
+</page>

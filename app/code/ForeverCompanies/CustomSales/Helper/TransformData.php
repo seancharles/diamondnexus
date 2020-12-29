@@ -10,7 +10,6 @@ namespace ForeverCompanies\CustomSales\Helper;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
-use Zend_Db_Select;
 
 class TransformData extends AbstractHelper
 {

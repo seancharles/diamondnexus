@@ -21,8 +21,11 @@ use Magento\Framework\App\Helper\Context;
 use Magento\Catalog\Api\Data\ProductCustomOptionInterfaceFactory;
 use Magento\Catalog\Model\Product;
 use Magento\Bundle\Api\Data\OptionInterfaceFactory;
+use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Exception\StateException;
 
 class Converter extends AbstractHelper
 {
@@ -57,6 +60,11 @@ class Converter extends AbstractHelper
     protected $productRepository;
 
     /**
+     * @var ProductType
+     */
+    protected $productType;
+
+    /**
      * @var string[]
      */
     protected $matchingBandWhere = [
@@ -64,6 +72,25 @@ class Converter extends AbstractHelper
         'entity_varchar.value LIKE \'%Matching Band%\'',
         'entity_varchar.value = \'Miami\'',
         'entity_varchar.value = \'San Francisco\''
+    ];
+
+    /**
+     * @var string[]
+     */
+    protected $chainLength = [
+        '12 in' => 'C',
+        '13 in' => 'D',
+        '14 in' => 'E',
+        '15 in' => 'F',
+        '16 in' => 'G',
+        '17 in' => 'H',
+        '18 in' => 'I',
+        '19 in' => 'J',
+        '20 in' => 'K',
+        '21 in' => 'L',
+        '22 in' => 'M',
+        '23 in' => 'N',
+        '24 in' => 'O'
     ];
 
     /**
@@ -75,6 +102,7 @@ class Converter extends AbstractHelper
      * @param Config $eavConfig
      * @param MatchingBand $matchingBand
      * @param ProductRepository $productRepository
+     * @param ProductType $productType
      */
     public function __construct(
         Context $context,
@@ -83,7 +111,8 @@ class Converter extends AbstractHelper
         LinkInterfaceFactory $linkInterfaceFactory,
         Config $eavConfig,
         MatchingBand $matchingBand,
-        ProductRepository $productRepository
+        ProductRepository $productRepository,
+        ProductType $productType
     ) {
         parent::__construct($context);
         $this->productCustomOptionInterfaceFactory = $productCustomOptionInterfaceFactory;
@@ -92,6 +121,7 @@ class Converter extends AbstractHelper
         $this->eavConfig = $eavConfig;
         $this->matchingBand = $matchingBand;
         $this->productRepository = $productRepository;
+        $this->productType = $productType;
     }
 
     /**
@@ -148,16 +178,23 @@ class Converter extends AbstractHelper
             foreach ($optionsData['simple'] as $optionData) {
                 /** @var Option $option */
                 $newOption = $this->productCustomOptionInterfaceFactory->create();
+                $values = $optionsData['options'][$optionData['title']];
+                if ($optionData['title'] == 'Chain Length') {
+                    foreach ($values as &$value) {
+                        $value['sku'] = $this->chainLength[$value['title']];
+                    }
+                }
                 $newOption->setData(
                     [
                         'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
                         'title' => $optionData['title'],
                         'type' => ProductCustomOptionInterface::OPTION_TYPE_DROP_DOWN,
                         'is_require' => 0,
-                        'values' => $optionsData['options'][$optionData['title']],
+                        'values' => $values,
                         'product_sku' => $product->getSku(),
                     ]
                 );
+
                 $options[] = $newOption;
             }
         }
@@ -169,6 +206,7 @@ class Converter extends AbstractHelper
      * @param Product $product
      * @param $optionsData
      * @param $productOptions
+     * @throws NoSuchEntityException
      */
     public function toBundle(Product $product, $optionsData, $productOptions)
     {
@@ -205,7 +243,9 @@ class Converter extends AbstractHelper
         $matchingBands = $this->matchingBand->getMatchingBands((int)$product->getId());
         if (count($matchingBands) > 0) {
             $optionsData['matching_bands'] = $this->prepareMatchingBandLinks($matchingBands);
-            $bOptions[] = $this->prepareBundleOpt('Matching Bands', '0', $optionsData['matching_bands']);
+            if (count($optionsData['matching_bands']) > 0) {
+                $bOptions[] = $this->prepareBundleOpt('Matching Bands', '0', $optionsData['matching_bands']);
+            }
         }
         if ($product->getSku() == 'LRENSL0091X') {
             $enhancers = $this->matchingBand->getEnhancers((int)$product->getId());
@@ -241,8 +281,21 @@ class Converter extends AbstractHelper
             $skuLink = '';
             $priceLink = 0;
             foreach ($products as $product) {
+                if ($product->getData('bundle_sku') == null || $product->getData('bundle_sku') == '') {
+                    $product->setCustomAttribute('bundle_sku', $sku);
+                    $product->setData('bundle_sku', $sku);
+                    try {
+                        $this->productRepository->save($product);
+                    } catch (CouldNotSaveException $e) {
+                        $this->_logger->error('Can\'t save bundle_sku ' . $product->getId() . ':' . $e->getMessage());
+                    } catch (InputException $e) {
+                        $this->_logger->error('Can\'t save bundle_sku ' . $product->getId() . ':' . $e->getMessage());
+                    } catch (StateException $e) {
+                        $this->_logger->error('Can\'t save bundle_sku ' . $product->getId() . ':' . $e->getMessage());
+                    }
+                }
                 if ($value->getValueIndex() == $product->getData('gemstone')) {
-                    $skuLink = $product->getSku();
+                    $skuLink = str_replace($sku, '', $product->getSku());
                     $priceLink = $product->getPrice();
                     continue;
                 }
@@ -276,7 +329,7 @@ class Converter extends AbstractHelper
     {
         $options = [];
         foreach ($product->getOptions() as $option) {
-            if ($option->getData('values') !== null) {
+            if ($option->getData('values') !== null || $option->getValues() !== null) {
                 $options[] = $option;
             }
         }
@@ -302,12 +355,17 @@ class Converter extends AbstractHelper
     /**
      * @param array $matchingBands
      * @return array
+     * @throws NoSuchEntityException
      */
     protected function prepareMatchingBandLinks(array $matchingBands)
     {
         $links = [];
         foreach ($matchingBands as $matchingBand) {
-
+            /** @var Product $product */
+            $product = $this->productRepository->getById($matchingBand['entity_id']);
+            if ($product->isDisabled()) {
+                continue;
+            }
             /** @var \Magento\Bundle\Model\Link $link */
             $link = $this->linkFactory->create();
             $link->setSku($matchingBand['sku']);
@@ -329,10 +387,10 @@ class Converter extends AbstractHelper
         $bundleOption = $this->optionInterfaceFactory->create();
         $bundleOption->setData(
             [
-            'title' => $title,
-            'type' => 'select',
-            'required' => $required,
-            'product_links' => $links
+                'title' => $title,
+                'type' => 'select',
+                'required' => $required,
+                'product_links' => $links
             ]
         );
         return $bundleOption;

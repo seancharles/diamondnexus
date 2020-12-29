@@ -7,26 +7,35 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Model\Sync;
 
-use ForeverCompanies\Salesforce\Model\QueueFactory;
 use ForeverCompanies\Salesforce\Model\RequestLogFactory;
-use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfigInterface;
-use Magento\Config\Model\ResourceModel\Config as ResourceModelConfig;
-use ForeverCompanies\Salesforce\Model\ReportFactory as ReportFactory;
 use ForeverCompanies\Salesforce\Model\Connector;
 use ForeverCompanies\Salesforce\Model\Data;
-use Magento\Sales\Model\OrderFactory;
+use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfigInterface;
+use Magento\Config\Model\ResourceModel\Config as ResourceModelConfig;
 use Magento\Customer\Model\CustomerFactory;
+use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\OrderFactory;
 
 class Order extends Connector
 {
     const SALESFORCE_ORDER_ATTRIBUTE_CODE = 'sf_orderid';
-	const SALESFORCE_ACCOUNT_ATTRIBUTE_CODE = 'sf_acctid';
+    const SALESFORCE_ACCOUNT_ATTRIBUTE_CODE = 'sf_acctid';
     const SALESFORCE_ORDER_ATTRIBUTE_CODE_ITEM_ID = 'sf_order_itemid';
+
+    /**
+     * @var \Magento\Sales\Api\OrderRepositoryInterface
+     */
+    protected $orderRepository;
 
     /**
      * @var \Magento\Sales\Model\OrderFactory
      */
     protected $orderFactory;
+    
+    /**
+     * @var \Magento\Customer\Model\CustomerFactory
+     */
+    protected $customerFactory;
 
     /**
      * @var \ForeverCompanies\Salesforce\Model\Sync\Account
@@ -41,37 +50,31 @@ class Order extends Connector
      * Order constructor.
      * @param ScopeConfigInterface $scopeConfig
      * @param ResourceModelConfig $resourceConfig
-     * @param ReportFactory $reportFactory
      * @param Data $data
-     * @param OrderFactory $orderFactory
-     * @param Account $account
-     * @param QueueFactory $queueFactory
      * @param RequestLogFactory $requestLogFactory
+     * @param OrderFactory $orderFactory
+     * @param CustomerFactory $customerFactory
      */
 
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         ResourceModelConfig $resourceConfig,
-        ReportFactory $reportFactory,
         Data $data,
-        QueueFactory $queueFactory,
         RequestLogFactory $requestLogFactory,
+        OrderRepositoryInterface $orderRepository,
         OrderFactory $orderFactory,
-		CustomerFactory $customerFactory,
-        Account $account
+        CustomerFactory $customerFactory
     ) {
         parent::__construct(
             $scopeConfig,
             $resourceConfig,
-            $reportFactory,
-            $queueFactory,
             $requestLogFactory
         );
         $this->orderFactory = $orderFactory;
-		$this->customerFactory = $customerFactory;
+        $this->orderRepository = $orderRepository;
+        $this->customerFactory = $customerFactory;
         $this->data   = $data;
         $this->_type = 'Order';
-        $this->account = $account;
     }
 
     /**
@@ -83,88 +86,106 @@ class Order extends Connector
      * @param $salesforceOrderId
      * @return string|void
      */
-    public function sync($increment_id)
+    public function sync($increment_id, $sfOrderId, $sfAccountId)
     {
         $order = $this->orderFactory->create()->loadByIncrementId($increment_id);
-		$salesforceOrderId = $order->getData(self::SALESFORCE_ORDER_ATTRIBUTE_CODE);
-		
-		echo "salesforceOrderId = " . $salesforceOrderId . "\n";
-		
-		// get the customer
-		if($order->getCustomerId()) {
-			$customer = $this->customerFactory->create()->load($order->getCustomerId());
-			$salesforceCustomerId = $customer->getData(self::SALESFORCE_ACCOUNT_ATTRIBUTE_CODE);
-		} else {
-			$salesforceCustomerId = null;
-		}
-		
-		echo "salesforceCustomerId = " . $salesforceCustomerId . "\n";
-		
+        
         $params = $this->data->getOrder($order, $this->_type);
+        
         $date = date('Y-m-d', time());
+        
         $data = [
             'Web_Order_Id__c' => $params['entity_id'],
+            'Web_Order_Number__c' => $params['increment_id'],
+            'Store_Name__c' => $params['store_name'],
             'EffectiveDate' => $date,
             'Status' => 'Draft',
+            
+            'First_Name__c' => $params['customer_firstname'],
+            'Last_Name__c' => $params['customer_lastname'],
+            'Email' => $params['customer_email'],
+            'Phone__c' => $params['bill_telephone'],
+            
             'BillingStreet' => $params['bill_street'],
             'BillingCity' => $params['bill_city'],
             'BillingState' => $params['bill_region'],
-            'BillingPostalCode' => '53132',//$params['bill_postalcode'],
-            'ShippingStreet' => $params['ship_street'],
-            'ShippingCity' => $params['ship_city'],
-            'ShippingState' => $params['ship_region'],
-            'ShippingPostalCode' => '53132',//$params['ship_postalcode'],
-            'Order_Subtotal__c' => '100',//$params['subtotal'],
-            'Discount_Amount__c' => '10',//$params['discount_amount'],
-            'Order_Total__c' => '110',//$params['grand_total'],
-            'Order_Status__c' => 'processing',//$params['status'],
-            'Ship_Method__c' => 'Ground',//$params['shipping_description'],
-            'Store_Name__c' => 'Diamond Nexus',//$params['store_name'],
-            'Web_Order_Number__c' => '1000000001',//$params['increment_id'],
-            'Tax_Amount__c' => '10',//$params['tax_amount']
+            'BillingPostalCode' => $params['bill_postcode'],
+            'BillingCountryCode' => $params['bill_country_id'],
+            
+            'Order_Subtotal__c' => $params['subtotal'],
+            'Discount_Amount__c' => $params['discount_amount'],
+            'Order_Total__c' => $params['grand_total'],
+            'Order_Status__c' => $params['status'],
+            'Ship_Method__c' => $params['shipping_method'],
+            'Tax_Amount__c' => $params['tax_amount']
         ];
 
-        // Create new Order
-		if ($salesforceOrderId) {
-			$data += ['Id' => $salesforceOrderId];
-			$result = ['order' => $data];
-			$this->updateOrder($this->_type, $result, $order->getIncrementId());
-		} elseif($salesforceCustomerId) {
-			$data += ['AccountId' => $salesforceCustomerId];
-			$result = ['order' => $data];
-			return $this->createOrder($this->_type, $result, $order->getIncrementId());
-		} else {
-			if(!$order->getCustomerId()) {
-				return $this->createGuestOrder($this->_type, $params, $order->getIncrementId());
-			}
-		}
+        // todo: add handling for guest order updates (will need to pull customer by email)
+        //
+        if ($sfOrderId) {
+            echo "Update Order: " . $order->getIncrementId() . "\n";
+            $data += ['Id' => $sfOrderId];
+            $result = ['order' => $data];
+            $this->updateOrder($result);
+            
+        } elseif($sfAccountId != null) {
+            echo "Create Order: " . $order->getIncrementId() . "\n";
+            $data += ['AccountId' => $sfAccountId];
+            $result = ['order' => $data];
+            return $this->createOrder($result);
+            
+        } else {
+            echo "Create Guest Order: " . $order->getIncrementId() . "\n";
+            if(!$order->getCustomerId()) {
+                $result = ['order' => $data];
+                return $this->createGuestOrder($result);
+            }
+        }
 
         return false;
     }
-
-    /**
-     * @param \Magento\Sales\Model\Order $order
-     * @param $salesforceId
-     * @throws \Exception
-     */
-    protected function saveOrderAttribute($order, $orderId)
+    
+    public function syncLineItems($orderId, $lastsyncAt)
     {
-        if ($orderId) {
-            $order->setData(self::SALESFORCE_ORDER_ATTRIBUTE_CODE, $orderId);
-            $order->save();
-        }
-    }
-
-    /**
-     * @param \Magento\Sales\Model\Order $order
-     * @param $salesforceId
-     * @throws \Exception
-     */
-    protected function saveOrderItemIdAttribute($order, $orderItemId)
-    {
-        if ($orderItemId) {
-            $order->setData(self::SALESFORCE_ORDER_ATTRIBUTE_CODE_ITEM_ID, $orderItemId);
-            $order->save();
+        // load order
+        $order = $this->orderRepository->get($orderId);
+        
+        // get sf order id
+        $sfOrderId = $order->getData('sf_orderid');
+        
+        $orderItems = $order->getAllItems();
+        
+        if($sfOrderId) {
+            $this->clearOrderLines($sfOrderId);
+            
+            foreach($orderItems as $item) {
+                
+                $sfItemId = $item->getData('sf_order_itemid');
+                
+                $data = [
+                    'Order__c' => $sfOrderId,
+                    'Web_Product_Id__c' => $item->getSku(),
+                    'Amount__c' => $item->getPrice(),
+                    'Name' => $item->getName()
+                ];
+                
+                if($sfItemId) {
+                    $data['Id'] = $sfItemId;
+                    $result = ['line' => $data];
+                    $this->updateOrderLine($result);
+                } else {
+                    $result = ['line' => $data];
+                    $sfItemId = $this->createOrderLine($result);
+                }
+                
+                if($sfItemId) {
+                    $item->setData('sf_order_itemid', $sfItemId)->save();
+                    $item->setData('lastsync_at', $lastsyncAt)->save();
+                }
+                
+            }
+        } else {
+            echo "Unable to sync items order id missing.";
         }
     }
 }

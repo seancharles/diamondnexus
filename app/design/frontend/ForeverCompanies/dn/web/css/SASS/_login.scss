@@ -1,0 +1,13 @@
+.login-container {
+    .fieldset:after {
+        font-size:14px;
+        font-weight: normal;
+    }
+}
+
+#send2{
+    @media screen and (max-width:768px) {
+        height:56px;
+        margin-bottom:24px;
+    }
+}

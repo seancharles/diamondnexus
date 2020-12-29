@@ -2,10 +2,11 @@
 
 namespace ForeverCompanies\CustomSales\Controller\Adminhtml\Order;
 
+use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 
-class Change extends \Magento\Backend\App\Action
+class Change extends Action
 {
 
     /**

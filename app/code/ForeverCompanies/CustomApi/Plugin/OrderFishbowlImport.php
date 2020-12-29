@@ -91,6 +91,7 @@ class OrderFishbowlImport
      * @param OrderSearchResultInterface $orderSearchResult
      * @return OrderSearchResultInterface
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @throws LocalizedException
      */
     public function afterGetList(
         OrderRepositoryInterface $subject,

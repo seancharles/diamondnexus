@@ -1,0 +1,41 @@
+.form-create-account {
+
+    .actions-toolbar {
+        .primary {
+            .action.submit.primary {
+               @media screen and (max-width:768px) {
+                   height:56px;
+               }
+            }
+        }
+    }
+
+    .fieldset {
+        &.create.account:after {
+            font-family: "Gotham Light";
+            font-weight: normal;
+            font-size: 14px;
+            color: #DA1E28;
+        }
+
+        .legend {
+            border-bottom:1px solid #BCBCBC;
+            
+            span {
+            font-family: "Didot";
+            font-size:24px;
+            letter-spacing: 0.19px;
+            color: #000000;
+            }
+    
+            &:after {
+                font-size:14px;
+            }
+        }
+    }
+
+    .fieldset.create.account:after {
+        font-size:14px;
+    }    
+}
+

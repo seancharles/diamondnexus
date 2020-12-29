@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace ForeverCompanies\CustomSales\Console\Command;
 
 use ForeverCompanies\CustomSales\Cron\ExpirationDate;
-use ForeverCompanies\CustomSales\Helper\TransformData;
 use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\LocalizedException;

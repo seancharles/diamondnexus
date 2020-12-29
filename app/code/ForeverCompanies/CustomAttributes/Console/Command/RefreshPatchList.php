@@ -13,10 +13,11 @@ use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\Patch\PatchHistory;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class RefreshPatchList extends \Symfony\Component\Console\Command\Command
+class RefreshPatchList extends Command
 {
 
     /**
@@ -34,6 +35,12 @@ class RefreshPatchList extends \Symfony\Component\Console\Command\Command
      */
     protected $resource;
 
+    /**
+     * RefreshPatchList constructor.
+     * @param State $state
+     * @param ResourceConnection $resourceConnection
+     * @param string|null $name
+     */
     public function __construct(
         State $state,
         ResourceConnection $resourceConnection,
@@ -54,9 +61,15 @@ class RefreshPatchList extends \Symfony\Component\Console\Command\Command
     ) {
         $this->state->setAreaCode(Area::AREA_GLOBAL);
         $output->writeln("Delete patch list of custom attributes...");
-        $connection = $this->resource->getConnection();        $select = $connection->select()
+        $connection = $this->resource->getConnection();
+        $select = $connection->select()
             ->from(PatchHistory::TABLE_NAME)
             ->where(PatchHistory::CLASS_NAME . ' like "%ForeverCompanies_CustomAttributes%"');
+        $delete = $connection->deleteFromSelect($select, $connection->getTableName(PatchHistory::TABLE_NAME));
+        $connection->query($delete);
+        $select = $connection->select()
+            ->from(PatchHistory::TABLE_NAME)
+            ->where(PatchHistory::CLASS_NAME . ' like "%ForeverCompanies_Salesforce%"');
         $delete = $connection->deleteFromSelect($select, $connection->getTableName(PatchHistory::TABLE_NAME));
         $connection->query($delete);
         $selectProducts = $connection->select()->from('catalog_product_entity');
