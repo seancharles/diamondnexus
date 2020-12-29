@@ -22,7 +22,7 @@ class Queue extends AbstractModel
 
     protected function _construct()
     {
-        $this->_init(ResourceModel\Queue::class);
+        $this->_init('ForeverCompanies\Salesforce\Model\ResourceModel\Queue');
     }
 
     public function queueExisted($type, $entityId)

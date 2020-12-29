@@ -33,6 +33,9 @@ class Connector
     const XML_PATH_SALESFORCE_ORDER_ENABLE = 'salesforcecrm/sync/order';
     const XML_PATH_SALESFORCE_ACCOUNT_ENABLE = 'salesforcecrm/sync/account';
 
+    const SF_CUSTOMER_TYPE = 'Customer';
+    const SF_ORDER_TYPE = 'Order';
+
     /**
      * Core store config
      *
@@ -46,29 +49,9 @@ class Connector
     protected $_resourceConfig;
 
     /**
-     * @var \ForeverCompanies\Salesforce\Model\ReportFactory
-     */
-    protected $_reportFactory;
-
-    /**
      * @var string
      */
     protected $_type;
-
-    /**
-     * @var string
-     */
-    protected $_table;
-
-    /**
-     * @var QueueFactory
-     */
-    protected $_queueFactory;
-
-    /**
-     * @var QueueFactory
-     */
-    protected $_requestLogFactory;
 
     /**
      * Connector constructor.
@@ -81,15 +64,11 @@ class Connector
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         ResourceModelConfig $resourceConfig,
-        ReportFactory $reportFactory,
-        QueueFactory $queueFactory,
         RequestLogFactory $requestLogFactory
     ) {
 
         $this->_scopeConfig = $scopeConfig;
         $this->_resourceConfig = $resourceConfig;
-        $this->_reportFactory = $reportFactory;
-        $this->_queueFactory = $queueFactory;
         $this->_requestLogFactory = $requestLogFactory;
     }
 
@@ -232,7 +211,6 @@ class Connector
         $response = $this->sendRequest(\Zend_Http_Client::POST, $path, $parameter);
         if (isset($response["id"])) {
             $id = $response["id"];
-            $this->saveReport($id, 'create', $table, 1, null, $mid);
             return $id;
         }
 
@@ -241,14 +219,16 @@ class Connector
 
     /**
      * Create new Order in Salesforce
+     *
+     * @param array $parameter
      */
-    public function createOrder($table, $parameter, $mid = null)
+    public function createOrder($parameter)
     {
         $path = "/services/apexrest/createOrder";
         $response = $this->sendRequest(\Zend_Http_Client::POST, $path, $parameter);
+        
         if (isset($response["orderId"])) {
             $id = $response["orderId"];
-            $this->saveReport($id, 'create', $table, 1, null, $mid);
             return $id;
         }
 
@@ -257,14 +237,16 @@ class Connector
 
     /**
      * Create new Order in Salesforce
+     *
+     * @param array $parameter
      */
-    public function createGuestOrder($table, $parameter, $mid = null)
+    public function createGuestOrder($parameter)
     {
         $path = "/services/apexrest/createGuestOrder";
         $response = $this->sendRequest(\Zend_Http_Client::POST, $path, $parameter);
+        
         if (isset($response["orderId"])) {
             $id = $response["orderId"];
-            $this->saveReport($id, 'create', $table, 1, null, $mid);
             return $id;
         }
 
@@ -273,17 +255,73 @@ class Connector
 
     /**
      * Update new Order in Salesforce
+     *
+     * @param array $parameter
      */
-    public function updateOrder($table, $parameter, $mid = null)
+    public function updateOrder($parameter)
     {
         $path = "/services/apexrest/updateOrder";
         $response = $this->sendRequest(\Zend_Http_Client::PUT, $path, $parameter);
+        
         if (isset($response["status"])) {
             $status = $response["status"];
             if ($status == "success") {
-                $this->saveReport($mid, 'create', $table, 1, null, $mid);
                 return true;
             }
+        }
+
+        return false;
+    }
+    
+    /**
+     * Create new Order in Salesforce
+     *
+     * @param array $parameter
+     */
+    public function createOrderLine($parameter)
+    {
+        $path = "/services/apexrest/createLine";
+        $response = $this->sendRequest(\Zend_Http_Client::POST, $path, $parameter);
+        
+        if (isset($response["lineId"])) {
+            $id = $response["lineId"];
+            return $id;
+        }
+
+        return false;
+    }
+    
+    /**
+     * Create new Order in Salesforce
+     *
+     * @param array $parameter
+     */
+    public function updateOrderLine($parameter)
+    {
+        $path = "/services/apexrest/updateLine";
+        $response = $this->sendRequest(\Zend_Http_Client::PUT, $path, $parameter);
+        
+        if (isset($response["orderId"])) {
+            $id = $response["orderId"];
+            return $id;
+        }
+
+        return false;
+    }
+    
+    /**
+     * Create new Order in Salesforce
+     *
+     * @param array $parameter
+     */
+    public function clearOrderLines($parameter)
+    {
+        $path = "/services/apexrest/deleteLine";
+        $response = $this->sendRequest(\Zend_Http_Client::DELETE, $path, $parameter);
+        
+        if (isset($response["orderId"])) {
+            $id = $response["orderId"];
+            return $id;
         }
 
         return false;
@@ -291,14 +329,15 @@ class Connector
 
     /**
      * Create new Account in Salesforce
+     *
+     * @param array $parameter
      */
-    public function createAccount($table, $parameter, $mid = null)
+    public function createAccount($parameter)
     {
         $path = "/services/apexrest/createAccount";
         $response = $this->sendRequest(\Zend_Http_Client::POST, $path, $parameter);
         if (isset($response["acctId"])) {
             $id = $response["acctId"];
-            $this->saveReport($id, 'create', $table, 1, null, $mid);
             return $response;
         }
 
@@ -309,15 +348,12 @@ class Connector
     /**
      * Update a account in Salesforce
      *
-     * @param string $table
-     * @param string $id
      * @param array $parameter
      */
-    public function updateAccount($table, $id, $parameter, $mid = null)
+    public function updateAccount($parameter)
     {
         $path = "/services/apexrest/updateAccount";
         $this->sendRequest(\Zend_Http_Client::PUT, $path, $parameter);
-        $this->saveReport($id, 'update', $table, 1, null, $mid);
     }
 
     /**
@@ -335,9 +371,15 @@ class Connector
         $path = '/services/data/v34.0/query?q=' . urlencode($query);
 
         $response = $this->sendRequest(\Zend_Http_Client::GET, $path);
-        if (isset($response['accountId'])) {
-            $id = $response['accountId'];
-            return $id;
+        
+        if(isset($response['records'][0]) == true) {
+            // pull the first row from the response
+            $row = $response['records'][0];
+            
+            // return the id for each type
+            if(($table == 'Order' || $table == 'Lead' || $table == 'Account') && isset($row['Id']) == true) {
+                return $row['Id'];
+            }
         }
 
         return false;
@@ -380,22 +422,6 @@ class Connector
     }
 
     /**
-     * @param $id
-     * @param $action
-     * @param $table
-     * @param int $status
-     * @param null $message
-     * @param null $mid
-     */
-    public function saveReport($id, $action, $table, $status = 1, $message = null, $mid = null)
-    {
-        $model = $this->_reportFactory->create();
-        $model->saveReport($id, $action, $table, $status, $message, $mid);
-
-        return;
-    }
-
-    /**
      * @param $method
      * @param $url
      * @param array $headers
@@ -419,4 +445,5 @@ class Connector
         $this->_requestLogFactory->create()->addRequest(RequestLog::REST_REQUEST_TYPE);
         return $response;
     }
+
 }

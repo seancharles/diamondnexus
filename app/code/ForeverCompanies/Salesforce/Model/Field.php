@@ -67,7 +67,7 @@ class Field extends AbstractModel
         Connector $connector,
         array $data = []
     ) {
-        parent::__construct($context, $registry, $resource, $resourceCollection, $data);
+        parent::__construct($context, $registry, $resource, $resourceCollection);
         $this->_connector = $connector;
     }
 
@@ -204,11 +204,11 @@ class Field extends AbstractModel
      */
     public function getMagentoFields()
     {
-        if (is_null($this->mageField)) {
+        if (isset($this->mageField[$this->mageType]) === false) {
             $this->setMagentoFields($this->mageType);
         }
 
-        return $this->mageField;
+        return $this->mageField[$this->mageType];
     }
 
     /**
@@ -273,6 +273,7 @@ class Field extends AbstractModel
                     'company'                  => 'Company',
                     'customer_firstname'       => 'Customer First Name',
                     'customer_middlename'      => 'Customer Middle Name',
+                    'customer_email'           => 'Customer Email',
                     'customer_lastname'        => 'Customer Last Name',
                     'bill_firstname'           => 'Billing First Name',
                     'bill_middlename'          => 'Billing Middle Name',
@@ -281,7 +282,7 @@ class Field extends AbstractModel
                     'bill_street'              => 'Billing Street',
                     'bill_city'                => 'Billing City',
                     'bill_region'              => 'Billing State/Province',
-                    'bill_postalcode'          => 'Billing Zip/Postal Code',
+                    'bill_postcode'            => 'Billing Zip/Postal Code',
                     'bill_telephone'           => 'Billing Telephone',
                     'bill_country_id'          => 'Billing Country',
                     'ship_firstname'           => 'Shipping First Name',
@@ -291,7 +292,7 @@ class Field extends AbstractModel
                     'ship_street'              => 'Shipping Street',
                     'ship_city'                => 'Shipping City',
                     'ship_region'              => 'Shipping State/Province',
-                    'ship_postalcode'          => 'Shipping Zip/Postal Code',
+                    'ship_poscode'             => 'Shipping Zip/Postal Code',
                     'ship_country_id'          => 'Shipping Country',
                     'shipping_amount'          => 'Shipping Amount',
                     'shipping_description'     => 'Shipping Description',
@@ -312,6 +313,6 @@ class Field extends AbstractModel
             default:
                 break;
         }
-        $this->mageField = $m_fields;
+        $this->mageField[$this->mageType] = $m_fields;
     }
 }

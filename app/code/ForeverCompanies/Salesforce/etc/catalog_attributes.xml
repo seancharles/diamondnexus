@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Catalog:etc/catalog_attributes.xsd">
+    <group name="order">
+        <attribute name="sf_orderid"/>
+		<attribute name="lastsync_at"/>
+    </group>
+
+    <group name="order_item">
+        <attribute name="sf_order_itemid"/>
+		<attribute name="lastsync_at"/>
+    </group>
+</config>

@@ -73,6 +73,7 @@ class Data
     {
         $this->field->setType($type);
         $magento_fields = $this->field->getMagentoFields();
+        
         $data = [];
         foreach ($magento_fields as $key => $item) {
             $sub = substr($key, 0, 5);
@@ -112,7 +113,7 @@ class Data
     public function getOrder($model, $type)
     {
         $this->field->setType($type);
-        $magentoFields = $this->field->getMagentoFields();
+        $magentoFields = $this->field->getMagentoFields($type);
         $data = [];
 
         foreach ($magentoFields as $key => $item) {
