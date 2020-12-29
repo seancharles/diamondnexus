@@ -7,9 +7,7 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Model\Sync;
 
-use ForeverCompanies\Salesforce\Model\QueueFactory;
 use ForeverCompanies\Salesforce\Model\RequestLogFactory;
-use ForeverCompanies\Salesforce\Model\ReportFactory as ReportFactory;
 use ForeverCompanies\Salesforce\Model\Connector;
 use ForeverCompanies\Salesforce\Model\Data;
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfigInterface;
@@ -37,24 +35,19 @@ class Account extends Connector
      * @param ReportFactory $reportFactory
      * @param Data $data
      * @param CustomerFactory $orderFactory
-     * @param QueueFactory $queueFactory
      * @param RequestLogFactory $requestLogFactory
      */
 
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         ResourceModelConfig $resourceConfig,
-        ReportFactory $reportFactory,
         Data $data,
-        QueueFactory $queueFactory,
         RequestLogFactory $requestLogFactory,
         CustomerFactory $customerFactory
     ) {
         parent::__construct(
             $scopeConfig,
             $resourceConfig,
-            $reportFactory,
-            $queueFactory,
             $requestLogFactory
         );
         $this->customerFactory = $customerFactory;
@@ -65,22 +58,18 @@ class Account extends Connector
     /**
      * Create or update new Account in Salesforce
      *
-     * @param  int     $id
+     * @param  int     $accountId
      * @param  string  $salesforceId
      * @return string
      */
-    public function sync($id)
+    public function sync($magAccountId, $sfAccountId = false)
     {
-        $customer = $this->customerFactory->create()->load($id);
+        $customer = $this->customerFactory->create()->load($magAccountId);
         
-        echo "" . $customer->getData('sf_acctid') . "\n";
-        echo "" . $customer->getData('lastsync_at') . "\n";
+        $id = null;
         
-        //print_r($customer->toArray());
-        //exit;
-        
-        $salesforceId = $customer->getData(self::SALESFORCE_ACCOUNT_ATTRIBUTE_CODE);
         $data  = $this->data->getCustomer($customer, $this->_type);
+        
         $params = [
             'Web_Account_Id__c' => $data['entity_id'],
             'FirstName' => $data['firstname'],
@@ -100,38 +89,18 @@ class Account extends Connector
             'ShippingPostalCode' => $data['ship_postcode']
         ];
 
-        echo "salesforceId = " . $salesforceId . "\n";
-
-        if (!$salesforceId) {
+        if(!$sfAccountId) {
             $params = ['acct' => $params];
-            $response = $this->createAccount($this->_type, $params, $customer->getId());
+            $response = $this->createAccount($params);
             $id =  $response["acctId"];
-        } elseif ($salesforceId) {
-            $params += ['Id' => $salesforceId];
+        } elseif($sfAccountId != null) {
+            $params += ['Id' => $sfAccountId];
             $params = ['acct' => $params];
-            $this->updateAccount($this->_type, $salesforceId, $params, $customer->getId());
+            $this->updateAccount($params);
+        } else {
+            echo "Invalid salesforce customer Id.\n";
         }
 
         return $id;
-    }
-
-
-    /**
-     * @param Customer $customer
-     * @param String $salesforceId
-     * @throws \Exception
-     */
-    protected function saveAttribute($customer, $salesforceId)
-    {
-        $customerData = $customer->getDataModel();
-        $customerData->setId($customer->getId());
-        $customerData->setCustomAttribute(
-            self::SALESFORCE_ACCOUNT_ATTRIBUTE_CODE,
-            $salesforceId
-        );
-        $customer->updateData($customerData);
-        /** @var \Magento\Customer\Model\ResourceModel\Customer $customerResource */
-        $customerResource = $this->customerFactory->create()->getResource();
-        $customerResource->saveAttribute($customer, self::SALESFORCE_ACCOUNT_ATTRIBUTE_CODE);
     }
 }

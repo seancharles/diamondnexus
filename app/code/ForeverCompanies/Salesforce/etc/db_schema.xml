@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="sales_order">
+        <column comment="SF Order ID" xsi:type="varchar" name="sf_orderid" />
+        <column comment="Last Sync" xsi:type="datetime" name="lastsync_at" />
+    </table>
+    <table name="sales_order_item">
+        <column comment="SF Order Item ID" xsi:type="varchar" name="sf_order_itemid"
+                nullable="true" default="0" />
+        <column comment="Last Sync" xsi:type="datetime" name="lastsync_at"
+                nullable="true" default="0" />
+    </table>
+	<table name="sales_order_address">
+        <column comment="Updated At" xsi:type="timestamp" name="address_updated_at"
+                on_update="false" nullable="true" default="0" />
+		<index referenceId="SALES_ORDER_ADDRESS_ADDRESS_UPDATED_AT" indexType="btree">
+			<column name="address_updated_at"/>
+		</index>
+	</table>
+</schema>

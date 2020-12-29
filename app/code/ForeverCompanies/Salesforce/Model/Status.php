@@ -29,7 +29,7 @@ class Status extends AbstractSource
      *
      * @return string[]
      */
-    public function getOptionArray()
+    public static function getOptionArray()
     {
         return [
             self::STATUS_ENABLED  => __('Enabled'),
@@ -46,7 +46,7 @@ class Status extends AbstractSource
     {
         $result = [];
 
-        foreach ($this->getOptionArray() as $index => $value) {
+        foreach (self::getOptionArray() as $index => $value) {
             $result[] = [
                 'value' => $index,
                 'label' => $value
@@ -64,7 +64,7 @@ class Status extends AbstractSource
      */
     public function getOptionText($optionId)
     {
-        $options = $this->getOptionArray();
+        $options = self::getOptionArray();
         return isset($options[$optionId]) ? $options[$optionId] : null;
     }
 }

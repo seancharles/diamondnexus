@@ -12,7 +12,6 @@ use Magento\Framework\Setup\UpgradeSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\DB\Ddl\Table;
-use Zend_Db_Exception;
 
 /**
  * Class UpgradeSchema
@@ -26,62 +25,18 @@ class UpgradeSchema implements UpgradeSchemaInterface
      *
      * @param SchemaSetupInterface $setup
      * @param ModuleContextInterface $context
-     * @throws Zend_Db_Exception
+     * @throws \Zend_Db_Exception
      */
     public function upgrade(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
         $installer = $setup;
         $installer->startSetup();
 
-        if (version_compare($context->getVersion(), '2.0.0') < 0) {
+        if (version_compare($context->getVersion(), '1.0.1') < 0) {
             $this->createRequestTable($installer);
-            $this->createQueueTable($installer);
-            $this->addReportColumn($installer);
-            $this->changeReportColumn($installer);
         }
 
         $installer->endSetup();
-    }
-
-    /**
-     * Create the table forevercompanies_salesforce_report
-     *
-     * @param SetupInterface $installer
-     * @return void
-     */
-    private function addReportColumn($installer)
-    {
-        $installer->getConnection()->addColumn(
-            $installer->getTable('forevercompanies_salesforce_report'),
-            'msg',
-            [
-                'type' => TABLE::TYPE_TEXT,
-                'nullable' => true,
-                'comment' => 'Message'
-            ]
-        );
-    }
-
-    /**
-     * Create the table forevercompanies_salesforce_report
-     *
-     * @param SetupInterface $installer
-     * @return void
-     */
-    private function changeReportColumn($installer)
-    {
-        $connection = $installer->getConnection();
-        if ($connection->tableColumnExists('forevercompanies_salesforce_report', 'id_magento')) {
-            $connection->changeColumn(
-                $installer->getTable('forevercompanies_salesforce_report'),
-                'id_magento',
-                'magento_id',
-                [
-                    'type' => Table::TYPE_TEXT,
-                    'comment' => 'Magento Id'
-                ]
-            );
-        }
     }
 
     /**
@@ -89,7 +44,6 @@ class UpgradeSchema implements UpgradeSchemaInterface
      *
      * @param SetupInterface $installer
      * @return void
-     * @throws Zend_Db_Exception
      */
     private function createRequestTable($installer)
     {
@@ -131,60 +85,6 @@ class UpgradeSchema implements UpgradeSchemaInterface
             'Request'
         )->setComment(
             'Salesforce Request Table'
-        );
-
-        $installer->getConnection()->createTable($table);
-    }
-
-    /**
-     * Create the table forevercompanies_salesforce_queue
-     *
-     * @param SetupInterface $installer
-     * @return void
-     * @throws Zend_Db_Exception
-     */
-    private function createQueueTable($installer)
-    {
-        $tableName = 'forevercompanies_salesforce_queue';
-        $table = $installer->getConnection()->newTable(
-            $installer->getTable($tableName)
-        )->addColumn(
-            'id',
-            Table::TYPE_INTEGER,
-            null,
-            [
-                'identity' => true,
-                'unsigned' => true,
-                'nullable' => false,
-                'primary' => true
-            ],
-            'Id'
-        )->addColumn(
-            'type',
-            Table::TYPE_TEXT,
-            45,
-            ['nullable' => true],
-            'Entity Type'
-        )->addColumn(
-            'entity_id',
-            Table::TYPE_TEXT,
-            null,
-            ['nullable' => false],
-            'Entity Id'
-        )->addColumn(
-            'enqueue_time',
-            Table::TYPE_DATETIME,
-            null,
-            ['nullable' => true],
-            'Enqueue Time'
-        )->addColumn(
-            'priority',
-            Table::TYPE_SMALLINT,
-            null,
-            ['nullable' => false],
-            'Enqueue Time'
-        )->setComment(
-            'Salesforce Sync Queue'
         );
 
         $installer->getConnection()->createTable($table);
