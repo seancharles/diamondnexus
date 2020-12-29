@@ -19,6 +19,8 @@ phases:
       - echo "BRANCH $BRANCH"
       - echo "SOURCE_VERSION $SOURCE_VERSION"
       - echo "username $GITUSER"
+      - export task="$Taskid"
+      - export accountId="$account"
   build:
     commands:
       - echo Build started on `date`
@@ -37,9 +39,8 @@ phases:
       - ls
       - ls
       - sleep 3
-      - aws s3 rm s3://mag2-dev-codebuild/magento --recursive
-      - sleep 3
-      - aws s3 sync . s3://mag2-dev-codebuild/magento
+      - aws s3 sync . s3://mag2-dev-codebuild/magento --exclude ".git/*"  --delete
+      - bash datasync.sh $task $accountId
       - sleep 3
       
   post_build:
