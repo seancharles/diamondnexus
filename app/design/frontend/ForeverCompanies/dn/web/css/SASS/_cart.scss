@@ -1,0 +1,146 @@
+.checkout-cart-index {
+    .page-main .cart-summary .block.shipping .title {
+        display:none;
+    }
+    
+    .cart-summary > .title {
+        font-family: "Didot";
+        font-size:24px;
+        line-height:32px;
+        letter-spacing:0.19px;
+    }
+
+    .cart.table-wrapper .cart thead tr th.col {
+        border-bottom:1px solid #BCBCBC;
+    }
+
+    .cart.table-wrapper .col.price .price-excluding-tax .price {
+        font-weight:normal;
+    }
+
+    .cart.table-wrapper .cart > .item {
+        border-bottom: 1px solid #BCBCBC;
+
+        &:last-child {
+            border:none;
+        }
+
+        .item-actions .actions-toolbar .action-towishlist {
+            display:none;
+        }
+    }
+
+    .cart.table-wrapper .action.towishlist {
+        display:none;
+    }
+
+    .cart-totals .grand strong, .opc-block-summary .table-totals .grand strong {
+        font-family: "Gotham Bold";
+        font-weight:normal;
+    }
+    .cart-summary .checkout-methods-items .item .affirm-as-low-as {
+        font-size:14px;
+        line-height:22px;
+        color: #383838;
+    }
+
+    .cart-summary .checkout-methods-items .action.primary.checkout {
+        background-color:#000;
+        border-color:#000;
+        text-transform:uppercase;
+        font-size:16px;
+        letter-spacing: 0px;
+        font-family: "Gotham Bold";
+        margin-bottom:32px;
+    }
+
+    .affirm-modal-trigger {
+        display:block;
+        color:#000;
+        font-size:14px;
+        margin-bottom:24px;
+        text-decoration:underline;
+    }
+
+    .action-continue .action.continue, .action.multicheckout, .cart-container .form-cart .actions.main .clear {
+        font-family: "Gotham Bold";
+        font-weight:normal;
+        letter-spacing: 0px;
+        color:#000;
+        font-size:14px;
+        text-transform: uppercase;
+        text-decoration: underline;       
+    }
+
+    .cart.table-wrapper .actions-toolbar > .action-edit {
+        display:none;
+    }
+
+    .cart-container {
+        @media screen and (max-width:768px) {
+            display: flex;
+            flex-direction: column;
+        }
+        .cart-gift-item {
+            display:none;
+        }
+    }
+
+    .form-cart .cart.main.actions .action.update {
+        background-color:#fff;
+        border-radius:0;
+        text-transform:uppercase;
+        font-family: "Gotham Bold";
+        border:1px solid #000;
+    }
+
+    .cart-discount {
+        width:100%;
+        border-top:1px solid #BCBCBC;
+        padding:25px 0;
+
+        @media screen and (max-width:768px) {
+            border:none;
+        }
+
+        .block.discount {
+            width:100%;
+
+            .title, .title strong {
+                color:#000;
+                font-size:16px;
+            }
+
+            .content .discount-coupon-form .fieldset.coupon  {
+
+                .field .control .input-text {
+                    width:75%;
+                }
+
+                .actions-toolbar .primary .action.apply.primary {
+                    color:#fff;
+                    box-shadow:none;
+                }
+                
+            }
+        }
+
+        .action-continue.we-accept {
+            color:#000;
+            font-size:16px;
+
+            a {
+                color:inherit;
+            }
+        }
+    }
+
+    .cart-discount .actions-toolbar .action.primary:not(:focus) {
+        box-shadow: none;
+        background-color:#fff;
+        color:#000;
+        border-color:#000;
+    }
+
+}
+
