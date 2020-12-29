@@ -5,12 +5,6 @@
     use Symfony\Component\Console\Input\InputInterface;
     use Symfony\Component\Console\Input\InputOption;
     use Symfony\Component\Console\Output\OutputInterface;
-    
-    use Magento\Framework\Stdlib\DateTime\DateTime;
-    use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
-    
-    use ForeverCompanies\Salesforce\Model\Sync\Account;
-    use ForeverCompanies\Salesforce\Model\Sync\Order;
 
     /**
      * Class SomeCommand
@@ -22,48 +16,18 @@
          */
         protected $name = 'forevercompanies:salesforce:sync';
 
-        protected $orderFactory;
-        protected $customerFactory;
-        protected $customerRepositoryInterface;
-        protected $customer;
-        protected $date;
-        
-        protected $fcSyncAccount;
-        protected $fcSyncOrder;
-        
-        const PAGE_SIZE = 1000;
-        
-        const SF_CUSTOMER_ID_FIELD = 'sf_acctid';
-        const SF_ORDER_ID_FIELD = 'sf_orderid';
-        const SF_LAST_SYNC_FIELD = 'lastsync_at';
-
         /**
-         * AbstractCustomer constructor.
-         * @param Account $account
-         * @param CustomerRepositoryInterface $customerRepositoryInterface
+         * SalesforceSync constructor.
+         * @param \ForeverCompanies\Salesforce\Helper\Sync$syncHelper
+         * @param \Magento\Framework\App\State$state
          */
 
         public function __construct(
-            \Magento\Framework\App\State $state,
-            \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderFactory,
-            \Magento\Sales\Api\OrderRepositoryInterface $orderRepositoryInterface,
-            \Magento\Customer\Model\CustomerFactory $customerFactory,
-            \Magento\Customer\Model\ResourceModel\CustomerFactory $customerResourceFactory,
-            DateTime $date,
-            TimezoneInterface $timezone,
-            Order $fcSyncOrder,
-            Account $fcSyncAccount
+            \ForeverCompanies\Salesforce\Helper\Sync $syncHelper,
+            \Magento\Framework\App\State $state
         ) {
+            $this->syncHelper = $syncHelper;
             $state->setAreaCode('adminhtml'); // or 'frontend', depending on your needs
-            $this->orderFactory = $orderFactory;
-            $this->orderRepositoryInterface = $orderRepositoryInterface;
-            $this->customerFactory = $customerFactory;
-            $this->customerResourceFactory = $customerResourceFactory;
-            $this->date = $date;
-            $this->timezone = $timezone;
-            
-            $this->fcSyncAccount = $fcSyncAccount;
-            $this->fcSyncOrder = $fcSyncOrder;
             
             parent::__construct($this->name);
         }
@@ -88,251 +52,6 @@
          */
         protected function execute(InputInterface $input, OutputInterface $output)
         {
-            echo "Sync started\n";
-            
-            // get recently modified customers
-            $customers = $this->getCustomersCollection();
-            
-            echo $customers->getSize() . " customers found\n";
-            
-            $this->processCustomers($customers);
-            
-            // get recently modified orders
-            $orders = $this->getOrderCollection();
-            
-            //print_r(get_class_methods($orders->getSelect()->where("")));
-            
-            echo $orders->getSize() . " orders found\n";
-            
-            $this->processOrders($orders);
-            
-            echo "Sync completed\n";
-        }
-        
-        protected function getOrderCollection()
-        {
-            /*
-            $collection = $this->orderFactory->create()
-                ->addAttributeToSelect('*')
-                ->addFieldToFilter("updated_at", array('gt' => $this->getFilterDate()))
-                ->addFieldToFilter("created_at", array('gt' => $this->getFilterDate()))
-                ->setPageSize(self::PAGE_SIZE);
-            */
-            
-            $collection = $this->orderFactory->create()
-                ->addFieldToFilter(
-                    array("main_table.updated_at","main_table.created_at"),
-                    array(
-                        array('gt' => $this->getFilterDate()),
-                        array('gt' => $this->getFilterDate())
-                    )
-                );
-            
-            $collection->getSelect()->joinLeft(
-                array('sosh' => 'sales_order_status_history'),
-                "main_table.entity_id = sosh.parent_id AND sosh.created_at > '{$this->getFilterDate()}'"
-            );
-            
-            $collection->getSelect()->joinLeft(
-                array('sst' => 'sales_shipment_track'),
-                "main_table.entity_id = sst.order_id AND sst.updated_at > '{$this->getFilterDate()}'"
-            );
-            
-            $collection->getSelect()->joinLeft(
-                array('soa' => 'sales_order_address'),
-                "main_table.entity_id = soa.parent_id AND soa.address_updated_at > '{$this->getFilterDate()}'"
-            );
-            
-            $collection->getSelect()
-                ->reset(\Zend_Db_Select::COLUMNS)
-                ->columns([
-                    'entity_id',
-                    'increment_id',
-                    'customer_id',
-                    'lastsync_at',
-                    'sf_orderid',
-                    'created_at',
-                    'updated_at',
-                    'MAX(sosh.created_at) AS sosh_created_at',
-                    'MAX(soa.address_updated_at) AS soa_updated_at',
-                    'MAX(sst.updated_at) AS sst_updated_at'
-                ]);
-            
-            $collection->getSelect()->group('main_table.entity_id')->order('main_table.updated_at DESC');
-            $collection->setPageSize(self::PAGE_SIZE);
-            
-            return $collection;
-        }
-        
-        protected function processOrders($orders)
-        {
-            // handle looping through large collections
-            for($i=1; $i<= $this->getPageCount($orders); $i++)
-            {
-                $orders->setCurPage($i);
-                
-                foreach($orders as $order)
-                {
-                    $lastSync = strtotime($order->getData(self::SF_LAST_SYNC_FIELD));
-                    $updatedAt = strtotime($order->getData('updated_at'));
-                    
-                    // joined columns for sales order status history
-                    $soshUpdatedAt = strtotime($order->getData('sosh_created_at'));
-                    // sales order address
-                    $soaUpdatedAt = strtotime($order->getData('soa_updated_at'));
-                    // sales shipmnet tracking
-                    $sstUpdatedAt = strtotime($order->getData('sst_updated_at'));
-                    
-                    $sfAccountId = null;
-                    
-                    if(
-                        $lastSync < $updatedAt ||
-                        $lastSync < $soshUpdatedAt ||
-                        $lastSync < $soaUpdatedAt ||
-                        $lastSync < $sstUpdatedAt
-                    ) {
-                        // load order instance for updating
-                        $orderInstance = $this->orderRepositoryInterface->get($order->getId());
-                        
-                        $sfOrderId = $orderInstance->getData(self::SF_ORDER_ID_FIELD);
-                        
-                        if(!$lastSync || !$sfOrderId) {
-                            
-                            // pull the order id from sales force (if it exists)
-                            $sfOrderId = $this->fcSyncOrder->searchRecord('Order', 'Web_Order_Id__c', $order->getId());
-                            
-                            if($order->getCustomerId()) {
-                                // pull the customer id from sales force (if it exists)
-                                $sfAccountId = $this->fcSyncAccount->searchRecord('Account', 'Web_Account_Id__c', $order->getCustomerId());
-                                
-                                // when customer isn't in SF create an account
-                                if(!$sfAccountId) {
-                                    $customerInstance = $this->customerFactory->create()->load($orderInstance->getCustomerId());
-                                    
-                                    // no salesforce account id on record create the account before adding the order
-                                    if(!$sfAccountId) {
-                                        echo "Sync Account: " . $customerInstance->getEmail() . "\n";
-                                        
-                                        $sfAccountId = $this->fcSyncAccount->sync($customerInstance->getId());
-                                        
-                                        $this->setCustomerAttributes($orderInstance->getCustomerId(), $sfAccountId);
-                                    }
-                                }
-                                
-                            } else {
-                                // lookup by email for guest orders
-                                $sfAccountId = $this->fcSyncAccount->searchRecord('Account', 'PersonEmail', $order->getCustomerEmail());
-                            }
-                            
-                            // sync new order for customer with account and guests
-                            $newSfOrderId = $this->fcSyncOrder->sync($order->getIncrementId(), $sfOrderId, $sfAccountId);
-                            
-                            // new accounts return SF account id
-                            if($newSfOrderId) {
-                                $orderInstance->setData(self::SF_ORDER_ID_FIELD, $newSfOrderId);
-                            } elseif($sfOrderId) {
-                                $orderInstance->setData(self::SF_ORDER_ID_FIELD, $sfOrderId);
-                            } else {
-                                echo "Error unable to find or create order.";
-                            }
-                            
-                        } else {
-                            // process order updates for existing orders that have all SF ids
-                            $this->fcSyncOrder->sync($order->getIncrementId(), $sfOrderId, $sfAccountId);
-                        }
-                        
-                        // always update the last sync time
-                        $orderInstance->setData('lastsync_at', $this->date->gmtDate());
-                        
-                        $this->orderRepositoryInterface->save($orderInstance);
-                        
-                        echo "Sync Order Items\n";
-                        
-                        // every time an order is processed the order items are replaced currently
-                        $this->fcSyncOrder->syncLineItems($order->getId(), $this->date->gmtDate());
-                    }
-                }
-            }
-        }
-
-        protected function getCustomersCollection()
-        {
-            $collection = $this->customerFactory->create()->getCollection()
-                ->addAttributeToSelect("*")
-                ->addFieldToFilter("updated_at", array('gt' => $this->getFilterDate()))
-                ->addFieldToFilter("created_at", array('gt' => $this->getFilterDate()))
-                ->setPageSize(self::PAGE_SIZE)
-                ->load();
-            
-            return $collection;
-        }
-        
-        protected function processCustomers($customers)
-        {
-            // handle looping through large collections
-            for($i=1; $i<= $this->getPageCount($customers); $i++)
-            {
-                $customers->setCurPage($i);
-                
-                foreach($customers as $customer)
-                {
-                    $lastSync = strtotime($customer->getData(self::SF_LAST_SYNC_FIELD));
-                    $updatedAt = strtotime($customer->getData('updated_at'));
-                    $customerId = $customer->getId();
-                    
-                    if($updatedAt > $lastSync) {
-                        
-                        echo "Sync " . $customer->getEmail() . "\n";
-                        
-                        // pull the account if it exists in SF
-                        $sfAccountId = $this->fcSyncAccount->searchRecord('Account', 'Web_Account_Id__c', $customerId);
-
-                        $sfNewAccountId = $this->fcSyncAccount->sync($customerId, $sfAccountId);
-                        
-                        if($sfNewAccountId) {
-                            $this->setCustomerAttributes($customerId, $sfNewAccountId);
-                        } elseif($sfAccountId) {
-                            $this->setCustomerAttributes($customerId, $sfAccountId);
-                        } else {
-                            echo "Error: unable to located account in Salesforce via API.";
-                        }
-                        
-                        echo "Snyc complete\n";
-                    }
-                }
-            }
-        }
-        
-        protected function setCustomerAttributes($customerId, $sfAcctId = false) {
-            
-            $customer = $this->customerFactory->create();
-
-            $customerData = $customer->getDataModel();
-            $customerData->setId($customerId);
-
-            if($sfAcctId) {
-                $customerData->setCustomAttribute(self::SF_CUSTOMER_ID_FIELD, $sfAcctId);
-            }
-            
-            $customerData->setCustomAttribute(self::SF_LAST_SYNC_FIELD, $this->date->gmtDate());
-
-            $customer->updateData($customerData);
-
-            $customerResource = $this->customerResourceFactory->create();
-
-            if ($sfAcctId) {
-                $customerResource->saveAttribute($customer, self::SF_CUSTOMER_ID_FIELD);
-            }
-            
-            $customerResource->saveAttribute($customer, self::SF_LAST_SYNC_FIELD);
-        }
-        
-        protected function getPageCount($collection) {
-            return ceil($collection->getSize() / self::PAGE_SIZE);
-        }
-        
-        protected function getFilterDate()
-        {
-            return date("Y-m-d", strtotime("-2 days")) . ' 00:00:00';
+            $this->syncHelper->run();
         }
     }
