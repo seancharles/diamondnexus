@@ -1,75 +1,3 @@
-/*For mixin /scss variable page*/
-/*Media query sizes - bottom of that size*/
-$break_380: 380px; /*m*/
-$break_640: 640px; /*sm*/
-$break_768: 768px; /*t*/
-$break_1025: 1025px; /*md*/
-$break_1260: 1260px; /*pg*/
-$break_1440: 1440px; /*lg*/
-$break_1920: 1920px; /*xl*/
-
-@mixin break_380 {
-    @media (min-width: #{$break_380}) {
-        @content;
-    }
-}
-@mixin break_640 {
-    @media (min-width: #{$break_640}) {
-        @content;
-    }
-}
-@mixin break_768 {
-    @media (min-width: #{$break_768}) {
-        @content;
-    }
-}
-@mixin break_1025 {
-    @media (min-width: #{$break_1025}) {
-        @content;
-    }
-}
-@mixin break_1260 {
-    @media (min-width: #{$break_1260}) {
-        @content;
-    }
-}
-@mixin break_1440 {
-    @media (min-width: #{$break_1440}) {
-        @content;
-    }
-}
-
-@mixin break_1920 {
-    @media (min-width: #{$break_1920}) {
-        @content;
-    }
-}
-
-/*General styles*/
-
-//   @function columns($i) {
-//     @return calc(#{$i} * var(--column-unit));
-//   }
-
-//   @function gutters($i) {
-//     @return calc(#{$i} * var(--gutter-unit));
-//   }
-
-//   @function column-spans($i) {
-//     @return calc(#{$i} * var(--column-and-gutter-unit) - var(--gutter-unit));
-//   }
-
-//   @function gutter-spans($i) {
-//     @return calc(#{$i} * var(--column-and-gutter-unit) - var(--column-unit));
-//   }
-
-//   @function mix-units($columns, $gutters: $columns) {
-//     @return calc((#{$columns} * var(--column-unit)) + (#{$gutters} * var(--gutter-unit)));
-//   }
-/*
-check this out for more info on the columns set up
-https://www.smashingmagazine.com/2019/03/robust-layouts-container-units-css/
-*/
 :root {
     // Grid proportions
     --grid-width: 346;
@@ -289,7 +217,7 @@ p {
         }
     }
 }
-.h2, , .page-title h1 {
+.h2,  .page-title h1 {
            font-family: var(--serif);
            font-weight: var(--weight-light);
            font-size: 32px;
@@ -514,10 +442,6 @@ p {
         border-color: #c0a374 !important;
     }
 
-    .actions-toolbar {
-        //display: none;
-    }
-
     .action.multicheckout {
         display: none;
     }
@@ -718,7 +642,7 @@ p {
         font-size: 20px;
     }
     .opc-progress-bar-item._active > span::before{
-        backround: #D19F4E !important;
+        background: #D19F4E !important;
         border-color: #D19F4E !important;
     }
     .opc-progress-bar-item._active > span::after{
@@ -761,12 +685,7 @@ p {
     #giftcardaccount-placer {
         display: none;
     }
-    .opc-block-shipping-information .shipping-information-title .action-edit::before{
 
-    }
-    .opc-block-shipping-information .shipping-information-title .action-edit > span {
-
-    }
     .opc-block-shipping-information .shipping-information-title .action-edit
     {
         top: 0px;
@@ -913,7 +832,7 @@ p {
         font-size: 20px;
     }
     .opc-progress-bar-item._active > span::before{
-        backround: #D19F4E !important;
+        background: #D19F4E !important;
         border-color: #D19F4E !important;
     }
     .opc-progress-bar-item._active > span::after{
@@ -945,12 +864,7 @@ p {
     #giftcardaccount-placer {
         display: none;
     }
-    .opc-block-shipping-information .shipping-information-title .action-edit::before{
 
-    }
-    .opc-block-shipping-information .shipping-information-title .action-edit > span {
-
-    }
     .opc-block-shipping-information .shipping-information-title .action-edit
     {
         top: 0px;
@@ -1052,7 +966,7 @@ p {
     .__affirm-logo {
         /* use !important to prevent issues with browser extensions that change fonts */
         font-family: 'affirm' !important;
-        speak: none;
+        //speak: none;
         font-style: normal;
         font-weight: normal;
         font-variant: normal;
@@ -1295,13 +1209,7 @@ p {
         font-size: 11px;
     }
 
-    .login-container .block-new-customer .actions-toolbar .primary span {
 
-    }
-
-    .box-address-billing .box-content{
-
-    }
 
     .login-container .fieldset::after {
         //margin: 10px 0 0;
@@ -1547,7 +1455,7 @@ p {
         font-size: 20px;
     }
     .opc-progress-bar-item._active > span::before{
-        backround: #D19F4E !important;
+        background: #D19F4E !important;
         border-color: #D19F4E !important;
     }
     .opc-progress-bar-item._active > span::after{
@@ -1586,12 +1494,7 @@ p {
     #giftcardaccount-placer {
         display: none;
     }
-    .opc-block-shipping-information .shipping-information-title .action-edit::before{
 
-    }
-    .opc-block-shipping-information .shipping-information-title .action-edit > span {
-
-    }
     .opc-block-shipping-information .shipping-information-title .action-edit
     {
         top: 0px;
@@ -1716,7 +1619,7 @@ p {
     .__affirm-logo {
         /* use !important to prevent issues with browser extensions that change fonts */
         font-family: 'affirm' !important;
-        speak: none;
+       // speak: none;
         font-style: normal;
         font-weight: normal;
         font-variant: normal;
@@ -1947,82 +1850,7 @@ li {
     margin-bottom: 5px;
 }
 
-.hideat {
-    display: inline;
-    &--380 {
-        display: inline;
-        @include break_380 {
-            display: none;
-        }
-    }
-    &--768 {
-        display: inline;
-        @include break_768 {
-            display: none;
-        }
-    }
-    &--1025 {
-        display: inline;
-        @include break_1025 {
-            display: none;
-        }
-    }
-    &--1280 {
-        display: inline;
-        @include break_1260 {
-            display: none;
-        }
-    }
-    &--1440 {
-        display: inline;
-        @include break_1440 {
-            display: none;
-        }
-    }
-    &--1920 {
-        display: inline;
-        @include break_1920 {
-            display: none;
-        }
-    }
+
 }
 
-.showat {
-    display: none;
-    &--380 {
-        display: none;
-        @include break_380 {
-            display: inline;
-        }
-    }
-    &--768 {
-        display: none;
-        @include break_768 {
-            display: inline;
-        }
-    }
-    &--1025 {
-        display: none;
-        @include break_1025 {
-            display: inline;
-        }
-    }
-    &--1280 {
-        display: none;
-        @include break_1260 {
-            display: inline;
-        }
-    }
-    &--1440 {
-        display: none;
-        @include break_1440 {
-            display: inline;
-        }
-    }
-    &--1920 {
-        display: none;
-        @include break_1920 {
-            display: inline;
-        }
-    }
-}
+
