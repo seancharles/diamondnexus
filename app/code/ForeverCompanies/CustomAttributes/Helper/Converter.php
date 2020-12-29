@@ -113,8 +113,7 @@ class Converter extends AbstractHelper
         MatchingBand $matchingBand,
         ProductRepository $productRepository,
         ProductType $productType
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->productCustomOptionInterfaceFactory = $productCustomOptionInterfaceFactory;
         $this->optionInterfaceFactory = $optionInterfaceFactory;
@@ -244,7 +243,7 @@ class Converter extends AbstractHelper
         $matchingBands = $this->matchingBand->getMatchingBands((int)$product->getId());
         if (count($matchingBands) > 0) {
             $optionsData['matching_bands'] = $this->prepareMatchingBandLinks($matchingBands);
-            if (count($optionsData['matching_bands'] ) > 0) {
+            if (count($optionsData['matching_bands']) > 0) {
                 $bOptions[] = $this->prepareBundleOpt('Matching Bands', '0', $optionsData['matching_bands']);
             }
         }

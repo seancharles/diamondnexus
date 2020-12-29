@@ -5,7 +5,6 @@ namespace ForeverCompanies\CustomAttributes\Model\Bundle\Product;
 use Magento\Bundle\Api\Data\OptionInterface;
 use Magento\Bundle\Model\Option;
 use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\Product;
 
 class OptionList extends \Magento\Bundle\Model\Product\OptionList
 {

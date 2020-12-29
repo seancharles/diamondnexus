@@ -301,6 +301,11 @@ class Mapping extends AbstractHelper
         return $countOfProducts;
     }
 
+    /**
+     * @param Product $product
+     * @param array $productOptions
+     * @return array[]
+     */
     protected function prepareProductToSimple(Product $product, array $productOptions)
     {
         $product->setTypeId(Type::TYPE_SIMPLE);
