@@ -365,13 +365,17 @@ class Mapping extends AbstractHelper
                     }
                 } else {
                     $optionLabel = $productOption->getLabel();
-                    if ($optionLabel == 'Total Carat Weight' || $optionLabel == 'Center Stone Size') {
+                    if ($optionLabel == 'Total Carat Weight') {
                         $values = $productOption->getValues();
                         $source = $productAttribute->getSource();
                         $tcw = $this->converterHelper->createTotalCaratWeight($values, $source, $sku, $optionLabel);
-                        $options = $product->getOptions();
-                        $options[] = $tcw;
-                        $product->setOptions($options);
+                        $oldOptions = $product->getOptions();
+                        $oldOptions[] = $tcw;
+                        $product->setOptions($oldOptions);
+                    }
+                    if ($optionLabel == 'Center Stone Size') {
+                        $bundleOptions[] = $this->getOption($productOption);
+                        $options[$productOption['attribute_id']] = $this->prepareOptions($productOption);
                     }
                     /** @var ProductExtension $extensionAttributes */
                     $extensionAttributes = $product->getExtensionAttributes();
