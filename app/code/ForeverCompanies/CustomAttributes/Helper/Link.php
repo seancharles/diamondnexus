@@ -51,7 +51,8 @@ class Link extends AbstractHelper
         ProductRepository $productRepository,
         BundlePriceUse $bundlePriceHelper,
         Logger $logger
-    ) {
+    )
+    {
         parent::__construct($context);
         $this->linkFactory = $linkFactory;
         $this->productRepository = $productRepository;
@@ -108,6 +109,7 @@ class Link extends AbstractHelper
                             $sku = str_replace('USLSCS0001X', 'USLSCS0007X', $sku);
                             break;
                         case 'CR':
+                        case 'CU':
                             $sku = str_replace('USLSSS0001X', 'USLSSS0003X', $sku);
                             $sku = str_replace('USLSCS0001X', 'USLSCS0003X', $sku);
                             break;
@@ -149,7 +151,14 @@ class Link extends AbstractHelper
                     }
                 } catch (\Exception $e) {
                     try {
-                        $product = $this->productRepository->get($sku . 'XXXX');
+                        if ($stoneForm == 'CU' || $stoneForm == "CR") {
+                            $sku = str_replace('CU', 'CR', $sku);
+                            $sku = str_replace('USLSSS0003X', 'USLSSS0006X', $sku);
+                            $sku = str_replace('USLSCS0003X', 'USLSCS0006X', $sku);
+                        } else {
+                            $sku = $sku . 'XXXX';
+                        }
+                        $product = $this->productRepository->get($sku);
                         if ($product->getId() !== null) {
                             $this->bundlePriceHelper->setBundlePrice($product, $itemPrice, $originalSku);
                             return $this->prepareLink($product);
