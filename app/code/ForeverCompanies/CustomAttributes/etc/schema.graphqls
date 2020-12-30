@@ -28,3 +28,9 @@ interface ProductInterface {
     shape: [String]
     @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
 }
+
+type BundleProduct {
+    bundle_base_price: Float
+    @doc(description: "The base price of a bundle product, used with ForeverCompanies Dynamic Bundle Products.")
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\BundleBasePrice")
+}

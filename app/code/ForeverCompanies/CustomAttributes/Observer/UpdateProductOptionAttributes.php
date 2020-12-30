@@ -2,7 +2,9 @@
 
 namespace ForeverCompanies\CustomAttributes\Observer;
 
+use Magento\Bundle\Model\Option;
 use Magento\Bundle\Model\Product\Type;
+use Magento\Catalog\Api\Data\ProductExtensionInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Eav\Model\Config;
@@ -100,11 +102,31 @@ class UpdateProductOptionAttributes implements ObserverInterface
                 return !empty($element);
             });
             $source = $this->eavConfig->getAttribute(Product::ENTITY, 'matching_band')->getSource();
-            if (count($childrenIds) > 0) {
+            /** @var ProductExtensionInterface $extension */
+            $extension = $product->getExtensionAttributes();
+            $flag = $this->checkMatchingBands($extension->getBundleProductOptions());
+            if (count($childrenIds) > 0 && $flag) {
                 $product->setData('matching_band', $source->getOptionId('Yes'));
             } else {
                 $product->setData('matching_band', $source->getOptionId('None'));
             }
         }
+    }
+
+    /**
+     * @param array|null $options
+     * @return bool
+     */
+    protected function checkMatchingBands($options) {
+        if ($options == null) {
+            return false;
+        }
+        /** @var Option $option */
+        foreach ($options as $option) {
+            if ($option->getTitle() == 'Matching Band') {
+                return true;
+            }
+        }
+        return false;
     }
 }
