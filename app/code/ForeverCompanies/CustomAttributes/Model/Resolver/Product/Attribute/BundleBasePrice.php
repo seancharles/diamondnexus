@@ -24,7 +24,8 @@ class BundleBasePrice implements ResolverInterface
      * BundleBasePrice constructor.
      * @param \Magento\Catalog\Model\ProductFactory $productFactory
      */
-    public function __construct(\Magento\Catalog\Model\ProductFactory $productFactory) {
+    public function __construct(\Magento\Catalog\Model\ProductFactory $productFactory)
+    {
         $this->productFactory = $productFactory;
     }
 

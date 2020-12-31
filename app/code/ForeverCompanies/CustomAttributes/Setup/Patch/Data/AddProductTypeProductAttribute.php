@@ -47,7 +47,6 @@ class AddProductTypeProductAttribute implements DataPatchInterface, PatchReverta
     public function apply()
     {
         $this->moduleDataSetup->getConnection()->startSetup();
-        /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
         $attribute = $eavSetup->getAttribute(\Magento\Catalog\Model\Product::ENTITY, 'product_type');
         if ($attribute) {
@@ -115,7 +114,6 @@ class AddProductTypeProductAttribute implements DataPatchInterface, PatchReverta
     public function revert()
     {
         $this->moduleDataSetup->getConnection()->startSetup();
-        /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
         $eavSetup->removeAttribute(\Magento\Catalog\Model\Product::ENTITY, 'product_type');
 
