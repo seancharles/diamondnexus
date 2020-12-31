@@ -35,39 +35,32 @@ class OrderIncrementsPatch implements DataPatchInterface
      */
     public function apply(): void
     {
-        /*
-            UPDATE `paulthree_magento`.`sales_sequence_profile` SET `prefix` = '11' WHERE (`profile_id` = '3');
-            UPDATE `paulthree_magento`.`sales_sequence_profile` SET `prefix` = '14' WHERE (`profile_id` = '5');
-            UPDATE `paulthree_magento`.`sales_sequence_profile` SET `prefix` = '17' WHERE (`profile_id` = '6');
-
-            UPDATE `paulthree_magento`.`sales_sequence_profile` SET `prefix` = '20' WHERE (`profile_id` = '13');
-            UPDATE `paulthree_magento`.`sales_sequence_profile` SET `prefix` = '24' WHERE (`profile_id` = '14');
-            UPDATE `paulthree_magento`.`sales_sequence_profile` SET `prefix` = '21' WHERE (`profile_id` = '15');
-            UPDATE `paulthree_magento`.`sales_sequence_profile` SET `prefix` = '27' WHERE (`profile_id` = '16');
-
-            UPDATE `paulthree_magento`.`sales_sequence_profile` SET `prefix` = '30' WHERE (`profile_id` = '9');
-            UPDATE `paulthree_magento`.`sales_sequence_profile` SET `prefix` = '31' WHERE (`profile_id` = '10');
-            UPDATE `paulthree_magento`.`sales_sequence_profile` SET `prefix` = '34' WHERE (`profile_id` = '11');
-        */
-        
-        // pull order increment ids, we are leaving other entities
-       $eavEntityStoreData = $this->getTableData('eav_entity_store','entity_type_id=5');
+        $this->updateEntities(5,'order');
+        $this->updateEntities(6,'invoice');
+        $this->updateEntities(7,'creditmemo');
+        $this->updateEntities(8,'shipment');
+    }
+    
+    protected function updateEntities($typeId = 0, $typeName = null)
+    {
+       $eavEntityStoreData = $this->getTableData('eav_entity_store','entity_type_id='.$typeId);
        
-       // maps values from the m1 table eav_entity_store and sets them to the new m2 eqivalent sales_sequence_profile
        foreach($eavEntityStoreData as $store)
         {
             $storeId = $store['store_id'];
-            $prefix = $store['store_id'];
+            $prefix = $store['increment_prefix'];
            
-            $sequenceMetaData = $this->getTableData('sales_sequence_meta','entity_type="order" AND store_id='.$storeId);
+            $sequenceMetaData = $this->getTableData('sales_sequence_meta','entity_type="'.$typeName.'" AND store_id='.$storeId);
            
             if(isset($sequenceMetaData[0]) == true) {
                 
                 $metaId = $sequenceMetaData[0]['meta_id'];
            
                 $updateQuery = "UPDATE ".$this->connection->getTableName("sales_sequence_profile").
-                    " SET prefix = ".$prefix.
+                    " SET prefix = '".$prefix."'".
                     " WHERE meta_id = '".$metaId."';";
+                    
+                $this->connection->query($updateQuery);
             }
         }
     }
