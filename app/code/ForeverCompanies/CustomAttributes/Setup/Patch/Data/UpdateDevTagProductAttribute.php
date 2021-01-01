@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Setup\Patch\Data;
 
+use Magento\Catalog\Model\Product;
 use Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface;
 use Magento\Eav\Setup\EavSetup;
 use Magento\Eav\Setup\EavSetupFactory;
@@ -47,18 +48,17 @@ class UpdateDevTagProductAttribute implements DataPatchInterface, PatchRevertabl
     public function apply()
     {
         $this->moduleDataSetup->getConnection()->startSetup();
-        /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $attribute = $eavSetup->getAttribute(\Magento\Catalog\Model\Product::ENTITY, 'dev_tag');
+        $attribute = $eavSetup->getAttribute(Product::ENTITY, 'dev_tag');
         if ($attribute) {
             $eavSetup->removeAttribute(
-                \Magento\Catalog\Model\Product::ENTITY,
+                Product::ENTITY,
                 'dev_tag'
             );
         }
         try {
             $eavSetup->addAttribute(
-                \Magento\Catalog\Model\Product::ENTITY,
+                Product::ENTITY,
                 'dev_tag',
                 [
                     'type' => 'varchar',
@@ -99,7 +99,7 @@ class UpdateDevTagProductAttribute implements DataPatchInterface, PatchRevertabl
         $this->moduleDataSetup->getConnection()->startSetup();
         /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $eavSetup->removeAttribute(\Magento\Catalog\Model\Product::ENTITY, 'dev_tag');
+        $eavSetup->removeAttribute(Product::ENTITY, 'dev_tag');
 
         $this->moduleDataSetup->getConnection()->endSetup();
     }

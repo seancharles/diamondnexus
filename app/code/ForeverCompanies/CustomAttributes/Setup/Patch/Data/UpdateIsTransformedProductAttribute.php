@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Setup\Patch\Data;
 
+use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Type;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface;
@@ -49,18 +50,17 @@ class UpdateIsTransformedProductAttribute implements DataPatchInterface, PatchRe
     public function apply()
     {
         $this->moduleDataSetup->getConnection()->startSetup();
-        /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $attribute = $eavSetup->getAttribute(\Magento\Catalog\Model\Product::ENTITY, 'is_transformed');
+        $attribute = $eavSetup->getAttribute(Product::ENTITY, 'is_transformed');
         if ($attribute) {
             $eavSetup->removeAttribute(
-                \Magento\Catalog\Model\Product::ENTITY,
+                Product::ENTITY,
                 'is_transformed'
             );
         }
         try {
             $eavSetup->addAttribute(
-                \Magento\Catalog\Model\Product::ENTITY,
+                Product::ENTITY,
                 'is_transformed',
                 [
                     'type' => 'int',
@@ -101,7 +101,7 @@ class UpdateIsTransformedProductAttribute implements DataPatchInterface, PatchRe
         $this->moduleDataSetup->getConnection()->startSetup();
         /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $eavSetup->removeAttribute(\Magento\Catalog\Model\Product::ENTITY, 'is_transformed');
+        $eavSetup->removeAttribute(Product::ENTITY, 'is_transformed');
 
         $this->moduleDataSetup->getConnection()->endSetup();
     }
