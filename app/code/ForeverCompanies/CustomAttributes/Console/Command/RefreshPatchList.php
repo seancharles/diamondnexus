@@ -58,7 +58,11 @@ class RefreshPatchList extends Command
         InputInterface $input,
         OutputInterface $output
     ) {
-        //$this->state->setAreaCode(Area::AREA_GLOBAL);
+        try {
+            $this->state->getAreaCode();
+        } catch (LocalizedException $e) {
+            $this->state->setAreaCode(Area::AREA_GLOBAL);
+        }
         $output->writeln("Delete patch list of custom attributes...");
         $connection = $this->resource->getConnection();
         $select = $connection->select()

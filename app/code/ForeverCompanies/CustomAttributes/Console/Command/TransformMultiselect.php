@@ -21,6 +21,7 @@ use ForeverCompanies\CustomAttributes\Model\Entity\Attribute\Source\Shape;
 use Magento\Catalog\Model\Product;
 use Magento\Eav\Model\Entity\Attribute\Backend\ArrayBackend;
 use Magento\Eav\Setup\EavSetupFactory;
+use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
@@ -87,7 +88,11 @@ class TransformMultiselect extends AbstractCommand
         InputInterface $input,
         OutputInterface $output
     ) {
-        $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_GLOBAL);
+        try {
+            $this->state->getAreaCode();
+        } catch (LocalizedException $e) {
+            $this->state->setAreaCode(Area::AREA_GLOBAL);
+        }
         $output->writeln("Prepare attributes for transformation to multiselectable fields...");
         $this->moduleDataSetup->getConnection()->startSetup();
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);

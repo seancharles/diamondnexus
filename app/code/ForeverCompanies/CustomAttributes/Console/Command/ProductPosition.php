@@ -56,7 +56,11 @@ class ProductPosition extends Command
         InputInterface $input,
         OutputInterface $output
     ) {
-        $this->state->setAreaCode(Area::AREA_GLOBAL);
+        try {
+            $this->state->getAreaCode();
+        } catch (LocalizedException $e) {
+            $this->state->setAreaCode(Area::AREA_GLOBAL);
+        }
         $output->writeln("Get categories for change product's position...");
         $categories = $this->getCategories();
         $output->writeln('Categories for migration: ' . count($categories));

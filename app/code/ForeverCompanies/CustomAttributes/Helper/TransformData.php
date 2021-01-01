@@ -34,6 +34,7 @@ use Magento\CatalogInventory\Model\Stock\Item;
 use Magento\CatalogInventory\Model\StockRegistry;
 use Magento\CatalogStaging\Model\ResourceModel\ProductSequence;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
+use Magento\Eav\Model\AttributeSetRepository;
 use Magento\Eav\Model\Config;
 use Magento\Framework\Api\Data\ImageContentInterfaceFactory;
 use Magento\Framework\Api\Data\VideoContentInterface;
@@ -97,6 +98,11 @@ class TransformData extends AbstractHelper
      * @var Config
      */
     protected $eav;
+
+    /**
+     * @var AttributeSetRepository
+     */
+    protected $attributeSetRepository;
 
     /**
      * @var ProductRepository
@@ -205,6 +211,7 @@ class TransformData extends AbstractHelper
     /**
      * @param Context $context
      * @param Config $config
+     * @param AttributeSetRepository $attributeSetRepository
      * @param CollectionFactory $collectionFactory
      * @param \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory
      * @param \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory $attributeSetCollectionFactory
@@ -234,6 +241,7 @@ class TransformData extends AbstractHelper
     public function __construct(
         Context $context,
         Config $config,
+        AttributeSetRepository $attributeSetRepository,
         CollectionFactory $collectionFactory,
         \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
         \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory $attributeSetCollectionFactory,
@@ -262,6 +270,7 @@ class TransformData extends AbstractHelper
     ) {
         parent::__construct($context);
         $this->eav = $config;
+        $this->attributeSetRepository = $attributeSetRepository;
         $this->productCollectionFactory = $collectionFactory;
         $this->categoryCollectionFactory = $categoryCollectionFactory;
         $this->category = $category;
@@ -1068,6 +1077,10 @@ class TransformData extends AbstractHelper
     private function editProductsFromConfigurable(Product $product)
     {
         foreach ($this->productFunctionalHelper->getProductForDelete() as $productForDelete) {
+            $attributeSet = $this->attributeSetRepository->get($productForDelete->getAttributeSetId());
+            if ($attributeSet->getAttributeSetName() == 'Migration_Loose Stones') {
+                continue;
+            }
             $movedAsPart = 'Removed as part of: ';
             $devTag = $productForDelete->getData('dev_tag');
             if ($devTag !== null && strpos($devTag, $movedAsPart) !== false) {

@@ -11,6 +11,7 @@ use ForeverCompanies\CustomAttributes\Helper\TransformData;
 use Magento\Catalog\Model\Product;
 use Magento\Eav\Model\Config;
 use Magento\Eav\Setup\EavSetupFactory;
+use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Exception\InputException;
@@ -73,7 +74,11 @@ class TransformValues extends AbstractCommand
         InputInterface $input,
         OutputInterface $output
     ) {
-        $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_GLOBAL);
+        try {
+            $this->state->getAreaCode();
+        } catch (LocalizedException $e) {
+            $this->state->setAreaCode(Area::AREA_GLOBAL);
+        }
         $output->writeln("Prepare values for transformation to multiselectable fields...");
         $this->moduleDataSetup->getConnection()->startSetup();
         $this->moveValues('chain_length', $output);
@@ -92,6 +97,8 @@ class TransformValues extends AbstractCommand
         $output->writeln('Cut Type is updated');
         $this->moveValues('shape', $output);
         $output->writeln('Shape is updated');
+        $this->moveValues('gemstone', $output);
+        $output->writeln('Center Stone Size is updated');
         $this->moduleDataSetup->getConnection()->endSetup();
         $output->writeln('Transformation is complete! Please execute bin/magento cache:clean');
     }
