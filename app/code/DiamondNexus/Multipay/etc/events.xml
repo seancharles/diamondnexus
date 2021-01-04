@@ -7,11 +7,15 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
-    <event name="payment_method_is_active">
-        <observer name="diamondnexus_multipay" instance="DiamondNexus\Multipay\Observer\PreparePaymentMethod"/>
-    </event>
-    <event name="payment_method_assign_data_multipay">
-        <observer name="multipay_payment_gateway_data_assign"
-                  instance="DiamondNexus\Multipay\Observer\DataAssignObserver"/>
-    </event>
+    <!--
+        Removed by Paul since this was causing issues in web checkout and we're not using for web at the moment.
+        
+        <event name="payment_method_is_active">
+            <observer name="diamondnexus_multipay" instance="DiamondNexus\Multipay\Observer\PreparePaymentMethod"/>
+        </event>
+        <event name="payment_method_assign_data_multipay">
+            <observer name="multipay_payment_gateway_data_assign"
+                      instance="DiamondNexus\Multipay\Observer\DataAssignObserver"/>
+        </event>
+    -->
 </config>
