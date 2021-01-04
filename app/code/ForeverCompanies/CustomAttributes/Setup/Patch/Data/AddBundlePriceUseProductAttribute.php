@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Setup\Patch\Data;
 
+use Magento\Catalog\Model\Product;
 use Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface;
 use Magento\Eav\Setup\EavSetup;
 use Magento\Eav\Setup\EavSetupFactory;
@@ -47,18 +48,17 @@ class AddBundlePriceUseProductAttribute implements DataPatchInterface, PatchReve
     public function apply()
     {
         $this->moduleDataSetup->getConnection()->startSetup();
-        /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $attribute = $eavSetup->getAttribute(\Magento\Catalog\Model\Product::ENTITY, 'bundle_price_use');
+        $attribute = $eavSetup->getAttribute(Product::ENTITY, 'bundle_price_use');
         if ($attribute) {
             $eavSetup->removeAttribute(
-                \Magento\Catalog\Model\Product::ENTITY,
+                Product::ENTITY,
                 'bundle_price_use'
             );
         }
         try {
             $eavSetup->addAttribute(
-                \Magento\Catalog\Model\Product::ENTITY,
+                Product::ENTITY,
                 'bundle_price_use',
                 [
                     'type' => 'decimal',
@@ -98,9 +98,8 @@ class AddBundlePriceUseProductAttribute implements DataPatchInterface, PatchReve
     public function revert()
     {
         $this->moduleDataSetup->getConnection()->startSetup();
-        /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $eavSetup->removeAttribute(\Magento\Catalog\Model\Product::ENTITY, 'bundle_price_use');
+        $eavSetup->removeAttribute(Product::ENTITY, 'bundle_price_use');
 
         $this->moduleDataSetup->getConnection()->endSetup();
     }

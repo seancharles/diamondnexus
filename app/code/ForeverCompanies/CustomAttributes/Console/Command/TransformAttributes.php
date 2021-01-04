@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Console\Command;
 
+use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
@@ -31,7 +32,11 @@ class TransformAttributes extends AbstractCommand
         InputInterface $input,
         OutputInterface $output
     ) {
-        $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_GLOBAL);
+        try {
+            $this->state->getAreaCode();
+        } catch (LocalizedException $e) {
+            $this->state->setAreaCode(Area::AREA_GLOBAL);
+        }
         $output->writeln("Get products for transformation...");
         $productCollection = $this->helper->getProductsForTransformCollection();
         $output->writeln('Products for transformation: ' . $productCollection->count());

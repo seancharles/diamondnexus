@@ -176,7 +176,7 @@ class Converter extends AbstractHelper
         }
         if (count($optionsData['options']) > 0) {
             foreach ($optionsData['simple'] as $optionData) {
-                /** @var Option $option */
+                /** @var Option $newOption */
                 $newOption = $this->productCustomOptionInterfaceFactory->create();
                 $values = $optionsData['options'][$optionData['title']];
                 if ($optionData['title'] == 'Chain Length') {

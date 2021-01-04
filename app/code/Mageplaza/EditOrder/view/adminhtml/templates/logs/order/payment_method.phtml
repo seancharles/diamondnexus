@@ -1,0 +1,67 @@
+<?php
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_EditOrder
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+
+/** @var \Mageplaza\EditOrder\Block\Adminhtml\Logs\Order\PaymentMethod $block */
+$order = $block->getOrder();
+?>
+
+<div class="admin__page-section-item order-payment-method">
+    <div class="admin__page-section-item-title">
+        <span class="title"><?= /* @noEscape */ __('Payment Information') ?></span>
+    </div>
+    <?php if ($block->checkPaymentUpdated()) : ?>
+        <?php $oldPaymentData = $block->getOldPaymentData() ?>
+        <table class="admin__table-secondary old-payment-method">
+            <caption><?= $block->escapeHtml(__('Old Information')) ?></caption>
+            <tr>
+                <td>
+                    <div class="admin__page-section-item-content">
+                        <div class="order-payment-method-title">
+                            <?= $block->getPaymentHtml($block->getOldPayment()) ?>
+                        </div>
+                        <div class="order-payment-currency">
+                            <?= /* @noEscape */ __('The order was placed using %1.', $order->getOrderCurrencyCode()) ?>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <table class="admin__table-secondary update-payment-method">
+            <caption><?= $block->escapeHtml(__('Update Information')) ?></caption>
+            <tr>
+                <td>
+                    <div class="admin__page-section-item-content">
+                        <div class="order-payment-method-title">
+                            <?= $block->getPaymentHtml($order->getPayment()) ?>
+                        </div>
+                        <div class="order-payment-currency">
+                            <?= /* @noEscape */ __('The order was placed using %1.', $order->getOrderCurrencyCode()) ?>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    <?php else : ?>
+        <table class="admin__table-secondary">
+            <caption class="title-no-update"><?= /** @noEscape */ __('There is no update.') ?></caption>
+        </table>
+    <?php endif; ?>
+</div>

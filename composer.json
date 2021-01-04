@@ -16,6 +16,7 @@
         "magento/data-migration-tool": "2.3.4",
         "magento/magento2-functional-testing-framework": "dev-develop",
         "magento/product-enterprise-edition": "2.4.1",
+        "mageplaza/module-core": "^1.4",
         "mageplaza/module-smtp": "^1.4",
         "shipperhq/module-address-autocomplete": "^20.3",
         "shipperhq/module-shipper": "^20.37"

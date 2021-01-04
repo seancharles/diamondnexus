@@ -28,7 +28,11 @@ class UpdateStocks extends AbstractCommand
         InputInterface $input,
         OutputInterface $output
     ) {
-        $this->state->setAreaCode(Area::AREA_GLOBAL);
+        try {
+            $this->state->getAreaCode();
+        } catch (LocalizedException $e) {
+            $this->state->setAreaCode(Area::AREA_GLOBAL);
+        }
         $output->writeln("Get products for change stocks...");
         $productCollection = $this->helper->getProductsForChangeStocks();
         $output->writeln('Products for transformation: ' . $productCollection->count());

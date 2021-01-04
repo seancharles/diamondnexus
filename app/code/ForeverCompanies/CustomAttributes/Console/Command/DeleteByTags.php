@@ -28,7 +28,11 @@ class DeleteByTags extends AbstractCommand
         InputInterface $input,
         OutputInterface $output
     ) {
-        $this->state->setAreaCode(Area::AREA_GLOBAL);
+        try {
+            $this->state->getAreaCode();
+        } catch (LocalizedException $e) {
+            $this->state->setAreaCode(Area::AREA_GLOBAL);
+        }
         $output->writeln("Delete products by tags...");
         $products = $this->helper->getProductsForDeleteCollection();
         $output->writeln("Count of products - " . $products->count());

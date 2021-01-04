@@ -426,6 +426,7 @@ return [
         'Klarna_Onsitemessaging' => 1,
         'Klarna_KpGraphQl' => 1,
         'Mageplaza_Core' => 1,
+        'Mageplaza_EditOrder' => 1,
         'Mageplaza_Smtp' => 1,
         'DiamondNexus_Multipay' => 1,
         'PayPal_BraintreeGraphQl' => 1,
@@ -436,9 +437,9 @@ return [
         'ShipperHQ_Logger' => 1,
         'ForeverCompanies_CustomAttributes' => 1,
         'Temando_ShippingRemover' => 1,
-        'Vertex_Tax' => 1,
-        'Vertex_AddressValidationApi' => 1,
-        'Vertex_AddressValidation' => 1,
+        'Vertex_Tax' => 0,
+        'Vertex_AddressValidationApi' => 0,
+        'Vertex_AddressValidation' => 0,
         'Yotpo_Yotpo' => 1
     ]
 ];

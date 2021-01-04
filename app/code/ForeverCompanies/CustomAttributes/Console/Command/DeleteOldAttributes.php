@@ -99,7 +99,11 @@ class DeleteOldAttributes extends AbstractCommand
         InputInterface $input,
         OutputInterface $output
     ) {
-        $this->state->setAreaCode(Area::AREA_GLOBAL);
+        try {
+            $this->state->getAreaCode();
+        } catch (LocalizedException $e) {
+            $this->state->setAreaCode(Area::AREA_GLOBAL);
+        }
         $output->writeln("Delete old attributes...");
         $eavSetup = $this->categorySetupFactory->create(['setup' => $this->moduleDataSetup]);
         foreach ($this->oldAttributes as $oldAttribute) {

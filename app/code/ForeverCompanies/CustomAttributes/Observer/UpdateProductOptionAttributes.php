@@ -117,7 +117,8 @@ class UpdateProductOptionAttributes implements ObserverInterface
      * @param array|null $options
      * @return bool
      */
-    protected function checkMatchingBands($options) {
+    protected function checkMatchingBands($options)
+    {
         if ($options == null) {
             return false;
         }
