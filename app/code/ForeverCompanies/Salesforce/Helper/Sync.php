@@ -220,8 +220,12 @@
         {
             $collection = $this->customerFactory->create()->getCollection()
                 ->addAttributeToSelect("*")
-                ->addFieldToFilter("updated_at", array('gt' => $this->getFilterDate()))
-                ->addFieldToFilter("created_at", array('gt' => $this->getFilterDate()))
+                ->addFieldToFilter(
+                    array(
+                        array('attribute'=> 'updated_at', 'gt' => $this->getFilterDate()),
+                        array('attribute' => 'created_at', 'gt' => $this->getFilterDate())
+                    )
+                )
                 ->setPageSize(self::PAGE_SIZE)
                 ->load();
             
