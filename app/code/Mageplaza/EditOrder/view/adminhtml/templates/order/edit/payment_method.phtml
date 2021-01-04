@@ -1,0 +1,54 @@
+<?php
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_EditOrder
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+
+/** @var \Mageplaza\EditOrder\Block\Adminhtml\Order\Edit\PaymentMethod $block */
+?>
+<a href="<?= /* @noEscape */ $block->getEditPaymentButtonUrl() ?>" class="mpeditorder-edit-btn"
+   id="mpeditorder-payment-method-btn"><?= /* @noEscape */ __('Edit') ?></a>
+
+<div id="mpeditorder-payment-method"
+     data-mage-init='{"mpEditPaymentMethod": {}}'>
+</div>
+
+<!--script to validate form-->
+<script>
+    require([
+        'jquery',
+        'mage/backend/form',
+        'mage/backend/validation'
+    ], function($){
+        $('#edit_form').form().validation({
+            validationUrl: '',
+            highlight: function(element) {
+                var detailsElement = $(element).closest('details');
+
+                if (detailsElement.length && detailsElement.is('.details')) {
+                    var summaryElement = detailsElement.find('summary');
+                    if (summaryElement.length && summaryElement.attr('aria-expanded') === "false") {
+                        summaryElement.trigger('click');
+                    }
+                }
+                $(element).trigger('highlight.validate');
+            }
+        });
+
+    });
+</script>

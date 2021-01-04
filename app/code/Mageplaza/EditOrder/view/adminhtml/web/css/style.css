@@ -1,0 +1,107 @@
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_EditOrder
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+
+#mpeditorder-shipping-address .field-vat-number .actions, #mpeditorder-billing-address .field-vat-number .actions {
+    display: none;
+}
+
+#mpeditorder-select-customer-grid {
+    width: 95%;
+    margin: 0 auto;
+}
+
+#mpeditorder-items .discount-custom-block {
+    font-size: 1.1rem;
+    margin: 0 0 0.5rem;
+}
+#mpeditorder-items .item-discount {
+    width: 10rem;
+}
+
+#mpeditorder-items input.item-tax {
+    min-width: 0;
+    width: 5.4rem;
+}
+
+#mpeditorder-items .order-items .actions, #mpeditorder-items .mpeditorder-items .actions, #mpeditorder-items .actions {
+    float: right;
+}
+
+.mp_collapsible_content {
+    padding: 0 10px 20px 20px;
+}
+
+.mpeditorder-form .label {
+    vertical-align: top;
+    display: inline-block;
+    width: 20%;
+    text-align: right;
+    margin-right: 15px;
+}
+
+.mpeditorder-form .control {
+    margin-left: 10px;
+    display: inline-block;
+    width: 70%;
+}
+
+#mpeditorder-order-date,  #mpeditorder-order-status {
+    width: 100%;
+}
+
+#mpeditorder-order-info p.note {
+    color: #303030;
+    font-size: 12px;
+    margin: 5px 0;
+}
+
+#mpeditorder-order-info .mpeditorder-messages {
+    margin-bottom: 20px;
+}
+
+.mpeditorder-order-info-popup {
+    margin: 0 auto;
+    max-width: 1000px;
+}
+
+.order-payment-method .admin__page-section-item-title {
+    position: relative;
+    z-index: 9;
+}
+
+#mpeditorder-quick-edit-button {
+    display: block !important;
+}
+
+#edit_form .mpeditorder-edit-btn {
+    display: none;
+}
+
+#mpeditorder-messages {
+    margin: 0 0 2rem;
+}
+
+.actions.btn-add-product {
+    float: right;
+}
+
+.mp_collapsible {
+    border-bottom: none;
+}
