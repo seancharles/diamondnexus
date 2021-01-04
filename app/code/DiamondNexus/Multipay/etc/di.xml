@@ -14,9 +14,6 @@
             </argument>
         </arguments>
     </type>
-    <type name="Magento\Payment\Model\MethodList">
-        <plugin name="methodlist" type="DiamondNexus\Multipay\Plugin\Model\Method\Available" sortOrder="1"/>
-    </type>
     <type name="Magento\Sales\Api\OrderRepositoryInterface">
         <plugin name="save_order_multipay" type="DiamondNexus\Multipay\Plugin\Model\OrderSave"/>
     </type>
