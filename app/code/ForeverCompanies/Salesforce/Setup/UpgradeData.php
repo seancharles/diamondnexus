@@ -59,12 +59,9 @@ class UpgradeData implements UpgradeDataInterface
         
         $salesSetup = $this->salesSetupFactory->create(['setup' => $setup]);
 
-        if (version_compare($context->getVersion(), '1.0.1') < 0) {
+        if (version_compare($context->getVersion(), '1.0.4') < 0) {
             $this->createCustomerAttribute($setup);
-        }
         
-        if (version_compare($context->getVersion(), '1.0.2') < 0) {
-
             $eavSetup->addAttribute(
                 \Magento\Catalog\Model\Product::ENTITY,
                 'sf_orderid',
@@ -117,9 +114,6 @@ class UpgradeData implements UpgradeDataInterface
                     'is_visible_in_grid' => true,
                 ]
             );
-        }
-        
-        if (version_compare($context->getVersion(), '1.0.3') < 0) {
             
             $attributeSetId = $eavSetup->getDefaultAttributeSetId('catalog_product');
             
