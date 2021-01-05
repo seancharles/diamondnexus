@@ -59,7 +59,7 @@ class UpgradeData implements UpgradeDataInterface
         
         $salesSetup = $this->salesSetupFactory->create(['setup' => $setup]);
 
-        if (version_compare($context->getVersion(), '1.0.0') < 0) {
+        if (version_compare($context->getVersion(), '1.0.1') < 0) {
             $this->createCustomerAttribute($setup);
         }
         
