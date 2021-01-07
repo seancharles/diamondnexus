@@ -9,6 +9,7 @@ namespace ForeverCompanies\Salesforce\Controller\Adminhtml\System\Config\Getauth
 
 use ForeverCompanies\Salesforce\Model\Connector;
 use Magento\Backend\App\Action;
+use Magento\Config\Model\Config as ConfigModel;
 
 /**
  * Class ForeverCompanies
@@ -17,6 +18,8 @@ use Magento\Backend\App\Action;
 class GetAuth extends Action
 {
     const ERROR_CONNECT_TO_SALESFORCECRM = 'INVALID_PASSWORD';
+
+    protected $configModel;
 
     /**
      * @var \ForeverCompanies\Salesforce\Model\Connector
@@ -30,10 +33,12 @@ class GetAuth extends Action
      */
     public function __construct(
         Action\Context $context,
-        Connector $connector
+        Connector $connector,
+        ConfigModel $configModel
     ) {
         parent::__construct($context);
         $this->connector   = $connector;
+        $this->configModel = $configModel;
     }
 
     /**
@@ -62,6 +67,9 @@ class GetAuth extends Action
                 echo json_encode($result);
                 return;
             } else {
+                $this->configModel->setDataByPath(Connector::XML_PATH_SALESFORCE_IS_CONNECTED, 1);
+                $this->configModel->save();
+                
                 $result = $response;
                 $result['error'] = 0;
                 echo json_encode($result);
