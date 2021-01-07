@@ -21,6 +21,7 @@ phases:
       - echo "username $GITUSER"
       - export task="$Taskid"
       - export accountId="$account"
+      - export snstopic="$sns"
   build:
     commands:
       - echo Build started on `date`
@@ -46,6 +47,7 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
+      - aws sns publish --topic-arn $snstopic --message "datasync perfomed"
       - pwd
       - ls -al
 artifacts:

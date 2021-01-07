@@ -5,6 +5,7 @@
         <arguments>
             <argument name="columns" xsi:type="array">
                 <item name="loggeduser" xsi:type="string">sales_order.loggeduser</item>
+                <item name="sales_person_id" xsi:type="string">sales_order.sales_person_id</item>
             </argument>
         </arguments>
     </virtualType>
