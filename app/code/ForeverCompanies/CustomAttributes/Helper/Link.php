@@ -405,22 +405,28 @@ class Link extends AbstractHelper
      */
     protected function extensionSearchSku(string $sku, string $stoneForm)
     {
-        foreach ($this->stoneSkuLookups[$stoneForm] as $old => $new) {
-            $sku = str_replace($old, $new, $sku);
-            $id = $this->productResource->getIdBySku($sku);
-            if ($id) {
-                try {
-                    return $this->productRepository->getById($id);
-                } catch (NoSuchEntityException $e) {
-                    return false;
+        // added the "if (array_key_exists())" because of the following error:
+        // In process product ID = 8563
+        //    In ErrorHandler.php line 61:
+        //    Notice: Undefined index: XX
+        if (array_key_exists($stoneForm, $this->stoneSkuLookups)) {
+            foreach ($this->stoneSkuLookups[$stoneForm] as $old => $new) {
+                $sku = str_replace($old, $new, $sku);
+                $id = $this->productResource->getIdBySku($sku);
+                if ($id) {
+                    try {
+                        return $this->productRepository->getById($id);
+                    } catch (NoSuchEntityException $e) {
+                        return false;
+                    }
                 }
-            }
-            $id = $this->productResource->getIdBySku($sku . 'XXXX');
-            if ($id) {
-                try {
-                    return $this->productRepository->getById($id);
-                } catch (NoSuchEntityException $e) {
-                    return false;
+                $id = $this->productResource->getIdBySku($sku . 'XXXX');
+                if ($id) {
+                    try {
+                        return $this->productRepository->getById($id);
+                    } catch (NoSuchEntityException $e) {
+                        return false;
+                    }
                 }
             }
         }
