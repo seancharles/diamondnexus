@@ -60,14 +60,6 @@
 					// get the quote id
 					$quoteId = $quote->getId();
 					
-                    // if the user doesn't have a quote yet create one
-                    if(!$quoteId > 0) {
-                        $quote->setIsActive(1);
-                        $quote->save();
-                        
-                        $quoteId = $quote->getId();
-                    }
-                    
 					if($bundleId > 0) {
 						$bundleProductModel = $this->productloader->create()->load($bundleId);
 						
@@ -93,6 +85,14 @@
 							} else {
 								$parentItem = $this->bundleHelper->addParentItem($bundleProductModel, $options);
 							}
+                            
+                            // if the user doesn't have a quote yet create one
+                            if(!$quoteId > 0) {
+                                $quote->setIsActive(1);
+                                $quote->save();
+                                
+                                $quoteId = $quote->getId();
+                            }
 
 							$quote->addItem($parentItem);
 							$quote->save();
@@ -240,10 +240,11 @@
 					if(isset($bundleProductSelections[$option->getId()]) == true && $bundleProductSelections[$option->getId()] == $selection->getSelectionId())
 					{
 						$bundleSelectionsId[] = $selection->getSelectionId();
-						
+                        
 						// native selection mapping
 						$bundleSelectionProductIds[$selection->getSelectionId()] = array(
 							'product_id' => $selection->getProductId(),
+                            'selection_price' => $selection->getSelectionPriceValue(),
 							'price' => $selection->getPrice(),
 							'option_id' => $option->getOptionId(),
 							'option_title' => $option->getTitle()
