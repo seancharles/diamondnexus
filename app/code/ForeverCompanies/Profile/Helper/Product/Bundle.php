@@ -89,7 +89,7 @@ class Bundle
 			}
 		}
 		
-		public function addParentItem($bundleProductModel, $options, $childProductModel)
+		public function addParentItem($bundleProductModel, $options, $childProductModel = false)
 		{
 			$selectionPrice = 0;
 			$customOptionPrice = 0;
@@ -130,7 +130,7 @@ class Bundle
 					$selectionPrice += $bundle['price'];
 				}
 				
-				if(isset($childProductModel) == true && $childProductModel->getId() > 0) {
+				if($childProductModel != false && isset($childProductModel) == true && $childProductModel->getId() > 0) {
 					// add the dynamic bundled item price to the selection total only when dynamic bundling
 					$price = $bundleProductModel->getPrice() + $childProductModel->getPrice() + $customOptionPrice + $selectionPrice;
 				} else {

@@ -8,8 +8,9 @@
 		protected $profileHelper;
 		protected $resultHelper;
 		protected $bundleHelper;
-		
+        
 		public $bundleSelectionProductIds;
+        public $bundleDynamicOptionIds;
 		
 		public function __construct(
 			\Magento\Catalog\Model\ProductFactory $productloader,
@@ -46,7 +47,9 @@
 					foreach($bundleCustomOptionsValues as $bundleCustomOption) {
 						foreach($bundleCustomOption->selections as $selection) {
 							foreach($selection->options as $option) {
-								$bundleCustomOptions[$selection->selection_id][$option->option_id] = $option->value;
+                                if(isset($option->option_id) == true) {
+                                    $bundleCustomOptions[$selection->selection_id][$option->option_id] = $option->value;
+                                }
 							}
 						}
 					}
@@ -57,6 +60,14 @@
 					// get the quote id
 					$quoteId = $quote->getId();
 					
+                    // if the user doesn't have a quote yet create one
+                    if(!$quoteId > 0) {
+                        $quote->setIsActive(1);
+                        $quote->save();
+                        
+                        $quoteId = $quote->getId();
+                    }
+                    
 					if($bundleId > 0) {
 						$bundleProductModel = $this->productloader->create()->load($bundleId);
 						
@@ -114,7 +125,10 @@
 							foreach($this->bundleSelectionProductIds as $selectionId => $bundle)
 							{
 								// implements the dynamic product when enabled
-								if(in_array($bundle['option_id'], $this->bundleDynamicOptionIds) == true) {
+								if(
+                                    is_array($this->bundleDynamicOptionIds) == true &&
+                                    in_array($bundle['option_id'], $this->bundleDynamicOptionIds) == true
+                                ) {
 									$childId = $dynamicId;
 								} else {
 									$childId = $bundle['product_id'];
