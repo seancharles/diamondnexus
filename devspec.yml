@@ -22,30 +22,42 @@ phases:
       - export task="$Taskid"
       - export accountId="$account"
       - export snstopic="$sns"
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+      - IMAGE_TAG=build-$(git rev-parse HEAD)
   build:
     commands:
       - echo Build started on `date`
-      - pwd
       - rm -rf *
-      - ls
-      - pwd
+      - echo Cloning remote GIT repo
       - git clone https://$username:$pass@github.com/ForeverCompanies/magento2.git --branch develop
-      - ls
       - cd magento2
+      - git log --name-status HEAD^..HEAD
       - git config --global --add remote.origin.fetch "+refs/pull/*/head:refs/remotes/origin/pr/*"
       - git config --global user.email "webdevlive@diamondnexus.com"
       - git config --global user.name "CI CD build"
       - chmod +x auto-repo-merge.sh
       - bash auto-repo-merge.sh
-      - ls
-      - ls
-      - sleep 3
+      - echo Building the Docker image...
+      - echo $REPOURL/magento:latest $REPOURL/magento:$IMAGE_TAG
+      - docker build -t magento --cache-from magento:latest --build-arg REDIS_HOST=$redis --build-arg DB_HOST=$dbhost --build-arg DB_NAME=$dbname --build-arg DB_USER=$dbuser --build-arg DB_ROOT_PASSWORD=$dbrootpassword --build-arg VARNISH_HOST=$varnishhost --build-arg RABBIT_HOST=$rabbithost --build-arg RABBIT_VHOST=$rabbitvhost --build-arg RABBIT_USER=$rabbituser --build-arg RABBIT_PASSWORD=$rabbitpassword --build-arg MAG_NAME=$magname --build-arg CONFIG__DEFAULT__CATALOG__SEARCH__ELASTICSEARCH7_SERVER_HOSTNAME=$elasticsearchserverhostname --build-arg CONFIG__DEFAULT__CATALOG__SEARCH__ENGINE=$catalogsearchengine --build-arg CONFIG__DEFAULT__CATALOG__SEARCH__ELASTICSEARCH7_SERVER_PORT=$elasticsearchserverport --build-arg BUILD=dev .
+      - docker tag magento:latest $REPOURL/magento:latest
+      - docker tag magento:latest $REPOURL/magento:$IMAGE_TAG
+      - docker images 
+      - docker create magento
+      - CONTAINER=$(docker ps -a | grep magento | awk '{print $1}')
+      - docker ps -a 
+      - echo $CONTAINER
+      - docker cp -a $CONTAINER:/var/www/magento/. .
+      - chown 1000:1000 -R .
       - aws s3 sync . s3://mag2-dev-codebuild/magento --exclude ".git/*"  --delete
       - bash datasync.sh $task $accountId
       - sleep 3
-      
   post_build:
     commands:
+      - echo Pushing the Docker images...
+      - echo $REPOURL/magento:latest $REPOURL/magento:$IMAGE_TAG
+      - docker push $REPOURL/magento:latest
+      - docker push $REPOURL/magento:$IMAGE_TAG
       - echo Build completed on `date`
       - aws sns publish --topic-arn $snstopic --message "datasync perfomed"
       - pwd
