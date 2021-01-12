@@ -89,7 +89,7 @@ class Bundle
 			}
 		}
 		
-		public function addParentItem($bundleProductModel, $options, $childProductModel)
+		public function addParentItem($bundleProductModel, $options, $childProductModel = false)
 		{
 			$selectionPrice = 0;
 			$customOptionPrice = 0;
@@ -127,12 +127,21 @@ class Bundle
 				// iterate through native bundle options
 				foreach($this->bundleSelectionProductIds as $bundle)
 				{
-					$selectionPrice += $bundle['price'];
+                    if($bundle['selection_price'] > 0) {
+                        $selectionPrice += $bundle['selection_price'];
+                    } else {
+                        $selectionPrice += $bundle['price'];
+                    }
 				}
 				
-				if(isset($childProductModel) == true && $childProductModel->getId() > 0) {
+				if($childProductModel != false && isset($childProductModel) == true && $childProductModel->getId() > 0) {
 					// add the dynamic bundled item price to the selection total only when dynamic bundling
-					$price = $bundleProductModel->getPrice() + $childProductModel->getPrice() + $customOptionPrice + $selectionPrice;
+                    if($selectionPrice > 0) {
+                        // if selection price is included do not include the base price, completely overide it when supplied
+                        $price = $bundleProductModel->getPrice() + $customOptionPrice + $selectionPrice;
+                    } else {
+                        $price = $bundleProductModel->getPrice() + $childProductModel->getPrice() + $customOptionPrice;
+                    }
 				} else {
 					// native pricing
 					$price = $bundleProductModel->getPrice() + $customOptionPrice + $selectionPrice;

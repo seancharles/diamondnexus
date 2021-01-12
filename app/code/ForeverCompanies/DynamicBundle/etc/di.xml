@@ -3,11 +3,6 @@
     <type name="ShipperHQ\Shipper\Model\Carrier\Processor\ShipperMapper">
         <plugin name="shipperhq-carrier-shippermapper" type="ForeverCompanies\DynamicBundle\Plugins\Shipperhq\ShipperMapper" />
     </type>
-	<!--
-    <type name="Magento\Framework\Event\ManagerInterface">
-        <plugin name="list_all_dispatched_event" type="ForeverCompanies\DynamicBundle\Plugins\ListDispatchedEvents" sortOrder="10" disabled="false"/>
-    </type>
-	-->
-	<!--<preference for="ShipperHQ\Shipper\Model\Carrier\Processor\ShipperMapper" type="ForeverCompanies\DynamicBundle\Model\Shipperhq\ShipperMapper" />-->
+    <preference for="Magento\Bundle\Model\Product\Type" type="ForeverCompanies\DynamicBundle\Model\Product\Type" />
 	<preference for="Magento\Quote\Model\Quote\Item" type="ForeverCompanies\DynamicBundle\Model\Quote\Item" />
 </config>

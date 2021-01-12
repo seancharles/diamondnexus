@@ -8,8 +8,9 @@
 		protected $profileHelper;
 		protected $resultHelper;
 		protected $bundleHelper;
-		
+        
 		public $bundleSelectionProductIds;
+        public $bundleDynamicOptionIds;
 		
 		public function __construct(
 			\Magento\Catalog\Model\ProductFactory $productloader,
@@ -46,7 +47,9 @@
 					foreach($bundleCustomOptionsValues as $bundleCustomOption) {
 						foreach($bundleCustomOption->selections as $selection) {
 							foreach($selection->options as $option) {
-								$bundleCustomOptions[$selection->selection_id][$option->option_id] = $option->value;
+                                if(isset($option->option_id) == true) {
+                                    $bundleCustomOptions[$selection->selection_id][$option->option_id] = $option->value;
+                                }
 							}
 						}
 					}
@@ -82,6 +85,14 @@
 							} else {
 								$parentItem = $this->bundleHelper->addParentItem($bundleProductModel, $options);
 							}
+                            
+                            // if the user doesn't have a quote yet create one
+                            if(!$quoteId > 0) {
+                                $quote->setIsActive(1);
+                                $quote->save();
+                                
+                                $quoteId = $quote->getId();
+                            }
 
 							$quote->addItem($parentItem);
 							$quote->save();
@@ -114,7 +125,10 @@
 							foreach($this->bundleSelectionProductIds as $selectionId => $bundle)
 							{
 								// implements the dynamic product when enabled
-								if(in_array($bundle['option_id'], $this->bundleDynamicOptionIds) == true) {
+								if(
+                                    is_array($this->bundleDynamicOptionIds) == true &&
+                                    in_array($bundle['option_id'], $this->bundleDynamicOptionIds) == true
+                                ) {
 									$childId = $dynamicId;
 								} else {
 									$childId = $bundle['product_id'];
@@ -226,10 +240,11 @@
 					if(isset($bundleProductSelections[$option->getId()]) == true && $bundleProductSelections[$option->getId()] == $selection->getSelectionId())
 					{
 						$bundleSelectionsId[] = $selection->getSelectionId();
-						
+                        
 						// native selection mapping
 						$bundleSelectionProductIds[$selection->getSelectionId()] = array(
 							'product_id' => $selection->getProductId(),
+                            'selection_price' => $selection->getSelectionPriceValue(),
 							'price' => $selection->getPrice(),
 							'option_id' => $option->getOptionId(),
 							'option_title' => $option->getTitle()

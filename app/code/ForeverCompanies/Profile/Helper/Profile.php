@@ -10,6 +10,7 @@ class Profile
 	protected $customerSession;
 	protected $checkoutSession;
 	protected $cartRepository;
+    protected $quoteItemCollectionFactory;
 	protected $formKey;
 	protected $cart;
 	protected $post;
@@ -29,6 +30,7 @@ class Profile
 		\Magento\Customer\Model\Session $customerSession,
 		\Magento\Checkout\Model\Session $checkoutSession,
 		\Magento\Quote\Api\CartRepositoryInterface $cartRepository,
+        \Magento\Quote\Model\ResourceModel\Quote\Item\CollectionFactory $quoteItemCollectionFactory,
 		\Magento\Framework\Data\Form\FormKey $formKey,
 		\Magento\Backend\App\Action\Context $context
 	) {
@@ -37,6 +39,7 @@ class Profile
 		$this->customerSession = $customerSession;
 		$this->checkoutSession = $checkoutSession;
 		$this->cartRepository = $cartRepository;
+        $this->quoteItemCollectionFactory = $quoteItemCollectionFactory;
 		$this->formKey = $formKey;
 		
 		$this->setProfileKey('form_key', $this->formKey->getFormKey());
@@ -186,11 +189,9 @@ class Profile
 	*/
 	public function getLastQuoteItemId($quoteId = 0)
 	{
-		$_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-		$collecion = $_objectManager->create('Magento\Quote\Model\ResourceModel\Quote\Item\Collection')->addFieldToFilter('quote_id',$quoteId);
+        $collection = $this->quoteItemCollectionFactory->create();
+		$collection->addFieldToFilter('quote_id',$quoteId);
 		
-		$lastitem = $collecion->getLastItem();
-		
-		return $lastitem->getId();
+		return $collection->getLastItem()->getId();
 	}
 }
