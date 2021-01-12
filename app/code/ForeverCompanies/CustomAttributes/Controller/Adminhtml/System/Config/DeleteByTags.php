@@ -56,8 +56,6 @@ class DeleteByTags extends Action
         foreach ($productCollection->getItems() as $item) {
             try {
                 $this->helper->deleteProduct((int)$item->getData('entity_id'));
-            } catch (InputException $e) {
-                $this->logger->error('Can\'t delete product ID = ' . $item->getData('entity_id'));
             } catch (NoSuchEntityException $e) {
                 $this->logger->error('Can\'t find product ID = ' . $item->getData('entity_id'));
             } catch (StateException $e) {

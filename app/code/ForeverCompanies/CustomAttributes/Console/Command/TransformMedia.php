@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace ForeverCompanies\CustomAttributes\Console\Command;
 
 use Magento\Framework\App\Area;
-use Magento\Framework\App\State;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -41,18 +40,8 @@ class TransformMedia extends AbstractCommand
         $productCollection = $this->helper->getProductsForMediaTransformCollection();
         $output->writeln('Products for media transformation: ' . $productCollection->count());
         foreach ($productCollection->getItems() as $item) {
-            try {
-                $output->writeln('In process product ID = ' . $item->getData('entity_id'));
-                $this->helper->transformMediaProduct((int)$item->getData('entity_id'));
-            } catch (InputException $e) {
-                $output->writeln($e->getMessage());
-            } catch (NoSuchEntityException $e) {
-                $output->writeln($e->getMessage());
-            } catch (StateException $e) {
-                $output->writeln($e->getMessage());
-            } catch (LocalizedException $e) {
-                $output->writeln($e->getMessage());
-            }
+            $output->writeln('In process product ID = ' . $item->getData('entity_id'));
+            $this->helper->transformMediaProduct((int)$item->getData('entity_id'));
         }
         $output->writeln('Transformation is complete! Please execute bin/magento indexer:reindex');
     }
