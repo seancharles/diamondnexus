@@ -7,6 +7,9 @@
                 <item name="TransformAttributes" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\TransformAttributes
                 </item>
+                <item name="CompleteSequence" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\CompleteSequence
+                </item>
                 <item name="TransformMedia" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\TransformMedia
                 </item>
