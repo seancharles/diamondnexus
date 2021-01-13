@@ -3,6 +3,7 @@ LABEL maintainer="Forever Companies"
 
 RUN groupadd -g 1000 admin
 RUN useradd -u 1000 -g 1000 -d /var/www/ admin
+RUN usermod -g www-data admin && usermod -a -G www-data,root root
 
 ARG BUILD
 ENV BUILD $BUILD
