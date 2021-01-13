@@ -101,7 +101,7 @@ class TranslateShipStatusToShippingGroup extends Command
             $this->productActionObject->updateAttributes(
                 $productIds,
                 array(
-                    'shipperhq_shipping_group' => $shippingStatusTranslateMap[$shippingStatusKey]
+                    'shipperhq_shipping_group' => $this->shippingStatusTranslateMap[$shippingStatusKey]
                 ),
                 0
             );
