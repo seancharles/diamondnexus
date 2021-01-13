@@ -3,6 +3,7 @@ LABEL maintainer="Forever Companies"
 
 RUN groupadd -g 1000 admin
 RUN useradd -u 1000 -g 1000 -d /var/www/ admin
+RUN usermod -g www-data admin && usermod -a -G www-data,root root
 
 ARG BUILD
 ENV BUILD $BUILD
@@ -102,8 +103,6 @@ RUN mkdir /var/www/.ssh/
 COPY bin/authorized_keys.$BUILD /var/www/.ssh/
 RUN chown admin:admin -R /var/www/.ssh/
 RUN chmod 600 /var/www/.ssh/*
-RUN mkdir /run/sshd/
-RUN chown admin:admin /run/sshd/
 RUN chown admin:admin -R /usr/local/etc/php/php.ini
 RUN chown admin:admin -R /usr/local/etc/php/php-fpm.pool.conf
 
