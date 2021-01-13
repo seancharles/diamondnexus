@@ -95,7 +95,8 @@ RUN if [ "$XDEBUG" = "on" ] ; then pecl install xdebug \
 && echo "xdebug.client_host=$HOST" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
 && echo "xdebug.discover_client_host=0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ; fi
 
-RUN echo "%admin	ALL=(ALL:ALL)	NOPASSWD: ALL" >> /etc/sudoers
+RUN echo "admin	ALL=(ALL:ALL)	NOPASSWD: ALL" >> /etc/sudoers
+
 RUN chown -R admin: /var/www
 COPY bin/php.ini /usr/local/etc/php/php.ini
 COPY bin/php-fpm.pool.conf /usr/local/etc/php/php-fpm.pool.conf
