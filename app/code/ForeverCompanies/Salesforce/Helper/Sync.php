@@ -298,6 +298,11 @@
         
         public function createLead($leadData)
         {
+            // default record type, overridden if specified
+            if(isset($leadData['RecordTypeId']) === false) {
+                $leadData['RecordTypeId'] = '0120v000000X2vcAAC';
+            }
+            
             return $this->fcSyncLead->sync([
                 'lead' => $leadData
             ]);
