@@ -19,6 +19,8 @@ use PHPUnit\Framework\TestCase;
  *
  * @magentoDbIsolation disabled
  * @magentoAppIsolation enabled
+ *
+ * Tests how category permission affects indexation mechanism
  */
 class ProductTest extends TestCase
 {
@@ -40,7 +42,7 @@ class ProductTest extends TestCase
     /**
      * @inheritdoc
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->indexTable = $this->objectManager->create(Index::class);
@@ -64,7 +66,7 @@ class ProductTest extends TestCase
         $indexer->reindexAll();
 
         $productData = array_merge(['product_id' => $product->getId()], $this->getProductData());
-        $this->assertContains($productData, $this->indexTable->getIndexForProduct($product->getId(), 1, 1));
+        $this->assertContainsEquals($productData, $this->indexTable->getIndexForProduct($product->getId(), 1, 1));
 
         $product->setVisibility(Visibility::VISIBILITY_NOT_VISIBLE);
         $product->save();

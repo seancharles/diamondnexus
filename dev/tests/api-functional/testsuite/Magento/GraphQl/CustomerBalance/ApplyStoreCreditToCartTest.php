@@ -30,7 +30,7 @@ class ApplyStoreCreditToCartTest extends GraphQlAbstract
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->getMaskedQuoteIdByReservedOrderId = $objectManager->get(GetMaskedQuoteIdByReservedOrderId::class);
@@ -124,11 +124,12 @@ class ApplyStoreCreditToCartTest extends GraphQlAbstract
      * @magentoApiDataFixture Magento/CustomerBalance/_files/disable_customer_balance.php
      * @magentoApiDataFixture Magento/GraphQl/Catalog/_files/simple_product.php
      * @magentoApiDataFixture Magento/CustomerBalance/_files/customer_balance_default_website.php
-     * @expectedException \Exception
-     * @expectedExceptionMessage You cannot add "credit" to the cart.
      */
     public function testApplyStoreCreditWithDisabledConfiguration()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You cannot add "credit" to the cart.');
+
         $quantity = 1;
         $sku = 'simple_product';
         $cartId = $this->createEmptyCart();

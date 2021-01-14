@@ -14,7 +14,6 @@ class CustomizationType extends AbstractCustomizationType
         'Chain Length' => 'chain_length',
         'Chain Width' => 'chain_width',
         'Ring Size' => 'ring_size',
-        'Ring Size:' => 'ring_size',
         'Certified Stone' => 'certified_stone',
         'Total Carat Weight' => 'tcw',
         'Stone Color' => 'color',
@@ -36,5 +35,4 @@ class CustomizationType extends AbstractCustomizationType
         'Shape' => 'Shape',
         'Center Stone Cut' => 'Shape',
     ];
-
 }

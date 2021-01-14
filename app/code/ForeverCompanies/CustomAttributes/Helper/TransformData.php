@@ -8,10 +8,11 @@ declare(strict_types=1);
 namespace ForeverCompanies\CustomAttributes\Helper;
 
 use Exception;
-use ForeverCompanies\CustomAttributes\Model\Config\Source\Product\BundleCustomizationType;
+use ForeverCompanies\CustomAttributes\Logger\ErrorsByOption\Logger as LoggerByOptions;
+use ForeverCompanies\CustomAttributes\Logger\ErrorsBySku\Logger as LoggerBySku;
+use ForeverCompanies\CustomAttributes\Model\Config\Source\Product\BundleCustomizationType as BType;
 use ForeverCompanies\CustomAttributes\Model\Config\Source\Product\CustomizationType;
 use Magento\Bundle\Api\Data\LinkInterface;
-use Magento\Bundle\Api\Data\LinkInterfaceFactory;
 use Magento\Bundle\Model\Product\Type;
 use Magento\Bundle\Model\ResourceModel\Selection;
 use Magento\Catalog\Api\AttributeSetRepositoryInterface;
@@ -31,13 +32,16 @@ use Magento\Catalog\Model\ProductRepository;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\CatalogInventory\Model\Stock\Item;
 use Magento\CatalogInventory\Model\StockRegistry;
+use Magento\CatalogStaging\Model\ResourceModel\ProductSequence;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
+use Magento\Eav\Model\AttributeSetRepository;
 use Magento\Eav\Model\Config;
 use Magento\Framework\Api\Data\ImageContentInterfaceFactory;
 use Magento\Framework\Api\Data\VideoContentInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Exception\InputException;
@@ -94,6 +98,11 @@ class TransformData extends AbstractHelper
      * @var Config
      */
     protected $eav;
+
+    /**
+     * @var AttributeSetRepository
+     */
+    protected $attributeSetRepository;
 
     /**
      * @var ProductRepository
@@ -175,6 +184,16 @@ class TransformData extends AbstractHelper
      */
     protected $bundleSelection;
 
+    /**
+     * @var LoggerByOptions
+     */
+    protected $loggerByOptions;
+
+    /**
+     * @var LoggerBySku
+     */
+    protected $loggerBySku;
+
     protected $mimeTypes = [
         'png' => 'image/png',
         'jpe' => 'image/jpeg',
@@ -192,6 +211,7 @@ class TransformData extends AbstractHelper
     /**
      * @param Context $context
      * @param Config $config
+     * @param AttributeSetRepository $attributeSetRepository
      * @param CollectionFactory $collectionFactory
      * @param \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory
      * @param \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory $attributeSetCollectionFactory
@@ -215,10 +235,13 @@ class TransformData extends AbstractHelper
      * @param Media $media
      * @param Serialize $serializer
      * @param Selection $bundleSelection
+     * @param LoggerByOptions $loggerByOptions
+     * @param LoggerBySku $loggerBySku
      */
     public function __construct(
         Context $context,
         Config $config,
+        AttributeSetRepository $attributeSetRepository,
         CollectionFactory $collectionFactory,
         \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
         \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory $attributeSetCollectionFactory,
@@ -241,10 +264,13 @@ class TransformData extends AbstractHelper
         GalleryManagement $galleryManagement,
         Media $media,
         Serialize $serializer,
-        Selection $bundleSelection
+        Selection $bundleSelection,
+        LoggerByOptions $loggerByOptions,
+        LoggerBySku $loggerBySku
     ) {
         parent::__construct($context);
         $this->eav = $config;
+        $this->attributeSetRepository = $attributeSetRepository;
         $this->productCollectionFactory = $collectionFactory;
         $this->categoryCollectionFactory = $categoryCollectionFactory;
         $this->category = $category;
@@ -268,6 +294,8 @@ class TransformData extends AbstractHelper
         $this->mediaHelper = $media;
         $this->serializer = $serializer;
         $this->bundleSelection = $bundleSelection;
+        $this->loggerByOptions = $loggerByOptions;
+        $this->loggerBySku = $loggerBySku;
     }
 
     /**
@@ -363,17 +391,17 @@ class TransformData extends AbstractHelper
     {
         $table = 'catalog_product_entity_int';
         $attr = 'is_media_transformed';
-        $where = 'is null';
+        $where = '= 0';
         return $this->getProductCollection($table, $attr, $where);
     }
 
     /**
-     * @param int $orderId
+     * @param int $productId
      */
-    public function transformProductSelect(int $orderId)
+    public function transformProductSelect(int $productId)
     {
         try {
-            $entity = $this->productRepository->getById($orderId);
+            $entity = $this->productRepository->getById($productId);
             /** @var Option $option */
             $entityOptions = $entity->getOptions();
             foreach ($entityOptions as $option) {
@@ -381,40 +409,22 @@ class TransformData extends AbstractHelper
                 $entity->unlockAttribute($attributeCode);
                 $data = [];
                 $eav = $this->eav->getAttribute(Product::ENTITY, $attributeCode);
+                if ($option->getValues() == null) {
+                    $this->loggerByOptions->error('Can\'t find options for Product ID = ' . $productId);
+                    continue;
+                }
                 foreach ($option->getValues() as $value) {
                     $data[] = $this->getDataForMultiselectable($value, $eav->getOptions());
                 }
+                $data = array_unique($data);
                 $entity->setData($attributeCode, implode(',', $data));
             }
             $this->productRepository->save($entity);
         } catch (NoSuchEntityException $e) {
-            $this->_logger->error('Can\'t transform product select for ' . $entity->getId() . ': ' . $e->getMessage());
+            $this->_logger->error('Can\'t transform product select for ' . $productId . ': ' . $e->getMessage());
         } catch (LocalizedException $e) {
-            $this->_logger->error('Can\'t transform product select for ' . $entity->getId() . ': ' . $e->getMessage());
+            $this->_logger->error('Can\'t transform product select for ' . $productId . ': ' . $e->getMessage());
         }
-    }
-
-    /**
-     * @param Value $value
-     * @param array $options
-     * @return mixed|string
-     */
-    protected function getDataForMultiselectable(Value $value, array $options)
-    {
-        /** @var \Magento\Eav\Model\Entity\Attribute\Option $option */
-        foreach ($options as $option) {
-            $title = $value->getTitle();
-            if ($title == $option['label']) {
-                return $option['value'];
-            }
-            if ($title == 'Round Brilliant') {
-                $title = 'Round';
-                if ($title == $option['label']) {
-                    return $option['value'];
-                }
-            }
-        }
-        return '';
     }
 
     /**
@@ -464,6 +474,9 @@ class TransformData extends AbstractHelper
         }
     }
 
+    /**
+     * @param int $entityId
+     */
     public function transformProductOptions(int $entityId)
     {
         $missingOptions = [];
@@ -478,41 +491,63 @@ class TransformData extends AbstractHelper
             if ($options == null && $isBundle != Type::TYPE_CODE) {
                 return;
             }
+            $oldAttributes = ['metal_type' => 'filter_metal', 'shape' => 'filter_shape', 'color' => 'filter_color'];
             if ($options !== null) {
+                $certifiedStone = true;
                 foreach ($options as &$option) {
                     $customizationType = $this->setCustomizationTypeToOption($option->getTitle());
+                    foreach ($oldAttributes as $attribute => $bool) {
+                        if ($customizationType == $attribute) {
+                            unset($oldAttributes[$attribute]);
+                        }
+                    }
                     if ($customizationType == -1) {
                         $missingOptions[] = $option->getTitle();
                         $customizationType = '';
                     }
-                   $option['customization_type'] = $customizationType;
+                    $option['customization_type'] = $customizationType;
+                    if ($option['title'] == 'Certified Stone') {
+                        $certifiedStone = false;
+                    }
                 }
                 $product->setOptions($options);
             }
-            if ($isBundle == Type::TYPE_CODE) {
-                $bundleOptions = $product->getExtensionAttributes()->getBundleProductOptions();
-                foreach ($bundleOptions as &$bundleData) {
-                    $title = $bundleData->getTitle();
-                    $bundleData['bundle_customization_type'] = BundleCustomizationType::OPTIONS[
-                        BundleCustomizationType::TITLE_MAPPING[$title]
-                    ];
+            foreach ($oldAttributes as $attribute => $filter) {
+                $data = $product->getData($filter);
+                if ($data == null) {
+                    continue;
                 }
-                $product->setData('bundle_options_data', $bundleOptions);
+                $newValues = $this->converter->getValues(explode(',', $data), $filter);
+                if (count($newValues) > 0) {
+                    $newOptionsId = $this->converter->getOptions($newValues, $attribute);
+                    $newValue = implode(',', $newOptionsId);
+                    if ($newValue == $product->getData($attribute)) {
+                        continue;
+                    }
+                    if ($product->getData($attribute) == '' || $product->getData($attribute) == null) {
+                        $allOptions = $newValue;
+                    } else {
+                        $allOptions = $product->getData($attribute) . ',' . $newValue;
+                    }
+                    $product->setData($attribute, $allOptions);
+                }
+            }
+            if ($isBundle == Type::TYPE_CODE) {
+                if (isset($certifiedStone)) {
+                    $this->bundleOptions($product, $certifiedStone);
+                } else {
+                    $this->bundleOptions($product);
+                }
             }
 
-            if (sizeof($missingOptions) > 0) {
-                $msg = "Missing options SKU: " . $product->getSku() . " | ID: " . $product->getId() . " | Options: {" . implode("|", $missingOptions) . "}\n";
-                file_put_contents(
-                    __DIR__ . '/../../../../../var/log/forevercompanies_options_errors_by_sku.log',
-                    $msg,
-                    FILE_APPEND
-                );
-                foreach($missingOptions as $opt) {
-                    file_put_contents(
-                        __DIR__ . '/../../../../../var/log/forevercompanies_options_errors_by_option.log',
-                        $opt,
-                        FILE_APPEND
-                    );
+            if (count($missingOptions) > 0) {
+                $sku = $product->getSku();
+                $id = $product->getId();
+                $start = "Missing options SKU: ";
+                $msg = $start . $sku . " | ID: " . $id . " | Options: {" . implode("|", $missingOptions) . "}\n";
+                $this->loggerBySku->error($msg);
+                foreach ($missingOptions as $opt) {
+                    $this->loggerByOptions->error($opt);
                 }
             }
 
@@ -523,6 +558,8 @@ class TransformData extends AbstractHelper
             $this->_logger->error('Error in transform options for ID = ' . $entityId . ': ' . $e->getMessage());
         } catch (StateException $e) {
             $this->_logger->error('Error in transform options for ID = ' . $entityId . ': ' . $e->getMessage());
+        } catch (LocalizedException $e) {
+            $this->loggerByOptions->error('Can\'t transform option for certificated product ID = ' . $entityId);
         }
     }
 
@@ -537,6 +574,10 @@ class TransformData extends AbstractHelper
     {
         $product = $this->getCurrentProduct($entityId);
         if ($product == null) {
+            return;
+        }
+        if ($product->getName() == null) {
+            $this->_logger->error('Product ID = ' . $entityId . ' without name');
             return;
         }
         if ($product->getTypeId() == Configurable::TYPE_CODE) {
@@ -555,8 +596,22 @@ class TransformData extends AbstractHelper
         $product->setData('is_salable', true);
         $product->setData('on_sale', true);
         $product->setData('is_transformed', true);
+        $product->setCustomAttribute('is_transformed', true);
+        $product->setData('sku_type', 1);
+        $product->setData('weight_type', 1);
+        $product->setData('price_type', 1);
+        if ($product->getData('certified_stone') !== null) {
+            $certifiedSrc = $this->eav->getAttribute(Product::ENTITY, 'certified_stone')->getSource();
+            $optionText = $product->getData('certified_stone') ? 'Classic Stone' : 'Certified Stone';
+            $value = $certifiedSrc->getOptionId($optionText);
+            $product->setData('certified_stone', $value);
+            $product->setCustomAttribute('certified_stone', $value);
+        }
         /** Finally! */
         try {
+            if ($product->getTypeId() == Product\Type::TYPE_BUNDLE) {
+                $this->refreshOptions($product);
+            }
             $this->productRepository->save($product);
             foreach (['youtube', 'video_url'] as $link) {
                 $videoUrl = $product->getData($link);
@@ -583,7 +638,7 @@ class TransformData extends AbstractHelper
             $product = $this->productRepository->getById($productId, true, 0);
             $this->productRepository->delete($product);
         } catch (StateException $e) {
-            throw new StateException(__('Cannot get product ID = ' . $productId));
+            throw new StateException(__('Cannot get product ID = ' . $productId . ': ' . $e->getMessage()));
         } catch (NoSuchEntityException $e) {
             throw new NoSuchEntityException(__('Cannot delete product ID = ' . $productId));
         }
@@ -622,6 +677,123 @@ class TransformData extends AbstractHelper
     }
 
     /**
+     * @param Product $product
+     */
+    protected function refreshOptions(Product $product)
+    {
+        $options = $product->getOptions();
+        /** @var ProductExtension $extensionAttributes */
+        $extensionAttributes = $product->getExtensionAttributes();
+        $bundleOptions = $extensionAttributes->getBundleProductOptions();
+        if ($bundleOptions == null) {
+            $product->setTypeId(Product\Type::TYPE_SIMPLE);
+            return;
+        }
+        /** @var Option $option */
+        foreach ($options as $id => $option) {
+            /** @var \Magento\Bundle\Model\Option $bundleOption */
+            foreach ($bundleOptions as $bundleOption) {
+                if ($option->getTitle() == $bundleOption->getTitle()) {
+                    unset($options[$id]);
+                }
+            }
+        }
+        $product->setOptions($options);
+    }
+
+    /**
+     * @param $title
+     * @param $links
+     * @param bool $classicStone
+     * @return bool
+     */
+    protected function checkClassicStone($title, $links, $classicStone)
+    {
+        if ($title == 'Center Stone Size') {
+            foreach ($links as $link) {
+                if (substr($link['sku'], 23, 1) == '1') {
+                    return false;
+                }
+            }
+        }
+        return $classicStone;
+    }
+
+    /**
+     * @param Value $value
+     * @param array $options
+     * @return mixed|string
+     */
+    protected function getDataForMultiselectable(Value $value, array $options)
+    {
+        /** @var \Magento\Eav\Model\Entity\Attribute\Option $option */
+        foreach ($options as $option) {
+            $title = $value->getTitle();
+            if ($title == $option['label']) {
+                return $option['value'];
+            }
+            if ($title == 'Round Brilliant') {
+                $title = 'Round';
+                if ($title == $option['label']) {
+                    return $option['value'];
+                }
+            }
+        }
+        return '';
+    }
+
+    /**
+     * @param $product
+     * @param bool|null $certifiedStone
+     */
+    protected function bundleOptions($product, $certifiedStone = null)
+    {
+        $bundleOptions = $product->getExtensionAttributes()->getBundleProductOptions();
+        if ($certifiedStone !== null && $certifiedStone === true) {
+            $classicStone = true;
+        }
+        $matchingBand = false;
+        if ($bundleOptions !== null) {
+            foreach ($bundleOptions as &$bundleData) {
+                $title = $bundleData->getTitle();
+                $productLinks = $bundleData->getProductLinks();
+                if (count($productLinks) > 0) {
+                    $matchingBand = true;
+                    if (isset($classicStone)) {
+                        $classicStone = $this->checkClassicStone($title, $productLinks, $classicStone);
+                    }
+                }
+                if ($title == 'Ring Size:') {
+                    $title = 'Ring Size';
+                }
+                $bundleData['bundle_customization_type'] = BType::OPTIONS[BType::TITLE_MAPPING[$title]];
+            }
+        }
+        $product->setData('bundle_options_data', $bundleOptions);
+        if (isset($classicStone)) {
+            try {
+                $src = $this->eav->getAttribute(Product::ENTITY, 'certified_stone')->getSource();
+                $optionText = $classicStone ? 'Classic Stone' : 'Certified Stone';
+                $value = (int)$src->getOptionId($optionText);
+                $product->setData('certified_stone', $value);
+            } catch (LocalizedException $e) {
+                $this->_logger->error($e->getMessage());
+            }
+        }
+        try {
+            $matchingSrc = $this->eav->getAttribute(Product::ENTITY, 'matching_band')->getSource();
+
+            if ($matchingBand) {
+                $product->setData('matching_band', (int)$matchingSrc->getOptionId('Yes'));
+            } else {
+                $product->setData('matching_band', (int)$matchingSrc->getOptionId('None'));
+            }
+        } catch (LocalizedException $e) {
+            $this->_logger->error($e->getMessage());
+        }
+    }
+
+    /**
      * @param string $table
      * @param string $attr
      * @param string $where
@@ -643,6 +815,7 @@ class TransformData extends AbstractHelper
                     ['value']
                 )->where('eav_table.value ' . $where)
                 ->where('sku is not null');
+            $productCollection->addAttributeToFilter('status', Status::STATUS_ENABLED);
             return $productCollection;
         } catch (LocalizedException $e) {
             $this->_logger->critical($e->getMessage());
@@ -662,6 +835,7 @@ class TransformData extends AbstractHelper
      */
     protected function addVideoToProduct($videoUrl, $product, $videoProvider = '')
     {
+        /** For all of that videos we will need create thumbs */
         $updiacam = strpos($videoUrl, 'up.diacam360');
         if ($updiacam) {
             throw new StateException(__('Cannot save video from up.diacam360 for product'));
@@ -672,7 +846,15 @@ class TransformData extends AbstractHelper
         }
         $stullercloud = strpos($videoUrl, 'assets.stullercloud');
         if ($stullercloud) {
+            /*$videoData = $this->getFileFromVimeoVideo($videoUrl, 'assets.stullercloud');
+            $media = $this->externalVideoEntryConverter->convertTo($product, $videoData);
+            $this->galleryManagement->create($product->getSku(), $media);
+            return;*/
             throw new StateException(__('Cannot save video from assets.stullercloud for product'));
+        }
+        $storage = strpos($videoUrl, 'storage.solofordiamonds');
+        if ($storage) {
+            throw new StateException(__('Cannot save video from storage.solofordiamonds for product'));
         }
         $v360 = strpos($videoUrl, 'v360.in');
         if ($v360) {
@@ -680,7 +862,8 @@ class TransformData extends AbstractHelper
         }
         if ($videoProvider == 'youtube') {
             $videoProvider = 'youtube';
-        } else {
+        }
+        if ($videoProvider == 'vimeo') {
             $videoProvider = str_replace('https://', '', $videoUrl);
             $videoProvider = str_replace('http://', '', $videoProvider);
             $dotPosition = strpos($videoProvider, ".") ?? false;
@@ -689,11 +872,15 @@ class TransformData extends AbstractHelper
             }
             $videoProvider = substr($videoProvider, 0, $dotPosition);
         }
-        $videoData = $this->getFileFromVimeoVideo($videoUrl, $videoProvider);
-        // Convert video data array to video entry
+        if ($videoProvider == 'vimeo' || $videoProvider == 'youtube') {
+            $videoData = $this->getFileFromVimeoVideo($videoUrl, $videoProvider);
+            // Convert video data array to video entry
 
-        $media = $this->externalVideoEntryConverter->convertTo($product, $videoData);
-        $this->galleryManagement->create($product->getSku(), $media);
+            $media = $this->externalVideoEntryConverter->convertTo($product, $videoData);
+            $this->galleryManagement->create($product->getSku(), $media);
+        } else {
+            $this->_logger->error('Can\'t save video for ' . $product->getId() . ' from ' . $videoProvider);
+        }
     }
 
     /**
@@ -730,7 +917,7 @@ class TransformData extends AbstractHelper
      */
     protected function convertConfigToBundle(Product $product)
     {
-        $this->transformIncludedProductsFirst($product->getId());
+        $this->transformIncludedProductsFirst($product->getId(), $product->getSku());
         $product->setData('price_type', TierPriceInterface::PRICE_TYPE_FIXED);
         $this->transformOptionsToBundle($product);
         $this->editProductsFromConfigurable($product);
@@ -750,7 +937,7 @@ class TransformData extends AbstractHelper
         } catch (NoSuchEntityException $exception) {
             $this->_logger->warning('Product with ID = ' . $entityId . 'not found');
         }
-        if ($product->isDisabled() || $product->getData('is_transformed') == $transformed) {
+        if ($product->getData('is_transformed') == $transformed || $product->isDisabled()) {
             return;
         }
         return $product;
@@ -771,9 +958,7 @@ class TransformData extends AbstractHelper
                 if (!array_key_exists(trim($title), CustomizationType::TITLE_MAPPING)) {
                     return -1;
                 }
-                return CustomizationType::OPTIONS[
-                    CustomizationType::TITLE_MAPPING[trim($title)]
-                ];
+                return CustomizationType::OPTIONS[CustomizationType::TITLE_MAPPING[trim($title)]];
         }
     }
 
@@ -798,6 +983,29 @@ class TransformData extends AbstractHelper
             $imageType = substr(strrchr($fileUrl, "."), 1); //find the image extension
             $thumb = $this->curl->execute($fileUrl);
         }
+        /*if ($provider == 'assets.stullercloud') {
+            $id = substr(strrchr($url, "/"), 2);
+            $id = str_replace('.mp4', '', $id);
+            $contentFromVimeo = $this->curl->execute($url);
+            $generalMediaEntryData = [
+                ProductAttributeMediaGalleryEntryInterface::LABEL => 'Migrated video',
+                ProductAttributeMediaGalleryEntryInterface::CONTENT => '',
+                ProductAttributeMediaGalleryEntryInterface::DISABLED => false,
+                ProductAttributeMediaGalleryEntryInterface::FILE => ''
+            ];
+            $videoData = array_merge(
+                $generalMediaEntryData,
+                [
+                    VideoContentInterface::TITLE => 'Migrated Video',
+                    VideoContentInterface::DESCRIPTION => '',
+                    VideoContentInterface::PROVIDER => $provider,
+                    VideoContentInterface::METADATA => null,
+                    VideoContentInterface::URL => $url,
+                    VideoContentInterface::TYPE => ExternalVideoEntryConverter::MEDIA_TYPE_CODE,
+                ]
+            );
+            return $videoData;
+        }*/
         if ($provider == 'youtube') {
             $id = $url;
             $url = 'https://www.youtube.com/watch?v=' . $id;
@@ -869,6 +1077,10 @@ class TransformData extends AbstractHelper
     private function editProductsFromConfigurable(Product $product)
     {
         foreach ($this->productFunctionalHelper->getProductForDelete() as $productForDelete) {
+            $attributeSet = $this->attributeSetRepository->get($productForDelete->getAttributeSetId());
+            if ($attributeSet->getAttributeSetName() == 'Migration_Loose Stones') {
+                continue;
+            }
             $movedAsPart = 'Removed as part of: ';
             $devTag = $productForDelete->getData('dev_tag');
             if ($devTag !== null && strpos($devTag, $movedAsPart) !== false) {
@@ -929,24 +1141,39 @@ class TransformData extends AbstractHelper
 
     /**
      * @param $entityId
+     * @param $sku
      */
-    private function transformIncludedProductsFirst($entityId)
+    private function transformIncludedProductsFirst($entityId, $sku)
     {
-        $products = $this->matchingBand->getMatchingBands((int)$entityId);
-        if (count($products) > 0) {
-            foreach ($products as $product) {
-                try {
+        try {
+            $products = $this->matchingBand->getMatchingBands((int)$entityId);
+            if (count($products) > 0) {
+                foreach ($products as $product) {
                     $this->transformProduct((int)$product['product_id']);
-                } catch (InputException $e) {
-                    $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
-                } catch (NoSuchEntityException $e) {
-                    $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
-                } catch (StateException $e) {
-                    $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
-                } catch (LocalizedException $e) {
-                    $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
                 }
             }
+            $products = $this->productRepository->get($sku)->getExtensionAttributes()->getConfigurableProductLinks();
+            if (count($products) > 0) {
+                foreach ($products as $product) {
+                    $this->transformProduct((int)$product);
+                }
+            }
+            if ($sku == 'LRENSL0091X') {
+                $products = $this->matchingBand->getEnhancers((int)$entityId);
+                if (count($products) > 0) {
+                    foreach ($products as $product) {
+                        $this->transformProduct((int)$product['product_id']);
+                    }
+                }
+            }
+        } catch (InputException $e) {
+            $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
+        } catch (StateException $e) {
+            $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
+        } catch (LocalizedException $e) {
+            $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
         }
     }
 }

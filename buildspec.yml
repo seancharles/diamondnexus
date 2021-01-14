@@ -2,7 +2,7 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      python: 3.7
+      python: 3.8
     commands:
       - python --version
   pre_build:
@@ -16,28 +16,36 @@ phases:
       - export pass="$GITPASSWORD"
       - echo "BRANCH $BRANCH"
       - echo "SOURCE_VERSION $SOURCE_VERSION"
+      - export task="$Taskid"
+      - export accountId="$account"
+      - aws --version
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+      - IMAGE_TAG=build-$(git rev-parse HEAD)
   build:
     commands:
       - echo Build started on `date`
       - echo Cloning remote GIT repo
-      - echo clone
-      - pwd
-      - ls
-      - pip install dirsync
-      - cp -p -r --backup=numbered `find ~/ -name dirsync -a -type d` ./
-      - ls 
-      - mkdir ../temp
-      - mv buildspec.yml devspec.yml script.sh ../temp
-      - zip -qr source.zip ./ -x '.git/*'
-      - aws s3 cp source.zip s3://mag2-prod-codebuild/source.zip
-      - aws lambda update-function-code --function-name $FUNCTION_NAME --s3-bucket mag2-prod-codebuild --s3-key source.zip
+      - git log --name-status HEAD^..HEAD
+      - echo Building the Docker image...
+      - docker build -t magento --cache-from magento:latest --build-arg REDIS_HOST=$redis --build-arg DB_HOST=$dbhost --build-arg DB_NAME=$dbname --build-arg DB_USER=$dbuser --build-arg DB_ROOT_PASSWORD=$dbrootpassword --build-arg VARNISH_HOST=$varnishhost --build-arg RABBIT_HOST=$rabbithost --build-arg RABBIT_VHOST=$rabbitvhost --build-arg RABBIT_USER=$rabbituser --build-arg RABBIT_PASSWORD=$rabbitpassword --build-arg MAG_NAME=$magname --build-arg CONFIG__DEFAULT__CATALOG__SEARCH__ELASTICSEARCH7_SERVER_HOSTNAME=$elasticsearchserverhostname --build-arg CONFIG__DEFAULT__CATALOG__SEARCH__ENGINE=$catalogsearchengine --build-arg CONFIG__DEFAULT__CATALOG__SEARCH__ELASTICSEARCH7_SERVER_PORT=$elasticsearchserverport --build-arg BUILD=prod .
+      - docker tag magento:latest $REPOURL/magento:latest
+      - docker tag magento:latest $REPOURL/magento:$IMAGE_TAG
+      - docker images 
+      - docker create magento
+      - CONTAINER=$(docker ps -a | grep magento | awk '{print $1}')
+      - docker ps -a 
+      - echo $CONTAINER
+      - docker cp -a $CONTAINER:/var/www/magento/. .
+      - chown 1000:1000 -R .
+      - aws s3 sync . s3://mag2-dev-codebuild/magento --exclude ".git/*"  --delete
+      - bash datasync.sh $task $accountId
       - sleep 3
-      #- aws sns publish {} topic
   post_build:
     commands:
+      - echo Pushing the Docker images...
+      - docker push $REPOURL/magento:latest
+      - docker push $REPOURL/magento:$IMAGE_TAG
       - echo Build completed on `date`
-      - pwd
-      - ls -al
 artifacts:
   files:
     - '**/*'

@@ -4,6 +4,7 @@
  * See COPYING.txt for license details.
  */
 
+use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\App\Config\MutableScopeConfigInterface;
 use Magento\GiftCard\Model\Catalog\Product\Type\Giftcard;
 use Magento\GiftCardAccount\Model\Pool;
@@ -11,9 +12,13 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Item;
 use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require __DIR__ . '/../../../Magento/Catalog/_files/product_simple.php';
-
+Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple.php');
+$objectManager = Bootstrap::getObjectManager();
+/** @var ProductRepositoryInterface $productRepository */
+$productRepository = $objectManager->create(ProductRepositoryInterface::class);
+$product = $productRepository->get('simple');
 /** @var $billingAddress \Magento\Sales\Model\Order\Address */
 $billingAddress = Bootstrap::getObjectManager()->create(
     \Magento\Sales\Model\Order\Address::class,

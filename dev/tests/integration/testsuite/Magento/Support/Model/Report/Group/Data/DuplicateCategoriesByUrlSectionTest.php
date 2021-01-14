@@ -26,7 +26,7 @@ class DuplicateCategoriesByUrlSectionTest extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->model = Bootstrap::getObjectManager()->create(DuplicateCategoriesByUrlSection::class);
     }

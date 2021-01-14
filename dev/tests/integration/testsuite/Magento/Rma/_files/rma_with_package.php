@@ -6,12 +6,23 @@
 declare(strict_types=1);
 
 use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Rma\Api\TrackRepositoryInterface;
 use Magento\Rma\Model\Shipping;
+use Magento\Sales\Api\Data\OrderInterfaceFactory;
 use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-include __DIR__ . '/../../../Magento/Rma/_files/rma.php';
+Resolver::getInstance()->requireDataFixture('Magento/Rma/_files/rma.php');
 
 $objectManager = Bootstrap::getObjectManager();
+/** @var TrackRepositoryInterface $trackRepository */
+$trackRepository = $objectManager->get(TrackRepositoryInterface::class);
+/** @var \Magento\Sales\Model\Order $order */
+$order = $objectManager->get(OrderInterfaceFactory::class)->create()->loadByIncrementId('100000001');
+$orderItems = $order->getItems();
+$orderItem = reset($orderItems);
+
+$orderProduct = $orderItem->getProduct();
 
 /** @var Json $json */
 $json = $objectManager->get(Json::class);
@@ -43,7 +54,8 @@ $packages = [
         ],
     ],
 ];
-
+/** @var $trackingNumber Shipping */
+$trackingNumber = $objectManager->create(Shipping::class)->load('TrackNumber', 'track_number');
 $trackingNumber->setCarrierCode('ups')
     ->setIsAdmin(Shipping::IS_ADMIN_STATUS_ADMIN_LABEL)
     ->setPackages($json->serialize($packages));

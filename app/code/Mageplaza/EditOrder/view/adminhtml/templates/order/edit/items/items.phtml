@@ -1,0 +1,37 @@
+<?php
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_EditOrder
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+
+/** @var \Magento\Sales\Block\Adminhtml\Order\Create\Items $block*/
+?>
+
+<div class="admin__page-section-title">
+    <strong class="title"><?= /* @noEscape */ $block->getHeaderText() ?></strong>
+    <div class="actions btn-add-product"></div>
+</div>
+<input id="current-order-id" name="order_id" value="<?= /** @noEscape */ $block->getOrderId() ?>" type="hidden" />
+<?= $block->getChildHtml('items_grid') ?>
+
+<!--Fix bug: missing 'Add Product' button on quick edit form-->
+<script type="text/javascript">
+    require(['jquery', 'mage/translate'], function ($) {
+        $('._collapsible-mpeditorder-items').trigger('click');
+    });
+</script>

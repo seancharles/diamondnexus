@@ -17,7 +17,7 @@ class BundleCustomizationType extends AbstractCustomizationType
         '' => '',
         'Matching Band' => 'Matching Band',
         'Matching Bands' => 'Matching Band',
+        'Enhancers' => 'Matching Band',
         'Center Stone Size' => 'Center Stone Size',
     ];
-
 }

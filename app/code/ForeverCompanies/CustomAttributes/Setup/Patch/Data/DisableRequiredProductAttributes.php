@@ -6,7 +6,6 @@ namespace ForeverCompanies\CustomAttributes\Setup\Patch\Data;
 
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
-use Magento\Catalog\Setup\CategorySetup;
 use Magento\Catalog\Setup\CategorySetupFactory;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Category;

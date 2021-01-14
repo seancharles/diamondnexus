@@ -76,7 +76,10 @@ class OrderFishbowlImport
                 ->select()->from($this->userResource->getMainTable(), ['username'])
                 ->where('user_id = ?', $order->getData('sales_person_id'));
             $salesPersonResult = $this->userResource->getConnection()->fetchRow($salesPersonSql);
-            $extensionAttributes->setSalesPersonUsername($salesPersonResult['username']);
+            $salesPerson = is_array($salesPersonResult) && array_key_exists('username', $salesPersonResult)
+                ? $salesPersonResult['username']
+                : '';
+            $extensionAttributes->setSalesPersonUsername($salesPerson);
         }
         $order->setExtensionAttributes($extensionAttributes);
 
@@ -88,6 +91,7 @@ class OrderFishbowlImport
      * @param OrderSearchResultInterface $orderSearchResult
      * @return OrderSearchResultInterface
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @throws LocalizedException
      */
     public function afterGetList(
         OrderRepositoryInterface $subject,
@@ -113,6 +117,9 @@ class OrderFishbowlImport
         }
         if ($extensionAttributes->getDeliveryDate() !== null) {
             $entity->setData('delivery_date', $extensionAttributes->getDeliveryDate());
+        }
+        if ($extensionAttributes->getDispatchDate() !== null) {
+            $entity->setData('dispatch_date', $extensionAttributes->getDeliveryDate());
         }
         if ($extensionAttributes->getShippingMethod() !== null) {
             $entity->setData('shipping_method', $extensionAttributes->getShippingMethod());

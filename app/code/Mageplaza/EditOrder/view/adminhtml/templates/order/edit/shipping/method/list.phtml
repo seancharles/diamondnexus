@@ -1,0 +1,128 @@
+<?php
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_EditOrder
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+
+/** @var \Mageplaza\EditOrder\Block\Adminhtml\Order\Edit\ShippingMethod $block */
+$_shippingRateGroups = $block->getShippingRates();
+?>
+
+<div class="mpeditorder-messages">
+    <div class="message message-error error mpeditorder-shipping-method-error" style="display: none"></div>
+</div>
+<?php if ($_shippingRateGroups) : ?>
+    <div id="order-shipping-method-choose" class="control" data-mage-init='{"mpListShippingMethod": ""}'>
+        <dl class="admin__order-shipment-methods">
+            <?php foreach ($_shippingRateGroups as $code => $_rates) : ?>
+                <dt class="admin__order-shipment-methods-title">
+                    <?= $block->escapeHtml($block->getCarrierName($code)) ?>
+                </dt>
+                <dd class="admin__order-shipment-methods-options">
+                    <ul class="admin__order-shipment-methods-options-list">
+                        <?php foreach ($_rates as $_rate) : ?>
+                            <?php $shipRateData = $block->getBaseShippingData($_rate); ?>
+                            <?php $_radioProperty = 'name="order[shipping_method]" type="radio"' ?>
+                            <?php $_code = $_rate->getCode() ?>
+                            <li class="admin__field-option mpeditorder-shipping-method-option">
+                                <?php if ($_rate->getErrorMessage()) : ?>
+                                    <div class="messages">
+                                        <div class="message message-error error">
+                                            <div><?= $block->escapeHtml($_rate->getErrorMessage()) ?></div>
+                                        </div>
+                                    </div>
+                                <?php else : ?>
+                                    <?php $_checked = $block->isMethodActive($_code) ? 'checked="checked"' : '' ?>
+                                    <?php $hide = $block->isMethodActive($_code) ? '' : 'style="display:none"' ?>
+                                    <input <?= /* @noEscape */ $_radioProperty ?>
+                                        value="<?= /* @noEscape */ $_code ?>"
+                                        id="s_method_<?= /* @noEscape */ $_code ?>" <?= /* @noEscape */ $_checked ?>
+                                        class="admin__control-radio"/>
+                                    <label class="admin__field-label" for="s_method_<?= /* @noEscape */ $_code ?>">
+                                        <?= $block->escapeHtml($_rate->getMethodTitle() ?: $_rate->getMethodDescription()) ?> -
+                                        <strong>
+                                            <?php if ($_checked) : ?>
+                                                <?= /* @noEscape */ $block->getShippingPrice($shipRateData['ship_amount'], true) ?>
+                                            <?php else : ?>
+                                                <?= /* @noEscape */ $block->getShippingPrice($_rate->getPrice(), true) ?>
+                                            <?php endif ?>
+                                        </strong>
+                                    </label>
+
+                                    <?php if ($_code !== 'freeshipping_freeshipping') : ?>
+                                        <table class="data-grid data-grid-draggable" <?= /* @noEscape */ $hide ?> style="margin: 20px">
+                                            <thead>
+                                            <tr>
+                                                <th class="data-grid-th _sortable _draggable">
+                                                    <span><?= /* @noEscape */ __('Shipping Fee (excl. Tax)') ?></span>
+                                                </th>
+                                                <th class="data-grid-th _sortable _draggable">
+                                                    <span><?= /* @noEscape */ __('Tax (%)') ?></span>
+                                                </th>
+                                                <th class="data-grid-th _sortable _draggable">
+                                                    <span><?= /* @noEscape */ __('Discount (Fixed Amount)') ?></span>
+                                                </th>
+                                                <th class="data-grid-th _sortable _draggable">
+                                                    <span><?= /* @noEscape */ __('Total Fee') ?></span>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr class="data-row mpeditorder-shipping-data-row cal data_<?= /* @noEscape */ $_code ?>">
+                                                <td>
+                                                    <input name="<?= /* @noEscape */ 'method_detail[' . $_code . '][ship_amount]' ?>"
+                                                           class="shipping-fee" type="text"
+                                                           value="<?= /* @noEscape */ number_format($shipRateData['ship_amount'], 2) ?>"/>
+                                                </td>
+                                                <td>
+                                                    <input name="<?= /* @noEscape */ 'method_detail[' . $_code . '][ship_tax_percent]' ?>"
+                                                           class="shipping-tax" type="text"
+                                                           value="<?= /* @noEscape */ number_format($shipRateData['ship_tax_percent'], 2) ?>"/>
+                                                </td>
+                                                <td>
+                                                    <input name="<?= /* @noEscape */ 'method_detail[' . $_code . '][ship_discount_amount]' ?>"
+                                                           class="shipping-discount" type="text"
+                                                           value="<?= /* @noEscape */ number_format($shipRateData['ship_discount_amount'], 2) ?>"/>
+                                                </td>
+                                                <td>
+                                                    <input name="<?= /* @noEscape */ 'method_detail[' . $_code . '][total_fee]' ?>"
+                                                           class="shipping-total-fee" type="text"
+                                                           value="<?= /* @noEscape */ number_format($shipRateData['total_fee'], 2) ?>" readonly/>
+                                                </td>
+                                                <input name="<?= /* @noEscape */ 'method_detail[' . $_code . '][ship_description]' ?>"
+                                                       class="shipping-description" type="hidden"
+                                                       value="<?= $block->escapeHtml($block->getCarrierName($code) . ' - ' . $_rate->getMethodTitle()) ?>"/>
+
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    <?php endif; ?>
+                                <?php endif ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </dd>
+            <?php endforeach; ?>
+        </dl>
+    </div>
+<?php else : ?>
+    <div class="order-shipping-method-summary">
+        <strong class="order-shipping-method-not-available"><?= /* @noEscape */ __('Sorry, no quotes are available for this order.') ?></strong>
+    </div>
+<?php endif ?>
+

@@ -5,17 +5,12 @@ namespace ForeverCompanies\CustomAttributes\Controller\Adminhtml\System\Config;
 use ForeverCompanies\CustomAttributes\Logger\Logger;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\Controller\Result\Json;
-use Magento\Framework\Controller\Result\JsonFactory;
 use ForeverCompanies\CustomAttributes\Helper\TransformData;
 use Magento\Framework\Exception\FileSystemException;
-use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\StateException;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Event\Observer;
-use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\File\Csv;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\Message\ManagerInterface;
@@ -23,8 +18,6 @@ use Magento\Store\Model\StoreManagerInterface;
 
 class DeleteByCsv extends Action
 {
-
-    protected $resultJsonFactory;
 
     /**
      * @var TransformData

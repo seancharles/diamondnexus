@@ -12,27 +12,28 @@
     "require": {
         "affirm/magento2": "^3.0",
         "cloudinary/cloudinary-magento2": "^1.11",
-        "gene/module-braintree": "^3.4",
+        "magento/composer-root-update-plugin": "~1.0",
         "magento/data-migration-tool": "2.3.4",
-        "magento/product-enterprise-edition": "2.3.4",
+        "magento/magento2-functional-testing-framework": "dev-develop",
+        "magento/product-enterprise-edition": "2.4.1",
+        "mageplaza/module-core": "^1.4",
         "mageplaza/module-smtp": "^1.4",
-        "run-as-root/magento2-prometheus-exporter": "^1.2",
         "shipperhq/module-address-autocomplete": "^20.3",
         "shipperhq/module-shipper": "^20.37"
     },
     "require-dev": {
         "allure-framework/allure-phpunit": "~1.2.0",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
-        "friendsofphp/php-cs-fixer": "~2.14.0",
+        "friendsofphp/php-cs-fixer": "~2.16.0",
         "lusitanian/oauth": "~0.8.10",
         "magento/magento-coding-standard": "~4.0.0",
-        "magento/magento2-functional-testing-framework": "2.5.3",
-        "pdepend/pdepend": "2.5.2",
+        "pdepend/pdepend": "~2.7.1",
         "phpcompatibility/php-compatibility": "^9.3",
-        "phpmd/phpmd": "@stable",
-        "phpunit/phpunit": "~6.5.0",
-        "sebastian/phpcpd": "~3.0.0",
-        "squizlabs/php_codesniffer": "~3.4.0"
+        "phpmd/phpmd": "^2.8.0",
+        "phpstan/phpstan": ">=0.12.3 <=0.12.23",
+        "phpunit/phpunit": "^9",
+        "sebastian/phpcpd": "~5.0.0",
+        "squizlabs/php_codesniffer": "~3.5.4"
     },
     "conflict": {
         "gene/bluefoot": "*"
@@ -68,7 +69,7 @@
             "Magento\\TestFramework\\Utility\\": "dev/tests/static/framework/Magento/TestFramework/Utility/"
         }
     },
-    "version": "2.3.4",
+    "version": "2.3.6",
     "minimum-stability": "stable",
     "repositories": [
         {

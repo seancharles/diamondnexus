@@ -38,7 +38,7 @@ class QtyCounterTest extends \Magento\TestFramework\Indexer\TestCase
      */
     private $cartManagement;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $db = Bootstrap::getInstance()->getBootstrap()
             ->getApplication()
@@ -54,7 +54,7 @@ class QtyCounterTest extends \Magento\TestFramework\Indexer\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->cartManagement = Bootstrap::getObjectManager()->get(CartManagementInterface::class);
     }
@@ -115,7 +115,7 @@ class QtyCounterTest extends \Magento\TestFramework\Indexer\TestCase
      */
     private function mockAmqpExchange()
     {
-        /** @var Exchange|\PHPUnit_Framework_MockObject_MockObject $amqpExchange */
+        /** @var Exchange|\PHPUnit\Framework\MockObject\MockObject $amqpExchange */
         $amqpExchange = $this->getMockBuilder(Exchange::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -133,7 +133,7 @@ class QtyCounterTest extends \Magento\TestFramework\Indexer\TestCase
                 })
             )
             ->willReturn(null);
-        /** @var ExchangeFactory|\PHPUnit_Framework_MockObject_MockObject $exchangeFactory */
+        /** @var ExchangeFactory|\PHPUnit\Framework\MockObject\MockObject $exchangeFactory */
         $exchangeFactory = $this->getMockBuilder(ExchangeFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -177,7 +177,7 @@ class QtyCounterTest extends \Magento\TestFramework\Indexer\TestCase
             ];
         }
 
-        /** @var DeploymentConfig|\PHPUnit_Framework_MockObject_MockObject $deploymentConfig */
+        /** @var DeploymentConfig|\PHPUnit\Framework\MockObject\MockObject $deploymentConfig */
         $deploymentConfig = $this->getMockBuilder(DeploymentConfig::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -275,7 +275,7 @@ class QtyCounterTest extends \Magento\TestFramework\Indexer\TestCase
     /**
      * teardown
      */
-    public function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
     }

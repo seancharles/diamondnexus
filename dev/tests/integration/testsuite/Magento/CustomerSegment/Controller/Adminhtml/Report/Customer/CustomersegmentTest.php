@@ -11,8 +11,15 @@ namespace Magento\CustomerSegment\Controller\Adminhtml\Report\Customer;
 class CustomersegmentTest extends \Magento\TestFramework\TestCase\AbstractBackendController
 {
     /**
-     * Checks if child 'grid' block is found in
-     * Magento/CustomerSegment/view/adminhtml/templates/report/detail/grid/container.phtml
+     * @inheritDoc
+     */
+    protected $resource = 'Magento_CustomerSegment::segment';
+    /**
+     * @inheritDoc
+     */
+    protected $uri = 'backend/customersegment/report_customer_customersegment/Segment';
+    /**
+     * Checks if child 'grid' block is found in Magento_CustomerSegment::report/detail/grid/container.phtml
      *
      * @magentoDataFixture Magento/CustomerSegment/_files/segment.php
      */
@@ -27,6 +34,6 @@ class CustomersegmentTest extends \Magento\TestFramework\TestCase\AbstractBacken
             'backend/customersegment/report_customer_customersegment/detail/segment_id/' . $segment->getId()
         );
         $content = $this->getResponse()->getBody();
-        $this->assertContains('segmentGridJsObject', $content);
+        $this->assertStringContainsString('segmentGridJsObject', $content);
     }
 }

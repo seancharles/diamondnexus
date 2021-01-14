@@ -7,13 +7,20 @@ declare(strict_types=1);
 
 use Magento\Rma\Api\Data\ItemInterface;
 use Magento\Rma\Model\Rma;
+use Magento\Sales\Api\Data\OrderInterfaceFactory;
+use Magento\Sales\Model\Order;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\Rma\Api\RmaRepositoryInterface;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-include __DIR__ . '/../../../Magento/Sales/_files/order.php';
+Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/order.php');
 
 $objectManager = Bootstrap::getObjectManager();
 
+/** @var Order $order */
+$order = $objectManager->get(OrderInterfaceFactory::class)->create()->loadByIncrementId('100000001');
+$orderItems = $order->getItems();
+$orderItem = reset($orderItems);
 /** @var $rma Rma */
 $rma = $objectManager->create(Rma::class);
 $rma->setOrderId($order->getId());

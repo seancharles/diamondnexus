@@ -3,9 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require __DIR__ . '/../../../Magento/SalesRule/_files/cart_rule_40_percent_off.php';
-require __DIR__ . '/../../../Magento/CustomerSegment/_files/segment_designers.php';
+Resolver::getInstance()->requireDataFixture('Magento/SalesRule/_files/cart_rule_40_percent_off.php');
+Resolver::getInstance()->requireDataFixture('Magento/CustomerSegment/_files/segment_designers.php');
 
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 $registry = $objectManager->get(\Magento\Framework\Registry::class);

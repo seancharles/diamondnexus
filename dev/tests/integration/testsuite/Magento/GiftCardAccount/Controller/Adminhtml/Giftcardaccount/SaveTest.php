@@ -9,6 +9,7 @@ class SaveTest extends \Magento\TestFramework\TestCase\AbstractController
 {
     /**
      * @magentoDataFixture Magento/Store/_files/core_fixturestore.php
+     * @magentoAppArea adminhtml
      */
     public function testExecute()
     {

@@ -3,40 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-\Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
-    \Magento\Framework\App\AreaList::class
-)->getArea(
-    \Magento\Backend\App\Area\FrontNameResolver::AREA_CODE
-)->load(
-    \Magento\Framework\App\Area::PART_CONFIG
-);
-if (!isset($scope)) {
-    $scope = 'websites';
-}
 
-/** @var $role \Magento\Authorization\Model\Role */
-$role = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\Authorization\Model\Role::class);
-$role->setName('admingws_role')->setGwsIsAll(0)->setRoleType('G')->setPid('1');
-if ('websites' == $scope) {
-    $role->setGwsWebsites(
-        \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
-            \Magento\Store\Model\StoreManagerInterface::class
-        )->getWebsite()->getId()
-    );
-} else {
-    $role->setGwsStoreGroups(
-        \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
-            \Magento\Store\Model\StoreManagerInterface::class
-        )->getWebsite()->getDefaultGroupId()
-    );
-}
+use Magento\Authorization\Model\Role;
+use Magento\Authorization\Model\Rules;
+use Magento\Backend\App\Area\FrontNameResolver;
+use Magento\Framework\App\Area;
+use Magento\Framework\App\AreaList;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\TestFramework\Helper\Bootstrap;
+use Magento\User\Model\User;
+
+$objectManager = Bootstrap::getObjectManager();
+$objectManager->get(AreaList::class)->getArea(FrontNameResolver::AREA_CODE)->load(Area::PART_CONFIG);
+
+/** @var $role Role */
+$role = $objectManager->create(Role::class);
+$role->setName('admingws_role')
+    ->setGwsIsAll(0)
+    ->setRoleType('G')
+    ->setPid('1')
+    ->setGwsWebsites($objectManager->get(StoreManagerInterface::class)->getWebsite()->getId());
 $role->save();
-
-/** @var $rule \Magento\Authorization\Model\Rules */
-$rule = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\Authorization\Model\Rules::class);
-$rule->setRoleId($role->getId())->setResources(['Magento_Backend::all'])->saveRel();
-
-$user = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\User\Model\User::class);
+/** @var $rule Rules */
+$rule = $objectManager->create(Rules::class);
+$rule->setRoleId($role->getId())
+    ->setResources(['Magento_Backend::all'])
+    ->saveRel();
+$user = $objectManager->create(User::class);
 $user->setData(
     [
         'firstname' => 'firstname',
@@ -47,5 +40,4 @@ $user->setData(
         'is_active' => 1,
     ]
 );
-
 $user->setRoleId($role->getId())->save();

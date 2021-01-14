@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="ForeverCompanies_Salesforce::salesforce"
+             title="Salesforce Integration"
+             translate="title"
+             module="ForeverCompanies_Salesforce"
+             sortOrder="60"
+             resource="ForeverCompanies_Salesforce::salesforce"/>
+
+        <add id="ForeverCompanies_Salesforce::integration"
+             title="Salesforce Integration"
+             module="ForeverCompanies_Salesforce"
+             sortOrder="10"
+             parent="ForeverCompanies_Salesforce::salesforce"
+             resource="ForeverCompanies_Salesforce::integration"/>
+
+        <add id="ForeverCompanies_Salesforce::mapping"
+             title="Field Mapping"
+             sortOrder="20"
+             module="ForeverCompanies_Salesforce"
+             parent="ForeverCompanies_Salesforce::integration"
+             action="salesforce/map/index"
+             resource="ForeverCompanies_Salesforce::mapping"/>
+
+        <add id="ForeverCompanies_Salesforce::debug"
+             title="Debug"
+             module="ForeverCompanies_Salesforce"
+             sortOrder="35"
+             parent="ForeverCompanies_Salesforce::integration"
+             action="salesforce/debug/index"
+             resource="ForeverCompanies_Salesforce::debug"/>
+			 
+        <add id="ForeverCompanies_Salesforce::config_salesforce"
+             title="Configuration"
+             module="ForeverCompanies_Salesforce"
+             sortOrder="40"
+             parent="ForeverCompanies_Salesforce::integration"
+             action="adminhtml/system_config/edit/section/salesforcecrm/"
+             resource="ForeverCompanies_Salesforce::config_salesforce"/>
+    </menu>
+</config>

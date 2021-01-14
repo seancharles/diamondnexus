@@ -21,8 +21,8 @@ use ForeverCompanies\CustomApi\Block\Adminhtml\Order\AsdAndDeliveryModalBox;
             min="<?= $block->escapeHtml(date('Y-m-d')) ?>"
             value="<?= $block->escapeHtml($block->getData('order')->getExtensionAttributes()->getDeliveryDate()) ?>"
         >
-
-        <input type="button" value="Submit" id="order-view-add-warranty">
+        <input name="form_key" type="hidden" value="<?php echo $block->getFormKey();?>">
+        <input type="submit" value="Submit" id="order-view-add-warranty">
     </form>
 </div>
 

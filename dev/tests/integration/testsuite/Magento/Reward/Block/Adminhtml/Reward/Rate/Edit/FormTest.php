@@ -13,7 +13,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     /** @var \Magento\Reward\Block\Adminhtml\Reward\Rate\Edit\Form */
     protected $_block;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $layout = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(

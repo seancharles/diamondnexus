@@ -1,6 +1,5 @@
 <?php
 
-
 namespace ForeverCompanies\CustomApi\Plugin\Adminhtml\Order;
 
 use ForeverCompanies\CustomApi\Block\Adminhtml\Order\AsdAndDeliveryModalBox;
@@ -13,6 +12,11 @@ use Magento\Framework\Exception\LocalizedException;
 class View
 {
 
+    /**
+     * @param \Magento\Sales\Block\Adminhtml\Order\View $subject
+     * @param $layout
+     * @return array
+     */
     public function beforeSetLayout(
         \Magento\Sales\Block\Adminhtml\Order\View $subject,
         $layout

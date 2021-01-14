@@ -5,6 +5,15 @@
         <arguments>
             <argument name="columns" xsi:type="array">
                 <item name="loggeduser" xsi:type="string">sales_order.loggeduser</item>
+                <item name="sales_person_id" xsi:type="string">sales_order.sales_person_id</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="ShipmentGridAggregator" type="Magento\Sales\Model\ResourceModel\Grid">
+        <arguments>
+            <argument name="columns" xsi:type="array">
+                <item name="final_shipping_cost" xsi:type="string">sales_shipment.final_shipping_cost</item>
+                <item name="delivery_date_actual" xsi:type="string">sales_shipment.delivery_date_actual</item>
             </argument>
         </arguments>
     </virtualType>
@@ -14,7 +23,14 @@
                 <item name="TransformStatuses" xsi:type="object">
                     ForeverCompanies\CustomSales\Console\Command\TransformStatuses
                 </item>
+                <item name="ExpirationQuotes" xsi:type="object">
+                    ForeverCompanies\CustomSales\Console\Command\ExpirationQuotes
+                </item>
             </argument>
         </arguments>
+    </type>
+    <type name="Magento\Sales\Model\Order\ShipmentRepository">
+        <plugin name="ForeverCompanies_CustomSales_Plugin_ShipmentRepository" sortOrder="10"
+                type="ForeverCompanies\CustomSales\Plugin\ShipmentRepository"/>
     </type>
 </config>

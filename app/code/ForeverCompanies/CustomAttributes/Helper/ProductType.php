@@ -9,7 +9,6 @@ namespace ForeverCompanies\CustomAttributes\Helper;
 
 use ForeverCompanies\CustomAttributes\Logger\Logger;
 use Magento\Catalog\Api\AttributeSetRepositoryInterface;
-use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Eav\Model\Config;
@@ -107,6 +106,7 @@ class ProductType extends AbstractHelper
             $attributeSetName = $this->attrSetRepository->get($product->getAttributeSetId())->getAttributeSetName();
             $productType = $this->attributeSetToProductType($attributeSetName);
             $product->setCustomAttribute('product_type', $productType);
+            $product->setData('product_type', $productType);
             if ($product->getCustomAttribute('product_type') == 'Stone') {
                 $product->setCustomAttribute('allow_in_bundles', 1);
             }

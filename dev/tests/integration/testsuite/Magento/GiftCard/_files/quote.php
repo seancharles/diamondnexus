@@ -10,8 +10,10 @@
  */
 declare(strict_types=1);
 
-require __DIR__ . '/../../Customer/_files/customer.php';
-require __DIR__ . '/../../Customer/_files/customer_address.php';
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+
+Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer.php');
+Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer_address.php');
 
 /** @var  \Magento\Framework\ObjectManagerInterface $objectManager */
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();

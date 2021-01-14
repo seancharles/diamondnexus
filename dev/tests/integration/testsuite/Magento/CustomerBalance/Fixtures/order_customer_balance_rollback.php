@@ -8,6 +8,7 @@ declare(strict_types=1);
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
 $objectManager = Bootstrap::getObjectManager();
 
@@ -25,5 +26,5 @@ foreach ($items as $item) {
     $repository->delete($item);
 }
 
-require __DIR__ . '/../../../Magento/Catalog/_files/product_simple_rollback.php';
-require __DIR__ . '/../../../Magento/Customer/_files/customer_rollback.php';
+Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple_rollback.php');
+Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer_rollback.php');

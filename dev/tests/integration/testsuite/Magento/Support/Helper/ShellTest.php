@@ -47,7 +47,7 @@ class ShellTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->filesystem = $this->objectManager->get(Filesystem::class);
@@ -64,7 +64,7 @@ class ShellTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function assertPreConditions()
+    protected function assertPreConditions(): void
     {
         parent::assertPreConditions();
         // phpcs:ignore Magento2.Security.InsecureFunction
@@ -124,18 +124,19 @@ class ShellTest extends \PHPUnit\Framework\TestCase
      * Test on missing file.
      *
      * @return void
-     * @expectedException \Magento\Framework\Exception\FileSystemException
-     * @expectedExceptionMessage File test|test '".txt is not found.
      */
     public function testIsFileLockedOnMissingFile(): void
     {
+        $this->expectException(\Magento\Framework\Exception\FileSystemException::class);
+        $this->expectExceptionMessage('File test|test \'".txt is not found.');
+
         $this->shell->isFileLocked($this->fileName);
     }
 
     /**
      * @inheritdoc
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         /** @var WriteInterface $varDirectory */

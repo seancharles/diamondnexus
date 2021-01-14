@@ -16,7 +16,7 @@ class AccordionTest extends \PHPUnit\Framework\TestCase
     /** @var \Magento\AdvancedCheckout\Block\Adminhtml\Manage\Accordion */
     protected $_block = null;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
@@ -30,7 +30,7 @@ class AccordionTest extends \PHPUnit\Framework\TestCase
         $this->_block = $this->_layout->createBlock(\Magento\AdvancedCheckout\Block\Adminhtml\Manage\Accordion::class);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->_block = null;
         $this->_layout = null;
@@ -87,11 +87,11 @@ class AccordionTest extends \PHPUnit\Framework\TestCase
         );
 
         $html = $this->_block->toHtml();
-        $this->assertContains($title, $html);
-        $this->assertContains($url, $html);
-        $this->assertNotContains($containerText, $html);
-        $this->assertContains($titleOne, $html);
-        $this->assertContains($blockContent, $html);
+        $this->assertStringContainsString($title, $html);
+        $this->assertStringContainsString($url, $html);
+        $this->assertStringNotContainsString($containerText, $html);
+        $this->assertStringContainsString($titleOne, $html);
+        $this->assertStringContainsString($blockContent, $html);
     }
 
     /**

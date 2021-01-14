@@ -25,7 +25,7 @@ class GiftCardAccountManagerInterfaceTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->manager = Bootstrap::getObjectManager()->get(GiftCardAccountManagerInterface::class);
     }

@@ -3,9 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require __DIR__ . '/../../Store/_files/core_fixturestore.php';
-require __DIR__ . '/simple_product.php';
+Resolver::getInstance()->requireDataFixture('Magento/Store/_files/core_fixturestore.php');
+Resolver::getInstance()->requireDataFixture('Magento/CatalogStaging/_files/simple_product.php');
 
 /** @var $store \Magento\Store\Model\Store */
 $store = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\Store\Model\Store::class);

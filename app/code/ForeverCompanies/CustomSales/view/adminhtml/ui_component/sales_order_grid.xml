@@ -1,13 +1,21 @@
 <listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <settings>
+        <buttons>
+            <button name="CreateQuote" class="ForeverCompanies\CustomSales\Block\Adminhtml\Sales\CreateQuote"/>
+        </buttons>
+    </settings>
     <columns name="sales_order_columns">
-        <column name="loggeduser">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="filter" xsi:type="string">text</item>
-                    <item name="label" xsi:type="string" translate="true">Logged User</item>
-                </item>
-            </argument>
+        <column name="sales_person_id" class="ForeverCompanies\CustomSales\Ui\Component\Columns\SalesPerson">
+            <settings>
+                <filter>select</filter>
+                <options class="ForeverCompanies\CustomSales\Model\User\Source"/>
+                <visible>true</visible>
+                <dataType>select</dataType>
+                <label translate="true">Sales Person</label>
+                <bodyTmpl>ui/grid/cells/html</bodyTmpl>
+                <sortable>false</sortable>
+            </settings>
         </column>
     </columns>
 </listing>

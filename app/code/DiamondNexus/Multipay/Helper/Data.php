@@ -8,13 +8,13 @@ use Braintree\Result\Error;
 use Braintree\Result\Successful;
 use DiamondNexus\Multipay\Model\Constant;
 use League\ISO3166\ISO3166;
-use Magento\Braintree\Model\Adapter\BraintreeAdapter;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Exception\ValidatorException;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order as OrderModel;
+use PayPal\Braintree\Model\Adapter\BraintreeAdapter;
 
 class Data extends AbstractHelper
 {

@@ -21,7 +21,7 @@ class EntityTest extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = \Magento\Framework\App\ObjectManager::getInstance();
     }

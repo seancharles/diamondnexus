@@ -1,6 +1,12 @@
 <?php
 use ForeverCompanies\CustomSales\Block\Adminhtml\Order\Create\SalesPerson;
+
 /** @var SalesPerson $block */
 ?>
+<form style="display: inline-table" action="<?= $block->escapeUrl($block->getFormUrl()) ?>" method="post"
+      id="order-create-change-salesperson-form">
 <span class="title"><?= $block->escapeHtml('Sales Person ID: ' . $block->getSalesPerson()) ?></span>
-
+<?php if ($block->isAllowed()) { ?>
+    <input type="submit" value="Change" id="order-view-add-warranty">
+<?php } ?>
+</form>

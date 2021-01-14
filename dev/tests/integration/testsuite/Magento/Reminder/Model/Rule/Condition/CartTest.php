@@ -18,7 +18,7 @@ class CartTest extends \PHPUnit\Framework\TestCase
     public function testDaysDiffCondition($operator, $value, $expectedResult)
     {
         $dateModelMock = $this->createPartialMock(\Magento\Framework\Stdlib\DateTime\DateTime::class, ['gmtDate']);
-        $dateModelMock->expects($this->atLeastOnce())->method('gmtDate')->will($this->returnValue('2013-12-24'));
+        $dateModelMock->expects($this->atLeastOnce())->method('gmtDate')->willReturn('2013-12-24');
 
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\Reminder\Model\Rule\Condition\Cart::class,
@@ -28,7 +28,7 @@ class CartTest extends \PHPUnit\Framework\TestCase
         $this->_model->setValue($value);
 
         $where = $this->_model->getConditionsSql(0, 0)->getPart('where');
-        $this->assertContains($expectedResult, $where[2]);
+        $this->assertStringContainsString($expectedResult, $where[2]);
     }
 
     /**
@@ -63,10 +63,11 @@ class CartTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException \Magento\Framework\Exception\LocalizedException
      */
     public function testDaysDiffConditionException()
     {
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
+
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\Reminder\Model\Rule\Condition\Cart::class
         );

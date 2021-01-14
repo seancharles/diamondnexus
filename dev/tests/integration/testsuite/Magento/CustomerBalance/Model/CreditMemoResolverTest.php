@@ -24,7 +24,7 @@ class CreditMemoResolverTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         /** @var ObjectManager $objectManager */
         $objectManager = Bootstrap::getObjectManager();
@@ -130,6 +130,15 @@ class CreditMemoResolverTest extends TestCase
                 'totalRefunded' => 0,
                 'balanceRefunded' => null,
                 'rewardRefunded' => null,
+                'expected' => true
+            ],
+            [
+                'totalInvoiced' => 20,
+                'balanceInvoiced' => 0,
+                'rewardInvoiced' => 0,
+                'totalRefunded' => 10,
+                'balanceRefunded' => 10,
+                'rewardRefunded' => 0,
                 'expected' => true
             ],
         ];

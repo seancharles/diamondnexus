@@ -22,7 +22,7 @@ class CollectionTest extends TestCase
      */
     private $collection;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->collection = Bootstrap::getObjectManager()->create(Collection::class);
     }

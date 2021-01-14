@@ -1,0 +1,27 @@
+<?php
+/** @var ForeverCompanies\Salesforce\Block\Adminhtml\Request\TodayRequestForm $block */
+$restRequest = $block->getTodayRestRequest();
+
+$noRequestMessage = 'No request has been made today';
+?>
+<section class="admin__page-section order-view-billing-shipping">
+    <div class="admin__page-section-title">
+        <span class="title"><?php /* @escapeNotVerified */
+            echo __('Requests Made Today') ?></span>
+    </div>
+    <div class="admin__page-section-content">
+        <div class="admin__page-section-item order-payment-method admin__fieldset-wrapper">
+            <div class="admin__page-section-item-title">
+                <span class="title"><?php /* @escapeNotVerified */
+                    echo __('Total API Request Today') ?></span>
+            </div>
+            <div class="admin__page-section-item-content">
+                <p style="font-size: 13pt;"><?php /* @escapeNotVerified */
+                    echo __('REST API Request:') ?>
+                    <?php /* @escapeNotVerified */
+                    echo $restRequest ? $restRequest : $noRequestMessage ?></p>
+            </div>
+        </div>
+
+
+</section>

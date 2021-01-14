@@ -238,7 +238,7 @@ class Result
 			}
 		}
 		
-		if($this->hasOptionErrors($aOptionsResult) == true) {
+		if($this->hasOptionErrors() == true) {
 			return $this->errors;
 		} else {
 			return false;

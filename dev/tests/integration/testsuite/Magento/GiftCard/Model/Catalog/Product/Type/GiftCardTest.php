@@ -78,6 +78,6 @@ class GiftCardTest extends \PHPUnit\Framework\TestCase
         $giftCardProduct = $productRepository->get('gift-card-with-fixed-amount-50', false, null, true);
         $quoteItem = $quote->addProduct($giftCardProduct, $buyRequest);
         $quoteItemBuyRequest = $quoteItem->getOptionByCode('info_buyRequest');
-        $this->assertContains('"giftcard_amount":50', $quoteItemBuyRequest->getValue());
+        $this->assertStringContainsString('"giftcard_amount":50', $quoteItemBuyRequest->getValue());
     }
 }

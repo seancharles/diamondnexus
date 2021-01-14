@@ -2,16 +2,9 @@
 
 namespace ForeverCompanies\CustomAttributes\Block\System\Config;
 
-use ForeverCompanies\CustomAttributes\Helper\TransformData;
-use Magento\Backend\Block\Template\Context;
-use Magento\Catalog\Model\ProductRepository;
 use Magento\Config\Block\System\Config\Form\Field;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\File\Csv;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Store\Model\StoreManagerInterface;
 
 class DeleteByCsv extends Field
 {

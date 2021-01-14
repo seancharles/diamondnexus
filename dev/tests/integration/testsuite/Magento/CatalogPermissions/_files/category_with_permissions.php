@@ -5,21 +5,26 @@
  */
 declare(strict_types=1);
 
+use Magento\TestFramework\Catalog\Model\GetCategoryByName;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\CatalogPermissions\Model\Permission;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require __DIR__ . '/../../Catalog/_files/category.php';
+Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/category.php');
 
+$objectManager = Bootstrap::getObjectManager();
+/** @var GetCategoryByName $getCategoryByName */
+$getCategoryByName = $objectManager->create(GetCategoryByName::class);
 /** @var $permission Permission */
-$permission = Bootstrap::getObjectManager()->create(Permission::class);
-$websiteId = Bootstrap::getObjectManager()
+$permission = $objectManager->create(Permission::class);
+$websiteId = $objectManager
     ->get(StoreManagerInterface::class)
     ->getWebsite()
     ->getId();
 $permission->setEntityId(1)
     ->setWebsiteId($websiteId)
-    ->setCategoryId($category->getId())
+    ->setCategoryId($getCategoryByName->execute('Category 1')->getId())
     ->setCustomerGroupId(1)
     ->setGrantCatalogCategoryView(Permission::PERMISSION_DENY)
     ->setGrantCatalogProductPrice(Permission::PERMISSION_DENY)

@@ -21,7 +21,7 @@ class OrderItemRepositoryTest extends WebapiAbstract
      */
     protected $objectManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
     }
@@ -50,7 +50,7 @@ class OrderItemRepositoryTest extends WebapiAbstract
 
         $response = $this->_webApiCall($serviceInfo, ['id' => $orderItem->getId()]);
 
-        $this->assertTrue(is_array($response));
+        $this->assertIsArray($response);
         $this->assertOrderItem($orderItem, $response);
     }
 
@@ -92,10 +92,10 @@ class OrderItemRepositoryTest extends WebapiAbstract
 
         $response = $this->_webApiCall($serviceInfo, $requestData);
 
-        $this->assertTrue(is_array($response));
+        $this->assertIsArray($response);
         $this->assertArrayHasKey('items', $response);
         $this->assertCount(1, $response['items']);
-        $this->assertTrue(is_array($response['items'][0]));
+        $this->assertIsArray($response['items'][0]);
         $this->assertOrderItem(current($order->getItems()), $response['items'][0]);
     }
 
@@ -107,6 +107,7 @@ class OrderItemRepositoryTest extends WebapiAbstract
     protected function assertOrderItem(\Magento\Sales\Model\Order\Item $orderItem, array $response)
     {
         $expected = $orderItem->getBuyRequest()->getData();
+        $expectedProductOptions = $orderItem->getProductOptions();
 
         $this->assertArrayHasKey('product_option', $response);
         $this->assertArrayHasKey('extension_attributes', $response['product_option']);
@@ -120,5 +121,11 @@ class OrderItemRepositoryTest extends WebapiAbstract
         $this->assertEquals($expected['giftcard_recipient_name'], $actualOptions['giftcard_recipient_name']);
         $this->assertEquals($expected['giftcard_recipient_email'], $actualOptions['giftcard_recipient_email']);
         $this->assertEquals($expected['giftcard_message'], $actualOptions['giftcard_message']);
+
+        $this->assertArrayHasKey('extension_attributes', $actualOptions);
+        $this->assertEquals(
+            $expectedProductOptions['giftcard_created_codes'],
+            $actualOptions['extension_attributes']['giftcard_created_codes']
+        );
     }
 }

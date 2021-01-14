@@ -7,16 +7,28 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomApi\Model;
 
+use ForeverCompanies\CustomApi\Api\Data\ExtSearchResultsInterfaceFactory;
 use ForeverCompanies\CustomApi\Api\ExtSalesOrderUpdateManagementInterface;
 use ForeverCompanies\CustomApi\Helper\ExtOrder;
-use Magento\Framework\Exception\LocalizedException;
+use ForeverCompanies\CustomApi\Model\ResourceModel\ExtSalesOrderUpdate\CollectionFactory;
+use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 
 class ExtSalesOrderUpdateManagement implements ExtSalesOrderUpdateManagementInterface
 {
     /**
-     * @var ResourceModel\ExtSalesOrderUpdate
+     * @var CollectionFactory
      */
-    protected $resourceModel;
+    protected $collectionFactory;
+
+    /**
+     * @var CollectionProcessorInterface
+     */
+    protected $collectionProcessor;
+
+    /**
+     * @var ExtSearchResultsInterfaceFactory
+     */
+    protected $searchResultsFactory;
 
     /**
      * @var ExtOrder
@@ -25,30 +37,36 @@ class ExtSalesOrderUpdateManagement implements ExtSalesOrderUpdateManagementInte
 
     /**
      * ExtSalesOrderUpdateManagement constructor.
-     * @param ResourceModel\ExtSalesOrderUpdate $resourceModel
+     * @param CollectionFactory $collectionFactory
+     * @param CollectionProcessorInterface $collectionProcessor
+     * @param ExtSearchResultsInterfaceFactory $searchResultsInterfaceFactory
      * @param ExtOrder $helper
      */
     public function __construct(
-        \ForeverCompanies\CustomApi\Model\ResourceModel\ExtSalesOrderUpdate $resourceModel,
+        CollectionFactory $collectionFactory,
+        CollectionProcessorInterface $collectionProcessor,
+        ExtSearchResultsInterfaceFactory $searchResultsInterfaceFactory,
         ExtOrder $helper
     ) {
-        $this->resourceModel = $resourceModel;
+        $this->collectionFactory = $collectionFactory;
+        $this->collectionProcessor = $collectionProcessor;
+        $this->searchResultsFactory = $searchResultsInterfaceFactory;
         $this->helper = $helper;
     }
 
     /**
      * {@inheritdoc}
-     * @throws LocalizedException
      */
-    public function getExtSalesOrderUpdate(bool $flagFishbowlUpdate)
+    public function getExtSalesOrderUpdate($searchCriteria)
     {
-        $flag = ($flagFishbowlUpdate == 'true') ? 1 : 0;
-        $connection = $this->resourceModel->getConnection();
-        $mainTable = $this->resourceModel->getMainTable();
-        $select = $connection->select()
-            ->from($mainTable, ['entity_id', 'order_id', 'updated_at', 'updated_fields', 'flag_fishbowl_update'])
-            ->where('flag_fishbowl_update = ?', $flag);
-        return $connection->fetchAll($select);
+        $collection = $this->collectionFactory->create();
+        $this->collectionProcessor->process($searchCriteria, $collection);
+        $collection->load();
+        $searchResult = $this->searchResultsFactory->create();
+        $searchResult->setSearchCriteria($searchCriteria);
+        $searchResult->setItems($collection->getItems());
+        $searchResult->setTotalCount($collection->getSize());
+        return $searchResult;
     }
 
     /**

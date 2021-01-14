@@ -36,6 +36,6 @@ class ItemsTest extends \PHPUnit\Framework\TestCase
         )->setArea(
             'adminhtml'
         );
-        $this->assertContains('<div id="magento_rma_item_edit_grid"', $layout->getOutput());
+        $this->assertStringContainsString('<div id="magento_rma_item_edit_grid"', $layout->getOutput());
     }
 }

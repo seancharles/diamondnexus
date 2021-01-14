@@ -1,0 +1,344 @@
+<?php
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_EditOrder
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+
+/** @var \Mageplaza\EditOrder\Block\Adminhtml\Order\Edit\Items\Grid $block*/
+?>
+<?php $_items = $block->getItems() ?>
+<?php if (empty($_items)) : ?>
+    <div id="order-items_grid">
+        <span><?= /** @noEscape */ __('No ordered items') ?></span>
+    </div>
+<?php else : ?>
+    <div class="admin__table-wrapper" id="order-items_grid">
+        <?php if (count($_items)>10) : ?>
+            <div class="actions update actions-update">
+                <?= $block->getButtonHtml(__('Update Items and Quantities'), 'order.itemsUpdate()', 'action-secondary') ?>
+            </div>
+        <?php endif; ?>
+        <table class="data-table admin__table-primary order-tables">
+            <thead>
+            <tr class="headings">
+                <th class="col-product"><span><?= /** @noEscape */ __('Product') ?></span></th>
+                <th class="col-price"><span><?= /** @noEscape */ __('Price') ?></span></th>
+                <th class="col-qty"><span><?= /** @noEscape */ __('Qty') ?></span></th>
+                <th class="col-subtotal"><span><?= /** @noEscape */ __('Subtotal') ?></span></th>
+                <th class="col-tax"><span><?= /** @noEscape */ __('Tax (%)') ?></span></th>
+                <th class="col-discount"><span><?= /** @noEscape */ __('Discount') ?></span></th>
+                <th class="col-row-total"><span><?= /** @noEscape */ __('Row Subtotal') ?></span></th>
+                <th class="col-action"><span><?= /** @noEscape */ __('Action') ?></span></th>
+            </tr>
+            </thead>
+            <tfoot>
+            <tr>
+                <td class="col-total"><?= /** @noEscape */ __('Total %1 product(s)', count($_items)) ?></td>
+                <td colspan="2" class="col-subtotal"><?= /** @noEscape */ __('Subtotal:') ?></td>
+                <td class="col-price">
+                    <strong><?= /** @noEscape */ $block->formatPrice($block->getSubtotal()) ?></strong>
+                </td>
+                <td class="col-price">
+                    <strong><?= /** @noEscape */ $block->formatPrice($block->getTotalTaxItems($_items)) ?></strong>
+                </td>
+                <td class="col-price">
+                    <strong><?= /** @noEscape */ $block->formatPrice($block->getDiscountAmount()) ?></strong>
+                </td>
+                <td class="col-price">
+                    <strong>
+                        <?= /** @noEscape */ $block->formatPrice($block->getSubtotalWithDiscount()) ?>
+                    </strong>
+                </td>
+                <td colspan="2">&nbsp;</td>
+            </tr>
+            </tfoot>
+            <?php $i = 0 ?>
+            <?php foreach ($_items as $_item) :
+                $isCustomDiscount = $block->isCustomDiscount($_item);
+                $i++ ?>
+                <tbody class="<?= /** @noEscape */ ($i%2) ? 'even' : 'odd' ?>">
+                <tr>
+                    <td class="col-product">
+                        <span id="order_item_<?= /** @noEscape */ $_item->getId() ?>_title">
+                            <?= $block->escapeHtml($_item->getName()) ?>
+                        </span>
+                        <div class="product-sku-block">
+                            <span><?= /** @noEscape */ __('SKU') ?>:</span>
+                            <?= /* @noEscape */ implode('<br />', $this->helper('Magento\Catalog\Helper\Data')->splitSku($block->escapeHtml($_item->getSku()))) ?>
+                        </div>
+                        <div class="product-configure-block">
+                            <?= $block->getConfigureButtonHtml($_item) ?>
+                        </div>
+                    </td>
+                    <td class="col-price">
+                        <?= /** @noEscape */ $block->formatPrice($_item->getCalculationPrice()) ?>
+                        <input id="item_price_<?= /** @noEscape */ $_item->getId() ?>"
+                               class="admin__control-checkbox"
+                               name="item[<?= /** @noEscape */ $_item->getId() ?>][price]"
+                               value="<?= /** @noEscape */ $_item->getCalculationPrice() ?>"
+                               type="hidden" />
+                        <?php $_isCustomPrice = $block->usedCustomPriceForItem($_item) ?>
+                        <?php if ($_tier = $block->getTierHtml($_item)) : ?>
+                            <div id="item_tier_block_<?= /** @noEscape */ $_item->getId() ?>"<?php if ($_isCustomPrice) : ?> style="display:none"<?php endif; ?>>
+                                <a href="#" onclick="$('item_tier_<?= /** @noEscape */ $_item->getId() ?>').toggle();return false;"><?= /** @noEscape */ __('Tier Pricing') ?></a>
+                                <div style="display:none" id="item_tier_<?= /** @noEscape */ $_item->getId() ?>"><?= /** @noEscape */ $_tier ?></div>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($block->canApplyCustomPrice($_item)) : ?>
+                            <div class="custom-price-block">
+                                <input type="checkbox"
+                                       class="admin__control-checkbox"
+                                       id="item_use_custom_price_<?= /** @noEscape */ $_item->getId() ?>"
+                                    <?php if ($_isCustomPrice) : ?>
+                                        checked="checked"
+                                    <?php endif; ?>
+                                       onclick="order.toggleCustomPrice(this, 'item_custom_price_<?= /** @noEscape */ $_item->getId() ?>', 'item_tier_block_<?= /** @noEscape */ $_item->getId() ?>');"/>
+                                <label
+                                        class="normal admin__field-label"
+                                        for="item_use_custom_price_<?= /** @noEscape */ $_item->getId() ?>">
+                                    <span><?= /** @noEscape */ __('Custom Price') ?>*</span></label>
+                            </div>
+                        <?php endif; ?>
+                        <input id="item_custom_price_<?= /** @noEscape */ $_item->getId() ?>"
+                               name="item[<?= /** @noEscape */ $_item->getId() ?>][custom_price]"
+                               value="<?= /** @noEscape */ sprintf('%.2f', $block->getOriginalEditablePrice($_item)) ?>"
+                            <?php if (!$_isCustomPrice) : ?>
+                                style="display:none"
+                                disabled="disabled"
+                            <?php endif; ?>
+                               class="input-text item-price admin__control-text"/>
+                    </td>
+                    <td class="col-qty">
+                        <input name="item[<?= /** @noEscape */ $_item->getId() ?>][qty]"
+                               class="input-text item-qty admin__control-text"
+                               value="<?= /** @noEscape */ $_item->getQty()*1 ?>"
+                               maxlength="12" />
+                    </td>
+                    <td class="col-subtotal col-price">
+                        <?= /** @noEscape */ $block->formatPrice($_item->getRowTotal()) ?>
+                        <input name="item[<?= /** @noEscape */ $_item->getId() ?>][subtotal]"
+                               class="item-subtotal"
+                               value="<?= /** @noEscape */ $_item->getRowTotal() ?>" type="hidden" />
+                    </td>
+                    <td class="col-tax">
+                        <?= /** @noEscape */ $block->formatPrice($_item->getTaxAmount()) ?><br>
+                        <input name="item[<?= /** @noEscape */ $_item->getId() ?>][tax]"
+                               class="input-text item-tax admin__control-text"
+                               value="<?= /** @noEscape */ $_item->getMpCustomTaxPercent() ?: /* @noEscape */ $_item->getTaxPercent()?>"
+                               maxlength="12" />
+                    </td>
+                    <td class="col-discount col-price">
+                        <?= /** @noEscape */ $block->formatPrice(-$_item->getTotalDiscountAmount()) ?>
+                        <input name="item[<?= /** @noEscape */ $_item->getId() ?>][discount_amount]"
+                               class="item-discount"
+                               value="<?= /** @noEscape */ $_item->getTotalDiscountAmount() ?>"
+                               type="hidden" />
+                        <div class="discount-price-block">
+                            <input id="item_use_discount_<?= /** @noEscape */ $_item->getId() ?>"
+                                   class="admin__control-checkbox"
+                                   name="item[<?= /** @noEscape */ $_item->getId() ?>][use_discount]"
+                                <?php if (!$_item->getNoDiscount()) : ?>
+                                    checked="checked"
+                                <?php endif; ?>
+                                   value="1"
+                                   onclick="toggleApplyDiscount(
+                                           this,
+                                           'discount-custom-block-<?= /** @noEscape */ $_item->getId() ?>',
+                                           'item_use_custom_discount_<?= /** @noEscape */ $_item->getId() ?>',
+                                           'mpeditorder-label-checkbox-<?= /** @noEscape */ $_item->getId() ?>',
+                                           'mpeditorder-custom-discount-<?= /** @noEscape */ $_item->getId() ?>')"
+                                   type="checkbox" />
+                            <label for="item_use_discount_<?= /** @noEscape */ $_item->getId() ?>"
+                                   class="normal admin__field-label">
+                                <span><?= /** @noEscape */ __('Apply') ?></span></label>
+                        </div>
+                        <div id="discount-custom-block-<?= /** @noEscape */ $_item->getId() ?>"
+                             class="discount-custom-block"
+                            <?php if ($_item->getNoDiscount()) : ?>
+                                style="display:none"
+                            <?php endif; ?>>
+                            <input type="checkbox"
+                                   class="admin__control-checkbox"
+                                   name="item[<?= /** @noEscape */ $_item->getId() ?>][use_custom_discount]"
+                                   id="item_use_custom_discount_<?= /** @noEscape */ $_item->getId() ?>"
+                                <?php if ($isCustomDiscount) : ?>
+                                    checked="checked"
+                                <?php endif ?>
+                                   value="1"
+                                   onclick="toggleCustomDiscount(this, <?= /** @noEscape */ $_item->getId() ?>)"/>
+                            <label for="item_use_custom_discount_<?= /** @noEscape */ $_item->getId() ?>"
+                                   class="normal admin__field-label"
+                                   id="mpeditorder-label-checkbox-<?= /** @noEscape */ $_item->getId() ?>">
+                                <span><?= /** @noEscape */ __('Custom') ?></span></label>
+                        </div>
+                        <div id="mpeditorder-custom-discount-<?= /** @noEscape */ $_item->getId() ?>"
+                            <?php if (!$isCustomDiscount) : ?>
+                                style="display: none"
+                            <?php endif ?>>
+                            <select id="mpeditorder-custom-discount-type-<?= /** @noEscape */ $_item->getId() ?>"
+                                    name="item[<?= /** @noEscape */ $_item->getId() ?>][discount_type]"
+                                <?php if (!$isCustomDiscount) : ?>
+                                    disabled
+                                <?php endif ?>>
+                                <?php foreach ($block->getDiscountOptions() as $type => $label) : ?>
+                                    <option value="<?= /** @noEscape */ $type ?>"
+                                        <?php if ($_item->getMpCustomDiscountType() === $type) : ?>
+                                            selected="selected"
+                                        <?php endif ?>>
+                                        <?= /** @noEscape */ $label ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select><br/>
+                            <input id="mpeditorder-custom-discount-value-<?= /** @noEscape */ $_item->getId() ?>"
+                                   name="item[<?= /** @noEscape */ $_item->getId() ?>][discount_value]"
+                                   type="text" value="<?= /** @noEscape */ $isCustomDiscount ?>" class="input-text item-discount"
+                                <?php if (!$isCustomDiscount) : ?>
+                                    disabled
+                                <?php endif ?> />
+                        </div>
+                    </td>
+                    <td class="col-price col-row-subtotal">
+                        <?php $_rowTotalWithoutDiscount = $_item->getRowTotal() - $_item->getTotalDiscountAmount(); ?>
+                        <?= /** @noEscape */ $block->formatPrice(max(0, $_rowTotalWithoutDiscount)) ?>
+                        <input name="item[<?= /** @noEscape */ $_item->getId() ?>][row_subtotal]"
+                               class="item-row-subtotal"
+                               value="<?= /** @noEscape */ max(0, $_rowTotalWithoutDiscount) ?>" type="hidden" />
+                    </td>
+                    <td class="col-actions last">
+                        <select class="admin__control-select" name="item[<?= /** @noEscape */ $_item->getId() ?>][action]">
+                            <option value=""><?= /** @noEscape */ __('Please select') ?></option>
+                            <option value="remove"><?= /** @noEscape */ __('Remove') ?></option>
+                        </select>
+                    </td>
+                </tr>
+
+                <?php $hasMessageError = false; ?>
+                <?php foreach ($_item->getMessage(false) as $messageError) :?>
+                    <?php if (!empty($messageError)) : ?>
+                        <?php $hasMessageError = true; ?>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+
+                <?php if ($hasMessageError) :?>
+                    <tr class="row-messages-error">
+                        <td colspan="100">
+                            <?php foreach ($_item->getMessage(false) as $message) :
+                                if (empty($message)) {
+                                    continue;
+                                }
+                                ?>
+                                <div class="message
+                                <?php if ($_item->getHasError()) : ?>
+                                    message-error
+                                <?php else : ?>
+                                    message-notice
+                                <?php endif; ?>">
+                                    <?= $block->escapeHtml($message) ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </td>
+                    </tr>
+                <?php endif;?>
+                </tbody>
+            <?php endforeach; ?>
+        </table>
+        <p><small><?= /** @noEscape */ $block->getInclExclTaxMessage() ?></small></p>
+    </div>
+
+    <div class="order-discounts">
+        <?= $block->getButtonHtml(__('Update Items and Quantities'), 'order.itemsUpdate()', 'action-secondary') ?>
+        <div id="order-coupons" class="order-coupons"><?= $block->getChildHtml('coupons') ?></div>
+    </div>
+
+    <script>
+        require([
+            'Magento_Sales/order/create/form'
+        ], function(){
+            order.itemsOnchangeBind();
+
+            //edit params loadBlock url
+            order.itemsUpdate = function () {
+                var area = ['items'];
+                var fieldsPrepare = {update_items: 1};
+                var info = $('order-items_grid').select('input', 'select', 'textarea');
+                for(var i=0; i<info.length; i++){
+                    if(!info[i].disabled && (info[i].type !== 'checkbox' || info[i].checked)) {
+                        fieldsPrepare[info[i].name] = info[i].getValue();
+                    }
+                }
+                fieldsPrepare = Object.extend(fieldsPrepare, this.productConfigureAddFields);
+                this.productConfigureSubmit('quote_items', area, fieldsPrepare);
+                this.orderItemChanged = false;
+            };
+
+            //edit params loadBlock url when add item
+            order.productGridAddSelected = function () {
+                if(this.productGridShowButton) Element.show(this.productGridShowButton);
+                var area = ['items'];
+                var fieldsPrepare = {};
+                var itemsFilter = [];
+                var products = this.gridProducts.toObject();
+                for (var productId in products) {
+                    itemsFilter.push(productId);
+                    var paramKey = 'item['+productId+']';
+                    for (var productParamKey in products[productId]) {
+                        paramKey += '['+productParamKey+']';
+                        fieldsPrepare[paramKey] = products[productId][productParamKey];
+                    }
+                }
+                this.productConfigureSubmit('product_to_add', area, fieldsPrepare, itemsFilter);
+                productConfigure.clean('quote_items');
+                this.hideArea('search');
+                this.gridProducts = $H({});
+            };
+
+            //edit params loadBlock url when apply coupon
+            order.applyCoupon = function (code) {
+                this.loadArea(['items'], true, {'order[coupon][code]':code, reset_shipping: 0, store_id: <?= /** @noEscape */ $block->getStoreId() ?>});
+                this.orderItemChanged = false;
+            };
+
+            //update to collect price for the first visit
+
+        });
+    </script>
+<?php endif; ?>
+
+<script>
+    function toggleCustomDiscount (checkbox, id) {
+        var elemId       = 'mpeditorder-custom-discount-' + id,
+            selectTypeId = 'mpeditorder-custom-discount-type-' + id,
+            inputValueId = 'mpeditorder-custom-discount-value-' + id;
+
+        $(selectTypeId).disabled = !checkbox.checked;
+        $(inputValueId).disabled = !checkbox.checked;
+        checkbox.checked ? $(elemId).show() : $(elemId).hide();
+    }
+
+    function toggleApplyDiscount(checkbox, customDiscountEl, customInput, customLabel, detailCustomEl) {
+        if (checkbox.checked) {
+            $(customDiscountEl).show();
+            $(customLabel).show();
+            $(customInput).checked = false;
+        }
+        else {
+            $(customLabel).hide();
+            $(detailCustomEl).hide();
+        }
+    }
+</script>

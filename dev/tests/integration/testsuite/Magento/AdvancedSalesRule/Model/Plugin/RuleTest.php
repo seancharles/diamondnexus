@@ -467,7 +467,7 @@ class RuleTest extends \PHPUnit\Framework\TestCase
                 'rule_id' => $rule->getRuleId(),
                 'group_id' => '2',
                 'weight' => '1',
-                'filter_text' => 'quote_address:payment_method:braintree_paypal',
+                'filter_text' => 'quote_address:payment_method:payflowpro',
                 'filter_text_generator_class' =>
                     \Magento\AdvancedSalesRule\Model\Rule\Condition\FilterTextGenerator\Address\PaymentMethod::class,
                 'filter_text_generator_arguments' => '{"attribute":"payment_method"}',

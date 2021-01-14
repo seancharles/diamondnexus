@@ -55,7 +55,7 @@ class CoreCopyDataQuoteToOrderTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->event = $this->objectManager->create(Event::class);

@@ -7,13 +7,8 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Console\Command;
 
-use ForeverCompanies\CustomAttributes\Helper\TransformData;
-use Magento\Framework\App\State;
-use Magento\Framework\Exception\InputException;
+use Magento\Framework\App\Area;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Exception\StateException;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -33,7 +28,11 @@ class TransformOptions extends AbstractCommand
         InputInterface $input,
         OutputInterface $output
     ) {
-        $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_GLOBAL);
+        try {
+            $this->state->getAreaCode();
+        } catch (LocalizedException $e) {
+            $this->state->setAreaCode(Area::AREA_GLOBAL);
+        }
         $output->writeln("Get products for option transformation...");
         $productCollection = $this->helper->getProductsAfterTransformCollection();
         $output->writeln('Products for update options: ' . $productCollection->count());

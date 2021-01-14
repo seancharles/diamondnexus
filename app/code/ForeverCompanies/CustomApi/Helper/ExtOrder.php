@@ -91,6 +91,7 @@ class ExtOrder extends AbstractHelper
             return 'Success!';
         } catch (LocalizedException $e) {
             $this->_logger->error('Can\'t update ExtOrder - ' . $e->getMessage());
+            return 'Can\'t update ExtOrder - ' . $e->getMessage();
         }
     }
 }

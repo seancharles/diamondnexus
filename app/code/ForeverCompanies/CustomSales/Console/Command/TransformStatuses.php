@@ -50,7 +50,7 @@ class TransformStatuses extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|void|null
+     * @return void
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {

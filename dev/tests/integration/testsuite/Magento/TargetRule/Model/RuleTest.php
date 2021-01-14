@@ -15,7 +15,7 @@ class RuleTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
@@ -78,10 +78,11 @@ class RuleTest extends \PHPUnit\Framework\TestCase
     /**
      * Test invalid rule type
      *
-     * @expectedException \Magento\Framework\Exception\LocalizedException
      */
     public function testValidateDataOnInvalidType()
     {
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
+
         $data = new \Magento\Framework\DataObject();
         $data->setRule(['actions' => ['test' => ['type' => 'Magento\TargetRule\Invalid']]]);
         $this->_model->validateData($data);
@@ -114,6 +115,7 @@ class RuleTest extends \PHPUnit\Framework\TestCase
         $targetRuleIndexModel = $objectManager->create(\Magento\TargetRule\Model\Index::class);
         $targetRuleModel = $objectManager->create(\Magento\TargetRule\Model\Rule::class);
         $actualProducts = [];
+        $idsToReindex = [];
         foreach ($products as $sku => $categories) {
             $categoryLinkManagement->assignProductToCategories($sku, $categories);
             /** @var \Magento\CatalogInventory\Model\Stock\Item $stockItem */
@@ -126,7 +128,13 @@ class RuleTest extends \PHPUnit\Framework\TestCase
             $stockItem->setIsQtyDecimal(0);
             $stockItem->setIsInStock(1);
             $stockItemRepository->save($stockItem);
+            $idsToReindex[] = $product->getId();
         }
+
+        /** @var \Magento\Indexer\Model\Indexer $indexer */
+        $indexer = $objectManager->create(\Magento\Indexer\Model\Indexer::class);
+        $indexer->load('catalog_product_price');
+        $indexer->reindexList($idsToReindex);
 
         $targetRuleModel->load('related', 'name');
         $data['actions'] = $conditions;
@@ -134,8 +142,8 @@ class RuleTest extends \PHPUnit\Framework\TestCase
         $targetRuleModel->save();
         $targetRuleIndexModel->setType($targetRuleModel->getApplyTo());
         $targetRuleIndexModel->setProduct($productRepository->get('simple2'));
-        foreach ($targetRuleIndexModel->getProductIds() as $sku) {
-            $actualProducts[] = $productRepository->getById($sku)->getSku();
+        foreach (array_keys($targetRuleIndexModel->getProductIds()) as $productId) {
+            $actualProducts[] = $productRepository->getById($productId)->getSku();
         }
         sort($expectedProducts);
         sort($actualProducts);

@@ -6,8 +6,11 @@ use Braintree\Result\Error;
 use DiamondNexus\Multipay\Helper\Data;
 use DiamondNexus\Multipay\Helper\EmailSender;
 use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\ValidatorException;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\View\Result\PageFactory;
@@ -52,6 +55,17 @@ class PaynowAction extends Action
      */
     protected $emailSender;
 
+    /**
+     * PaynowAction constructor.
+     * @param Context $context
+     * @param Data $helper
+     * @param OrderRepositoryInterface $orderRepository
+     * @param Json $serializer
+     * @param Transaction $transaction
+     * @param Cache\Type $cache
+     * @param PageFactory $pageFactory
+     * @param EmailSender $emailSender
+     */
     public function __construct(
         Context $context,
         Data $helper,
@@ -72,6 +86,9 @@ class PaynowAction extends Action
         return parent::__construct($context);
     }
 
+    /**
+     * @return ResponseInterface|Redirect|ResultInterface
+     */
     public function execute()
     {
         $resultRedirect = $this->resultRedirectFactory->create();

@@ -4,6 +4,7 @@
         <attribute code="flag_fishbowl_import" type="string" />
         <attribute code="anticipated_shipdate" type="string" />
         <attribute code="delivery_date" type="string" />
+        <attribute code="dispatch_date" type="string" />
         <attribute code="shipping_method" type="string" />
         <attribute code="sales_person_id" type="string" />
         <attribute code="sales_person_username" type="string" />

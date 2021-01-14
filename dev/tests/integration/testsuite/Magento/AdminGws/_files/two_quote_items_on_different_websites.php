@@ -4,8 +4,6 @@
  * See COPYING.txt for license details.
  */
 
-include 'two_roles_for_different_websites.php';
-
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Visibility;
@@ -13,6 +11,9 @@ use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\QuoteIdMask;
 use Magento\Quote\Model\QuoteIdMaskFactory;
 use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+
+Resolver::getInstance()->requireDataFixture('Magento/AdminGws/_files/two_roles_for_different_websites.php');
 
 $objectManager = Bootstrap::getObjectManager();
 

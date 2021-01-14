@@ -8,13 +8,10 @@ declare(strict_types=1);
 namespace ForeverCompanies\CustomAttributes\Helper;
 
 use ForeverCompanies\CustomAttributes\Logger\Logger;
-use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
-use Magento\Bundle\Api\Data\LinkInterfaceFactory;
-use Magento\Bundle\Api\Data\LinkInterface;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -32,11 +29,19 @@ class BundlePriceUse extends AbstractHelper
      * @var Logger
      */
     protected $logger;
+
     /**
      * @var ProductType
      */
     private $productTypeHelper;
 
+    /**
+     * BundlePriceUse constructor.
+     * @param Context $context
+     * @param ProductRepositoryInterface $productRepository
+     * @param ProductType $productTypeHelper
+     * @param Logger $logger
+     */
     public function __construct(
         Context $context,
         ProductRepositoryInterface $productRepository,

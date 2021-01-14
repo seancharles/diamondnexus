@@ -8,10 +8,11 @@ use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-require INTEGRATION_TESTS_DIR . '/testsuite/Magento/Customer/_files/three_customers.php';
-require INTEGRATION_TESTS_DIR . '/testsuite/Magento/Sales/_files/order_list.php';
-require INTEGRATION_TESTS_DIR . '/testsuite/Magento/CustomerSegment/_files/segment.php';
+Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/three_customers.php');
+Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/order_list.php');
+Resolver::getInstance()->requireDataFixture('Magento/CustomerSegment/_files/segment.php');
 
 $objectManager = Bootstrap::getObjectManager();
 $orderRepository = $objectManager->create(OrderRepositoryInterface::class);

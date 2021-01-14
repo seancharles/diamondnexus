@@ -15,7 +15,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
      */
     protected $_block;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_block = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
@@ -35,7 +35,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
     {
         $this->_block->setValue('127');
         $condition = $this->_block->getCondition();
-        $this->assertContains('127', (string)$condition['ntoa']);
+        $this->assertStringContainsString('127', (string)$condition['ntoa']);
         $this->assertNotEquals('127', (string)$condition['ntoa']); // DB-depended placeholder symbols were added
     }
 }

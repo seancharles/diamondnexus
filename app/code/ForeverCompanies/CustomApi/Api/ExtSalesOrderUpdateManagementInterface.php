@@ -7,15 +7,18 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomApi\Api;
 
+use ForeverCompanies\CustomApi\Api\Data\ExtSearchResultsInterface;
+use Magento\Framework\Api\SearchCriteriaInterface;
+
 interface ExtSalesOrderUpdateManagementInterface
 {
 
     /**
      * GET for ExtSalesOrderUpdate api
-     * @param bool $flagFishbowlUpdate
-     * @return string
+     * @param SearchCriteriaInterface $searchCriteria
+     * @return ExtSearchResultsInterface
      */
-    public function getExtSalesOrderUpdate(bool $flagFishbowlUpdate);
+    public function getExtSalesOrderUpdate(SearchCriteriaInterface $searchCriteria);
 
     /**
      * POST for ExtSalesOrderUpdate api

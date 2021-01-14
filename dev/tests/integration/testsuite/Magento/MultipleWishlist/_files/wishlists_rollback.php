@@ -3,6 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
@@ -21,5 +22,5 @@ for ($i = 1; $i <= 2; $i++) {
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);
 
-include 'products_rollback.php';
-include 'customer_rollback.php';
+Resolver::getInstance()->requireDataFixture('Magento/MultipleWishlist/_files/products_rollback.php');
+Resolver::getInstance()->requireDataFixture('Magento/MultipleWishlist/_files/customer_rollback.php');

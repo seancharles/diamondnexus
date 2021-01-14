@@ -10,6 +10,7 @@ use Magento\TargetRule\Model\ResourceModel\Rule as TargetRuleResourceModel;
 use Magento\TargetRule\Model\ResourceModel\Rule\Collection;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
 $objectManager = Bootstrap::getObjectManager();
 /** @var TargetRuleResourceModel $targetRuleResourceModel */
@@ -33,4 +34,4 @@ foreach ($targetRuleCollection->getItems() as $item) {
     }
 }
 
-include __DIR__ . '/products_with_attributes_rollback.php';
+Resolver::getInstance()->requireDataFixture('Magento/TargetRule/_files/products_with_attributes_rollback.php');

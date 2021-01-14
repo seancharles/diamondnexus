@@ -7,30 +7,35 @@
                 <item name="TransformAttributes" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\TransformAttributes
                 </item>
-            </argument>
-            <argument name="commands" xsi:type="array">
+                <item name="CompleteSequence" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\CompleteSequence
+                </item>
                 <item name="TransformMedia" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\TransformMedia
                 </item>
-            </argument>
-            <argument name="commands" xsi:type="array">
-                <item name="TransformMedia" xsi:type="object">
-                    ForeverCompanies\CustomAttributes\Console\Command\DeleteOIdAttributes
+                <item name="DeleteByTags" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\DeleteByTags
                 </item>
-            </argument>
-            <argument name="commands" xsi:type="array">
-                <item name="TransformOptions" xsi:type="object">
-                    ForeverCompanies\CustomAttributes\Console\Command\TransformOptions
+                <item name="DeleteOldAttributes" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\DeleteOldAttributes
                 </item>
-            </argument>
-            <argument name="commands" xsi:type="array">
                 <item name="TransformMultiselect" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\TransformMultiselect
                 </item>
-            </argument>
-            <argument name="commands" xsi:type="array">
                 <item name="UpdateStocks" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\UpdateStocks
+                </item>
+                <item name="TransformOptions" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\TransformOptions
+                </item>
+                <item name="TransformValues" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\TransformValues
+                </item>
+                <item name="ProductPosition" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\ProductPosition
+                </item>
+                <item name="RefreshPatchList" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\RefreshPatchList
                 </item>
             </argument>
         </arguments>
@@ -48,6 +53,33 @@
             </argument>
         </arguments>
     </type>
+    <type name="ForeverCompanies\CustomAttributes\Logger\ErrorsByOption\Handler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="ForeverCompanies\CustomAttributes\Logger\ErrorsByOption\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">ForeverCompaniesLogByOption</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">ForeverCompanies\CustomAttributes\Logger\ErrorsByOption\Handler</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="ForeverCompanies\CustomAttributes\Logger\ErrorsBySku\Handler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="ForeverCompanies\CustomAttributes\Logger\ErrorsBySku\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">ForeverCompaniesLogBySku</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">ForeverCompanies\CustomAttributes\Logger\ErrorsBySku\Handler</item>
+            </argument>
+        </arguments>
+    </type>
     <preference for="Cloudinary\Cloudinary\Model\Observer\ProductGalleryChangeTemplate"
                 type="ForeverCompanies\CustomAttributes\Model\Observer\ProductGalleryChangeTemplate"/>
     <type name="Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\CustomOptions">
@@ -59,6 +91,11 @@
         <plugin name="forevercompanies_customattributes_bundlecustom_option"
                 type="ForeverCompanies\CustomAttributes\Plugin\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePanel"
                 sortOrder="1"/>
+    </type>
+    <type name="Magento\Framework\Model\ActionValidator\RemoveAction">
+        <plugin name="forevercompanies_customattributes_framework_remove_is_allowed"
+                type="ForeverCompanies\CustomAttributes\Plugin\Framework\Model\ActionValidator\RemoveAction"
+                sortOrder="10"/>
     </type>
     <preference for="Magento\Bundle\Model\Product\OptionList"
                 type="ForeverCompanies\CustomAttributes\Model\Bundle\Product\OptionList"/>

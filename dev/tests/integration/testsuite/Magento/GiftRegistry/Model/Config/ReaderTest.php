@@ -19,7 +19,7 @@ class ReaderTest extends \PHPUnit\Framework\TestCase
      */
     private $originalRenderer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
@@ -36,12 +36,12 @@ class ReaderTest extends \PHPUnit\Framework\TestCase
         $this->originalRenderer = Phrase::getRenderer();
         $translateRendererMock = $this->createMock(\Magento\Framework\Phrase\RendererInterface::class);
         $translateRendererMock->expects($this->any())->method('render')
-            ->will(
-                $this->returnCallback(
+            ->willReturnCallback(
+                
                     function ($input) {
                         return end($input) . ' (translated)';
                     }
-                )
+                
             );
         Phrase::setRenderer($translateRendererMock);
 
@@ -53,7 +53,7 @@ class ReaderTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         Phrase::setRenderer($this->originalRenderer);
     }

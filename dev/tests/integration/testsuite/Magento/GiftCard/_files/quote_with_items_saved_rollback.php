@@ -3,6 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 $registry = $objectManager->get(\Magento\Framework\Registry::class);
 $registry->unregister('isSecureArea');
@@ -17,6 +19,6 @@ if ($quote->getId()) {
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);
 
-require __DIR__ . '/../../Customer/_files/customer_address_rollback.php';
-require __DIR__ . '/../../Customer/_files/customer_rollback.php';
-require __DIR__ . '/../../GiftCard/_files/gift_card_with_available_message_rollback.php';
+Resolver::getInstance()->requireDataFixture('Magento/GiftCard/_files/gift_card_with_available_message_rollback.php');
+Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer_rollback.php');
+Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer_address_rollback.php');

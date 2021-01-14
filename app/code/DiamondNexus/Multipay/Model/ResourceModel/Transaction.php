@@ -12,6 +12,7 @@ use DiamondNexus\Multipay\Logger\Logger;
 use DiamondNexus\Multipay\Model\Constant;
 use DiamondNexus\Multipay\Model\TransactionFactory;
 use Exception;
+use ForeverCompanies\CustomApi\Helper\ExtOrder;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
@@ -49,17 +50,24 @@ class Transaction extends AbstractDb
      */
     protected $emailSender;
 
+    /**
+     * @var ExtOrder
+     */
+    protected $extOrderHelper;
+
     public function __construct(
         Context $context,
         TransactionFactory $transactionFactory,
         Logger $logger,
         EmailSender $emailSender,
+        ExtOrder $extOrderHelper,
         $connectionName = null
     ) {
         parent::__construct($context, $connectionName);
         $this->transactionFactory = $transactionFactory;
         $this->logger = $logger;
         $this->emailSender = $emailSender;
+        $this->extOrderHelper = $extOrderHelper;
     }
 
     /**
@@ -98,12 +106,12 @@ class Transaction extends AbstractDb
         if (isset($information[Constant::CHANGE_DUE_DATA])) {
             $change = $information[Constant::CHANGE_DUE_DATA];
         }
-        if ((int) $information[Constant::PAYMENT_METHOD_DATA] == Constant::MULTIPAY_TOTAL_AMOUNT) {
+        if ((int)$information[Constant::PAYMENT_METHOD_DATA] == Constant::MULTIPAY_TOTAL_AMOUNT) {
             if (isset($information[Constant::OPTION_PARTIAL_DATA])) {
                 $amount = $information[Constant::OPTION_PARTIAL_DATA];
             }
         }
-        if ((int) $information[Constant::PAYMENT_METHOD_DATA] == Constant::MULTIPAY_PARTIAL_AMOUNT) {
+        if ((int)$information[Constant::PAYMENT_METHOD_DATA] == Constant::MULTIPAY_PARTIAL_AMOUNT) {
             $amount = $information[Constant::CASH_TENDERED_DATA];
             if ($change == 0 && $amount > $information[Constant::AMOUNT_DUE_DATA]) {
                 $change = $amount - $information[Constant::AMOUNT_DUE_DATA];
@@ -124,18 +132,19 @@ class Transaction extends AbstractDb
         $transaction = $this->transactionFactory->create();
         $transaction->setData(
             [
-            'order_id' => $orderId,
-            'transaction_type' => Constant::MULTIPAY_SALE_ACTION,
-            'payment_method' => $information[Constant::PAYMENT_METHOD_DATA],
-            'amount' => $amount,
-            'tendered' => $tendered,
-            'change' => $change,
-            'transaction_timestamp' => time(),
+                'order_id' => $orderId,
+                'transaction_type' => Constant::MULTIPAY_SALE_ACTION,
+                'payment_method' => $information[Constant::PAYMENT_METHOD_DATA],
+                'amount' => $amount,
+                'tendered' => $tendered,
+                'change' => $change,
+                'transaction_timestamp' => time(),
             ]
         );
         try {
             $order->setTotalPaid($order->getTotalPaid() + $amount);
             $this->save($transaction);
+            $this->extOrderHelper->createNewExtSalesOrder((int)$orderId, ['payment']);
         } catch (AlreadyExistsException $e) {
             $this->logger->error($e->getMessage());
         } catch (Exception $e) {

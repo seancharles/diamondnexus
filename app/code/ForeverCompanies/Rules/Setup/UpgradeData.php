@@ -5,7 +5,7 @@
  */
 declare(strict_types=1);
 
-namespace ForeverCompanies\Salesforce\Setup;
+namespace ForeverCompanies\Rules\Setup;
 
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;

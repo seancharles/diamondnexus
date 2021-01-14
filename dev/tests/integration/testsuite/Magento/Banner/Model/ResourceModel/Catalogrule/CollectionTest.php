@@ -32,7 +32,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
      */
     protected $_customerGroupId = \Magento\Customer\Model\GroupManagement::NOT_LOGGED_IN_ID;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->_collection = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\Banner\Model\ResourceModel\Catalogrule\Collection::class
@@ -43,7 +43,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->_banner->load('Test Dynamic Block', 'name');
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->_collection = null;
         $this->_banner = null;

@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Setup\Patch\Data;
 
+use Magento\Catalog\Model\Product;
 use Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface;
 use Magento\Eav\Setup\EavSetup;
 use Magento\Eav\Setup\EavSetupFactory;
@@ -47,18 +48,17 @@ class AddAcwProductAttribute implements DataPatchInterface, PatchRevertableInter
     public function apply()
     {
         $this->moduleDataSetup->getConnection()->startSetup();
-        /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $attribute = $eavSetup->getAttribute(\Magento\Catalog\Model\Product::ENTITY, 'acw');
+        $attribute = $eavSetup->getAttribute(Product::ENTITY, 'acw');
         if ($attribute) {
             $eavSetup->removeAttribute(
-                \Magento\Catalog\Model\Product::ENTITY,
+                Product::ENTITY,
                 'acw'
             );
         }
         try {
             $eavSetup->addAttribute(
-                \Magento\Catalog\Model\Product::ENTITY,
+                Product::ENTITY,
                 'acw',
                 [
                     'type' => 'int',
@@ -99,9 +99,8 @@ class AddAcwProductAttribute implements DataPatchInterface, PatchRevertableInter
     public function revert()
     {
         $this->moduleDataSetup->getConnection()->startSetup();
-        /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $eavSetup->removeAttribute(\Magento\Catalog\Model\Product::ENTITY, 'acw');
+        $eavSetup->removeAttribute(Product::ENTITY, 'acw');
 
         $this->moduleDataSetup->getConnection()->endSetup();
     }
