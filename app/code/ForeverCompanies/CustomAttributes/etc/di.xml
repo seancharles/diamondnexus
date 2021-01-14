@@ -43,6 +43,9 @@
                 <item name="RefreshPatchList" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\RefreshPatchList
                 </item>
+                <item name="TranslateShipStatusToShippingGroup" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\TranslateShipStatusToShippingGroup
+                </item>
             </argument>
         </arguments>
     </type>
