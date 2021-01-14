@@ -12,13 +12,13 @@ use Magento\Framework\Exception\LocalizedException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class UpdateStocks extends AbstractCommand
+class UpdateLooseStones extends AbstractCommand
 {
 
     /**
      * @var string
      */
-    protected $name = 'forevercompanies:update-stocks';
+    protected $name = 'forevercompanies:update-loose-stones';
 
     /**
      * {@inheritdoc}
@@ -33,14 +33,14 @@ class UpdateStocks extends AbstractCommand
         } catch (LocalizedException $e) {
             $this->state->setAreaCode(Area::AREA_GLOBAL);
         }
-        $output->writeln("Get products for change stocks...");
-        $productCollection = $this->helper->getProductsForChangeStocks();
+        $output->writeln("Get products for change loose stones...");
+        $productCollection = $this->helper->getProductsForChangeLooseStones();
         $output->writeln('Products for transformation: ' . $productCollection->count());
         foreach ($productCollection->getItems() as $item) {
-            $output->writeln('In process product ID = ' . $item->getData('entity_id'));
-            $this->helper->updateStock($item->getData('sku'));
+            $output->writeln('In process product SKU = ' . $item->getData('sku'));
+            $this->helper->updateLooseStone($item->getData('sku'));
         }
-        $output->writeln('Stocks are updated! Please execute bin/magento indexer:reindex');
+        $output->writeln('Loose stones are updated! Please execute bin/magento cache:clean');
     }
 
     /**
@@ -49,7 +49,7 @@ class UpdateStocks extends AbstractCommand
     protected function configure()
     {
         $this->setName($this->name);
-        $this->setDescription("Update stocks - set specific enabled products qty is over 9000");
+        $this->setDescription("Update loose stones - update empty attributes");
         parent::configure();
     }
 }

@@ -336,6 +336,42 @@ class TransformData extends AbstractHelper
     }
 
     /**
+     * @param string $sku
+     */
+    public function updateLooseStone($sku)
+    {
+        $changeFlag = false;
+        try {
+            $product = $this->productRepository->get($sku);
+            if ($product->getData('gemstone') == null || $product->getData('gemstone') == '') {
+                $centerStoneSize = substr_replace(substr($sku, 17, 4), '.', 2, 0) . ' ct';
+                if (strpos($centerStoneSize, '0') === 0) {
+                    $centerStoneSize = substr($centerStoneSize, 1);
+                }
+                $gemstoneAttribute = $this->eav->getAttribute(Product::ENTITY, 'gemstone');
+                $centerStoneSizeValue = $gemstoneAttribute->getSource()->getOptionId($centerStoneSize);
+                $product->setData('gemstone', $centerStoneSizeValue);
+                $changeFlag = true;
+            }
+            if ($product->getData('carat_weight') == null || $product->getData('carat_weight') == 0) {
+                $caratWeight = substr_replace(substr($sku, 17, 4), '.', 2, 0);
+                if (strpos($caratWeight, '0') === 0) {
+                    $caratWeight = substr($caratWeight, 1);
+                }
+                $product->setData('carat_weight', (float)$caratWeight);
+                $changeFlag = true;
+            }
+            if ($changeFlag) {
+                $this->productRepository->save($product);
+            }
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->error($e->getMessage());
+        } catch (LocalizedException $e) {
+            $this->_logger->error($e->getMessage());
+        }
+    }
+
+    /**
      * @return Collection
      */
     public function getProductsForChangeStocks()
@@ -348,6 +384,20 @@ class TransformData extends AbstractHelper
         $collection->addAttributeToFilter('attribute_set_id', ['neq' => $attributeSetId]);
         $collection->addCategoriesFilter(['nin' => $categories]);
         //only filter in stock product
+        return $collection;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getProductsForChangeLooseStones()
+    {
+        $attributeSetId = $this->getAttributeSetId('Migration_Loose Stones');
+        $collection = $this->productCollectionFactory->create();
+        $collection->addAttributeToSelect('*');
+        $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
+        $collection->addAttributeToFilter('attribute_set_id', ['eq' => $attributeSetId]);
+        $collection->addAttributeToFilter('type_id', ['eq' => Product\Type::TYPE_SIMPLE]);
         return $collection;
     }
 
@@ -486,6 +536,9 @@ class TransformData extends AbstractHelper
             if ($product == null) {
                 return;
             }
+            if ($product->getData('product_type') == null) {
+                $this->productTypeHelper->setProductType($product);
+            }
             $options = $product->getOptions();
             $isBundle = $product->getTypeId();
             if ($options == null && $isBundle != Type::TYPE_CODE) {
@@ -494,11 +547,16 @@ class TransformData extends AbstractHelper
             $oldAttributes = ['metal_type' => 'filter_metal', 'shape' => 'filter_shape', 'color' => 'filter_color'];
             if ($options !== null) {
                 $certifiedStone = true;
+                /** @var Option $option */
                 foreach ($options as &$option) {
+                    if ($option->getData('customization_type') !== null) {
+                        continue;
+                    }
                     $customizationType = $this->setCustomizationTypeToOption($option->getTitle());
                     foreach ($oldAttributes as $attribute => $bool) {
                         if ($customizationType == $attribute) {
                             unset($oldAttributes[$attribute]);
+                            continue;
                         }
                     }
                     if ($customizationType == -1) {
@@ -550,7 +608,6 @@ class TransformData extends AbstractHelper
                     $this->loggerByOptions->error($opt);
                 }
             }
-
             $this->productRepository->save($product);
         } catch (CouldNotSaveException $e) {
             $this->_logger->error('Error in transform options for ID = ' . $entityId . ': ' . $e->getMessage());
@@ -755,6 +812,9 @@ class TransformData extends AbstractHelper
         $matchingBand = false;
         if ($bundleOptions !== null) {
             foreach ($bundleOptions as &$bundleData) {
+                if ($bundleData->getData('bundle_customization_type') !== null) {
+                    continue;
+                }
                 $title = $bundleData->getTitle();
                 $productLinks = $bundleData->getProductLinks();
                 if (count($productLinks) > 0) {
@@ -937,7 +997,8 @@ class TransformData extends AbstractHelper
         } catch (NoSuchEntityException $exception) {
             $this->_logger->warning('Product with ID = ' . $entityId . 'not found');
         }
-        if ($product->getData('is_transformed') == $transformed || $product->isDisabled()) {
+
+        if ($product->getData('is_transformed') === $transformed || $product->isDisabled()) {
             return;
         }
         return $product;
