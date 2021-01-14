@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route method="GET" url="/V1/forevercompanies-stones-intermediary">
+        <service class="ForeverCompanies\StonesIntermediary\Api\StonesIntermediaryManagementInterface"
+                 method="getStonesIntermediary"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route method="POST" url="/V1/forevercompanies-stones-intermediary/create">
+        <service class="ForeverCompanies\StonesIntermediary\Api\StonesIntermediaryManagementInterface"
+                 method="postStonesIntermediary"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route method="PUT" url="/V1/forevercompanies-stones-intermediary/update">
+        <service class="ForeverCompanies\StonesIntermediary\Api\StonesIntermediaryManagementInterface"
+                 method="putStonesIntermediary"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route method="DELETE" url="/V1/forevercompanies-stones-intermediary/delete/:id">
+        <service class="ForeverCompanies\StonesIntermediary\Api\StonesIntermediaryManagementInterface"
+                 method="deleteStonesIntermediary"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+</routes>
