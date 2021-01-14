@@ -1,0 +1,16 @@
+<?php
+
+use ForeverCompanies\CustomSales\Block\Adminhtml\Order\View\SalesPerson;
+use Magento\Framework\Exception\LocalizedException;
+
+/** @var SalesPerson $block */
+?>
+
+<table class="admin__table-secondary order-account-information-table">
+    <tbody>
+        <tr>
+            <th>Sales Person</th>
+            <td><?php echo $block->getSalesPerson(); ?></td>
+        </tr>
+    </tbody>
+</table>
