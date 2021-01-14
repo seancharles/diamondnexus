@@ -296,7 +296,7 @@
             $customerResource->saveAttribute($customer, self::SF_LAST_SYNC_FIELD);
         }
         
-        public function upsertLead($leadData)
+        public function createLead($leadData)
         {
             return $this->fcSyncLead->sync([
                 'lead' => $leadData
