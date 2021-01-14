@@ -32,15 +32,16 @@
 		{
 			if ($this->formKeyValidator->validate($this->getRequest()) == false) {
 			
-				$storeId = $this->storeManager->getStore()->getId();
+				$websiteId = $this->storeManager->getWebsite()->getId();
 				$formId = $this->formHelper->getSanitizedField('form_id');
+                $formData = $this->formHelper->getSanitizedField('form_post_json');
 				
 				$model = $this->submissionFactory->create();
 				
 				$model->addData([
-					"store_id" => $storeId,
+					"website_id" => $websiteId,
 					"form_id" => $formId,
-					"form_post_json" => json_encode(['key'=>'hello world']),
+					"form_post_json" => json_encode($formData),
 					"created_at" => date("Y-m-d h:i:s", time())
 				]);
 				

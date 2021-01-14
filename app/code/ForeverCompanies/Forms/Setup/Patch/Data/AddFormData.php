@@ -15,7 +15,7 @@ class AddFormData implements DataPatchInterface
     const FA_WEBSITE_ID = 2;
     const TF_WEBSITE_ID = 3;
     
-    const FORM_STATUS_ACTIVE = 1
+    const FORM_STATUS_ACTIVE = 1;
     
     /**
      * @var \Magento\Framework\Setup\ModuleDataSetupInterface
@@ -57,8 +57,7 @@ class AddFormData implements DataPatchInterface
                     'lastname' => 'Last Name',
                     'email' => 'Email Address',
                     'telephone' => 'Telephone',
-                    'design' => 'What do you want to design',
-                    'date' => 'Date/Time'
+                    'design' => 'What do you want to design'
                 ]),
                 'validation_json' => json_encode([
                     'firstname' => 'required',
@@ -74,8 +73,7 @@ class AddFormData implements DataPatchInterface
                 'fields_json' => json_encode([
                     'firstname' => 'First Name',
                     'lastname' => 'Last Name',
-                    'email' => 'Email Address',
-                    'date' => 'Date/Time'
+                    'email' => 'Email Address'
                 ]),
                 'validation_json' => json_encode([
                     'firstname' => 'required',
@@ -100,8 +98,7 @@ class AddFormData implements DataPatchInterface
                     'engagement' => 'Are you shopping for an Engagement Ring?',
                     'type_need' => 'Which best applies to you: ',
                     'need_by' => 'When do you need the Engagement Ring by?',
-                    'itemsofinterest' => 'Other Jewelry pieces you are interested in',
-                    'date' => 'Date/Time'
+                    'itemsofinterest' => 'Other Jewelry pieces you are interested in'
                 ]),
                 'validation_json' => json_encode([
                     'firstname' => 'required',
@@ -118,8 +115,7 @@ class AddFormData implements DataPatchInterface
                 'website_id' => self::DN_WEBSITE_ID,
                 'active' => self::FORM_STATUS_ACTIVE,
                 'fields_json' => json_encode([
-                    'email' => 'Email Address',
-                    'date' => 'Date/Time'
+                    'email' => 'Email Address'
                 ]),
                 'validation_json' => json_encode([
                     'email' => 'required'
@@ -130,8 +126,7 @@ class AddFormData implements DataPatchInterface
                 'website_id' => self::FA_WEBSITE_ID,
                 'active' => self::FORM_STATUS_ACTIVE,
                 'fields_json' => json_encode([
-                    'firstname' => 'First Name',
-                    'date' => 'Date/Time'
+                    'firstname' => 'First Name'
                 ]),
                 'validation_json' => json_encode([
                     'email' => 'required'
@@ -142,8 +137,7 @@ class AddFormData implements DataPatchInterface
                 'website_id' => self::TF_WEBSITE_ID,
                 'active' => self::FORM_STATUS_ACTIVE,
                 'fields_json' => json_encode([
-                    'email' => 'Email Address',
-                    'date' => 'Date/Time'
+                    'email' => 'Email Address'
                 ]),
                 'validation_json' => json_encode([
                     'email' => 'required'
