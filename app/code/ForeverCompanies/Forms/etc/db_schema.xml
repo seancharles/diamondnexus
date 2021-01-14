@@ -3,9 +3,10 @@
 	<table name="fc_form" resource="default" engine="innodb"
 				comment="Forever Companies Forms">
 		<column xsi:type="int" name="form_id" unsigned="true" nullable="false" identity="true" comment="Form ID"/>
-		<column xsi:type="smallint" name="store_id" unsigned="true" comment="Store ID"/>
+		<column xsi:type="smallint" name="website_id" unsigned="true" comment="Store ID"/>
 		<column xsi:type="tinyint" name="active" unsigned="true" nullable="true" comment="Active"/>
 		<column xsi:type="text" name="fields_json" comment=""/>
+        <column xsi:type="text" name="fields_validation_json" comment=""/>
 		<constraint xsi:type="primary" referenceId="PRIMARY">
 			<column name="form_id"/>
 		</constraint>
@@ -14,7 +15,7 @@
 			   comment="Forever Companies Form Submissions">
 		<column xsi:type="int" name="submission_id" unsigned="true" nullable="false" identity="true" comment="Submission ID"/>
 		<column xsi:type="int" name="form_id" unsigned="true" comment="Form ID"/>
-		<column xsi:type="smallint" name="store_id" unsigned="true" comment="Store ID"/>
+		<column xsi:type="smallint" name="website_id" unsigned="true" comment="Store ID"/>
 		<column xsi:type="text" name="form_post_json" comment="Form Post JSON"/>
 		<column xsi:type="datetime" name="created_at" on_update="false" comment="Date"/>
 		<constraint xsi:type="primary" referenceId="PRIMARY">
