@@ -421,6 +421,7 @@ return [
         'ForeverCompanies_Rules' => 1,
         'ForeverCompanies_Salesforce' => 1,
         'ForeverCompanies_SearchEngine' => 1,
+        'ForeverCompanies_StonesIntermediary' => 1,
         'Klarna_Core' => 1,
         'Klarna_Ordermanagement' => 1,
         'Klarna_Kp' => 1,
