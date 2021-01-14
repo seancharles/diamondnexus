@@ -163,7 +163,7 @@ class Connector
      */
     public function sendRequest($method, $path, $parameter = null, $useFreshCredential = false)
     {
-        if ($useFreshCredential) {
+        if ($useFreshCredential == false) {
             $instance_url = $this->_scopeConfig->getValue(
                 self::XML_PATH_SALESFORCE_INSTANCE_URL,
                 ScopeInterface::SCOPE_STORE
@@ -338,6 +338,24 @@ class Connector
         $response = $this->sendRequest(\Zend_Http_Client::POST, $path, $parameter);
         if (isset($response["acctId"])) {
             $id = $response["acctId"];
+            return $response;
+        }
+
+        return false;
+    }
+    
+    /**
+     * Create new Lead in Salesforce
+     *
+     * @param array $parameter
+     */
+    public function createLead($parameter)
+    {
+        $path = "/services/apexrest/createLead";
+        $response = $this->sendRequest(\Zend_Http_Client::POST, $path, $parameter);
+        
+        if (isset($response["leadId"])) {
+            $id = $response["leadId"];
             return $response;
         }
 

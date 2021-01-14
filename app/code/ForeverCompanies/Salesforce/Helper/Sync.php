@@ -9,6 +9,7 @@
 
     use ForeverCompanies\Salesforce\Model\Sync\Account;
     use ForeverCompanies\Salesforce\Model\Sync\Order;
+    use ForeverCompanies\Salesforce\Model\Sync\Lead;
 
     class Sync extends AbstractHelper
     {
@@ -18,8 +19,9 @@
         protected $customer;
         protected $date;
         
-        protected $fcSyncAccount;
         protected $fcSyncOrder;
+        protected $fcSyncAccount;
+        protected $fcSyncLead;
         
         const PAGE_SIZE = 1000;
         
@@ -35,7 +37,8 @@
             DateTime $date,
             TimezoneInterface $timezone,
             Order $fcSyncOrder,
-            Account $fcSyncAccount
+            Account $fcSyncAccount,
+            Lead $fcSyncLead
         )
         {
             $this->orderFactory = $orderFactory;
@@ -47,6 +50,7 @@
             
             $this->fcSyncAccount = $fcSyncAccount;
             $this->fcSyncOrder = $fcSyncOrder;
+            $this->fcSyncLead = $fcSyncLead;
         }
         
         /**
@@ -290,6 +294,13 @@
             }
             
             $customerResource->saveAttribute($customer, self::SF_LAST_SYNC_FIELD);
+        }
+        
+        public function upsertLead($leadData)
+        {
+            return $this->fcSyncLead->sync([
+                'lead' => $leadData
+            ]);
         }
         
         protected function logOutput($message, $pushConsole = true)
