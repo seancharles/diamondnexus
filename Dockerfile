@@ -101,7 +101,7 @@ RUN chown -R admin: /var/www
 COPY bin/php.ini /usr/local/etc/php/php.ini
 COPY bin/php-fpm.pool.conf /usr/local/etc/php/php-fpm.pool.conf
 RUN mkdir /var/www/.ssh/
-COPY bin/authorized_keys.$BUILD /var/www/.ssh/
+COPY bin/authorized_keys.$BUILD /var/www/.ssh/authorized_keys
 RUN chown admin:admin -R /var/www/.ssh/
 RUN chmod 600 /var/www/.ssh/*
 RUN chown admin:admin -R /usr/local/etc/php/php.ini
