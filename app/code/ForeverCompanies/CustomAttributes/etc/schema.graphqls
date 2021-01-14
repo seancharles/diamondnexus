@@ -27,6 +27,8 @@ interface ProductInterface {
     @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
     shape: [String]
     @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    gemstone: [String]
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
 }
 
 type BundleProduct {

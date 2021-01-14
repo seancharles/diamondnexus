@@ -44,10 +44,14 @@ class SalesPerson extends Column
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
 
-                // load the user
-                $user = $this->userFactory->create()->load($item["sales_person_id"]);
-                
-                $item[$this->getData('name')] = $user->getUsername();
+                if($item["sales_person_id"] > 0) {
+                    // load the user
+                    $user = $this->userFactory->create()->load($item["sales_person_id"]);
+                    
+                    $item[$this->getData('name')] = $user->getUsername();
+                } else {
+                    $item[$this->getData('name')] = "Web";
+                }
             }
         }
 

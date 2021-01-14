@@ -3,6 +3,7 @@ LABEL maintainer="Forever Companies"
 
 RUN groupadd -g 1000 admin
 RUN useradd -u 1000 -g 1000 -d /var/www/ admin
+RUN usermod -g www-data admin && usermod -a -G www-data,root root
 
 ARG BUILD
 ENV BUILD $BUILD
@@ -94,12 +95,13 @@ RUN if [ "$XDEBUG" = "on" ] ; then pecl install xdebug \
 && echo "xdebug.client_host=$HOST" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
 && echo "xdebug.discover_client_host=0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ; fi
 
-RUN echo "%admin	ALL=(ALL:ALL)	NOPASSWD: ALL" >> /etc/sudoers
+RUN echo "admin	ALL=(ALL:ALL)	NOPASSWD: ALL" >> /etc/sudoers
+
 RUN chown -R admin: /var/www
 COPY bin/php.ini /usr/local/etc/php/php.ini
 COPY bin/php-fpm.pool.conf /usr/local/etc/php/php-fpm.pool.conf
 RUN mkdir /var/www/.ssh/
-COPY bin/authorized_keys.$BUILD /var/www/.ssh/
+COPY bin/authorized_keys.$BUILD /var/www/.ssh/authorized_keys
 RUN chown admin:admin -R /var/www/.ssh/
 RUN chmod 600 /var/www/.ssh/*
 RUN chown admin:admin -R /usr/local/etc/php/php.ini

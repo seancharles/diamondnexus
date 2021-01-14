@@ -38,7 +38,7 @@ class UpdateStocks extends AbstractCommand
         $output->writeln('Products for transformation: ' . $productCollection->count());
         foreach ($productCollection->getItems() as $item) {
             $output->writeln('In process product ID = ' . $item->getData('entity_id'));
-            $this->helper->updateStock((int)$item->getData('sku'));
+            $this->helper->updateStock($item->getData('sku'));
         }
         $output->writeln('Stocks are updated! Please execute bin/magento indexer:reindex');
     }

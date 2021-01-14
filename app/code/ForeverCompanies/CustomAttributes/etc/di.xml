@@ -25,6 +25,12 @@
                 <item name="UpdateStocks" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\UpdateStocks
                 </item>
+                <item name="UpdateLooseStones" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\UpdateLooseStones
+                </item>
+                <item name="UpdateCustomizationType" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\UpdateCustomizationType
+                </item>
                 <item name="TransformOptions" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\TransformOptions
                 </item>
@@ -36,6 +42,9 @@
                 </item>
                 <item name="RefreshPatchList" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\RefreshPatchList
+                </item>
+                <item name="TranslateShipStatusToShippingGroup" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\TranslateShipStatusToShippingGroup
                 </item>
             </argument>
         </arguments>
@@ -62,7 +71,8 @@
         <arguments>
             <argument name="name" xsi:type="string">ForeverCompaniesLogByOption</argument>
             <argument name="handlers" xsi:type="array">
-                <item name="system" xsi:type="object">ForeverCompanies\CustomAttributes\Logger\ErrorsByOption\Handler</item>
+                <item name="system" xsi:type="object">ForeverCompanies\CustomAttributes\Logger\ErrorsByOption\Handler
+                </item>
             </argument>
         </arguments>
     </type>
@@ -76,7 +86,8 @@
         <arguments>
             <argument name="name" xsi:type="string">ForeverCompaniesLogBySku</argument>
             <argument name="handlers" xsi:type="array">
-                <item name="system" xsi:type="object">ForeverCompanies\CustomAttributes\Logger\ErrorsBySku\Handler</item>
+                <item name="system" xsi:type="object">ForeverCompanies\CustomAttributes\Logger\ErrorsBySku\Handler
+                </item>
             </argument>
         </arguments>
     </type>
