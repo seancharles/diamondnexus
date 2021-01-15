@@ -372,6 +372,40 @@ class TransformData extends AbstractHelper
     }
 
     /**
+     * @param string $sku
+     */
+    public function updateRingSizeSku($sku)
+    {
+        $changeFlag = false;
+        try {
+            $product = $this->productRepository->get($sku);
+            $options = $product->getOptions();
+            if (count($options) == 0) {
+                return;
+            }
+            foreach ($options as $option) {
+                if ($option->getTitle() == 'Ring Size') {
+                    $values = $option->getValues();
+                    foreach ($values as &$value) {
+                        if (strlen($value->getSku()) == 3) {
+                            $value->setSku('0' . $value->getSku());
+                        }
+                    }
+                    $option->setValues($values);
+                    $changeFlag = 1;
+                }
+            }
+            if ($changeFlag) {
+                $this->productRepository->save($product);
+            }
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->error($e->getMessage());
+        } catch (LocalizedException $e) {
+            $this->_logger->error($e->getMessage());
+        }
+    }
+
+    /**
      * @return Collection
      */
     public function getProductsForChangeStocks()
@@ -398,6 +432,15 @@ class TransformData extends AbstractHelper
         $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
         $collection->addAttributeToFilter('attribute_set_id', ['eq' => $attributeSetId]);
         $collection->addAttributeToFilter('type_id', ['eq' => Product\Type::TYPE_SIMPLE]);
+        return $collection;
+    }
+
+    public function getBundleProducts()
+    {
+        $collection = $this->productCollectionFactory->create();
+        $collection->addAttributeToSelect('*');
+        $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
+        $collection->addAttributeToFilter('type_id', ['eq' => Product\Type::TYPE_BUNDLE]);
         return $collection;
     }
 

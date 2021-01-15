@@ -69,7 +69,8 @@ class TranslateShipStatusToShippingGroup extends Command
      * {@inheritdoc}
      * @throws LocalizedException
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         
         $output->writeln("Updating products Shipping Group with mapped Shipping Status value.");
         
@@ -78,14 +79,13 @@ class TranslateShipStatusToShippingGroup extends Command
 
         $shippingStatusOptions = $attribute->getSource()->getAllOptions();
         
-        foreach($shippingStatusOptions as $option) {
-            if($option['value']) {
+        foreach ($shippingStatusOptions as $option) {
+            if ($option['value']) {
                 $this->shippingStatusLabelMap[$option['label']] = $option['value'];
             }
         }
         
-        foreach($this->shippingStatusLabelMap as $shippingStatusKey => $shippingStatusId)
-        {
+        foreach ($this->shippingStatusLabelMap as $shippingStatusKey => $shippingStatusId) {
             $productIds = [];
             
             $productCollection = $this->collectionFactory->create();
@@ -93,16 +93,15 @@ class TranslateShipStatusToShippingGroup extends Command
             
             $output->writeln($productCollection->getSize() . " Product(s) found with shipping status code: " . $shippingStatusKey);
         
-            foreach($productCollection as $product)
-            {
+            foreach ($productCollection as $product) {
                 $productIds[] = $product->getId();
             }
             
             $this->productActionObject->updateAttributes(
                 $productIds,
-                array(
+                [
                     'shipperhq_shipping_group' => $this->shippingStatusTranslateMap[$shippingStatusKey]
-                ),
+                ],
                 0
             );
         }
