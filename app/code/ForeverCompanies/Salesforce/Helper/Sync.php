@@ -337,17 +337,12 @@
                         
                         $postData = json_decode($lead->getData('form_post_json'));
 
-                        $leadData = [];
-                        $leadData['RecordTypeId'] = '0120v000000X2vcAAC';
-                        $leadData['email'] = $lead->getEmail();
-                        
-                        if(isset($postData['firstname']) == true) {
-                            $leadData['firstname'] = $lead->getFirstname();
-                        }
-                        
-                        if(isset($postData['lastname']) == true) {
-                            $leadData['lastname'] = $lead->getLastname();
-                        }
+                        $leadData = [
+                            'RecordTypeId' => '0120v000000X2vcAAC',
+                            'email' => $lead->getEmail(),
+                            'FirstName' => $postData->firstname,
+                            'LastName' => $postData->lastname
+                        ];
                         
                         $leadId = $this->fcSyncLead->sync([
                             'lead' => $leadData
@@ -355,7 +350,7 @@
                         
                         if($leadId) {
                             // always update the last sync time
-                            $lead->setData('lastsync_at', $this->date->gmtDate());
+                            $lead->setData(self::SF_LAST_SYNC_FIELD, $this->date->gmtDate());
                             
                             $this->leadsFactory->create()->save($lead);
                         }

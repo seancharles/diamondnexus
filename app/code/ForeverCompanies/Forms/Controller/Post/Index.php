@@ -34,6 +34,7 @@
 			
 				$websiteId = $this->storeManager->getWebsite()->getId();
 				$formId = $this->formHelper->getSanitizedField('form_id');
+                $email = $this->formHelper->getSanitizedField('email');
                 $formData = $this->formHelper->getSanitizedField('form_post_json');
 				
 				$model = $this->submissionFactory->create();
@@ -41,7 +42,8 @@
 				$model->addData([
 					"website_id" => $websiteId,
 					"form_id" => $formId,
-					"form_post_json" => json_encode($formData),
+                    "email" => $email,
+					"form_post_json" => $formData,
 					"created_at" => date("Y-m-d h:i:s", time())
 				]);
 				
