@@ -314,6 +314,8 @@
                         array('gt' => $this->getFilterDate())
                     )
                 )
+                // form ids to sync to salesforce, this should be maintained
+                ->addFieldToFilter("form_id", array('in' => array(1,2,3)))
                 ->setPageSize(self::PAGE_SIZE)
                 ->load();
             
