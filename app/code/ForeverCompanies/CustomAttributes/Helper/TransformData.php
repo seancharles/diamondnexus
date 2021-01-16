@@ -405,6 +405,31 @@ class TransformData extends AbstractHelper
         }
     }
 
+    public function updateStoneBundleSku($sku)
+    {
+        try {
+            $product = $this->productRepository->get($sku);
+            $bundleOptions = $product->getExtensionAttributes()->getBundleProductOptions();
+            $nId = false;
+            foreach ($bundleOptions as $id => $bundleOption) {
+                if ($bundleOption->getTitle() == 'Center Stone Size') {
+                    $nId = $id;
+                    continue;
+                }
+            }
+            if ($nId === false) {
+                return;
+            }
+            foreach ($product->getTypeInstance(true)->getChildrenIds($product->getId(), false)[$nId] as $id) {
+                $linkedProduct = $this->productRepository->getById($id);
+                if ($linkedProduct->getData('bundle_sku') == null) {
+
+                }
+            }
+        } catch (NoSuchEntityException $e) {
+        }
+    }
+
     /**
      * @return Collection
      */

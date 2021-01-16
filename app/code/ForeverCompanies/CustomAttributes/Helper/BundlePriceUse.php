@@ -59,7 +59,6 @@ class BundlePriceUse extends AbstractHelper
         $sku = $product->getSku();
         if ($product->getData('bundle_price_use') == 0 || $product->getData('bundle_price_use') !== $price) {
             $product->setData('bundle_price_use', $price);
-            $product->setData('bundle_sku', $originalSku);
             try {
                 $this->productTypeHelper->setProductType($product);
                 $this->productRepository->save($product);

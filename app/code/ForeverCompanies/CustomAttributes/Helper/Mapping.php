@@ -21,7 +21,10 @@ use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Api\Data\AttributeInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
+use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Exception\StateException;
 
 class Mapping extends AbstractHelper
 {
@@ -557,8 +560,20 @@ class Mapping extends AbstractHelper
                 $sku = $product->getSku();
                 $skusForLikedProduct[$id] = $this->productFunctionalHelper->getStoneSkuFromProductSku($sku);
                 $this->productFunctionalHelper->addProductToDelete($product);
+                if ($product->getData('bundle_sku') == null) {
+                    $bundleSku = substr($sku, 11, 13);
+                    $product->setData('bundle_sku', $bundleSku);
+                    $product->setCustomAttribute('bundle_sku', $bundleSku);
+                    $this->productRepository->save($product);
+                }
             } catch (NoSuchEntityException $e) {
                 $this->customLogger->info('SKU not found - ' . $e->getMessage());
+            } catch (CouldNotSaveException $e) {
+                $this->customLogger->info('Can\'t update bundle_sku - ' . $e->getMessage());
+            } catch (InputException $e) {
+                $this->customLogger->info('Can\'t update bundle_sku - ' . $e->getMessage());
+            } catch (StateException $e) {
+                $this->customLogger->info('Can\'t update bundle_sku - ' . $e->getMessage());
             }
         }
         return array_unique($skusForLikedProduct);
