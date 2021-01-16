@@ -23,9 +23,6 @@
             <tooltip>
                 <![CDATA[
                         Host of Salesforce ]]></tooltip>
-            <depends>
-                <field id="is_connected">0</field>
-            </depends>
         </field>
         <field id="client_id"
                translate="label comment"
@@ -34,9 +31,6 @@
             <label>Client ID</label>
             <tooltip>Enter Consumer key of connect app</tooltip>
             <config_path>salesforcecrm/salesforceconfig/client_id</config_path>
-            <depends>
-                <field id="is_connected">0</field>
-            </depends>
         </field>
         <field id="client_secret"
                translate="label comment"
@@ -45,9 +39,6 @@
             <label>Client Secret</label>
             <tooltip>Enter Consumer secret of connect app</tooltip>
             <config_path>salesforcecrm/salesforceconfig/client_secret</config_path>
-            <depends>
-                <field id="is_connected">0</field>
-            </depends>
         </field>
         <field id="email" translate="label comment"
                type="text" sortOrder="12"
@@ -62,9 +53,6 @@
                     <li>Professional Edition(bought API package)</li>
                     </ol>]]></tooltip>
             <config_path>salesforcecrm/salesforceconfig/email</config_path>
-            <depends>
-                <field id="is_connected">0</field>
-            </depends>
         </field>
         <field id="passwd" translate="label comment"
                type="text" sortOrder="13"
@@ -74,9 +62,6 @@
             <frontend_model>ForeverCompanies\Salesforce\Block\System\Config\Form\Field\Password</frontend_model>
             <tooltip>Enter Password of SalesforceCRM account</tooltip>
             <config_path>salesforcecrm/salesforceconfig/passwd</config_path>
-            <depends>
-                <field id="is_connected">0</field>
-            </depends>
         </field>
         <field id="get_access_token" translate="button_label"
                sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">

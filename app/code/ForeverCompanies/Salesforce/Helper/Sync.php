@@ -14,10 +14,14 @@
     class Sync extends AbstractHelper
     {
         protected $orderFactory;
+        protected $orderRepositoryInterface;
         protected $customerFactory;
-        protected $customerRepositoryInterface;
-        protected $customer;
+        protected $customerResourceFactory;
+        protected $leadsCollectionFactory;
+        protected $leadsFactory;
+        
         protected $date;
+        protected $timezone;
         
         protected $fcSyncOrder;
         protected $fcSyncAccount;
@@ -34,8 +38,12 @@
             \Magento\Sales\Api\OrderRepositoryInterface $orderRepositoryInterface,
             \Magento\Customer\Model\CustomerFactory $customerFactory,
             \Magento\Customer\Model\ResourceModel\CustomerFactory $customerResourceFactory,
+            \ForeverCompanies\Forms\Model\ResourceModel\Submission\CollectionFactory $leadsCollectionFactory,
+            \ForeverCompanies\Forms\Model\ResourceModel\SubmissionFactory $leadsFactory,
+            
             DateTime $date,
             TimezoneInterface $timezone,
+            
             Order $fcSyncOrder,
             Account $fcSyncAccount,
             Lead $fcSyncLead
@@ -45,6 +53,9 @@
             $this->orderRepositoryInterface = $orderRepositoryInterface;
             $this->customerFactory = $customerFactory;
             $this->customerResourceFactory = $customerResourceFactory;
+            $this->leadsCollectionFactory = $leadsCollectionFactory;
+            $this->leadsFactory = $leadsFactory;
+            
             $this->date = $date;
             $this->timezone = $timezone;
             
@@ -78,6 +89,28 @@
             $this->logOutput($orders->getSize() . " orders found");
 
             $this->processOrders($orders);
+
+            $this->logOutput("Sync completed");
+        }
+        
+        /**
+         * Execute the sync
+         *
+         * @param InputInterface $input
+         * @param OutputInterface $output
+         *
+         * @return null|int
+         */        
+        public function runLeads()
+        {
+            $this->logOutput("Sync started");
+
+            // get recently modified customers
+            $leads = $this->getLeadsCollection();
+
+            $this->logOutput($leads->getSize() . " leads found");
+
+            $this->processLeads($leads);
 
             $this->logOutput("Sync completed");
         }
@@ -266,6 +299,65 @@
                             $this->logOutput("Error: unable to located account in Salesforce via API.");
                         }
                         
+                        $this->logOutput("Sync complete");
+                    }
+                }
+            }
+        }
+        
+        protected function getLeadsCollection()
+        {
+            $collection = $this->leadsCollectionFactory->create()
+                ->addFieldToFilter(
+                    array("main_table.created_at"),
+                    array(
+                        array('gt' => $this->getFilterDate())
+                    )
+                )
+                ->setPageSize(self::PAGE_SIZE)
+                ->load();
+            
+            return $collection;
+        }
+        
+        protected function processLeads($leads)
+        {
+            // handle looping through large collections
+            for($i=1; $i<= $this->getPageCount($leads); $i++)
+            {
+                $leads->setCurPage($i);
+                
+                foreach($leads as $lead)
+                {
+                    if($lead->getData(self::SF_LAST_SYNC_FIELD) == null) {
+                        
+                        $this->logOutput("Sync " . $lead->getEmail());
+                        
+                        $postData = json_decode($lead->getData('form_post_json'));
+
+                        $leadData = [];
+                        $leadData['RecordTypeId'] = '0120v000000X2vcAAC';
+                        $leadData['email'] = $lead->getEmail();
+                        
+                        if(isset($postData['firstname']) == true) {
+                            $leadData['firstname'] = $lead->getFirstname();
+                        }
+                        
+                        if(isset($postData['lastname']) == true) {
+                            $leadData['lastname'] = $lead->getLastname();
+                        }
+                        
+                        $leadId = $this->fcSyncLead->sync([
+                            'lead' => $leadData
+                        ]);
+                        
+                        if($leadId) {
+                            // always update the last sync time
+                            $lead->setData('lastsync_at', $this->date->gmtDate());
+                            
+                            $this->leadsFactory->create()->save($lead);
+                        }
+                        
                         $this->logOutput("Snyc complete");
                     }
                 }
@@ -294,18 +386,6 @@
             }
             
             $customerResource->saveAttribute($customer, self::SF_LAST_SYNC_FIELD);
-        }
-        
-        public function createLead($leadData)
-        {
-            // default record type, overridden if specified
-            if(isset($leadData['RecordTypeId']) === false) {
-                $leadData['RecordTypeId'] = '0120v000000X2vcAAC';
-            }
-            
-            return $this->fcSyncLead->sync([
-                'lead' => $leadData
-            ]);
         }
         
         protected function logOutput($message, $pushConsole = true)

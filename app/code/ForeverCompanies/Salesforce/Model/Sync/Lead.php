@@ -33,12 +33,14 @@ class Lead extends Connector
         ScopeConfigInterface $scopeConfig,
         ResourceModelConfig $resourceConfig,
         Data $data,
-        RequestLogFactory $requestLogFactory
+        RequestLogFactory $requestLogFactory,
+        \Magento\Config\Model\Config $configModel
     ) {
         parent::__construct(
             $scopeConfig,
             $resourceConfig,
-            $requestLogFactory
+            $requestLogFactory,
+            $configModel
         );
         $this->_type = 'Lead';
         $this->data = $data;

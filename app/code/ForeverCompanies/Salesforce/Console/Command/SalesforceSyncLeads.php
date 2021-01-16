@@ -9,16 +9,16 @@
     /**
      * Class SomeCommand
      */
-    class SalesforceSync extends Command
+    class SalesforceSyncLeads extends Command
     {
         /**
          * @var string
          */
-        protected $name = 'forevercompanies:salesforce:sync';
+        protected $name = 'forevercompanies:salesforce:leads:sync';
 
         /**
          * SalesforceSync constructor.
-         * @param \ForeverCompanies\Salesforce\Helper\Sync$syncHelper
+         * @param \ForeverCompanies\Salesforce\Helper\Sync $syncHelper
          */
 
         public function __construct(
@@ -35,7 +35,7 @@
         protected function configure()
         {
             $this->setName($this->name);
-            $this->setDescription("Sync magento orders/customers to Salesforce");
+            $this->setDescription("Sync magento Leads to Salesforce");
             parent::configure();
         }
         
@@ -49,6 +49,6 @@
          */
         protected function execute(InputInterface $input, OutputInterface $output)
         {
-            $this->syncHelper->run();
+            $this->syncHelper->runLeads();
         }
     }

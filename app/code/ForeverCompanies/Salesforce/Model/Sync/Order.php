@@ -61,6 +61,7 @@ class Order extends Connector
         ResourceModelConfig $resourceConfig,
         Data $data,
         RequestLogFactory $requestLogFactory,
+        \Magento\Config\Model\Config $configModel,
         OrderRepositoryInterface $orderRepository,
         OrderFactory $orderFactory,
         CustomerFactory $customerFactory
@@ -68,7 +69,8 @@ class Order extends Connector
         parent::__construct(
             $scopeConfig,
             $resourceConfig,
-            $requestLogFactory
+            $requestLogFactory,
+            $configModel
         );
         $this->orderFactory = $orderFactory;
         $this->orderRepository = $orderRepository;
