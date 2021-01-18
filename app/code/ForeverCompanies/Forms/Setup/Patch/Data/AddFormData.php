@@ -59,7 +59,7 @@ class AddFormData implements DataPatchInterface
                     'telephone' => 'Telephone',
                     'design' => 'What do you want to design'
                 ]),
-                'validation_json' => json_encode([
+                'fields_validation_json' => json_encode([
                     'firstname' => 'required',
                     'lastname' => 'required',
                     'email' => 'required',
@@ -75,7 +75,7 @@ class AddFormData implements DataPatchInterface
                     'lastname' => 'Last Name',
                     'email' => 'Email Address'
                 ]),
-                'validation_json' => json_encode([
+                'fields_validation_json' => json_encode([
                     'firstname' => 'required',
                     'lastname' => 'required',
                     'email' => 'required'
@@ -100,7 +100,7 @@ class AddFormData implements DataPatchInterface
                     'need_by' => 'When do you need the Engagement Ring by?',
                     'itemsofinterest' => 'Other Jewelry pieces you are interested in'
                 ]),
-                'validation_json' => json_encode([
+                'fields_validation_json' => json_encode([
                     'firstname' => 'required',
                     'lastname' => 'required',
                     'email' => 'required',
@@ -117,7 +117,7 @@ class AddFormData implements DataPatchInterface
                 'fields_json' => json_encode([
                     'email' => 'Email Address'
                 ]),
-                'validation_json' => json_encode([
+                'fields_validation_json' => json_encode([
                     'email' => 'required'
                 ]),
             ],
@@ -128,7 +128,7 @@ class AddFormData implements DataPatchInterface
                 'fields_json' => json_encode([
                     'firstname' => 'First Name'
                 ]),
-                'validation_json' => json_encode([
+                'fields_validation_json' => json_encode([
                     'email' => 'required'
                 ]),
             ],
@@ -139,7 +139,7 @@ class AddFormData implements DataPatchInterface
                 'fields_json' => json_encode([
                     'email' => 'Email Address'
                 ]),
-                'validation_json' => json_encode([
+                'fields_validation_json' => json_encode([
                     'email' => 'required'
                 ]),
             ]
