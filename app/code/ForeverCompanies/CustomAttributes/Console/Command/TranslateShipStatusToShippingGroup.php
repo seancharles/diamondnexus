@@ -18,7 +18,7 @@ class TranslateShipStatusToShippingGroup extends Command
      * @var \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory
      */
     protected $collectionFactory;
-    
+
     /**
      * @var \Magento\Catalog\Api\Data\ProductInterface
      */
@@ -28,7 +28,7 @@ class TranslateShipStatusToShippingGroup extends Command
      * @var \Magento\Eav\Model\Config
      */
     protected $eavConfig;
-    
+
     /**
      * @var \Magento\Catalog\Model\ResourceModel\Product\Action
      */
@@ -40,7 +40,7 @@ class TranslateShipStatusToShippingGroup extends Command
     protected $shippingStatusTranslateMap = [
         "SixDay" => "10 Days"
     ];
-    
+
     /**
      * @var Array
      */
@@ -61,7 +61,7 @@ class TranslateShipStatusToShippingGroup extends Command
         $this->productRepository = $productRepository;
         $this->eavConfig = $eavConfig;
         $this->productActionObject = $action;
-        
+
         parent::__construct($this->name);
     }
 
@@ -71,32 +71,33 @@ class TranslateShipStatusToShippingGroup extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        
+
         $output->writeln("Updating products Shipping Group with mapped Shipping Status value.");
-        
+
         // get shipping status attribute to create mapping
         $attribute = $this->eavConfig->getAttribute('catalog_product', 'shipping_status');
 
         $shippingStatusOptions = $attribute->getSource()->getAllOptions();
-        
+
         foreach ($shippingStatusOptions as $option) {
             if ($option['value']) {
                 $this->shippingStatusLabelMap[$option['label']] = $option['value'];
             }
         }
-        
+
         foreach ($this->shippingStatusLabelMap as $shippingStatusKey => $shippingStatusId) {
             $productIds = [];
-            
+
             $productCollection = $this->collectionFactory->create();
             $productCollection->addFieldToFilter("shipping_status", $shippingStatusId);
-            
-            $output->writeln($productCollection->getSize() . " Product(s) found with shipping status code: " . $shippingStatusKey);
-        
+
+            $text = " Product(s) found with shipping status code: ";
+            $output->writeln($productCollection->getSize() . $text . $shippingStatusKey);
+
             foreach ($productCollection as $product) {
                 $productIds[] = $product->getId();
             }
-            
+
             $this->productActionObject->updateAttributes(
                 $productIds,
                 [
@@ -106,7 +107,7 @@ class TranslateShipStatusToShippingGroup extends Command
             );
         }
     }
-    
+
     /**
      * {@inheritdoc}
      */

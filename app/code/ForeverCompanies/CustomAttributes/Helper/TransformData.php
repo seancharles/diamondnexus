@@ -209,6 +209,28 @@ class TransformData extends AbstractHelper
     ];
 
     /**
+     * @var string[]
+     */
+    protected $configurableSku = [
+        'LRENRS0105XCU',
+        'LRENRS0105XRB',
+        'MRWBXX0054X',
+        'MRWBXX0053X',
+        'MRWBXX0082X',
+        'MRWBXX0081X',
+        'MRWBXX0080X',
+        'MRWBXX0079X',
+        'MRWBXX0078X',
+        'MRWBXX0077X',
+        'MRWBXX0073X',
+        'MRWBXX0072X',
+        'MRWBXX0071X',
+        'MRWBXX0076X',
+        'MRWBXX0075X',
+        'MRWBXX0074X'
+    ];
+
+    /**
      * @param Context $context
      * @param Config $config
      * @param AttributeSetRepository $attributeSetRepository
@@ -405,31 +427,6 @@ class TransformData extends AbstractHelper
         }
     }
 
-    public function updateStoneBundleSku($sku)
-    {
-        try {
-            $product = $this->productRepository->get($sku);
-            $bundleOptions = $product->getExtensionAttributes()->getBundleProductOptions();
-            $nId = false;
-            foreach ($bundleOptions as $id => $bundleOption) {
-                if ($bundleOption->getTitle() == 'Center Stone Size') {
-                    $nId = $id;
-                    continue;
-                }
-            }
-            if ($nId === false) {
-                return;
-            }
-            foreach ($product->getTypeInstance(true)->getChildrenIds($product->getId(), false)[$nId] as $id) {
-                $linkedProduct = $this->productRepository->getById($id);
-                if ($linkedProduct->getData('bundle_sku') == null) {
-
-                }
-            }
-        } catch (NoSuchEntityException $e) {
-        }
-    }
-
     /**
      * @return Collection
      */
@@ -444,6 +441,52 @@ class TransformData extends AbstractHelper
         $collection->addCategoriesFilter(['nin' => $categories]);
         //only filter in stock product
         return $collection;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getMigrationLooseDiamondsProducts()
+    {
+        $attributeSetId = $this->getAttributeSetId('Migration_Loose Diamonds');
+        $collection = $this->productCollectionFactory->create();
+        $collection->addAttributeToSelect('*');
+        $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
+        $collection->addAttributeToFilter('attribute_set_id', ['eq' => $attributeSetId]);
+        return $collection;
+    }
+
+    /**
+     * @param $sku
+     */
+    public function cleanOptions($sku)
+    {
+        try {
+            $product = $this->productRepository->get($sku);
+
+            $flag = false;
+            $options = $product->getOptions();
+            if (count($options) > 0) {
+                foreach ($options as $id => $option) {
+                    if (strpos('Set', $option->getTitle()) !== false) {
+                        unset($options[$id]);
+                        $flag = true;
+                    }
+                }
+                if ($flag) {
+                    $product->setOptions($options);
+                    $this->productRepository->save($product);
+                }
+            }
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->error('Can\'t get product SKU =  ' . $sku . ': ' . $e->getMessage());
+        } catch (CouldNotSaveException $e) {
+            $this->_logger->error('Can\'t clean options for product SKU =  ' . $sku . ': ' . $e->getMessage());
+        } catch (InputException $e) {
+            $this->_logger->error('Can\'t clean options for product SKU =  ' . $sku . ': ' . $e->getMessage());
+        } catch (StateException $e) {
+            $this->_logger->error('Can\'t clean options for product SKU =  ' . $sku . ': ' . $e->getMessage());
+        }
     }
 
     /**
@@ -706,8 +749,11 @@ class TransformData extends AbstractHelper
             return;
         }
         if ($product->getTypeId() == Configurable::TYPE_CODE) {
-            if (strpos($product->getName(), 'Chelsa') === false) {
-                $this->convertConfigToBundle($product);
+            $sku = $product->getSku();
+            if (strpos($product->getName(), 'Chelsa') === false && !in_array($sku, $this->configurableSku)) {
+                if (strpos($sku, 'LREB') === false) {
+                    $this->convertConfigToBundle($product);
+                }
             }
         }
         $this->productTypeHelper->setProductType($product);
@@ -1205,9 +1251,13 @@ class TransformData extends AbstractHelper
      */
     private function editProductsFromConfigurable(Product $product)
     {
+        $sku = $product->getSku();
         foreach ($this->productFunctionalHelper->getProductForDelete() as $productForDelete) {
             $attributeSet = $this->attributeSetRepository->get($productForDelete->getAttributeSetId());
             if ($attributeSet->getAttributeSetName() == 'Migration_Loose Stones') {
+                continue;
+            }
+            if (in_array($sku, $this->configurableSku) || strpos($sku, 'LREB') === 0) {
                 continue;
             }
             $movedAsPart = 'Removed as part of: ';
@@ -1260,7 +1310,7 @@ class TransformData extends AbstractHelper
             $qty = $product->getQty();
             $stock->setData('qty', $qty);
             if ($qty == 0) {
-                $this->_logger->info('Product with SKU = ' . $product->getSku() . ' don\'t have qty in stock');
+                $this->_logger->info('Product with SKU = ' . $sku . ' don\'t have qty in stock');
                 $stock->setData('qty', 999);
             }
             $newExtensions->setStockItem($stock);
