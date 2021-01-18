@@ -39,6 +39,9 @@
                 <item name="SalesforceSync" xsi:type="object">
                     ForeverCompanies\Salesforce\Console\Command\SalesforceSync
                 </item>
+                <item name="SalesforceSyncLeads" xsi:type="object">
+                    ForeverCompanies\Salesforce\Console\Command\SalesforceSyncLeads
+                </item>
             </argument>
         </arguments>
     </type>

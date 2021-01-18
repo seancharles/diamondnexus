@@ -25,11 +25,17 @@
                 <item name="UpdateStocks" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\UpdateStocks
                 </item>
+                <item name="DiamondOptionsCleanup" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\DiamondOptionsCleanup
+                </item>
                 <item name="UpdateLooseStones" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\UpdateLooseStones
                 </item>
                 <item name="UpdateCustomizationType" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\UpdateCustomizationType
+                </item>
+                <item name="UpdateRingSizeSku" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\UpdateRingSizeSku
                 </item>
                 <item name="TransformOptions" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\TransformOptions

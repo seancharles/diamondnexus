@@ -43,12 +43,14 @@ class Account extends Connector
         ResourceModelConfig $resourceConfig,
         Data $data,
         RequestLogFactory $requestLogFactory,
+        \Magento\Config\Model\Config $configModel,
         CustomerFactory $customerFactory
     ) {
         parent::__construct(
             $scopeConfig,
             $resourceConfig,
-            $requestLogFactory
+            $requestLogFactory,
+            $configModel
         );
         $this->customerFactory = $customerFactory;
         $this->_type = 'Account';

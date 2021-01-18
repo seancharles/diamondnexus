@@ -22,7 +22,7 @@ class CompleteSequence extends Command
     /**
      * @var string
      */
-    protected $name = 'forevercompanies:update-category-sequence';
+    protected $name = 'forevercompanies:update-all-sequence';
 
     /**
      * @var State
@@ -70,6 +70,11 @@ class CompleteSequence extends Command
             $output->writeln('Update category ID = ' .$category['entity_id']);
             $this->addSequence($category['entity_id']);
         }
+        $selectProducts = $connection->select()->from('catalog_product_entity');
+        foreach ($connection->fetchAll($selectProducts) as $product) {
+            $output->writeln('Update product ID = ' .$product['entity_id']);
+            $this->addSequenceProduct($product['entity_id']);
+        }
         $output->writeln('Setting sequences are complete! Please execute bin/magento cache:clean');
     }
 
@@ -79,6 +84,12 @@ class CompleteSequence extends Command
     private function addSequence($id)
     {
         $tableName = $this->resource->getTableName('sequence_catalog_category');
+        $this->resource->getConnection()->insertOnDuplicate($tableName, ['sequence_value' => $id]);
+    }
+
+    private function addSequenceProduct($id)
+    {
+        $tableName = $this->resource->getTableName('sequence_product');
         $this->resource->getConnection()->insertOnDuplicate($tableName, ['sequence_value' => $id]);
     }
 

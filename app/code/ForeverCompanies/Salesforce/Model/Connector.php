@@ -52,6 +52,11 @@ class Connector
      * @var string
      */
     protected $_type;
+    
+    /**
+     * \Magento\Config\Model\Config
+     */
+    protected $configModel;
 
     /**
      * Connector constructor.
@@ -64,12 +69,14 @@ class Connector
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         ResourceModelConfig $resourceConfig,
-        RequestLogFactory $requestLogFactory
+        RequestLogFactory $requestLogFactory,
+        \Magento\Config\Model\Config $configModel
     ) {
 
         $this->_scopeConfig = $scopeConfig;
         $this->_resourceConfig = $resourceConfig;
         $this->_requestLogFactory = $requestLogFactory;
+        $this->configModel = $configModel;
     }
 
     /**
@@ -116,6 +123,7 @@ class Connector
                 'password' => $password
             ];
             $response = $this->makeRequest(\Zend_Http_Client::POST, $apiUrl, [], $params);
+            
             $response = \GuzzleHttp\json_decode($response, true);
 
             if (isset($response['access_token']) && isset($response['instance_url'])) {
@@ -173,7 +181,7 @@ class Connector
                 ScopeInterface::SCOPE_STORE
             );
         }
-
+        
         try {
             if (!isset($instance_url) || !isset($access_token) || $useFreshCredential) {
                 $login = $this->getAccessToken();
@@ -192,9 +200,12 @@ class Connector
         $url = $instance_url . $path;
         $response = $this->makeRequest($method, $url, $headers, $parameter);
         $response = json_decode($response, true);
+        
         if (isset($response[0]['errorCode']) && $response[0]['errorCode'] == 'INVALID_SESSION_ID') {
-            $this->sendRequest($method, $path, $parameter, true);
+            $response = $this->sendRequest($method, $path, $parameter, true);
+            $response = json_decode($response, true);
         }
+
         return $response;
     }
 
