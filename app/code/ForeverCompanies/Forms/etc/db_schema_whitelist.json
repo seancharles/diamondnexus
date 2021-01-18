@@ -1,0 +1,28 @@
+{
+    "fc_form": {
+        "column": {
+            "form_id": true,
+            "website_id": true,
+            "active": true,
+            "fields_json": true,
+            "fields_validation_json": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "fc_form_submission": {
+        "column": {
+            "submission_id": true,
+            "form_id": true,
+            "website_id": true,
+            "email": true,
+            "form_post_json": true,
+            "lastsync_at": true,
+            "created_at": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}
