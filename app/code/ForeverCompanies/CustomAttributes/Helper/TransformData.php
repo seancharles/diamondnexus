@@ -393,6 +393,25 @@ class TransformData extends AbstractHelper
         }
     }
 
+    public function updatePriceType(string $sku)
+    {
+        try {
+            $product = $this->productRepository->get($sku);
+        if ($product->getData('price_view') == '0' || $product->getData('price_view') == null) {
+            $product->setData('price_view', '1');
+            $this->productRepository->save($product);
+        }
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->error('Can\'t get product SKU = ' . $sku . ': ' . $e->getMessage());
+        } catch (CouldNotSaveException $e) {
+            $this->_logger->error('Can\'t change product price view. Product SKU = ' . $sku . ': ' . $e->getMessage());
+        } catch (InputException $e) {
+            $this->_logger->error('Can\'t change product price view. Product SKU = ' . $sku . ': ' . $e->getMessage());
+        } catch (StateException $e) {
+            $this->_logger->error('Can\'t change product price view. Product SKU = ' . $sku . ': ' . $e->getMessage());
+        }
+    }
+
     /**
      * @param string $sku
      */
@@ -503,12 +522,29 @@ class TransformData extends AbstractHelper
         return $collection;
     }
 
+    /**
+     * @return Collection
+     */
     public function getBundleProducts()
     {
         $collection = $this->productCollectionFactory->create();
         $collection->addAttributeToSelect('*');
         $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
         $collection->addAttributeToFilter('type_id', ['eq' => Product\Type::TYPE_BUNDLE]);
+        return $collection;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getBundleAndConfigurableProducts()
+    {
+        $collection = $this->productCollectionFactory->create();
+        $collection->addAttributeToSelect('*');
+        $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
+        $collection->addAttributeToFilter('type_id', [
+            'in' => [Product\Type::TYPE_BUNDLE, Configurable::TYPE_CODE]
+        ]);
         return $collection;
     }
 
