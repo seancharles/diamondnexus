@@ -2,8 +2,10 @@
 
 use ForeverCompanies\CustomSales\Block\Adminhtml\Order\View\SalesPerson;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Escaper;
 
 /** @var SalesPerson $block */
+/** @var $escaper Escaper */
 ?>
 
 <table class="admin__table-secondary order-account-information-table">
@@ -14,3 +16,16 @@ use Magento\Framework\Exception\LocalizedException;
         </tr>
     </tbody>
 </table>
+<form style="display: inline-table" action="<?= $escaper->escapeUrl($block->getExchangeUrl()) ?>" method="post"
+      id="order-create-change-salesperson-form">
+    <label class="checkbox"> Is Exchange
+        <input type="checkbox" name="is_exchange" id="is_exchange"
+               value="1"
+            <?php if ($block->getIsExchange() ){ ?>
+               checked="checked" class="checkbox"/>
+        <?php } ?>
+    </label>
+    <input type="submit" value="Save change" id="order-view-add-warranty">
+    <input name="form_key" type="hidden" value="<?php echo $block->getFormKey();?>">
+    <input name="order_id" type="hidden" value="<?php echo $block->getOrder()->getId();?>">
+</form>

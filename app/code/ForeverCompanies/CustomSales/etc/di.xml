@@ -33,4 +33,7 @@
         <plugin name="ForeverCompanies_CustomSales_Plugin_ShipmentRepository" sortOrder="10"
                 type="ForeverCompanies\CustomSales\Plugin\ShipmentRepository"/>
     </type>
+    <type name="Magento\Sales\Api\OrderRepositoryInterface">
+        <plugin name="custom_sales_order_repo" type="ForeverCompanies\CustomSales\Plugin\OrderRepository"/>
+    </type>
 </config>
