@@ -85,6 +85,7 @@ class UpdateProductOptionAttributes implements ObserverInterface
                 }
                 $value[] = $setValue;
             }
+            $value = array_filter(array_unique($value));
             $product->setData($attribute, implode(',', $value));
         }
         if (count($errors) > 0) {
