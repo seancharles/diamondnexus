@@ -38,4 +38,8 @@
                 type="ForeverCompanies\CustomApi\Model\ExtSearchResults" />
     <preference for="ForeverCompanies\CustomApi\Api\ReindexInterface"
                 type="ForeverCompanies\CustomApi\Model\Reindex"/>
+    <preference for="ShipperHQ\Shipper\Ui\Component\Listing\Column\DeliveryDate"
+                type="ForeverCompanies\CustomApi\Ui\Component\Listing\Column\DeliveryDate"/>
+    <preference for="ShipperHQ\Shipper\Ui\Component\Listing\Column\DispatchDate"
+                type="ForeverCompanies\CustomApi\Ui\Component\Listing\Column\DispatchDate"/>
 </config>

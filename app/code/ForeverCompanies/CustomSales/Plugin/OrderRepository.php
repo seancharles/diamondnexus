@@ -60,7 +60,7 @@ class OrderRepository
         OrderInterface $order
     )
     {
-        if ($order->getData('is_exchange') == null) {
+        if ($order->getData('is_exchange') == null || $order->getData('is_exchange') == '0') {
             return $this->addToExtensionIsExchange($order, 'no');
         }
         if ($order->getBillingAddress()->getCountryId() == 'US') {

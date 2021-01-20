@@ -18,5 +18,19 @@
                 </options>
             </settings>
         </column>
+        <column name="delivery_date">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="timezone" xsi:type="string">false</item>
+                </item>
+            </argument>
+        </column>
+        <column name="dispatch_date">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="timezone" xsi:type="string">false</item>
+                </item>
+            </argument>
+        </column>
     </columns>
 </listing>

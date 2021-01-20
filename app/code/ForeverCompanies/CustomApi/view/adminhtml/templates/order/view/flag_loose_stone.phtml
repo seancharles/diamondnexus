@@ -1,11 +1,13 @@
 <?php
 
 use ForeverCompanies\CustomApi\Block\Adminhtml\Order\View\Items\Column;
+use Magento\Framework\Escaper;
 
 /** @var Column $block */
+/** @var Escaper $escaper $item */
 if ($item = $block->getItem()) : ?>
     <div id="order_item_<?= /* @noEscape */
     $item->getId() ?>_flag_loose_stone" class="product-title">
-        <?= $block->escapeHtml($block->getFlagLooseStone()) ?>
+        <?= $escaper->escapeHtml($block->getFlagLooseStone()) ?>
     </div>
 <?php endif; ?>
