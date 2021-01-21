@@ -85,7 +85,9 @@ class UpdateProductOptionAttributes implements ObserverInterface
                 }
                 $value[] = $setValue;
             }
-            $product->setData($attribute, implode(',', $value));
+            $value = array_filter(array_unique($value));
+            $valueString = empty($value) ? '' : implode(',', $value);
+            $product->setData($attribute, $valueString);
         }
         if (count($errors) > 0) {
             if ($this->state->getAreaCode() == \Magento\Framework\App\Area::AREA_ADMINHTML) {
