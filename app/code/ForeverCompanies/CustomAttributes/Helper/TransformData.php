@@ -578,7 +578,8 @@ class TransformData extends AbstractHelper
                     $data[] = $this->getDataForMultiselectable($value, $eav->getOptions());
                 }
                 $data = array_filter(array_unique($data));
-                $entity->setData($attributeCode, implode(',', $data));
+                $dataString = empty($data) ? '' : implode(',', $data);
+                $entity->setData($attributeCode, $dataString);
             }
             $this->productRepository->save($entity);
         } catch (NoSuchEntityException $e) {
