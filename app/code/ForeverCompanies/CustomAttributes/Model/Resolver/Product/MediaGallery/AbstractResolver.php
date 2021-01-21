@@ -33,7 +33,13 @@ abstract class AbstractResolver
     }
 
     /**
-     * @inheritdoc
+     * @param Field $field
+     * @param $context
+     * @param ResolveInfo $info
+     * @param array|null $value
+     * @param array|null $args
+     * @return array
+     * @throws LocalizedException
      */
     public function resolve(
         Field $field,

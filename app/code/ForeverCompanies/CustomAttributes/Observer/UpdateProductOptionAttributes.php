@@ -58,6 +58,18 @@ class UpdateProductOptionAttributes implements ObserverInterface
         $errors = [];
         /** @var Product $product */
         $product = $observer->getData('data_object');
+        if ($product->getData('backorder_flag') == '0') {
+            $product->setData('backorder_date', null);
+            $product->setData('backordered_deactivate_date', null);
+        }
+        if ($product->getData('backorder_flag') == '1') {
+            if ($product->getData('backorder_date') == null) {
+                throw new LocalizedException(__('Can\'t save product attributes - Set Backorder date or disable it!'));
+            }
+            if ($product->getData('backordered_deactivate_date') == null) {
+                throw new LocalizedException(__('Can\'t save product attributes - Set Backorder deactivate date!'));
+            }
+        }
         if ($product->getId() == null || $product->getData('is_transformed') != 1) {
             return;
         }

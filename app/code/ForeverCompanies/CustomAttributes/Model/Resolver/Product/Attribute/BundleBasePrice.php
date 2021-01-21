@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ForeverCompanies\CustomAttributes\Model\Resolver\Product\Attribute;
 
 use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\ProductFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
@@ -16,15 +17,15 @@ use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 class BundleBasePrice implements ResolverInterface
 {
     /**
-     * @var ProductFactory|\Magento\Catalog\Model\ProductFactory
+     * @var ProductFactory
      */
     protected $productFactory;
 
     /**
      * BundleBasePrice constructor.
-     * @param \Magento\Catalog\Model\ProductFactory $productFactory
+     * @param ProductFactory $productFactory
      */
-    public function __construct(\Magento\Catalog\Model\ProductFactory $productFactory)
+    public function __construct(ProductFactory $productFactory)
     {
         $this->productFactory = $productFactory;
     }

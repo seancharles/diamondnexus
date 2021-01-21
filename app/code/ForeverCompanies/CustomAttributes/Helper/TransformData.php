@@ -397,10 +397,10 @@ class TransformData extends AbstractHelper
     {
         try {
             $product = $this->productRepository->get($sku);
-        if ($product->getData('price_view') == '0' || $product->getData('price_view') == null) {
-            $product->setData('price_view', '1');
-            $this->productRepository->save($product);
-        }
+            if ($product->getData('price_view') == '0' || $product->getData('price_view') == null) {
+                $product->setData('price_view', '1');
+                $this->productRepository->save($product);
+            }
         } catch (NoSuchEntityException $e) {
             $this->_logger->error('Can\'t get product SKU = ' . $sku . ': ' . $e->getMessage());
         } catch (CouldNotSaveException $e) {
