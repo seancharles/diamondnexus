@@ -264,6 +264,7 @@ class Link extends AbstractHelper
     public function createNewLink(string $sku, float $itemPrice, string $originalSku)
     {
         try {
+            $beforeChange = $sku;
             $product = $this->productRepository->get($sku);
             if ($product->getId() !== null) {
                 $this->bundlePriceHelper->setBundlePrice($product, $itemPrice, $originalSku);
@@ -366,9 +367,8 @@ class Link extends AbstractHelper
                         if (substr($sku, -4) == 'XXXX') {
                             $sku = substr($sku, 0, -4);
                         }
-                        $product = $this->extensionSearchSku($sku, $stoneForm);
+                        $product = $this->extensionSearchSku($sku, $stoneForm, $beforeChange);
                         if (!$product) {
-                            $this->logger->info('CAN\'T CREATE LINK FOR PRODUCT = ' . $originalSku);
                             return;
                         }
                         $this->bundlePriceHelper->setBundlePrice($product, $itemPrice, $originalSku);
@@ -403,7 +403,7 @@ class Link extends AbstractHelper
      * @param string $stoneForm
      * @return \Magento\Catalog\Model\Product|false
      */
-    protected function extensionSearchSku(string $sku, string $stoneForm)
+    protected function extensionSearchSku(string $sku, string $stoneForm, string $beforeChange)
     {
         // added the "if (array_key_exists())" because of the following error:
         // In process product ID = 8563

@@ -375,6 +375,7 @@ class Mapping extends AbstractHelper
                         $oldOptions = $product->getOptions();
                         $oldOptions[] = $tcw;
                         $product->setOptions($oldOptions);
+                        continue;
                     }
                     if ($optionLabel == 'Center Stone Size') {
                         $bundleOptions[] = $this->getOption($productOption);
@@ -539,8 +540,16 @@ class Mapping extends AbstractHelper
             $originalPrice = $this->productRepository->getById($originalId)->getPrice();
             $itemPrice = $originalPrice - $basePrice;
             $link = $this->linkHelper->createNewLink($sku, $itemPrice, $originalSku);
+            if ($link == null) {
+                if (substr($sku, 13, 4) == 'XXXX') {
+                    $sku = substr_replace($sku, 'WHXX', 13, 4);
+                    $link = $this->linkHelper->createNewLink($sku, $itemPrice, $originalSku);
+                }
+            }
             if ($link !== null) {
                 $links[] = $link;
+            } else {
+                $this->customLogger->info('CAN\'T CREATE LINK FOR PRODUCT = ' . $originalSku);
             }
         }
         return $links;
