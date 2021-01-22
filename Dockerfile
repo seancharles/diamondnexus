@@ -2,7 +2,7 @@ FROM php:7.4.13-fpm
 LABEL maintainer="Forever Companies"
 
 RUN groupadd -g 1000 admin
-RUN useradd -u 1000 -g 1000 -d /var/www/ admin
+RUN useradd -u 1000 -g 1000 -d /var/www/ admin -s /bin/bash
 RUN usermod -g www-data admin && usermod -a -G www-data,root root
 
 ARG BUILD
@@ -96,28 +96,32 @@ RUN if [ "$XDEBUG" = "on" ] ; then pecl install xdebug \
 && echo "xdebug.discover_client_host=0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ; fi
 
 RUN echo "admin	ALL=(ALL:ALL)	NOPASSWD: ALL" >> /etc/sudoers
-
-RUN chown -R admin: /var/www
 COPY bin/php.ini /usr/local/etc/php/php.ini
 COPY bin/php-fpm.pool.conf /usr/local/etc/php/php-fpm.pool.conf
-RUN mkdir /var/www/.ssh/
-COPY bin/authorized_keys.$BUILD /var/www/.ssh/authorized_keys
-RUN chown admin:admin -R /var/www/.ssh/
-RUN chmod 600 /var/www/.ssh/*
-RUN chown admin:admin -R /usr/local/etc/php/php.ini
-RUN chown admin:admin -R /usr/local/etc/php/php-fpm.pool.conf
-
-COPY bin/auth.json /root/.composer/auth.json
-COPY . /var/www/magento
-RUN echo "Composer Install"
-RUN cd /var/www/magento && cp app/etc/env.php.bak app/etc/env.php
-RUN cd /var/www/magento && php -d memory_limit=-1 `which composer` update
-RUN cd /var/www/magento && php -d memory_limit=-1 bin/magento setup:upgrade
-RUN cd /var/www/magento && php -d memory_limit=-1 bin/magento setup:di:compile
-RUN cd /var/www/magento && php -d memory_limit=-1 bin/magento cron:install
-RUN cd /var/www/magento && php -d memory_limit=-1 bin/magento indexer:reindex
-RUN cd /var/www/magento && php -d memory_limit=-1 bin/magento setup:static-content:deploy -f
-RUN chown admin:admin -R /var/www/magento
 
 USER admin
 WORKDIR /var/www/magento
+
+RUN sudo chown admin:admin -R /usr/local/etc/php/php.ini
+RUN sudo chown admin:admin -R /usr/local/etc/php/php-fpm.pool.conf
+RUN sudo chown -R admin: /var/www
+RUN sudo mkdir /var/www/.ssh/
+RUN sudo chown admin:admin -R /var/www/.ssh/
+COPY bin/authorized_keys.$BUILD /var/www/.ssh/authorized_keys
+RUN sudo chown admin:admin -R /var/www/.ssh/
+RUN sudo chmod 600 /var/www/.ssh/*
+RUN sudo mkdir /var/www/.composer
+run sudo chown admin:admin /var/www/.composer
+COPY bin/auth.json /var/www/.composer/auth.json
+run sudo chown admin:admin -R /var/www/.composer
+COPY . /var/www/magento
+RUN sudo chown admin:admin -R /var/www/magento
+
+RUN echo "Composer Install"
+RUN cp app/etc/env.php.bak app/etc/env.php
+RUN php -d memory_limit=-1 `which composer` update
+RUN php -d memory_limit=-1 bin/magento setup:upgrade
+RUN php -d memory_limit=-1 bin/magento setup:di:compile
+RUN php -d memory_limit=-1 bin/magento cron:install
+RUN php -d memory_limit=-1 bin/magento indexer:reindex
+RUN php -d memory_limit=-1 bin/magento setup:static-content:deploy -f
