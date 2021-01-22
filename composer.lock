@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "857ef4288ffad24ede216cb9e7afa7e7",
+    "content-hash": "bc6d7a42c2dbe6e8e9621160081a4fe6",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -25619,16 +25619,16 @@
         },
         {
             "name": "shipperhq/module-address-autocomplete",
-            "version": "20.3.1",
+            "version": "20.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/shipperhq/module-address-autocomplete.git",
-                "reference": "3fb96e8bb03811a557a3bb85826e843cdb52fd53"
+                "reference": "96bd30bb0b870d4a4d6c1cb02f701ce9501f5ad8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shipperhq/module-address-autocomplete/zipball/3fb96e8bb03811a557a3bb85826e843cdb52fd53",
-                "reference": "3fb96e8bb03811a557a3bb85826e843cdb52fd53",
+                "url": "https://api.github.com/repos/shipperhq/module-address-autocomplete/zipball/96bd30bb0b870d4a4d6c1cb02f701ce9501f5ad8",
+                "reference": "96bd30bb0b870d4a4d6c1cb02f701ce9501f5ad8",
                 "shasum": ""
             },
             "require": {
@@ -25659,20 +25659,20 @@
                 }
             ],
             "description": "ShipperHQ Address Autocomplete Tool",
-            "time": "2020-06-18T16:03:13+00:00"
+            "time": "2020-12-21T10:02:52+00:00"
         },
         {
             "name": "shipperhq/module-common",
-            "version": "20.9.0",
+            "version": "20.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/shipperhq/module-common.git",
-                "reference": "627b46edcf45d43f319c9ce0fa71265a2cace270"
+                "reference": "095b7b7b0ec98556cbad79a48275cc84affdf951"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shipperhq/module-common/zipball/627b46edcf45d43f319c9ce0fa71265a2cace270",
-                "reference": "627b46edcf45d43f319c9ce0fa71265a2cace270",
+                "url": "https://api.github.com/repos/shipperhq/module-common/zipball/095b7b7b0ec98556cbad79a48275cc84affdf951",
+                "reference": "095b7b7b0ec98556cbad79a48275cc84affdf951",
                 "shasum": ""
             },
             "require": {
@@ -25694,6 +25694,7 @@
                 "phpunit/phpunit": "~5.3.0",
                 "sebastian/phpcpd": "2.0.4",
                 "squizlabs/php_codesniffer": "^3.2",
+                "symfony/dependency-injection": ">3.4.26",
                 "theseer/phpdox": "^0.10.1"
             },
             "type": "magento2-module",
@@ -25721,7 +25722,7 @@
                 }
             ],
             "description": "ShipperHQ Common",
-            "time": "2019-11-20T15:58:33+00:00"
+            "time": "2021-01-07T11:03:56+00:00"
         },
         {
             "name": "shipperhq/module-logger",
@@ -28385,12 +28386,12 @@
             "version": "1.9.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webmozart/assert.git",
+                "url": "https://github.com/webmozarts/assert.git",
                 "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
                 "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389",
                 "shasum": ""
             },
