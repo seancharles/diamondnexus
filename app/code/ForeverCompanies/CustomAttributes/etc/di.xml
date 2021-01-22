@@ -55,6 +55,9 @@
                 <item name="TranslateShipStatusToShippingGroup" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\TranslateShipStatusToShippingGroup
                 </item>
+                <item name="UpdateBundlePriceTypeFixed" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\UpdateBundlePriceTypeFixed
+                </item>
             </argument>
         </arguments>
     </type>
