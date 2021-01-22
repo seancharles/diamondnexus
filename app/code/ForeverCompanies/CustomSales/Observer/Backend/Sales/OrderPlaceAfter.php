@@ -42,11 +42,17 @@ class OrderPlaceAfter implements ObserverInterface
         $refererUrl = $this->redirect->getRefererUrl();
         $statusString = stristr($refererUrl, 'status/');
         $statusString = str_replace('status/', '', $statusString);
+        $exchangeString = stristr($refererUrl, 'is_exchange/');
+        $exchangeString = str_replace('is_exchange/', '', $exchangeString);
         if ($statusString !== false) {
             $position = (int) strpos($statusString, "/");
             $order->setData('status', substr($statusString, 0, $position));
             $order->setData('state', substr($statusString, 0, $position));
             $order->setData('quote_expiration_date', date('Y-m-d', strtotime('+30 day')));
+        }
+        if ($exchangeString !== false) {
+            $position = (int) strpos($exchangeString, "/");
+            $order->setData('is_exchange', substr($exchangeString, 0, $position));
         }
     }
 }

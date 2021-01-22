@@ -81,10 +81,12 @@ class OrderPlaceBefore implements ObserverInterface
             $data = $connection->fetchRow($select);
             if ($data == false) {
                 $order->setData('sales_person_id', $user->getId());
+            } else {
+                if ($data['is_active'] == 0) {
+                    $order->setData('sales_person_id', $user->getId());
+                }
             }
-            if ($data['is_active'] == 0) {
-                $order->setData('sales_person_id', $user->getId());
-            }
+
         }
     }
 }

@@ -21,5 +21,4 @@ interface ReindexInterface
      * @return string
      */
     public function reindexCategories(array $categoryIds);
-
 }

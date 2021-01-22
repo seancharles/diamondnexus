@@ -6,4 +6,7 @@
         <attribute code="final_shipping_cost" type="string"/>
         <attribute code="delivery_date_actual" type="string"/>
     </extension_attributes>
+    <extension_attributes for="Magento\Sales\Api\Data\OrderInterface">
+        <attribute code="fb_custom_field_id_22" type="string" />
+    </extension_attributes>
 </config>
