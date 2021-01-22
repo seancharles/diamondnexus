@@ -874,8 +874,25 @@ class TransformData extends AbstractHelper
             return;
         }
 
-        // set price_type
-        $product->setData('price_type', Price::PRICE_TYPE_FIXED);
+        // should we save the product record?
+        $productSave = false;
+
+        // check if a price exists, if not, add a record
+        if (is_null($product->getPrice())) {
+            $product->setPrice(0.00);
+            $productSave = true;
+        }
+
+        // check if the price_type attribute is set 1. if not, set it.
+        if (Price::PRICE_TYPE_FIXED !== (int) $product->getData('price_type')) {
+            $product->setData('price_type', Price::PRICE_TYPE_FIXED);
+            $productSave = true;
+        }
+
+        // don't call product->save if nothing needs saving
+        if (!$productSave) {
+            return;
+        }
 
         // save the product
         try {
