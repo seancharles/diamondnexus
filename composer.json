@@ -19,7 +19,7 @@
         "mageplaza/module-core": "^1.4",
         "mageplaza/module-smtp": "^1.4",
         "shipperhq/module-address-autocomplete": "^20.3",
-        "shipperhq/module-shipper": "^20.37"
+        "shipperhq/module-shipper": "20.39.7"
     },
     "require-dev": {
         "allure-framework/allure-phpunit": "~1.2.0",
