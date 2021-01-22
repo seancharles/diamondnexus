@@ -13,6 +13,7 @@ use ForeverCompanies\CustomAttributes\Logger\ErrorsBySku\Logger as LoggerBySku;
 use ForeverCompanies\CustomAttributes\Model\Config\Source\Product\BundleCustomizationType as BType;
 use ForeverCompanies\CustomAttributes\Model\Config\Source\Product\CustomizationType;
 use Magento\Bundle\Api\Data\LinkInterface;
+use Magento\Bundle\Model\Product\Price;
 use Magento\Bundle\Model\Product\Type;
 use Magento\Bundle\Model\ResourceModel\Selection;
 use Magento\Catalog\Api\AttributeSetRepositoryInterface;
@@ -845,6 +846,45 @@ class TransformData extends AbstractHelper
             $this->_logger->error('Can\'t disable product ID = ' . $productId . ': ' . $e->getMessage());
         } catch (InputException $e) {
             $this->_logger->error('Can\'t disable product ID = ' . $productId . ': ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * @param int $entityId
+     * @throws InputException
+     * @throws LocalizedException
+     * @throws StateException
+     */
+    public function updateBundlePriceTypeFixed(int $entityId)
+    {
+        $product = $this->getCurrentProduct($entityId);
+
+        // if product not found, or product name not set, log error and return
+        if ($product == null) {
+            return;
+        }
+        if ($product->getName() == null) {
+            $this->_logger->error('Product ID = ' . $entityId . ' without name');
+            return;
+        }
+
+        // if product is not a bundle, log error and return
+        if ($product->getTypeId() !== Product\Type::TYPE_BUNDLE) {
+            $this->_logger->error('updateBundlePriceType Error: Product ID = ' . $entityId . ' is not a bundle.');
+            return;
+        }
+
+        // set price_type
+        $product->setData('price_type', Price::PRICE_TYPE_FIXED);
+
+        // save the product
+        try {
+            $this->productRepository->save($product);
+        } catch (InputException $inputException) {
+            $this->_logger->error($inputException->getMessage());
+            throw $inputException;
+        } catch (Exception $e) {
+            throw new StateException(__('Cannot save product - ' . $e->getMessage()));
         }
     }
 
