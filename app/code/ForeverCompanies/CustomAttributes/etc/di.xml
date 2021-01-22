@@ -37,6 +37,9 @@
                 <item name="UpdateRingSizeSku" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\UpdateRingSizeSku
                 </item>
+                <item name="UpdateAdvancedPricing" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\UpdateAdvancedPricing
+                </item>
                 <item name="TransformOptions" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\TransformOptions
                 </item>

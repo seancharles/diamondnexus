@@ -29,6 +29,13 @@ interface ProductInterface {
     @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
     gemstone: [String]
     @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    backorder_flag: String
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Backorder")
+    backorder_date: String
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Backorder")
+    backordered_deactivate_date: String
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Backorder")
+
 }
 
 type BundleProduct {

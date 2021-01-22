@@ -1,12 +1,29 @@
 <?php
+
 use ForeverCompanies\CustomSales\Block\Adminhtml\Order\Create\SalesPerson;
+use Magento\Framework\Escaper;
 
 /** @var SalesPerson $block */
+/** @var $escaper Escaper */
 ?>
-<form style="display: inline-table" action="<?= $block->escapeUrl($block->getFormUrl()) ?>" method="post"
+<form style="display: inline-table" action="<?= $escaper->escapeUrl($block->getFormUrl()) ?>" method="post"
       id="order-create-change-salesperson-form">
-<span class="title"><?= $block->escapeHtml('Sales Person ID: ' . $block->getSalesPerson()) ?></span>
-<?php if ($block->isAllowed()) { ?>
-    <input type="submit" value="Change" id="order-view-add-warranty">
-<?php } ?>
+    <input name="form_key" type="hidden" value="<?php echo $block->getFormKey();?>">
+    <span class="title"><?= $escaper->escapeHtml('Sales Person ID: ' . $block->getSalesPerson()) ?></span>
+    <?php if ($block->isAllowed()) { ?>
+        <input type="submit" value="Change" id="order-view-add-warranty">
+    <?php } ?>
+</form>
+<br />
+<form style="display: inline-table" action="<?= $escaper->escapeUrl($block->getExchangeUrl()) ?>" method="post"
+      id="order-create-change-salesperson-form">
+    <label class="checkbox"> Is Exchange
+        <input type="checkbox" name="is_exchange" id="is_exchange"
+               value="1"
+            <?php if ($block->getIsExchange() ){ ?>
+                checked="checked" class="checkbox"/>
+        <?php } ?>
+    </label>
+    <input type="submit" value="Save change" id="order-view-add-warranty">
+    <input name="form_key" type="hidden" value="<?php echo $block->getFormKey();?>">
 </form>

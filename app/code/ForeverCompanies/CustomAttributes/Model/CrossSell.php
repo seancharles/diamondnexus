@@ -3,7 +3,6 @@
 namespace ForeverCompanies\CustomAttributes\Model;
 
 use Magento\Framework\DataObject\IdentityInterface;
-use Magento\Framework\DB\Select;
 use Magento\Framework\Model\AbstractModel;
 
 class CrossSell extends AbstractModel implements IdentityInterface

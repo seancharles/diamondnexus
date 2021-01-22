@@ -1,7 +1,9 @@
 <?php
 
 use ForeverCompanies\CustomApi\Block\Adminhtml\Order\AsdAndDeliveryModalBox;
+use Magento\Framework\Escaper;
 
+/** @var Escaper $escaper $item */
 /** @var $block AsdAndDeliveryModalBox */
 ?>
 <div id="popup-modal">
@@ -12,16 +14,16 @@ use ForeverCompanies\CustomApi\Block\Adminhtml\Order\AsdAndDeliveryModalBox;
             name="dispatch_date"
             type="date"
             data-date-format="Month dd yyyy"
-            min="<?= $block->escapeHtml(date('Y-m-d')) ?>"
-            value="<?= $block->escapeHtml($block->getData('order')->getExtensionAttributes()->getAnticipatedShipdate()) ?>"
+            min="<?= $escaper->escapeHtml(date('Y-m-d')) ?>"
+            value="<?= $escaper->escapeHtml($block->getData('order')->getExtensionAttributes()->getAnticipatedShipdate()) ?>"
         >
         Delivery Date <input
             name="delivery_date"
             type="date"
-            min="<?= $block->escapeHtml(date('Y-m-d')) ?>"
-            value="<?= $block->escapeHtml($block->getData('order')->getExtensionAttributes()->getDeliveryDate()) ?>"
+            min="<?= $escaper->escapeHtml(date('Y-m-d')) ?>"
+            value="<?= $escaper->escapeHtml($block->getData('order')->getExtensionAttributes()->getDeliveryDate()) ?>"
         >
-        <input name="form_key" type="hidden" value="<?php echo $block->getFormKey();?>">
+        <input name="form_key" type="hidden" value="<?= $block->getFormKey(); ?>">
         <input type="submit" value="Submit" id="order-view-add-warranty">
     </form>
 </div>

@@ -40,8 +40,7 @@ class Reindex implements ReindexInterface
         Product $productIndex,
         Category $categoryIndex,
         ProductRepository $productRepository
-    )
-    {
+    ) {
         $this->productIndex = $productIndex;
         $this->categoryIndex = $categoryIndex;
         $this->productRepository = $productRepository;
@@ -57,7 +56,7 @@ class Reindex implements ReindexInterface
         $ids = [];
         foreach ($productIds as $productId) {
             $product = $this->productRepository->getById($productId);
-            $ids = array_merge($ids, $product->getData('category_ids'));
+            $ids[] = $product->getData('category_ids');
         }
         $this->productIndex->execute($ids);
         return 'Reindex success';
@@ -69,7 +68,8 @@ class Reindex implements ReindexInterface
      */
     public function reindexCategories($categoryIds)
     {
-        $this->categoryIndex->execute($categoryIds);;
+        $this->categoryIndex->execute($categoryIds);
+        ;
         return 'Reindex success';
     }
 }

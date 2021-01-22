@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomApi\Api;
 
-use ForeverCompanies\CustomApi\Api\Data\ExtSearchResultsInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 
 interface ExtSalesOrderUpdateManagementInterface
@@ -16,7 +15,7 @@ interface ExtSalesOrderUpdateManagementInterface
     /**
      * GET for ExtSalesOrderUpdate api
      * @param SearchCriteriaInterface $searchCriteria
-     * @return ExtSearchResultsInterface
+     * @return \ForeverCompanies\CustomApi\Api\Data\ExtSearchResultsInterface
      */
     public function getExtSalesOrderUpdate(SearchCriteriaInterface $searchCriteria);
 

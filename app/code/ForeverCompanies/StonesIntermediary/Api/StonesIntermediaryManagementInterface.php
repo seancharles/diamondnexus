@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace ForeverCompanies\StonesIntermediary\Api;
 
 use ForeverCompanies\StonesIntermediary\Api\Data\StonesIntermediaryInterface;
-use ForeverCompanies\StonesIntermediary\Api\Data\StonesIntermediarySearchResultsInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 
 interface StonesIntermediaryManagementInterface
@@ -17,7 +16,7 @@ interface StonesIntermediaryManagementInterface
     /**
      * GET for StonesIntermediary api
      * @param SearchCriteriaInterface $searchCriteria
-     * @return StonesIntermediarySearchResultsInterface
+     * @return \ForeverCompanies\StonesIntermediary\Api\Data\StonesIntermediarySearchResultsInterface
      */
     public function getStonesIntermediary(SearchCriteriaInterface $searchCriteria);
 

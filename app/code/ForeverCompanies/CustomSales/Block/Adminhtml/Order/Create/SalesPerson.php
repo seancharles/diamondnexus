@@ -72,10 +72,34 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCr
     }
 
     /**
+     * @return string
+     */
+    public function getExchangeUrl()
+    {
+        $params = [];
+        if ($this->getRequest()->getParam('is_exchange') !== null) {
+            $params['is_exchange'] = $this->getRequest()->getParam('is_exchange');
+        }
+        return $this->getUrl('forevercompanies_custom/exchange/start', $params);
+    }
+
+    /**
      * @return bool
      */
     public function isAllowed()
     {
         return $this->salesPersonHelper->isAllowed();
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsExchange()
+    {
+        $isExchange = $this->getRequest()->getParam('is_exchange');
+        if ($isExchange === "1") {
+            return true;
+        }
+        return false;
     }
 }
