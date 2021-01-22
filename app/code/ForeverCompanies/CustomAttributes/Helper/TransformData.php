@@ -874,34 +874,20 @@ class TransformData extends AbstractHelper
             return;
         }
 
-        // check if a price exists, if not, throw error
-        if (is_null($product->getPrice())) {
-            $this->_logger->error('updateBundlePriceType Error: Product ID = ' . $entityId . ' has no price attribute record.');
-            return;
-        }
-
-        // should we save the product record?
-        $productSave = false;
-
-        // check if the price_type attribute is set 1. if not, set it.
+        // check if the price_type attribute is set 1. if not, set it and save
         if (Price::PRICE_TYPE_FIXED !== (int) $product->getData('price_type')) {
+            // set price_type
             $product->setData('price_type', Price::PRICE_TYPE_FIXED);
-            $productSave = true;
-        }
 
-        // don't call product->save if nothing needs saving
-        if (!$productSave) {
-            return;
-        }
-
-        // save the product
-        try {
-            $this->productRepository->save($product);
-        } catch (InputException $inputException) {
-            $this->_logger->error($inputException->getMessage());
-            throw $inputException;
-        } catch (Exception $e) {
-            throw new StateException(__('Cannot save product - ' . $e->getMessage()));
+            // save the product
+            try {
+                $this->productRepository->save($product);
+            } catch (InputException $inputException) {
+                $this->_logger->error($inputException->getMessage());
+                throw $inputException;
+            } catch (Exception $e) {
+                throw new StateException(__('Cannot save product - ' . $e->getMessage()));
+            }
         }
     }
 
