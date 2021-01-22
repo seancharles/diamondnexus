@@ -38,7 +38,7 @@ class UpdateBundlePriceTypeFixed extends AbstractCommand
         $output->writeln('Products for update: ' . $productCollection->count());
         foreach ($productCollection->getItems() as $item) {
             $output->writeln('In process product ID = ' . $item->getData('entity_id'));
-            $this->helper->updateBundlePriceTypeFixed($item->getData('entity_id'));
+            $this->helper->updateBundlePriceTypeFixed((int) $item->getData('entity_id'));
         }
         $output->writeln('Bundle price_type is updated! Please execute bin/magento cache:flush');
     }
