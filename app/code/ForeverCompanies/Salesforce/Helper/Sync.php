@@ -27,7 +27,7 @@
         protected $fcSyncAccount;
         protected $fcSyncLead;
         
-        const PAGE_SIZE = 1000;
+        const PAGE_SIZE = 10000;
         
         const SF_CUSTOMER_ID_FIELD = 'sf_acctid';
         const SF_ORDER_ID_FIELD = 'sf_orderid';
@@ -117,14 +117,7 @@
         
         protected function getOrderCollection()
         {
-            $collection = $this->orderFactory->create()
-                ->addFieldToFilter(
-                    array("main_table.updated_at","main_table.created_at"),
-                    array(
-                        array('gt' => $this->getFilterDate()),
-                        array('gt' => $this->getFilterDate())
-                    )
-                );
+            $collection = $this->orderFactory->create();
             
             $collection->getSelect()->joinLeft(
                 array('sosh' => 'sales_order_status_history'),
@@ -157,7 +150,20 @@
                 ]);
             
             $collection->getSelect()->group('main_table.entity_id')->order('main_table.updated_at DESC');
+            
+            $collection->getSelect()->where(
+                    "((`main_table`.`updated_at` > '{$this->getFilterDate()}') OR (`main_table`.`created_at` > '{$this->getFilterDate()}'))
+                OR
+                    (sosh.created_at > '{$this->getFilterDate()}')
+                OR
+                    (sst.updated_at > '{$this->getFilterDate()}')
+                OR
+                    (soa.address_updated_at > '{$this->getFilterDate()}')"
+            );
+            
             $collection->setPageSize(self::PAGE_SIZE);
+            
+            echo $collection->getSelect() . "\n";
             
             return $collection;
         }
@@ -403,6 +409,6 @@
         
         protected function getFilterDate()
         {
-            return date("Y-m-d", strtotime("-2 days")) . ' 00:00:00';
+            return date("Y-m-d", strtotime("-1 days")) . ' 00:00:00';
         }
     }

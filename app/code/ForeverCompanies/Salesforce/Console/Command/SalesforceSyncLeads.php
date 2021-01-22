@@ -1,6 +1,7 @@
 <?php
     namespace ForeverCompanies\Salesforce\Console\Command;
     
+    use Magento\Framework\App\Area;
     use Symfony\Component\Console\Command\Command;
     use Symfony\Component\Console\Input\InputInterface;
     use Symfony\Component\Console\Input\InputOption;
@@ -22,9 +23,11 @@
          */
 
         public function __construct(
-            \ForeverCompanies\Salesforce\Helper\Sync $syncHelper
+            \ForeverCompanies\Salesforce\Helper\Sync $syncHelper,
+            \Magento\Framework\App\State $state
         ) {
             $this->syncHelper = $syncHelper;
+            $this->state = $state;
             
             parent::__construct($this->name);
         }
@@ -49,6 +52,8 @@
          */
         protected function execute(InputInterface $input, OutputInterface $output)
         {
+            $this->state->setAreaCode(Area::AREA_GLOBAL);
+            
             $this->syncHelper->runLeads();
         }
     }
