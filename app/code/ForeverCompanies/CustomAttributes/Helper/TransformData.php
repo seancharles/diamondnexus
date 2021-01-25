@@ -394,6 +394,9 @@ class TransformData extends AbstractHelper
         }
     }
 
+    /**
+     * @param string $sku
+     */
     public function updatePriceType(string $sku)
     {
         try {
