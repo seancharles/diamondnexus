@@ -10,39 +10,41 @@
 <?php $_options = $block->decorateArray($block->getOptions()) ?>
 <?php $_productId = $block->getProduct()->getId() ?>
 <?php if (count($_options)) :?>
-<script type="text/x-magento-init">
-    {
-        "#product_addtocart_form": {
-            "priceOptions": {
-                "optionConfig": <?= /* @noEscape */ $block->getJsonConfig() ?>,
-                "controlContainer": ".field",
-                "priceHolderSelector": "[data-product-id='<?= $block->escapeHtml($_productId) ?>'][data-role=priceBox]"
+    <script type="text/x-magento-init">
+        {
+            "#product_addtocart_form": {
+                "priceOptions": {
+                    "optionConfig": <?= /* @noEscape */ $block->getJsonConfig() ?>,
+                    "controlContainer": ".field",
+                    "priceHolderSelector": "[data-product-id='<?= $block->escapeHtml($_productId) ?>'][data-role=priceBox]"
+                }
             }
         }
-    }
-</script>
+    </script>
 
-	<div class="field required">
-		<label class="label" for="dynamic_bundled_item_id">
-			<span>Stone</span>
-		</label>
-		<select id="dynamic_bundled_item_id" name="dynamic_bundled_item_id">
-			<option value="">--- Please Select ---</option>
-		<?php
-			$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-			/** @var \Magento\Catalog\Model\ResourceModel\Product\Collection $productCollection */
-			$productCollection = $objectManager->create('Magento\Catalog\Model\ResourceModel\Product\Collection');
-			/** Apply filters here */
-			$collection = $productCollection->addAttributeToSelect('*')
-					->addAttributeToFilter('attribute_set_id',13)
-					->load();
+    <?php if($block->getProduct()->getDynamicBundle() == '1'): ?>
+        <div class="field required">
+            <label class="label" for="dynamic_bundled_item_id">
+                <span>Stone</span>
+            </label>
+            <select id="dynamic_bundled_item_id" name="dynamic_bundled_item_id">
+                <option value="">--- Please Select ---</option>
+            <?php
+                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                /** @var \Magento\Catalog\Model\ResourceModel\Product\Collection $productCollection */
+                $productCollection = $objectManager->create('Magento\Catalog\Model\ResourceModel\Product\Collection');
+                /** Apply filters here */
+                $collection = $productCollection->addAttributeToSelect('*')
+                        ->addAttributeToFilter('attribute_set_id',13)
+                        ->load();
 
-			foreach ($collection as $product){
-				 echo '<option value="' . $product->getId() . '">' . $product->getName() . '</option>';
-			}
-		?>
-		</select>
-	</div>
+                foreach ($collection as $product){
+                     echo '<option value="' . $product->getId() . '">' . $product->getName() . '</option>';
+                }
+            ?>
+            </select>
+        </div>
+    <?php endif; ?>
 
     <?php foreach ($_options as $_option) :?>
         <?= $block->getOptionHtml($_option) ?>
