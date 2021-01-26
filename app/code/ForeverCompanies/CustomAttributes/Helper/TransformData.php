@@ -1012,6 +1012,10 @@ class TransformData extends AbstractHelper
                 if ($bundleData->getData('bundle_customization_type') !== null) {
                     continue;
                 }
+                if ($product->getSku() == 'LRENSL0091X') {
+                    $bundleData['bundle_customization_type'] = '';
+                    continue;
+                }
                 $title = $bundleData->getTitle();
                 $productLinks = $bundleData->getProductLinks();
                 if (count($productLinks) > 0) {

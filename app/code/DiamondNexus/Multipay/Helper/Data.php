@@ -62,7 +62,10 @@ class Data extends AbstractHelper
         $shippingAddress = $order->getShippingAddress();
         $info = $order->getPayment()->getAdditionalInformation();
         $billingAddress = $order->getBillingAddress();
-        $amount = $info[Constant::OPTION_PARTIAL_DATA];
+        $amount = 0;
+        if (isset($info[Constant::OPTION_PARTIAL_DATA])) {
+            $amount = $info[Constant::OPTION_PARTIAL_DATA];
+        }
         if (isset($info[Constant::OPTION_TOTAL_DATA]) && (int)$info[Constant::OPTION_TOTAL_DATA] == 1) {
             $amount = $info[Constant::AMOUNT_DUE_DATA];
         } else {
