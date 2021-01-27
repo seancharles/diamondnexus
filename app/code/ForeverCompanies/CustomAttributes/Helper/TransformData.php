@@ -385,7 +385,7 @@ class TransformData extends AbstractHelper
                 $changeFlag = true;
             }
             $css = $gemstoneAttribute->getSource()->getOptionText($product->getData('gemstone'));
-            if (strpos($product->getName(), $css) == false) {
+            if (is_string($css) && strpos($product->getName(), $css) == false) {
                 $product->setName($product->getName() . ' ' . $css);
                 $changeFlag = true;
             }
