@@ -207,6 +207,8 @@ p {
   text-transform: uppercase; }
 
 @media (max-width: 760px) {
+  box.box-newsletter {
+    display: none; }
   .checkout-index-index .logo {
     text-align: center;
     margin-left: 55px; }
@@ -872,7 +874,7 @@ p {
     padding-top: 6px; } }
 
 @media (min-width: 768px) {
-  box.box-newsletter {
+  .box.box-newsletter {
     display: none; }
   .action.primary.add {
     width: 176px;

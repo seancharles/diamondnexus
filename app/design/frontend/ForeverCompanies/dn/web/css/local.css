@@ -1106,3 +1106,9 @@ input[type="text"], input[type="password"], input[type="url"], input[type="tel"]
     font-weight: bold;
     font-family: 'Gotham Light';
     padding-top: 6px; } }
+
+.checkout-index-index .checkout-shipping-method .actions-toolbar .action.primary.button {
+  text-decoration: none; }
+
+.checkout-onepage-success .page-main .columns .main .checkout-success .actions-toolbar .primary .action.primary.continue {
+  color: #fff; }
