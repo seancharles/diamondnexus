@@ -364,6 +364,7 @@ class TransformData extends AbstractHelper
     public function updateLooseStone($sku)
     {
         $changeFlag = false;
+        $gemstoneAttribute = $this->eav->getAttribute(Product::ENTITY, 'gemstone');
         try {
             $product = $this->productRepository->get($sku);
             if ($product->getData('gemstone') == null || $product->getData('gemstone') == '') {
@@ -371,7 +372,6 @@ class TransformData extends AbstractHelper
                 if (strpos($centerStoneSize, '0') === 0) {
                     $centerStoneSize = substr($centerStoneSize, 1);
                 }
-                $gemstoneAttribute = $this->eav->getAttribute(Product::ENTITY, 'gemstone');
                 $centerStoneSizeValue = $gemstoneAttribute->getSource()->getOptionId($centerStoneSize);
                 $product->setData('gemstone', $centerStoneSizeValue);
                 $changeFlag = true;
@@ -382,6 +382,11 @@ class TransformData extends AbstractHelper
                     $caratWeight = substr($caratWeight, 1);
                 }
                 $product->setData('carat_weight', (float)$caratWeight);
+                $changeFlag = true;
+            }
+            $css = $gemstoneAttribute->getSource()->getOptionText($product->getData('gemstone'));
+            if (strpos($product->getName(), $css) == false) {
+                $product->setName($product->getName() . ' ' . $css);
                 $changeFlag = true;
             }
             if ($changeFlag) {
@@ -1010,6 +1015,10 @@ class TransformData extends AbstractHelper
         if ($bundleOptions !== null) {
             foreach ($bundleOptions as &$bundleData) {
                 if ($bundleData->getData('bundle_customization_type') !== null) {
+                    continue;
+                }
+                if ($product->getSku() == 'LRENSL0091X') {
+                    $bundleData['bundle_customization_type'] = '';
                     continue;
                 }
                 $title = $bundleData->getTitle();
