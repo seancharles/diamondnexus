@@ -437,7 +437,7 @@ class TransformData extends AbstractHelper
                 if ($option->getTitle() == 'Ring Size') {
                     $values = $option->getValues();
                     foreach ($values as &$value) {
-                        if (strlen($value->getSku()) == 3) {
+                        if (!is_null($value->getSku()) && strlen($value->getSku()) == 3) {
                             $value->setSku('0' . $value->getSku());
                         }
                     }
