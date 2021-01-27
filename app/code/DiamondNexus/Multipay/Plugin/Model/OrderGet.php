@@ -57,7 +57,9 @@ class OrderGet
         $orderExtension = $extensionAttributes ? $extensionAttributes : $this->orderExtensionFactory->create();
         $allTransactionsByOrderId = $this->transactionResource->getAllTransactionsByOrderId($resultOrder->getId());
         foreach ($allTransactionsByOrderId as &$transaction) {
-            $transaction['payment_method'] = Constant::MULTIPAY_METHOD_LABEL[$transaction['payment_method']];
+            if (isset($transaction['payment_method'])) {
+                $transaction['payment_method'] = Constant::MULTIPAY_METHOD_LABEL[$transaction['payment_method']];
+            }
         }
         if (count($allTransactionsByOrderId) > 0) {
             $orderExtension->setMultipayTransactions($allTransactionsByOrderId);

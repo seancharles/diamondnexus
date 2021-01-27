@@ -68,18 +68,18 @@ class OrderSave
     ) {
         $payment = $order->getPayment();
         $methodInstance = $payment->getMethod();
-        $information = $payment->getAdditionalInformation();
-        if (!isset($information[Constant::PAYMENT_METHOD_DATA])) {
+        $info = $payment->getAdditionalInformation();
+        if (!isset($info[Constant::PAYMENT_METHOD_DATA])) {
             return $order;
         }
-        $method = $information[Constant::PAYMENT_METHOD_DATA];
+        $method = $info[Constant::PAYMENT_METHOD_DATA];
 
         if ($methodInstance === Constant::MULTIPAY_METHOD) {
             switch ($method) {
                 case Constant::MULTIPAY_CREDIT_METHOD:
                 case Constant::MULTIPAY_CASH_METHOD:
                 case Constant::MULTIPAY_AFFIRM_OFFLINE_METHOD:
-                    $this->saveMultipayTransaction($order, $information);
+                    $this->saveMultipayTransaction($order, $info);
                     break;
                 case Constant::MULTIPAY_QUOTE_METHOD:
                     $this->emailSender->sendEmail('new quote', $order->getCustomerEmail(), ['order' => $order]);
@@ -110,13 +110,13 @@ class OrderSave
         }
         $payment = $order->getPayment();
         $methodInstance = $payment->getMethod();
-        $information = $payment->getAdditionalInformation();
-        if (!isset($information[Constant::PAYMENT_METHOD_DATA])) {
+        $info = $payment->getAdditionalInformation();
+        if (!isset($info[Constant::PAYMENT_METHOD_DATA])) {
             return;
         }
-        $method = $information[Constant::PAYMENT_METHOD_DATA];
+        $method = $info[Constant::PAYMENT_METHOD_DATA];
         if ($methodInstance === Constant::MULTIPAY_METHOD && $method != Constant::MULTIPAY_QUOTE_METHOD) {
-            if ($information[Constant::OPTION_TOTAL_DATA] == null) {
+            if (!isset($info[Constant::OPTION_TOTAL_DATA]) || $info[Constant::OPTION_TOTAL_DATA] == null) {
                 throw new ValidatorException(__('You need choose Amount option - total or partial '));
             }
         }
@@ -126,11 +126,11 @@ class OrderSave
                 throw new ValidatorException(__('Credit card failed verification'));
             }
         }
-        if (isset($information[Constant::OPTION_TOTAL_DATA])) {
-            if ($methodInstance === Constant::MULTIPAY_METHOD && $information[Constant::OPTION_TOTAL_DATA] == 1) {
+        if (isset($info[Constant::OPTION_TOTAL_DATA])) {
+            if ($methodInstance === Constant::MULTIPAY_METHOD && $info[Constant::OPTION_TOTAL_DATA] == 1) {
                 $order->setState(Order::STATE_PROCESSING)->setStatus(Order::STATE_PROCESSING);
             }
-            if ($methodInstance === Constant::MULTIPAY_METHOD && $information[Constant::OPTION_TOTAL_DATA] == 2) {
+            if ($methodInstance === Constant::MULTIPAY_METHOD && $info[Constant::OPTION_TOTAL_DATA] == 2) {
                 $order->setState('pending')->setStatus('pending');
             }
         }
