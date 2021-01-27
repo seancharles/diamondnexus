@@ -85,6 +85,21 @@ input[type="text"], input[type="password"], input[type="url"], input[type="tel"]
   .navigation ul li {
     font-weight: normal; }
 
+header .panel,
+.block-search,
+.minicart-wrapper,
+.nav-toggle {
+  display: none; }
+
+.page-header .logo {
+  left: 50%;
+  transform: translate(-50%);
+  margin: 10px 0; }
+  .page-header .logo svg {
+    width: 152px; }
+    .page-header .logo svg:hover {
+      fill: #bfa374; }
+
 .login-container .fieldset:after {
   font-size: 14px;
   font-weight: normal; }
@@ -162,6 +177,18 @@ input[type="text"], input[type="password"], input[type="url"], input[type="tel"]
 
 .account .block-wishlist {
   display: none; }
+
+footer {
+  display: none; }
+
+.copyright {
+  background: transparent;
+  color: #000; }
+  .copyright a {
+    color: #000; }
+    .copyright a:hover {
+      color: #000;
+      text-decoration: underline; }
 
 .checkout-cart-index .page-main .cart-summary .block.shipping .title {
   display: none; }

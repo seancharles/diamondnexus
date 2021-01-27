@@ -1,9 +1,15 @@
-.page-footer {
-    .footer.content {
-       // display: none;
-    }
+footer {
+    display: none;
 }
 
-.shouldBeFooter {
-    //color:red;
+.copyright {
+    background: transparent;
+    color: #000;
+    a {
+        color: #000;
+        &:hover {
+            color: #000;
+            text-decoration: underline;
+        }
+    }
 }
