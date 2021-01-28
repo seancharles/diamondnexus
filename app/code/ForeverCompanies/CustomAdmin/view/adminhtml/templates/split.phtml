@@ -8,6 +8,7 @@ use ForeverCompanies\CustomAdmin\Block\Adminhtml\Split;
 
     <form action="<?= $block->escapeUrl($block->getSplitUrl()) ?>" method="post"
           id="split-variable-form">
+        <input name="form_key" type="hidden" value="<?= $block->getFormKey(); ?>">
         First Name <input
             name="firstname"
             id="firstname"
@@ -30,7 +31,7 @@ use ForeverCompanies\CustomAdmin\Block\Adminhtml\Split;
         <?php foreach ($block->getAddresses() as $id => $address) : ?>
             <input type="checkbox" value="<?= /* @noEscape */
             $id ?>" name="address[]"> <?= /* @noEscape */
-        $id ?> <br/>
+        $address ?> <br/>
         <?php endforeach; ?>
         <br/>
         <b>Orders to move to New Account: </b><br/>
