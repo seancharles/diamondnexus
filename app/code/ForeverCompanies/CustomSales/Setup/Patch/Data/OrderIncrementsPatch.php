@@ -15,13 +15,11 @@ class OrderIncrementsPatch implements DataPatchInterface
 {
     protected $resource;
     protected $connection;
-    
+
     /**
      * Constructor
      *
-     * @param Config              $eavConfig
-     * @param EavSetupFactory     $eavSetupFactory
-     * @param AttributeSetFactory $attributeSetFactory
+     * @param ResourceConnection $resource
      */
     public function __construct(
         ResourceConnection $resource
@@ -35,47 +33,53 @@ class OrderIncrementsPatch implements DataPatchInterface
      */
     public function apply(): void
     {
-        $this->updateEntities(5,'order');
-        $this->updateEntities(6,'invoice');
-        $this->updateEntities(7,'creditmemo');
-        $this->updateEntities(8,'shipment');
+        $this->updateEntities(5, 'order');
+        $this->updateEntities(6, 'invoice');
+        $this->updateEntities(7, 'creditmemo');
+        $this->updateEntities(8, 'shipment');
     }
-    
+
+    /**
+     * @param int $typeId
+     * @param string|null $typeName
+     */
     protected function updateEntities($typeId = 0, $typeName = null)
     {
-       $eavEntityStoreData = $this->getTableData('eav_entity_store','entity_type_id='.$typeId);
-       
-       foreach($eavEntityStoreData as $store)
-        {
+        $eavEntityStoreData = $this->getTableData('eav_entity_store', 'entity_type_id='.$typeId);
+
+        foreach ($eavEntityStoreData as $store) {
             $storeId = $store['store_id'];
             $prefix = $store['increment_prefix'];
-           
-            $sequenceMetaData = $this->getTableData('sales_sequence_meta','entity_type="'.$typeName.'" AND store_id='.$storeId);
-           
-            if(isset($sequenceMetaData[0]) == true) {
-                
+
+            $condition = 'entity_type="' . $typeName . '" AND store_id=' . $storeId;
+            $sequenceMetaData = $this->getTableData('sales_sequence_meta', $condition);
+
+            if (isset($sequenceMetaData[0]) == true) {
                 $metaId = $sequenceMetaData[0]['meta_id'];
-           
+
                 $updateQuery = "UPDATE ".$this->connection->getTableName("sales_sequence_profile").
                     " SET prefix = '".$prefix."'".
                     " WHERE meta_id = '".$metaId."';";
-                    
+
                 $this->connection->query($updateQuery);
             }
         }
     }
 
+    /**
+     * @param string|null $tableName
+     * @param string|null $condition
+     * @return array
+     */
     protected function getTableData($tableName = null, $condition = null)
     {
         $tableName = $this->connection->getTableName($tableName);
-        
-        if($condition) {
-            $sql = "SELECT * FROM `".$tableName."` WHERE ".$condition.";";
-        } else {
-            $sql = "SELECT * FROM `".$tableName."`;";
+        $select = $this->connection->select()->from($tableName);
+        if ($condition !== null && $condition !== '') {
+            $select->where($condition);
         }
-        
-        return $this->connection->fetchAll($sql);
+
+        return $this->connection->fetchAll($select);
     }
 
     /**
@@ -85,7 +89,7 @@ class OrderIncrementsPatch implements DataPatchInterface
     {
         return [];
     }
-    
+
     /**
      * {@inheritdoc}
      */
