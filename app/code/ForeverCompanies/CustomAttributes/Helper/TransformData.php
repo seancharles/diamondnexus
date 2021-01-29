@@ -232,6 +232,11 @@ class TransformData extends AbstractHelper
     ];
 
     /**
+     * @var int
+     */
+    protected $looseDiamondCategory = ['926'];
+
+    /**
      * @param Context $context
      * @param Config $config
      * @param AttributeSetRepository $attributeSetRepository
@@ -319,6 +324,47 @@ class TransformData extends AbstractHelper
         $this->bundleSelection = $bundleSelection;
         $this->loggerByOptions = $loggerByOptions;
         $this->loggerBySku = $loggerBySku;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getProductsLooseDiamonds()
+    {
+        $attributeSetId = $this->getAttributeSetId('Migration_Loose Diamonds');
+        $collection = $this->productCollectionFactory->create();
+        $collection->addAttributeToSelect('*');
+        $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
+        $collection->addAttributeToFilter('attribute_set_id', ['eq' => $attributeSetId]);
+        $collection->addAttributeToFilter('type_id', ['eq' => Product\Type::TYPE_SIMPLE]);
+        return $collection;
+    }
+
+    /**
+     * @param int $entityId
+     */
+    public function setLooseDiamondCategory(int $entityId)
+    {
+        try {
+            $product = $this->productRepository->getById($entityId);
+            $existingCategories = $product->getCategoriyIds();
+            if (is_array($existingCategories) && !empty($existingCategories)) {
+                $categoryIds = array_unique(
+                    array_merge(
+                        $existingCategories,
+                        $this->looseDiamondCategory
+                    )
+                );
+            } else {
+                $categoryIds = $this->looseDiamondCategory;
+            }
+            $product->setCategoryIds($categoryIds);
+            $this->productRepository->save($product);
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->error($e->getMessage());
+        } catch (LocalizedException $e) {
+            $this->_logger->error($e->getMessage());
+        }
     }
 
     /**
