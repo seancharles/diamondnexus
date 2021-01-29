@@ -336,6 +336,20 @@ class TransformData extends AbstractHelper
     }
 
     /**
+     * @return Collection
+     */
+    public function getProductsLooseDiamonds()
+    {
+        $attributeSetId = $this->getAttributeSetId('Migration_Loose Diamonds');
+        $collection = $this->productCollectionFactory->create();
+        $collection->addAttributeToSelect('*');
+        $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
+        $collection->addAttributeToFilter('attribute_set_id', ['eq' => $attributeSetId]);
+        $collection->addAttributeToFilter('type_id', ['eq' => Product\Type::TYPE_SIMPLE]);
+        return $collection;
+    }
+
+    /**
      * @param int $entityId
      */
     public function setLooseDiamondCategory(int $entityId)
