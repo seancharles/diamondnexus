@@ -17,6 +17,7 @@ use Magento\Bundle\Model\Product\Price;
 use Magento\Bundle\Model\Product\Type;
 use Magento\Bundle\Model\ResourceModel\Selection;
 use Magento\Catalog\Api\AttributeSetRepositoryInterface;
+use Magento\Catalog\Api\CategoryLinkManagementInterface;
 use Magento\Catalog\Api\Data\ProductAttributeMediaGalleryEntryInterface;
 use Magento\Catalog\Api\Data\ProductCustomOptionInterface;
 use Magento\Catalog\Api\Data\ProductExtension;
@@ -69,6 +70,11 @@ class TransformData extends AbstractHelper
      * @var \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory
      */
     protected $categoryCollectionFactory;
+
+    /**
+     * @var \CategoryLinkManagementInterface
+     */
+    protected $categoryLinkManagementInterface;
 
     /**
      * @var Category
@@ -232,11 +238,17 @@ class TransformData extends AbstractHelper
     ];
 
     /**
+     * @var int
+     */
+    protected $looseDiamondCategory = 926;
+
+    /**
      * @param Context $context
      * @param Config $config
      * @param AttributeSetRepository $attributeSetRepository
      * @param CollectionFactory $collectionFactory
      * @param \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory
+     * @param CategoryLinkManagementInterface $categoryLinkManagementInterface
      * @param \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory $attributeSetCollectionFactory
      * @param StockRegistry $stockRegistry
      * @param SourceItemsSaveInterface $sourceItemsSaveInterface
@@ -267,6 +279,7 @@ class TransformData extends AbstractHelper
         AttributeSetRepository $attributeSetRepository,
         CollectionFactory $collectionFactory,
         \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
+        CategoryLinkManagementInterface $categoryLinkManagementInterface,
         \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory $attributeSetCollectionFactory,
         StockRegistry $stockRegistry,
         SourceItemsSaveInterface $sourceItemsSaveInterface,
@@ -296,6 +309,7 @@ class TransformData extends AbstractHelper
         $this->attributeSetRepository = $attributeSetRepository;
         $this->productCollectionFactory = $collectionFactory;
         $this->categoryCollectionFactory = $categoryCollectionFactory;
+        $this->categoryLinkManagement = $categoryLinkManagementInterface;
         $this->category = $category;
         $this->attributeSetCollectionFactory = $attributeSetCollectionFactory;
         $this->stockRegistry = $stockRegistry;
@@ -319,6 +333,28 @@ class TransformData extends AbstractHelper
         $this->bundleSelection = $bundleSelection;
         $this->loggerByOptions = $loggerByOptions;
         $this->loggerBySku = $loggerBySku;
+    }
+
+    /**
+     * @param int $entityId
+     */
+    public function setLooseDiamondCategory(int $entityId)
+    {
+        try {
+            $product = $this->productRepository->getById($entityId);
+            $categoryIds = array_merge(
+                $product->getCategoriyIds(),
+                $this->looseDiamondCategory
+            );
+            $this->categoryLinkManagement->assignProductToCategories(
+                $product->getSku(),
+                $categoryIds
+            );
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->error($e->getMessage());
+        } catch (LocalizedException $e) {
+            $this->_logger->error($e->getMessage());
+        }
     }
 
     /**
