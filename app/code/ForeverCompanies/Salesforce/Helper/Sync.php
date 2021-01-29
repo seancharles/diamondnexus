@@ -263,16 +263,37 @@
 
         protected function getCustomersCollection()
         {
-            $collection = $this->customerFactory->create()->getCollection()
-                ->addAttributeToSelect("*")
-                ->addFieldToFilter(
-                    array(
-                        array('attribute'=> 'updated_at', 'gt' => $this->getFilterDate()),
-                        array('attribute' => 'created_at', 'gt' => $this->getFilterDate())
-                    )
-                )
-                ->setPageSize(self::PAGE_SIZE)
-                ->load();
+            $collection = $this->customerFactory->create()->getCollection();
+                
+            $collection->getSelect()->joinLeft(
+                array('ca' => 'customer_address_entity'),
+                "e.entity_id = ca.parent_id AND ca.updated_at > '{$this->getFilterDate()}'"
+            );
+            
+            $collection->getSelect()
+                ->reset(\Zend_Db_Select::COLUMNS)
+                ->columns([
+                    'entity_id',
+                    'email',
+                    'group_id',
+                    'store_id',
+                    'firstname',
+                    'default_billing',
+                    'default_shipping',
+                    'lastname',
+                    'created_at',
+                    'updated_at'
+                ]);
+            
+            $collection->getSelect()->where(
+                    "((`e`.`updated_at` > '{$this->getFilterDate()}') OR (`e`.`created_at` > '{$this->getFilterDate()}'))
+                OR
+                    (ca.updated_at > '{$this->getFilterDate()}')"
+            );
+                
+            $collection->setPageSize(self::PAGE_SIZE);
+            
+            echo $collection->getSelect() . "\n";
             
             return $collection;
         }
@@ -295,7 +316,11 @@
                         $this->logOutput("Sync " . $customer->getEmail());
                         
                         // pull the account if it exists in SF
-                        $sfAccountId = $this->fcSyncAccount->searchRecord('Account', 'Web_Account_Id__c', $customerId);
+                        $sfAccountId = $this->fcSyncAccount->searchRecord('Account', 'PersonEmail', $customer->getEmail());
+
+                        if(isset($sfAccountId['status']) == true && $sfAccountId['status'] == 'error') {
+                            $sfAccountId = null;
+                        }
 
                         $sfNewAccountId = $this->fcSyncAccount->sync($customerId, $sfAccountId);
                         
