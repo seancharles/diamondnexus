@@ -29,8 +29,7 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\AbstractOrder
         Admin $adminHelper,
         UserFactory $userFactory,
         array $data = []
-    )
-    {
+    ) {
         parent::__construct($context, $registry, $adminHelper, $data);
         $this->userFactory = $userFactory;
     }

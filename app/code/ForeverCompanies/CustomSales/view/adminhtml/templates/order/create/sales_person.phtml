@@ -8,7 +8,7 @@ use Magento\Framework\Escaper;
 ?>
 <form style="display: inline-table" action="<?= $escaper->escapeUrl($block->getFormUrl()) ?>" method="post"
       id="order-create-change-salesperson-form">
-    <input name="form_key" type="hidden" value="<?php echo $block->getFormKey();?>">
+    <input name="form_key" type="hidden" value="<?= $escaper->escapeHtml($block->getFormKey())?>">
     <span class="title"><?= $escaper->escapeHtml('Sales Person ID: ' . $block->getSalesPerson()) ?></span>
     <?php if ($block->isAllowed()) { ?>
         <input type="submit" value="Change" id="order-view-add-warranty">
@@ -20,10 +20,10 @@ use Magento\Framework\Escaper;
     <label class="checkbox"> Is Exchange
         <input type="checkbox" name="is_exchange" id="is_exchange"
                value="1"
-            <?php if ($block->getIsExchange() ){ ?>
+            <?php if ($block->getIsExchange()) { ?>
                 checked="checked" class="checkbox"/>
         <?php } ?>
     </label>
     <input type="submit" value="Save change" id="order-view-add-warranty">
-    <input name="form_key" type="hidden" value="<?php echo $block->getFormKey();?>">
+    <input name="form_key" type="hidden" value="<?= $escaper->escapeHtml($block->getFormKey())?>">
 </form>

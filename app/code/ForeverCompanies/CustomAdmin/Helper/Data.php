@@ -360,19 +360,20 @@ class Data extends AbstractHelper
     {
         try {
             if ($this->customerRepository->get($data['email'])->getId() !== null) {
-                throw new LocalizedException(__('This email is created already'));
+                $customerFlag = true;
             }
         } catch (NoSuchEntityException $e) {
             $this->_logger->info('Createing new customer with email ' . $data['email']);
         } catch (LocalizedException $e) {
             $this->_logger->info('Creating new customer with email ' . $data['email']);
         }
-
-        $customer = $this->customerFactory->create();
-        $customer->setEmail($data['email']);
-        $customer->setFirstname($data['firstname']);
-        $customer->setLastname($data['lastname']);
-        $this->customerRepository->save($customer);
+        if (!isset($customerFlag)) {
+            $customer = $this->customerFactory->create();
+            $customer->setEmail($data['email']);
+            $customer->setFirstname($data['firstname']);
+            $customer->setLastname($data['lastname']);
+            $this->customerRepository->save($customer);
+        }
         $newCustomer = $this->customerRepository->get($data['email']);
 
         if (isset($data['address'])) {
@@ -428,39 +429,53 @@ class Data extends AbstractHelper
      */
     protected function changeOrder($order, CustomerInterface $toCustomer)
     {
-        $quote = $this->quoteRepository->get($order->getQuoteId());
-        $quote->setCustomer($toCustomer);
-        /** a. Also change the customer_email on the order to be Customer 1’s email. */
-        $quote->setCustomerEmail($toCustomer->getEmail());
-        $quote->collectTotals();
-        $this->quoteRepository->save($quote);
-        if ($quote->getItems() !== null) {
-            foreach ($quote->getItems() as $quoteItem) {
-                /** @var Item $orderItem */
-                $orderItem = $this->quoteToOrder->convert($quoteItem);
-                $origOrderItemNew = $order->getItemByQuoteItemId($quoteItem->getId());
-                if ($origOrderItemNew) {
-                    $origOrderItemNew->addData($orderItem->getData());
-                } else {
-                    if ($quoteItem->getParentItem()) {
-                        /** @var \Magento\Sales\Model\Order\Item $quoteItemId */
-                        $parentItem = $orderItem->getParentItem();
-                        $quoteItemId = $parentItem->getId();
-                        /** @var Item $item */
-                        $item = $order->getItemByQuoteItemId($quoteItemId);
-                        $orderItem->setParentItem($item);
+        try {
+            $quote = $this->quoteRepository->get($order->getQuoteId());
+            $quote->setCustomer($toCustomer);
+            /** a. Also change the customer_email on the order to be Customer 1’s email. */
+            $quote->setCustomerEmail($toCustomer->getEmail());
+            $quote->collectTotals();
+            $this->quoteRepository->save($quote);
+            if ($quote->getItems() !== null) {
+                foreach ($quote->getItems() as $quoteItem) {
+                    /** @var Item $orderItem */
+                    $orderItem = $this->quoteToOrder->convert($quoteItem);
+                    $origOrderItemNew = $order->getItemByQuoteItemId($quoteItem->getId());
+                    if ($origOrderItemNew) {
+                        $origOrderItemNew->addData($orderItem->getData());
+                    } else {
+                        if ($quoteItem->getParentItem()) {
+                            /** @var \Magento\Sales\Model\Order\Item $quoteItemId */
+                            $parentItem = $orderItem->getParentItem();
+                            $quoteItemId = $parentItem->getId();
+                            /** @var Item $item */
+                            $item = $order->getItemByQuoteItemId($quoteItemId);
+                            $orderItem->setParentItem($item);
+                        }
+                        $order->addItem($orderItem);
                     }
-                    $order->addItem($orderItem);
                 }
             }
+            $order->setSubtotal($quote->getSubtotal())
+                ->setBaseSubtotal($quote->getBaseSubtotal())
+                ->setGrandTotal($quote->getGrandTotal())
+                ->setBaseGrandTotal($quote->getBaseGrandTotal())
+                ->setCustomerEmail($toCustomer->getEmail())
+                ->setCustomerId($toCustomer->getId());
+            $this->quoteRepository->save($quote);
+        } catch (NoSuchEntityException $e) {
+            $order->setCustomerEmail($toCustomer->getEmail());
+            $order->setCustomerPrefix($toCustomer->getPrefix());
+            $order->setCustomerFirstname($toCustomer->getFirstname());
+            $order->setCustomerMiddlename($toCustomer->getMiddlename());
+            $order->setCustomerLastname($toCustomer->getLastname());
+            $order->setCustomerSuffix($toCustomer->getSuffix());
+            $order->setCustomerGroupId($toCustomer->getGroupId());
+            $order->setCustomerDob($toCustomer->getDob());
+            $order->setCustomerTaxvat($toCustomer->getTaxvat());
+            $order->setCustomerGender($toCustomer->getGender());
+            $order->setCustomerId($toCustomer->getId());
         }
-        $order->setSubtotal($quote->getSubtotal())
-            ->setBaseSubtotal($quote->getBaseSubtotal())
-            ->setGrandTotal($quote->getGrandTotal())
-            ->setBaseGrandTotal($quote->getBaseGrandTotal())
-            ->setCustomerEmail($toCustomer->getEmail())
-            ->setCustomerId($toCustomer->getId());
-        $this->quoteRepository->save($quote);
         $this->orderRepository->save($order);
     }
 }

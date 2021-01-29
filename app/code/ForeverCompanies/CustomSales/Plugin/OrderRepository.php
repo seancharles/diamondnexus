@@ -40,8 +40,7 @@ class OrderRepository
         OrderExtensionFactory $orderExtensionFactory,
         CarrierGroup $carrierGroup,
         User $userResource
-    )
-    {
+    ) {
         $this->orderExtensionFactory = $orderExtensionFactory;
         $this->carrierGroup = $carrierGroup;
         $this->userResource = $userResource;
@@ -58,8 +57,7 @@ class OrderRepository
     public function afterGet(
         OrderRepositoryInterface $subject,
         OrderInterface $order
-    )
-    {
+    ) {
         if ($order->getData('is_exchange') == null || $order->getData('is_exchange') == '0') {
             return $this->addToExtensionIsExchange($order, 'no');
         }
@@ -78,8 +76,7 @@ class OrderRepository
     public function afterGetList(
         OrderRepositoryInterface $subject,
         OrderSearchResultInterface $orderSearchResult
-    )
-    {
+    ) {
         /** @var OrderInterface $entity */
         foreach ($orderSearchResult->getItems() as $order) {
             $this->afterGet($subject, $order);

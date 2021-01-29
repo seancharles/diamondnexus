@@ -86,7 +86,6 @@ class OrderPlaceBefore implements ObserverInterface
                     $order->setData('sales_person_id', $user->getId());
                 }
             }
-
         }
     }
 }
