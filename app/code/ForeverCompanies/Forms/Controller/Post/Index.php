@@ -10,13 +10,19 @@
 	{
 		protected $formKeyValidator;
 		protected $storeManager;
+        protected $cookieManager;
 		protected $submissionFactory;
 		protected $formHelper;
+        
+        const COOKIE_NAME = 'submission_key';
+        const COOKIE_DURATION = 86400; // lifetime in seconds
 		
 		public function __construct(
 			\Magento\Framework\App\Action\Context $context,
 			\Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator,
 			\Magento\Store\Model\StoreManagerInterface $storeManager,
+            \Magento\Framework\Stdlib\CookieManagerInterface $cookieManager,
+            \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory $cookieMetadataFactory,
 			\ForeverCompanies\Forms\Model\SubmissionFactory  $submissionFactory,
 			\ForeverCompanies\Forms\Helper\Form $formHelper
 		) {
@@ -24,6 +30,8 @@
 			
 			$this->formKeyValidator = $formKeyValidator;
 			$this->storeManager = $storeManager;
+            $this->cookieManager = $cookieManager;
+            $this->cookieMetadataFactory = $cookieMetadataFactory;
 			$this->submissionFactory = $submissionFactory;
 			$this->formHelper = $formHelper;
 		}
@@ -39,9 +47,27 @@
 				
 				$model = $this->submissionFactory->create();
 				
+                $leadKey = $this->cookieManager->getCookie($COOKIE_NAME);
+                
+                if(!strlen($leadKey) > 0) {
+                    // generate new submission key (unique to each form)
+                    $leadKey = $websiteId . $formId . bin2hex(random_bytes(20));
+                    
+                     $metadata = $this->cookieMetadataFactory
+                         ->createPublicCookieMetadata()
+                         ->setDuration(self::COOKIE_DURATION);
+                         
+                     $this->cookieManager->setPublicCookie(
+                         self::COOKIE_NAME,
+                         $leadKey,
+                         $metadata
+                     );
+                }
+                
 				$model->addData([
+                    "lead_key" => $leadKey,
+                    "form_id" => $formId,
 					"website_id" => $websiteId,
-					"form_id" => $formId,
                     "email" => $email,
 					"form_post_json" => $formData,
 					"created_at" => date("Y-m-d h:i:s", time())
