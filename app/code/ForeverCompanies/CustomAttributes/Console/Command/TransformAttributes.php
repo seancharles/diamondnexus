@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Console\Command;
 
+use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\InputException;
@@ -38,11 +39,30 @@ class TransformAttributes extends AbstractCommand
             $this->state->setAreaCode(Area::AREA_GLOBAL);
         }
         $output->writeln("Get products for transformation...");
-        $productCollection = $this->helper->getProductsForTransformCollection();
-        $output->writeln('Products for transformation: ' . $productCollection->count());
+        $output->writeln("Configurable products first...");
+        $productCollection = $this->helper->getBundleAndConfigurableProducts();
+        $output->writeln('Configurable Products for transformation: ' . $productCollection->count());
+        $this->transformProduct($productCollection, $output);
+        $output->writeln("And after configurable transform simple products...");
+        $productCollection = $this->helper->getProductsAfterTransformCollection();
+        $output->writeln('Simple Products for transformation: ' . $productCollection->count());
+        $this->transformProduct($productCollection, $output);
+        $output->writeln('Transformation is complete! Please execute bin/magento indexer:reindex');
+    }
+
+    /**
+     * @param Collection $productCollection
+     * @param OutputInterface $output
+     */
+    protected function transformProduct(Collection $productCollection, OutputInterface $output)
+    {
         foreach ($productCollection->getItems() as $item) {
             try {
                 $output->writeln('In process product ID = ' . $item->getData('entity_id'));
+                if ($item->getData('sku') == null) {
+                    $output->writeln('SKU NOT FOUND!');
+                    continue;
+                }
                 $this->helper->transformProduct((int)$item->getData('entity_id'));
             } catch (InputException $e) {
                 $output->writeln($e->getMessage());
@@ -54,7 +74,6 @@ class TransformAttributes extends AbstractCommand
                 $output->writeln($e->getMessage());
             }
         }
-        $output->writeln('Transformation is complete! Please execute bin/magento indexer:reindex');
     }
 
     /**
