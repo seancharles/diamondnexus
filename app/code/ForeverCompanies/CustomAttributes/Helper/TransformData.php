@@ -385,7 +385,7 @@ class TransformData extends AbstractHelper
                 $changeFlag = true;
             }
             $css = $gemstoneAttribute->getSource()->getOptionText($product->getData('gemstone'));
-            if (is_string($css) && strpos($product->getName(), $css) == false) {
+            if (is_string($css) && strpos($product->getName(), $css) === false) {
                 $product->setName($product->getName() . ' ' . $css);
                 $changeFlag = true;
             }
@@ -437,7 +437,7 @@ class TransformData extends AbstractHelper
                 if ($option->getTitle() == 'Ring Size') {
                     $values = $option->getValues();
                     foreach ($values as &$value) {
-                        if (!is_null($value->getSku()) && strlen($value->getSku()) == 3) {
+                        if ($value->getSku() !== null && strlen($value->getSku()) == 3) {
                             $value->setSku('0' . $value->getSku());
                         }
                     }
@@ -1047,12 +1047,17 @@ class TransformData extends AbstractHelper
             }
         }
         try {
+            foreach ($bundleOptions as $bundleOption) {
+                if ($bundleOption->getData('bundle_customization_type') == 'matching_band') {
+                    $matchingBand = true;
+                }
+            }
             $matchingSrc = $this->eav->getAttribute(Product::ENTITY, 'matching_band')->getSource();
 
             if ($matchingBand) {
-                $product->setData('matching_band', (int)$matchingSrc->getOptionId('Yes'));
+                $product->setData('matching_band', $matchingSrc->getOptionId('Yes'));
             } else {
-                $product->setData('matching_band', (int)$matchingSrc->getOptionId('None'));
+                $product->setData('matching_band', $matchingSrc->getOptionId('None'));
             }
         } catch (LocalizedException $e) {
             $this->_logger->error($e->getMessage());
