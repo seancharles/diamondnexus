@@ -47,13 +47,24 @@ class Lead extends Connector
     }
 
     /**
-     * Create or update new lead in Salesforce
+     * Create new lead in Salesforce
      *
      * @param  array     $data
      * @return string
      */
-    public function sync($data)
+    public function create($data)
     {
         return $this->createLead($data);
+    }
+    
+    /**
+     * Update lead in Salesforce
+     *
+     * @param  array     $data
+     * @return string
+     */
+    public function update($data, $leadId)
+    {
+        return $this->updateLead($data);
     }
 }

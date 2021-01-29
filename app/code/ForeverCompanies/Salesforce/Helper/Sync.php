@@ -40,6 +40,7 @@
             \Magento\Customer\Model\ResourceModel\CustomerFactory $customerResourceFactory,
             \ForeverCompanies\Forms\Model\ResourceModel\Submission\CollectionFactory $leadsCollectionFactory,
             \ForeverCompanies\Forms\Model\ResourceModel\SubmissionFactory $leadsFactory,
+            \ForeverCompanies\Salesforce\Helper\Mapping $mappingHelper,
             
             DateTime $date,
             TimezoneInterface $timezone,
@@ -55,6 +56,7 @@
             $this->customerResourceFactory = $customerResourceFactory;
             $this->leadsCollectionFactory = $leadsCollectionFactory;
             $this->leadsFactory = $leadsFactory;
+            $this->mappingHelper = $mappingHelper;
             
             $this->date = $date;
             $this->timezone = $timezone;
@@ -337,6 +339,10 @@
                 
                 foreach($leads as $lead)
                 {
+                    $leadId = null;
+                    $response = null;
+                    $updateLeadId = null;
+                    
                     if($lead->getData(self::SF_LAST_SYNC_FIELD) == null) {
                         
                         $this->logOutput("Sync " . $lead->getEmail());
@@ -345,23 +351,63 @@
 
                         $leadData = [
                             'RecordTypeId' => '0120v000000X2vcAAC',
-                            'email' => $lead->getEmail(),
+                            'Brand__c' => $this->mappingHelper->getStoreCode($lead->getWebsiteId()),
+                            'LeadSource' => 'Website',
+                            'Email' => $lead->getEmail(),
                             'FirstName' => $postData->firstname,
                             'LastName' => $postData->lastname
                         ];
                         
-                        $leadId = $this->fcSyncLead->sync([
-                            'lead' => $leadData
-                        ]);
+                        // get text representation of form identifier
+                        $formCode = $this->mappingHelper->getFormCode($lead->getFormId());
                         
-                        if($leadId) {
+                        switch($formCode) {
+                            case "fa-short":
+                                $leadData['Lead_Key__c'] = $lead->getLeadKey();
+                                $leadData['Phone'] = $this->getObjectKey($postData,'telephone');
+                                $leadData['SEM_campaign__c'] = $this->getObjectKey($postData,'utms');
+                                $leadData['lea13'] = 'Initial Inquiry';
+                                $leadData['Lead_Assignment__c'] = 'fa_lead_queue';
+                                break;
+                                
+                            case "fa-long":
+                                $leadData['DateNeeded__c'] = $this->getObjectKey($postData,'selectNeedBy');
+                                $leadData['PreferredMetalType__c'] = $this->getObjectKey($postData,'selectMetalType');
+                                
+                                $leadData['InspirationLink__c'] = $this->getObjectKey($postData,'imageUploadOne');
+                                $leadData['Inspiration_Link_2__c'] = $this->getObjectKey($postData,'imageUploadTwo');
+                                $leadData['Inspiration_Link_3__c'] = $this->getObjectKey($postData,'imageUploadThree');
+                                
+                                $leadData['Comments__c'] = $this->getObjectKey($postData,'txtComments');
+                                $leadData['JewelryType__c'] = $this->getObjectKey($postData,'selectJewelryType');
+                                $leadData['StoneCut__c'] = $this->getObjectKey($postData,'selectShapePreference');
+                                break;
+                        }
+                        
+                        if(strlen($lead->getLeadKey()) > 0) {
+                            // get lead id by key
+                            $updateLeadId = $this->fcSyncAccount->searchRecord('Lead', 'Lead_Key__c', $lead->getLeadKey());
+                        }
+                        
+                        if( $updateLeadId ) {
+                            $this->logOutput("Updating lead");
+                            $response = $this->fcSyncLead->update(['lead' => $leadData], $updateLeadId);
+                        } else {
+                            $this->logOutput("Creating lead");
+                            $leadId = $this->fcSyncLead->create(['lead' => $leadData]);
+                        }
+                        
+                        if($leadId || $response) {
+                            
+                            $this->logOutput("Saving lead");
+                            
                             // always update the last sync time
                             $lead->setData(self::SF_LAST_SYNC_FIELD, $this->date->gmtDate());
                             
                             $this->leadsFactory->create()->save($lead);
+                        } else {
+                            $this->logOutput("Lead was not able to sync");
                         }
-                        
-                        $this->logOutput("Snyc complete");
                     }
                 }
             }
@@ -410,5 +456,9 @@
         protected function getFilterDate()
         {
             return date("Y-m-d", strtotime("-1 days")) . ' 00:00:00';
+        }
+        
+        protected function getObjectKey($object, $key) {
+            return (isset($date->{$object}) == true) ? $object->{$key} : '';
         }
     }
