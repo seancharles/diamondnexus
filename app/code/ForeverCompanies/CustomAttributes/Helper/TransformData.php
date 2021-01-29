@@ -358,9 +358,11 @@ class TransformData extends AbstractHelper
             $product = $this->productRepository->getById($entityId);
             $existingCategories = $product->getCategoriyIds();
             if (is_array($existingCategories)) {
-                $categoryIds = array_merge(
-                    $existingCategories,
-                    $this->looseDiamondCategory
+                $categoryIds = array_unique(
+                    array_merge(
+                        $existingCategories,
+                        [$this->looseDiamondCategory]
+                    )
                 );
             } else {
                 $categoryIds = [$this->looseDiamondCategory];
@@ -369,6 +371,7 @@ class TransformData extends AbstractHelper
                 $product->getSku(),
                 $categoryIds
             );
+            $this->productRepository->save($product);
         } catch (NoSuchEntityException $e) {
             $this->_logger->error($e->getMessage());
         } catch (LocalizedException $e) {
