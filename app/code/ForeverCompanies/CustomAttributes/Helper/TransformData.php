@@ -356,10 +356,15 @@ class TransformData extends AbstractHelper
     {
         try {
             $product = $this->productRepository->getById($entityId);
-            $categoryIds = array_merge(
-                $product->getCategoriyIds(),
-                $this->looseDiamondCategory
-            );
+            $existingCategories = $product->getCategoriyIds();
+            if (is_array($existingCategories)) {
+                $categoryIds = array_merge(
+                    $existingCategories,
+                    $this->looseDiamondCategory
+                );
+            } else {
+                $categoryIds = [$this->looseDiamondCategory];
+            }
             $this->categoryLinkManagement->assignProductToCategories(
                 $product->getSku(),
                 $categoryIds
