@@ -49,7 +49,7 @@ class AddFormData implements DataPatchInterface
         
         $formData = [
             [
-                // fa short form
+                'name' => 'fa short form',
                 'website_id' => self::FA_WEBSITE_ID,
                 'active' => self::FORM_STATUS_ACTIVE,
                 'fields_json' => json_encode([
@@ -67,22 +67,27 @@ class AddFormData implements DataPatchInterface
                 ]),
             ],
             [
-                // long form
+                'name' => 'fa long form',
                 'website_id' => self::FA_WEBSITE_ID,
                 'active' => self::FORM_STATUS_ACTIVE,
                 'fields_json' => json_encode([
-                    'firstname' => 'First Name',
-                    'lastname' => 'Last Name',
-                    'email' => 'Email Address'
+                    'email' => 'Email Address',
+                    'telephone' => 'Telephone',
+                    'designfor' => 'Who are you designing for?',
+                    'selectJewelryType' => 'Design insight',
+                    'selectShapePreference' => 'Shape preference',
+                    'selectMetalType' => 'Select your metal type',
+                    'selectNeedBy' => 'When do you need it by?',
+                    'txtComments' => 'Is there anything else you\'d like us to know?',
+                    'imageUploadOne' => 'Image #1',
+                    'imageUploadTwo' => 'Image #2',
+                    'imageUploadThree' => 'Image #3'
                 ]),
                 'fields_validation_json' => json_encode([
-                    'firstname' => 'required',
-                    'lastname' => 'required',
-                    'email' => 'required'
                 ]),
             ],
             [
-                // dn catalog request form
+                'name' => 'dn catalog request form',
                 'website_id' => self::DN_WEBSITE_ID,
                 'active' => self::FORM_STATUS_ACTIVE,
                 'fields_json' => json_encode([
@@ -111,7 +116,7 @@ class AddFormData implements DataPatchInterface
                 ]),
             ],
             [
-                // dn modal form
+                'name' => 'dn modal form',
                 'website_id' => self::DN_WEBSITE_ID,
                 'active' => self::FORM_STATUS_ACTIVE,
                 'fields_json' => json_encode([
@@ -122,7 +127,7 @@ class AddFormData implements DataPatchInterface
                 ]),
             ],
             [
-                // fa modal form
+                'name' => 'fa modal form',
                 'website_id' => self::FA_WEBSITE_ID,
                 'active' => self::FORM_STATUS_ACTIVE,
                 'fields_json' => json_encode([
@@ -133,7 +138,7 @@ class AddFormData implements DataPatchInterface
                 ]),
             ],
             [
-                // tf modal form
+                'name' => 'tf modal form',
                 'website_id' => self::TF_WEBSITE_ID,
                 'active' => self::FORM_STATUS_ACTIVE,
                 'fields_json' => json_encode([
