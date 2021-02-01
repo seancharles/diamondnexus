@@ -3,7 +3,7 @@
 	<table name="fc_form" resource="default" engine="innodb"
 				comment="Forever Companies Forms">
 		<column xsi:type="int" name="form_id" unsigned="true" nullable="false" identity="true" comment="Form ID"/>
-        <column xsi:type="varchar" name="form_name" comment="Form Name"/>
+        <column xsi:type="varchar" name="name" comment="Form Name"/>
 		<column xsi:type="smallint" name="website_id" unsigned="true" comment="Store ID"/>
 		<column xsi:type="tinyint" name="active" unsigned="true" nullable="true" comment="Active"/>
 		<column xsi:type="text" name="fields_json" comment=""/>
