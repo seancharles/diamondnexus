@@ -47,7 +47,7 @@
 				
 				$model = $this->submissionFactory->create();
 				
-                $leadKey = $this->cookieManager->getCookie($COOKIE_NAME);
+                $leadKey = $this->cookieManager->getCookie(self::COOKIE_NAME);
                 
                 if(!strlen($leadKey) > 0) {
                     // generate new submission key (unique to each form)
