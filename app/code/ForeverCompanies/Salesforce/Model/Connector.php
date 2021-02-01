@@ -203,7 +203,6 @@ class Connector
         
         if (isset($response[0]['errorCode']) && $response[0]['errorCode'] == 'INVALID_SESSION_ID') {
             $response = $this->sendRequest($method, $path, $parameter, true);
-            $response = json_decode($response, true);
         }
 
         return $response;
@@ -368,6 +367,23 @@ class Connector
         if (isset($response["leadId"])) {
             $id = $response["leadId"];
             return $response;
+        }
+
+        return false;
+    }
+    
+    /**
+     * Create new Lead in Salesforce
+     *
+     * @param array $parameter
+     */
+    public function updateLead($parameter)
+    {
+        $path = "/services/apexrest/updateLead";
+        $response = $this->sendRequest(\Zend_Http_Client::POST, $path, $parameter);
+        
+        if (isset($response["status"]) && $response["status"] == "succes") {
+            return true;
         }
 
         return false;

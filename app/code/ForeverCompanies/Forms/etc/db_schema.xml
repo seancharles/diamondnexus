@@ -3,6 +3,7 @@
 	<table name="fc_form" resource="default" engine="innodb"
 				comment="Forever Companies Forms">
 		<column xsi:type="int" name="form_id" unsigned="true" nullable="false" identity="true" comment="Form ID"/>
+        <column xsi:type="varchar" name="form_name" comment="Form Name"/>
 		<column xsi:type="smallint" name="website_id" unsigned="true" comment="Store ID"/>
 		<column xsi:type="tinyint" name="active" unsigned="true" nullable="true" comment="Active"/>
 		<column xsi:type="text" name="fields_json" comment=""/>
@@ -14,6 +15,7 @@
 	<table name="fc_form_submission" resource="default" engine="innodb"
 			   comment="Forever Companies Form Submissions">
 		<column xsi:type="int" name="submission_id" unsigned="true" nullable="false" identity="true" comment="Submission ID"/>
+        <column xsi:type="varchar" name="lead_key" comment="Used for multipart form posts"/>
 		<column xsi:type="int" name="form_id" unsigned="true" comment="Form ID"/>
 		<column xsi:type="smallint" name="website_id" unsigned="true" comment="Store ID"/>
         <column xsi:type="varchar" name="email" comment="Email Address"/>

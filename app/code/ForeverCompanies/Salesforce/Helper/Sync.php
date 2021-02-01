@@ -27,7 +27,7 @@
         protected $fcSyncAccount;
         protected $fcSyncLead;
         
-        const PAGE_SIZE = 1000;
+        const PAGE_SIZE = 10000;
         
         const SF_CUSTOMER_ID_FIELD = 'sf_acctid';
         const SF_ORDER_ID_FIELD = 'sf_orderid';
@@ -40,6 +40,7 @@
             \Magento\Customer\Model\ResourceModel\CustomerFactory $customerResourceFactory,
             \ForeverCompanies\Forms\Model\ResourceModel\Submission\CollectionFactory $leadsCollectionFactory,
             \ForeverCompanies\Forms\Model\ResourceModel\SubmissionFactory $leadsFactory,
+            \ForeverCompanies\Salesforce\Helper\Mapping $mappingHelper,
             
             DateTime $date,
             TimezoneInterface $timezone,
@@ -55,6 +56,7 @@
             $this->customerResourceFactory = $customerResourceFactory;
             $this->leadsCollectionFactory = $leadsCollectionFactory;
             $this->leadsFactory = $leadsFactory;
+            $this->mappingHelper = $mappingHelper;
             
             $this->date = $date;
             $this->timezone = $timezone;
@@ -117,14 +119,7 @@
         
         protected function getOrderCollection()
         {
-            $collection = $this->orderFactory->create()
-                ->addFieldToFilter(
-                    array("main_table.updated_at","main_table.created_at"),
-                    array(
-                        array('gt' => $this->getFilterDate()),
-                        array('gt' => $this->getFilterDate())
-                    )
-                );
+            $collection = $this->orderFactory->create();
             
             $collection->getSelect()->joinLeft(
                 array('sosh' => 'sales_order_status_history'),
@@ -157,7 +152,20 @@
                 ]);
             
             $collection->getSelect()->group('main_table.entity_id')->order('main_table.updated_at DESC');
+            
+            $collection->getSelect()->where(
+                    "((`main_table`.`updated_at` > '{$this->getFilterDate()}') OR (`main_table`.`created_at` > '{$this->getFilterDate()}'))
+                OR
+                    (sosh.created_at > '{$this->getFilterDate()}')
+                OR
+                    (sst.updated_at > '{$this->getFilterDate()}')
+                OR
+                    (soa.address_updated_at > '{$this->getFilterDate()}')"
+            );
+            
             $collection->setPageSize(self::PAGE_SIZE);
+            
+            echo $collection->getSelect() . "\n";
             
             return $collection;
         }
@@ -255,16 +263,37 @@
 
         protected function getCustomersCollection()
         {
-            $collection = $this->customerFactory->create()->getCollection()
-                ->addAttributeToSelect("*")
-                ->addFieldToFilter(
-                    array(
-                        array('attribute'=> 'updated_at', 'gt' => $this->getFilterDate()),
-                        array('attribute' => 'created_at', 'gt' => $this->getFilterDate())
-                    )
-                )
-                ->setPageSize(self::PAGE_SIZE)
-                ->load();
+            $collection = $this->customerFactory->create()->getCollection();
+                
+            $collection->getSelect()->joinLeft(
+                array('ca' => 'customer_address_entity'),
+                "e.entity_id = ca.parent_id AND ca.updated_at > '{$this->getFilterDate()}'"
+            );
+            
+            $collection->getSelect()
+                ->reset(\Zend_Db_Select::COLUMNS)
+                ->columns([
+                    'entity_id',
+                    'email',
+                    'group_id',
+                    'store_id',
+                    'firstname',
+                    'default_billing',
+                    'default_shipping',
+                    'lastname',
+                    'created_at',
+                    'updated_at'
+                ]);
+            
+            $collection->getSelect()->where(
+                    "((`e`.`updated_at` > '{$this->getFilterDate()}') OR (`e`.`created_at` > '{$this->getFilterDate()}'))
+                OR
+                    (ca.updated_at > '{$this->getFilterDate()}')"
+            );
+                
+            $collection->setPageSize(self::PAGE_SIZE);
+            
+            echo $collection->getSelect() . "\n";
             
             return $collection;
         }
@@ -287,7 +316,11 @@
                         $this->logOutput("Sync " . $customer->getEmail());
                         
                         // pull the account if it exists in SF
-                        $sfAccountId = $this->fcSyncAccount->searchRecord('Account', 'Web_Account_Id__c', $customerId);
+                        $sfAccountId = $this->fcSyncAccount->searchRecord('Account', 'PersonEmail', $customer->getEmail());
+
+                        if(isset($sfAccountId['status']) == true && $sfAccountId['status'] == 'error') {
+                            $sfAccountId = null;
+                        }
 
                         $sfNewAccountId = $this->fcSyncAccount->sync($customerId, $sfAccountId);
                         
@@ -331,6 +364,10 @@
                 
                 foreach($leads as $lead)
                 {
+                    $leadId = null;
+                    $response = null;
+                    $updateLeadId = null;
+                    
                     if($lead->getData(self::SF_LAST_SYNC_FIELD) == null) {
                         
                         $this->logOutput("Sync " . $lead->getEmail());
@@ -339,23 +376,63 @@
 
                         $leadData = [
                             'RecordTypeId' => '0120v000000X2vcAAC',
-                            'email' => $lead->getEmail(),
+                            'Brand__c' => $this->mappingHelper->getStoreCode($lead->getWebsiteId()),
+                            'LeadSource' => 'Website',
+                            'Email' => $lead->getEmail(),
                             'FirstName' => $postData->firstname,
                             'LastName' => $postData->lastname
                         ];
                         
-                        $leadId = $this->fcSyncLead->sync([
-                            'lead' => $leadData
-                        ]);
+                        // get text representation of form identifier
+                        $formCode = $this->mappingHelper->getFormCode($lead->getFormId());
                         
-                        if($leadId) {
+                        switch($formCode) {
+                            case "fa-short":
+                                $leadData['Lead_Key__c'] = $lead->getLeadKey();
+                                $leadData['Phone'] = $this->getObjectKey($postData,'telephone');
+                                $leadData['SEM_campaign__c'] = $this->getObjectKey($postData,'utms');
+                                $leadData['lea13'] = 'Initial Inquiry';
+                                $leadData['Lead_Assignment__c'] = 'fa_lead_queue';
+                                break;
+                                
+                            case "fa-long":
+                                $leadData['DateNeeded__c'] = $this->getObjectKey($postData,'selectNeedBy');
+                                $leadData['PreferredMetalType__c'] = $this->getObjectKey($postData,'selectMetalType');
+                                
+                                $leadData['InspirationLink__c'] = $this->getObjectKey($postData,'imageUploadOne');
+                                $leadData['Inspiration_Link_2__c'] = $this->getObjectKey($postData,'imageUploadTwo');
+                                $leadData['Inspiration_Link_3__c'] = $this->getObjectKey($postData,'imageUploadThree');
+                                
+                                $leadData['Comments__c'] = $this->getObjectKey($postData,'txtComments');
+                                $leadData['JewelryType__c'] = $this->getObjectKey($postData,'selectJewelryType');
+                                $leadData['StoneCut__c'] = $this->getObjectKey($postData,'selectShapePreference');
+                                break;
+                        }
+                        
+                        if(strlen($lead->getLeadKey()) > 0) {
+                            // get lead id by key
+                            $updateLeadId = $this->fcSyncAccount->searchRecord('Lead', 'Lead_Key__c', $lead->getLeadKey());
+                        }
+                        
+                        if( $updateLeadId ) {
+                            $this->logOutput("Updating lead");
+                            $response = $this->fcSyncLead->update(['lead' => $leadData], $updateLeadId);
+                        } else {
+                            $this->logOutput("Creating lead");
+                            $leadId = $this->fcSyncLead->create(['lead' => $leadData]);
+                        }
+                        
+                        if($leadId || $response) {
+                            
+                            $this->logOutput("Saving lead");
+                            
                             // always update the last sync time
                             $lead->setData(self::SF_LAST_SYNC_FIELD, $this->date->gmtDate());
                             
                             $this->leadsFactory->create()->save($lead);
+                        } else {
+                            $this->logOutput("Lead was not able to sync");
                         }
-                        
-                        $this->logOutput("Snyc complete");
                     }
                 }
             }
@@ -403,6 +480,10 @@
         
         protected function getFilterDate()
         {
-            return date("Y-m-d", strtotime("-2 days")) . ' 00:00:00';
+            return date("Y-m-d", strtotime("-1 days")) . ' 00:00:00';
+        }
+        
+        protected function getObjectKey($object, $key) {
+            return (isset($date->{$object}) == true) ? $object->{$key} : '';
         }
     }
