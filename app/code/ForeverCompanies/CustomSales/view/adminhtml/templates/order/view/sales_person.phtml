@@ -10,10 +10,14 @@ use Magento\Framework\Escaper;
 
 <table class="admin__table-secondary order-account-information-table">
     <tbody>
-        <tr>
-            <th>Sales Person</th>
-            <td><?php echo $block->getSalesPerson(); ?></td>
-        </tr>
+    <tr>
+        <th>Sales Person</th>
+        <td><?php try {
+                echo $escaper->escapeHtml($block->getSalesPerson());
+            } catch (LocalizedException $e) {
+                echo '';
+            } ?></td>
+    </tr>
     </tbody>
 </table>
 <form style="display: inline-table" action="<?= $escaper->escapeUrl($block->getExchangeUrl()) ?>" method="post"
@@ -21,11 +25,15 @@ use Magento\Framework\Escaper;
     <label class="checkbox"> Is Exchange
         <input type="checkbox" name="is_exchange" id="is_exchange"
                value="1"
-            <?php if ($block->getIsExchange() ){ ?>
+            <?php if ($block->getIsExchange()) { ?>
                checked="checked" class="checkbox"/>
         <?php } ?>
     </label>
     <input type="submit" value="Save change" id="order-view-add-warranty">
-    <input name="form_key" type="hidden" value="<?php echo $block->getFormKey();?>">
-    <input name="order_id" type="hidden" value="<?php echo $block->getOrder()->getId();?>">
+    <input name="form_key" type="hidden" value="<?= $escaper->escapeHtml($block->getFormKey()) ?>">
+    <input name="order_id" type="hidden" value="<?php try {
+        echo $escaper->escapeHtml($block->getOrder()->getId());
+                                                } catch (LocalizedException $e) {
+                                                    echo '';
+                                                } ?>">
 </form>

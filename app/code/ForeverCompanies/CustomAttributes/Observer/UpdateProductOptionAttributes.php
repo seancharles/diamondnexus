@@ -138,7 +138,7 @@ class UpdateProductOptionAttributes implements ObserverInterface
         }
         /** @var Option $option */
         foreach ($options as $option) {
-            if ($option->getTitle() == 'Matching Band') {
+            if ($option->getTitle() == 'Matching Band' || $option->getTitle() == 'Matching Bands') {
                 return true;
             }
         }

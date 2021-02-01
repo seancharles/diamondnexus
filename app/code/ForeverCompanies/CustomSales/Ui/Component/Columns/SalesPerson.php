@@ -25,8 +25,7 @@ class SalesPerson extends Column
         UserFactory $userFactory,
         array $components = [],
         array $data = []
-    )
-    {
+    ) {
         $this->_orderRepository = $orderRepository;
         $this->userFactory = $userFactory;
         
@@ -43,8 +42,7 @@ class SalesPerson extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
-
-                if($item["sales_person_id"] > 0) {
+                if ($item["sales_person_id"] > 0) {
                     // load the user
                     $user = $this->userFactory->create()->load($item["sales_person_id"]);
                     

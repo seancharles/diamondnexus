@@ -232,6 +232,11 @@ class TransformData extends AbstractHelper
     ];
 
     /**
+     * @var int
+     */
+    protected $looseDiamondCategory = ['926'];
+
+    /**
      * @param Context $context
      * @param Config $config
      * @param AttributeSetRepository $attributeSetRepository
@@ -324,6 +329,47 @@ class TransformData extends AbstractHelper
     /**
      * @return Collection
      */
+    public function getProductsLooseDiamonds()
+    {
+        $attributeSetId = $this->getAttributeSetId('Migration_Loose Diamonds');
+        $collection = $this->productCollectionFactory->create();
+        $collection->addAttributeToSelect('*');
+        $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
+        $collection->addAttributeToFilter('attribute_set_id', ['eq' => $attributeSetId]);
+        $collection->addAttributeToFilter('type_id', ['eq' => Product\Type::TYPE_SIMPLE]);
+        return $collection;
+    }
+
+    /**
+     * @param int $entityId
+     */
+    public function setLooseDiamondCategory(int $entityId)
+    {
+        try {
+            $product = $this->productRepository->getById($entityId);
+            $existingCategories = $product->getCategoriyIds();
+            if (is_array($existingCategories) && !empty($existingCategories)) {
+                $categoryIds = array_unique(
+                    array_merge(
+                        $existingCategories,
+                        $this->looseDiamondCategory
+                    )
+                );
+            } else {
+                $categoryIds = $this->looseDiamondCategory;
+            }
+            $product->setCategoryIds($categoryIds);
+            $this->productRepository->save($product);
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->error($e->getMessage());
+        } catch (LocalizedException $e) {
+            $this->_logger->error($e->getMessage());
+        }
+    }
+
+    /**
+     * @return Collection
+     */
     public function getProductsForDeleteCollection()
     {
         $table = 'catalog_product_entity_varchar';
@@ -364,6 +410,7 @@ class TransformData extends AbstractHelper
     public function updateLooseStone($sku)
     {
         $changeFlag = false;
+        $gemstoneAttribute = $this->eav->getAttribute(Product::ENTITY, 'gemstone');
         try {
             $product = $this->productRepository->get($sku);
             if ($product->getData('gemstone') == null || $product->getData('gemstone') == '') {
@@ -371,7 +418,6 @@ class TransformData extends AbstractHelper
                 if (strpos($centerStoneSize, '0') === 0) {
                     $centerStoneSize = substr($centerStoneSize, 1);
                 }
-                $gemstoneAttribute = $this->eav->getAttribute(Product::ENTITY, 'gemstone');
                 $centerStoneSizeValue = $gemstoneAttribute->getSource()->getOptionId($centerStoneSize);
                 $product->setData('gemstone', $centerStoneSizeValue);
                 $changeFlag = true;
@@ -384,6 +430,11 @@ class TransformData extends AbstractHelper
                 $product->setData('carat_weight', (float)$caratWeight);
                 $changeFlag = true;
             }
+            $css = $gemstoneAttribute->getSource()->getOptionText($product->getData('gemstone'));
+            if (is_string($css) && strpos($product->getName(), $css) === false) {
+                $product->setName($product->getName() . ' ' . $css);
+                $changeFlag = true;
+            }
             if ($changeFlag) {
                 $this->productRepository->save($product);
             }
@@ -394,6 +445,9 @@ class TransformData extends AbstractHelper
         }
     }
 
+    /**
+     * @param string $sku
+     */
     public function updatePriceType(string $sku)
     {
         try {
@@ -429,7 +483,7 @@ class TransformData extends AbstractHelper
                 if ($option->getTitle() == 'Ring Size') {
                     $values = $option->getValues();
                     foreach ($values as &$value) {
-                        if (strlen($value->getSku()) == 3) {
+                        if ($value->getSku() !== null && strlen($value->getSku()) == 3) {
                             $value->setSku('0' . $value->getSku());
                         }
                     }
@@ -1009,6 +1063,10 @@ class TransformData extends AbstractHelper
                 if ($bundleData->getData('bundle_customization_type') !== null) {
                     continue;
                 }
+                if ($product->getSku() == 'LRENSL0091X') {
+                    $bundleData['bundle_customization_type'] = '';
+                    continue;
+                }
                 $title = $bundleData->getTitle();
                 $productLinks = $bundleData->getProductLinks();
                 if (count($productLinks) > 0) {
@@ -1035,12 +1093,17 @@ class TransformData extends AbstractHelper
             }
         }
         try {
+            foreach ($bundleOptions as $bundleOption) {
+                if ($bundleOption->getData('bundle_customization_type') == 'matching_band') {
+                    $matchingBand = true;
+                }
+            }
             $matchingSrc = $this->eav->getAttribute(Product::ENTITY, 'matching_band')->getSource();
 
             if ($matchingBand) {
-                $product->setData('matching_band', (int)$matchingSrc->getOptionId('Yes'));
+                $product->setData('matching_band', $matchingSrc->getOptionId('Yes'));
             } else {
-                $product->setData('matching_band', (int)$matchingSrc->getOptionId('None'));
+                $product->setData('matching_band', $matchingSrc->getOptionId('None'));
             }
         } catch (LocalizedException $e) {
             $this->_logger->error($e->getMessage());

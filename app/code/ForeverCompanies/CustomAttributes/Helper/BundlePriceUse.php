@@ -54,6 +54,11 @@ class BundlePriceUse extends AbstractHelper
         $this->logger = $logger;
     }
 
+    /**
+     * @param Product $product
+     * @param float $price
+     * @param string $originalSku
+     */
     public function setBundlePrice(Product $product, float $price, string $originalSku)
     {
         $sku = $product->getSku();

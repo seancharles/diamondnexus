@@ -541,9 +541,17 @@ class Mapping extends AbstractHelper
             $itemPrice = $originalPrice - $basePrice;
             $link = $this->linkHelper->createNewLink($sku, $itemPrice, $originalSku);
             if ($link == null) {
+                $newSku = str_replace('CU', 'CR', $sku);
+                $link = $this->linkHelper->createNewLink($newSku, $itemPrice, $originalSku);
+            }
+            if ($link == null) {
                 if (substr($sku, 13, 4) == 'XXXX') {
                     $sku = substr_replace($sku, 'WHXX', 13, 4);
                     $link = $this->linkHelper->createNewLink($sku, $itemPrice, $originalSku);
+                    if ($link == null) {
+                        $newSku = str_replace('CU', 'CR', $sku);
+                        $link = $this->linkHelper->createNewLink($newSku, $itemPrice, $originalSku);
+                    }
                 }
             }
             if ($link !== null) {
@@ -566,6 +574,9 @@ class Mapping extends AbstractHelper
             try {
                 /** @var Product $product */
                 $product = $this->productRepository->getById($productId, true, 0, true);
+                if ($product->isDisabled()) {
+                    continue;
+                }
                 $sku = $product->getSku();
                 $skusForLikedProduct[$id] = $this->productFunctionalHelper->getStoneSkuFromProductSku($sku);
                 $this->productFunctionalHelper->addProductToDelete($product);

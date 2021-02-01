@@ -381,6 +381,12 @@ class Converter extends AbstractHelper
         return $links;
     }
 
+    /**
+     * @param string $title
+     * @param string $required
+     * @param array $links
+     * @return \Magento\Bundle\Model\Option
+     */
     protected function prepareBundleOpt(string $title, string $required, array $links)
     {
         /** @var \Magento\Bundle\Model\Option $bundleOption */

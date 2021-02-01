@@ -212,8 +212,7 @@ class MigrationAdmin extends Command
         Role $roleResource,
         RulesFactory $rulesFactory,
         Rules $ruleResource
-    )
-    {
+    ) {
         $this->state = $state;
         $this->connectionFactory = $connectionFactory;
         $this->userFactory = $userFactory;
@@ -236,7 +235,6 @@ class MigrationAdmin extends Command
     {
         $this->state->setAreaCode(Area::AREA_GLOBAL);
         $db = $this->initDb($input);
-        //var_dump($db);exit;
         $output->writeln('Migration admin groups');
         $this->migrateGroups($db, $output);
         $output->writeln('Success migrated! Execute bin/magento cache:flush');
@@ -257,11 +255,28 @@ class MigrationAdmin extends Command
         ]);
     }
 
+    /**
+     * @param AdapterInterface $db
+     * @param OutputInterface $output
+     */
     protected function migrateGroups(AdapterInterface $db, OutputInterface $output)
     {
         $roleTable = $this->scopeConfig->getValue('forevercompanies_adminmigration/tables/role');
         $ruleTable = $this->scopeConfig->getValue('forevercompanies_adminmigration/tables/rule');
         $userTable = $this->scopeConfig->getValue('forevercompanies_adminmigration/tables/user');
+        $selectForDelete = $db->select()->from('admin_user');
+        $deleteUsers = $db->select()->getConnection()->fetchAll($selectForDelete);
+        foreach ($deleteUsers as $deleteUser) {
+            $userModel = $this->userFactory->create();
+            $this->userResource->load($userModel, $deleteUser['user_id']);
+            try {
+                $this->userResource->delete($userModel);
+            } catch (LocalizedException $e) {
+                $output->writeln('Can\'t delete user ' . $deleteUser['email']);
+            }
+        }
+        $db->delete('authorization_rule', 'role_id > 1');
+        $db->delete('authorization_role', 'role_id > 1');
         $select = $db->select()->from($roleTable)
             ->where('role_type = ?', 'G');
         $groups = $db->select()->getConnection()->fetchAll($select);
@@ -283,7 +298,7 @@ class MigrationAdmin extends Command
             } catch (AlreadyExistsException $e) {
                 continue;
             } catch (\Exception $e) {
-                exit($e->getMessage());
+                $output->writeln($e->getMessage());
             }
         }
         foreach ($roleNames as $oldRoleId => $roleName) {
@@ -310,6 +325,7 @@ class MigrationAdmin extends Command
                     ->where('role.parent_id = ?', $oldRoleId);
                 foreach ($db->fetchAll($selectUsers) as $user) {
                     $adminInfo = [
+                        //'user_id' => $user['user_id'],
                         'username' => $user['username'],
                         'firstname' => $user['firstname'],
                         'lastname' => $user['lastname'],
@@ -324,6 +340,9 @@ class MigrationAdmin extends Command
                     try {
                         $this->userResource->save($userModel);
                         $savedUser = $this->userResource->loadByUsername($user['username']);
+                        $bind = ['user_id' => $user['user_id']];
+                        $db->delete('magento_logging_event', 'user_id = ' . $savedUser['user_id']);
+                        $db->update('admin_user', $bind, 'user_id = ' . $savedUser['user_id']);
                         $this->userResource->getConnection()->update(
                             $this->userResource->getTable('admin_passwords'),
                             ['password_hash' => $user['password']],
@@ -336,16 +355,21 @@ class MigrationAdmin extends Command
                     }
                 }
             } catch (LocalizedException $e) {
-                exit($e->getMessage());
+                $output->writeln($e->getMessage());
             }
         }
+        $lastRow = $db->select()->from('admin_user')->order('user_id desc')->limit(1);
+        $id = $db->fetchRow($lastRow);
+        $nextId = $id['user_id'] + 1;
+        /** @codingStandardsIgnoreStart */
+        $db->query('ALTER TABLE admin_user AUTO_INCREMENT = ' . $nextId);
+        /** @codingStandardsIgnoreSEnd */
     }
 
     /**
      * @inheritDoc
      */
-    protected
-    function configure()
+    protected function configure()
     {
         $this->setName($this->name);
         $this->setDescription('Migration admin users from M1 db to M2');
