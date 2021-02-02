@@ -378,17 +378,23 @@
                             'RecordTypeId' => '0120v000000X2vcAAC',
                             'Brand__c' => $this->mappingHelper->getStoreCode($lead->getWebsiteId()),
                             'LeadSource' => 'Website',
-                            'Email' => $lead->getEmail(),
-                            'FirstName' => $postData->firstname,
-                            'LastName' => $postData->lastname
+                            'Email' => $lead->getEmail()
                         ];
+						
+						if(isset($postData->firstname) == true) {
+							$leadData['FirstName'] = $postData->firstname;
+						}
+						
+						if(isset($postData->firstname) == true) {
+							$leadData['LastName'] = $postData->lastname;
+						}
                         
                         // get text representation of form identifier
                         $formCode = $this->mappingHelper->getFormCode($lead->getFormId());
                         
                         switch($formCode) {
                             case "fa-short":
-                                $leadData['Lead_Key__c'] = $lead->getLeadKey();
+								// $leadData['Lead_Key__c'] = $lead->getLeadKey(); (removed since we change to unique emails)
                                 $leadData['Phone'] = $this->getObjectKey($postData,'telephone');
                                 $leadData['SEM_campaign__c'] = $this->getObjectKey($postData,'utms');
                                 $leadData['lea13'] = 'Initial Inquiry';
@@ -409,14 +415,13 @@
                                 break;
                         }
                         
-                        if(strlen($lead->getLeadKey()) > 0) {
-                            // get lead id by key
-                            $updateLeadId = $this->fcSyncAccount->searchRecord('Lead', 'Lead_Key__c', $lead->getLeadKey());
-                        }
+						// get lead id by email (previously was key)
+						$updateLeadId = $this->fcSyncAccount->searchRecord('Lead', 'Email', $lead->getEmail());
                         
                         if( $updateLeadId ) {
                             $this->logOutput("Updating lead");
-                            $response = $this->fcSyncLead->update(['lead' => $leadData], $updateLeadId);
+							$leadData['Id'] = $updateLeadId;
+                            $response = $this->fcSyncLead->update(['lead' => $leadData]);
                         } else {
                             $this->logOutput("Creating lead");
                             $leadId = $this->fcSyncLead->create(['lead' => $leadData]);
