@@ -58,13 +58,17 @@ class Lead extends Connector
     }
     
     /**
-     * Update lead in Salesforce
+     * Update lead in Salesforce $data['Id'] = $updateLeadId;
      *
      * @param  array     $data
      * @return string
      */
-    public function update($data, $leadId)
+    public function update($data, $leadId = false)
     {
+		if(isset($data['lead']['Id']) == false) {
+			return false;
+		}
+		
         return $this->updateLead($data);
     }
 }
