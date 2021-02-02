@@ -295,7 +295,8 @@ class TransformData extends AbstractHelper
         Selection $bundleSelection,
         LoggerByOptions $loggerByOptions,
         LoggerBySku $loggerBySku
-    ) {
+    )
+    {
         parent::__construct($context);
         $this->eav = $config;
         $this->attributeSetRepository = $attributeSetRepository;
@@ -886,6 +887,7 @@ class TransformData extends AbstractHelper
             $this->_logger->error($inputException->getMessage());
             throw $inputException;
         } catch (Exception $e) {
+            $this->_logger->error($e->getMessage());
             throw new StateException(__('Cannot save product - ' . $e->getMessage()));
         }
     }
@@ -965,7 +967,7 @@ class TransformData extends AbstractHelper
         }
 
         // check if the price_type attribute is set 1. if not, set it and save
-        if (Price::PRICE_TYPE_FIXED !== (int) $product->getData('price_type')) {
+        if (Price::PRICE_TYPE_FIXED !== (int)$product->getData('price_type')) {
             // set price_type
             $product->setData('price_type', Price::PRICE_TYPE_FIXED);
 
@@ -1083,15 +1085,9 @@ class TransformData extends AbstractHelper
         }
         $product->setData('bundle_options_data', $bundleOptions);
         if (isset($classicStone)) {
-            try {
-                $src = $this->eav->getAttribute(Product::ENTITY, 'certified_stone')->getSource();
-                $optionText = $classicStone ? 'Classic Stone' : 'Certified Stone';
-                $value = (int)$src->getOptionId($optionText);
-                $product->setData('certified_stone', $value);
-            } catch (LocalizedException $e) {
-                $this->_logger->error($e->getMessage());
-            }
+            $this->checkIsStone($classicStone, $product);
         }
+
         try {
             foreach ($bundleOptions as $bundleOption) {
                 if ($bundleOption->getData('bundle_customization_type') == 'matching_band') {
@@ -1496,6 +1492,53 @@ class TransformData extends AbstractHelper
             $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
         } catch (LocalizedException $e) {
             $this->_logger->critical('Can\'t transform matching bands for product ID = ' . $entityId);
+        }
+    }
+
+    /**
+     * @param bool $classicStone
+     * @param Product $product
+     * @throws LocalizedException
+     */
+    private function checkIsStone(bool $classicStone, Product $product)
+    {
+        $flag = false;
+        foreach ($product->getOptions() as $option) {
+            if ($option->getTitle() == 'Certified Stone') {
+                $flag = true;
+                continue;
+            }
+        }
+        if (!$flag) {
+            /** @var ProductExtension $extensionAttributes */
+            $extensionAttributes = $product->getExtensionAttributes();
+            $bundleOptions = $extensionAttributes->getBundleProductOptions();
+            if ($bundleOptions !== null) {
+                foreach ($bundleOptions as $option) {
+                    if ($option->getTitle() == 'Center Stone Size') {
+                        $flag = true;
+                        continue;
+                    }
+                }
+            }
+        }
+        if ($flag) {
+            try {
+                $src = $this->eav->getAttribute(Product::ENTITY, 'certified_stone')->getSource();
+                $optionText = $classicStone ? 'Classic Stone' : 'Certified Stone';
+                $value = (int)$src->getOptionId($optionText);
+                $product->setData('certified_stone', $value);
+            } catch (LocalizedException $e) {
+                $this->_logger->error($e->getMessage());
+            }
+        } else {
+            if ($product->getData('certified_stone') === null) {
+                $certifiedSrc = $this->eav->getAttribute(Product::ENTITY, 'certified_stone')->getSource();
+                $optionText = 'None';
+                $value = $certifiedSrc->getOptionId($optionText);
+                $product->setData('certified_stone', $value);
+                $product->setCustomAttribute('certified_stone', $value);
+            }
         }
     }
 }

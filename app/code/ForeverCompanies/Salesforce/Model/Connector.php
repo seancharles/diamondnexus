@@ -380,9 +380,9 @@ class Connector
     public function updateLead($parameter)
     {
         $path = "/services/apexrest/updateLead";
-        $response = $this->sendRequest(\Zend_Http_Client::POST, $path, $parameter);
-        
-        if (isset($response["status"]) && $response["status"] == "succes") {
+        $response = $this->sendRequest(\Zend_Http_Client::PUT, $path, $parameter);
+		
+        if (isset($response["status"]) == true && $response["status"] == "success") {
             return true;
         }
 

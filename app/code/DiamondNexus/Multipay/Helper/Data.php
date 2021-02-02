@@ -163,7 +163,11 @@ class Data extends AbstractHelper
             $status = 'quote';
         }
         if ($order->getStatus() !== $status) {
+            $payPost = $post;
+            unset($payPost['form_key']);
             $order->setStatus($status)->setState($status);
+            $payment = $order->getPayment();
+            $payment->setAdditionalInformation($payPost);
             $this->orderRepository->save($order);
         }
     }

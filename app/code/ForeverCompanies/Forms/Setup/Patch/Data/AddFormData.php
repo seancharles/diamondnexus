@@ -71,8 +71,6 @@ class AddFormData implements DataPatchInterface
                 'website_id' => self::FA_WEBSITE_ID,
                 'active' => self::FORM_STATUS_ACTIVE,
                 'fields_json' => json_encode([
-                    'email' => 'Email Address',
-                    'telephone' => 'Telephone',
                     'designfor' => 'Who are you designing for?',
                     'selectJewelryType' => 'Design insight',
                     'selectShapePreference' => 'Shape preference',
@@ -94,7 +92,7 @@ class AddFormData implements DataPatchInterface
                     'firstname' => 'First Name',
                     'lastname' => 'Last Name',
                     'email' => 'Email Address',
-                    'coutry' => 'Country',
+                    'country' => 'Country',
                     'address1' => 'Address 1',
                     'address2' => 'Apt / Suite / Other',
                     'city' => 'City',
