@@ -113,7 +113,7 @@ class Connector
 
             $url = parse_url($host);
             
-            $apiUrl = 'https://' . $url['path'] . '/services/oauth2/token';
+            $apiUrl = 'https://' . $url['host'] . '/services/oauth2/token';
             
             $params =[
                 'grant_type' => 'password',
