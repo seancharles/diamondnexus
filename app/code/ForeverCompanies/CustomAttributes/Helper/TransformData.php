@@ -454,6 +454,10 @@ class TransformData extends AbstractHelper
         try {
             $product = $this->productRepository->get($sku);
             if ($product->getData('price_view') == '0' || $product->getData('price_view') == null) {
+                // check if product_type is not set, and set it
+                if ($product->getData('product_type') == null) {
+                    $this->productTypeHelper->setProductType($product);
+                }
                 $product->setData('price_view', '1');
                 $this->productRepository->save($product);
             }
@@ -540,6 +544,21 @@ class TransformData extends AbstractHelper
             $product = $this->productRepository->get($sku);
 
             $flag = false;
+
+            // check if product_type is not set, and set it
+            if ($product->getData('product_type') == null) {
+                $this->productTypeHelper->setProductType($product);
+                $flag = true;
+            }
+
+            // check if product is backordered, and if so, if the backorder_deactivate_date is not set, set it
+            if ($product->getData('backorder_flag') == 1) {
+                if (is_null($product->getData('backordered_deactivate_date'))) {
+                    $product->setData('backordered_deactivate_date', '2045-01-01 00:00:00');
+                    $flag = true;
+                }
+            }
+
             $options = $product->getOptions();
             if (count($options) > 0) {
                 foreach ($options as $id => $option) {
@@ -973,6 +992,10 @@ class TransformData extends AbstractHelper
 
             // save the product
             try {
+                // check if product_type is not set, and set it
+                if ($product->getData('product_type') == null) {
+                    $this->productTypeHelper->setProductType($product);
+                }
                 $this->productRepository->save($product);
             } catch (InputException $inputException) {
                 $this->_logger->error($inputException->getMessage());
