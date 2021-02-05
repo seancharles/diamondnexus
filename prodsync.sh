@@ -4,16 +4,16 @@ if [ $distributionId = '"mag2-prod-cluster-LoadBalancer-88293620.us-east-1.elb.a
   s3location=arn:aws:datasync:us-east-1:$2:location/loc-06ba97a9cdf96a6c3
   aws s3 sync . s3://mag2-prod-standby-codebuild/magento --exclude ".git/*"  --delete
   efslocation=$(aws datasync create-location-efs --subdirectory /magento/ --efs-filesystem-arn arn:aws:elasticfilesystem:us-east-1:$2:file-system/$3 --ec2-config SecurityGroupArns=arn:aws:ec2:us-east-1:$2:security-group/$4,SubnetArn=arn:aws:ec2:us-east-1:$2:subnet/$5 --region us-east-1 | awk 'NF{ print $NF }' | sed 's/{//g' | sed 's/"//g' | sed 's/}//g')
-  task=$(aws datasync create-task --source-location-arn $s3location --destination-location-arn $efslocation --cloud-watch-log-group-arn arn:aws:logs:us-east-1:$2:log-group:/aws/lambda/mag2-prod-magento-Lambda --name mag2-prod-maento-standby --excludes FilterType=SIMPLE_PATTERN,Value='*/log|/env.php' --options PreserveDeletedFiles=REMOVE,Uid=NONE,Gid=NONE --region us-east-1 | awk 'NF{ print $NF }' | sed 's/{//g' | sed 's/"//g' | sed 's/}//g')
+  task=$(aws datasync create-task --source-location-arn $s3location --destination-location-arn $efslocation --cloud-watch-log-group-arn arn:aws:logs:us-east-1:$2:log-group:/aws/lambda/mag2-prod-magento-Lambda --name mag2-prod-magento-standby --excludes FilterType=SIMPLE_PATTERN,Value='*/log|/env.php' --options PreserveDeletedFiles=REMOVE,Uid=NONE,Gid=NONE,LogLevel=BASIC --region us-east-1 | awk 'NF{ print $NF }' | sed 's/{//g' | sed 's/"//g' | sed 's/}//g')
   taskexecution=$(aws datasync start-task-execution --task-arn $task --override-options Gid=NONE,Uid=NONE,PreserveDeletedFiles=REMOVE --region us-east-1 | awk 'NF{ print $NF }' | sed 's/{//g' | sed 's/"//g' | sed 's/}//g')
   rtn=$?
   if [ $rtn = 0 ]; then  
-    execute=$(aws datasync describe-task-execution --task-execution-arn $taskexecution --region us-east-1 | grep  "TransferStatus")
-    while [ -z "$execute" ] 
+    execute=$(aws datasync describe-task-execution --task-execution-arn $taskexecution --region us-east-1 | grep  "TransferStatus" | awk 'NF{ print $NF }' | sed 's/,$//' | sed 's/"//g')
+    while [ -z "$execute" ] || [ "$execute" = "PENDING" ]
     do
       sleep 20
       echo "inprogress"
-      execute=$(aws datasync describe-task-execution --task-execution-arn $taskexecution --region us-east-1 | grep  "TransferStatus")
+      execute=$(aws datasync describe-task-execution --task-execution-arn $taskexecution --region us-east-1 | grep  "TransferStatus" | awk 'NF{ print $NF }' | sed 's/,$//' | sed 's/"//g')
       sleep 10
     done
     echo "transfer completed"
@@ -28,12 +28,12 @@ else
   taskexecution=$(aws datasync start-task-execution --task-arn arn:aws:datasync:us-east-1:$2:task/$1 --override-options Gid=NONE,Uid=NONE,PreserveDeletedFiles=REMOVE --region us-east-1 | awk 'NF{ print $NF }' | sed 's/{//g' | sed 's/"//g' | sed 's/}//g')
   rtn=$?
   if [ $rtn = 0 ]; then  
-    execute=$(aws datasync describe-task-execution --task-execution-arn $taskexecution --region us-east-1 | grep  "TransferStatus")
-    while [ -z "$execute" ] 
+    execute=$(aws datasync describe-task-execution --task-execution-arn $taskexecution --region us-east-1 | grep  "TransferStatus" | awk 'NF{ print $NF }' | sed 's/,$//' | sed 's/"//g')
+    while [ -z "$execute" ] || [ "$execute" = "PENDING" ]
     do
       sleep 20
       echo "inprogress"
-      execute=$(aws datasync describe-task-execution --task-execution-arn $taskexecution --region us-east-1 | grep  "TransferStatus")
+      execute=$(aws datasync describe-task-execution --task-execution-arn $taskexecution --region us-east-1 | grep  "TransferStatus" | awk 'NF{ print $NF }' | sed 's/,$//' | sed 's/"//g')
       sleep 10
     done
     echo "transfer completed"
