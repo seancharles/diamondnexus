@@ -413,6 +413,7 @@ class TransformData extends AbstractHelper
 
     /**
      * @param string $sku
+     * @throws LocalizedException
      */
     public function updateLooseStone($sku)
     {
@@ -499,6 +500,51 @@ class TransformData extends AbstractHelper
                 }
             }
             if ($changeFlag) {
+                $this->productRepository->save($product);
+            }
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->error($e->getMessage());
+        } catch (LocalizedException $e) {
+            $this->_logger->error($e->getMessage());
+        }
+    }
+
+    /**
+     * @param $id
+     */
+    public function updateStoneShape($id)
+    {
+        try {
+            $product = $this->productRepository->getById($id);
+            if ($product->getData('cut_type')  == null && $product->getData('shape') !== null) {
+                $shape = $product->getData('shape');
+                if (substr($shape, -1) == ',') {
+                    $shape = substr($shape, 0, -1);
+                    $product->setData('shape', $shape);
+                }
+                $cutSrc = $this->eav->getAttribute(Product::ENTITY, 'cut_type')->getSource();
+                $shapeSrc = $this->eav->getAttribute(Product::ENTITY, 'shape')->getSource();
+                $textValue = $shapeSrc->getOptionText($shape);
+                if (is_array($textValue)) {
+                    $value = '';
+                    foreach ($textValue as $allTextValue) {
+                        if ($allTextValue == 'Round') {
+                            $allTextValue = 'Round Brilliant';
+                        }
+                        $value .= $cutSrc->getOptionId($allTextValue) . ',';
+                    }
+                } else {
+                    if ($textValue == 'Round') {
+                        $textValue = 'Round Brilliant';
+                    }
+                    $value = $cutSrc->getOptionId($textValue);
+                }
+                if (substr($value, -1) == ',') {
+                    $value = substr($value, 0, -1);
+                    $product->setData('shape', $shape);
+                    $product->setData('cut_type', $value);
+                    $product->setCustomAttribute('cut_type', $value);
+                }
                 $this->productRepository->save($product);
             }
         } catch (NoSuchEntityException $e) {

@@ -23,7 +23,7 @@ use Magento\Framework\Escaper;
             min="<?= $escaper->escapeHtml(date('Y-m-d')) ?>"
             value="<?= $escaper->escapeHtml($block->getData('order')->getExtensionAttributes()->getDeliveryDate()) ?>"
         >
-        <input name="form_key" type="hidden" value="<?= $block->getFormKey(); ?>">
+        <input name="form_key" type="hidden" value="<?= $escaper->escapeHtml($block->getFormKey()); ?>">
         <input type="submit" value="Submit" id="order-view-add-warranty">
     </form>
 </div>

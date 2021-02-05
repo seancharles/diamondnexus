@@ -15,6 +15,7 @@
     <type name="Magento\Sales\Api\OrderRepositoryInterface">
         <plugin name="get_order_fishbowl_import" type="ForeverCompanies\CustomApi\Plugin\OrderFishbowlImport"/>
         <plugin name="get_order_item_loose_stone" type="ForeverCompanies\CustomApi\Plugin\OrderItemLooseStone"/>
+        <plugin name="get_order_custom_options" type="ForeverCompanies\CustomApi\Plugin\OrderItemCustomOptions"/>
     </type>
     <type name="Magento\Sales\Model\Order\AddressRepository">
         <plugin name="forevercompanies_customapi_plugin_address_repository"
@@ -36,6 +37,8 @@
     </type>
     <preference for="ForeverCompanies\CustomApi\Api\Data\ExtSearchResultsInterface"
                 type="ForeverCompanies\CustomApi\Model\ExtSearchResults" />
+    <preference for="ForeverCompanies\CustomApi\Api\Data\CustomOptionInterface"
+                type="ForeverCompanies\CustomApi\Model\CustomOption" />
     <preference for="ForeverCompanies\CustomApi\Api\ReindexInterface"
                 type="ForeverCompanies\CustomApi\Model\Reindex"/>
     <preference for="ShipperHQ\Shipper\Ui\Component\Listing\Column\DeliveryDate"
