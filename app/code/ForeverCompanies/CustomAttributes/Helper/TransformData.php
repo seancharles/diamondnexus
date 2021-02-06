@@ -42,7 +42,6 @@ use Magento\Framework\Api\Data\VideoContentInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
-use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Exception\InputException;
@@ -186,6 +185,11 @@ class TransformData extends AbstractHelper
     protected $bundleSelection;
 
     /**
+     * @var \Magento\UrlRewrite\Model\ResourceModel\UrlRewrite
+     */
+    protected $urlRewrite;
+
+    /**
      * @var LoggerByOptions
      */
     protected $loggerByOptions;
@@ -293,6 +297,7 @@ class TransformData extends AbstractHelper
         Media $media,
         Serialize $serializer,
         Selection $bundleSelection,
+        \Magento\UrlRewrite\Model\ResourceModel\UrlRewrite $urlRewrite,
         LoggerByOptions $loggerByOptions,
         LoggerBySku $loggerBySku
     )
@@ -323,6 +328,7 @@ class TransformData extends AbstractHelper
         $this->mediaHelper = $media;
         $this->serializer = $serializer;
         $this->bundleSelection = $bundleSelection;
+        $this->urlRewrite = $urlRewrite;
         $this->loggerByOptions = $loggerByOptions;
         $this->loggerBySku = $loggerBySku;
     }
@@ -906,8 +912,12 @@ class TransformData extends AbstractHelper
             $this->_logger->error($inputException->getMessage());
             throw $inputException;
         } catch (Exception $e) {
-            $this->_logger->error($e->getMessage());
-            throw new StateException(__('Cannot save product - ' . $e->getMessage()));
+            if ($e->getMessage() == 'Cannot save product - URL key for specified store already exists.') {
+                $this->deleteRepeatedUrlKeys($product);
+            } else {
+                $this->_logger->error($e->getMessage());
+                throw new StateException(__('Cannot save product - ' . $e->getMessage()));
+            }
         }
     }
 
@@ -950,7 +960,11 @@ class TransformData extends AbstractHelper
             $product->setStatus(Status::STATUS_DISABLED);
             $this->productRepository->save($product);
         } catch (StateException $e) {
-            throw new StateException(__('Cannot get product ID = ' . $productId));
+            if ($e->getMessage() == 'Cannot save product - URL key for specified store already exists.') {
+                $this->deleteRepeatedUrlKeys($product);
+            } else {
+                throw new StateException(__('Cannot get product ID = ' . $productId));
+            }
         } catch (NoSuchEntityException $e) {
             throw new NoSuchEntityException(__('Cannot delete product ID = ' . $productId));
         } catch (CouldNotSaveException $e) {
@@ -1008,6 +1022,7 @@ class TransformData extends AbstractHelper
 
     /**
      * @param Product $product
+     * @throws NoSuchEntityException
      */
     protected function refreshOptions(Product $product)
     {
@@ -1018,6 +1033,36 @@ class TransformData extends AbstractHelper
         if ($bundleOptions == null) {
             $product->setTypeId(Product\Type::TYPE_SIMPLE);
             return;
+        }
+        foreach ($bundleOptions as $bundleOption) {
+            $links = $bundleOption->getProductLinks();
+            foreach ($links as $link) {
+                $linkedProduct = $this->productRepository->getById($link->getData('product_id'));
+                if ($linkedProduct->getData('is_transformed') == null) {
+                    try {
+                        $this->transformProduct((int)$linkedProduct->getId());
+                    } catch (InputException $e) {
+                        $this->loggerByOptions->error('Can\'t save link for SKU = ' . $product->getSku());
+                    } catch (NoSuchEntityException $e) {
+                        $this->loggerByOptions->error('Can\'t save link for SKU = ' . $product->getSku());
+                    } catch (StateException $e) {
+                        if ($e->getMessage() == 'Cannot save product - URL key for specified store already exists.') {
+                            $this->deleteRepeatedUrlKeys($linkedProduct);
+                            $this->productRepository->save($linkedProduct);
+                        } else {
+                            $this->loggerByOptions->error('Can\'t save link for SKU = ' . $product->getSku());
+                        }
+                    } catch (LocalizedException $e) {
+                        $this->loggerByOptions->error('Can\'t save link for SKU = ' . $product->getSku());
+                    } catch (CouldNotSaveException $e) {
+                        $this->_logger->error($e->getMessage());
+                    } catch (InputException $e) {
+                        $this->_logger->error($e->getMessage());
+                    } catch (StateException $e) {
+                        $this->_logger->error($e->getMessage());
+                    }
+                }
+            }
         }
         /** @var Option $option */
         foreach ($options as $id => $option) {
@@ -1562,6 +1607,24 @@ class TransformData extends AbstractHelper
                 $product->setData('certified_stone', $value);
                 $product->setCustomAttribute('certified_stone', $value);
             }
+        }
+    }
+
+    /**
+     * @param Product $product
+     */
+    private function deleteRepeatedUrlKeys(Product $product)
+    {
+        $connection = $this->urlRewrite->getConnection();
+        $urlKey = $product->getUrlKey();
+        $id = $product->getId();
+        try {
+            $connection->delete(
+                $this->urlRewrite->getMainTable(),
+                'request_path like "%' . $urlKey . '.html" && entity_id != ' . $id . ' && entity_type = "product"'
+            );
+        } catch (LocalizedException $e) {
+            $this->loggerBySku->error('Can\'t change UL KEY for ' . $product->getSku());
         }
     }
 }

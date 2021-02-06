@@ -220,6 +220,11 @@ class Mapping extends AbstractHelper
     protected $matchingBandHelper;
 
     /**
+     * @var ProductType
+     */
+    protected $productTypeHelper;
+
+    /**
      * @var Logger
      */
     protected $customLogger;
@@ -233,6 +238,7 @@ class Mapping extends AbstractHelper
      * @param ProductFunctional $productFunctionalHelper
      * @param Converter $converterHelper
      * @param MatchingBand $matchingBandHelper
+     * @param ProductType $productTypeHelper
      * @param Logger $logger
      */
     public function __construct(
@@ -243,6 +249,7 @@ class Mapping extends AbstractHelper
         ProductFunctional $productFunctionalHelper,
         Converter $converterHelper,
         MatchingBand $matchingBandHelper,
+        ProductType $productTypeHelper,
         Logger $logger
     ) {
         parent::__construct($context);
@@ -252,6 +259,7 @@ class Mapping extends AbstractHelper
         $this->productFunctionalHelper = $productFunctionalHelper;
         $this->converterHelper = $converterHelper;
         $this->matchingBandHelper = $matchingBandHelper;
+        $this->productTypeHelper = $productTypeHelper;
         $this->customLogger = $logger;
     }
 
@@ -584,6 +592,9 @@ class Mapping extends AbstractHelper
                     $bundleSku = substr($sku, 11, 13);
                     $product->setData('bundle_sku', $bundleSku);
                     $product->setCustomAttribute('bundle_sku', $bundleSku);
+                    if ($product->getData('product_type') == null) {
+                        $this->productTypeHelper->setProductType($product);
+                    }
                     $this->productRepository->save($product);
                 }
             } catch (NoSuchEntityException $e) {
