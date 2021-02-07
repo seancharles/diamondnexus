@@ -5,23 +5,25 @@ use Magento\Framework\Escaper;
 
 /** @var Escaper $escaper $item */
 /** @var $block AsdAndDeliveryModalBox */
+$extensionAttributes = $block->getData('order')->getExtensionAttributes();
 ?>
 <div id="popup-modal">
 
-    <form action="<?= $block->escapeUrl($block->getFormUrl()) ?>" method="post"
+    <form action="<?= $escaper->escapeUrl($block->getFormUrl()) ?>" method="post"
           id="order-view-add-warranty-form">
         Dispatch Date <input
             name="dispatch_date"
             type="date"
             data-date-format="Month dd yyyy"
             min="<?= $escaper->escapeHtml(date('Y-m-d')) ?>"
-            value="<?= $escaper->escapeHtml($block->getData('order')->getExtensionAttributes()->getAnticipatedShipdate()) ?>"
+            value="<?=
+            $escaper->escapeHtml($extensionAttributes->getAnticipatedShipdate()) ?>"
         >
         Delivery Date <input
             name="delivery_date"
             type="date"
             min="<?= $escaper->escapeHtml(date('Y-m-d')) ?>"
-            value="<?= $escaper->escapeHtml($block->getData('order')->getExtensionAttributes()->getDeliveryDate()) ?>"
+            value="<?= $escaper->escapeHtml($extensionAttributes->getDeliveryDate()) ?>"
         >
         <input name="form_key" type="hidden" value="<?= $escaper->escapeHtml($block->getFormKey()); ?>">
         <input type="submit" value="Submit" id="order-view-add-warranty">

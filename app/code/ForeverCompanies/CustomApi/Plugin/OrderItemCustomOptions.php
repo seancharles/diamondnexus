@@ -2,8 +2,8 @@
 
 namespace ForeverCompanies\CustomApi\Plugin;
 
-use ForeverCompanies\CustomApi\Api\Data\CustomOptionInterface;
 use ForeverCompanies\CustomApi\Api\Data\CustomOptionInterfaceFactory;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderItemExtension;
@@ -25,7 +25,7 @@ class OrderItemCustomOptions
     private $customOptionInterfaceFactory;
 
     /**
-     * @var \Magento\Framework\App\ResourceConnection
+     * @var ResourceConnection
      */
     private $db;
 
@@ -34,12 +34,12 @@ class OrderItemCustomOptions
      *
      * @param OrderItemExtensionFactory $extensionFactory
      * @param CustomOptionInterfaceFactory $customOptionInterfaceFactory
-     * @param \Magento\Framework\App\ResourceConnection $db
+     * @param ResourceConnection $db
      */
     public function __construct(
         OrderItemExtensionFactory $extensionFactory,
         CustomOptionInterfaceFactory $customOptionInterfaceFactory,
-        \Magento\Framework\App\ResourceConnection $db
+        ResourceConnection $db
     ) {
         $this->extensionFactory = $extensionFactory;
         $this->customOptionInterfaceFactory = $customOptionInterfaceFactory;
@@ -109,8 +109,24 @@ class OrderItemCustomOptions
             $customOption = $this->customOptionInterfaceFactory->create();
             $customOption->setOptionId($id);
             $customOption->setOptionValue($value);
-            $customOption->setOptionTitle($connection->fetchRow($name)['title']);
-            $customOption->setOptionValueTitle($connection->fetchRow($val)['title']);
+            if ($id !== '') {
+                $rowName = $connection->fetchRow($name);
+                if ($rowName !== false) {
+                    $customOption->setOptionTitle($rowName['title']);
+                }
+            } else {
+                $customOption->setOptionTitle('option not found in catalog_product_option table');
+            }
+            if ($value !== '') {
+                $rowVal = $connection->fetchRow($val);
+                if ($rowVal !== false) {
+                    $customOption->setOptionValueTitle($rowVal['title']);
+                } else {
+                    $customOption->setOptionValueTitle($value);
+                }
+            } else {
+                $customOption->setOptionValueTitle('');
+            }
             $customOptions[] = $customOption;
         }
         $extensionAttributes->setCustomOptions($customOptions);
