@@ -440,6 +440,7 @@ return [
         'ShipperHQ_Common' => 1,
         'ShipperHQ_Logger' => 1,
         'ForeverCompanies_CustomApi' => 1,
+        'Tealium_Tags' => 1,
         'Temando_ShippingRemover' => 1,
         'Vertex_Tax' => 0,
         'Vertex_AddressValidationApi' => 0,
