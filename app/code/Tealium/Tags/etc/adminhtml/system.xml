@@ -1,0 +1,267 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="tealium" translate="label" sortOrder="10">
+            <label>Tealium</label>
+        </tab>
+        <section id="tealium_tags" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Tag Management</label>
+            <tab>tealium</tab>
+            <resource>Tealium_Tags::tealium_tags</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General</label>
+                <field id="enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="onepage" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable OnePage Checkout</label>
+                    <comment><![CDATA[
+                                    <span class="notice">
+                                        Enable/Disable OnePage Checkout Support
+                                    </span>
+                                ]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="account" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Account</label>
+                    <comment>
+                        <![CDATA[
+                                    <span class="notice">
+                                        Tealium account name
+                                    </span>
+                                ]]>
+                    </comment>
+                </field>
+                <field id="profile" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Profile</label>
+                    <comment>
+                        <![CDATA[
+                                    <span class="notice">
+                                        Tealium profile to use on all pages
+                                    </span>
+                                ]]>
+                    </comment>
+                </field>
+                <field id="env" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Environment</label>
+                    <comment>
+                        <![CDATA[
+                                    <span class="notice">
+                                        Tealium environment to load
+                                    </span>
+                                ]]>
+                    </comment>
+                </field>
+                <field id="custom_udo_enable" translate="label" type="select" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Custom UDO</label>
+                    <comment>
+                        <![CDATA[
+                                    <span class="notice">
+                                        Enable the use of a custom PHP UDO definition file to extend the default Tealium Magento data layer
+                                    </span>
+                                ]]>
+                    </comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="udo" translate="label" type="text" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom UDO file path</label>
+                    <comment>
+                        <![CDATA[
+                                <span class="notice">Full system path of custom UDO definition file</span><br />
+                                <a href="javascript:false;" onclick="javascript: document.getElementById('udo_example').style.display='block'">Click for example</a><br/>
+                                <a href="javascript:false;" onclick="javascript: document.getElementById('code_example').style.display='block'">Click for UDO PHP base code</a>
+                                <div style="display:none;" id="udo_example">
+                                    /var/www/html/magento/udo/udo.php
+                                    <br /><a href="javascript:false;" onclick="javascript: document.getElementById('udo_example').style.display='none'">Hide</a>
+                                </div>
+                                <div style="display:none;" id="code_example">
+                                    <pre>
+                                        &lt;?php
+                                        // TealiumExtendData use this to override or extend default values proivided by the Tealium module
+
+                                        class TealiumExtendData {
+                                            private static $store;
+                                            private static $page;
+
+                                            public static function setStore($store){
+                                                TealiumExtendData::$store = $store;
+                                            }
+
+                                            public static function setPage($page){
+                                                TealiumExtendData::$page = $page;
+                                            }
+
+                                            public function getHome(){
+                                                $store = TealiumExtendData::$store;
+                                                $page = TealiumExtendData::$page;
+
+                                                $outputArray = array();
+                                                //$outputArray[&quot;custom_key&quot;] = "value";
+
+                                                return $outputArray;
+                                            }
+
+                                            public function getSearch(){
+                                                $store = TealiumExtendData::$store;
+                                                $page = TealiumExtendData::$page;
+
+                                                $outputArray = array();
+                                                //$outputArray[&quot;custom_key&quot;] = "value";
+
+                                                return $outputArray;
+                                            }
+
+                                            public function getCategory(){
+                                                $store = TealiumExtendData::$store;
+                                                $page = TealiumExtendData::$page;
+
+                                                $outputArray = array();
+                                                //$outputArray[&quot;custom_key&quot;] = "value";
+
+                                                return $outputArray;
+                                            }
+
+                                            public function getProductPage(){
+                                                $store = TealiumExtendData::$store;
+                                                $page = TealiumExtendData::$page;
+
+                                                $outputArray = array();
+                                                //$outputArray[&quot;custom_key&quot;] = "value";
+                                                // make sure any product values are in an array
+
+                                                return $outputArray;
+                                            }
+
+                                            public function getCartPage() {
+                                                $store = TealiumExtendData::$store;
+                                                $page = TealiumExtendData::$page;
+
+                                                $outputArray = array();
+                                                //$outputArray[&quot;custom_key&quot;] = "value";
+                                                // make sure any product values are in an array
+
+                                                return $outputArray;
+                                            }
+
+                                            public function getOrderConfirmation(){
+                                                $store = TealiumExtendData::$store;
+                                                $page = TealiumExtendData::$page;
+
+                                                $outputArray = array();
+                                                //$outputArray[&quot;custom_key&quot;] = "value";
+                                                // make sure any product values are in an array
+
+                                                return  $outputArray;
+                                            }
+
+                                            public function getCustomerData(){
+                                                $store = TealiumExtendData::$store;
+                                                $page = TealiumExtendData::$page;
+
+                                                $outputArray = array();
+                                                //$outputArray[&quot;custom_key&quot;] = "value";
+
+                                                return $outputArray;
+                                            }
+                                        }
+
+
+                                        TealiumExtendData::setStore($data["store"]);
+                                        TealiumExtendData::setPage($data["page"]);
+
+
+                                        $udoElements = array(
+                                            &quot;Home&quot; =&gt; function(){
+                                                $tealiumData = new TealiumExtendData();
+                                                return $tealiumData-&gt;getHome();
+                                            },
+                                            &quot;Search&quot; =&gt; function(){
+                                                $tealiumData = new TealiumExtendData();
+                                                return $tealiumData-&gt;getSearch();
+                                            },
+                                            &quot;Category&quot; =&gt; function(){
+                                                $tealiumData = new TealiumExtendData();
+                                                return $tealiumData-&gt;getCategory();
+                                            },
+                                            &quot;ProductPage&quot; =&gt; function(){
+                                                $tealiumData = new TealiumExtendData();
+                                                return $tealiumData-&gt;getProductPage();
+                                            },
+                                            &quot;Cart&quot; =&gt; function(){
+                                                $tealiumData = new TealiumExtendData();
+                                                return $tealiumData-&gt;getCartPage();
+                                            },
+                                            &quot;Confirmation&quot; =&gt; function(){
+                                                $tealiumData = new TealiumExtendData();
+                                                return $tealiumData-&gt;getOrderConfirmation();
+                                            },
+                                            &quot;Customer&quot; =&gt; function(){
+                                                $tealiumData = new TealiumExtendData();
+                                                return $tealiumData-&gt;getCustomerData();
+                                            }
+                                        );
+
+
+                                        ?&gt;
+                                    </pre>
+                                    <br /><a href="javascript:false;" onclick="javascript: document.getElementById('code_example').style.display='none'">Hide</a>
+                                </div>
+                                ]]>
+                    </comment>
+                </field>
+                <field id="external_script" translate="label" type="select" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable External Script Support</label>
+                    <comment>
+                        <![CDATA[
+                                    <span class="notice">
+                                        Place Tealium code in external javaScript file
+                                        <br/>
+                                        *NOTE Order confirmation page will always load script on page
+                                    </span>
+                                ]]>
+                    </comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="external_script_type" translate="label" type="select" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>External Script Async</label>
+                    <comment>
+                        <![CDATA[
+                                <span class="notice">
+                                    Enable async loading of the external script
+                                    <br />
+                                    !WARNING! By enabling, we can't gaurantee all of your tags will fire before the user navigates away
+                                </span>
+                            ]]>
+                    </comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="diagnostic_enable" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Diagnostic Tag</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="diagnostic_tag" translate="label" type="text" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom diagnostic tag URI path</label>
+                    <comment>
+                        <![CDATA[
+                                    <span class="notice">
+                                        Please contact your Account Manager for information about this feature
+                                    </span>
+                                ]]>
+                    </comment>
+                </field>
+                <field id="help" translate="label" type="label" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Help Section</label>
+                    <comment>
+                        <![CDATA[
+                            <a href="https://github.com/Tealium/integration-magento2">
+                                Help
+                            </a>
+                        ]]>
+                    </comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
