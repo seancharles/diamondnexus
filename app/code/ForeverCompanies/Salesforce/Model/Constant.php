@@ -15,7 +15,8 @@ class Constant
         3 => 'dn-catalog-request',
         4 => 'dn-modal',
         5 => 'fa-modal',
-        6 => 'tf-modal'
+        6 => 'tf-modal',
+		7 => 'tf-short'
     ];
 
     const WEBSITE_MAPPING = [
