@@ -5,6 +5,7 @@ namespace DiamondNexus\Multipay\Block\Adminhtml\Order;
 use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
 use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
+use Magento\Sales\Model\Order;
 
 /**
  * Class AddPaymentModalBox
@@ -37,6 +38,9 @@ class AbstractPayment extends Template
      */
     public function isMultipay()
     {
-        return $this->getData('order')->getPayment()->getMethod() == 'multipay';
+        /** @var Order $order */
+        $order = $this->getData('order');
+        $method = $order->getPayment()->getMethod();
+        return $method == 'multipay' && $order->getTotalDue() != 0;
     }
 }

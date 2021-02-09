@@ -104,8 +104,8 @@ class OrderItemCustomOptions
         $valueTable = 'catalog_product_option_type_title';
         $connection = $this->db->getConnection();
         foreach ($options as $id => $value) {
-            $name = $connection->select()->from($idTable)->where('option_id = ' . $id);
-            $val = $connection->select()->from($valueTable)->where('option_type_id = ' . $value);
+            $name = $connection->select()->from($idTable)->where('option_id = "' . $id . '"');
+            $val = $connection->select()->from($valueTable)->where('option_type_id = "' . $value . '"');
             $customOption = $this->customOptionInterfaceFactory->create();
             $customOption->setOptionId($id);
             $customOption->setOptionValue($value);
