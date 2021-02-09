@@ -10,6 +10,8 @@ namespace ForeverCompanies\Salesforce\Model;
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfigInterface;
 use Magento\Config\Model\ResourceModel\Config as ResourceModelConfig;
 use Magento\Store\Model\ScopeInterface;
+use Magento\Framework\App\Config\Storage\WriterInterface;
+use Magento\Framework\App\Cache\TypeListInterface;
 
 /**
  * Class Connector
@@ -54,9 +56,14 @@ class Connector
     protected $_type;
     
     /**
-     * \Magento\Config\Model\Config
+     * \Magento\Framework\App\Config\Storage\WriterInterface
      */
-    protected $configModel;
+    protected $configWriter;
+	
+    /**
+     * \Magento\Framework\App\Cache\TypeListInterface
+     */
+    protected $cacheTypeList;
 
     /**
      * Connector constructor.
@@ -68,15 +75,16 @@ class Connector
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
+		WriterInterface $configWriter,
+		TypeListInterface $cacheTypeList,
         ResourceModelConfig $resourceConfig,
-        RequestLogFactory $requestLogFactory,
-        \Magento\Config\Model\Config $configModel
+        RequestLogFactory $requestLogFactory
     ) {
-
         $this->_scopeConfig = $scopeConfig;
+		$this->configWriter = $configWriter;
+		$this->cacheTypeList = $cacheTypeList;
         $this->_resourceConfig = $resourceConfig;
         $this->_requestLogFactory = $requestLogFactory;
-        $this->configModel = $configModel;
     }
 
     /**
@@ -127,24 +135,23 @@ class Connector
             $response = \GuzzleHttp\json_decode($response, true);
 
             if (isset($response['access_token']) && isset($response['instance_url'])) {
-                $this->_resourceConfig->saveConfig(
-                    self::XML_PATH_SALESFORCE_INSTANCE_URL,
-                    $response['instance_url'],
-                    'default',
-                    0
-                );
-                $this->_resourceConfig->saveConfig(
-                    self::XML_PATH_SALESFORCE_ACCESS_TOKEN,
-                    $response['access_token'],
-                    'default',
-                    0
-                );
-                $this->_resourceConfig->saveConfig(
-                    self::XML_PATH_SALESFORCE_IS_CONNECTED,
-                    1,
-                    'default',
-                    0
-                );
+				$this->configWriter->save(
+					self::XML_PATH_SALESFORCE_INSTANCE_URL,
+					$response['instance_url']
+				);
+				$this->configWriter->save(
+					self::XML_PATH_SALESFORCE_ACCESS_TOKEN,
+					$response['access_token']
+				);
+				$this->configWriter->save(
+					self::XML_PATH_SALESFORCE_IS_CONNECTED,
+					1
+				);
+				
+				// if the config is updated the cache needs to be flushed
+				// otherwise the updated key value will not be refreshed next run
+				$this->cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
+
                 //$response['account_id'] = $response['id'];
                 unset($response['id']);
                 unset($response['token_type']);
@@ -181,7 +188,7 @@ class Connector
                 ScopeInterface::SCOPE_STORE
             );
         }
-        
+		
         try {
             if (!isset($instance_url) || !isset($access_token) || $useFreshCredential) {
                 $login = $this->getAccessToken();
@@ -200,7 +207,7 @@ class Connector
         $url = $instance_url . $path;
         $response = $this->makeRequest($method, $url, $headers, $parameter);
         $response = json_decode($response, true);
-        
+		
         if (isset($response[0]['errorCode']) && $response[0]['errorCode'] == 'INVALID_SESSION_ID') {
             $response = $this->sendRequest($method, $path, $parameter, true);
         }
