@@ -12,6 +12,7 @@
     "require": {
         "affirm/magento2": "^3.0",
         "cloudinary/cloudinary-magento2": "^1.11",
+        "lcobucci/jwt": "3.3",
         "magento/composer-root-update-plugin": "~1.0",
         "magento/data-migration-tool": "2.3.4",
         "magento/magento2-functional-testing-framework": "dev-develop",
