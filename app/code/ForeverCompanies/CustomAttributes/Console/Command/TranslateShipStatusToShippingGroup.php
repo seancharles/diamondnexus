@@ -38,7 +38,27 @@ class TranslateShipStatusToShippingGroup extends Command
      * @var Array
      */
     protected $shippingStatusTranslateMap = [
-        "SixDay" => "10 Days"
+		"ZeroDay" => "0 Day",
+		"Last Minute" => "0 Day",
+		"Immediate" => "1 Day",
+		"TwoDay" => "2 Day",
+		"ThreeDay" => "3 Day",
+		"FourDay" => "4 Day",
+		"WarrantyFour" => "4 Day",
+		"Rapid" => "5 Day",
+        "SixDay" => "6 Day",
+		"SevenDay" => "7 Day",
+		"Warranty" => "7 Day",
+		"Standard" => "8 Day",
+		"TenDay" => "10 Day",
+		"Extended" => "12 Day",
+		"FourteenDay" => "14 Day",
+		"FifteenDay" => "15 Day",
+		"Backordered" => "17 Day",
+		"TwentyDay" => "20 Day",
+		"TwentyOneDay" => "20 Day",
+		// fifty day isn't supported by any shipping api (update to 20)
+		"FiftyDay" => "20 Day"
     ];
 
     /**
@@ -71,17 +91,27 @@ class TranslateShipStatusToShippingGroup extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $output->writeln("Updating products Shipping Group with mapped Shipping Status value.");
 
         // get shipping status attribute to create mapping
-        $attribute = $this->eavConfig->getAttribute('catalog_product', 'shipping_status');
+        $shipStatusAttribute = $this->eavConfig->getAttribute('catalog_product', 'shipping_status');
 
-        $shippingStatusOptions = $attribute->getSource()->getAllOptions();
+        $shippingStatusOptions = $shipStatusAttribute->getSource()->getAllOptions();
 
         foreach ($shippingStatusOptions as $option) {
             if ($option['value']) {
                 $this->shippingStatusLabelMap[$option['label']] = $option['value'];
+            }
+        }
+		
+        // get shipping group option ids
+        $shipperGroupAttribute = $this->eavConfig->getAttribute('catalog_product', 'shipperhq_shipping_group');
+
+        $shipperGroupOptions = $shipperGroupAttribute->getSource()->getAllOptions();
+
+        foreach ($shipperGroupOptions as $option) {
+            if ($option['value']) {
+                $this->shipperGroupLabelMap[$option['label']] = $option['value'];
             }
         }
 
@@ -101,7 +131,9 @@ class TranslateShipStatusToShippingGroup extends Command
             $this->productActionObject->updateAttributes(
                 $productIds,
                 [
-                    'shipperhq_shipping_group' => $this->shippingStatusTranslateMap[$shippingStatusKey]
+                    'shipperhq_shipping_group' => $this->shipperGroupLabelMap[
+						$this->shippingStatusTranslateMap[$shippingStatusKey]
+					]
                 ],
                 0
             );
