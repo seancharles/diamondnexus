@@ -37,6 +37,13 @@
                     <frontend_model>ForeverCompanies\CustomAttributes\Block\System\Config\DeleteByCsv</frontend_model>
                     <label>Delete products by file (Save Config before use that button)</label>
                 </field>
+                <field id="ids" translate="label comment" type="text" sortOrder="10" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>List of product ids for transform</label>
+                    <comment>
+                        Example: 123,124,125,126
+                    </comment>
+                </field>
             </group>
         </section>
     </system>

@@ -300,8 +300,7 @@ class TransformData extends AbstractHelper
         \Magento\UrlRewrite\Model\ResourceModel\UrlRewrite $urlRewrite,
         LoggerByOptions $loggerByOptions,
         LoggerBySku $loggerBySku
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->eav = $config;
         $this->attributeSetRepository = $attributeSetRepository;
@@ -605,7 +604,7 @@ class TransformData extends AbstractHelper
 
             // check if product is backordered, and if so, if the backorder_deactivate_date is not set, set it
             if ($product->getData('backorder_flag') == 1) {
-                if (is_null($product->getData('backordered_deactivate_date'))) {
+                if ($product->getData('backordered_deactivate_date') == null) {
                     $product->setData('backordered_deactivate_date', '2045-01-01 00:00:00');
                     $flag = true;
                 }
@@ -673,6 +672,14 @@ class TransformData extends AbstractHelper
             'in' => [Product\Type::TYPE_BUNDLE, Configurable::TYPE_CODE]
         ]);
         return $collection;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProductListFromAdmin()
+    {
+        return $this->scopeConfig->getValue('forevercompanies_customattributes/general/ids');
     }
 
     /**
@@ -912,29 +919,21 @@ class TransformData extends AbstractHelper
             $this->_logger->error('Product ID = ' . $entityId . ' without name');
             return;
         }
+        $sku = $product->getSku();
+        if ($sku == '') {
+            $this->_logger->error('Product ID = ' . $entityId . ' without SKU');
+        }
+        if (substr($sku, 10, 1) == 'F') {
+            $this->setAttributesToProduct($product);
+        }
         if ($product->getTypeId() == Configurable::TYPE_CODE) {
-            $sku = $product->getSku();
             if (strpos($product->getName(), 'Chelsa') === false && !in_array($sku, $this->configurableSku)) {
                 if (strpos($sku, 'LREB') === false) {
                     $this->convertConfigToBundle($product);
                 }
             }
         }
-        $this->productTypeHelper->setProductType($product);
-
-        foreach (['returnable' => 'is_returnable', 'tcw' => 'acw'] as $before => $new) {
-            $customAttribute = $product->getCustomAttribute($before);
-            if ($customAttribute != null) {
-                $product->setCustomAttribute($new, $customAttribute);
-            }
-        }
-        $product->setData('is_salable', true);
-        $product->setData('on_sale', true);
-        $product->setData('is_transformed', true);
-        $product->setCustomAttribute('is_transformed', true);
-        $product->setData('sku_type', 1);
-        $product->setData('weight_type', 1);
-        $product->setData('price_type', 1);
+        $this->setAttributesToProduct($product);
         if ($product->getData('certified_stone') !== null) {
             $certifiedSrc = $this->eav->getAttribute(Product::ENTITY, 'certified_stone')->getSource();
             $optionText = $product->getData('certified_stone') ? 'Classic Stone' : 'Certified Stone';
@@ -964,6 +963,32 @@ class TransformData extends AbstractHelper
                 $this->_logger->error($e->getMessage());
                 throw new StateException(__('Cannot save product - ' . $e->getMessage()));
             }
+        }
+    }
+
+    /**
+     * @param $product
+     */
+    protected function setAttributesToProduct($product)
+    {
+        try {
+            $this->productTypeHelper->setProductType($product);
+
+            foreach (['returnable' => 'is_returnable', 'tcw' => 'acw'] as $before => $new) {
+                $customAttribute = $product->getCustomAttribute($before);
+                if ($customAttribute != null) {
+                    $product->setCustomAttribute($new, $customAttribute);
+                }
+            }
+            $product->setData('is_salable', true);
+            $product->setData('on_sale', true);
+            $product->setData('is_transformed', true);
+            $product->setCustomAttribute('is_transformed', true);
+            $product->setData('sku_type', 1);
+            $product->setData('weight_type', 1);
+            $product->setData('price_type', 1);
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->error($e->getMessage());
         }
     }
 

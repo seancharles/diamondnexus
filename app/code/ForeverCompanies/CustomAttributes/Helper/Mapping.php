@@ -413,16 +413,25 @@ class Mapping extends AbstractHelper
             try {
                 /** @var Attribute $attribute */
                 $attribute = $this->productAttributeRepository->get($attributeId);
-                if ($attribute->getData(AttributeInterface::FRONTEND_LABEL) == 'Center Stone Size') {
+                $attributeLabelData = $attribute->getData(AttributeInterface::FRONTEND_LABEL);
+                if ($attributeLabelData == 'Center Stone Size') {
                     $product->setData('certified_stone', $classicStone);
-                    continue;
+                    //continue;
                 }
                 foreach ($option as $index) {
+                    if ($attributeLabelData == 'Center Stone Size') {
+                        $itemSku = str_replace('.', '', strstr($index, ' ', true));
+                        if (strlen($itemSku) == 3) {
+                            $itemSku = '0' . $itemSku;
+                        }
+                    } else {
+                        $itemSku = $this->mappingSku[$attributeLabelData][$index];
+                    }
                     $customizableOption = [
                         'title' => $index,
                         'price' => 0,
                         'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
-                        'sku' => $this->mappingSku[$attribute->getData(AttributeInterface::FRONTEND_LABEL)][$index],
+                        'sku' => $itemSku,
                         'product_sku' => $sku,
                     ];
                     $customizableOptions[$attributeId][] = $customizableOption;
