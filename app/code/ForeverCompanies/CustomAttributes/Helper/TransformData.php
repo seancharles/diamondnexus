@@ -925,6 +925,8 @@ class TransformData extends AbstractHelper
         }
         if (substr($sku, 10, 1) == 'F') {
             $this->setAttributesToProduct($product);
+            $this->productRepository->save($product);
+            return;
         }
         if ($product->getTypeId() == Configurable::TYPE_CODE) {
             if (strpos($product->getName(), 'Chelsa') === false && !in_array($sku, $this->configurableSku)) {
