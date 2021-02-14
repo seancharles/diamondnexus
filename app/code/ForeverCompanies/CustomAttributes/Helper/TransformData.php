@@ -439,7 +439,8 @@ class TransformData extends AbstractHelper
             }
             $css = $gemstoneAttribute->getSource()->getOptionText($product->getData('gemstone'));
             if (is_string($css) && strpos($product->getName(), $css) === false) {
-                $product->setName($product->getName() . ' ' . $css);
+                $name = str_replace('  ', ' ', $product->getName() . ' ' . $css);
+                $product->setName($name);
                 $changeFlag = true;
             }
             if ($changeFlag) {
@@ -519,7 +520,7 @@ class TransformData extends AbstractHelper
     {
         try {
             $product = $this->productRepository->getById($id);
-            if ($product->getData('cut_type')  == null && $product->getData('shape') !== null) {
+            if ($product->getData('cut_type') == null && $product->getData('shape') !== null) {
                 $shape = $product->getData('shape');
                 if (substr($shape, -1) == ',') {
                     $shape = substr($shape, 0, -1);
@@ -979,7 +980,8 @@ class TransformData extends AbstractHelper
             foreach (['returnable' => 'is_returnable', 'tcw' => 'acw'] as $before => $new) {
                 $customAttribute = $product->getCustomAttribute($before);
                 if ($customAttribute != null) {
-                    $product->setCustomAttribute($new, $customAttribute);
+                    $product->setCustomAttribute($new, $customAttribute->getValue());
+                    $product->setData($new, $customAttribute->getValue());
                 }
             }
             $product->setData('is_salable', true);
@@ -989,6 +991,8 @@ class TransformData extends AbstractHelper
             $product->setData('sku_type', 1);
             $product->setData('weight_type', 1);
             $product->setData('price_type', 1);
+            $product->setCustomAttribute('news_to_date', $product->getData('news_to_date'));
+            $product->setData('news_to_date', $product->getData('news_to_date'));
         } catch (NoSuchEntityException $e) {
             $this->_logger->error($e->getMessage());
         }
@@ -1096,9 +1100,13 @@ class TransformData extends AbstractHelper
     /**
      * @param Product $product
      * @throws NoSuchEntityException
+     * @throws InputException
+     * @throws StateException
+     * @throws CouldNotSaveException
      */
-    protected function refreshOptions(Product $product)
-    {
+    protected function refreshOptions(
+        Product $product
+    ) {
         $options = $product->getOptions();
         /** @var ProductExtension $extensionAttributes */
         $extensionAttributes = $product->getExtensionAttributes();
@@ -1121,18 +1129,12 @@ class TransformData extends AbstractHelper
                     } catch (StateException $e) {
                         if ($e->getMessage() == 'Cannot save product - URL key for specified store already exists.') {
                             $this->deleteRepeatedUrlKeys($linkedProduct);
-                            $this->productRepository->save($linkedProduct);
+                                $this->productRepository->save($linkedProduct);
                         } else {
                             $this->loggerByOptions->error('Can\'t save link for SKU = ' . $product->getSku());
                         }
                     } catch (LocalizedException $e) {
                         $this->loggerByOptions->error('Can\'t save link for SKU = ' . $product->getSku());
-                    } catch (CouldNotSaveException $e) {
-                        $this->_logger->error($e->getMessage());
-                    } catch (InputException $e) {
-                        $this->_logger->error($e->getMessage());
-                    } catch (StateException $e) {
-                        $this->_logger->error($e->getMessage());
                     }
                 }
             }

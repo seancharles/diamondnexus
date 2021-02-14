@@ -626,6 +626,16 @@ class Mapping extends AbstractHelper
      */
     private function getSkuForOption($attribute, $index)
     {
+        if ($attribute == 'Band Width') {
+            if (strlen($index) == 3) {
+                $index = '0' . $index;
+            }
+            return strtoupper($index);
+        }
+        if ($attribute == 'Chain Width') {
+            $index = str_replace('mm', '', $index);
+            return str_replace('.', '', $index);
+        }
         return $this->mappingSku[$attribute][$index] ?? '';
     }
 }

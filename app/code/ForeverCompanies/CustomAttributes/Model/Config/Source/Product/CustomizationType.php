@@ -12,7 +12,7 @@ class CustomizationType extends AbstractCustomizationType
         ' ' => '',
         'Metal Type' => 'metal_type',
         'Chain Length' => 'chain_length',
-        'Chain Width' => 'chain_width',
+        'Chain Width' => 'chain_size',
         'Ring Size' => 'ring_size',
         'Certified Stone' => 'certified_stone',
         'Total Carat Weight' => 'tcw',
@@ -20,6 +20,7 @@ class CustomizationType extends AbstractCustomizationType
         'Stone Shape' => 'cut',
         'Shape' => 'shape',
         'Center Stone Cut' => 'shape',
+        'Band Width' => 'band_width'
     ];
 
     const TITLE_MAPPING = [
@@ -34,5 +35,6 @@ class CustomizationType extends AbstractCustomizationType
         'Stone Shape' => 'Stone Shape',
         'Shape' => 'Shape',
         'Center Stone Cut' => 'Shape',
+        'Band Width' => 'Band Width',
     ];
 }
