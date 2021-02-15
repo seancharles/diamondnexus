@@ -75,6 +75,21 @@ body:not(.customer-account-index) .account-additional-note {
     display: none;
 }
 
+.customer-account-create .form-create-account .actions-toolbar .primary.action {
+    height: auto;
+    padding: 15px;
+    background: #000;
+    border: none;
+    border-radius: 0;
+    text-transform: uppercase;
+}
+.customer-account-create
+    .form-create-account
+    .actions-toolbar
+    .primary.action:hover {
+    background: #af9c9b !important;
+}
+
 .checkout-cart-index a.towishlist {
     color: #8e7171;
 }
