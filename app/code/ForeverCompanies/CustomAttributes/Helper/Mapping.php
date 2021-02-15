@@ -176,8 +176,8 @@ class Mapping extends AbstractHelper
             'White & New Canary' => 'WHNC',
             'White New Canary' => 'WHNC',
             'White Pearl' => 'WHPR',
-            'Whit & Rose' => 'WHRS',
-            'Whit Rose' => 'WHRS',
+            'White & Rose' => 'WHRS',
+            'White Rose' => 'WHRS',
             'White & Ruby' => 'WHRU',
             'White Ruby' => 'WHRU',
             'White & Sapphire' => 'WHSP',
@@ -635,6 +635,9 @@ class Mapping extends AbstractHelper
         if ($attribute == 'Chain Width') {
             $index = str_replace('mm', '', $index);
             return str_replace('.', '', $index);
+        }
+        if (strpos($attribute, 'Color') !== false) {
+            $attribute = 'Color';
         }
         return $this->mappingSku[$attribute][$index] ?? '';
     }

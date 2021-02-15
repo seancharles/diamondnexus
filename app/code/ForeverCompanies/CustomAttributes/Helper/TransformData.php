@@ -55,6 +55,7 @@ use Magento\InventoryApi\Api\SourceItemsSaveInterface;
 use Magento\MediaStorage\Model\ResourceModel\File\Storage\File;
 use Magento\ProductVideo\Model\Product\Attribute\Media\ExternalVideoEntryConverter;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\UrlRewrite\Model\ResourceModel\UrlRewrite;
 use Zend_Db_Select;
 
 class TransformData extends AbstractHelper
@@ -185,7 +186,7 @@ class TransformData extends AbstractHelper
     protected $bundleSelection;
 
     /**
-     * @var \Magento\UrlRewrite\Model\ResourceModel\UrlRewrite
+     * @var UrlRewrite
      */
     protected $urlRewrite;
 
@@ -199,6 +200,9 @@ class TransformData extends AbstractHelper
      */
     protected $loggerBySku;
 
+    /**
+     * @var string[]
+     */
     protected $mimeTypes = [
         'png' => 'image/png',
         'jpe' => 'image/jpeg',
@@ -236,6 +240,15 @@ class TransformData extends AbstractHelper
     ];
 
     /**
+     * @var string[]
+     */
+    protected $filterAttributes = [
+        'metal_type' => 'filter_metal',
+        'shape' => 'filter_shape',
+        'color' => 'filter_color'
+    ];
+
+    /**
      * @var int
      */
     protected $looseDiamondCategory = ['926'];
@@ -267,6 +280,7 @@ class TransformData extends AbstractHelper
      * @param Media $media
      * @param Serialize $serializer
      * @param Selection $bundleSelection
+     * @param UrlRewrite $urlRewrite
      * @param LoggerByOptions $loggerByOptions
      * @param LoggerBySku $loggerBySku
      */
@@ -297,7 +311,7 @@ class TransformData extends AbstractHelper
         Media $media,
         Serialize $serializer,
         Selection $bundleSelection,
-        \Magento\UrlRewrite\Model\ResourceModel\UrlRewrite $urlRewrite,
+        UrlRewrite $urlRewrite,
         LoggerByOptions $loggerByOptions,
         LoggerBySku $loggerBySku
     ) {
@@ -420,8 +434,9 @@ class TransformData extends AbstractHelper
         $gemstoneAttribute = $this->eav->getAttribute(Product::ENTITY, 'gemstone');
         try {
             $product = $this->productRepository->get($sku);
+            $skuStone = substr($sku, 17, 4);
             if ($product->getData('gemstone') == null || $product->getData('gemstone') == '') {
-                $centerStoneSize = substr_replace(substr($sku, 17, 4), '.', 2, 0) . ' ct';
+                $centerStoneSize = substr_replace($skuStone, '.', 2, 0) . ' ct';
                 if (strpos($centerStoneSize, '0') === 0) {
                     $centerStoneSize = substr($centerStoneSize, 1);
                 }
@@ -430,7 +445,7 @@ class TransformData extends AbstractHelper
                 $changeFlag = true;
             }
             if ($product->getData('carat_weight') == null || $product->getData('carat_weight') == 0) {
-                $caratWeight = substr_replace(substr($sku, 17, 4), '.', 2, 0);
+                $caratWeight = substr_replace($skuStone, '.', 2, 0);
                 if (strpos($caratWeight, '0') === 0) {
                     $caratWeight = substr($caratWeight, 1);
                 }
@@ -827,7 +842,7 @@ class TransformData extends AbstractHelper
             if ($options == null && $isBundle != Type::TYPE_CODE) {
                 return;
             }
-            $oldAttributes = ['metal_type' => 'filter_metal', 'shape' => 'filter_shape', 'color' => 'filter_color'];
+            $oldAttributes = $this->filterAttributes;
             if ($options !== null) {
                 $certifiedStone = true;
                 /** @var Option $option */
@@ -970,35 +985,6 @@ class TransformData extends AbstractHelper
     }
 
     /**
-     * @param $product
-     */
-    protected function setAttributesToProduct($product)
-    {
-        try {
-            $this->productTypeHelper->setProductType($product);
-
-            foreach (['returnable' => 'is_returnable', 'tcw' => 'acw'] as $before => $new) {
-                $customAttribute = $product->getCustomAttribute($before);
-                if ($customAttribute != null) {
-                    $product->setCustomAttribute($new, $customAttribute->getValue());
-                    $product->setData($new, $customAttribute->getValue());
-                }
-            }
-            $product->setData('is_salable', true);
-            $product->setData('on_sale', true);
-            $product->setData('is_transformed', true);
-            $product->setCustomAttribute('is_transformed', true);
-            $product->setData('sku_type', 1);
-            $product->setData('weight_type', 1);
-            $product->setData('price_type', 1);
-            $product->setCustomAttribute('news_to_date', $product->getData('news_to_date'));
-            $product->setData('news_to_date', $product->getData('news_to_date'));
-        } catch (NoSuchEntityException $e) {
-            $this->_logger->error($e->getMessage());
-        }
-    }
-
-    /**
      * @param int $productId
      * @throws NoSuchEntityException
      * @throws StateException
@@ -1098,6 +1084,62 @@ class TransformData extends AbstractHelper
     }
 
     /**
+     * @param $productId
+     */
+    public function copyValuesFromFilters($productId)
+    {
+        try {
+            $product = $this->productRepository->getById($productId);
+            foreach ($this->filterAttributes as $attr => $filter) {
+                $srcFilter = $this->eav->getAttribute(Product::ENTITY, $filter)->getSource();
+                $srcAttr = $this->eav->getAttribute(Product::ENTITY, $attr)->getSource();
+                $value = $srcFilter->getOptionText($product->getData($filter));
+                if (is_array($value)) {
+                    $ids = [];
+                    foreach ($value as $val) {
+                        $ids[] = $srcAttr->getOptionId($val);
+                    }
+                    $product->setData($attr, implode(',', $ids));
+                } else {
+                    $id = $srcAttr->getOptionId($value);
+                    $product->setData($attr, $id);
+                }
+            }
+            $this->productRepository->save($product);
+        } catch (LocalizedException $e) {
+            $this->_logger->error('Can\'t find attribute filter attribute for ID = ' . $productId);
+        }
+    }
+
+    /**
+     * @param $product
+     */
+    protected function setAttributesToProduct($product)
+    {
+        try {
+            $this->productTypeHelper->setProductType($product);
+            foreach (['returnable' => 'is_returnable', 'tcw' => 'acw'] as $before => $new) {
+                $customAttribute = $product->getCustomAttribute($before);
+                if ($customAttribute != null) {
+                    $product->setCustomAttribute($new, $customAttribute->getValue());
+                    $product->setData($new, $customAttribute->getValue());
+                }
+            }
+            $product->setData('is_salable', true);
+            $product->setData('on_sale', true);
+            $product->setData('is_transformed', true);
+            $product->setCustomAttribute('is_transformed', true);
+            $product->setData('sku_type', 1);
+            $product->setData('weight_type', 1);
+            $product->setData('price_type', 1);
+            $product->setCustomAttribute('news_to_date', $product->getData('news_to_date'));
+            $product->setData('news_to_date', $product->getData('news_to_date'));
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->error($e->getMessage());
+        }
+    }
+
+    /**
      * @param Product $product
      * @throws NoSuchEntityException
      * @throws InputException
@@ -1129,7 +1171,7 @@ class TransformData extends AbstractHelper
                     } catch (StateException $e) {
                         if ($e->getMessage() == 'Cannot save product - URL key for specified store already exists.') {
                             $this->deleteRepeatedUrlKeys($linkedProduct);
-                                $this->productRepository->save($linkedProduct);
+                            $this->productRepository->save($linkedProduct);
                         } else {
                             $this->loggerByOptions->error('Can\'t save link for SKU = ' . $product->getSku());
                         }
@@ -1195,6 +1237,7 @@ class TransformData extends AbstractHelper
     /**
      * @param $product
      * @param bool|null $certifiedStone
+     * @throws LocalizedException
      */
     protected function bundleOptions($product, $certifiedStone = null)
     {

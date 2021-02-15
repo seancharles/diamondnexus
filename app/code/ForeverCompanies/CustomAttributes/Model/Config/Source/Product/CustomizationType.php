@@ -19,7 +19,6 @@ class CustomizationType extends AbstractCustomizationType
         'Stone Color' => 'color',
         'Stone Shape' => 'cut',
         'Shape' => 'shape',
-        'Center Stone Cut' => 'shape',
         'Band Width' => 'band_width'
     ];
 
@@ -32,9 +31,11 @@ class CustomizationType extends AbstractCustomizationType
         'Certified Stone' => 'Certified Stone',
         'Total Carat Weight' => 'Total Carat Weight',
         'Stone Color' => 'Stone Color',
+        'Color' => 'Stone Color',
+        'Pearl Color' => 'Stone Color',
         'Stone Shape' => 'Stone Shape',
         'Shape' => 'Shape',
-        'Center Stone Cut' => 'Shape',
+        'Center Stone Cut' => 'Stone Shape',
         'Band Width' => 'Band Width',
     ];
 }

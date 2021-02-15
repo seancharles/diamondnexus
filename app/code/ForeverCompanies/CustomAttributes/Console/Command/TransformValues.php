@@ -100,6 +100,13 @@ class TransformValues extends AbstractCommand
         $this->moveValues('gemstone', $output);
         $output->writeln('Center Stone Size is updated');
         $this->moduleDataSetup->getConnection()->endSetup();
+        $output->writeln('Copy values from filters to attributes');
+        $products = $this->helper->getProductsAfterTransformCollection();
+        foreach ($products->getItems() as $product) {
+            $output->writeln('Copy values from filter to attribute in Product ID = ');
+            $this->helper->copyValuesFromFilters($product->getData('entity_id'));
+        }
+
         $output->writeln('Transformation is complete! Please execute bin/magento cache:clean');
     }
 
