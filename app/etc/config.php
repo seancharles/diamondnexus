@@ -417,6 +417,7 @@ return [
         'ForeverCompanies_CustomAttributes' => 1,
         'Mageplaza_Core' => 1,
         'ForeverCompanies_Forms' => 1,
+        'ForeverCompanies_Gifts' => 1,
         'ForeverCompanies_Migration' => 1,
         'ForeverCompanies_Profile' => 1,
         'ForeverCompanies_QuoteCleaner' => 1,
