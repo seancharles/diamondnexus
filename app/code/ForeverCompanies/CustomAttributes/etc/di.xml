@@ -7,6 +7,9 @@
                 <item name="TransformAttributes" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\TransformAttributes
                 </item>
+                <item name="TransformAttributesFromList" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\TransformAttributesFromList
+                </item>
                 <item name="CompleteSequence" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\CompleteSequence
                 </item>
@@ -30,6 +33,9 @@
                 </item>
                 <item name="UpdateLooseStones" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\UpdateLooseStones
+                </item>
+                <item name="UpdateStoneShape" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\UpdateStoneShape
                 </item>
                 <item name="UpdateCustomizationType" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\UpdateCustomizationType

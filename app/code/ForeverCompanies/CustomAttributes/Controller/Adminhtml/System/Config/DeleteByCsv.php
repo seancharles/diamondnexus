@@ -6,7 +6,9 @@ use ForeverCompanies\CustomAttributes\Logger\Logger;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use ForeverCompanies\CustomAttributes\Helper\TransformData;
+use Magento\Catalog\Model\ResourceModel\CategoryProduct;
 use Magento\Framework\Exception\FileSystemException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\StateException;
 use Magento\Catalog\Model\ProductRepository;
@@ -14,6 +16,8 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\File\Csv;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\UrlInterface;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
 class DeleteByCsv extends Action
@@ -60,6 +64,11 @@ class DeleteByCsv extends Action
     protected $fileSystem;
 
     /**
+     * @var CategoryProduct
+     */
+    protected $resource;
+
+    /**
      * DeleteByCsv constructor.
      * @param Context $context
      * @param ManagerInterface $messageManager
@@ -67,6 +76,7 @@ class DeleteByCsv extends Action
      * @param StoreManagerInterface $storeManager
      * @param ScopeConfigInterface $scopeConfig
      * @param ProductRepository $productRepository
+     * @param CategoryProduct $resource
      * @param Logger $logger
      * @param File $fileSystem
      */
@@ -77,6 +87,7 @@ class DeleteByCsv extends Action
         StoreManagerInterface $storeManager,
         ScopeConfigInterface $scopeConfig,
         ProductRepository $productRepository,
+        CategoryProduct $resource,
         Logger $logger,
         File $fileSystem
     ) {
@@ -86,6 +97,7 @@ class DeleteByCsv extends Action
         $this->storeManager = $storeManager;
         $this->scopeConfig = $scopeConfig;
         $this->productRepository = $productRepository;
+        $this->resource = $resource;
         $this->logger = $logger;
         $this->fileSystem = $fileSystem;
     }
@@ -94,13 +106,13 @@ class DeleteByCsv extends Action
      * Collect relations data
      *
      * @return void
-     * @throws StateException|NoSuchEntityException
-     * @throws FileSystemException
+     * @throws NoSuchEntityException
+     * @throws FileSystemException|LocalizedException
      */
     public function execute()
     {
-        $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORES;
-        $urlTypeMedia = \Magento\Framework\UrlInterface::URL_TYPE_MEDIA;
+        $storeScope = ScopeInterface::SCOPE_STORES;
+        $urlTypeMedia = UrlInterface::URL_TYPE_MEDIA;
         $scopeConfig = 'forevercompanies_customattributes/general/forevercompanies_deletebycsv_file';
         $uploadedCsvFilePath = $this->scopeConfig->getValue($scopeConfig, $storeScope);
         $pubMediaUrl = $this->storeManager->getStore()->getBaseUrl($urlTypeMedia);
@@ -125,6 +137,12 @@ class DeleteByCsv extends Action
                     } catch (NoSuchEntityException $e) {
                         $this->logger->info('Product ID = ' . $productId . ' not found');
                         continue;
+                    } catch (LocalizedException $e) {
+                        $this->logger->info('Product ID = ' . $productId . ' not deleted');
+                        continue;
+                    } catch (\TypeError $e) {
+                            $connection = $this->resource->getConnection();
+                            $connection->delete($this->resource->getMainTable(), 'entity_id = ' . $productId);
                     }
                 }
             }

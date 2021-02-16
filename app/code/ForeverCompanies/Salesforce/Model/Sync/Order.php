@@ -11,6 +11,8 @@ use ForeverCompanies\Salesforce\Model\RequestLogFactory;
 use ForeverCompanies\Salesforce\Model\Connector;
 use ForeverCompanies\Salesforce\Model\Data;
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfigInterface;
+use Magento\Framework\App\Config\Storage\WriterInterface;
+use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Config\Model\ResourceModel\Config as ResourceModelConfig;
 use Magento\Customer\Model\CustomerFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
@@ -58,6 +60,8 @@ class Order extends Connector
 
     public function __construct(
         ScopeConfigInterface $scopeConfig,
+		WriterInterface $configWriter,
+		TypeListInterface $cacheTypeList,
         ResourceModelConfig $resourceConfig,
         Data $data,
         RequestLogFactory $requestLogFactory,
@@ -68,6 +72,8 @@ class Order extends Connector
     ) {
         parent::__construct(
             $scopeConfig,
+			$configWriter,
+			$cacheTypeList,
             $resourceConfig,
             $requestLogFactory,
             $configModel

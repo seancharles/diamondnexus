@@ -1,14 +1,16 @@
 <?php
 
 use ForeverCompanies\CustomAdmin\Block\Adminhtml\Split;
+use Magento\Framework\Escaper;
 
+/** @var Escaper $escaper $item */
 /** @var $block Split */
 ?>
 <div id="split-customer">
 
-    <form action="<?= $block->escapeUrl($block->getSplitUrl()) ?>" method="post"
+    <form action="<?= $escaper->escapeUrl($block->getSplitUrl()) ?>" method="post"
           id="split-variable-form">
-        <input name="form_key" type="hidden" value="<?= $block->getFormKey(); ?>">
+        <input name="form_key" type="hidden" value="<?= $escaper->escapeHtml($block->getFormKey()); ?>">
         First Name <input
             name="firstname"
             id="firstname"

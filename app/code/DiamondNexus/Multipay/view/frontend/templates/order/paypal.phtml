@@ -1,6 +1,9 @@
 <?php
 
 use DiamondNexus\Multipay\Block\Order\Paypal;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
 
 /** @var Paypal $block */
 # get the order id from the url
@@ -10,9 +13,9 @@ $incrementId = $block->getIncrementId();
 # get the amount due
 $amount = $block->getBalanceAmount();
 $paypalClientId = $block->getClientId();
-$btn = $block->escapeHtml('.paypal-button-widget');
+$btn = $escaper->escapeHtml('.paypal-button-widget');
 $errorAlert = "There was an error processing your payment. Please call customer service.";
-$src = $block->escapeHtml('https://www.paypal.com/sdk/js?client-id=' . $paypalClientId);
+$src = $escaper->escapeHtml('https://www.paypal.com/sdk/js?client-id=' . $paypalClientId);
 $jsCheckoutGuest = "$('#paypal-in-context-checkout-guest " . $btn;
 $jsCheckout = "$('#paypal-in-context-checkout " . $btn;
 ?>
@@ -132,17 +135,17 @@ $jsCheckout = "$('#paypal-in-context-checkout " . $btn;
 <script
     src="<?= /** @noEscape */
     $src ?>&currency=USD&disable-funding=credit&integration-date=2020-10-01"
-    data-order-id="<?= $block->escapeHtml($incrementId); ?>"></script>
-<form action="<?= $block->escapeUrl($block->getPaypalUrl()) ?>" method="post">
+    data-order-id="<?= $escaper->escapeHtml($incrementId); ?>"></script>
+<form action="<?= $escaper->escapeUrl($block->getPaypalUrl()) ?>" method="post">
     <input type="hidden" name="order_id" value="<?= $block->escapeHtml($id); ?>"/>
     <div class="my-account">
         <div class="dashboard">
             <div id="logo">
-                <img src="<?= $block->escapeHtml($block->getPaypalLogo()) ?>" width="240"
+                <img src="<?= $escaper->escapeHtml($block->getPaypalLogo()) ?>" width="240"
                      border="0" alt=""/>
             </div>
             <div class="page-title">
-                <h1>Payment for order #<?= $block->escapeHtml($incrementId); ?></h1>
+                <h1>Payment for order #<?= $escaper->escapeHtml($incrementId); ?></h1>
             </div>
             <?php if ($block->getErrors()) : ?>
                 <ul class="errors">
@@ -157,7 +160,7 @@ $jsCheckout = "$('#paypal-in-context-checkout " . $btn;
                     <div class="payment" id="paymentStandard">
                         <dl>
                             <dt><label>Amount Due:</label></dt>
-                            <dd><?= $block->escapeHtml(number_format($amount, 2)); ?></dd>
+                            <dd><?= $escaper->escapeHtml(number_format($amount, 2)); ?></dd>
                         </dl>
                         <div style="clear:both;"></div>
                         <dl style="border-top: 1px solid #ccc; padding-top: 15px;">
@@ -189,9 +192,9 @@ $jsCheckout = "$('#paypal-in-context-checkout " . $btn;
                                             $.fancybox.showLoading();
 
                                             $.ajax({
-                                                method: "<?= $block->escapeHtml('POST') ?>",
+                                                method: "<?= $block->$escaper('POST') ?>",
                                                 dataType: "JSON",
-                                                url: "<?=  $block->escapeHtml($block->getPaypalActionUrl()); ?>",
+                                                url: "<?=  $block->$escaper($block->getPaypalActionUrl()); ?>",
                                                 data: {
                                                     order_id: <?= /** @noEscape */ $id; ?>,
                                                     details: details

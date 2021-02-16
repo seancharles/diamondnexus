@@ -325,7 +325,6 @@ class MigrationAdmin extends Command
                     ->where('role.parent_id = ?', $oldRoleId);
                 foreach ($db->fetchAll($selectUsers) as $user) {
                     $adminInfo = [
-                        //'user_id' => $user['user_id'],
                         'username' => $user['username'],
                         'firstname' => $user['firstname'],
                         'lastname' => $user['lastname'],
@@ -343,27 +342,32 @@ class MigrationAdmin extends Command
                         $bind = ['user_id' => $user['user_id']];
                         $db->delete('magento_logging_event', 'user_id = ' . $savedUser['user_id']);
                         $db->update('admin_user', $bind, 'user_id = ' . $savedUser['user_id']);
+                        $db->update('authorization_role', $bind, 'user_id = ' . $savedUser['user_id']);
                         $this->userResource->getConnection()->update(
                             $this->userResource->getTable('admin_passwords'),
                             ['password_hash' => $user['password']],
                             ['user_id' => $savedUser['user_id']]
                         );
+                        $lastRow = $db->select()->from('admin_user')->order('user_id desc')->limit(1);
+                        $id = $db->fetchRow($lastRow);
+                        $nextId = $id['user_id'] + 1;
+                        /** @codingStandardsIgnoreStart */
+                        $db->query('ALTER TABLE admin_user AUTO_INCREMENT = ' . $nextId);
+                        /** @codingStandardsIgnoreSEnd */
                     } catch (AlreadyExistsException $e) {
                         $output->writeln('Can\'t save exists user with username ' . $user['username']);
                     } catch (\Exception $e) {
-                        $output->writeln('Can\'t save admin user ' . $user['username'] . ':' . $e->getMessage());
+                        $output->writeln('Can\'t save admin ' . $user['username'] . ':' . $e->getMessage());
                     }
                 }
             } catch (LocalizedException $e) {
                 $output->writeln($e->getMessage());
             }
         }
-        $lastRow = $db->select()->from('admin_user')->order('user_id desc')->limit(1);
-        $id = $db->fetchRow($lastRow);
-        $nextId = $id['user_id'] + 1;
-        /** @codingStandardsIgnoreStart */
-        $db->query('ALTER TABLE admin_user AUTO_INCREMENT = ' . $nextId);
-        /** @codingStandardsIgnoreSEnd */
+        $db->insert(
+            'authorization_rule',
+            ['role_id' => 1, 'resource_id' => 'Magento_Backend::all', 'permission' => 'allow']
+        );
     }
 
     /**

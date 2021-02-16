@@ -276,7 +276,6 @@ class Link extends AbstractHelper
     public function createNewLink(string $sku, float $itemPrice, string $originalSku)
     {
         try {
-            $beforeChange = $sku;
             $product = $this->productRepository->get($sku);
             if ($product->getId() !== null) {
                 $this->bundlePriceHelper->setBundlePrice($product, $itemPrice, $originalSku);
@@ -359,12 +358,6 @@ class Link extends AbstractHelper
                     }
                 } catch (\Exception $e) {
                     try {
-                        /*if ($stoneForm == 'CU' || $stoneForm == "CR") {
-                            $stoneForm = 'CR';
-                            $sku = str_replace('CU', 'CR', $sku);
-                            $sku = str_replace('USLSSS0003X', 'USLSSS0006X', $sku);
-                            $sku = str_replace('USLSCS0003X', 'USLSCS0006X', $sku);
-                        }*/
                         $product = $this->productRepository->get($sku . 'XXXX');
                         if ($product->getId() !== null) {
                             $this->bundlePriceHelper->setBundlePrice($product, $itemPrice, $originalSku);
@@ -377,7 +370,7 @@ class Link extends AbstractHelper
                         if (substr($sku, -4) == 'XXXX') {
                             $sku = substr($sku, 0, -4);
                         }
-                        $product = $this->extensionSearchSku($sku, $stoneForm, $beforeChange);
+                        $product = (isset($stoneForm)) ? $this->extensionSearchSku($sku, $stoneForm) : false;
                         if (!$product) {
                             return;
                         }
@@ -413,12 +406,8 @@ class Link extends AbstractHelper
      * @param string $stoneForm
      * @return \Magento\Catalog\Model\Product|false
      */
-    protected function extensionSearchSku(string $sku, string $stoneForm, string $beforeChange)
+    protected function extensionSearchSku(string $sku, string $stoneForm)
     {
-        // added the "if (array_key_exists())" because of the following error:
-        // In process product ID = 8563
-        //    In ErrorHandler.php line 61:
-        //    Notice: Undefined index: XX
         if (array_key_exists($stoneForm, $this->stoneSkuLookups)) {
             foreach ($this->stoneSkuLookups[$stoneForm] as $old => $new) {
                 $sku = str_replace($old, $new, $sku);
@@ -431,6 +420,14 @@ class Link extends AbstractHelper
                     }
                 }
                 $id = $this->productResource->getIdBySku($sku . 'XXXX');
+                if ($id) {
+                    try {
+                        return $this->productRepository->getById($id);
+                    } catch (NoSuchEntityException $e) {
+                        return false;
+                    }
+                }
+                $id = $this->productResource->getIdBySku($sku . 'XXXXXXXX');
                 if ($id) {
                     try {
                         return $this->productRepository->getById($id);

@@ -42,7 +42,6 @@ use Magento\Framework\Api\Data\VideoContentInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
-use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Exception\InputException;
@@ -56,6 +55,7 @@ use Magento\InventoryApi\Api\SourceItemsSaveInterface;
 use Magento\MediaStorage\Model\ResourceModel\File\Storage\File;
 use Magento\ProductVideo\Model\Product\Attribute\Media\ExternalVideoEntryConverter;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\UrlRewrite\Model\ResourceModel\UrlRewrite;
 use Zend_Db_Select;
 
 class TransformData extends AbstractHelper
@@ -186,6 +186,11 @@ class TransformData extends AbstractHelper
     protected $bundleSelection;
 
     /**
+     * @var UrlRewrite
+     */
+    protected $urlRewrite;
+
+    /**
      * @var LoggerByOptions
      */
     protected $loggerByOptions;
@@ -195,6 +200,9 @@ class TransformData extends AbstractHelper
      */
     protected $loggerBySku;
 
+    /**
+     * @var string[]
+     */
     protected $mimeTypes = [
         'png' => 'image/png',
         'jpe' => 'image/jpeg',
@@ -232,6 +240,15 @@ class TransformData extends AbstractHelper
     ];
 
     /**
+     * @var string[]
+     */
+    protected $filterAttributes = [
+        'metal_type' => 'filter_metal',
+        'shape' => 'filter_shape',
+        'color' => 'filter_color'
+    ];
+
+    /**
      * @var int
      */
     protected $looseDiamondCategory = ['926'];
@@ -263,6 +280,7 @@ class TransformData extends AbstractHelper
      * @param Media $media
      * @param Serialize $serializer
      * @param Selection $bundleSelection
+     * @param UrlRewrite $urlRewrite
      * @param LoggerByOptions $loggerByOptions
      * @param LoggerBySku $loggerBySku
      */
@@ -293,10 +311,10 @@ class TransformData extends AbstractHelper
         Media $media,
         Serialize $serializer,
         Selection $bundleSelection,
+        UrlRewrite $urlRewrite,
         LoggerByOptions $loggerByOptions,
         LoggerBySku $loggerBySku
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->eav = $config;
         $this->attributeSetRepository = $attributeSetRepository;
@@ -323,6 +341,7 @@ class TransformData extends AbstractHelper
         $this->mediaHelper = $media;
         $this->serializer = $serializer;
         $this->bundleSelection = $bundleSelection;
+        $this->urlRewrite = $urlRewrite;
         $this->loggerByOptions = $loggerByOptions;
         $this->loggerBySku = $loggerBySku;
     }
@@ -407,6 +426,7 @@ class TransformData extends AbstractHelper
 
     /**
      * @param string $sku
+     * @throws LocalizedException
      */
     public function updateLooseStone($sku)
     {
@@ -414,8 +434,9 @@ class TransformData extends AbstractHelper
         $gemstoneAttribute = $this->eav->getAttribute(Product::ENTITY, 'gemstone');
         try {
             $product = $this->productRepository->get($sku);
+            $skuStone = substr($sku, 17, 4);
             if ($product->getData('gemstone') == null || $product->getData('gemstone') == '') {
-                $centerStoneSize = substr_replace(substr($sku, 17, 4), '.', 2, 0) . ' ct';
+                $centerStoneSize = substr_replace($skuStone, '.', 2, 0) . ' ct';
                 if (strpos($centerStoneSize, '0') === 0) {
                     $centerStoneSize = substr($centerStoneSize, 1);
                 }
@@ -424,7 +445,7 @@ class TransformData extends AbstractHelper
                 $changeFlag = true;
             }
             if ($product->getData('carat_weight') == null || $product->getData('carat_weight') == 0) {
-                $caratWeight = substr_replace(substr($sku, 17, 4), '.', 2, 0);
+                $caratWeight = substr_replace($skuStone, '.', 2, 0);
                 if (strpos($caratWeight, '0') === 0) {
                     $caratWeight = substr($caratWeight, 1);
                 }
@@ -433,7 +454,8 @@ class TransformData extends AbstractHelper
             }
             $css = $gemstoneAttribute->getSource()->getOptionText($product->getData('gemstone'));
             if (is_string($css) && strpos($product->getName(), $css) === false) {
-                $product->setName($product->getName() . ' ' . $css);
+                $name = str_replace('  ', ' ', $product->getName() . ' ' . $css);
+                $product->setName($name);
                 $changeFlag = true;
             }
             if ($changeFlag) {
@@ -507,6 +529,51 @@ class TransformData extends AbstractHelper
     }
 
     /**
+     * @param $id
+     */
+    public function updateStoneShape($id)
+    {
+        try {
+            $product = $this->productRepository->getById($id);
+            if ($product->getData('cut_type') == null && $product->getData('shape') !== null) {
+                $shape = $product->getData('shape');
+                if (substr($shape, -1) == ',') {
+                    $shape = substr($shape, 0, -1);
+                    $product->setData('shape', $shape);
+                }
+                $cutSrc = $this->eav->getAttribute(Product::ENTITY, 'cut_type')->getSource();
+                $shapeSrc = $this->eav->getAttribute(Product::ENTITY, 'shape')->getSource();
+                $textValue = $shapeSrc->getOptionText($shape);
+                if (is_array($textValue)) {
+                    $value = '';
+                    foreach ($textValue as $allTextValue) {
+                        if ($allTextValue == 'Round') {
+                            $allTextValue = 'Round Brilliant';
+                        }
+                        $value .= $cutSrc->getOptionId($allTextValue) . ',';
+                    }
+                } else {
+                    if ($textValue == 'Round') {
+                        $textValue = 'Round Brilliant';
+                    }
+                    $value = $cutSrc->getOptionId($textValue);
+                }
+                if (substr($value, -1) == ',') {
+                    $value = substr($value, 0, -1);
+                    $product->setData('shape', $shape);
+                    $product->setData('cut_type', $value);
+                    $product->setCustomAttribute('cut_type', $value);
+                }
+                $this->productRepository->save($product);
+            }
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->error($e->getMessage());
+        } catch (LocalizedException $e) {
+            $this->_logger->error($e->getMessage());
+        }
+    }
+
+    /**
      * @return Collection
      */
     public function getProductsForChangeStocks()
@@ -553,7 +620,7 @@ class TransformData extends AbstractHelper
 
             // check if product is backordered, and if so, if the backorder_deactivate_date is not set, set it
             if ($product->getData('backorder_flag') == 1) {
-                if (is_null($product->getData('backordered_deactivate_date'))) {
+                if ($product->getData('backordered_deactivate_date') == null) {
                     $product->setData('backordered_deactivate_date', '2045-01-01 00:00:00');
                     $flag = true;
                 }
@@ -621,6 +688,14 @@ class TransformData extends AbstractHelper
             'in' => [Product\Type::TYPE_BUNDLE, Configurable::TYPE_CODE]
         ]);
         return $collection;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProductListFromAdmin()
+    {
+        return $this->scopeConfig->getValue('forevercompanies_customattributes/general/ids');
     }
 
     /**
@@ -767,7 +842,7 @@ class TransformData extends AbstractHelper
             if ($options == null && $isBundle != Type::TYPE_CODE) {
                 return;
             }
-            $oldAttributes = ['metal_type' => 'filter_metal', 'shape' => 'filter_shape', 'color' => 'filter_color'];
+            $oldAttributes = $this->filterAttributes;
             if ($options !== null) {
                 $certifiedStone = true;
                 /** @var Option $option */
@@ -860,29 +935,23 @@ class TransformData extends AbstractHelper
             $this->_logger->error('Product ID = ' . $entityId . ' without name');
             return;
         }
+        $sku = $product->getSku();
+        if ($sku == '') {
+            $this->_logger->error('Product ID = ' . $entityId . ' without SKU');
+        }
+        if (substr($sku, 10, 1) == 'F') {
+            $this->setAttributesToProduct($product);
+            $this->productRepository->save($product);
+            return;
+        }
         if ($product->getTypeId() == Configurable::TYPE_CODE) {
-            $sku = $product->getSku();
             if (strpos($product->getName(), 'Chelsa') === false && !in_array($sku, $this->configurableSku)) {
                 if (strpos($sku, 'LREB') === false) {
                     $this->convertConfigToBundle($product);
                 }
             }
         }
-        $this->productTypeHelper->setProductType($product);
-
-        foreach (['returnable' => 'is_returnable', 'tcw' => 'acw'] as $before => $new) {
-            $customAttribute = $product->getCustomAttribute($before);
-            if ($customAttribute != null) {
-                $product->setCustomAttribute($new, $customAttribute);
-            }
-        }
-        $product->setData('is_salable', true);
-        $product->setData('on_sale', true);
-        $product->setData('is_transformed', true);
-        $product->setCustomAttribute('is_transformed', true);
-        $product->setData('sku_type', 1);
-        $product->setData('weight_type', 1);
-        $product->setData('price_type', 1);
+        $this->setAttributesToProduct($product);
         if ($product->getData('certified_stone') !== null) {
             $certifiedSrc = $this->eav->getAttribute(Product::ENTITY, 'certified_stone')->getSource();
             $optionText = $product->getData('certified_stone') ? 'Classic Stone' : 'Certified Stone';
@@ -906,8 +975,12 @@ class TransformData extends AbstractHelper
             $this->_logger->error($inputException->getMessage());
             throw $inputException;
         } catch (Exception $e) {
-            $this->_logger->error($e->getMessage());
-            throw new StateException(__('Cannot save product - ' . $e->getMessage()));
+            if ($e->getMessage() == 'Cannot save product - URL key for specified store already exists.') {
+                $this->deleteRepeatedUrlKeys($product);
+            } else {
+                $this->_logger->error($e->getMessage());
+                throw new StateException(__('Cannot save product - ' . $e->getMessage()));
+            }
         }
     }
 
@@ -950,7 +1023,11 @@ class TransformData extends AbstractHelper
             $product->setStatus(Status::STATUS_DISABLED);
             $this->productRepository->save($product);
         } catch (StateException $e) {
-            throw new StateException(__('Cannot get product ID = ' . $productId));
+            if ($e->getMessage() == 'Cannot save product - URL key for specified store already exists.') {
+                $this->deleteRepeatedUrlKeys($product);
+            } else {
+                throw new StateException(__('Cannot get product ID = ' . $productId));
+            }
         } catch (NoSuchEntityException $e) {
             throw new NoSuchEntityException(__('Cannot delete product ID = ' . $productId));
         } catch (CouldNotSaveException $e) {
@@ -1007,10 +1084,71 @@ class TransformData extends AbstractHelper
     }
 
     /**
-     * @param Product $product
+     * @param $productId
      */
-    protected function refreshOptions(Product $product)
+    public function copyValuesFromFilters($productId)
     {
+        try {
+            $product = $this->productRepository->getById($productId);
+            foreach ($this->filterAttributes as $attr => $filter) {
+                $srcFilter = $this->eav->getAttribute(Product::ENTITY, $filter)->getSource();
+                $srcAttr = $this->eav->getAttribute(Product::ENTITY, $attr)->getSource();
+                $value = $srcFilter->getOptionText($product->getData($filter));
+                if (is_array($value)) {
+                    $ids = [];
+                    foreach ($value as $val) {
+                        $ids[] = $srcAttr->getOptionId($val);
+                    }
+                    $product->setData($attr, implode(',', $ids));
+                } else {
+                    $id = $srcAttr->getOptionId($value);
+                    $product->setData($attr, $id);
+                }
+            }
+            $this->productRepository->save($product);
+        } catch (LocalizedException $e) {
+            $this->_logger->error('Can\'t find attribute filter attribute for ID = ' . $productId);
+        }
+    }
+
+    /**
+     * @param $product
+     */
+    protected function setAttributesToProduct($product)
+    {
+        try {
+            $this->productTypeHelper->setProductType($product);
+            foreach (['returnable' => 'is_returnable', 'tcw' => 'acw'] as $before => $new) {
+                $customAttribute = $product->getCustomAttribute($before);
+                if ($customAttribute != null) {
+                    $product->setCustomAttribute($new, $customAttribute->getValue());
+                    $product->setData($new, $customAttribute->getValue());
+                }
+            }
+            $product->setData('is_salable', true);
+            $product->setData('on_sale', true);
+            $product->setData('is_transformed', true);
+            $product->setCustomAttribute('is_transformed', true);
+            $product->setData('sku_type', 1);
+            $product->setData('weight_type', 1);
+            $product->setData('price_type', 1);
+            $product->setCustomAttribute('news_to_date', $product->getData('news_to_date'));
+            $product->setData('news_to_date', $product->getData('news_to_date'));
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->error($e->getMessage());
+        }
+    }
+
+    /**
+     * @param Product $product
+     * @throws NoSuchEntityException
+     * @throws InputException
+     * @throws StateException
+     * @throws CouldNotSaveException
+     */
+    protected function refreshOptions(
+        Product $product
+    ) {
         $options = $product->getOptions();
         /** @var ProductExtension $extensionAttributes */
         $extensionAttributes = $product->getExtensionAttributes();
@@ -1018,6 +1156,30 @@ class TransformData extends AbstractHelper
         if ($bundleOptions == null) {
             $product->setTypeId(Product\Type::TYPE_SIMPLE);
             return;
+        }
+        foreach ($bundleOptions as $bundleOption) {
+            $links = $bundleOption->getProductLinks();
+            foreach ($links as $link) {
+                $linkedProduct = $this->productRepository->getById($link->getData('product_id'));
+                if ($linkedProduct->getData('is_transformed') == null) {
+                    try {
+                        $this->transformProduct((int)$linkedProduct->getId());
+                    } catch (InputException $e) {
+                        $this->loggerByOptions->error('Can\'t save link for SKU = ' . $product->getSku());
+                    } catch (NoSuchEntityException $e) {
+                        $this->loggerByOptions->error('Can\'t save link for SKU = ' . $product->getSku());
+                    } catch (StateException $e) {
+                        if ($e->getMessage() == 'Cannot save product - URL key for specified store already exists.') {
+                            $this->deleteRepeatedUrlKeys($linkedProduct);
+                            $this->productRepository->save($linkedProduct);
+                        } else {
+                            $this->loggerByOptions->error('Can\'t save link for SKU = ' . $product->getSku());
+                        }
+                    } catch (LocalizedException $e) {
+                        $this->loggerByOptions->error('Can\'t save link for SKU = ' . $product->getSku());
+                    }
+                }
+            }
         }
         /** @var Option $option */
         foreach ($options as $id => $option) {
@@ -1075,6 +1237,7 @@ class TransformData extends AbstractHelper
     /**
      * @param $product
      * @param bool|null $certifiedStone
+     * @throws LocalizedException
      */
     protected function bundleOptions($product, $certifiedStone = null)
     {
@@ -1562,6 +1725,24 @@ class TransformData extends AbstractHelper
                 $product->setData('certified_stone', $value);
                 $product->setCustomAttribute('certified_stone', $value);
             }
+        }
+    }
+
+    /**
+     * @param Product $product
+     */
+    private function deleteRepeatedUrlKeys(Product $product)
+    {
+        $connection = $this->urlRewrite->getConnection();
+        $urlKey = $product->getUrlKey();
+        $id = $product->getId();
+        try {
+            $connection->delete(
+                $this->urlRewrite->getMainTable(),
+                'request_path like "%' . $urlKey . '.html" && entity_id != ' . $id . ' && entity_type = "product"'
+            );
+        } catch (LocalizedException $e) {
+            $this->loggerBySku->error('Can\'t change UL KEY for ' . $product->getSku());
         }
     }
 }

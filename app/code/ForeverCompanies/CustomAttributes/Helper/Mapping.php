@@ -176,8 +176,8 @@ class Mapping extends AbstractHelper
             'White & New Canary' => 'WHNC',
             'White New Canary' => 'WHNC',
             'White Pearl' => 'WHPR',
-            'Whit & Rose' => 'WHRS',
-            'Whit Rose' => 'WHRS',
+            'White & Rose' => 'WHRS',
+            'White Rose' => 'WHRS',
             'White & Ruby' => 'WHRU',
             'White Ruby' => 'WHRU',
             'White & Sapphire' => 'WHSP',
@@ -220,6 +220,11 @@ class Mapping extends AbstractHelper
     protected $matchingBandHelper;
 
     /**
+     * @var ProductType
+     */
+    protected $productTypeHelper;
+
+    /**
      * @var Logger
      */
     protected $customLogger;
@@ -233,6 +238,7 @@ class Mapping extends AbstractHelper
      * @param ProductFunctional $productFunctionalHelper
      * @param Converter $converterHelper
      * @param MatchingBand $matchingBandHelper
+     * @param ProductType $productTypeHelper
      * @param Logger $logger
      */
     public function __construct(
@@ -243,6 +249,7 @@ class Mapping extends AbstractHelper
         ProductFunctional $productFunctionalHelper,
         Converter $converterHelper,
         MatchingBand $matchingBandHelper,
+        ProductType $productTypeHelper,
         Logger $logger
     ) {
         parent::__construct($context);
@@ -252,6 +259,7 @@ class Mapping extends AbstractHelper
         $this->productFunctionalHelper = $productFunctionalHelper;
         $this->converterHelper = $converterHelper;
         $this->matchingBandHelper = $matchingBandHelper;
+        $this->productTypeHelper = $productTypeHelper;
         $this->customLogger = $logger;
     }
 
@@ -405,16 +413,25 @@ class Mapping extends AbstractHelper
             try {
                 /** @var Attribute $attribute */
                 $attribute = $this->productAttributeRepository->get($attributeId);
-                if ($attribute->getData(AttributeInterface::FRONTEND_LABEL) == 'Center Stone Size') {
+                $attributeLabelData = $attribute->getData(AttributeInterface::FRONTEND_LABEL);
+                if ($attributeLabelData == 'Center Stone Size') {
                     $product->setData('certified_stone', $classicStone);
-                    continue;
+                    //continue;
                 }
                 foreach ($option as $index) {
+                    if ($attributeLabelData == 'Center Stone Size') {
+                        $itemSku = str_replace('.', '', strstr($index, ' ', true));
+                        if (strlen($itemSku) == 3) {
+                            $itemSku = '0' . $itemSku;
+                        }
+                    } else {
+                        $itemSku = $this->mappingSku[$attributeLabelData][$index];
+                    }
                     $customizableOption = [
                         'title' => $index,
                         'price' => 0,
                         'price_type' => TierPriceInterface::PRICE_TYPE_FIXED,
-                        'sku' => $this->mappingSku[$attribute->getData(AttributeInterface::FRONTEND_LABEL)][$index],
+                        'sku' => $itemSku,
                         'product_sku' => $sku,
                     ];
                     $customizableOptions[$attributeId][] = $customizableOption;
@@ -584,6 +601,9 @@ class Mapping extends AbstractHelper
                     $bundleSku = substr($sku, 11, 13);
                     $product->setData('bundle_sku', $bundleSku);
                     $product->setCustomAttribute('bundle_sku', $bundleSku);
+                    if ($product->getData('product_type') == null) {
+                        $this->productTypeHelper->setProductType($product);
+                    }
                     $this->productRepository->save($product);
                 }
             } catch (NoSuchEntityException $e) {
@@ -606,6 +626,19 @@ class Mapping extends AbstractHelper
      */
     private function getSkuForOption($attribute, $index)
     {
+        if ($attribute == 'Band Width') {
+            if (strlen($index) == 3) {
+                $index = '0' . $index;
+            }
+            return strtoupper($index);
+        }
+        if ($attribute == 'Chain Width') {
+            $index = str_replace('mm', '', $index);
+            return str_replace('.', '', $index);
+        }
+        if (strpos($attribute, 'Color') !== false) {
+            $attribute = 'Color';
+        }
         return $this->mappingSku[$attribute][$index] ?? '';
     }
 }
