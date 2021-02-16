@@ -58,10 +58,17 @@ class OrderRepository
         OrderRepositoryInterface $subject,
         OrderInterface $order
     ) {
+        /** @var \Magento\Sales\Model\Order $order */
         if ($order->getData('is_exchange') == null || $order->getData('is_exchange') == '0') {
             return $this->addToExtensionIsExchange($order, 'no');
         }
         if ($order->getBillingAddress()->getCountryId() == 'US') {
+            $shippingAddress = $order->getShippingAddress();
+            if ($shippingAddress !== null) {
+                if ($shippingAddress->getCountryId() !== 'US') {
+                    return $this->addToExtensionIsExchange($order, 'yes');
+                }
+            }
             return $this->addToExtensionIsExchange($order, 'no');
         }
         return $this->addToExtensionIsExchange($order, 'yes');

@@ -104,6 +104,9 @@ class Order extends AdminOrder implements HttpPostActionInterface
             $request = $this->getRequest();
             $post = $request->getPostValue();
             $orderId = $order->getEntityId();
+            $info = $post;
+            unset($info['form_key']);
+            $order->getPayment()->setAdditionalInformation($info);
             if ($post[Constant::PAYMENT_METHOD_DATA] !== Constant::MULTIPAY_QUOTE_METHOD) {
                 $this->helper->sendToBraintree($order);
             }

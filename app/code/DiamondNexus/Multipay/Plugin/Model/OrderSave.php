@@ -9,6 +9,8 @@ use DiamondNexus\Multipay\Model\Constant;
 use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
 use DiamondNexus\Multipay\Model\TransactionFactory;
 use Exception;
+use Magento\Framework\App\Area;
+use Magento\Framework\App\State;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\ValidatorException;
 use Magento\Sales\Api\Data\OrderInterface;
@@ -38,19 +40,27 @@ class OrderSave
     protected $emailSender;
 
     /**
+     * @var State
+     */
+    protected $state;
+
+    /**
      * OrderSave constructor.
      * @param Transaction $resource
      * @param Data $helper
      * @param EmailSender $emailSender
+     * @param State $state
      */
     public function __construct(
         Transaction $resource,
         Data $helper,
-        EmailSender $emailSender
+        EmailSender $emailSender,
+        State $state
     ) {
         $this->resource = $resource;
         $this->helper = $helper;
         $this->emailSender = $emailSender;
+        $this->state = $state;
     }
 
     /**
@@ -96,6 +106,7 @@ class OrderSave
      * @param OrderInterface $order
      * @return void
      * @throws ValidatorException
+     * @throws LocalizedException
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function beforeSave(
@@ -105,6 +116,7 @@ class OrderSave
         if ($order->getStatus() == Order::STATE_CANCELED) {
             return;
         }
+
         if ($order->getState() == 'quote' && $order->getStatus() == 'quote') {
             $requiredQuote = true;
         }
@@ -121,9 +133,11 @@ class OrderSave
             }
         }
         if ($methodInstance === Constant::MULTIPAY_METHOD && $method == Constant::MULTIPAY_CREDIT_METHOD) {
-            $result = $this->helper->sendToBraintree($order);
-            if ($result instanceof Error) {
-                throw new ValidatorException(__('Credit card failed verification'));
+            if ($this->state->getAreaCode() !== Area::AREA_ADMINHTML) {
+                $result = $this->helper->sendToBraintree($order);
+                if ($result instanceof Error) {
+                    throw new ValidatorException(__('Credit card failed verification'));
+                }
             }
         }
         if (isset($info[Constant::OPTION_TOTAL_DATA])) {

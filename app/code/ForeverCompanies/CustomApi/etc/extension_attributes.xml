@@ -15,5 +15,6 @@
     </extension_attributes>
     <extension_attributes for="Magento\Sales\Api\Data\OrderItemInterface">
         <attribute code="flag_loose_stone" type="string" />
+        <attribute code="custom_options" type="ForeverCompanies\CustomApi\Api\Data\CustomOptionInterface[]" />
     </extension_attributes>
 </config>

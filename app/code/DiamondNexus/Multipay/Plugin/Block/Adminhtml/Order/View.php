@@ -18,14 +18,18 @@ class View
         \Magento\Sales\Block\Adminhtml\Order\View $subject,
         $layout
     ) {
-        $subject->addButton(
-            'add_payment_button',
-            [
+        $order = $subject->getOrder();
+        $method = $order->getPayment()->getMethod();
+        if ($method == 'multipay' && $order->getTotalDue() != 0) {
+            $subject->addButton(
+                'add_payment_button',
+                [
                 'label' => __('Add payment'),
                 'onclick' => "",
                 'class' => 'action-default action-warranty-order',
-            ]
-        );
+                ]
+            );
+        }
         return [$layout];
     }
 

@@ -75,6 +75,9 @@ class Data extends AbstractHelper
         }
         $items = [];
         foreach ($order->getItems() as $orderItem) {
+            if ($orderItem->getPrice() == 0) {
+                continue;
+            }
             $items[] = [
                 'name' => substr($orderItem->getName(), 0, 35),
                 'kind' => 'debit',
@@ -163,12 +166,8 @@ class Data extends AbstractHelper
             $status = 'quote';
         }
         if ($order->getStatus() !== $status) {
-            $payPost = $post;
-            unset($payPost['form_key']);
             $order->setStatus($status)->setState($status);
-            $payment = $order->getPayment();
-            $payment->setAdditionalInformation($payPost);
-            $this->orderRepository->save($order);
         }
+        $this->orderRepository->save($order);
     }
 }
