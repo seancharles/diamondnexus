@@ -56,6 +56,15 @@ abstract class AbstractResolver
             throw new LocalizedException(__('"model" value should be specified'));
         }
 
+        // this was added to prevent a graphql error when querying for the following attributes:
+        // * image
+        // * small_image
+        // * thumbnail
+        // @todo fix this so the custom attributes will be returned when querying the above
+        if (!array_key_exists('id', $value)) {
+            return false;
+        }
+
         return $this->mediaHelper->getCustomMediaOptions($value['id']);
     }
 }
