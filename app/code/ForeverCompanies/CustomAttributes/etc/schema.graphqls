@@ -35,11 +35,7 @@ interface ProductInterface {
     @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Backorder")
     backordered_deactivate_date: String
     @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Backorder")
-
-}
-
-type BundleProduct {
-    bundle_base_price: Float
-    @doc(description: "The base price of a bundle product, used with ForeverCompanies Dynamic Bundle Products.")
-    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\BundleBasePrice")
+    base_price: Float
+    @doc(description: "The base price of a product.")
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\BasePrice")
 }
