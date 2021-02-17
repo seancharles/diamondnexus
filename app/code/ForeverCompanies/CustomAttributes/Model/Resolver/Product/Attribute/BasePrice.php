@@ -14,7 +14,7 @@ use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 /**
  * Resolve data for product Brand name
  */
-class BundleBasePrice implements ResolverInterface
+class BasePrice implements ResolverInterface
 {
     /**
      * @var ProductFactory
@@ -48,18 +48,18 @@ class BundleBasePrice implements ResolverInterface
         $productModel = $value['model'];
 
         /**
-         * @TODO is there a better way to implement this?
+         * @todo is there a better way to implement this?
          * $productModel->getDataByKey('price') returns null
          * if we load a new product by id through the product factory though, getDataByKey('price') works
          */
 
-        $bundleBasePrice = null;
+        $basePrice = null;
 
         if ($productModel->getId()) {
             $product = $this->productFactory->create()->load($productModel->getId());
-            $bundleBasePrice = $product->getDataByKey('price');
+            $basePrice = $product->getDataByKey('price');
         }
 
-        return ($bundleBasePrice) ?: 0.00;
+        return ($basePrice) ?: 0.00;
     }
 }
