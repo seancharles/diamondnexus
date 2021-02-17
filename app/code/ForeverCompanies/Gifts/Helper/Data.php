@@ -29,9 +29,45 @@ class Data extends AbstractHelper
         return $this->scopeConfig->getValue('forevercompanies_gifts/general/active');
     }
 
+    /**
+     * @param $name
+     * @return string|null
+     */
     public function getAttributeSetId($name)
     {
         $set = $this->attributeSetCollectionFactory->create()->addFieldToFilter('attribute_set_name', $name);
         return $set->getFirstItem()->getData('attribute_set_id');
+    }
+
+    /**
+     * @return string
+     */
+    public function getGiftProductId()
+    {
+        return $this->scopeConfig->getValue('forevercompanies_gifts/purchase/product_id');
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmountForGift()
+    {
+        return $this->scopeConfig->getValue('forevercompanies_gifts/purchase/total');
+    }
+
+    /**
+     * @return string
+     */
+    public function getGiftMessage()
+    {
+        return $this->scopeConfig->getValue('forevercompanies_gifts/purchase/message');
+    }
+
+    /**
+     * @return string
+     */
+    public function getGiftLink()
+    {
+        return $this->scopeConfig->getValue('forevercompanies_gifts/purchase/link');
     }
 }

@@ -37,6 +37,9 @@ class UpdateStocks extends AbstractCommand
         $productCollection = $this->helper->getProductsForChangeStocks();
         $output->writeln('Products for transformation: ' . $productCollection->count());
         foreach ($productCollection->getItems() as $item) {
+            if ($item->getData('sku') == null) {
+                continue;
+            }
             if (substr($item->getData('sku'), 10, 1) == 'F') {
                 continue;
             }
