@@ -98,6 +98,8 @@ RUN echo "admin	ALL=(ALL:ALL)	NOPASSWD: ALL" >> /etc/sudoers
 COPY bin/php.ini /usr/local/etc/php/php.ini
 COPY bin/php-fpm.pool.conf /usr/local/etc/php/php-fpm.pool.conf
 
+COPY bin/entrypoint.sh /
+
 USER admin
 WORKDIR /var/www/magento
 
@@ -124,3 +126,4 @@ RUN php -d memory_limit=-1 bin/magento setup:di:compile
 RUN php -d memory_limit=-1 bin/magento cron:install
 RUN php -d memory_limit=-1 bin/magento indexer:reindex
 RUN php -d memory_limit=-1 bin/magento setup:static-content:deploy -f
+ENTRYPOINT [ "/app-entrypoint.sh" ]
