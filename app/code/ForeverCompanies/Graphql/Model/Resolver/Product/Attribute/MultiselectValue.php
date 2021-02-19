@@ -14,7 +14,7 @@ use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 /**
  * Format multiselect fields into graphql
  */
-class Multiselect implements ResolverInterface
+class MultiselectValue implements ResolverInterface
 {
     /**
      * @var Config
@@ -50,7 +50,7 @@ class Multiselect implements ResolverInterface
         $values = explode(',', $value[$field->getName()]);
         $result = [];
         foreach ($values as $val) {
-            $result[] = $val . ', ' . $source->getOptionText($val);
+            $result[] = $source->getOptionText($val);
         }
         return $result;
     }

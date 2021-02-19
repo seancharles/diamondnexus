@@ -1,5 +1,5 @@
 interface ProductInterface {
     shipperhq_shipping_group: [String]
-    @doc(description: "The base price of a product.")
-    @resolver(class: "ForeverCompanies\\Graphql\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    @doc(description: "The textual value of the shipperhq_shipping_group field, used in relation to ASD")
+    @resolver(class: "ForeverCompanies\\Graphql\\Model\\Resolver\\Product\\Attribute\\MultiselectValue")
 }
