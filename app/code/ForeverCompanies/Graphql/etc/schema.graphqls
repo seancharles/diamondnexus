@@ -1,5 +1,5 @@
 interface ProductInterface {
-    metal_type: [String]
+    shipperhq_shipping_group: [String]
     @doc(description: "The base price of a product.")
     @resolver(class: "ForeverCompanies\\Graphql\\Model\\Resolver\\Product\\Attribute\\Multiselect")
 }
