@@ -47,8 +47,7 @@ class MassDelete extends Action implements HttpPostActionInterface
         Filter $filter,
         CollectionFactory $collectionFactory,
         StonesSupplierManagementInterface $supplierManagement
-    )
-    {
+    ) {
         $this->filter = $filter;
         $this->collectionFactory = $collectionFactory;
         $this->supplierManagement = $supplierManagement;

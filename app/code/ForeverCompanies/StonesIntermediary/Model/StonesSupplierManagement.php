@@ -55,7 +55,7 @@ class StonesSupplierManagement implements StonesSupplierManagementInterface
         CollectionProcessorInterface $collectionProcessor,
         StonesSupplierSearchResultsInterfaceFactory $searchResultsInterfaceFactory,
         StonesSupplierFactory $stonesIntermediaryFactory,
-        \ForeverCompanies\StonesIntermediary\Model\ResourceModel\StonesIntermediary $stonesResource
+        \ForeverCompanies\StonesIntermediary\Model\ResourceModel\StonesSupplier $stonesResource
     ) {
         $this->collectionFactory = $collectionFactory;
         $this->collectionProcessor = $collectionProcessor;
@@ -124,5 +124,16 @@ class StonesSupplierManagement implements StonesSupplierManagementInterface
         }
         $this->stonesResource->delete($stone);
         return 'Data was deleted!';
+    }
+
+    /**
+     * @param $id
+     * @return StonesSupplier
+     */
+    public function getById($id)
+    {
+        $stone = $this->stonesSupplierFactory->create();
+        $this->stonesResource->load($stone, $id);
+        return $stone;
     }
 }
