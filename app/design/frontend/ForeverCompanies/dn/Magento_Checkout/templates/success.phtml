@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
@@ -7,44 +8,19 @@
 ?>
 <?php /** @var $block \Magento\Checkout\Block\Onepage\Success */ ?>
 <div class="checkout-success">
-    <?php if ($block->getOrderId()) :?>
-        <?php if ($block->getCanViewOrder()) :?>
-            <h1>
-                HOORAY!<br/>
-                You just ordered something amazing!
-            </h1>
-            <p class="order-number"><?= $block->escapeHtml(__('Your order # is: %1.', sprintf('<a href="%s" class="order-number"><strong>%s</strong></a>', $block->escapeUrl($block->getViewOrderUrl()), $block->getOrderId())), ['a', 'strong']) ?></p>
-        <?php  else :?>
-            <p class="order-number"><?= $block->escapeHtml(__('Your order # is: <span>%1</span>.', $block->getOrderId()), ['span']) ?></p>
-        <?php endif;?>
-        <p class="order-text">
-            Here’s what will happen next: Our jewelers will create your piece, if it features <br/>
-            stones they will be carefully set, then they’ll polish it to perfection and wrap it <br/>
-            for mailing. We will email you a tracking number when your piece ships. <br/>
-            Because we know how important this piece is, a signature by an adult is <br/>
-            required for delivery! <span>Not going to be home?</span>
-        </p>
-    <?php endif;?>
-    <div class="order-blocks">
-        <div class="order-blocks-11">
-            <div class="order-calendar">
-                <div class="order-ship-date">
-                    <a>ESTIMATED SHIP DATE</a>
-                </div>
-            </div>
-        </div>
+    <?php if ($block->getOrderId()) : ?>
+        <?php if ($block->getCanViewOrder()) : ?>
+            <p><?= $block->escapeHtml(__('Your order number is: %1.', sprintf('<a href="%s" class="order-number"><strong>%s</strong></a>', $block->escapeUrl($block->getViewOrderUrl()), $block->getOrderId())), ['a', 'strong']) ?></p>
+        <?php else : ?>
+            <p><?= $block->escapeHtml(__('Your order # is: <span>%1</span>.', $block->getOrderId()), ['span']) ?></p>
+        <?php endif; ?>
+    <?php endif; ?>
 
-        <div class="order-info">
-            <div class="order-email">
-                <i class="ico"></i>
-               <p> Watch your email for updates.<br/>
-                We’ll be in touch every step of <br/>
-                   the way!</p>
-            </div>
-            <div class="order-featured-collections">
-                <h1>Featured Collections</h1>
-                <a>SHOP NOW</a>
-            </div>
+    <?= $block->getAdditionalInfoHtml() ?>
+
+    <div class="actions-toolbar">
+        <div class="primary">
+            <a class="action primary continue" href="<?= $block->escapeUrl($block->getContinueUrl()) ?>"><span><?= $block->escapeHtml(__('Continue Shopping')) ?></span></a>
         </div>
     </div>
 </div>
