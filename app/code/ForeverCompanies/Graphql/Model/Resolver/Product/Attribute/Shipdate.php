@@ -41,14 +41,14 @@ class Shipdate implements ResolverInterface
 		$currentStampBeforeCutoff = $this->shipdateHelper->getTimestamp();
 		$currentStampAfterCutoff = $this->shipdateHelper->getTimestamp(true);
 		
-		for($i=1; $i<=$days; $i++) {
+		for($i=0; $i<=$days; $i++) {
 
 			// timestamps midnight and 2:01
 			$timestampBeforeCutoff = $this->shipdateHelper->adjustTimestampDays($currentStampBeforeCutoff, $i);
 			$timestampAfterCutoff = $this->shipdateHelper->adjustTimestampDays($currentStampAfterCutoff, $i);
 			
 			// date formatted for array keys
-			$date = date('d-m-Y', $timestampBeforeCutoff);
+			$date = date('Y-m-d', $timestampBeforeCutoff);
 			
 			$shipdates[$date]['before_cutoff'] = [];
 			$shipdates[$date]['after_cutoff'] = [];
