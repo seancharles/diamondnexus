@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <system>
+		<section id="forevercompanies_customsales" translate="label" type="text" sortOrder="100" showInDefault="1">
+            <label>Shipdate Calendar</label>
+            <tab>forevercompanies</tab>
+            <resource>ForeverCompanies_CustomSales::shipdate_config</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1">
+				<label>General</label>
+				<field id="forevercompanies_shipdate_blackout_dates" translate="label comment" type="text" sortOrder="10" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Blackout Dates</label>
+                    <comment>
+                        Example: 7-4-2021, 12-24-2021, 12-25-2021, 12-31-2021
+                    </comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
