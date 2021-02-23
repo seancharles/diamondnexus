@@ -10,10 +10,14 @@ namespace ForeverCompanies\CustomSales\Helper;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class Shipdate extends AbstractHelper
 {
 	protected $_holidays;
+	protected $_scopeConfig;
+	
+	const XML_PATH_BLACKOUT_SHIPDATES = 'forevercompanies_customsales/shipping/blackout_dates';
 	
     /**
      * SalesPerson constructor.
@@ -22,17 +26,21 @@ class Shipdate extends AbstractHelper
      * @param Session $session
      */
     public function __construct(
+		ScopeConfigInterface $scopeConfig,
 		Context $context
 	)
     {
-        parent::__construct($context);
+		$this->_scopeConfig = $scopeConfig;
 		
-		$this->_holidays = [
-			'7-4-2021',
-			'12-24-2021',
-			'12-25-2021',
-			'12-31-2021'
-		];
+        parent::__construct($context);
+
+		$blackoutDates = $this->_scopeConfig->getValue(
+			self::XML_PATH_BLACKOUT_SHIPDATES,
+			\Magento\Store\Model\ScopeInterface::SCOPE_STORE
+		);
+		
+		// parse blackout dates comma separated list
+		$this->_holidays = explode(",", $blackoutDates);
     }
 
     /**
