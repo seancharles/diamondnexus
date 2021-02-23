@@ -54,9 +54,9 @@ class Shipdate implements ResolverInterface
 			$shipdates[$date]['after_cutoff'] = [];
 
 			// push asd for each shipping group before and after cutoff
-			for($j=1; $j<=20; $j++) {
-				$shipdates[$date]['before_cutoff'][] = $this->shipdateHelper->getShipdate($j, $timestampBeforeCutoff);
-				$shipdates[$date]['after_cutoff'][] = $this->shipdateHelper->getShipdate($j, $timestampAfterCutoff);
+			for($j=0; $j<=20; $j++) {
+				$shipdates[$date]['before_cutoff'][$j . ' Day'] = $this->shipdateHelper->getShipdate($j, $timestampBeforeCutoff);
+				$shipdates[$date]['after_cutoff'][$j . ' Day'] = $this->shipdateHelper->getShipdate($j, $timestampAfterCutoff);
 			}
 		}
 		
