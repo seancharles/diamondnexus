@@ -1,5 +1,18 @@
+type Query {
+    shipdatecalendar(
+        days: Int! @doc(description: "Number of days to return shipdates for")
+    ): shipData
+	@resolver(class:"ForeverCompanies\\Graphql\\Model\\Resolver\\Product\\Attribute\\Shipdate")
+	@doc(description: "The shipdatecalendar query returns information about a customer")
+}
+
+type shipData {
+	json: String
+}
+
 interface ProductInterface {
     shipperhq_shipping_group: [String]
     @doc(description: "The textual value of the shipperhq_shipping_group field, used in relation to ASD")
     @resolver(class: "ForeverCompanies\\Graphql\\Model\\Resolver\\Product\\Attribute\\MultiselectValue")
 }
+
