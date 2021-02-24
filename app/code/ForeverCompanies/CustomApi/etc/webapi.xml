@@ -29,7 +29,7 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
-    <route method="PUT" url="/V1/forevercompanies-customapi/extsalesorderupdate/:orderId">
+    <route method="PUT" url="/V1/forevercompanies-customapi/extsalesorderupdate/:entityId">
         <service class="ForeverCompanies\CustomApi\Api\ExtSalesOrderUpdateManagementInterface"
                  method="putExtSalesOrderUpdate"/>
         <resources>
