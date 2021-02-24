@@ -38,27 +38,27 @@ class TranslateShipStatusToShippingGroup extends Command
      * @var Array
      */
     protected $shippingStatusTranslateMap = [
-		"ZeroDay" => "0 Day",
-		"Last Minute" => "0 Day",
-		"Immediate" => "1 Day",
-		"TwoDay" => "2 Day",
-		"ThreeDay" => "3 Day",
-		"FourDay" => "4 Day",
-		"WarrantyFour" => "4 Day",
-		"Rapid" => "5 Day",
+        "ZeroDay" => "0 Day",
+        "Last Minute" => "0 Day",
+        "Immediate" => "1 Day",
+        "TwoDay" => "2 Day",
+        "ThreeDay" => "3 Day",
+        "FourDay" => "4 Day",
+        "WarrantyFour" => "4 Day",
+        "Rapid" => "5 Day",
         "SixDay" => "6 Day",
-		"SevenDay" => "7 Day",
-		"Warranty" => "7 Day",
-		"Standard" => "8 Day",
-		"TenDay" => "10 Day",
-		"Extended" => "12 Day",
-		"FourteenDay" => "14 Day",
-		"FifteenDay" => "15 Day",
-		"Backordered" => "17 Day",
-		"TwentyDay" => "20 Day",
-		"TwentyOneDay" => "20 Day",
-		// fifty day isn't supported by any shipping api (update to 20)
-		"FiftyDay" => "20 Day"
+        "SevenDay" => "7 Day",
+        "Warranty" => "7 Day",
+        "Standard" => "8 Day",
+        "TenDay" => "10 Day",
+        "Extended" => "12 Day",
+        "FourteenDay" => "14 Day",
+        "FifteenDay" => "15 Day",
+        "Backordered" => "17 Day",
+        "TwentyDay" => "20 Day",
+        "TwentyOneDay" => "20 Day",
+        // fifty day isn't supported by any shipping api (update to 20)
+        "FiftyDay" => "20 Day"
     ];
 
     /**
@@ -103,7 +103,7 @@ class TranslateShipStatusToShippingGroup extends Command
                 $this->shippingStatusLabelMap[$option['label']] = $option['value'];
             }
         }
-		
+        
         // get shipping group option ids
         $shipperGroupAttribute = $this->eavConfig->getAttribute('catalog_product', 'shipperhq_shipping_group');
 
@@ -132,8 +132,8 @@ class TranslateShipStatusToShippingGroup extends Command
                 $productIds,
                 [
                     'shipperhq_shipping_group' => $this->shipperGroupLabelMap[
-						$this->shippingStatusTranslateMap[$shippingStatusKey]
-					]
+                        $this->shippingStatusTranslateMap[$shippingStatusKey]
+                    ]
                 ],
                 0
             );

@@ -4,7 +4,41 @@
     <preference for="ForeverCompanies\StonesIntermediary\Api\StonesIntermediaryManagementInterface"
                 type="ForeverCompanies\StonesIntermediary\Model\StonesIntermediaryManagement"/>
     <preference for="ForeverCompanies\StonesIntermediary\Api\Data\StonesIntermediarySearchResultsInterface"
-                type="ForeverCompanies\StonesIntermediary\Model\StonesIntermediarySearchResults" />
+                type="ForeverCompanies\StonesIntermediary\Model\StonesIntermediarySearchResults"/>
     <preference for="ForeverCompanies\StonesIntermediary\Api\Data\StonesIntermediaryInterface"
                 type="ForeverCompanies\StonesIntermediary\Model\StonesIntermediary"/>
+    <preference for="ForeverCompanies\StonesIntermediary\Model\Spi\StonesIntermediaryResourceInterface"
+                type="ForeverCompanies\StonesIntermediary\Model\ResourceModel\StonesIntermediary"/>
+
+    <preference for="ForeverCompanies\StonesIntermediary\Api\StonesSupplierManagementInterface"
+                type="ForeverCompanies\StonesIntermediary\Model\StonesSupplierManagement"/>
+    <preference for="ForeverCompanies\StonesIntermediary\Api\Data\StonesSupplierSearchResultsInterface"
+                type="ForeverCompanies\StonesIntermediary\Model\StonesSupplierSearchResults"/>
+    <preference for="ForeverCompanies\StonesIntermediary\Api\Data\StonesSupplierInterface"
+                type="ForeverCompanies\StonesIntermediary\Model\StonesSupplier"/>
+    <preference for="ForeverCompanies\StonesIntermediary\Model\Spi\StonesSupplierResourceInterface"
+                type="ForeverCompanies\StonesIntermediary\Model\ResourceModel\StonesSupplier"/>
+
+    <type name="ForeverCompanies\StonesIntermediary\Ui\DataProvider\StonesSupplier\ListingDataProvider">
+        <plugin name="forevercompanies_stonessupplier_attributes"
+                type="ForeverCompanies\StonesIntermediary\Plugin\AddAttributesToUiDataProvider"/>
+    </type>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="diamond_supplier_listing_data_source" xsi:type="string">
+                    ForeverCompaniesStonesIntermediaryCollection
+                </item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="ForeverCompaniesStonesIntermediaryCollection"
+                 type="ForeverCompanies\StonesIntermediary\Ui\DataProvider\StonesSupplier\Listing\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">stones_supplier</argument>
+            <argument name="resourceModel" xsi:type="string">
+                ForeverCompanies\StonesIntermediary\Model\ResourceModel\StonesSupplier
+            </argument>
+        </arguments>
+    </virtualType>
 </config>

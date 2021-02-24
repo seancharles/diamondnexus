@@ -133,4 +133,6 @@
                 type="ForeverCompanies\CustomAttributes\Model\Bundle\Product\OptionList"/>
     <preference for="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\Composite"
                 type="ForeverCompanies\CustomAttributes\Ui\DataProvider\Product\Form\Modifier\Composite"/>
+    <preference for="ForeverCompanies\CustomAttributes\Api\KeysAndValuesInterface"
+                type="ForeverCompanies\CustomAttributes\Model\KeysAndValues"/>
 </config>

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="sales_quote_product_add_after">
+        <observer name="forevercompanies_gifts_add_gift"
+                  instance="ForeverCompanies\Gifts\Observer\QuoteItemAdditionCheckGift"/>
+    </event>
+    <event name="sales_quote_remove_item">
+        <observer name="forevercompanies_gifts_remove_gift"
+                  instance="ForeverCompanies\Gifts\Observer\QuoteItemRemoveCheckGift"/>
+    </event>
+</config>

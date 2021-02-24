@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="diamondnexus_multipay_transaction" resource="default" engine="innodb" comment="Multipay Transactions">
+        <column xsi:type="int" name="id" padding="10" unsigned="false" nullable="false" identity="true"
+                comment="Entity ID"/>
+        <column xsi:type="int" name="order_id" padding="10" unsigned="true" nullable="false" identity="false"
+                comment="Order ID"/>
+        <column xsi:type="tinyint" name="transaction_type" unsigned="true" nullable="false"
+                identity="false"
+                comment="Transaction Type"/>
+        <column xsi:type="tinyint" name="payment_method" unsigned="true" nullable="false"
+                identity="false"
+                comment="Payment method"/>
+        <column xsi:type="decimal" name="amount" scale="2" precision="12" unsigned="false"
+                nullable="true" comment="Amount"/>
+        <column xsi:type="decimal" name="tendered" scale="2" precision="12" unsigned="false"
+                nullable="true" comment="Tendered"/>
+        <column xsi:type="decimal" name="change" scale="2" precision="12" unsigned="false"
+                nullable="true" comment="Change"/>
+        <column xsi:type="varchar" name="card_type" nullable="false" length="2" default="" comment="Card Type"/>
+        <column xsi:type="varchar" name="transaction_id" nullable="false" length="20" default="" comment="Transaction"/>
+        <column xsi:type="varchar" name="last4" nullable="false" length="4" default="" comment="Last 4 card's symbols"/>
+        <column xsi:type="datetime" name="transaction_timestamp" on_update="false" nullable="false"
+                default="CURRENT_TIMESTAMP"
+                comment="Transaction created at"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+        <index referenceId="DIAMOND_MULTIPAY_TRANSACTION_ID" indexType="btree">
+            <column name="id"/>
+        </index>
+        <index referenceId="DIAMOND_MULTIPAY_TRANSACTION_ORDER" indexType="btree">
+            <column name="order_id"/>
+        </index>
+        <index referenceId="DIAMOND_MULTIPAY_TRANSACTION_TRANSACTION_ID" indexType="btree">
+            <column name="transaction_id"/>
+        </index>
+    </table>
+</schema>
