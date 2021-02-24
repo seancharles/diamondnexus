@@ -43,12 +43,12 @@ phases:
       - chown 1000:1000 -R .
       - bash prodsync.sh $task $accountId $efsid $datasyncsg $subnetid
       - sleep 3
-  post_build:
-    commands:
       - echo Pushing the Docker images...
       - docker push $REPOURL/magento:latest
       - docker push $REPOURL/magento:$IMAGE_TAG
       - aws sns publish --topic-arn $snstopic --message "datasync perfomed"
+  post_build:
+    commands:
       - echo Build completed on `date`
 artifacts:
   files:
