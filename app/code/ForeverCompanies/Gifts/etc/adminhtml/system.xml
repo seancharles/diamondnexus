@@ -49,6 +49,15 @@
                     </comment>
                 </field>
             </group>
+            <group id="free_gift_rules" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+                <label>Free gift rules</label>
+                <field id="rules" translate="label" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Rules</label>
+                    <frontend_model>ForeverCompanies\Gifts\Block\Adminhtml\Form\Field\Rules</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+            </group>
         </section>
     </system>
 </config>

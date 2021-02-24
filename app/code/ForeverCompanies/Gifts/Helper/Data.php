@@ -2,9 +2,12 @@
 
 namespace ForeverCompanies\Gifts\Helper;
 
+use Magento\Catalog\Model\Product;
+use Magento\Eav\Model\Config;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
+use Magento\Framework\Exception\LocalizedException;
 
 class Data extends AbstractHelper
 {
@@ -14,13 +17,24 @@ class Data extends AbstractHelper
     protected $attributeSetCollectionFactory;
 
     /**
+     * @var Config
+     */
+    protected $eav;
+
+    /**
      * Data constructor.
      * @param Context $context
      * @param CollectionFactory $attributeSetCollectionFactory
+     * @param Config $eav
      */
-    public function __construct(Context $context, CollectionFactory $attributeSetCollectionFactory)
+    public function __construct(
+        Context $context,
+        CollectionFactory $attributeSetCollectionFactory,
+        Config $eav
+)
     {
         parent::__construct($context);
+        $this->eav = $eav;
         $this->attributeSetCollectionFactory = $attributeSetCollectionFactory;
     }
 
@@ -69,5 +83,28 @@ class Data extends AbstractHelper
     public function getGiftLink()
     {
         return $this->scopeConfig->getValue('forevercompanies_gifts/purchase/link');
+    }
+
+    /**
+     * @return array
+     */
+    public function getRules()
+    {
+        return $this->scopeConfig->getValue('forevercompanies_gifts/free_gift_rules/rules');
+    }
+
+    /**
+     * @param $attribute
+     * @param $id
+     * @return bool|string
+     */
+    public function getValue($attribute, $id)
+    {
+        try {
+            $source = $this->eav->getAttribute(Product::ENTITY, $attribute)->getSource();
+            return $source->getOptionText($id);
+        } catch (LocalizedException $e) {
+            return false;
+        }
     }
 }
