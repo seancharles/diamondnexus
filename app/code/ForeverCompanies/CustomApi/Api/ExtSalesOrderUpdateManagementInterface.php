@@ -29,9 +29,9 @@ interface ExtSalesOrderUpdateManagementInterface
     public function postExtSalesOrderUpdate(int $orderId, string $updatedFields, bool $flagFishbowlUpdate);
 
     /**
-     * @param int $orderId
+     * @param int $entityId
      * @param bool $flagFishbowlUpdate
      * @return string
      */
-    public function putExtSalesOrderUpdate(int $orderId, bool $flagFishbowlUpdate);
+    public function putExtSalesOrderUpdate(int $entityId, bool $flagFishbowlUpdate);
 }
