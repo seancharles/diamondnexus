@@ -348,7 +348,7 @@
                     )
                 )
                 // form ids to sync to salesforce, this should be maintained
-                ->addFieldToFilter("form_id", array('in' => array(1,2,3)))
+                ->addFieldToFilter("form_id", array('in' => array(1,2,3,7)))
                 ->setPageSize(self::PAGE_SIZE)
                 ->load();
             
@@ -413,6 +413,11 @@
                                 $leadData['JewelryType__c'] = $this->getObjectKey($postData,'selectJewelryType');
                                 $leadData['StoneCut__c'] = $this->getObjectKey($postData,'selectShapePreference');
                                 break;
+								
+							case "tf-short":
+								$leadData['Phone'] = $this->getObjectKey($postData,'telephone');
+								break;
+								
                         }
                         
 						// get lead id by email (previously was key)

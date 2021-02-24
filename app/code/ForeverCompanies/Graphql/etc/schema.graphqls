@@ -1,0 +1,34 @@
+type Query {
+    shipdatecalendar(
+        days: Int! @doc(description: "Number of days to return shipdates for")
+    ): shipData
+	@resolver(class:"ForeverCompanies\\Graphql\\Model\\Resolver\\Product\\Attribute\\Shipdate")
+	@doc(description: "The shipdatecalendar query returns information about a customer")
+}
+
+type shipData {
+	json: String
+}
+
+interface ProductInterface {
+    shipperhq_shipping_group: [String]
+    @doc(description: "The textual value of the shipperhq_shipping_group field, used in relation to ASD")
+    @resolver(class: "ForeverCompanies\\Graphql\\Model\\Resolver\\Product\\Attribute\\MultiselectValue")
+    filter_availableby: [String]
+    @resolver(class: "ForeverCompanies\\Graphql\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    filter_availableby: [String]
+    @resolver(class: "ForeverCompanies\\Graphql\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    filter_style: [String]
+    @resolver(class: "ForeverCompanies\\Graphql\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    filter_featured_collections: [String]
+    @resolver(class: "ForeverCompanies\\Graphql\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    filter_metal: [String]
+    @resolver(class: "ForeverCompanies\\Graphql\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    filter_shape: [String]
+    @resolver(class: "ForeverCompanies\\Graphql\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    filter_color: [String]
+    @resolver(class: "ForeverCompanies\\Graphql\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    filter_carat_weight: [String]
+    @resolver(class: "ForeverCompanies\\Graphql\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+}
+

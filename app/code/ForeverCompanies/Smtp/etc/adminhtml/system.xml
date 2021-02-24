@@ -1,0 +1,20 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="smtp">
+            <tab>mageplaza</tab>
+            <resource>Mageplaza_Smtp::configuration</resource>
+            <group id="developer">
+                <field id="developer_mode" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Developer Mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>If Enabled, Magento will send all emails to the developer address.</comment>
+                </field>
+                <field id="developer_mode_email" translate="label comment" type="text" sortOrder="60" showInDefault="1">
+                    <label>Developer Email Address</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment></comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
