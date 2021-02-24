@@ -69,7 +69,6 @@ class MatchingBand extends AbstractHelper
         } catch (LocalizedException $e) {
             $this->_logger->critical('Can\'t get matching bands for product ID = ' . $entityId);
         }
-        return;
     }
 
     /**
@@ -88,6 +87,5 @@ class MatchingBand extends AbstractHelper
         } catch (LocalizedException $e) {
             $this->_logger->critical('Can\'t get enhancers for product ID = ' . $entityId);
         }
-        return;
     }
 }

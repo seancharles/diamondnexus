@@ -1,0 +1,20 @@
+<?php
+
+use ForeverCompanies\StonesIntermediary\Block\AddSupplier;
+use Magento\Framework\Escaper;
+
+/** @var AddSupplier $block */
+/** @var Escaper $escaper */
+?>
+
+<h1>Stone Supplier</h1>
+<div class="admin__field-control">
+    <form action="<?= $escaper->escapeUrl($block->getFormAction()) ?>" method="post" class="form">
+        <label for="name" class="label">Name</label> <input name="name" type="text"><br />
+        <label for="code" class="label">Code</label> <input name="code" type="text"><br />
+        <label for="email" class="label">Email</label> <input name="email" type="text"><br />
+        <label for="enabled" class="label">Enabled</label> <input name="enabled" type="checkbox"><br />
+        <input type="submit" value="Save Stone Supplier">
+        <input name="form_key" type="hidden" value="<?= $escaper->escapeHtml($block->getFormKey()); ?>">
+    </form>
+</div>

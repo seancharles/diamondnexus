@@ -86,7 +86,7 @@ class ExtOrder extends AbstractHelper
             $connection->update(
                 $mainTable,
                 [ExtSalesOrderUpdateInterface::FLAG => (int)$flag],
-                [$idFieldName . ' = ?' => $row[$idFieldName]]
+                [ExtSalesOrderUpdateInterface::ORDER_ID . ' = ?' => $orderId]
             );
             return 'Success!';
         } catch (LocalizedException $e) {

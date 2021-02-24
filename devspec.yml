@@ -49,17 +49,17 @@ phases:
       - echo $CONTAINER
       - docker cp -a $CONTAINER:/var/www/magento/. .
       - chown 1000:1000 -R .
-      - aws s3 sync . s3://mag2-dev-codebuild/magento --exclude ".git/*"  --delete
+      - aws s3 sync . $bucket --exclude ".git/*"  --delete
       - bash datasync.sh $task $accountId
       - sleep 3
-  post_build:
-    commands:
       - echo Pushing the Docker images...
       - echo $REPOURL/magento:latest $REPOURL/magento:$IMAGE_TAG
       - docker push $REPOURL/magento:latest
       - docker push $REPOURL/magento:$IMAGE_TAG
-      - echo Build completed on `date`
       - aws sns publish --topic-arn $snstopic --message "datasync perfomed"
+  post_build:
+    commands:
+      - echo Build completed on `date`
       - pwd
       - ls -al
 artifacts:

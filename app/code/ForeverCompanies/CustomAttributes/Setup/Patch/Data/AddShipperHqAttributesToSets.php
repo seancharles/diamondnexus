@@ -32,24 +32,24 @@ class AddShipperHqAttributesToSets implements DataPatchInterface
     private $attributeSetFactory;
     
     private $dimensionalAttributeList = [
-		'shipperhq_dim_group',
-		'ship_separately',
-		'ship_length',
-		'ship_width',
-		'ship_height',
-		'shipperhq_poss_boxes'
+        'shipperhq_dim_group',
+        'ship_separately',
+        'ship_length',
+        'ship_width',
+        'ship_height',
+        'shipperhq_poss_boxes'
     ];
-	
-	private $freightAttributeList = [
-		'freight_class',
-		'must_ship_freight'
-	];
-	
-	private $shippingAttributeList = [
-		'shipperhq_shipping_group',
-		'shipperhq_warehouse',
-		'shipperhq_hs_code'
-	];
+    
+    private $freightAttributeList = [
+        'freight_class',
+        'must_ship_freight'
+    ];
+    
+    private $shippingAttributeList = [
+        'shipperhq_shipping_group',
+        'shipperhq_warehouse',
+        'shipperhq_hs_code'
+    ];
 
     /**
      * Constructor
@@ -62,12 +62,12 @@ class AddShipperHqAttributesToSets implements DataPatchInterface
         Config $eavConfig,
         EavSetupFactory $eavSetupFactory,
         AttributeSetFactory $attributeSetFactory,
-		Attribute $eavAttribute
+        Attribute $eavAttribute
     ) {
         $this->eavConfig = $eavConfig;
         $this->eavSetupFactory = $eavSetupFactory;
         $this->attributeSetFactory = $attributeSetFactory;
-		$this->eavAttribute = $eavAttribute;
+        $this->eavAttribute = $eavAttribute;
     }
 
     /**
@@ -81,27 +81,26 @@ class AddShipperHqAttributesToSets implements DataPatchInterface
         
         foreach ($attributeSetIds as $attributeSetId) {
             if ($attributeSetId) {
-				
-				// dimensional group
-                $eavSetup->addAttributeGroup (
+                // dimensional group
+                $eavSetup->addAttributeGroup(
                     $entityTypeId,
                     $attributeSetId,
                     "Dimensional Shipping",
                     997
                 );
-				
+                
                 $dim_group_id = $eavSetup->getAttributeGroupId(
                     $entityTypeId,
                     $attributeSetId,
                     "Dimensional Shipping"
                 );
-				
-                foreach($this->dimensionalAttributeList as $attributeCode) {
-					$attributeId = $this->eavAttribute->getIdByCode(
-						\Magento\Catalog\Model\Product::ENTITY,
-						$attributeCode
-					);
-					
+                
+                foreach ($this->dimensionalAttributeList as $attributeCode) {
+                    $attributeId = $this->eavAttribute->getIdByCode(
+                        \Magento\Catalog\Model\Product::ENTITY,
+                        $attributeCode
+                    );
+                    
                     $eavSetup->addAttributeToSet(
                         $entityTypeId,
                         $attributeSetId,
@@ -110,27 +109,27 @@ class AddShipperHqAttributesToSets implements DataPatchInterface
                         999
                     );
                 }
-				
-				// freight group
-                $eavSetup->addAttributeGroup (
+                
+                // freight group
+                $eavSetup->addAttributeGroup(
                     $entityTypeId,
                     $attributeSetId,
                     "Freight Shipping",
                     998
                 );
-				
+                
                 $freight_group_id = $eavSetup->getAttributeGroupId(
                     $entityTypeId,
                     $attributeSetId,
                     "Freight Shipping"
                 );
-				
-                foreach($this->freightAttributeList as $attributeCode) {
-					$attributeId = $this->eavAttribute->getIdByCode(
-						\Magento\Catalog\Model\Product::ENTITY,
-						$attributeCode
-					);
-					
+                
+                foreach ($this->freightAttributeList as $attributeCode) {
+                    $attributeId = $this->eavAttribute->getIdByCode(
+                        \Magento\Catalog\Model\Product::ENTITY,
+                        $attributeCode
+                    );
+                    
                     $eavSetup->addAttributeToSet(
                         $entityTypeId,
                         $attributeSetId,
@@ -139,9 +138,9 @@ class AddShipperHqAttributesToSets implements DataPatchInterface
                         999
                     );
                 }
-				
-				// shipping group
-                $eavSetup->addAttributeGroup (
+                
+                // shipping group
+                $eavSetup->addAttributeGroup(
                     $entityTypeId,
                     $attributeSetId,
                     "Shipping",
@@ -154,12 +153,12 @@ class AddShipperHqAttributesToSets implements DataPatchInterface
                     "Shipping"
                 );
                 
-                foreach($this->shippingAttributeList as $attributeCode) {
-					$attributeId = $this->eavAttribute->getIdByCode(
-						\Magento\Catalog\Model\Product::ENTITY,
-						$attributeCode
-					);
-					
+                foreach ($this->shippingAttributeList as $attributeCode) {
+                    $attributeId = $this->eavAttribute->getIdByCode(
+                        \Magento\Catalog\Model\Product::ENTITY,
+                        $attributeCode
+                    );
+                    
                     $eavSetup->addAttributeToSet(
                         $entityTypeId,
                         $attributeSetId,
