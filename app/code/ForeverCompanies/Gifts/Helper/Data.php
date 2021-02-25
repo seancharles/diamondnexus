@@ -8,6 +8,7 @@ use Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Serialize\Serializer\Serialize;
 
 class Data extends AbstractHelper
 {
@@ -22,25 +23,60 @@ class Data extends AbstractHelper
     protected $eav;
 
     /**
+     * @var Serialize
+     */
+    protected $serialize;
+
+    /**
      * Data constructor.
      * @param Context $context
      * @param CollectionFactory $attributeSetCollectionFactory
+     * @param Serialize $serialize
      * @param Config $eav
      */
     public function __construct(
         Context $context,
         CollectionFactory $attributeSetCollectionFactory,
+        Serialize $serialize,
         Config $eav
-)
+    )
     {
         parent::__construct($context);
         $this->eav = $eav;
+        $this->serialize = $serialize;
         $this->attributeSetCollectionFactory = $attributeSetCollectionFactory;
     }
 
-    public function isEnabled()
+    /**
+     * @return bool
+     */
+    public function isEnabledPurchase()
     {
-        return $this->scopeConfig->getValue('forevercompanies_gifts/general/active');
+        return $this->getPurchaseConfig('active');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabledFreeGift()
+    {
+        return $this->getGiftRules('active');
+    }
+
+    /**
+     * @return string
+     */
+    public function isEnabledExpiredTime()
+    {
+        return $this->getGiftRules('expired');
+    }
+
+    /**
+     * @return int
+     */
+    public function getExpiredTime()
+    {
+        return (int)$this->getGiftRules('time');
     }
 
     /**
@@ -58,7 +94,7 @@ class Data extends AbstractHelper
      */
     public function getGiftProductId()
     {
-        return $this->scopeConfig->getValue('forevercompanies_gifts/purchase/product_id');
+        return $this->getPurchaseConfig('product_id');
     }
 
     /**
@@ -66,7 +102,7 @@ class Data extends AbstractHelper
      */
     public function getAmountForGift()
     {
-        return $this->scopeConfig->getValue('forevercompanies_gifts/purchase/total');
+        return $this->getPurchaseConfig('total');
     }
 
     /**
@@ -74,7 +110,7 @@ class Data extends AbstractHelper
      */
     public function getGiftMessage()
     {
-        return $this->scopeConfig->getValue('forevercompanies_gifts/purchase/message');
+        return $this->getPurchaseConfig('message');
     }
 
     /**
@@ -82,7 +118,7 @@ class Data extends AbstractHelper
      */
     public function getGiftLink()
     {
-        return $this->scopeConfig->getValue('forevercompanies_gifts/purchase/link');
+        return $this->getPurchaseConfig('link');
     }
 
     /**
@@ -90,7 +126,25 @@ class Data extends AbstractHelper
      */
     public function getRules()
     {
-        return $this->scopeConfig->getValue('forevercompanies_gifts/free_gift_rules/rules');
+        return $this->serialize->unserialize($this->getGiftRules('rules'));
+    }
+
+    /**
+     * @param string $config
+     * @return string
+     */
+    protected function getGiftRules(string $config)
+    {
+        return $this->scopeConfig->getValue('forevercompanies_gifts/free_gift_rules/' . $config);
+    }
+
+    /**
+     * @param string $config
+     * @return string
+     */
+    protected function getPurchaseConfig(string $config)
+    {
+        return $this->scopeConfig->getValue('forevercompanies_gifts/purchase/' . $config);
     }
 
     /**

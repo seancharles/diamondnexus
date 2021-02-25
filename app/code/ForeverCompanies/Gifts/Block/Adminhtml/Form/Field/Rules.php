@@ -34,7 +34,7 @@ class Rules extends AbstractFieldArray
             'metal_type',
             ['label' => __('Metal Type'), 'class' => 'required-entry', 'renderer' => $this->getMetalType()]
         );
-        $this->addColumn('sku', ['label' => __('SKU'), 'class' => 'required-entry']);
+        $this->addColumn('sku', ['label' => __('SKU'), 'class' => 'required-entry', 'required' => true]);
         $this->_addAfter = false;
         $this->_addButtonLabel = __('Add');
     }
