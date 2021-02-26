@@ -14,7 +14,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class Shipdate extends AbstractHelper
 {
-	protected $_holidays;
+	protected $_holidays = [];
 	protected $_scopeConfig;
 	
 	const XML_PATH_BLACKOUT_SHIPDATES = 'forevercompanies_customsales/shipping/blackout_dates';
@@ -39,8 +39,10 @@ class Shipdate extends AbstractHelper
 			\Magento\Store\Model\ScopeInterface::SCOPE_STORE
 		);
 		
-		// parse blackout dates comma separated list
-		$this->_holidays = explode(",", $blackoutDates);
+		if(isset($blackoutDates) == true) {
+			// parse blackout dates comma separated list
+			$this->_holidays = explode(",", $blackoutDates);
+		}
     }
 
     /**

@@ -65,28 +65,28 @@ class ExtOrder extends AbstractHelper
     }
 
     /**
-     * @param int $orderId
+     * @param int $entityId
      * @param bool $flag
      * @return string
      */
-    public function updateExtSalesOrder(int $orderId, bool $flag)
+    public function updateExtSalesOrder(int $entityId, bool $flag)
     {
         $connection = $this->extResource->getConnection();
         try {
             $mainTable = $this->extResource->getMainTable();
             $idFieldName = $this->extResource->getIdFieldName();
             $select = $connection->select()->from($mainTable)
-                ->where(ExtSalesOrderUpdateInterface::ORDER_ID . ' = ?', $orderId)
+                ->where(ExtSalesOrderUpdateInterface::ENTITY_ID . ' = ?', $entityId)
                 ->order($idFieldName . ' desc')
                 ->limit(1);
             $row = $connection->fetchRow($select);
             if (!$row) {
-                return 'Can\'t find ext sales row with order_id = ' . $orderId;
+                return 'Can\'t find ext sales row with entity_id = ' . $entityId;
             }
             $connection->update(
                 $mainTable,
                 [ExtSalesOrderUpdateInterface::FLAG => (int)$flag],
-                [ExtSalesOrderUpdateInterface::ORDER_ID . ' = ?' => $orderId]
+                [ExtSalesOrderUpdateInterface::ENTITY_ID . ' = ?' => $entityId]
             );
             return 'Success!';
         } catch (LocalizedException $e) {

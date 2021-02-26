@@ -49,7 +49,7 @@ phases:
       - echo $CONTAINER
       - docker cp -a $CONTAINER:/var/www/magento/. .
       - chown 1000:1000 -R .
-      - aws s3 sync . s3://mag2-dev-codebuild/magento --exclude ".git/*"  --delete
+      - aws s3 sync . $bucket --exclude ".git/*"  --delete
       - bash datasync.sh $task $accountId
       - sleep 3
       - echo Pushing the Docker images...

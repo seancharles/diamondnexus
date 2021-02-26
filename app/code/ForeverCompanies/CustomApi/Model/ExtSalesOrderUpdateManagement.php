@@ -81,8 +81,8 @@ class ExtSalesOrderUpdateManagement implements ExtSalesOrderUpdateManagementInte
     /**
      * {@inheritdoc}
      */
-    public function putExtSalesOrderUpdate(int $orderId, bool $flagFishbowlUpdate)
+    public function putExtSalesOrderUpdate(int $entityId, bool $flagFishbowlUpdate)
     {
-        return $this->helper->updateExtSalesOrder($orderId, $flagFishbowlUpdate);
+        return $this->helper->updateExtSalesOrder($entityId, $flagFishbowlUpdate);
     }
 }
