@@ -34,6 +34,9 @@
                 <item name="UpdateLooseStones" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\UpdateLooseStones
                 </item>
+                <item name="UpdateDescription" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\UpdateDescription
+                </item>
                 <item name="UpdateStoneShape" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\UpdateStoneShape
                 </item>

@@ -10,4 +10,8 @@
         <observer name="forevercompanies_gifts_remove_gift"
                   instance="ForeverCompanies\Gifts\Observer\QuoteItemRemoveCheckGift"/>
     </event>
+    <event name="sales_quote_collect_totals_before">
+        <observer name="forevercompanies_gifts_totals_before"
+                  instance="ForeverCompanies\Gifts\Observer\ProcessQuoteObserver"/>
+    </event>
 </config>

@@ -8,9 +8,8 @@ use Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Serialize\Serializer\Serialize;
 
-class Data extends AbstractHelper
+class Purchase extends AbstractHelper
 {
     /**
      * @var CollectionFactory
@@ -23,27 +22,19 @@ class Data extends AbstractHelper
     protected $eav;
 
     /**
-     * @var Serialize
-     */
-    protected $serialize;
-
-    /**
      * Data constructor.
      * @param Context $context
      * @param CollectionFactory $attributeSetCollectionFactory
-     * @param Serialize $serialize
      * @param Config $eav
      */
     public function __construct(
         Context $context,
         CollectionFactory $attributeSetCollectionFactory,
-        Serialize $serialize,
         Config $eav
     )
     {
         parent::__construct($context);
         $this->eav = $eav;
-        $this->serialize = $serialize;
         $this->attributeSetCollectionFactory = $attributeSetCollectionFactory;
     }
 
@@ -53,30 +44,6 @@ class Data extends AbstractHelper
     public function isEnabledPurchase()
     {
         return $this->getPurchaseConfig('active');
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEnabledFreeGift()
-    {
-        return $this->getGiftRules('active');
-    }
-
-    /**
-     * @return string
-     */
-    public function isEnabledExpiredTime()
-    {
-        return $this->getGiftRules('expired');
-    }
-
-    /**
-     * @return int
-     */
-    public function getExpiredTime()
-    {
-        return (int)$this->getGiftRules('time');
     }
 
     /**
@@ -119,23 +86,6 @@ class Data extends AbstractHelper
     public function getGiftLink()
     {
         return $this->getPurchaseConfig('link');
-    }
-
-    /**
-     * @return array
-     */
-    public function getRules()
-    {
-        return $this->serialize->unserialize($this->getGiftRules('rules'));
-    }
-
-    /**
-     * @param string $config
-     * @return string
-     */
-    protected function getGiftRules(string $config)
-    {
-        return $this->scopeConfig->getValue('forevercompanies_gifts/free_gift_rules/' . $config);
     }
 
     /**

@@ -121,8 +121,8 @@ class TransformValues extends AbstractCommand
     }
 
     /**
-     * @param $name
-     * @param $output
+     * @param string $name
+     * @param OutputInterface $output
      */
     protected function moveValues($name, $output)
     {
