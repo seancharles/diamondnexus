@@ -15,6 +15,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\Patch\PatchRevertableInterface;
+use Zend_Validate_Exception;
 
 class AddBundleSkuProductAttribute implements DataPatchInterface, PatchRevertableInterface
 {
@@ -44,6 +45,8 @@ class AddBundleSkuProductAttribute implements DataPatchInterface, PatchRevertabl
 
     /**
      * {@inheritdoc}
+     * @throws LocalizedException
+     * @throws Zend_Validate_Exception
      */
     public function apply()
     {
@@ -56,7 +59,6 @@ class AddBundleSkuProductAttribute implements DataPatchInterface, PatchRevertabl
                 'bundle_sku'
             );
         }
-        try {
             $eavSetup->addAttribute(
                 Product::ENTITY,
                 'bundle_sku',
@@ -86,11 +88,6 @@ class AddBundleSkuProductAttribute implements DataPatchInterface, PatchRevertabl
                     'is_filterable_in_grid' => false,
                 ]
             );
-        } catch (LocalizedException $e) {
-            return;
-        } catch (\Zend_Validate_Exception $e) {
-            return;
-        }
         $this->moduleDataSetup->getConnection()->endSetup();
     }
 

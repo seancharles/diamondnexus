@@ -15,6 +15,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\Patch\PatchRevertableInterface;
+use Zend_Validate_Exception;
 
 class AddDiamondImporterAttributes implements DataPatchInterface, PatchRevertableInterface
 {
@@ -226,57 +227,53 @@ class AddDiamondImporterAttributes implements DataPatchInterface, PatchRevertabl
 
     /**
      * {@inheritdoc}
+     * @throws LocalizedException
+     * @throws Zend_Validate_Exception
      */
     public function apply()
     {
         $this->moduleDataSetup->getConnection()->startSetup();
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        try {
-            foreach ($this->attributes as $data) {
-                $attribute = $eavSetup->getAttribute(Product::ENTITY, $data['code']);
-                if ($attribute) {
-                    $eavSetup->removeAttribute(
-                        Product::ENTITY,
-                        $data['attribute']
-                    );
-                }
-                $eavSetup->addAttribute(
+        foreach ($this->attributes as $data) {
+            $attribute = $eavSetup->getAttribute(Product::ENTITY, $data['code']);
+            if ($attribute) {
+                $eavSetup->removeAttribute(
                     Product::ENTITY,
-                    $data['code'],
-                    [
-                        'type' => $data['type'],
-                        'label' => $data['title'],
-                        'input' => $data['input'],
-                        'source' => '',
-                        'frontend' => '',
-                        'required' => $data['required'],
-                        'backend' => '',
-                        'global' => ScopedAttributeInterface::SCOPE_STORE,
-                        'default' => null,
-                        'visible' => true,
-                        'user_defined' => true,
-                        'searchable' => true,
-                        'filterable' => false,
-                        'comparable' => false,
-                        'visible_on_front' => true,
-                        'unique' => false,
-                        'used_in_product_listing' => false,
-                        'is_used_in_grid' => false,
-                        'is_visible_in_grid' => false,
-                        'is_filterable_in_grid' => false,
-                    ]
-                );
-                $eavSetup->addAttributeToGroup(
-                    \Magento\Catalog\Model\Product::ENTITY,
-                    'Migration_Loose Diamonds',
-                    'General', // group
-                    $data['code'],
+                    $data['attribute']
                 );
             }
-        } catch (LocalizedException $e) {
-            return;
-        } catch (\Zend_Validate_Exception $e) {
-            return;
+            $eavSetup->addAttribute(
+                Product::ENTITY,
+                $data['code'],
+                [
+                    'type' => $data['type'],
+                    'label' => $data['title'],
+                    'input' => $data['input'],
+                    'source' => '',
+                    'frontend' => '',
+                    'required' => $data['required'],
+                    'backend' => '',
+                    'global' => ScopedAttributeInterface::SCOPE_STORE,
+                    'default' => null,
+                    'visible' => true,
+                    'user_defined' => true,
+                    'searchable' => true,
+                    'filterable' => false,
+                    'comparable' => false,
+                    'visible_on_front' => true,
+                    'unique' => false,
+                    'used_in_product_listing' => false,
+                    'is_used_in_grid' => false,
+                    'is_visible_in_grid' => false,
+                    'is_filterable_in_grid' => false,
+                ]
+            );
+            $eavSetup->addAttributeToGroup(
+                \Magento\Catalog\Model\Product::ENTITY,
+                'Migration_Loose Diamonds',
+                'General', // group
+                $data['code'],
+            );
         }
         foreach ($this->attributesToGroup as $data) {
             $eavSetup->addAttributeToGroup(

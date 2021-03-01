@@ -15,6 +15,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\Patch\PatchRevertableInterface;
+use Zend_Validate_Exception;
 
 class AddAllowInBundlesProductAttribute implements DataPatchInterface, PatchRevertableInterface
 {
@@ -44,6 +45,8 @@ class AddAllowInBundlesProductAttribute implements DataPatchInterface, PatchReve
 
     /**
      * {@inheritdoc}
+     * @throws LocalizedException
+     * @throws Zend_Validate_Exception
      */
     public function apply()
     {
@@ -56,7 +59,6 @@ class AddAllowInBundlesProductAttribute implements DataPatchInterface, PatchReve
                 'allow_in_bundles'
             );
         }
-        try {
             $eavSetup->addAttribute(
                 Product::ENTITY,
                 'allow_in_bundles',
@@ -83,15 +85,9 @@ class AddAllowInBundlesProductAttribute implements DataPatchInterface, PatchReve
                     'used_in_product_listing' => false,
                     'is_used_in_grid' => true,
                     'is_visible_in_grid' => false,
-                    'is_filterable_in_grid' => false,
-                    'option' => ['values' => [""]]
+                    'is_filterable_in_grid' => false
                 ]
             );
-        } catch (LocalizedException $e) {
-            return;
-        } catch (\Zend_Validate_Exception $e) {
-            return;
-        }
         $this->moduleDataSetup->getConnection()->endSetup();
     }
 

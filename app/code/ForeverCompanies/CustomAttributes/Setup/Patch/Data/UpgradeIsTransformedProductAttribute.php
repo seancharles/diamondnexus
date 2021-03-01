@@ -15,6 +15,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\Patch\PatchRevertableInterface;
+use Zend_Validate_Exception;
 
 class UpgradeIsTransformedProductAttribute implements DataPatchInterface, PatchRevertableInterface
 {
@@ -52,6 +53,8 @@ class UpgradeIsTransformedProductAttribute implements DataPatchInterface, PatchR
 
     /**
      * {@inheritdoc}
+     * @throws LocalizedException
+     * @throws Zend_Validate_Exception
      */
     public function apply()
     {
@@ -64,7 +67,6 @@ class UpgradeIsTransformedProductAttribute implements DataPatchInterface, PatchR
                 'is_transformed'
             );
         }
-        try {
             $eavSetup->addAttribute(
                 Product::ENTITY,
                 'is_transformed',
@@ -91,14 +93,13 @@ class UpgradeIsTransformedProductAttribute implements DataPatchInterface, PatchR
                     'apply_to' => 'simple,configurable,virtual,bundle,downloadable'
                 ]
             );
-        } catch (LocalizedException $e) {
-            return;
-        } catch (\Zend_Validate_Exception $e) {
-            return;
-        }
         $this->moduleDataSetup->getConnection()->endSetup();
     }
 
+    /**
+     * @throws LocalizedException
+     * @throws Zend_Validate_Exception
+     */
     public function revert()
     {
         $this->moduleDataSetup->getConnection()->startSetup();

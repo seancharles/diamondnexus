@@ -17,6 +17,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\Patch\PatchRevertableInterface;
+use Zend_Validate_Exception;
 
 class AddStoneImportPriceOverrideProductAttribute implements DataPatchInterface, PatchRevertableInterface
 {
@@ -46,11 +47,12 @@ class AddStoneImportPriceOverrideProductAttribute implements DataPatchInterface,
 
     /**
      * {@inheritdoc}
+     * @throws LocalizedException
+     * @throws Zend_Validate_Exception
      */
     public function apply()
     {
         $this->moduleDataSetup->getConnection()->startSetup();
-        /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
         $attribute = $eavSetup->getAttribute(Product::ENTITY, 'stone_import_price_override');
         if ($attribute) {
@@ -59,72 +61,65 @@ class AddStoneImportPriceOverrideProductAttribute implements DataPatchInterface,
                 'stone_import_price_override'
             );
         }
-        try {
-            $eavSetup->addAttribute(
-                Product::ENTITY,
-                'stone_import_price_override',
-                [
-                    'type' => 'int',
-                    'label' => 'Stone Import Price Override',
-                    'input' => 'select',
-                    'source' => '',
-                    'frontend' => '',
-                    'required' => true,
-                    'backend' => '',
-                    'sort_order' => '50',
-                    'global' => ScopedAttributeInterface::SCOPE_STORE,
-                    'default' => null,
-                    'visible' => true,
-                    'user_defined' => true,
-                    'searchable' => true,
-                    'filterable' => false,
-                    'comparable' => false,
-                    'visible_on_front' => false,
-                    'unique' => false,
-                    'apply_to' => implode(',', [Type::TYPE_SIMPLE, Type::TYPE_BUNDLE, Configurable::TYPE_CODE]),
-                    'group' => 'General',
-                    'used_in_product_listing' => false,
-                    'is_used_in_grid' => true,
-                    'is_visible_in_grid' => false,
-                    'is_filterable_in_grid' => false,
-                ]
-            );
-            $eavSetup->updateAttribute(
-                Product::ENTITY,
-                'special_from_date',
-                'visible',
-                true
-            );
-            $eavSetup->updateAttribute(
-                Product::ENTITY,
-                'special_from_date',
-                'apply_to',
-                implode(',', [Type::TYPE_SIMPLE, Type::TYPE_BUNDLE, Configurable::TYPE_CODE])
-            );
-            $eavSetup->updateAttribute(
-                Product::ENTITY,
-                'special_to_date',
-                'visible',
-                true
-            );
-            $eavSetup->updateAttribute(
-                Product::ENTITY,
-                'special_to_date',
-                'apply_to',
-                implode(',', [Type::TYPE_SIMPLE, Type::TYPE_BUNDLE, Configurable::TYPE_CODE])
-            );
-        } catch (LocalizedException $e) {
-            return;
-        } catch (\Zend_Validate_Exception $e) {
-            return;
-        }
+        $eavSetup->addAttribute(
+            Product::ENTITY,
+            'stone_import_price_override',
+            [
+                'type' => 'int',
+                'label' => 'Stone Import Price Override',
+                'input' => 'select',
+                'source' => '',
+                'frontend' => '',
+                'required' => true,
+                'backend' => '',
+                'sort_order' => '50',
+                'global' => ScopedAttributeInterface::SCOPE_STORE,
+                'default' => null,
+                'visible' => true,
+                'user_defined' => true,
+                'searchable' => true,
+                'filterable' => false,
+                'comparable' => false,
+                'visible_on_front' => false,
+                'unique' => false,
+                'apply_to' => implode(',', [Type::TYPE_SIMPLE, Type::TYPE_BUNDLE, Configurable::TYPE_CODE]),
+                'group' => 'General',
+                'used_in_product_listing' => false,
+                'is_used_in_grid' => true,
+                'is_visible_in_grid' => false,
+                'is_filterable_in_grid' => false,
+            ]
+        );
+        $eavSetup->updateAttribute(
+            Product::ENTITY,
+            'special_from_date',
+            'visible',
+            true
+        );
+        $eavSetup->updateAttribute(
+            Product::ENTITY,
+            'special_from_date',
+            'apply_to',
+            implode(',', [Type::TYPE_SIMPLE, Type::TYPE_BUNDLE, Configurable::TYPE_CODE])
+        );
+        $eavSetup->updateAttribute(
+            Product::ENTITY,
+            'special_to_date',
+            'visible',
+            true
+        );
+        $eavSetup->updateAttribute(
+            Product::ENTITY,
+            'special_to_date',
+            'apply_to',
+            implode(',', [Type::TYPE_SIMPLE, Type::TYPE_BUNDLE, Configurable::TYPE_CODE])
+        );
         $this->moduleDataSetup->getConnection()->endSetup();
     }
 
     public function revert()
     {
         $this->moduleDataSetup->getConnection()->startSetup();
-        /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
         $eavSetup->removeAttribute(Product::ENTITY, 'stone_import_price_override');
 
