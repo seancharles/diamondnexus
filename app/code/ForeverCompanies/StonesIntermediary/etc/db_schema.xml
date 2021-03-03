@@ -1,0 +1,99 @@
+<?xml version="1.0" ?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="stones_intermediary">
+        <column xsi:type="int" name="id" padding="10" unsigned="false" nullable="false" identity="true"
+                comment="Entity ID"/>
+        <column comment="As Grown" length="255" name="as_grown" nullable="true"
+                xsi:type="varchar"/>
+        <column comment="Blockchain verified" length="255" name="blockchain_verified" nullable="true"
+                xsi:type="varchar"/>
+        <column xsi:type="datetime" name="born_on_date" on_update="false" comment="Born on date"/>
+        <column comment="Carbon neutral" length="255" name="carbon_neutral" nullable="true"
+                xsi:type="varchar"/>
+        <column xsi:type="int" name="certificate_number" unsigned="true" nullable="false" identity="false"
+                comment="Certificate number"/>
+        <column comment="Certificate URL" length="255" name="certificate_url" nullable="true"
+                xsi:type="varchar"/>
+        <column comment="Charitable contribution" length="255" name="charitable_contribution" nullable="true"
+                xsi:type="varchar"/>
+        <column comment="Clarity" length="255" name="clarity" nullable="true"
+                xsi:type="varchar"/>
+        <column comment="Color" length="255" name="color" nullable="true"
+                xsi:type="varchar"/>
+        <column comment="Color of colored diamonds" length="255" name="color_of_colored_diamonds" nullable="true"
+                xsi:type="varchar"/>
+        <column xsi:type="decimal" name="cost" scale="2" precision="12" unsigned="false"
+                nullable="true" comment="Cost"/>
+        <column comment="Country of origin" length="255" name="country_of_origin" nullable="true"
+                xsi:type="varchar"/>
+        <column comment="Culet" length="255" name="culet" nullable="true"
+                xsi:type="varchar"/>
+        <column comment="Custom" length="255" name="custom" nullable="true"
+                xsi:type="varchar"/>
+        <column comment="Cut grade" length="255" name="cut_grade" nullable="true"
+                xsi:type="varchar"/>
+        <column comment="CVD" length="255" name="cvd" nullable="true"
+                xsi:type="varchar"/>
+        <column xsi:type="datetime" name="delivery_date" on_update="false" comment="Delivery date"/>
+        <column xsi:type="decimal" name="depth_percent" scale="2" precision="12" unsigned="false"
+                nullable="true" comment="Depth, %"/>
+        <column xsi:type="decimal" name="depth_mm" scale="2" precision="12" unsigned="false"
+                nullable="true" comment="Depth, mm"/>
+        <column comment="Fluorescence" length="255" name="fluorescence" nullable="true"
+                xsi:type="varchar"/>
+        <column comment="Gridle" length="255" name="gridle" nullable="true"
+                xsi:type="varchar"/>
+        <column comment="Hpht" length="255" name="hpht" nullable="true"
+                xsi:type="varchar"/>
+        <column comment="Hue" length="255" name="hue" nullable="true"
+                xsi:type="varchar"/>
+        <column comment="Image link" length="255" name="image_link" nullable="true"
+                xsi:type="varchar"/>
+        <column comment="Intensity" length="255" name="intensity" nullable="true"
+                xsi:type="varchar"/>
+        <column comment="Lab" length="255" name="lab" nullable="true"
+                xsi:type="varchar"/>
+        <column xsi:type="decimal" name="length" scale="2" precision="12" unsigned="false"
+                nullable="true" comment="Length"/>
+        <column xsi:type="decimal" name="length_to_width" scale="2" precision="12" unsigned="false"
+                nullable="true" comment="Length to width"/>
+        <column comment="Measurements" length="255" name="measurements" nullable="true"
+                xsi:type="varchar"/>
+        <column xsi:type="decimal" name="msrp" scale="2" precision="12" unsigned="false"
+                nullable="true" comment="MSRP"/>
+        <column xsi:type="tinyint" name="online" unsigned="true" nullable="true" comment="Online"/>
+        <column comment="Patented" length="255" name="patented" nullable="true"
+                xsi:type="varchar"/>
+        <column comment="Polish" length="255" name="polish" nullable="true"
+                xsi:type="varchar"/>
+        <column xsi:type="decimal" name="price" scale="2" precision="12" unsigned="false"
+                nullable="true" comment="Price"/>
+        <column xsi:type="int" name="rapaport" unsigned="true" nullable="false" identity="false"
+                comment="Rapaport"/>
+        <column xsi:type="decimal" name="rap_percent" scale="2" precision="12" unsigned="false"
+                nullable="true" comment="Rap, %"/>
+        <column comment="Shape" length="255" name="shape" nullable="true"
+                xsi:type="varchar"/>
+        <column comment="Supplier" length="255" name="supplier" nullable="true"
+                xsi:type="varchar"/>
+        <column comment="Symmetry" length="255" name="symmetry" nullable="true"
+                xsi:type="varchar"/>
+        <column xsi:type="decimal" name="table_percent" scale="2" precision="12" unsigned="false"
+                nullable="true" comment="Table, %"/>
+        <column comment="Video" length="255" name="video" nullable="true"
+                xsi:type="varchar"/>
+        <column xsi:type="decimal" name="weight" scale="2" precision="12" unsigned="false"
+                nullable="true" comment="Weight"/>
+        <column xsi:type="decimal" name="width" scale="2" precision="12" unsigned="false"
+                nullable="true" comment="Width"/>
+        <column xsi:type="tinyint" name="failed_import" unsigned="true" nullable="true" comment="Failed Import"/>
+        <column xsi:type="datetime" name="failed_date" on_update="false" comment="Failed Date"/>
+        <column xsi:type="tinyint" name="imported" unsigned="true" nullable="true" comment="Imported"/>
+        <column xsi:type="datetime" name="import_date" on_update="false" comment="Import Date"/>
+        <column xsi:type="datetime" name="last_seen_date" on_update="false" comment="Last seen Date"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+    </table>
+</schema>
