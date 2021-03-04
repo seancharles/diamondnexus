@@ -98,7 +98,7 @@ do
     then
         error "Not merging branches - we're in trouble."
     else
-        for branch in ${magento2_extra_branches[@]}
+        for branch in ${extra_branches[@]}
         do
             try_merge $branch
         done

@@ -25,7 +25,7 @@ for issue in issues.json()["items"]:
 
 main_branch=origin/develop
 
-magento2_extra_branches=(
+extra_branches=(
     $(list_issues ForeverCompanies/magento2 | sed 's|^|origin/pr/|;')
 )
 
