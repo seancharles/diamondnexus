@@ -67,6 +67,9 @@
                 <item name="SetLooseDiamondsCategory" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\SetLooseDiamondsCategory
                 </item>
+                <item name="SetProductType" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\SetProductType
+                </item>
             </argument>
         </arguments>
     </type>
