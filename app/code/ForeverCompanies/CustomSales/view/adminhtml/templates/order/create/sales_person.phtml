@@ -9,7 +9,7 @@ use Magento\Framework\Escaper;
 <form style="display: inline-table" action="<?= $escaper->escapeUrl($block->getFormUrl()) ?>" method="post"
       id="order-create-change-salesperson-form">
     <input name="form_key" type="hidden" value="<?= $escaper->escapeHtml($block->getFormKey())?>">
-    <span class="title"><?= $escaper->escapeHtml('Sales Person ID: ' . $block->getSalesPerson()) ?></span>
+    <span class="title"><?= $escaper->escapeHtml('Sales Person: ' . $block->getSalesPerson()) ?></span>
     <?php if ($block->isAllowed()) { ?>
         <input type="submit" value="Change" id="order-view-add-warranty">
     <?php } ?>

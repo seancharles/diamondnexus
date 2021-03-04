@@ -13,6 +13,7 @@
         "affirm/magento2": "^3.0",
         "cloudinary/cloudinary-magento2": "^1.11",
         "cweagans/composer-patches": "^1.7",
+        "fooman/printorderpdf-m2": "^3.3",
         "lcobucci/jwt": "3.3",
         "magento/composer-root-update-plugin": "~1.0",
         "magento/data-migration-tool": "2.3.4",

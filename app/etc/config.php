@@ -409,6 +409,7 @@ return [
         'Dotdigitalgroup_Email' => 1,
         'Dotdigitalgroup_Chat' => 1,
         'Dotdigitalgroup_Enterprise' => 1,
+        'Fooman_PrintOrderPdf' => 1,
         'ForeverCompanies_AdminMigration' => 1,
         'ForeverCompanies_CustomAdmin' => 1,
         'ShipperHQ_Shipper' => 1,

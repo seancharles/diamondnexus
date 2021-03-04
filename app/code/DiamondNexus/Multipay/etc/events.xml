@@ -18,8 +18,4 @@
                       instance="DiamondNexus\Multipay\Observer\DataAssignObserver"/>
         </event>
     -->
-    <event name="sales_order_save_after">
-        <observer name="diamondnexus_sales_order_save_after"
-                  instance="DiamondNexus\Multipay\Observer\SalesOrderSaveObserver" />
-    </event>
 </config>
