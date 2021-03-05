@@ -411,6 +411,7 @@ return [
         'Dotdigitalgroup_Enterprise' => 1,
         'Fooman_PrintOrderPdf' => 1,
         'ForeverCompanies_AdminMigration' => 1,
+        'ForeverCompanies_AssignCustomerToOrder' => 1,
         'ForeverCompanies_CustomAdmin' => 1,
         'ShipperHQ_Shipper' => 1,
         'ForeverCompanies_DynamicBundle' => 1,
