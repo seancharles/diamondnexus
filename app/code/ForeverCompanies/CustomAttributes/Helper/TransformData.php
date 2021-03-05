@@ -347,6 +347,33 @@ class TransformData extends AbstractHelper
     }
 
     /**
+     * @return mixed
+     */
+    public function getAllEnabledProducts()
+    {
+        $collection = $this->productCollectionFactory->create();
+        $collection->addAttributeToSelect('*');
+        $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
+        return $collection;
+    }
+
+    /**
+     * @param $entityId
+     */
+    public function setProductType($entityId)
+    {
+        try {
+            $product = $this->productRepository->getById($entityId);
+            if ($product->getData('product_type') == null) {
+                $this->productTypeHelper->setProductType($product);
+                $this->productRepository->save($product);
+            }
+        } catch (NoSuchEntityException | LocalizedException $e) {
+            $this->_logger->error($e->getMessage());
+        }
+    }
+
+    /**
      * @return Collection
      */
     public function getProductsLooseDiamonds()
