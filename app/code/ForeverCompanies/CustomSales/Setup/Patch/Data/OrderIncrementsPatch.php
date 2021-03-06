@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace ForeverCompanies\CustomSales\Setup\Patch\Data;
 
 use Magento\Framework\Setup\Patch\DataPatchInterface;
-use Magento\Framework\Setup\Patch\PatchRevertableInterface;
 use Magento\Framework\App\ResourceConnection;
 
 class OrderIncrementsPatch implements DataPatchInterface
