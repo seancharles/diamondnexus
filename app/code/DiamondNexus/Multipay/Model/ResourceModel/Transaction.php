@@ -112,7 +112,7 @@ class Transaction extends AbstractDb
             }
         }
         if ((int)$information[Constant::PAYMENT_METHOD_DATA] == Constant::MULTIPAY_PARTIAL_AMOUNT) {
-            $amount = $information[Constant::CASH_TENDERED_DATA];
+            $amount = $information[Constant::OPTION_PARTIAL_DATA];
             if ($change == 0 && $amount > $information[Constant::AMOUNT_DUE_DATA]) {
                 $change = $amount - $information[Constant::AMOUNT_DUE_DATA];
             }
@@ -142,9 +142,13 @@ class Transaction extends AbstractDb
             ]
         );
         try {
-            $order->setTotalPaid($order->getTotalPaid() + $amount);
+            if ($order->getTotalPaid() !== null) {
+                $order->setTotalPaid($order->getTotalPaid() + $amount);
+                $this->extOrderHelper->createNewExtSalesOrder((int)$orderId, ['payment']);
+            } else {
+                $order->setTotalPaid((float)$amount);
+            }
             $this->save($transaction);
-            $this->extOrderHelper->createNewExtSalesOrder((int)$orderId, ['payment']);
         } catch (AlreadyExistsException $e) {
             $this->logger->error($e->getMessage());
         } catch (Exception $e) {
