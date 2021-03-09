@@ -22,6 +22,7 @@ class OrderSaveBefore implements ObserverInterface
      */
     protected $checkingFields = [
         'status',
+        'billing_address_id',
         'shipping_address_id',
         'anticipated_shipdate',
         'delivery_date',
@@ -59,6 +60,8 @@ class OrderSaveBefore implements ObserverInterface
                 if ($order->dataHasChangedFor($key)) {
                     if ($key == 'shipping_address_id') {
                         $changes[] = 'shipping_address';
+                    }elseif($key == 'billing_address_id') {
+                        $changes[] = 'billing_address';
                     } else {
                         $changes[] = $key;
                     }
