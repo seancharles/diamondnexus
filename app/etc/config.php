@@ -449,5 +449,434 @@ return [
         'Vertex_AddressValidationApi' => 0,
         'Vertex_AddressValidation' => 0,
         'Yotpo_Yotpo' => 1
+    ],
+    'themes' => [
+
+    ],
+    'system' => [
+        'default' => [
+            'admin' => [
+
+            ],
+            'design' => [
+
+            ],
+            'dev' => [
+
+            ],
+            'system' => [
+
+            ],
+            'web' => [
+
+            ],
+            'general' => [
+
+            ],
+            'theme' => [
+
+            ],
+            'currency' => [
+
+            ],
+            'adobe_ims' => [
+
+            ],
+            'adobe_stock' => [
+
+            ],
+            'customer' => [
+                'account_share' => [
+                    'scope' => '1'
+                ],
+                'captcha' => [
+
+                ],
+                'magento_customerbalance' => [
+                    'is_enabled' => '1'
+                ],
+                'magento_customersegment' => [
+                    'is_enabled' => '1'
+                ]
+            ],
+            'cms' => [
+
+            ],
+            'catalog' => [
+                'search' => [
+
+                ],
+                'review' => [
+
+                ]
+            ],
+            'indexer' => [
+
+            ],
+            'payment' => [
+                'free' => [
+                    'active' => '0'
+                ],
+                'substitution' => [
+                    'active' => '0'
+                ],
+                'checkmo' => [
+                    'active' => '1'
+                ],
+                'purchaseorder' => [
+                    'active' => '0'
+                ],
+                'banktransfer' => [
+                    'active' => '0'
+                ],
+                'cashondelivery' => [
+                    'active' => '0'
+                ],
+                'vault' => [
+
+                ],
+                'paypal_express' => [
+                    'active' => '0'
+                ],
+                'paypal_express_bml' => [
+
+                ],
+                'payflow_express' => [
+                    'active' => '0'
+                ],
+                'payflow_express_bml' => [
+                    'active' => '0'
+                ],
+                'payflowpro' => [
+                    'active' => '0'
+                ],
+                'payflowpro_cc_vault' => [
+                    'active' => '0'
+                ],
+                'paypal_billing_agreement' => [
+                    'active' => '0'
+                ],
+                'payflow_link' => [
+                    'active' => '0'
+                ],
+                'payflow_advanced' => [
+                    'active' => '0'
+                ],
+                'hosted_pro' => [
+
+                ],
+                'amazon_payment' => [
+                    'active' => '0'
+                ],
+                'amazonlogin' => [
+                    'active' => '0'
+                ],
+                'affirm_gateway' => [
+                    'active' => '1',
+                    'debug' => '1'
+                ],
+                'braintree' => [
+                    'active' => '0'
+                ],
+                'braintree_paypal' => [
+                    'active' => '0'
+                ],
+                'braintree_paypal_credit' => [
+                    'active' => '0'
+                ],
+                'braintree_cc_vault' => [
+                    'active' => '0'
+                ],
+                'braintree_paypal_vault' => [
+                    'active' => '0'
+                ],
+                'braintree_applepay' => [
+                    'active' => '0'
+                ],
+                'braintree_googlepay' => [
+                    'active' => '0'
+                ],
+                'braintree_venmo' => [
+                    'active' => '0'
+                ],
+                'braintree_ach_direct_debit' => [
+                    'active' => '0'
+                ],
+                'braintree_local_payment' => [
+                    'active' => '0'
+                ],
+                'klarna_kp' => [
+                    'active' => '0'
+                ],
+                'multipay' => [
+                    'active' => '1'
+                ],
+                'progressive_gateway' => [
+                    'active' => '1'
+                ],
+                'authorizenet_acceptjs' => [
+
+                ],
+                'paypal_payment_pro' => [
+                    'active' => '0'
+                ],
+                'wps_express' => [
+                    'active' => '0'
+                ],
+                'wps_express_bml' => [
+                    'active' => '0'
+                ],
+                'companycredit' => [
+
+                ],
+                'cybersource' => [
+
+                ],
+                'authorizenet_directpost' => [
+
+                ],
+                'worldpay' => [
+
+                ],
+                'eway' => [
+
+                ]
+            ],
+            'export' => [
+
+            ],
+            'sales' => [
+
+            ],
+            'sales_email' => [
+
+            ],
+            'sales_pdf' => [
+
+            ],
+            'dashboard' => [
+
+            ],
+            'cataloginventory' => [
+
+            ],
+            'checkout' => [
+
+            ],
+            'captcha' => [
+
+            ],
+            'promo' => [
+
+            ],
+            'giftcard' => [
+
+            ],
+            'wishlist' => [
+
+            ],
+            'magento_giftregistry' => [
+
+            ],
+            'oauth' => [
+
+            ],
+            'contact' => [
+
+            ],
+            'csp' => [
+
+            ],
+            'analytics' => [
+
+            ],
+            'carriers' => [
+                'dhl' => [
+                    'active' => '0'
+                ],
+                'fedex' => [
+                    'active' => '0'
+                ],
+                'instore' => [
+                    'active' => '0'
+                ],
+                'flatrate' => [
+                    'active' => '1'
+                ],
+                'tablerate' => [
+                    'active' => '0'
+                ],
+                'freeshipping' => [
+                    'active' => '0'
+                ],
+                'ups' => [
+                    'active' => '0'
+                ],
+                'usps' => [
+                    'active' => '0'
+                ],
+                'shipper' => [
+                    'active' => '1'
+                ],
+                'shipperadmin' => [
+                    'active' => '1'
+                ],
+                'shqfedex' => [
+                    'title' => 'Fedex',
+                    'active' => '1'
+                ],
+                'shqusps' => [
+                    'title' => 'USPS',
+                    'active' => '1'
+                ],
+                'shqups' => [
+                    'title' => 'UPS',
+                    'active' => '1'
+                ]
+            ],
+            'import' => [
+                'format_v1' => [
+                    'page_size' => '5000'
+                ],
+                'format_v2' => [
+                    'page_size' => '10000',
+                    'bunch_size' => '100'
+                ]
+            ],
+            'trans_email' => [
+
+            ],
+            'tax' => [
+
+            ],
+            'google' => [
+
+            ],
+            'advanced' => [
+                'in_store_pickup_api' => [
+                    'search_term_delimiter' => ':'
+                ]
+            ],
+            'shipping' => [
+                'origin' => [
+                    'country_id' => 'US',
+                    'postcode' => '53132',
+                    'region_id' => '64',
+                    'city' => 'Franklin',
+                    'street_line1' => '5050 W Ashland Way',
+                    'street_line2' => null
+                ]
+            ],
+            'multishipping' => [
+
+            ],
+            'reports' => [
+
+            ],
+            'login_as_customer' => [
+
+            ],
+            'visualmerchandiser' => [
+
+            ],
+            'paypal' => [
+
+            ],
+            'persistent' => [
+
+            ],
+            'recaptcha_backend' => [
+
+            ],
+            'recaptcha_frontend' => [
+
+            ],
+            'magento_reward' => [
+
+            ],
+            'sitemap' => [
+
+            ],
+            'crontab' => [
+
+            ],
+            'support' => [
+
+            ],
+            'webapi' => [
+                'webapisecurity' => [
+                    'allow_insecure' => '0'
+                ]
+            ],
+            'affirm' => [
+
+            ],
+            'connector_api_credentials' => [
+
+            ],
+            'sync_settings' => [
+
+            ],
+            'abandoned_carts' => [
+
+            ],
+            'connector_automation' => [
+
+            ],
+            'connector_dynamic_content' => [
+
+            ],
+            'transactional_emails' => [
+
+            ],
+            'connector_configuration' => [
+
+            ],
+            'connector_data_mapping' => [
+
+            ],
+            'connector_developer_settings' => [
+
+            ],
+            'chat_api_credentials' => [
+
+            ],
+            'quote_cleaner' => [
+
+            ],
+            'salesforcecrm' => [
+
+            ],
+            'smtp' => [
+
+            ],
+            'klarna' => [
+
+            ],
+            'mpeditorder' => [
+                'general' => [
+                    'enabled' => '1',
+                    'enabled_quick_edit' => '1',
+                    'auto_recalculate_shipping_fee' => '0'
+                ]
+            ],
+            'shqlogmenu' => [
+                'shqlogger' => [
+                    'enabled' => '1'
+                ]
+            ],
+            'yotpo' => [
+
+            ]
+        ],
+        'stores' => [
+
+        ],
+        'websites' => [
+
+        ],
+        'website' => [
+
+        ]
     ]
 ];
