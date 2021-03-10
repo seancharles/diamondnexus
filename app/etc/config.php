@@ -811,11 +811,6 @@ return [
             'affirm' => [
 
             ],
-            'cloudinary' => [
-                'cloud' => [
-                    'cloudinary_enabled' => '1'
-                ]
-            ],
             'connector_api_credentials' => [
 
             ],
