@@ -9,7 +9,7 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
     <!--
         Removed by Paul since this was causing issues in web checkout and we're not using for web at the moment.
-        
+
         <event name="payment_method_is_active">
             <observer name="diamondnexus_multipay" instance="DiamondNexus\Multipay\Observer\PreparePaymentMethod"/>
         </event>

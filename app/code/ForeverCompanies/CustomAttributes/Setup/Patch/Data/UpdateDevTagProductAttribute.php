@@ -15,6 +15,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\Patch\PatchRevertableInterface;
+use Zend_Validate_Exception;
 
 class UpdateDevTagProductAttribute implements DataPatchInterface, PatchRevertableInterface
 {
@@ -44,6 +45,8 @@ class UpdateDevTagProductAttribute implements DataPatchInterface, PatchRevertabl
 
     /**
      * {@inheritdoc}
+     * @throws LocalizedException
+     * @throws Zend_Validate_Exception
      */
     public function apply()
     {
@@ -56,48 +59,41 @@ class UpdateDevTagProductAttribute implements DataPatchInterface, PatchRevertabl
                 'dev_tag'
             );
         }
-        try {
-            $eavSetup->addAttribute(
-                Product::ENTITY,
-                'dev_tag',
-                [
-                    'type' => 'varchar',
-                    'label' => 'Dev tag',
-                    'input' => 'text',
-                    'source' => '',
-                    'frontend' => '',
-                    'required' => false,
-                    'backend' => '',
-                    'sort_order' => '30',
-                    'global' => ScopedAttributeInterface::SCOPE_STORE,
-                    'default' => null,
-                    'visible' => true,
-                    'user_defined' => true,
-                    'searchable' => false,
-                    'filterable' => false,
-                    'comparable' => false,
-                    'visible_on_front' => false,
-                    'unique' => false,
-                    'apply_to' => '',
-                    'group' => 'General',
-                    'used_in_product_listing' => false,
-                    'is_used_in_grid' => true,
-                    'is_visible_in_grid' => false,
-                    'is_filterable_in_grid' => false
-                ]
-            );
-        } catch (LocalizedException $e) {
-            return;
-        } catch (\Zend_Validate_Exception $e) {
-            return;
-        }
+        $eavSetup->addAttribute(
+            Product::ENTITY,
+            'dev_tag',
+            [
+                'type' => 'varchar',
+                'label' => 'Dev tag',
+                'input' => 'text',
+                'source' => '',
+                'frontend' => '',
+                'required' => false,
+                'backend' => '',
+                'sort_order' => '30',
+                'global' => ScopedAttributeInterface::SCOPE_STORE,
+                'default' => null,
+                'visible' => true,
+                'user_defined' => true,
+                'searchable' => false,
+                'filterable' => false,
+                'comparable' => false,
+                'visible_on_front' => false,
+                'unique' => false,
+                'apply_to' => '',
+                'group' => 'General',
+                'used_in_product_listing' => false,
+                'is_used_in_grid' => true,
+                'is_visible_in_grid' => false,
+                'is_filterable_in_grid' => false
+            ]
+        );
         $this->moduleDataSetup->getConnection()->endSetup();
     }
 
     public function revert()
     {
         $this->moduleDataSetup->getConnection()->startSetup();
-        /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
         $eavSetup->removeAttribute(Product::ENTITY, 'dev_tag');
 

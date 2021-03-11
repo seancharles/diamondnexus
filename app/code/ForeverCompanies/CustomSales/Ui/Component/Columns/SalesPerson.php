@@ -11,10 +11,21 @@ use Magento\User\Model\UserFactory;
 class SalesPerson extends Column
 {
     /**
+     * @var OrderRepositoryInterface
+     */
+    protected $orderRepository;
+    /**
+     * @var UserFactory
+     */
+    protected $userFactory;
+
+    /**
      * Constructor
      *
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
+     * @param OrderRepositoryInterface $orderRepository
+     * @param UserFactory $userFactory
      * @param array $components
      * @param array $data
      */
@@ -26,9 +37,9 @@ class SalesPerson extends Column
         array $components = [],
         array $data = []
     ) {
-        $this->_orderRepository = $orderRepository;
+        $this->orderRepository = $orderRepository;
         $this->userFactory = $userFactory;
-        
+
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
@@ -43,9 +54,9 @@ class SalesPerson extends Column
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
                 if ($item["sales_person_id"] > 0) {
-                    // load the user
+                    // it's method derpecated. Todo: load by resource model or repository
                     $user = $this->userFactory->create()->load($item["sales_person_id"]);
-                    
+
                     $item[$this->getData('name')] = $user->getUsername();
                 } else {
                     $item[$this->getData('name')] = "Web";

@@ -2,7 +2,6 @@
 
 namespace ForeverCompanies\CustomSales\Plugin;
 
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\Data\OrderExtension;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderExtensionFactory;
@@ -10,7 +9,6 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\Data\OrderSearchResultInterface;
 use Magento\User\Model\ResourceModel\User;
 use ShipperHQ\Shipper\Helper\CarrierGroup;
-use ShipperHQ\Shipper\Model\Order\GridDetail;
 
 class OrderRepository
 {

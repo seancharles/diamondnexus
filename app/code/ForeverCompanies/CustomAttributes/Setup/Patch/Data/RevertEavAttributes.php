@@ -10,6 +10,7 @@ namespace ForeverCompanies\CustomAttributes\Setup\Patch\Data;
 use Magento\Catalog\Model\Product;
 use Magento\Eav\Model\Entity\Attribute\Backend\ArrayBackend;
 use Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface;
+use Magento\Eav\Model\Entity\Attribute\Source\Table;
 use Magento\Eav\Setup\EavSetup;
 use Magento\Eav\Setup\EavSetupFactory;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
@@ -19,6 +20,9 @@ use Magento\Framework\Setup\Patch\PatchRevertableInterface;
 class RevertEavAttributes implements DataPatchInterface
 {
 
+    /**
+     * @var string[]
+     */
     protected $filteringAttributes = [
         'chain_length',
         'chain_size',
@@ -93,7 +97,7 @@ class RevertEavAttributes implements DataPatchInterface
                     Product::ENTITY,
                     $filteringAttribute,
                     'source_model',
-                    \Magento\Eav\Model\Entity\Attribute\Source\Table::class
+                    Table::class
                 );
             }
             $eavSetup->updateAttribute(

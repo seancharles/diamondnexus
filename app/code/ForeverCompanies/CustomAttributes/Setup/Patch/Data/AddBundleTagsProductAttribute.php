@@ -15,6 +15,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\Patch\PatchRevertableInterface;
+use Zend_Validate_Exception;
 
 class AddBundleTagsProductAttribute implements DataPatchInterface, PatchRevertableInterface
 {
@@ -44,6 +45,8 @@ class AddBundleTagsProductAttribute implements DataPatchInterface, PatchRevertab
 
     /**
      * {@inheritdoc}
+     * @throws LocalizedException
+     * @throws Zend_Validate_Exception
      */
     public function apply()
     {
@@ -56,7 +59,6 @@ class AddBundleTagsProductAttribute implements DataPatchInterface, PatchRevertab
                 'bundle_tags'
             );
         }
-        try {
             $eavSetup->addAttribute(
                 Product::ENTITY,
                 'bundle_tags',
@@ -83,15 +85,9 @@ class AddBundleTagsProductAttribute implements DataPatchInterface, PatchRevertab
                     'used_in_product_listing' => false,
                     'is_used_in_grid' => true,
                     'is_visible_in_grid' => false,
-                    'is_filterable_in_grid' => false,
-                    'option' => ['values' => [""]]
+                    'is_filterable_in_grid' => false
                 ]
             );
-        } catch (LocalizedException $e) {
-            return;
-        } catch (\Zend_Validate_Exception $e) {
-            return;
-        }
         $this->moduleDataSetup->getConnection()->endSetup();
     }
 

@@ -43,6 +43,8 @@ class AddHoverImageAttribute implements DataPatchInterface
 
     /**
      * @return AddHoverImageAttribute|void
+     * @throws LocalizedException
+     * @throws Zend_Validate_Exception
      */
     public function apply()
     {

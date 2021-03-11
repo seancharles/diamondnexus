@@ -2,17 +2,21 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-       <referenceBlock name="order_items">
+        <referenceBlock name="order_items">
             <block class="ForeverCompanies\CustomSales\Block\Adminhtml\Order\View\LoggedUser"
                    name="sales_order_view_custom"
                    template="order/view/loggeduser.phtml"/>
-       </referenceBlock>
-       
+        </referenceBlock>
         <referenceBlock name="extra_customer_info">
             <block class="ForeverCompanies\CustomSales\Block\Adminhtml\Order\View\SalesPerson"
-                    name="sales_order_salesperson"
-                    template="order/view/sales_person.phtml"
+                   name="sales_order_salesperson"
+                   template="order/view/sales_person.phtml"
             />
+        </referenceBlock>
+        <referenceBlock name="order_tab_info">
+            <block class="Magento\Sales\Block\Adminhtml\Order\View\History"
+                   name="order_history"
+                   template="ForeverCompanies_CustomSales::order/view/history.phtml"/>
         </referenceBlock>
     </body>
 </page>

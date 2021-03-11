@@ -11,7 +11,7 @@ $id = $block->getData('order_id');
 # load the increment id
 $incrementId = $block->getIncrementId();
 # get the amount due
-$amount = $block->getBalanceAmount();
+$amount = $escaper->escapeHtml($block->getBalanceAmount());
 $paypalClientId = $block->getClientId();
 $btn = $escaper->escapeHtml('.paypal-button-widget');
 $errorAlert = "There was an error processing your payment. Please call customer service.";
@@ -192,9 +192,9 @@ $jsCheckout = "$('#paypal-in-context-checkout " . $btn;
                                             $.fancybox.showLoading();
 
                                             $.ajax({
-                                                method: "<?= $block->$escaper('POST') ?>",
+                                                method: "<?= $escaper->escapeHtml('POST') ?>",
                                                 dataType: "JSON",
-                                                url: "<?=  $block->$escaper($block->getPaypalActionUrl()); ?>",
+                                                url: "<?= $escaper->escapeUrl($block->getPaypalActionUrl()); ?>",
                                                 data: {
                                                     order_id: <?= /** @noEscape */ $id; ?>,
                                                     details: details
@@ -232,7 +232,7 @@ $jsCheckout = "$('#paypal-in-context-checkout " . $btn;
                                                         && details.purchase_units[0].amount.value == <?= $amount; ?>) {
                                                         sendPayment(details);
                                                     } else {
-                                                        alert('<?=$errorAlert ?>');
+                                                        alert('<?=$escaper->escapeHtml($errorAlert) ?>');
                                                     }
                                                 });
                                             },

@@ -15,6 +15,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\Patch\PatchRevertableInterface;
+use Zend_Validate_Exception;
 
 class AddBundlePriceUseProductAttribute implements DataPatchInterface, PatchRevertableInterface
 {
@@ -44,6 +45,8 @@ class AddBundlePriceUseProductAttribute implements DataPatchInterface, PatchReve
 
     /**
      * {@inheritdoc}
+     * @throws LocalizedException
+     * @throws Zend_Validate_Exception
      */
     public function apply()
     {
@@ -56,42 +59,35 @@ class AddBundlePriceUseProductAttribute implements DataPatchInterface, PatchReve
                 'bundle_price_use'
             );
         }
-        try {
-            $eavSetup->addAttribute(
-                Product::ENTITY,
-                'bundle_price_use',
-                [
-                    'type' => 'decimal',
-                    'label' => 'Bundle price use',
-                    'input' => 'price',
-                    'source' => '',
-                    'frontend' => '',
-                    'required' => false,
-                    'backend' => '',
-                    'sort_order' => '30',
-                    'global' => ScopedAttributeInterface::SCOPE_STORE,
-                    'default' => null,
-                    'visible' => true,
-                    'user_defined' => true,
-                    'searchable' => false,
-                    'filterable' => false,
-                    'comparable' => true,
-                    'visible_on_front' => true,
-                    'unique' => false,
-                    'apply_to' => '',
-                    'group' => 'General',
-                    'used_in_product_listing' => false,
-                    'is_used_in_grid' => true,
-                    'is_visible_in_grid' => false,
-                    'is_filterable_in_grid' => false,
-                    'option' => ['values' => [""]]
-                ]
-            );
-        } catch (LocalizedException $e) {
-            return;
-        } catch (\Zend_Validate_Exception $e) {
-            return;
-        }
+        $eavSetup->addAttribute(
+            Product::ENTITY,
+            'bundle_price_use',
+            [
+                'type' => 'decimal',
+                'label' => 'Bundle price use',
+                'input' => 'price',
+                'source' => '',
+                'frontend' => '',
+                'required' => false,
+                'backend' => '',
+                'sort_order' => '30',
+                'global' => ScopedAttributeInterface::SCOPE_STORE,
+                'default' => null,
+                'visible' => true,
+                'user_defined' => true,
+                'searchable' => false,
+                'filterable' => false,
+                'comparable' => true,
+                'visible_on_front' => true,
+                'unique' => false,
+                'apply_to' => '',
+                'group' => 'General',
+                'used_in_product_listing' => false,
+                'is_used_in_grid' => true,
+                'is_visible_in_grid' => false,
+                'is_filterable_in_grid' => false
+            ]
+        );
         $this->moduleDataSetup->getConnection()->endSetup();
     }
 

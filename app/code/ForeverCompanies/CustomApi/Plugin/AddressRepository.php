@@ -35,7 +35,11 @@ class AddressRepository
         OrderAddressInterface $entity
     ) {
         if ($entity->hasDataChanges() && $entity->getOrder()->getId()) {
-            $this->extOrder->createNewExtSalesOrder($entity->getOrder()->getId(), ['shipping_address']);
+            if ($entity->getAddressType() == 'billing') {
+                $this->extOrder->createNewExtSalesOrder($entity->getOrder()->getId(), ['billing_address']);
+            } elseif ($entity->getAddressType() == 'shipping') {
+                $this->extOrder->createNewExtSalesOrder($entity->getOrder()->getId(), ['shipping_address']);
+            }
         }
     }
 }

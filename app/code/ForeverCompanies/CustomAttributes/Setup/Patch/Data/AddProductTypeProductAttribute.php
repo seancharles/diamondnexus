@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Setup\Patch\Data;
 
+use Magento\Catalog\Model\Product;
 use Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface;
 use Magento\Eav\Setup\EavSetup;
 use Magento\Eav\Setup\EavSetupFactory;
@@ -14,6 +15,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\Patch\PatchRevertableInterface;
+use Zend_Validate_Exception;
 
 class AddProductTypeProductAttribute implements DataPatchInterface, PatchRevertableInterface
 {
@@ -43,71 +45,67 @@ class AddProductTypeProductAttribute implements DataPatchInterface, PatchReverta
 
     /**
      * {@inheritdoc}
+     * @throws LocalizedException
+     * @throws Zend_Validate_Exception
      */
     public function apply()
     {
         $this->moduleDataSetup->getConnection()->startSetup();
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $attribute = $eavSetup->getAttribute(\Magento\Catalog\Model\Product::ENTITY, 'product_type');
+        $attribute = $eavSetup->getAttribute(Product::ENTITY, 'product_type');
         if ($attribute) {
             $eavSetup->removeAttribute(
-                \Magento\Catalog\Model\Product::ENTITY,
+                Product::ENTITY,
                 'product_type'
             );
         }
-        try {
-            $eavSetup->addAttribute(
-                \Magento\Catalog\Model\Product::ENTITY,
-                'product_type',
-                [
-                    'type' => 'int',
-                    'label' => 'Product Type',
-                    'input' => 'select',
-                    'source' => '',
-                    'frontend' => '',
-                    'required' => true,
-                    'backend' => '',
-                    'sort_order' => '30',
-                    'global' => ScopedAttributeInterface::SCOPE_STORE,
-                    'default' => null,
-                    'visible' => true,
-                    'user_defined' => true,
-                    'searchable' => true,
-                    'filterable' => false,
-                    'comparable' => true,
-                    'visible_on_front' => true,
-                    'unique' => false,
-                    'apply_to' => '',
-                    'group' => 'General',
-                    'used_in_product_listing' => false,
-                    'is_used_in_grid' => true,
-                    'is_visible_in_grid' => false,
-                    'is_filterable_in_grid' => false,
-                    'option' => [
-                        'values' => [
-                            "Bracelet",
-                            "Chain",
-                            "Earring",
-                            "Diamond",
-                            "Gift Card",
-                            "Stone",
-                            "Matched Set",
-                            "Matching Band",
-                            "Necklace",
-                            "Pendant",
-                            "Ring",
-                            "Ring Setting",
-                            "Watch",
-                            "Other"
-                        ]
+        $eavSetup->addAttribute(
+            Product::ENTITY,
+            'product_type',
+            [
+                'type' => 'int',
+                'label' => 'Product Type',
+                'input' => 'select',
+                'source' => '',
+                'frontend' => '',
+                'required' => true,
+                'backend' => '',
+                'sort_order' => '30',
+                'global' => ScopedAttributeInterface::SCOPE_STORE,
+                'default' => null,
+                'visible' => true,
+                'user_defined' => true,
+                'searchable' => true,
+                'filterable' => false,
+                'comparable' => true,
+                'visible_on_front' => true,
+                'unique' => false,
+                'apply_to' => '',
+                'group' => 'General',
+                'used_in_product_listing' => false,
+                'is_used_in_grid' => true,
+                'is_visible_in_grid' => false,
+                'is_filterable_in_grid' => false,
+                'option' => [
+                    'values' => [
+                        "Bracelet",
+                        "Chain",
+                        "Earring",
+                        "Diamond",
+                        "Gift Card",
+                        "Stone",
+                        "Matched Set",
+                        "Matching Band",
+                        "Necklace",
+                        "Pendant",
+                        "Ring",
+                        "Ring Setting",
+                        "Watch",
+                        "Other"
                     ]
                 ]
-            );
-        } catch (LocalizedException $e) {
-            return;
-        } catch (\Zend_Validate_Exception $e) {
-            return;
-        }
+            ]
+        );
         $this->moduleDataSetup->getConnection()->endSetup();
     }
 
@@ -115,7 +113,7 @@ class AddProductTypeProductAttribute implements DataPatchInterface, PatchReverta
     {
         $this->moduleDataSetup->getConnection()->startSetup();
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $eavSetup->removeAttribute(\Magento\Catalog\Model\Product::ENTITY, 'product_type');
+        $eavSetup->removeAttribute(Product::ENTITY, 'product_type');
 
         $this->moduleDataSetup->getConnection()->endSetup();
     }

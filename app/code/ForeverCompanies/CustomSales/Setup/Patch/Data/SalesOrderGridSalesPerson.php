@@ -8,20 +8,17 @@ declare(strict_types=1);
 namespace ForeverCompanies\CustomSales\Setup\Patch\Data;
 
 use Magento\Framework\Setup\Patch\DataPatchInterface;
-use Magento\Framework\Setup\Patch\PatchRevertableInterface;
 use Magento\Framework\App\ResourceConnection;
 
 class SalesOrderGridSalesPerson implements DataPatchInterface
 {
     protected $resource;
     protected $connection;
-    
+
     /**
      * Constructor
      *
-     * @param Config              $eavConfig
-     * @param EavSetupFactory     $eavSetupFactory
-     * @param AttributeSetFactory $attributeSetFactory
+     * @param ResourceConnection $resource
      */
     public function __construct(
         ResourceConnection $resource
@@ -42,7 +39,7 @@ class SalesOrderGridSalesPerson implements DataPatchInterface
                             sales_order_grid.sales_person_id = sales_order.sales_person_id
                         WHERE
                             sales_order.entity_id = sales_order_grid.entity_id;";
-        
+
         $this->connection->query($updateQuery);
     }
 
@@ -53,7 +50,7 @@ class SalesOrderGridSalesPerson implements DataPatchInterface
     {
         return [];
     }
-    
+
     /**
      * {@inheritdoc}
      */

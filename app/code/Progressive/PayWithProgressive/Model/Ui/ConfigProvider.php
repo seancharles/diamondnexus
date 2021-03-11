@@ -120,6 +120,7 @@ class ConfigProvider implements ConfigProviderInterface
                         self::FRAUD => __('Fraud')
                     ],
                     'apiKeyPublic' => $this->_configProgressive->getPublicApiKey(),
+                    /** TODO: Fix, method has protected method */
                     'apiUrl' => $this->_configProgressive->getApiUrl(),
                     'merchant' => [
                         'user_confirmation_url' => $this->urlBuilder
