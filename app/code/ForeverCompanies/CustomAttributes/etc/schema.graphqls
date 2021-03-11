@@ -38,4 +38,10 @@ interface ProductInterface {
     base_price: Float
     @doc(description: "The base price of a product.")
     @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\BasePrice")
+    clarity_sort : Int
+    @doc(description: "Sorting clarity in Product Listing.")
+    color_sort  : Int
+    @doc(description: "Sorting color in Product Listing.")
+    cut_grade_sort  : Int
+    @doc(description: "Sorting Cut Grade in Product Listing.")
 }

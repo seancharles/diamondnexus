@@ -1,0 +1,28 @@
+<?php
+
+use ForeverCompanies\CustomSales\Block\Adminhtml\Order\Create\CustomFields;
+use Magento\Framework\Escaper;
+
+/** @var CustomFields $block */
+/** @var $escaper Escaper */
+?>
+<div style="max-width: 400px;"
+     class="admin__field field-comment">
+    <label for="final-shipping-cost" class="admin__field-label">
+        <span><?= $escaper->escapeHtml(__('Final Shipping Cost')) ?></span>
+    </label>
+    <div class="admin__field-control">
+        <input
+            id="final-shipping-cost"
+            name="shipment[final_shipping_cost]"
+            class="admin__control-text"/>
+    </div>
+    <label for="delivery-date-actual" class="admin__field-label">
+        <span><?= $escaper->escapeHtml(__('Actual Date of Delivery')) ?></span>
+    </label>
+    <div class="admin__field-control">
+        <input type="date" name="shipment[delivery_date_actual]" id="delivery-date-actual" placeholder="Event Date"
+               value="" class="admin__control-text"
+        />
+    </div>
+</div>

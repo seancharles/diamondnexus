@@ -54,7 +54,7 @@ class ExtOrder extends AbstractHelper
         $changesText = is_array($data) ? implode(', ', $data) : $data;
         $extOrder->setOrderId($orderId);
         $extOrder->setUpdatedFields($changesText);
-        $extOrder->setFlag($flag);
+        $extOrder->setFlag((int)$flag);
         try {
             $this->extResource->save($extOrder);
         } catch (AlreadyExistsException $e) {

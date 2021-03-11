@@ -7,6 +7,7 @@ use Magento\Backend\Model\Auth\Session;
 use Magento\Backend\Model\Session\Quote;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
+use Magento\Quote\Model\QuoteRepository;
 use Magento\Sales\Model\AdminOrder\Create;
 use Magento\User\Model\ResourceModel\User;
 use Magento\User\Model\UserFactory;
@@ -24,9 +25,15 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCr
     protected $salesPersonHelper;
 
     /**
+     * @var QuoteRepository
+     */
+    protected $quoteRepository;
+
+    /**
      * SalesPerson constructor.
      * @param Context $context
      * @param Quote $sessionQuote
+     * @param QuoteRepository $quoteRepository
      * @param Create $orderCreate
      * @param PriceCurrencyInterface $priceCurrency
      * @param Session $authSession
@@ -36,6 +43,7 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCr
     public function __construct(
         Context $context,
         Quote $sessionQuote,
+        QuoteRepository $quoteRepository,
         Create $orderCreate,
         PriceCurrencyInterface $priceCurrency,
         Session $authSession,
@@ -45,6 +53,7 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCr
         parent::__construct($context, $sessionQuote, $orderCreate, $priceCurrency, $data);
         $this->authSession = $authSession;
         $this->salesPersonHelper = $salesPersonHelper;
+        $this->quoteRepository = $quoteRepository;
     }
 
     /**
@@ -52,11 +61,24 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCr
      */
     public function getSalesPerson()
     {
-        $salesPersonId = $this->getRequest()->getParam('sales_person_id');
-        if ($salesPersonId !== null) {
-            return $this->salesPersonHelper->getSalesPersonInfo($salesPersonId, 'username');
+        $salesPersonId = null;
+        if ($this->getQuote()->getData('sales_person_id') !== null) {
+            $salesPersonId = $this->getQuote()->getData('sales_person_id');
         }
-        return $this->authSession->getUser()->getUserName();
+        if ($this->getRequest()->getParam('sales_person_id') !== null) {
+            $salesPersonId = $this->getRequest()->getParam('sales_person_id');
+        }
+        if ($salesPersonId !== null) {
+            $firstname = $this->salesPersonHelper->getSalesPersonInfo($salesPersonId, 'firstname');
+            $lastname = $this->salesPersonHelper->getSalesPersonInfo($salesPersonId, 'lastname');
+            if ($firstname == '' && $lastname == '') {
+                $quote = $this->getQuote()->setData('sales_person_id', $this->authSession->getUser()->getId());
+                $this->quoteRepository->save($quote);
+                return $this->authSession->getUser()->getName();
+            }
+            return $firstname . ' ' . $lastname;
+        }
+        return $this->authSession->getUser()->getName();
     }
 
     /**

@@ -17,6 +17,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\Patch\PatchRevertableInterface;
+use Zend_Validate_Exception;
 
 class UpdateIsTransformedProductAttribute implements DataPatchInterface, PatchRevertableInterface
 {
@@ -46,6 +47,8 @@ class UpdateIsTransformedProductAttribute implements DataPatchInterface, PatchRe
 
     /**
      * {@inheritdoc}
+     * @throws LocalizedException
+     * @throws Zend_Validate_Exception
      */
     public function apply()
     {
@@ -58,41 +61,35 @@ class UpdateIsTransformedProductAttribute implements DataPatchInterface, PatchRe
                 'is_transformed'
             );
         }
-        try {
-            $eavSetup->addAttribute(
-                Product::ENTITY,
-                'is_transformed',
-                [
-                    'type' => 'int',
-                    'label' => 'is transformed',
-                    'input' => 'boolean',
-                    'source' => '',
-                    'frontend' => '',
-                    'required' => true,
-                    'backend' => '',
-                    'sort_order' => '30',
-                    'global' => ScopedAttributeInterface::SCOPE_STORE,
-                    'default' => 0,
-                    'visible' => true,
-                    'user_defined' => true,
-                    'searchable' => false,
-                    'filterable' => false,
-                    'comparable' => false,
-                    'visible_on_front' => false,
-                    'unique' => false,
-                    'apply_to' => implode(',', [Type::TYPE_SIMPLE, Type::TYPE_BUNDLE, Configurable::TYPE_CODE]),
-                    'group' => 'General',
-                    'used_in_product_listing' => false,
-                    'is_used_in_grid' => true,
-                    'is_visible_in_grid' => false,
-                    'is_filterable_in_grid' => false,
-                ]
-            );
-        } catch (LocalizedException $e) {
-            return;
-        } catch (\Zend_Validate_Exception $e) {
-            return;
-        }
+        $eavSetup->addAttribute(
+            Product::ENTITY,
+            'is_transformed',
+            [
+                'type' => 'int',
+                'label' => 'is transformed',
+                'input' => 'boolean',
+                'source' => '',
+                'frontend' => '',
+                'required' => true,
+                'backend' => '',
+                'sort_order' => '30',
+                'global' => ScopedAttributeInterface::SCOPE_STORE,
+                'default' => 0,
+                'visible' => true,
+                'user_defined' => true,
+                'searchable' => false,
+                'filterable' => false,
+                'comparable' => false,
+                'visible_on_front' => false,
+                'unique' => false,
+                'apply_to' => implode(',', [Type::TYPE_SIMPLE, Type::TYPE_BUNDLE, Configurable::TYPE_CODE]),
+                'group' => 'General',
+                'used_in_product_listing' => false,
+                'is_used_in_grid' => true,
+                'is_visible_in_grid' => false,
+                'is_filterable_in_grid' => false,
+            ]
+        );
         $this->moduleDataSetup->getConnection()->endSetup();
     }
 

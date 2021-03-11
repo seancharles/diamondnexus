@@ -79,7 +79,7 @@ class CompleteSequence extends Command
     }
 
     /**
-     * @param $id
+     * @param string $id
      */
     private function addSequence($id)
     {
@@ -87,6 +87,9 @@ class CompleteSequence extends Command
         $this->resource->getConnection()->insertOnDuplicate($tableName, ['sequence_value' => $id]);
     }
 
+    /**
+     * @param string $id
+     */
     private function addSequenceProduct($id)
     {
         $tableName = $this->resource->getTableName('sequence_product');
