@@ -25,5 +25,8 @@
     <type name="Magento\Sales\Api\OrderRepositoryInterface">
         <plugin name="multipay_transactions" type="DiamondNexus\Multipay\Plugin\Model\OrderGet"/>
     </type>
+    <type name="Magento\Sales\Model\Order\Config">
+        <plugin name="quote_get_statuses" type="DiamondNexus\Multipay\Plugin\Model\Order\Config"/>
+    </type>
     <preference for="Magento\Sales\Block\Order\History" type="DiamondNexus\Multipay\Block\Order\History"/>
 </config>
