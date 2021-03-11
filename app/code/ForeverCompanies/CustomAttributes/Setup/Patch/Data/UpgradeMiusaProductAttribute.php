@@ -46,12 +46,15 @@ class UpgradeMiusaProductAttribute implements DataPatchInterface, PatchRevertabl
     {
         $this->moduleDataSetup->getConnection()->startSetup();
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $eavSetup->updateAttribute(
-            Product::ENTITY,
-            'miusa',
-            'default_value',
-            ''
-        );
+        $attribute = $eavSetup->getAttribute(Product::ENTITY, 'miusa');
+        if ($attribute) {
+            $eavSetup->updateAttribute(
+                Product::ENTITY,
+                'miusa',
+                'default_value',
+                ''
+            );
+        }
         $this->moduleDataSetup->getConnection()->endSetup();
     }
 
@@ -59,12 +62,15 @@ class UpgradeMiusaProductAttribute implements DataPatchInterface, PatchRevertabl
     {
         $this->moduleDataSetup->getConnection()->startSetup();
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $eavSetup->updateAttribute(
-            Product::ENTITY,
-            'miusa',
-            'default_value',
-            'None'
-        );
+        $attribute = $eavSetup->getAttribute(Product::ENTITY, 'miusa');
+        if ($attribute) {
+            $eavSetup->updateAttribute(
+                Product::ENTITY,
+                'miusa',
+                'default_value',
+                'None'
+            );
+        }
         $this->moduleDataSetup->getConnection()->endSetup();
     }
 
