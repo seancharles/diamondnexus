@@ -89,6 +89,9 @@ class ProductPosition extends Command
         parent::configure();
     }
 
+    /**
+     * @return array
+     */
     private function getCategories()
     {
         $connection = $this->categoryProductResource->getConnection();
@@ -101,6 +104,11 @@ class ProductPosition extends Command
         }
     }
 
+    /**
+     * @param $categoryId
+     * @return array
+     * @throws LocalizedException
+     */
     private function getProducts($categoryId)
     {
         $connection = $this->categoryProductResource->getConnection();

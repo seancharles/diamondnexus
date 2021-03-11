@@ -46,7 +46,7 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\AbstractOrder
         $salesPersonId = $this->getOrder()->getData('sales_person_id');
 
         if ($salesPersonId) {
-            $user = $this->userFactory->create()->load($salesPersonId)->getUsername();
+            $user = $this->userFactory->create()->load($salesPersonId)->getName();
         }
 
         if ($user === false) {

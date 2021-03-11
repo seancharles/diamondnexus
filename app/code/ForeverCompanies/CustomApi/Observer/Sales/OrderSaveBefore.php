@@ -6,6 +6,7 @@ use ForeverCompanies\CustomApi\Helper\ExtOrder;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Model\Order;
+use Magento\Sales\Model\ResourceModel\Order\Status\History\Collection;
 
 /**
  * Save original order status.
@@ -53,6 +54,12 @@ class OrderSaveBefore implements ObserverInterface
         if (!$order->getId()) {
             return $this;
         }
+        $history = $order->getAllStatusHistory();
+        /** @var Collection $lastMessage */
+        $lastMessage = current($history);
+        if (strpos($lastMessage->getData()['comment'], 'Order Placed by') !== false) {
+            return;
+        }
         $changes = [];
         foreach ($this->checkingFields as $key) {
             $data = $order->getData($key);
@@ -60,7 +67,7 @@ class OrderSaveBefore implements ObserverInterface
                 if ($order->dataHasChangedFor($key)) {
                     if ($key == 'shipping_address_id') {
                         $changes[] = 'shipping_address';
-                    }elseif($key == 'billing_address_id') {
+                    } elseif ($key == 'billing_address_id') {
                         $changes[] = 'billing_address';
                     } else {
                         $changes[] = $key;

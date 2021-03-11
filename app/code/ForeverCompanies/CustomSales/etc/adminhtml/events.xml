@@ -19,4 +19,8 @@
         <observer instance="ForeverCompanies\CustomSales\Observer\Backend\Sales\OrderPlaceAfter"
                   name="forevercompanies_customsales_observer_backend_sales_order_place_after"/>
     </event>
+    <event name="sales_order_shipment_save_before">
+        <observer name="customsales_before_save_order_shipment"
+                  instance="ForeverCompanies\CustomSales\Observer\BeforeSaveOrderShipment"/>
+    </event>
 </config>

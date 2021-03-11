@@ -453,6 +453,33 @@ class TransformData extends AbstractHelper
 
     /**
      * @param string $sku
+     */
+    public function updateDescription($sku)
+    {
+        try {
+            $product = $this->productRepository->get($sku);
+            $description = $product->getData('description');
+            $search = 'have our jewelers set a Nexus Diamond in a setting';
+            $replace = 'have our jewelers set a Nexus Diamond™ alternative in a setting';
+            $description = str_replace($search, $replace, $description);
+            $product->setData('description', $description);
+            if ($product->getData('product_type') == null) {
+                $this->productTypeHelper->setProductType($product);
+            }
+            $this->productRepository->save($product);
+        } catch (NoSuchEntityException $e) {
+            $this->_logger->error('Can\'t find SKU = ' .$sku);
+        } catch (CouldNotSaveException $e) {
+            $this->_logger->error('Can\'t save SKU = ' .$sku);
+        } catch (InputException $e) {
+            $this->_logger->error('Can\'t save SKU = ' .$sku);
+        } catch (StateException $e) {
+            $this->_logger->error('Can\'t save SKU = ' .$sku);
+        }
+    }
+
+    /**
+     * @param string $sku
      * @throws LocalizedException
      */
     public function updateLooseStone($sku)
@@ -688,6 +715,20 @@ class TransformData extends AbstractHelper
         $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
         $collection->addAttributeToFilter('attribute_set_id', ['eq' => $attributeSetId]);
         $collection->addAttributeToFilter('type_id', ['eq' => Product\Type::TYPE_SIMPLE]);
+        return $collection;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getProductsForChangeDescription()
+    {
+        $attributeSetId = $this->getAttributeSetId('Migration_Loose Stones');
+        $collection = $this->productCollectionFactory->create();
+        $collection->addAttributeToSelect('*');
+        $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
+        $collection->addAttributeToFilter('attribute_set_id', ['eq' => $attributeSetId]);
+        $collection->addAttributeToFilter('description', ['like' => '%our jewelers set a Nexus Diamond%']);
         return $collection;
     }
 

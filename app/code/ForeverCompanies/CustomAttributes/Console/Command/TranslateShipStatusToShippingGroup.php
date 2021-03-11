@@ -1,6 +1,11 @@
 <?php
 namespace ForeverCompanies\CustomAttributes\Console\Command;
 
+use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\ResourceModel\Product\Action;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
+use Magento\Eav\Model\Config;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,27 +20,27 @@ class TranslateShipStatusToShippingGroup extends Command
     protected $name = 'forevercompanies:translate:shipping-status';
 
     /**
-     * @var \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory
+     * @var CollectionFactory
      */
     protected $collectionFactory;
 
     /**
-     * @var \Magento\Catalog\Api\Data\ProductInterface
+     * @var ProductInterface
      */
     protected $productRepository;
 
     /**
-     * @var \Magento\Eav\Model\Config
+     * @var Config
      */
     protected $eavConfig;
 
     /**
-     * @var \Magento\Catalog\Model\ResourceModel\Product\Action
+     * @var Action
      */
     protected $productActionObject;
 
     /**
-     * @var Array
+     * @var array
      */
     protected $shippingStatusTranslateMap = [
         "ZeroDay" => "0 Day",
@@ -62,20 +67,23 @@ class TranslateShipStatusToShippingGroup extends Command
     ];
 
     /**
-     * @var Array
+     * @var array
      */
     protected $shippingStatusLabelMap = [];
+    private $shipperGroupLabelMap;
 
     /**
      * TransformMultiselect constructor.
-     * @param State $state
-     * @param ProductRepositoryInterface $productRepository
+     * @param CollectionFactory $collectionFactory
+     * @param ProductInterface $productRepository
+     * @param Config $eavConfig
+     * @param Action $action
      */
     public function __construct(
-        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $collectionFactory,
-        \Magento\Catalog\Api\Data\ProductInterface $productRepository,
-        \Magento\Eav\Model\Config $eavConfig,
-        \Magento\Catalog\Model\ResourceModel\Product\Action $action
+        CollectionFactory $collectionFactory,
+        ProductInterface $productRepository,
+        Config $eavConfig,
+        Action $action
     ) {
         $this->collectionFactory = $collectionFactory;
         $this->productRepository = $productRepository;
@@ -88,6 +96,7 @@ class TranslateShipStatusToShippingGroup extends Command
     /**
      * {@inheritdoc}
      * @throws LocalizedException
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -103,9 +112,10 @@ class TranslateShipStatusToShippingGroup extends Command
                 $this->shippingStatusLabelMap[$option['label']] = $option['value'];
             }
         }
-        
+
         // get shipping group option ids
-        $shipperGroupAttribute = $this->eavConfig->getAttribute('catalog_product', 'shipperhq_shipping_group');
+        $hqCode = 'shipperhq_shipping_group';
+        $shipperGroupAttribute = $this->eavConfig->getAttribute(Product::ENTITY, $hqCode);
 
         $shipperGroupOptions = $shipperGroupAttribute->getSource()->getAllOptions();
 
@@ -131,7 +141,8 @@ class TranslateShipStatusToShippingGroup extends Command
             $this->productActionObject->updateAttributes(
                 $productIds,
                 [
-                    'shipperhq_shipping_group' => $this->shipperGroupLabelMap[
+                    /** Where is $str ? */
+                    $str => $this->shipperGroupLabelMap[
                         $this->shippingStatusTranslateMap[$shippingStatusKey]
                     ]
                 ],

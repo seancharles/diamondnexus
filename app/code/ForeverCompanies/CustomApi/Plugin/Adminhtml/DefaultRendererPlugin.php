@@ -14,7 +14,7 @@ class DefaultRendererPlugin
      * @param DefaultRenderer $subject
      * @param LayoutInterface $result
      *
-     * @return PaymentDetailsInterface $paymentDetails
+     * @return array|PaymentDetailsInterface|LayoutInterface
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */

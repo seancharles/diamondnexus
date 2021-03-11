@@ -84,7 +84,7 @@ class RefreshPatchList extends Command
     }
 
     /**
-     * @param $id
+     * @param string $id
      */
     private function addSequence($id)
     {

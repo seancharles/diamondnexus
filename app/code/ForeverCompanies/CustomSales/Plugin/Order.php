@@ -3,6 +3,7 @@
 namespace ForeverCompanies\CustomSales\Plugin;
 
 use Magento\Backend\Model\Auth\Session;
+use Magento\Sales\Model\Order\Status\History;
 
 class Order
 {
@@ -20,11 +21,16 @@ class Order
         $this->session = $session;
     }
 
-    public function beforeAddCommentToStatusHistory(\Magento\Sales\Model\Order $subject, $comment)
-    {
+    /**
+     * @param \Magento\Sales\Model\Order $subject
+     * @param History $history
+     */
+    public function beforeAddStatusHistory(
+        \Magento\Sales\Model\Order $subject,
+        History $history
+    ) {
         if ($this->session->getUser() !== null) {
-            $comment = 'Sales person: ' . $this->session->getUser()->getUserName() . '<br />' . $comment;
+            $history->setData('sales_person', $this->session->getUser()->getUserName());
         }
-        return $comment;
     }
 }
