@@ -239,7 +239,7 @@ class AddDiamondImporterAttributes implements DataPatchInterface, PatchRevertabl
             if ($attribute) {
                 $eavSetup->removeAttribute(
                     Product::ENTITY,
-                    $data['attribute']
+                    $data['code']
                 );
             }
             $eavSetup->addAttribute(
