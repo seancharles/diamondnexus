@@ -1,9 +1,10 @@
 FROM php:7.4.13-fpm
 LABEL maintainer="Forever Companies"
 
+RUN apt-get update && apt-get install sudo
 RUN groupadd -g 1000 admin
-RUN useradd -u 1000 -g 1000 -d /var/www/ admin -s /bin/bash
-RUN usermod -g www-data admin && usermod -a -G www-data,root root
+RUN echo "%admin	ALL=(ALL:ALL)	NOPASSWD: ALL" >> /etc/sudoers
+RUN useradd -u 1000 -g 1000 -d /var/www/ admin
 
 ARG BUILD
 ENV BUILD $BUILD
@@ -200,6 +201,14 @@ RUN echo "deb http://ftp.ua.debian.org/debian/ stretch main" >> /etc/apt/sources
    && rm -rf /var/lib/apt/lists/* /usr/local/etc/php-fpm.d/* \
    && cd /tmp && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php /tmp/composer-setup.php --version=1.10.16 --install-dir=/usr/bin && php -r "unlink('composer-setup.php');" \
    && mv /usr/bin/composer.phar /usr/bin/composer
+
+COPY bin/files/ /etc/nginx/
+RUN chown 1000:1000 -R /etc/nginx/
+
+ARG htaccess
+
+RUN echo -n 'diamondnexus:' >> /var/.htpasswd
+RUN openssl passwd -apr1 passin `echo "$htaccess"` | tail -n1 >> /var/.htpasswd
 
 RUN if [ "$XDEBUG" = "on" ] ; then pecl install xdebug \
 && docker-php-ext-enable xdebug \

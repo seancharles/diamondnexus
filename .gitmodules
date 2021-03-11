@@ -1,0 +1,3 @@
+[submodule "nginx-magento2"]
+	path = bin/files
+	url = git@github.com:ForeverCompanies/nginx-magento2.git
