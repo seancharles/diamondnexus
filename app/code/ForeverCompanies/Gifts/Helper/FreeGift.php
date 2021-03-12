@@ -8,7 +8,8 @@ use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Catalog\Model\ProductRepository;
-use Magento\Framework\Exception\NoSuchEntityException;use Magento\Framework\Serialize\Serializer\Json as Serialize;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Serialize\Serializer\Json as Serialize;
 use Magento\Quote\Model\Quote\Item;
 use Magento\Framework\Stdlib\DateTime;
 
@@ -32,22 +33,22 @@ class FreeGift extends AbstractHelper
     /**
      * @var string[]
      */
-    protected $attributeSetIds;
+    protected $attributeSetIds = [];
 
     /**
      * @var string[]
      */
-    protected $metalTypes;
+    protected $metalTypes = [];
 
     /**
      * @var string[]
      */
-    protected $giftSkus;
+    protected $giftSkus = [];
 
     /**
      * @var array[]
      */
-    protected $rules;
+    protected $rules = [];
 
     /**
      * Data constructor.
@@ -61,8 +62,7 @@ class FreeGift extends AbstractHelper
         ProductRepository $productRepository,
         DateTime $dateTime,
         Serialize $serialize
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->productRepository = $productRepository;
         $this->serialize = $serialize;
@@ -105,14 +105,16 @@ class FreeGift extends AbstractHelper
     public function fillRules()
     {
         $this->rules = $this->getRules();
-        foreach ($this->rules as $rule) {
-            $this->attributeSetIds[] = $rule['attribute_set_id'];
-            $this->metalTypes[] = $rule['metal_type'];
-            $this->giftSkus[] = $rule['sku'];
+        if (count($this->rules) > 0) {
+            foreach ($this->rules as $rule) {
+                $this->attributeSetIds[] = $rule['attribute_set_id'];
+                $this->metalTypes[] = $rule['metal_type'];
+                $this->giftSkus[] = $rule['sku'];
+            }
+            $this->attributeSetIds = array_unique($this->attributeSetIds);
+            $this->metalTypes = array_unique($this->metalTypes);
+            $this->giftSkus = array_unique($this->giftSkus);
         }
-        $this->attributeSetIds = array_unique($this->attributeSetIds);
-        $this->metalTypes = array_unique($this->metalTypes);
-        $this->giftSkus = array_unique($this->giftSkus);
     }
 
     /**
@@ -195,11 +197,11 @@ class FreeGift extends AbstractHelper
             }
             try {
                 $addingSku = $this->checkRulesInQuoteItem($quoteItem);
-            if ($addingSku) {
-                $giftSkus = $this->addGiftSku($addingSku, $giftSkus, $quoteItem->getQty());
-            }
+                if ($addingSku) {
+                    $giftSkus = $this->addGiftSku($addingSku, $giftSkus, $quoteItem->getQty());
+                }
             } catch (NoSuchEntityException $e) {
-                /** TODO */
+                $this->_logger->error($e->getMessage());
             }
         }
         if (count($giftSkus) == 0) {
@@ -269,7 +271,6 @@ class FreeGift extends AbstractHelper
         }
         return $giftSkus;
     }
-
 
     /**
      * @param string $config
