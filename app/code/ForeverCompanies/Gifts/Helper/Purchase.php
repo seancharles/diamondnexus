@@ -31,8 +31,7 @@ class Purchase extends AbstractHelper
         Context $context,
         CollectionFactory $attributeSetCollectionFactory,
         Config $eav
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->eav = $eav;
         $this->attributeSetCollectionFactory = $attributeSetCollectionFactory;

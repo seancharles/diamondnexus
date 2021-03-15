@@ -40,8 +40,7 @@ class QuoteItemAdditionCheckGift implements ObserverInterface
         Purchase $purchaseHelper,
         FreeGift $freeGiftHelper,
         ProductRepository $productRepository
-    )
-    {
+    ) {
         $this->purchaseHelper = $purchaseHelper;
         $this->freeGiftHelper = $freeGiftHelper;
         $this->productRepository = $productRepository;
@@ -129,6 +128,4 @@ class QuoteItemAdditionCheckGift implements ObserverInterface
             $this->freeGiftHelper->addGiftToQuote($quote, $this->purchaseHelper->getGiftProductId(), 1, true);
         }
     }
-
-
 }
