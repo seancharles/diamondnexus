@@ -195,6 +195,8 @@ class AddDiamondImporterAttributes implements DataPatchInterface, PatchRevertabl
         'clarity',
         'weight',
         'cut_grade',
+        'carat_weight',
+        'supplier',
         'description',
         'location',
         'cert_url_key',
