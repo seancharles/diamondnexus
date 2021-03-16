@@ -18,12 +18,16 @@ class Sync
     
     public function execute()
     {
-        $this->syncHelper->run();
+        if($this->syncHelper->isOrderSyncEnabled()) {
+            $this->syncHelper->run();
 
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/cron.log');
-        $logger = new \Zend\Log\Logger();
-        $logger->addWriter($writer);
-        $logger->info(__METHOD__);
+            $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/cron.log');
+            $logger = new \Zend\Log\Logger();
+            $logger->addWriter($writer);
+            $logger->info(__METHOD__);
+        } else {
+            echo "Warn: orders cron disabled\n";
+        }
 
         return $this;
 

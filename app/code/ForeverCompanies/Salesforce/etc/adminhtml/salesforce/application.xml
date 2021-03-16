@@ -11,7 +11,7 @@
         <field id="order_sync_is_active"  translate="label" type="select"
                sortOrder="0" showInDefault="1" showInWebsite="0"
                showInStore="0">
-            <label>Enable Leads Sync</label>
+            <label>Enable Order Sync</label>
             <config_path>salesforcecrm/salesforceconfig/order_sync_is_active</config_path>
             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
             <comment>Command: bin/magento forevercompanies:salesforce:leads:sync</comment>
@@ -19,7 +19,7 @@
         <field id="lead_sync_is_active"  translate="label" type="select"
                sortOrder="0" showInDefault="1" showInWebsite="0"
                showInStore="0">
-            <label>Enable Order Sync</label>
+            <label>Enable Leads Sync</label>
             <config_path>salesforcecrm/salesforceconfig/lead_sync_is_active</config_path>
             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
             <comment>Command: bin/magento forevercompanies:salesforce:sync</comment>

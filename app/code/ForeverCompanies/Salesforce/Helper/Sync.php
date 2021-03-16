@@ -19,6 +19,7 @@
         protected $customerResourceFactory;
         protected $leadsCollectionFactory;
         protected $leadsFactory;
+        protected $scopeConfig;
         
         protected $date;
         protected $timezone;
@@ -41,6 +42,7 @@
             \ForeverCompanies\Forms\Model\ResourceModel\Submission\CollectionFactory $leadsCollectionFactory,
             \ForeverCompanies\Forms\Model\ResourceModel\SubmissionFactory $leadsFactory,
             \ForeverCompanies\Salesforce\Helper\Mapping $mappingHelper,
+            \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
             
             DateTime $date,
             TimezoneInterface $timezone,
@@ -57,6 +59,7 @@
             $this->leadsCollectionFactory = $leadsCollectionFactory;
             $this->leadsFactory = $leadsFactory;
             $this->mappingHelper = $mappingHelper;
+            $this->scopeConfig = $scopeConfig;
             
             $this->date = $date;
             $this->timezone = $timezone;
@@ -495,5 +498,27 @@
         
         protected function getObjectKey($object, $key) {
             return (isset($date->{$object}) == true) ? $object->{$key} : '';
+        }
+        
+        /*
+         * @return bool
+         */
+        public function isLeadSyncEnabled($scope = \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
+        {
+            return $this->scopeConfig->isSetFlag(
+                'salesforcecrm/salesforceconfig/lead_sync_is_active',
+                $scope
+            );
+        }
+        
+        /*
+         * @return bool
+         */
+        public function isOrderSyncEnabled($scope = \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
+        {
+            return $this->scopeConfig->isSetFlag(
+                'salesforcecrm/salesforceconfig/order_sync_is_active',
+                $scope
+            );
         }
     }
