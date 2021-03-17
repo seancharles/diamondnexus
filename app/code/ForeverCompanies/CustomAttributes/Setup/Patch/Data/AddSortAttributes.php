@@ -36,6 +36,16 @@ class AddSortAttributes implements DataPatchInterface
             'title' => 'Cut Grade Sort',
             'sort_order' => '51',
         ],
+        [
+            'code' => 'shape_alpha_sort',
+            'title' => 'Shape Alpha Sort',
+            'sort_order' => '61',
+        ],
+        [
+            'code' => 'shape_pop_sort',
+            'title' => 'Shape Popularity Sort',
+            'sort_order' => '71',
+        ],
     ];
 
     /**

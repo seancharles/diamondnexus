@@ -44,4 +44,8 @@ interface ProductInterface {
     @doc(description: "Sorting color in Product Listing.")
     cut_grade_sort  : Int
     @doc(description: "Sorting Cut Grade in Product Listing.")
+    shape_alpha_sort  : Int
+    @doc(description: "Sorting shape alphabetically in Product Listing.")
+    shape_pop_sort  : Int
+    @doc(description: "Sorting shape by popularity in Product Listing.")
 }
