@@ -2,6 +2,7 @@
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <!--
     <event name="sales_quote_product_add_after">
         <observer name="forevercompanies_gifts_add_gift"
                   instance="ForeverCompanies\Gifts\Observer\QuoteItemAdditionCheckGift"/>
@@ -14,4 +15,5 @@
         <observer name="forevercompanies_gifts_totals_before"
                   instance="ForeverCompanies\Gifts\Observer\ProcessQuoteObserver"/>
     </event>
+    -->
 </config>
