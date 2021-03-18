@@ -251,7 +251,7 @@ class TransformData extends AbstractHelper
     /**
      * @var int
      */
-    protected $looseDiamondCategory = ['926'];
+    private $clearanceDiamondsCategoryId = 906;
 
     /**
      * @param Context $context
@@ -389,28 +389,32 @@ class TransformData extends AbstractHelper
 
     /**
      * @param int $entityId
+     * @param int $looseDiamondCategory
+     * @return string
      */
-    public function setLooseDiamondCategory(int $entityId)
+    public function setLooseDiamondCategory(int $entityId, int $looseDiamondCategory): string
     {
         try {
             $product = $this->productRepository->getById($entityId);
-            $existingCategories = $product->getCategoriyIds();
+            $existingCategories = $product->getCategoryIds();
             if (is_array($existingCategories) && !empty($existingCategories)) {
+                if (in_array($looseDiamondCategory, $existingCategories)) {
+                    return 'not updated - already set';
+                } elseif (in_array($this->clearanceDiamondsCategoryId, $existingCategories)) {
+                    return 'not updated - is clearance diamond';
+                }
                 $categoryIds = array_unique(
-                    array_merge(
-                        $existingCategories,
-                        $this->looseDiamondCategory
-                    )
+                    array_merge($existingCategories, [$looseDiamondCategory])
                 );
             } else {
-                $categoryIds = $this->looseDiamondCategory;
+                $categoryIds = $looseDiamondCategory;
             }
             $product->setCategoryIds($categoryIds);
             $this->productRepository->save($product);
-        } catch (NoSuchEntityException $e) {
+            return 'updated!';
+        } catch (NoSuchEntityException | LocalizedException $e) {
             $this->_logger->error($e->getMessage());
-        } catch (LocalizedException $e) {
-            $this->_logger->error($e->getMessage());
+            return 'error - ' . $e->getMessage();
         }
     }
 
@@ -1471,7 +1475,7 @@ class TransformData extends AbstractHelper
      * @param string $setName
      * @return array|mixed|null
      */
-    protected function getAttributeSetId(string $setName)
+    public function getAttributeSetId(string $setName)
     {
         $set = $this->attributeSetCollectionFactory->create()->addFieldToFilter('attribute_set_name', $setName);
         return $set->getFirstItem()->getData('attribute_set_id');

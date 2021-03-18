@@ -67,12 +67,12 @@
                 <item name="UpdateBundlePriceTypeFixed" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\UpdateBundlePriceTypeFixed
                 </item>
-                <item name="SetLooseDiamondsCategory" xsi:type="object">
-                    ForeverCompanies\CustomAttributes\Console\Command\SetLooseDiamondsCategory
-                </item>
                 <item name="SetProductType" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\SetProductType
                 </item>
+                <item name="CreateLooseDiamondsCategory" xsi:type="object">
+                ForeverCompanies\CustomAttributes\Console\Command\CreateLooseDiamondsCategory
+            </item>
             </argument>
         </arguments>
     </type>
