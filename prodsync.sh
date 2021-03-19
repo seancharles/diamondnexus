@@ -1,6 +1,6 @@
 #!/bin/bash
 distributionId=$(aws cloudfront get-distribution-config --id E206DWJUE94NO9 | grep DomainName | awk 'NF{ print $NF }')
-if [ $distributionId = '"mag2-prod-cluster-LoadBalancer-88293620.us-east-1.elb.amazonaws.com",' ]; then
+if [ $distributionId != '"mag2-prod-cluster-LoadBalancer-88293620.us-east-1.elb.amazonaws.com",' ]; then
   s3location=arn:aws:datasync:us-east-1:$2:location/loc-06ba97a9cdf96a6c3
   aws s3 sync . s3://mag2-prod-standby-codebuild/magento --exclude ".git/*"  --delete
   efslocation=$(aws datasync create-location-efs --subdirectory /magento/ --efs-filesystem-arn arn:aws:elasticfilesystem:us-east-1:$2:file-system/$3 --ec2-config SecurityGroupArns=arn:aws:ec2:us-east-1:$2:security-group/$4,SubnetArn=arn:aws:ec2:us-east-1:$2:subnet/$5 --region us-east-1 | awk 'NF{ print $NF }' | sed 's/{//g' | sed 's/"//g' | sed 's/}//g')
