@@ -179,14 +179,11 @@ class CreateLooseDiamondsCategory extends Command
         $i = 1;
         foreach ($productCollection->getItems() as $item) {
             $result = $this->helper->updateLooseDiamond((int)$item->getData('entity_id'), $this->newCategoryId);
-
             $output->writeln("#" . $i . " - Product ID: " . $item->getData('entity_id') . " - " . $result);
-
             $i++;
-
-            if ($i > 10) {
-                return;
-            }
+//            if ($i > 17) {
+//                return;
+//            }
         }
         $output->writeln('Loose stones are updated! Please execute bin/magento cache:clean');
     }

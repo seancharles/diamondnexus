@@ -540,9 +540,17 @@ class TransformData extends AbstractHelper
                 $x .= ' | shapePopSort: ' . $this->shapePopSortValues[$shape];
             }
 
-            // change visibility of this product
-            $product->setVisibility(Visibility::VISIBILITY_IN_SEARCH);
-            $x .= ' | visibility: ' . Visibility::VISIBILITY_IN_SEARCH;
+//            // change visibility of this product
+//            $websiteIds = $product->getWebsiteIds();
+//            $z = var_export($websiteIds, true);
+//            $x .= ' | website ids: ' . $z;
+//
+//            foreach ($websiteIds as $websiteId) {
+//                $product->setStoreid($websiteId)->setData('visibility', Visibility::VISIBILITY_IN_SEARCH);
+//            }
+//            $product->setWebsiteIds($websiteIds);
+//            $product->setVisibility(Visibility::VISIBILITY_IN_SEARCH);
+//            $x .= ' | visibility: ' . Visibility::VISIBILITY_IN_SEARCH;
 
             if ($product->getData('product_type') == null) {
                 $this->productTypeHelper->setProductType($product);
