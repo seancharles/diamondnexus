@@ -253,7 +253,7 @@ class AddDiamondImporterAttributes implements DataPatchInterface, PatchRevertabl
                     'frontend' => '',
                     'required' => $data['required'],
                     'backend' => '',
-                    'global' => ScopedAttributeInterface::SCOPE_STORE,
+                    'global' => ScopedAttributeInterface::SCOPE_GLOBAL,
                     'default' => null,
                     'visible' => true,
                     'user_defined' => true,

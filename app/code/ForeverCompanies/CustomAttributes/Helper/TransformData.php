@@ -29,6 +29,7 @@ use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Gallery\GalleryManagement;
 use Magento\Catalog\Model\Product\Option;
 use Magento\Catalog\Model\Product\Option\Value;
+use Magento\Catalog\Model\Product\Visibility;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\CatalogInventory\Model\Stock\Item;
@@ -254,6 +255,82 @@ class TransformData extends AbstractHelper
     private $clearanceDiamondsCategoryId = 906;
 
     /**
+     * Sort values for color attribute values
+     * @var int[]
+     */
+    private $colorSortValues  = [
+        '2871' => 100,
+        '2870' => 200,
+        '2869' => 300,
+        '2868' => 400,
+        '2867' => 500,
+        '2866' => 600,
+        '2865' => 700,
+    ];
+
+    /**
+     * Sort values for cut_grade attribute values
+     * @var int[]
+     */
+    private $cutGradeSortValues = [
+        '2879' => 100,
+        '2878' => 200,
+        '2876' => 300,
+        '2877' => 400,
+        '3076' => 500,
+    ];
+
+    /**
+     * Sort values for clarity attribute values
+     * @var int[]
+     */
+    private $claritySortValues = [
+        '2858' => 100,
+        '2857' => 200,
+        '2861' => 300,
+        '2859' => 400,
+        '2863' => 500,
+        '2862' => 600,
+        '2854' => 700,
+        '3564' => 800,
+    ];
+
+    /**
+     * Sort values for shape attribute values, alphabetically
+     * @var int[]
+     */
+    private $shapeAlphaSortValues = [
+        '2844' => 100,
+        '2845' => 200,
+        '2848' => 300,
+        '2846' => 400,
+        '2851' => 500,
+        '2847' => 600,
+        '2850' => 700,
+        '2843' => 800,
+        '2849' => 900,
+        '2842' => 1000,
+    ];
+
+    /**
+     * Sort values for shape attribute values, popularity
+     * @var int[]
+     */
+    private $shapePopSortValues = [
+        '2842' => 100,
+        '2843' => 200,
+        '2845' => 300,
+        '2847' => 400,
+        '2848' => 500,
+        '2850' => 600,
+        '2844' => 700,
+        '2849' => 800,
+        '2851' => 900,
+        '2846' => 1000,
+    ];
+
+
+    /**
      * @param Context $context
      * @param Config $config
      * @param AttributeSetRepository $attributeSetRepository
@@ -392,26 +469,92 @@ class TransformData extends AbstractHelper
      * @param int $looseDiamondCategory
      * @return string
      */
-    public function setLooseDiamondCategory(int $entityId, int $looseDiamondCategory): string
+    public function updateLooseDiamond(int $entityId, int $looseDiamondCategory): string
     {
+        $x = '';
+
         try {
+            // get the product by entity id
             $product = $this->productRepository->getById($entityId);
+
+            // pull list of existing categories
             $existingCategories = $product->getCategoryIds();
+
+            // variable that will contain our array of categories
+            $categoryIds = [];
+
+            // if existing categories are found, we need to check if the existing category is the loose diamond
+            // category or the clearance diamond category - if so, do nothing
             if (is_array($existingCategories) && !empty($existingCategories)) {
-                if (in_array($looseDiamondCategory, $existingCategories)) {
-                    return 'not updated - already set';
-                } elseif (in_array($this->clearanceDiamondsCategoryId, $existingCategories)) {
-                    return 'not updated - is clearance diamond';
+
+                // if this product is in the clearance category, we don't want to change visibility
+                if (in_array($this->clearanceDiamondsCategoryId, $existingCategories)) {
+                    return 'not updated, clearance diamond';
+                } elseif (
+                    !in_array($looseDiamondCategory, $existingCategories) &&
+                    !in_array($this->clearanceDiamondsCategoryId, $existingCategories)
+                ) {
+                    $categoryIds = array_unique(
+                        array_merge($existingCategories, [$looseDiamondCategory])
+                    );
                 }
-                $categoryIds = array_unique(
-                    array_merge($existingCategories, [$looseDiamondCategory])
-                );
-            } else {
-                $categoryIds = $looseDiamondCategory;
             }
-            $product->setCategoryIds($categoryIds);
+            // product doesn't have existing categories, just set the loose diamond category as the product's
+            // only category...
+            else {
+                $categoryIds = [$looseDiamondCategory];
+            }
+
+            // if the categoryIds array is populated, then we should update the product
+            if (!empty($categoryIds)) {
+                $product->setCategoryIds($categoryIds);
+                $x .= ' | category updated';
+            }
+
+            // next lets determine the sort values for all of our attributes
+            $color = $product->getData('color');
+            if (array_key_exists($color, $this->colorSortValues)) {
+                $product->setCustomAttribute('color_sort', $this->colorSortValues[$color]);
+                $x .= ' | colorSort: ' . $this->colorSortValues[$color];
+            }
+
+            $cutGrade = $product->getData('cut_grade');
+            if (array_key_exists($cutGrade, $this->cutGradeSortValues)) {
+                $product->setCustomAttribute('cut_grade_sort', $this->cutGradeSortValues[$cutGrade]);
+                $x .= ' | cutGradeSort: ' . $this->cutGradeSortValues[$cutGrade];
+            }
+
+            $clarity = $product->getData('clarity');
+            if (array_key_exists($clarity, $this->claritySortValues)) {
+                $product->setCustomAttribute('clarity_sort', $this->claritySortValues[$clarity]);
+                $x .= ' | claritySort: ' . $this->claritySortValues[$clarity];
+            }
+
+            $shape = $product->getData('shape');
+            if (array_key_exists($shape, $this->shapeAlphaSortValues)) {
+                $product->setCustomAttribute('shape_alpha_sort', $this->shapeAlphaSortValues[$shape]);
+                $x .= ' | shapeAlphaSort: ' . $this->shapeAlphaSortValues[$shape];
+            }
+            if (array_key_exists($shape, $this->shapePopSortValues)) {
+                $product->setCustomAttribute('shape_pop_sort', $this->shapePopSortValues[$shape]);
+                $x .= ' | shapePopSort: ' . $this->shapePopSortValues[$shape];
+            }
+
+            // change visibility of this product
+            $product->setVisibility(Visibility::VISIBILITY_IN_SEARCH);
+            $x .= ' | visibility: ' . Visibility::VISIBILITY_IN_SEARCH;
+
+            if ($product->getData('product_type') == null) {
+                $this->productTypeHelper->setProductType($product);
+                $x .= ' | product type set';
+            }
+
+            // now save product
             $this->productRepository->save($product);
-            return 'updated!';
+            $x .= ' | saved';
+
+            return 'updated! - ' . $x;
+
         } catch (NoSuchEntityException | LocalizedException $e) {
             $this->_logger->error($e->getMessage());
             return 'error - ' . $e->getMessage();

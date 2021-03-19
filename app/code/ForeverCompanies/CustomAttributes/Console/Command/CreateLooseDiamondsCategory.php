@@ -118,6 +118,8 @@ class CreateLooseDiamondsCategory extends Command
             $this->state->setAreaCode(Area::AREA_GLOBAL);
         }
 
+        $output->writeln("Area code: " . $this->state->getAreaCode());
+
         $output->writeln("Create new Loose Diamonds category...");
 
         // set current store to TF
@@ -176,9 +178,15 @@ class CreateLooseDiamondsCategory extends Command
         $output->writeln('Loose diamonds found: ' . $productCollection->count());
         $i = 1;
         foreach ($productCollection->getItems() as $item) {
-            $result = $this->helper->setLooseDiamondCategory((int)$item->getData('entity_id'), $this->newCategoryId);
+            $result = $this->helper->updateLooseDiamond((int)$item->getData('entity_id'), $this->newCategoryId);
+
             $output->writeln("#" . $i . " - Product ID: " . $item->getData('entity_id') . " - " . $result);
+
             $i++;
+
+            if ($i > 10) {
+                return;
+            }
         }
         $output->writeln('Loose stones are updated! Please execute bin/magento cache:clean');
     }

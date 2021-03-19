@@ -88,7 +88,7 @@ class AddSortAttributes implements DataPatchInterface
                         'label' => $attribute['title'],
                         'input' => 'text',
                         'required' => false,
-                        'global' => ScopedAttributeInterface::SCOPE_STORE,
+                        'global' => ScopedAttributeInterface::SCOPE_GLOBAL,
                         'used_in_product_listing' => true,
                         'default' => null,
                         'visible' => true,
