@@ -54,9 +54,6 @@ phases:
       - mount -t nfs -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport $MOUNT_EFS:/ ./nfsmount/
       - docker cp -a $CONTAINER:/var/www/magento/ ./nfsmount/
       - chown 1000:1000 -R ./nfsmount/
-      - docker cp -a $CONTAINER:/var/www/magento/. .
-      - chown 1000:1000 -R .
-      - aws s3 sync . $bucket --exclude ".git/*"  --delete
       - bash datasync.sh $task $accountId
       - sleep 3
       - echo Pushing the Docker images...
