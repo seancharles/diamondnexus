@@ -28,6 +28,9 @@ phases:
   build:
     commands:
       - echo Build started on `date`
+      - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+      - apt-get -y update
+      - apt-get install -y nfs-common
       - echo Cloning remote GIT repo
       - git log --name-status HEAD^..HEAD
       - echo Building the Docker image...
