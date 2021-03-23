@@ -73,7 +73,7 @@
                 <item name="CreateLooseDiamondsCategory" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\CreateLooseDiamondsCategory
                 </item>
-                <item name="CreateLooseDiamondsCategory" xsi:type="object">
+                <item name="UpdateLooseDiamondVisibility" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\UpdateLooseDiamondVisibility
                 </item>
             </argument>

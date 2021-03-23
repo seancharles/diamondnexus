@@ -110,7 +110,7 @@ class CreateLooseDiamondsCategory extends Command
      * @throws LocalizedException
      * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $this->state->getAreaCode();
