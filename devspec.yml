@@ -29,7 +29,7 @@ phases:
       - echo Build started on `date`
       - rm -rf *
       - echo Cloning remote GIT repo
-      - git clone https://$username:$pass@github.com/ForeverCompanies/magento2.git --branch develop
+      - git clone https://$username:$pass@github.com/ForeverCompanies/magento2.git --branch $BRANCH
       - cd magento2
       - git log --name-status HEAD^..HEAD
       - git config --global --add remote.origin.fetch "+refs/pull/*/head:refs/remotes/origin/pr/*"
