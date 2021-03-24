@@ -261,7 +261,7 @@ class SetLooseDiamondAttributes extends Command
                     if (array_key_exists($clarity, $this->claritySortValues)) {
                         $this->productActionObject->updateAttributes(
                             $entityIds,
-                            ['clarity_sort' => $this->cutGradeSortValues[$clarity]],
+                            ['clarity_sort' => $this->claritySortValues[$clarity]],
                             0
                         );
                     }
