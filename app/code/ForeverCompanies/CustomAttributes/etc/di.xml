@@ -70,8 +70,8 @@
                 <item name="SetProductType" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\SetProductType
                 </item>
-                <item name="CreateLooseDiamondsCategory" xsi:type="object">
-                    ForeverCompanies\CustomAttributes\Console\Command\CreateLooseDiamondsCategory
+                <item name="SetLooseDiamondAttributes" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\SetLooseDiamondAttributes
                 </item>
                 <item name="UpdateLooseDiamondVisibility" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\UpdateLooseDiamondVisibility
