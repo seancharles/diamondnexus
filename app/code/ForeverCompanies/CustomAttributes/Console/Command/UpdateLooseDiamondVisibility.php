@@ -78,7 +78,11 @@ class UpdateLooseDiamondVisibility extends Command
         $i = 1;
         foreach ($productCollection->getItems() as $item) {
             $categoryIds = $item->getCategoryIds();
-            if (is_array($categoryIds) && !empty($categoryIds) && !in_array($this->looseDiamondClearanceCategoryId, $categoryIds)) {
+            if (
+                is_null($categoryIds) ||
+                (is_array($categoryIds) && empty($categoryIds)) ||
+                (!empty($categoryIds) && !in_array($this->looseDiamondClearanceCategoryId, $categoryIds))
+            ) {
                 $entityIds[] = (int) $item->getData('entity_id');
                 $str = "added to update";
             } else {
