@@ -21,13 +21,17 @@ interface ProductInterface {
     @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
     certified_stone: [String]
     @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
-    color: [String]
-    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
     cut_type: [String]
     @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
-    shape: [String]
-    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
     gemstone: [String]
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    clarity: [String]
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    color: [String]
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    cut_grade: [String]
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
+    shape: [String]
     @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Multiselect")
     backorder_flag: String
     @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\Attribute\\Backorder")
