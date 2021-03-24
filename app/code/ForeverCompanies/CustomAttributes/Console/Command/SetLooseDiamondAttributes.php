@@ -9,10 +9,11 @@ use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\ResourceModel\Product\Action;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\Eav\Model\Config;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SetLooseDiamondAttributes extends AbstractCommand
+class SetLooseDiamondAttributes extends Command
 {
 
     /**
@@ -301,7 +302,7 @@ class SetLooseDiamondAttributes extends AbstractCommand
             $output->writeln("Error: " . $e->getMessage());
         }
 
-        $output->writeln('Loose diamonds attributes updated!');
+        $output->writeln('Loose diamonds attributes updated! Please execute bin/magento cache:clean');
     }
 
     /**

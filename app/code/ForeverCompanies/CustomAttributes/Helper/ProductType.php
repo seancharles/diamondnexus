@@ -114,6 +114,21 @@ class ProductType extends AbstractHelper
     }
 
     /**
+     * @param Product $product
+     * @return string
+     * @throws NoSuchEntityException
+     */
+    public function getProductType(Product $product): string
+    {
+        if ($product->getData('product_type') == null) {
+            $attributeSetName = $this->attrSetRepository->get($product->getAttributeSetId())->getAttributeSetName();
+            return $this->attributeSetToProductType($attributeSetName);
+        } else {
+            return "";
+        }
+    }
+
+    /**
      * @param string $attributeSetName
      * @return string
      */
