@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Console\Command;
 
-use Magento\Framework\App\Area;
+use ForeverCompanies\CustomAttributes\Helper\ProductType;
+use ForeverCompanies\CustomAttributes\Helper\TransformData;
+use Magento\Catalog\Model\ResourceModel\Product\Action;
 use Magento\Framework\Exception\LocalizedException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SetProductType extends AbstractCommand
+class SetProductType extends Command
 {
 
     /**
@@ -18,25 +21,74 @@ class SetProductType extends AbstractCommand
     protected $name = 'forevercompanies:set-product-type';
 
     /**
+     * @var
+     */
+    protected $helper;
+
+    /**
+     * @var ProductType
+     */
+    protected $productTypeHelper;
+
+    /**
+     * @var Action
+     */
+    protected $productActionObject;
+
+    /**
+     * SetProductType constructor.
+     * @param TransformData $helper
+     * @param ProductType $productTypeHelper
+     * @param Action $action
+     */
+    public function __construct(
+        TransformData $helper,
+        ProductType $productTypeHelper,
+        Action $action
+    ) {
+        $this->helper = $helper;
+        $this->productTypeHelper = $productTypeHelper;
+        $this->productActionObject = $action;
+        parent::__construct($this->name);
+    }
+
+    /**
      * {@inheritdoc}
      * @throws LocalizedException
+     * @throws \Exception
      */
     protected function execute(
         InputInterface $input,
         OutputInterface $output
     ) {
-        try {
-            $this->state->getAreaCode();
-        } catch (LocalizedException $e) {
-            $this->state->setAreaCode(Area::AREA_GLOBAL);
-        }
         $output->writeln("Get products to set product type...");
         $productCollection = $this->helper->getAllEnabledProducts();
-        $output->writeln('Products for transformation: ' . $productCollection->count());
+        $output->writeln('Number of products found: ' . $productCollection->count());
+
+        $productTypeData = [];
+
         foreach ($productCollection->getItems() as $item) {
             $output->writeln('In process product ID = ' . $item->getData('entity_id'));
-            $this->helper->setProductType((int)$item->getData('entity_id'));
+            $productType = $this->productTypeHelper->getProductType($item);
+            if ($productType !== "") {
+                $productTypeData[$productType][] = (int)$item->getData('entity_id');
+            }
         }
+
+        try {
+            if (!empty($productTypeData)) {
+                foreach ($productTypeData as $productType => $entityIds) {
+                    $this->productActionObject->updateAttributes(
+                        $entityIds,
+                        ['product_type' => $productType],
+                        0
+                    );
+                }
+            }
+        } catch (\Exception $e) {
+            $output->writeln("Error: " . $e->getMessage());
+        }
+
         $output->writeln('Product Types are updated! Please execute bin/magento cache:clean');
     }
 

@@ -38,6 +38,8 @@ class UpdateIsFilterableOnCustomAttributes implements DataPatchInterface, PatchR
         'cut_type',
         'gemstone',
         'metal_type',
+        'online',
+        'product_type',
         'ring_size',
         'shape',
     ];

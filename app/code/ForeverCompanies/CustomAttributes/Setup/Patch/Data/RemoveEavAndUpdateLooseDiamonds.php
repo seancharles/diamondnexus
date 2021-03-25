@@ -195,7 +195,7 @@ class RemoveEavAndUpdateLooseDiamonds implements DataPatchInterface
                         'label' => $attribute['title'],
                         'input' => $attribute['input'],
                         'required' => false,
-                        'global' => ScopedAttributeInterface::SCOPE_STORE,
+                        'global' => ScopedAttributeInterface::SCOPE_GLOBAL,
                         'used_in_product_listing' => true,
                         'default' => null,
                         'visible' => true,
