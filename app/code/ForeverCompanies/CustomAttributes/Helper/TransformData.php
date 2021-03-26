@@ -29,6 +29,7 @@ use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Gallery\GalleryManagement;
 use Magento\Catalog\Model\Product\Option;
 use Magento\Catalog\Model\Product\Option\Value;
+use Magento\Catalog\Model\Product\Visibility;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\CatalogInventory\Model\Stock\Item;
@@ -248,10 +249,6 @@ class TransformData extends AbstractHelper
         'color' => 'filter_color'
     ];
 
-    /**
-     * @var int
-     */
-    private $clearanceDiamondsCategoryId = 906;
 
     /**
      * @param Context $context
@@ -385,37 +382,6 @@ class TransformData extends AbstractHelper
         $collection->addAttributeToFilter('attribute_set_id', ['eq' => $attributeSetId]);
         $collection->addAttributeToFilter('type_id', ['eq' => Product\Type::TYPE_SIMPLE]);
         return $collection;
-    }
-
-    /**
-     * @param int $entityId
-     * @param int $looseDiamondCategory
-     * @return string
-     */
-    public function setLooseDiamondCategory(int $entityId, int $looseDiamondCategory): string
-    {
-        try {
-            $product = $this->productRepository->getById($entityId);
-            $existingCategories = $product->getCategoryIds();
-            if (is_array($existingCategories) && !empty($existingCategories)) {
-                if (in_array($looseDiamondCategory, $existingCategories)) {
-                    return 'not updated - already set';
-                } elseif (in_array($this->clearanceDiamondsCategoryId, $existingCategories)) {
-                    return 'not updated - is clearance diamond';
-                }
-                $categoryIds = array_unique(
-                    array_merge($existingCategories, [$looseDiamondCategory])
-                );
-            } else {
-                $categoryIds = $looseDiamondCategory;
-            }
-            $product->setCategoryIds($categoryIds);
-            $this->productRepository->save($product);
-            return 'updated!';
-        } catch (NoSuchEntityException | LocalizedException $e) {
-            $this->_logger->error($e->getMessage());
-            return 'error - ' . $e->getMessage();
-        }
     }
 
     /**
