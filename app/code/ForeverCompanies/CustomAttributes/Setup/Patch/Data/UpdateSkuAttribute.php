@@ -1,8 +1,5 @@
 <?php
-/**
- * Copyright ©  All rights reserved.
- * See COPYING.txt for license details.
- */
+
 declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Setup\Patch\Data;
@@ -13,36 +10,23 @@ use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\Patch\PatchRevertableInterface;
 
-class UpdateIsFilterableOnCustomAttributes implements DataPatchInterface, PatchRevertableInterface
+class UpdateSkuAttribute implements DataPatchInterface, PatchRevertableInterface
 {
 
     /**
      * @var ModuleDataSetupInterface
      */
     private $moduleDataSetup;
+
     /**
      * @var EavSetupFactory
      */
     private $eavSetupFactory;
 
     /**
-     * @var string[]
+     * @var string
      */
-    private $attributesToUpdate = [
-        'band_width',
-        'certified_stone',
-        'color',
-        'clarity',
-        'carat_weight',
-        'cut_grade',
-        'cut_type',
-        'gemstone',
-        'metal_type',
-        'online',
-        'product_type',
-        'ring_size',
-        'shape',
-    ];
+    private $_attribute = 'sku';
 
     /**
      * Constructor
@@ -65,14 +49,28 @@ class UpdateIsFilterableOnCustomAttributes implements DataPatchInterface, PatchR
     {
         $this->moduleDataSetup->getConnection()->startSetup();
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        foreach ($this->attributesToUpdate as $attribute) {
-            $eavSetup->updateAttribute(
-                Product::ENTITY,
-                $attribute,
-                'is_filterable',
-                1
-            );
-        }
+
+        // change url_key to be set to searchable (is_searchable = 1)
+        $eavSetup->updateAttribute(
+            Product::ENTITY,
+            $this->_attribute,
+            'is_filterable_in_grid',
+            1
+        );
+        $eavSetup->updateAttribute(
+            Product::ENTITY,
+            $this->_attribute,
+            'is_used_in_grid',
+            1
+        );
+        $eavSetup->updateAttribute(
+            Product::ENTITY,
+            $this->_attribute,
+            'is_visible_in_advanced_search',
+            1
+        );
+
+
         $this->moduleDataSetup->getConnection()->endSetup();
     }
 
@@ -80,14 +78,15 @@ class UpdateIsFilterableOnCustomAttributes implements DataPatchInterface, PatchR
     {
         $this->moduleDataSetup->getConnection()->startSetup();
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        foreach ($this->attributesToUpdate as $attribute) {
-            $eavSetup->updateAttribute(
-                Product::ENTITY,
-                $attribute,
-                'is_filterable',
-                0
-            );
-        }
+
+        // change url_key to be set to searchable (is_searchable = 0)
+        $eavSetup->updateAttribute(
+            Product::ENTITY,
+            'url_key',
+            'is_searchable',
+            0
+        );
+
         $this->moduleDataSetup->getConnection()->endSetup();
     }
 
