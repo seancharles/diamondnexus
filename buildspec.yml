@@ -46,7 +46,7 @@ phases:
       - if [ $(aws cloudfront get-distribution-config --id E206DWJUE94NO9 | grep DomainName | awk 'NF{ print $NF }') = '"mag2-prod-cluster-LoadBalancer-88293620.us-east-1.elb.amazonaws.com",' ]; then MOUNTTHIS=$MOUNTNFSSTANDBY; else MOUNTTHIS=$MOUNTNFS ; fi
       - mount -t nfs -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport $MOUNTTHIS:/ ./nfsmount/
       - docker cp -a $CONTAINER:/var/www/magento/pub/static/ ./nfsmount/magento/pub/
-      - chown 1000:1000 -R ./nfsmount/pub/static/
+      - chown 1000:1000 -R ./nfsmount/magento/pub/static/
       - sleep 3
       - echo Pushing the Docker images...
       - docker push $REPOURL/magento:latest
