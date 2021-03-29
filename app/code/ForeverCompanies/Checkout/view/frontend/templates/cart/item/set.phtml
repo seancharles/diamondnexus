@@ -32,12 +32,11 @@ $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $collection = $objectManager->create('\Magento\Quote\Model\ResourceModel\Quote\Item\CollectionFactory')->create();
 		$collection->addFieldToFilter('quote_id', $_item->getQuoteId());
         $collection->addFieldToFilter('set_id', $_item->getSetId());
-        //$collection->addFieldToFilter('item_id' array('ne'=> $_item->getItemId()));
         
         if($collection) {
-            $diamondItem = $collection->getLastItem();
-
-            $diamondItem->setStoreId($_item->getStoreId());
+            if($_item->getItemId() != $collection->getLastItem()->getId()) {
+                $diamondItem = $collection->getLastItem();
+            }
         }
     ?>
         <!-- configurable.phtml -->
@@ -149,7 +148,11 @@ $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                     <?php else :?>
                         <span class="price-excluding-tax" data-label="Excl. Tax">
                             <span class="cart-price">
-                                <span class="price"><?php echo $priceHelper->convertAndFormat(($_item->getPrice() * $_item->getQty()) + ($diamondItem->getPrice() * $diamondItem->getQty()));; ?></span>
+                                <?php if($diamondItem != null): ?>
+                                    <span class="price"><?php echo $priceHelper->convertAndFormat(($_item->getPrice() * $_item->getQty()) + ($diamondItem->getPrice() * $diamondItem->getQty())); ?></span>
+                                <?php else: ?>
+                                    <span class="price"><?php echo $priceHelper->convertAndFormat($_item->getPrice() * $_item->getQty()); ?></span>
+                                <?php endif; ?>
                             </span>
                         </span>
                     <?php endif; ?>
