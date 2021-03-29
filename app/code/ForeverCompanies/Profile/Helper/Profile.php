@@ -24,7 +24,9 @@ class Profile
         'set_builder' => [
             'type' => null,
             'setting' => null,
-            'stone' => null
+            'setting_sku' => null,
+            'stone' => null,
+            'stone_sku' => null
         ],
 		'cart_qty' => 0
 	];
