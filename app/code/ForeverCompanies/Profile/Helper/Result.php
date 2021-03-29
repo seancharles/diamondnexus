@@ -268,6 +268,16 @@ class Result
 		}
 		$this->success = (bool) $bool;
 	}
+    
+	public function addSuccessMessage($message = null) {
+		if($message != null) {
+            if($this->message != null) {
+                $this->message .= "\n" .$message;
+            } else {
+                $this->message .= $message;
+            }
+		}
+	}
 
 	public function getSuccess() {
 		return $this->success;

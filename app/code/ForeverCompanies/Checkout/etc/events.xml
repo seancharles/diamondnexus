@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
-   <event name="checkout_cart_product_add_after">
-       <observer name="fc_checkout_add_to_cart" instance="ForeverCompanies\Checkout\Observer\AddToQuote" />
-   </event>
+    <event name="checkout_cart_product_add_after">
+        <observer name="fc_checkout_add_to_cart" instance="ForeverCompanies\Checkout\Observer\AddToCart" />
+    </event>
+    <event name="sales_quote_remove_item">
+        <observer name="fc_checkout_quote_remove_item" instance="ForeverCompanies\Checkout\Observer\QuoteRemoveItem" />
+    </event>
 </config>

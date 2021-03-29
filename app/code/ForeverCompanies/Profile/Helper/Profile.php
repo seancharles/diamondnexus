@@ -21,6 +21,11 @@ class Profile
 		'logged_in' => false,
 		'lastsync' => null,
 		'cart_items' => null,
+        'set_builder' => [
+            'type' => null,
+            'setting' => null,
+            'stone' => null
+        ],
 		'cart_qty' => 0
 	];
 	
@@ -45,7 +50,13 @@ class Profile
 		$this->setProfileKey('form_key', $this->formKey->getFormKey());
 		$this->setProfileKey('customer_id', (int) $customerSession->getCustomerId());
 		$this->setProfileKey('logged_in', (bool) $customerSession->isLoggedIn());
-		
+        
+        $this->setProfileKey('set_builder', [
+            'type' => $this->getProfileSessionKey('set_type'),
+            'setting' => $this->getProfileSessionKey('set_setting'),
+            'stone' => $this->getProfileSessionKey('set_stone')
+        ]);
+        
 		// add cart into to 
 		if($this->checkoutSession->getQuote()->getId() > 0) {
 			$this->setProfileKey('quote_id', (int) $this->checkoutSession->getQuote()->getId());
@@ -136,8 +147,23 @@ class Profile
 	
 	public function setProfileKey($key = null, $value = null)
 	{
-		$this->profile[$key] = $value;
+        $this->profile[$key] = $value;
 	}
+    
+	public function setProfileBuilderKey($key = null, $value = null)
+	{
+        $this->profile['set_builder'][$key] = $value;
+	}
+
+    public function getProfileSessionKey($key = null)
+    {
+        return $this->checkoutSession->getData($key);
+    }
+    
+    public function setProfileSessionKey($key = null, $value = null)
+    {
+        $this->checkoutSession->setData($key, $value);
+    }
 	
 	public function clearQuote()
 	{
