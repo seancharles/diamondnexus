@@ -31,6 +31,12 @@ class SetTfRootCategory implements DataPatchInterface
     protected $categoryFactory;
 
     /**
+     * The store code for TF
+     * @var string
+     */
+    private $tfStoreCode = 'www_1215diamonds_com';
+    
+    /**
      * The root category that should be used for TF
      * @var int
      */
