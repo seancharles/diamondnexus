@@ -63,12 +63,7 @@
 
                     $setId = time();
                     
-                    $this->_checkoutSession->setParentItemId(null);
                     $this->_checkoutSession->setBundleIdentifier($setId);
-                    
-                    //$settingProduct = $this->addItem($settingParams['product'], $settingParams, $setId);
-
-                    //$this->addQuoteItem($quote, $settingParams['product'], $settingParams);
                     
                     $storeId = $this->_objectManager->get(
                         \Magento\Store\Model\StoreManagerInterface::class
@@ -83,30 +78,6 @@
                         'checkout_cart_product_add_after',
                         ['quote_item' => $result, 'product' => $settingProduct]
                     );
-                    
-                    //$parentItemId = $this->getLastItemId($setId);
-                    
-                    $quoteId = $quote->getId();
-                    
-                    echo "quoteId=" . $quoteId . "\n";
-                    
-                    $collection = $this->quoteItemCollectionFactory->create();
-                    $collection->addFieldToFilter('quote_id', $quoteId);
-                    //$collection->addFieldToFilter('set_id', $setId);
-                    
-                    if($collection) {
-                        echo "valid collection\n";
-                        
-                        $firstItem = $collection->getFirstItem();
-                        
-                        echo $firstItem->getItemId();
-                    }
-                    
-                    //echo $parentItemId;
-                    exit;
-                    
-                    $this->_checkoutSession->setParentItemId($parentItemId);
-                    //$this->addQuoteItem($stoneParams['product'], $stoneParams, $setId);
                     
                     $product = $this->productRepository->getById($stoneParams['product'], false, $storeId);
                     
@@ -123,13 +94,17 @@
                     
                     $this->profileHelper->setProfileSessionKey('set_type', null);
                     $this->profileHelper->setProfileSessionKey('set_setting', null);
+                    $this->profileHelper->setProfileSessionKey('set_setting_sku', null);
                     $this->profileHelper->setProfileSessionKey('set_stone', null);
+                    $this->profileHelper->setProfileSessionKey('set_stone_sku', null);
 
                     // update the current profile instance
                     $this->profileHelper->setProfileKey('set_builder', [
                         'type' => null,
                         'setting' => null,
-                        'stone' => null
+                        'setting_sku' => null,
+                        'stone' => null,
+                        'stone_sku' => null
                     ]);
 
                     $message = __(
@@ -155,23 +130,4 @@
 			
 			$this->resultHelper->getResult();
 		}
-        
-        protected function getLastItemId($setId = null)
-        {
-            $quoteId = $quote->getId();
-            
-            echo $quoteId . "\n";
-            
-            $collection = $this->quoteItemCollectionFactory->create();
-            $collection->addFieldToFilter('quote_id', $quoteId);
-            $collection->addFieldToFilter('set_id', $setId);
-            
-            if($collection) {
-                $firstItem = $collection->getFirstItem();
-                
-                return $firstItem->getItemId();
-            }
-            
-            return null;
-        }
 	}

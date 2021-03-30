@@ -51,10 +51,12 @@
                                 // values are stored in checkout session
                                 $this->profileHelper->setProfileSessionKey('set_type','ring');
                                 $this->profileHelper->setProfileSessionKey('set_stone',$params);
+                                $this->profileHelper->setProfileSessionKey('set_stone_sku', $productModel->getSku());
 
                                 // update the current profile instance
                                 $this->profileHelper->setProfileBuilderKey('type', 'ring');
                                 $this->profileHelper->setProfileBuilderKey('stone', $params);
+                                $this->profileHelper->setProfileBuilderKey('stone_sku', $productModel->getSku());
 
                                 $message = __(
                                     'Added %1 to set',

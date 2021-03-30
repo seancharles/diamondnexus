@@ -64,12 +64,14 @@
                             if($validationResult == false) {
 
                                 // values are stored in checkout session
-                                $this->profileHelper->setProfileSessionKey('set_type','ring');
-                                $this->profileHelper->setProfileSessionKey('set_setting',$params);
+                                $this->profileHelper->setProfileSessionKey('set_type', 'ring');
+                                $this->profileHelper->setProfileSessionKey('set_setting', $params);
+                                $this->profileHelper->setProfileSessionKey('set_setting_sku', $productModel->getSku());
 
                                 // update the current profile instance
                                 $this->profileHelper->setProfileBuilderKey('type', 'ring');
                                 $this->profileHelper->setProfileBuilderKey('setting', $params);
+                                $this->profileHelper->setProfileBuilderKey('setting_sku', $params);
 
                                 $message = __(
                                     'Added %1 to set',

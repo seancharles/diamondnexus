@@ -56,7 +56,9 @@ class Profile
         $this->setProfileKey('set_builder', [
             'type' => $this->getProfileSessionKey('set_type'),
             'setting' => $this->getProfileSessionKey('set_setting'),
-            'stone' => $this->getProfileSessionKey('set_stone')
+            'setting_sku' => $this->getProfileSessionKey('set_setting_sku'),
+            'stone' => $this->getProfileSessionKey('set_stone'),
+            'stone_sku' => $this->getProfileSessionKey('set_stone_sku')
         ]);
         
 		// add cart into to 
