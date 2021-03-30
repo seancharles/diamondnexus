@@ -45,7 +45,7 @@ class SetTfRootCategory implements DataPatchInterface
     public function __construct(
         State $state,
         StoreManagerInterface $storeManager,
-        CategoryFactory $categoryFactory,
+        CategoryFactory $categoryFactory
     ) {
         $this->state = $state;
         $this->storeManager = $storeManager;
