@@ -6,6 +6,7 @@ namespace ForeverCompanies\CustomAttributes\Setup\Patch\Data;
 
 use Magento\Catalog\Model\CategoryFactory;
 use Magento\Eav\Setup\EavSetupFactory;
+use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
