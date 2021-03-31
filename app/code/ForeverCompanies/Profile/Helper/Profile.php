@@ -4,6 +4,9 @@ namespace ForeverCompanies\Profile\Helper;
  
 class Profile
 {
+    const POST_TYPE_OBJECT = 'json';
+    const POST_TYPE_ARRAY = 'array';
+    
 	public $request;
 	public $formKeyValidator;
 	
@@ -14,6 +17,7 @@ class Profile
 	protected $formKey;
 	protected $cart;
 	protected $post;
+    protected $postType;
 	
 	protected $profile = [
 		'form_key' => null,
@@ -102,31 +106,44 @@ class Profile
 		return $cartQty;
 	}
 	
-	public function getPost()
+	public function getPost($postType = self::POST_TYPE_OBJECT, $postArray = false)
 	{
-		// parse the json post
-		$json = file_get_contents('php://input');
+        $this->postType = $postType;
+        
+        if($this->postType == self::POST_TYPE_OBJECT) {
+        
+            // parse the json post
+            $json = file_get_contents('php://input');
 
-		// Converts it into a PHP object
-		$data = json_decode($json);
+            // Converts it into a PHP object
+            $data = json_decode($json);
 
-		if(isset($data->form_key) == true) {
-			// get form key
-			$formKey = $data->form_key;
-			
-			// translate ajax post object to form value to validate
-			$this->request->setPostValue('form_key', $formKey);
-		}
+            if(isset($data->form_key) == true) {
+                // get form key
+                $formKey = $data->form_key;
+                
+                // translate ajax post object to form value to validate
+                $this->request->setPostValue('form_key', $formKey);
+            }
+        } else {
+            $data = $postArray;
+        }
 
 		$this->post = $data;
 	}
 	
 	public function getPostParam($field = null)
 	{
-		if(isset($this->post->{$field}) == true) {
-			return $this->post->{$field};
-		}
-		
+        if($this->postType == self::POST_TYPE_OBJECT) {
+            if(isset($this->post->{$field}) == true) {
+                return $this->post->{$field};
+            }
+        } else {
+            if(isset($this->post[$field]) == true) {
+                return $this->post[$field];
+            }
+        }
+
 		return null;
 	}
 	

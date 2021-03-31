@@ -71,7 +71,7 @@
                                 // update the current profile instance
                                 $this->profileHelper->setProfileBuilderKey('type', 'ring');
                                 $this->profileHelper->setProfileBuilderKey('setting', $params);
-                                $this->profileHelper->setProfileBuilderKey('setting_sku', $params);
+                                $this->profileHelper->setProfileBuilderKey('setting_sku', $productModel->getSku());
 
                                 $message = __(
                                     'Added %1 to set',
