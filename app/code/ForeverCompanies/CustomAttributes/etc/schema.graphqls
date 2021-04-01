@@ -8,6 +8,12 @@ interface MediaGalleryInterface {
     role_ui: String
     @doc(description: "The role of the product image or video.")
     @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\MediaGallery\\UiRole")
+    image_url: String
+    @doc(description: "The base url of the image")
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\MediaGallery\\ImageUrl")
+    image_path: String
+    @doc(description: "The relative path of the image")
+    @resolver(class: "ForeverCompanies\\CustomAttributes\\Model\\Resolver\\Product\\MediaGallery\\ImagePath")
 }
 
 interface ProductInterface {
