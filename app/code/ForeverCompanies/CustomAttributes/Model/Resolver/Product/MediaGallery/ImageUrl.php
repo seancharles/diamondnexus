@@ -14,7 +14,7 @@ use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
  */
 class ImageUrl implements ResolverInterface
 {
-    private $url = 'https://res.cloudinary.com/foco';
+    private $url = 'https://res.cloudinary.com/foco/image/upload/catalog/product';
 
     /**
      * @inheritdoc
