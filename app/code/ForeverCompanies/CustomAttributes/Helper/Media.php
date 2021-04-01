@@ -165,4 +165,17 @@ class Media extends AbstractHelper
             ['gallery_value' => Gallery::GALLERY_VALUE_TABLE]
         )->where('gallery_value.value_id = ?', $valueId);
     }
+
+    /**
+     * @param $valueId
+     * @return mixed
+     */
+    public function getImagePath($valueId)
+    {
+        $connection = $this->resourceConnection->getConnection();
+        $select = $connection->select()->from(
+            ['gallery' => Gallery::GALLERY_TABLE]
+        )->where('gallery.value_id = ?', $valueId);
+        return $connection->fetchRow($select);
+    }
 }
