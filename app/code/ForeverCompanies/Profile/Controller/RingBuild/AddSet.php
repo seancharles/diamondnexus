@@ -1,6 +1,6 @@
 <?php
 
-    namespace ForeverCompanies\Profile\Controller\Cart;
+    namespace ForeverCompanies\Profile\Controller\RingBuild;
 
 	class AddSet extends \ForeverCompanies\Profile\Controller\ApiController
 	{

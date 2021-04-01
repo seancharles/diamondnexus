@@ -34,10 +34,8 @@
 					}
 					
 					if(count($itemsList) > 0){
-						$quote = $this->profileHelper->getQuote();
-						
 						// get the cart items
-						$quoteItems = $quote->getItems();
+						$quoteItems = $this->profileHelper->getCartItems();
 						
 						// iterate the users cart items
 						foreach($quoteItems as $item)
@@ -47,8 +45,6 @@
 								$item->delete();
 							}
 						}
-						
-						$this->profileHelper->saveQuote();
 						
 						$this->resultHelper->setSuccess(true, 'Removed item(s) from cart');
 						

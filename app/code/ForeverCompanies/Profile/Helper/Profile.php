@@ -36,21 +36,23 @@ class Profile
 	];
 	
 	public function __construct(
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
 		\Magento\Framework\App\RequestInterface $request,
 		\Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator,
 		\Magento\Customer\Model\Session $customerSession,
 		\Magento\Checkout\Model\Session $checkoutSession,
-		\Magento\Quote\Api\CartRepositoryInterface $cartRepository,
-        \Magento\Quote\Model\ResourceModel\Quote\Item\CollectionFactory $quoteItemCollectionFactory,
+		\Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
+        \Magento\Checkout\Model\Cart $cart,
 		\Magento\Framework\Data\Form\FormKey $formKey,
 		\Magento\Backend\App\Action\Context $context
 	) {
+        $this->storeManager = $storeManager;
 		$this->request = $request;
 		$this->formKeyValidator = $formKeyValidator;
 		$this->customerSession = $customerSession;
 		$this->checkoutSession = $checkoutSession;
-		$this->cartRepository = $cartRepository;
-        $this->quoteItemCollectionFactory = $quoteItemCollectionFactory;
+        $this->productRepository = $productRepository;
+        $this->cart = $cart;
 		$this->formKey = $formKey;
 		
 		$this->setProfileKey('form_key', $this->formKey->getFormKey());
@@ -66,8 +68,8 @@ class Profile
         ]);
         
 		// add cart into to 
-		if($this->checkoutSession->getQuote()->getId() > 0) {
-			$this->setProfileKey('quote_id', (int) $this->checkoutSession->getQuote()->getId());
+		if($this->cart->getId() > 0) {
+			$this->setProfileKey('quote_id', (int) $this->cart->getId());
 			$this->setProfileKey('cart_items', $this->getCartItems());
 			$this->setProfileKey('cart_qty', (int) $this->getCartQty());
 		} else {
@@ -76,19 +78,43 @@ class Profile
 		}
 	}
 	
+    public function addCartItem($productId, $params, $setId = false)
+    {
+        // Specific for TF ring builder
+        if($setId != false) {
+            $this->checkoutSession->setBundleIdentifier($setId);
+        }
+        
+        $storeId = $this->storeManager->getStore()->getId();
+        
+        $product = $this->productRepository->getById($productId, false, $storeId);
+        
+        // TBD if this is needed
+        if($setId != false) {
+            $product->addCustomOption('ring_builder_identifier', $setId);
+        }
+        
+        $this->cart->addProduct($product, $params);
+        $this->cart->save();
+        
+        if($setId != false) {
+            $this->checkoutSession->setBundleIdentifier(null);
+        }
+    }
+    
 	public function getCartItems()
 	{
 		$items = [];
 		
-		foreach($this->checkoutSession->getQuote()->getItems() as $item) {
-			$items[] = [
-				'item_id' => $item->getId(),
+        foreach($this->cart->getItems() as $item) {
+            $items[] = [
+                'item_id' => $item->getId(),
                 'set_id' => $item->getSetId(),
-				'name' => $item->getName(),
-				'sku' => $item->getSku(),
-				'price' => $item->getPrice()
-			];
-		}
+                'name' => $item->getName(),
+                'sku' => $item->getSku(),
+                'price' => $item->getPrice()
+            ];
+        }
 		
 		return $items;
 	}
@@ -96,21 +122,14 @@ class Profile
 	public function getCartQty()
 	{
 		$cartQty = 0;
-		$items = $this->checkoutSession->getQuote()->getItems();
-        $sets = [];
-		
-		if(isset($items) == true) {
-			foreach ($items as $item){
-                if($item->getSetId() > 0) {
-                    if(isset($sets[$item->getSetId()]) == false) {
-                        $sets[$item->getSetId()] = 1;
-                        $cartQty += $item->getQty();
-                    }
-                } else {
-                    $cartQty += $item->getQty();
-                }
-			}
-		}
+
+        $items = $this->cart->getItems();
+
+        if(isset($items) == true) {
+            foreach($items as $item) {
+                $cartQty += $item->getQty();
+            }
+        }
 		
 		return $cartQty;
 	}
@@ -195,25 +214,24 @@ class Profile
         $this->checkoutSession->setData($key, $value);
     }
 	
-	public function clearQuote()
+	public function clearCart()
 	{
-		$quoteItems = $this->checkoutSession->getQuote()->getAllVisibleItems();
+		$quoteItems = $this->cart->getItems();
 		
 		foreach ($quoteItems as $item) {
 			$item->delete();
 		}
-		
-		$this->saveQuote();
 	}
 	
-	public function getQuote()
+	public function getCart()
 	{
 		// load the quote using quote repository
-		return $this->checkoutSession->getQuote();
+		return $this->cart;
 	}
 	
 	public function saveQuote()
 	{
+        /*
 		$this->cartRepository->save($this->getQuote());
 		
 		// workaround to load the quote after it was updated to fetch qty and items
@@ -247,16 +265,6 @@ class Profile
 		// updating profile info to match quote after the quote is saved (don't do this before)
 		$this->setProfileKey("cart_qty", $cartQty);
 		$this->setProfileKey("cart_items", $items);
-	}
-	
-	/**
-	* get last cart item added
-	*/
-	public function getLastQuoteItemId($quoteId = 0)
-	{
-        $collection = $this->quoteItemCollectionFactory->create();
-		$collection->addFieldToFilter('quote_id',$quoteId);
-		
-		return $collection->getLastItem()->getId();
+        */
 	}
 }

@@ -1,8 +1,8 @@
 <?php
 
-	namespace ForeverCompanies\Profile\Controller\Cart;
+	namespace ForeverCompanies\Profile\Controller\RingBuild;
 
-	class RebuildSet extends \ForeverCompanies\Profile\Controller\ApiController
+	class Rebuild extends \ForeverCompanies\Profile\Controller\ApiController
 	{
 		protected $profileHelper;
 		protected $resultHelper;

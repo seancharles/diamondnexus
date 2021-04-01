@@ -1,6 +1,6 @@
 <?php
 
-	namespace ForeverCompanies\Profile\Controller\Cart;
+	namespace ForeverCompanies\Profile\Controller\RingBuild;
 
 	class AddSetting extends \ForeverCompanies\Profile\Controller\ApiController
 	{
@@ -21,8 +21,6 @@
 
 		public function execute()
 		{
-            $hasErrors = false;
-            
 			try{
 				$this->profileHelper->getPost();
 				
@@ -90,7 +88,6 @@
                                 
                             } else {
                                 foreach($validationResult as $error) {
-                                    $hasErrors = true;
                                     $this->resultHelper->addProductError($productId, $error);
                                 }
                             }
