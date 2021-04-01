@@ -106,7 +106,10 @@ class Profile
 	{
 		$items = [];
 		
-        foreach($this->cart->getItems() as $item) {
+        //print_r(get_class_methods($this->cart->getQuote()->getAllVisibleItems()));
+        //exit;
+        
+        foreach($this->cart->getQuote()->getAllVisibleItems() as $item) {
             $items[] = [
                 'item_id' => $item->getId(),
                 'set_id' => $item->getSetId(),
@@ -121,13 +124,24 @@ class Profile
 	
 	public function getCartQty()
 	{
+        $sets = [];
 		$cartQty = 0;
 
-        $items = $this->cart->getItems();
+        $items = $this->cart->getQuote()->getAllVisibleItems();
 
         if(isset($items) == true) {
             foreach($items as $item) {
-                $cartQty += $item->getQty();
+                if($item->getSetId() > 0) {
+                    if(isset($sets[$item->getSetId()]) == false) {
+                        // only count the first item
+                        $cartQty += $item->getQty();
+                        
+                        // add set to the list
+                        $sets[$item->getSetId()] = 1;
+                    }
+                } else {
+                    $cartQty += $item->getQty();
+                }
             }
         }
 		
