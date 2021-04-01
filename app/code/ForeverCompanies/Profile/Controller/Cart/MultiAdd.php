@@ -1,129 +1,106 @@
 <?php
-/**
- *
- * Copyright © Magento, Inc. All rights reserved.
- * See COPYING.txt for license details.
- */
-namespace ForeverCompanies\Profile\Controller\Cart;
-
-use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
-use Magento\Checkout\Model\Cart as CustomerCart;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Exception\NoSuchEntityException;
-
-/**
- * Controller for processing add to cart action.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class MultiAdd extends \Magento\Checkout\Controller\Cart implements HttpPostActionInterface
-{
     /**
-     * @var ProductRepositoryInterface
+     * Add simple and configurable products to the cart
      */
-    protected $productRepository;
+	namespace ForeverCompanies\Profile\Controller\Cart;
 
-    /**
-     * @param \Magento\Framework\App\Action\Context $context
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Magento\Checkout\Model\Session $checkoutSession
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator
-     * @param CustomerCart $cart
-     * @param ProductRepositoryInterface $productRepository
-     * @codeCoverageIgnore
-     */
-    public function __construct(
-        \Magento\Framework\App\Action\Context $context,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Checkout\Model\Session $checkoutSession,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator,
-        CustomerCart $cart,
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
-        \Magento\Quote\Model\ResourceModel\Quote\Item\CollectionFactory $quoteItemCollectionFactory
-    ) {
-        parent::__construct(
-            $context,
-            $scopeConfig,
-            $checkoutSession,
-            $storeManager,
-            $formKeyValidator,
-            $cart
-        );
-        $this->productRepository = $productRepository;
-        $this->quoteItemCollectionFactory = $quoteItemCollectionFactory;
-    }
-    
-     /**
-     * Add product to shopping cart action
-     *
-     * @return ResponseInterface|ResultInterface
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     */
-    public function execute()
-    {
-        $params = $this->getRequest()->getParams();
+	class MultiAdd extends \ForeverCompanies\Profile\Controller\ApiController
+	{
+		protected $productloader;
+		protected $profileHelper;
+		protected $resultHelper;
+		
+		public function __construct(
+			\Magento\Catalog\Model\ProductFactory $productloader,
+			\ForeverCompanies\Profile\Helper\Profile $profileHelper,
+			\ForeverCompanies\Profile\Helper\Result $resultHelper,
+			\Magento\Backend\App\Action\Context $context
+		) {
+			$this->productloader = $productloader;
+			$this->profileHelper = $profileHelper;
+			$this->resultHelper = $resultHelper;
+			
+			parent::__construct($context);
+		}
 
-        $settingId = (int) $params['setting']['id'];
-        $stoneId = (int) $params['stone']['id'];
+		public function execute()
+		{
+			try{
+				$this->profileHelper->getPost();
+				
+				if ($this->profileHelper->formKeyValidator->validate($this->getRequest())) {
 
-        $settingParams = ['product' => $settingId];
-        $settingParams['super_attribute'][145] = $params['setting']['super_attribute'][145];
-        $settingParams['super_attribute'][149] = $params['setting']['super_attribute'][149];
-        $settingParams['options'][6099] = $params['setting']['options'][6099];
-        
-        $stoneParams = [
-            'product' => $stoneId,
-            'parent_id' => 123
-        ];
-        
-        $setId = time();
-        
-        $this->_checkoutSession->setParentItemId(null);
-        $this->_checkoutSession->setBundleIdentifier($setId);
-        
-        $this->addItem($settingId, $settingParams);
-        $parentItemId = $this->getLastItemId($setId);
-        
-        $this->_checkoutSession->setParentItemId($parentItemId);
-        $this->addItem($stoneId, $stoneParams);
+					$productId = $this->profileHelper->getPostParam('product');
+					$qty = $this->profileHelper->getPostParam('qty');
+					
+					$superAttributes = $this->profileHelper->getPostParam('super_attributes');
+					$options = $this->profileHelper->getPostParam('options');
 
-        echo "Success!";
-    }
-    
-    protected function addItem($productId, $params)
-    {
-        $storeId = $this->_objectManager->get(
-            \Magento\Store\Model\StoreManagerInterface::class
-        )->getStore()->getId();
-        
-        $product = $this->productRepository->getById($productId, false, $storeId);
-        
-        $this->cart->addProduct($product, $params);
-        $this->cart->save();
+					if($productId > 0) {
+						
+						$productModel = $this->productloader->create()->load($productId);
+						// valid product loaded
+						
+						if(isset($productModel) == true && $productModel->getId() > 0) {
+							
+							$params = array(
+								'product' => $productId,
+								'qty' => $qty
+							);
+							
+							if(isset($superAttributes) == true) {
+								// convert configurable options to array
+								foreach($superAttributes as $attribute) {
+									$params['super_attribute'][$attribute->id] = $attribute->value;
+								}
+							}
+							
+							if(isset($options) == true) {
+								// convert custom options to array
+								foreach($options as $option) {
+									$params['options'][$option->id] = $option->value;
+								}
+							}
+							
+							$validationResult = $this->resultHelper->validateProductOptions($productModel, $params);
 
-        $this->_eventManager->dispatch(
-            'checkout_cart_add_product_complete',
-            ['product' => $product, 'request' => $this->getRequest(), 'response' => $this->getResponse()]
-        );
-    }
-    
-    protected function getLastItemId($setId = null)
-    {
-        $quoteId = $this->cart->getQuote()->getId();
-        
-        $collection = $this->quoteItemCollectionFactory->create();
-		$collection->addFieldToFilter('quote_id', $quoteId);
-        $collection->addFieldToFilter('set_id', $setId);
-        
-        if($collection) {
-            $firstItem = $collection->getFirstItem();
-            
-            return $firstItem->getItemId();
-        }
-        
-        return null;
-    }
-}
+							if($validationResult == false) {
+
+								$this->profileHelper->addCartItem($productId, $params);
+								
+								$message = __(
+									'You added %1 to your shopping cart.',
+									$productModel->getName()
+								);
+								
+								$this->resultHelper->setSuccess(true, $message);
+								
+								// updates the last sync time
+								$this->profileHelper->sync();
+							
+								$this->resultHelper->setProfile(
+									$this->profileHelper->getProfile()
+								);
+							} else {
+								foreach($validationResult as $error) {
+									$this->resultHelper->addProductError($productId, $error);
+								}
+							}
+						} else {
+							$this->resultHelper->addProductError($productId, "Product could not be found.");
+						}
+					} else {
+						$this->resultHelper->addProductError($productId, "Product ID is invalid.");
+					}
+					
+				} else {
+					$this->resultHelper->addFormKeyError();
+				}
+			
+			} catch (\Exception $e) {
+				$this->resultHelper->addExceptionError($e);
+			}
+			
+			$this->resultHelper->getResult();
+		}
+	}

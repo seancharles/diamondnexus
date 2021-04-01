@@ -2,11 +2,21 @@
 
     namespace ForeverCompanies\Profile\Controller\RingBuild;
 
+    /**
+     * Controller for processing add set to cart action.
+     *
+     * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+     */
 	class AddSet extends \ForeverCompanies\Profile\Controller\ApiController
 	{
 		protected $profileHelper;
 		protected $resultHelper;
 		
+        /**
+         * @param \Magento\Framework\App\Action\Context $context
+         * @param \ForeverCompanies\Profile\Helper\Profile $profileHelper
+         * @param \ForeverCompanies\Profile\Helper\Result $resultHelper
+         */
         public function __construct(
             \Magento\Framework\App\Action\Context $context,
             \Magento\Catalog\Model\ProductFactory $productloader,
@@ -42,11 +52,14 @@
                     if(count($errorResult['configurable_option']) == 0 && count($errorResult['custom_option']) == 0) {
 
                         $setId = time();
+
+                        $settingId = (int) $settingParams['product'];
+                        $stoneId = (int) $stoneParams['product'];
                         
-                        $settingProduct = $this->productloader->create()->load($settingParams['product']);
+                        $settingProduct = $this->productloader->create()->load($settingId);
                         
-                        $this->profileHelper->addCartItem($settingParams['product'], $settingParams, $setId);
-                        $this->profileHelper->addCartItem($settingParams['product'], $stoneParams, $setId);
+                        $this->profileHelper->addCartItem($settingId, $settingParams, $setId);
+                        $this->profileHelper->addCartItem($stoneId, $stoneParams, $setId);
                         
                         $this->profileHelper->setProfileSessionKey('set_type', null);
                         $this->profileHelper->setProfileSessionKey('set_setting', null);

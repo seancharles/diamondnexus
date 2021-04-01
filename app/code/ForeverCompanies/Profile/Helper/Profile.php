@@ -68,13 +68,13 @@ class Profile
         ]);
         
 		// add cart into to 
-		if($this->cart->getId() > 0) {
-			$this->setProfileKey('quote_id', (int) $this->cart->getId());
+		if($this->cart->getQuote()->getId() > 0) {
+			$this->setProfileKey('quote_id', (int) $this->cart->getQuote()->getId());
 			$this->setProfileKey('cart_items', $this->getCartItems());
 			$this->setProfileKey('cart_qty', (int) $this->getCartQty());
 		} else {
 			//$this->setProfileKey('cart_items', null);
-			$this->setProfileKey('cart_qty', 0);
+			$this->setProfileKey('cart_qty', 123);
 		}
 	}
 	
@@ -182,6 +182,9 @@ class Profile
 		$this->customerSession->setLastSync($now);
 		
 		$this->setProfileKey('lastsync', $now);
+        
+        $this->setProfileKey('cart_items', $this->getCartItems());
+        $this->setProfileKey('cart_qty', $this->getCartQty());
 	}
 	
 	public function getProfile()
@@ -227,44 +230,5 @@ class Profile
 	{
 		// load the quote using quote repository
 		return $this->cart;
-	}
-	
-	public function saveQuote()
-	{
-        /*
-		$this->cartRepository->save($this->getQuote());
-		
-		// workaround to load the quote after it was updated to fetch qty and items
-		// otherwise this information might be off from the actual cart data, this
-		// might not be the best way to implement
-		$quote = $this->cartRepository->get($this->checkoutSession->getQuote()->getId());
-
-		$cartQty = 0;
-		$items = [];
-        $sets = [];
-		
-		foreach($quote->getItems() as $item) {
-			$items[] = [
-				'item_id' => $item->getId(),
-                'set_id' => $item->getSetId(),
-				'name' => $item->getName(),
-				'sku' => $item->getSku(),
-				'price' => $item->getPrice()
-			];
-			
-            if($item->getSetId() > 0) {
-                if(isset($sets[$item->getSetId()]) == false) {
-                    $sets[$item->getSetId()] = 1;
-                    $cartQty += $item->getQty();
-                }
-            } else {
-                $cartQty += $item->getQty();
-            }
-		}
-       
-		// updating profile info to match quote after the quote is saved (don't do this before)
-		$this->setProfileKey("cart_qty", $cartQty);
-		$this->setProfileKey("cart_items", $items);
-        */
 	}
 }
