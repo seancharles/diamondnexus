@@ -83,6 +83,7 @@ class Profile
 		foreach($this->checkoutSession->getQuote()->getItems() as $item) {
 			$items[] = [
 				'item_id' => $item->getId(),
+                'set_id' => $item->getSetId(),
 				'name' => $item->getName(),
 				'sku' => $item->getSku(),
 				'price' => $item->getPrice()
@@ -96,10 +97,18 @@ class Profile
 	{
 		$cartQty = 0;
 		$items = $this->checkoutSession->getQuote()->getItems();
+        $sets = [];
 		
 		if(isset($items) == true) {
 			foreach ($items as $item){
-				$cartQty += $item->getQty();
+                if($item->getSetId() > 0) {
+                    if(isset($sets[$item->getSetId()]) == false) {
+                        $sets[$item->getSetId()] = 1;
+                        $cartQty += $item->getQty();
+                    }
+                } else {
+                    $cartQty += $item->getQty();
+                }
 			}
 		}
 		
@@ -214,18 +223,27 @@ class Profile
 
 		$cartQty = 0;
 		$items = [];
+        $sets = [];
 		
 		foreach($quote->getItems() as $item) {
 			$items[] = [
 				'item_id' => $item->getId(),
+                'set_id' => $item->getSetId(),
 				'name' => $item->getName(),
 				'sku' => $item->getSku(),
 				'price' => $item->getPrice()
 			];
 			
-			$cartQty += $item->getQty();
+            if($item->getSetId() > 0) {
+                if(isset($sets[$item->getSetId()]) == false) {
+                    $sets[$item->getSetId()] = 1;
+                    $cartQty += $item->getQty();
+                }
+            } else {
+                $cartQty += $item->getQty();
+            }
 		}
-		
+       
 		// updating profile info to match quote after the quote is saved (don't do this before)
 		$this->setProfileKey("cart_qty", $cartQty);
 		$this->setProfileKey("cart_items", $items);

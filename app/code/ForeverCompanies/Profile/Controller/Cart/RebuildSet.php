@@ -103,21 +103,4 @@
             
 			$this->resultHelper->getResult();
 		}
-        
-        public function getSelectedOptions($item){
-         $result = [];
-            $options = $item->getProductOptions();
-            if ($options) {
-                if (isset($options['options'])) {
-                    $result = array_merge($result, $options['options']);
-                }
-                if (isset($options['additional_options'])) {
-                    $result = array_merge($result, $options['additional_options']);
-                }
-                if (isset($options['attributes_info'])) {
-                    $result = array_merge($result, $options['attributes_info']);
-                }
-            }
-            return $result;
-        }
 	}
