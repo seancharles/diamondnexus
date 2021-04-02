@@ -4,7 +4,7 @@
      */
 	namespace ForeverCompanies\Profile\Controller\Cart;
 
-	class Add extends \ForeverCompanies\Profile\Controller\ApiController
+	class MultiAdd extends \ForeverCompanies\Profile\Controller\ApiController
 	{
 		protected $productloader;
 		protected $profileHelper;

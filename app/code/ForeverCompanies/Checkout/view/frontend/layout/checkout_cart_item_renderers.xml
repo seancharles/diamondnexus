@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="checkout.cart.item.renderers.configurable" template="ForeverCompanies_Checkout::cart/item/set.phtml">
+            <block class="Magento\Checkout\Block\Cart\Item\Renderer\Actions" name="checkout.cart.item.renderers.configurable.actions" as="actions">
+                <block class="ForeverCompanies\Checkout\Block\Cart\Item\Renderer\Actions\Remove" name="checkout.cart.item.renderers.configurable.actions.remove" template="ForeverCompanies_Checkout::cart/item/renderer/actions/remove.phtml"/>
+            </block>
+        </referenceBlock>
+        <referenceBlock name="checkout.cart.item.renderers.simple" template="ForeverCompanies_Checkout::cart/item/set.phtml" />
+    </body>
+</page>
+
+<!--
+    <referenceBlock name="checkout.onepage.review.item.renderers.configurable" template="ForeverCompanies_Checkout::onepage/review/set.phtml" />
+    <referenceBlock name="checkout.onepage.review.item.renderers.simple" template="ForeverCompanies_Checkout::onepage/review/set.phtml" />
+-->
