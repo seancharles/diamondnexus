@@ -47,7 +47,7 @@ class Remove extends \Magento\Checkout\Block\Cart\Item\Renderer\Actions\Remove
     {
         $item = $this->getItem();
         
-        $url = $this->getUrl('fcprofile/cart/rebuildset');
+        $url = $this->getUrl('fcprofile/ringbuild/rebuild');
 
         $data = [
             'itemid' => $item->getId(),

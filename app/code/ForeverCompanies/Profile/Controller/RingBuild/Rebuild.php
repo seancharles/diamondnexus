@@ -76,13 +76,6 @@
                         }
                     }
                     
-                    /*
-                    $message = __(
-                        'Added %1 to set',
-                        $productModel->getName()
-                    );
-                    */
-                    
                     $this->resultHelper->addSuccessMessage('complete');
                     $this->resultHelper->setSuccess(true);
                     
@@ -101,6 +94,7 @@
 				$this->resultHelper->addExceptionError($e);
 			}
             
+            // TBD redirect to public ring builder URL or change response
 			$this->resultHelper->getResult();
 		}
 	}
