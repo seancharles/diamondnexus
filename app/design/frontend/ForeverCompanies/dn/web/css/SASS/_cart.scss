@@ -1,4 +1,25 @@
 .checkout-cart-index {
+    a,
+    .clear,
+    .action-cancel {
+        color: #000 !important;
+        text-decoration: underline !important;
+        &:hover {
+            color: #000 !important;
+            text-decoration: none !important;
+        }
+    }
+    button:not(.clear):not(.action-cancel) {
+        border-color: #000 !important;
+        background: #000;
+        color: #fff;
+        text-transform: uppercase;
+        font-weight: bold;
+        border-radius: 0;
+        &:hover {
+            background: #383838 !important;
+        }
+    }
     .page-title {
         font-size: 40px !important;
         line-height: 48px !important;
@@ -8,16 +29,16 @@
             line-height: 60px !important;
         }
     }
+    .order-summary {
+        font-family: 'Didot 06 A', 'Didot 06 B', serif;
+    }
     a.towishlist,
-    .clear,
     .cart-gift-item .title > span,
     .cart-discount .title > strong,
-    .we-accept a,
-    .affirm-modal-trigger,
-    .action-continue .continue {
+    .we-accept a {
         color: #000 !important;
         &:hover {
-            color: #bfa374 !important;
+            color: #000 !important;
         }
     }
     .we-accept-cards {
@@ -32,7 +53,7 @@
     }
     .action.continue {
         text-transform: none;
-        font-family: 'Gotham Bold';
+        font-family: 'Gotham SSm A', 'Gotham SSm B', sans-serif;
     }
     .coupon {
         display: flex;
@@ -89,6 +110,9 @@
         &:hover {
             background-color: #383838 !important;
         }
+    }
+    .actions-toolbar > .secondary .action:last-child {
+        text-transform: none !important;
     }
     .cart-container {
         .action.update {

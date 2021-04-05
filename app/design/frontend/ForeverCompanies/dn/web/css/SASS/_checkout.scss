@@ -1,9 +1,36 @@
 .checkout-index-index {
+    button {
+        border-color: #000 !important;
+        background: #000;
+        color: #fff;
+        text-transform: uppercase;
+        font-weight: bold;
+        border-radius: 0;
+        &:hover {
+            background: #383838 !important;
+        }
+    }
+    .actions-toolbar > .primary .action span,
+    .actions-toolbar > .primary .action:last-child span {
+        font-weight: bold !important;
+    }
+    .title,
+    .step-title {
+        font-family: 'Didot 06 A', 'Didot 06 B', serif;
+    }
+    .checkout-payment-method .payment-option-title .action-toggle {
+        color: #000 !important;
+    }
     #checkout {
         padding: 50px 0;
     }
     a {
-        color: #bfa374;
+        text-decoration: underline !important;
+        color: #000;
+        &:hover {
+            text-decoration: none !important;
+            color: #000;
+        }
     }
     .opc-progress-bar {
         margin: 0 0 40px;

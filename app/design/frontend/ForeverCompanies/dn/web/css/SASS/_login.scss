@@ -1,4 +1,16 @@
 .customer-account-login {
+    .field.note,
+    p {
+        font-family: 'Gotham SSm A', 'Gotham SSm B', sans-serif;
+        font-size: 16px;
+    }
+    a {
+        color: #000 !important;
+        text-decoration: underline !important;
+        &:hover {
+            text-decoration: none !important;
+        }
+    }
     .page-title {
         font-size: 40px !important;
         line-height: 48px !important;
@@ -13,6 +25,7 @@
         background: transparent !important;
         .primary {
             width: auto !important;
+            margin-right: 10px;
             &:hover {
                 background: #383838 !important;
             }
@@ -32,6 +45,7 @@
                 font-size: 14px;
                 padding: 16px 24px;
                 width: 100% !important;
+                text-decoration: none !important;
                 &:hover {
                     background-color: #383838;
                 }
