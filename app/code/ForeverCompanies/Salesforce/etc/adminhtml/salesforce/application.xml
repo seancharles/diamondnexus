@@ -1,13 +1,37 @@
 <?xml version="1.0"?>
 <include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
+    <group id="general" translate="label"
+           type="text" sortOrder="80"
+           showInDefault="1"
+           showInWebsite="1"
+           showInStore="1">
+        <fieldset_css>salesforce-connection-app</fieldset_css>
+        <label>General</label>
+        <field id="order_sync_is_active"  translate="label" type="select"
+               sortOrder="0" showInDefault="1" showInWebsite="0"
+               showInStore="0">
+            <label>Enable Order Sync</label>
+            <config_path>salesforcecrm/salesforceconfig/order_sync_is_active</config_path>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <comment>Command: bin/magento forevercompanies:salesforce:leads:sync</comment>
+        </field>
+        <field id="lead_sync_is_active"  translate="label" type="select"
+               sortOrder="0" showInDefault="1" showInWebsite="0"
+               showInStore="0">
+            <label>Enable Leads Sync</label>
+            <config_path>salesforcecrm/salesforceconfig/lead_sync_is_active</config_path>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <comment>Command: bin/magento forevercompanies:salesforce:sync</comment>
+        </field>
+    </group>
     <group id="config" translate="label"
            type="text" sortOrder="80"
            showInDefault="1"
            showInWebsite="1"
            showInStore="1">
         <fieldset_css>salesforce-connection-app</fieldset_css>
-        <label>Setup And Authentication SalesforceCRM Account</label>
+        <label>Authentication / API</label>
         <field id="is_connected"  translate="label" type="hidden"
                sortOrder="0" showInDefault="1" showInWebsite="1"
                showInStore="1">
@@ -23,6 +47,7 @@
             <tooltip>
                 <![CDATA[
                         Host of Salesforce ]]></tooltip>
+            <comment>Should always start with https://</comment>
         </field>
         <field id="client_id"
                translate="label comment"
@@ -80,6 +105,7 @@
             <tooltip>Access Token expires after 30 minutes and auto refresh</tooltip>
             <config_path>salesforcecrm/salesforceconfig/access_token</config_path>
             <attribute type="readonly">readonly</attribute>
+            <comment>Do not change</comment>
             <depends>
                 <field id="is_connected">1</field>
             </depends>
@@ -95,6 +121,7 @@
             <tooltip>URL of SalesforceCRM with each account edition</tooltip>
             <config_path>salesforcecrm/salesforceconfig/instance_url</config_path>
             <attribute type="readonly">readonly</attribute>
+            <comment>Do not change</comment>
             <depends>
                 <field id="is_connected">1</field>
             </depends>
