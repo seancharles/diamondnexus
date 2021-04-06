@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="quote_item">
+        <column xsi:type="varchar" name="set_id" nullable="true" length="16" comment="TF Set ID"/>
+        <!--
+        <index referenceId="CATALOG_PRODUCT_ENTITY_MEDIA_GALLERY_VALUE_CATALOG_PRODUCT_BUNDLE_SELECTION_ID"
+               indexType="btree">
+            <column name="set_id"/>
+        </index>
+        -->
+    </table>
+</schema>
