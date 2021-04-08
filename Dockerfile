@@ -236,8 +236,7 @@ RUN set -ex; \
        apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $fetchDeps; \
        rm -rf /var/lib/apt/lists/*
 
-COPY config/default.vcl /etc/varnish/default.vcl.template
-RUN cat /etc/varnish/default.vcl.template | sed "s/MAGENTO/$MAGENTO/g" | sed "s/NGINX_HOST/$NGINX_HOST/g" | sed "s/VARNISH_HOST/$VARNISH_HOST/g" > /etc/varnish/default.vcl
+COPY bin/default.vcl /etc/varnish/default.vcl
 
 RUN if [ "$XDEBUG" = "on" ] ; then pecl install xdebug \
 && docker-php-ext-enable xdebug \
