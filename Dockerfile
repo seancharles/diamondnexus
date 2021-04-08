@@ -216,6 +216,29 @@ ARG htaccess
 RUN echo -n 'diamondnexus:' >> /var/.htpasswd
 RUN openssl passwd -apr1 passin `echo "$htaccess"` | tail -n1 >> /var/.htpasswd
 
+ENV VARNISH_VERSION 5.2.1-1~stretch
+RUN set -ex; \
+       fetchDeps=" \
+               dirmngr \
+               gnupg \
+       "; \
+       apt-get update; \
+       apt-get install -y --no-install-recommends apt-transport-https ca-certificates $fetchDeps; \
+       key=91CFD5635A1A5FAC0662BEDD2E9BA3FE86BE909D; \
+       export GNUPGHOME="$(mktemp -d)"; \
+       gpg --batch --keyserver hkp://keyserver.ubuntu.com --recv-keys $key; \
+       gpg --batch --export export $key > /etc/apt/trusted.gpg.d/varnish.gpg; \
+       gpgconf --kill all; \
+       rm -rf $GNUPGHOME; \
+       echo deb https://packagecloud.io/varnishcache/varnish52/debian/ stretch main > /etc/apt/sources.list.d/varnish.list; \
+       apt-get update; \
+       apt-get install -y --no-install-recommends varnish=$VARNISH_VERSION; \
+       apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $fetchDeps; \
+       rm -rf /var/lib/apt/lists/*
+
+COPY config/default.vcl /etc/varnish/default.vcl.template
+RUN cat /etc/varnish/default.vcl.template | sed "s/MAGENTO/$MAGENTO/g" | sed "s/NGINX_HOST/$NGINX_HOST/g" | sed "s/VARNISH_HOST/$VARNISH_HOST/g" > /etc/varnish/default.vcl
+
 RUN if [ "$XDEBUG" = "on" ] ; then pecl install xdebug \
 && docker-php-ext-enable xdebug \
 && touch /var/log/xdebug_remote.log \
