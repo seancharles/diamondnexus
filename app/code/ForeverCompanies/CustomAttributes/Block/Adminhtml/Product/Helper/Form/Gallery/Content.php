@@ -154,4 +154,26 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
         }
         return $data;
     }
+    
+    public function getLinkedProducts()
+    {
+        $data = [
+            ['id' => 1, 'label' => 'San Francisco'],
+            ['id' => 2, 'label' => 'Miami'],
+            ['id' => 3, 'label' => 'Manhatten']
+        ];
+        
+        return $data;
+    }
+    
+    public function getMetalTypes()
+    {
+        $data = [
+            '14k White Gold',
+            '14k Yellow Gold',
+            '14k Rose Gold',
+        ];
+        
+        return $data;
+    }
 }
