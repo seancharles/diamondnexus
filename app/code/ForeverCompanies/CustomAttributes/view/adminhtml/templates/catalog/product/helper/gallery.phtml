@@ -418,9 +418,9 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                                                data-role="metaltype-selector"
                                                data-form-part="<?= /* @noEscape*/ $formName ?>"
                                                type="checkbox"
-                                               value="<?= $block->escapeHtml($metalType) ?>"
+                                               value="<?= $block->escapeHtml($metalType['id']) ?>"
                                         />
-                                        <?= /* @noEscape*/ $block->escapeHtml($metalType) ?>
+                                        <?= /* @noEscape*/ $block->escapeHtml($metalType['label']) ?>
                                     </label>
                                 </li>
                                 <?php

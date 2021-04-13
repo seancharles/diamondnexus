@@ -15,6 +15,8 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Json\DecoderInterface;
 use Magento\Framework\Json\EncoderInterface;
 use Magento\Framework\Serialize\Serializer\Json;
+use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
+use ForeverCompanies\CustomLinked\Model\Product as CustomLink;
 
 /**
  * Block for gallery content.
@@ -30,6 +32,21 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
      * @var Json
      */
     protected $jsonHelper;
+    
+    /**
+     * @var Magento\Catalog\Api\ProductLinkRepositoryInterface
+     */
+    protected $productLinkRepository;
+    
+    /**
+     * @var \Magento\Catalog\Model\Product\Option
+     */
+    protected $configurableOption;
+    
+    /**
+     * @var \Magento\Catalog\Model\Product\Option
+     */
+    protected $customOption;
 
     /**
      * @var string
@@ -59,6 +76,9 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
         ProductSpinsetMapFactory $productSpinsetMapFactory,
         Media $mediaHelper,
         Json $jsonHelper,
+        Configurable $configurableOption,
+        Option $customOption,
+        CustomLink $customLink,
         array $data = []
     ) {
         parent::__construct(
@@ -72,6 +92,9 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
         );
         $this->mediaHelper = $mediaHelper;
         $this->jsonHelper = $jsonHelper;
+        $this->configurableOption = $configurableOption;
+        $this->customOption = $customOption;
+        $this->customLink = $customLink;
     }
 
     /**
@@ -157,23 +180,43 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
     
     public function getLinkedProducts()
     {
-        $data = [
-            ['id' => 1, 'label' => 'San Francisco'],
-            ['id' => 2, 'label' => 'Miami'],
-            ['id' => 3, 'label' => 'Manhatten']
-        ];
+        $values = [];
+        /** @var Product $product */
+        $product = $this->getData('element')->getDataObject();
         
-        return $data;
+        $customLinkedProduct = $this->customLink->load($product->getId());
+        
+        $products = $customLinkedProduct->getCustomlinkedProductCollection();
+        
+        foreach($products as $product) {
+            $values[] = [
+                'id' => $product->getId(),
+                'label' => $product->getName()
+            ];
+        }
+        
+        return $values;
     }
     
     public function getMetalTypes()
     {
-        $data = [
-            '14k White Gold',
-            '14k Yellow Gold',
-            '14k Rose Gold',
-        ];
+        $values = [];
+        /** @var Product $product */
+        $product = $this->getData('element')->getDataObject();
         
-        return $data;
+        $productAttributeOptions = $this->configurableOption->getConfigurableAttributesAsArray($product);
+        
+        foreach ($productAttributeOptions as $option) {
+            if($option['label'] == "Precious Metal") {
+                foreach($option['values'] as $value) {
+                    $values[] = [
+                        'id' => $value['value_index'],
+                        'label' => $value['label']
+                    ];
+                }
+            }
+        }
+        
+        return $values;
     }
 }
