@@ -52,6 +52,7 @@ class Product Extends \Magento\Catalog\Model\Product
     {
         $collection = $this->getLinkInstance()->setLinkTypeId(static::LINK_TYPE_CUSTOMLINKED)->getProductCollection()->setIsStrongMode();
         $collection->setProduct($this);
+        $collection->addAttributeToSelect('name','catalog_product_entity_varchar');
         return $collection;
     }
 

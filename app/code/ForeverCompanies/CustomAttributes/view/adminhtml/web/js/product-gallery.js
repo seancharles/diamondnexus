@@ -625,6 +625,28 @@ define(
                             parent.toggleClass(selectedClass, $(this).prop('checked'));
                         }
                     );
+                    
+                    $dialog.on(
+                        'change',
+                        '[data-role=linked-product-selector]',
+                        function () {
+                            var parent = $(this).closest('.item'),
+                            selectedClass = 'selected';
+                            $dialog.find('.field-image-product-matching-band-product').find('.item.selected').removeClass('selected');
+                            parent.toggleClass(selectedClass, $(this).prop('checked'));
+                        }
+                    );
+                    
+                    $dialog.on(
+                        'change',
+                        '[data-role=metaltype-selector]',
+                        function () {
+                            var parent = $(this).closest('.item'),
+                            selectedClass = 'selected';
+                            $dialog.find('.field-image-product-metal-type').find('.item.selected').removeClass('selected');
+                            parent.toggleClass(selectedClass, $(this).prop('checked'));
+                        }
+                    );
                     /** CUSTOM OFF */
 
                     $dialog.on('change', '[data-role=type-selector]', $.proxy(this._notifyType, this));
@@ -712,6 +734,36 @@ define(
                             optionValue = target.val();
 
                             this._setFields(imageData, optionValue, targetName, 'ui_role');
+
+                        }.bind(this)
+                    );
+                    
+                    $dialog.on(
+                        'change',
+                        '[data-role="linked-product-selector"]',
+                        function (e) {
+                            let images = 'product[media_gallery][images]';
+                            var target = $(e.target),
+                            imageData = $dialog.data('imageData'),
+                            targetName = images + '[' + imageData['value_id'] + '][matching_band_product]',
+                            optionValue = target.val();
+
+                            this._setFields(imageData, optionValue, targetName, 'matching_band_product');
+
+                        }.bind(this)
+                    );
+                    
+                    $dialog.on(
+                        'change',
+                        '[data-role="metaltype-selector"]',
+                        function (e) {
+                            let images = 'product[media_gallery][images]';
+                            var target = $(e.target),
+                            imageData = $dialog.data('imageData'),
+                            targetName = images + '[' + imageData['value_id'] + '][metal_type]',
+                            optionValue = target.val();
+
+                            this._setFields(imageData, optionValue, targetName, 'metal_type');
 
                         }.bind(this)
                     );
@@ -876,6 +928,46 @@ define(
                                 parent = $checkbox.closest('.item'),
                                 selectedClass = 'selected',
                                 isChecked = imageData.ui_role == $checkbox.val();
+
+                                $checkbox.prop(
+                                    'checked',
+                                    isChecked
+                                );
+                                parent.toggleClass(selectedClass, isChecked);
+                            },
+                            this
+                        )
+                    );
+                    
+                    $(event.target)
+                    .find('[data-role=linked-product-selector]')
+                    .each(
+                        $.proxy(
+                            function (index, checkbox) {
+                                var $checkbox = $(checkbox),
+                                parent = $checkbox.closest('.item'),
+                                selectedClass = 'selected',
+                                isChecked = imageData.matching_band_product == $checkbox.val();
+
+                                $checkbox.prop(
+                                    'checked',
+                                    isChecked
+                                );
+                                parent.toggleClass(selectedClass, isChecked);
+                            },
+                            this
+                        )
+                    );
+                    
+                    $(event.target)
+                    .find('[data-role=metaltype-selector]')
+                    .each(
+                        $.proxy(
+                            function (index, checkbox) {
+                                var $checkbox = $(checkbox),
+                                parent = $checkbox.closest('.item'),
+                                selectedClass = 'selected',
+                                isChecked = imageData.metal_type == $checkbox.val();
 
                                 $checkbox.prop(
                                     'checked',

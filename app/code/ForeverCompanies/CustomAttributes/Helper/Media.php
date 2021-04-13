@@ -76,6 +76,8 @@ class Media extends AbstractHelper
             $image['catalog_product_bundle_selection_id'] = $row['catalog_product_bundle_selection_id'];
             $image['tags'] = $row['tags'];
             $image['ui_role'] = $row['ui_role'];
+            $image['matching_band_product'] = $row['matching_band_product'];
+            $image['metal_type'] = $row['metal_type'];
         }
 
         return $images;
@@ -94,13 +96,17 @@ class Media extends AbstractHelper
             $selectionId = $image['catalog_product_bundle_selection_id'] ?? 0;
             $tags = $image['tags'] ?? '';
             $uiRole = $image['ui_role'] ?? '';
+            $linkedProduct = $image['matching_band_product'] ?? '';
+            $metalType = $image['metal_type'] ?? '';
             $connection->update(
                 $mediaGallery,
                 [
                     'catalog_product_option_type_id' => $optionType,
                     'catalog_product_bundle_selection_id' => $selectionId,
                     'tags' => $tags,
-                    'ui_role' => $uiRole
+                    'ui_role' => $uiRole,
+                    'matching_band_product' => $linkedProduct,
+                    'metal_type' => $metalType
                 ],
                 ['value_id = ?' => $id]
             );
