@@ -138,6 +138,12 @@
                 type="ForeverCompanies\CustomAttributes\Plugin\Framework\Model\ActionValidator\RemoveAction"
                 sortOrder="10"/>
     </type>
+    <type name="Magento\Catalog\Model\Product\Link\SaveHandler">
+        <plugin name="Forever_Companies_Custom_Attributes_Plugin_Magento_Catalog_Model_Product_Link_SaveHandler"
+                sortOrder="10"
+                type="ForeverCompanies\CustomAttributes\Plugin\Catalog\Model\Product\Link\SaveHandler"
+                disabled="false" />
+    </type>
     <preference for="Magento\Bundle\Model\Product\OptionList"
                 type="ForeverCompanies\CustomAttributes\Model\Bundle\Product\OptionList"/>
     <preference for="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\Composite"
