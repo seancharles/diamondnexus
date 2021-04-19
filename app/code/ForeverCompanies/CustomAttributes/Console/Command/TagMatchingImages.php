@@ -1,24 +1,20 @@
 <?php
-/**
- * Copyright ©  All rights reserved.
- * See COPYING.txt for license details.
- */
 declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Console\Command;
 
-use Magento\Framework\App\Area;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\StateException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Filesystem\DirectoryList;
 
-class TagMatchingImages extends AbstractCommand
+class TagMatchingImages extends Command
 {
     /**
      * @var string
@@ -33,9 +29,9 @@ class TagMatchingImages extends AbstractCommand
         $this->resourceConnection = $resourceConnection;
         $this->productRepository = $productRepository;
         $this->fileSystem = $fileSystem;
-        
+
         $this->connection = $this->resourceConnection->getConnection();
-        
+
         parent::__construct($this->name);
     }
 
@@ -47,11 +43,7 @@ class TagMatchingImages extends AbstractCommand
         InputInterface $input,
         OutputInterface $output
     ) {
-        try {
-            $this->state->getAreaCode();
-        } catch (LocalizedException $e) {
-            $this->state->setAreaCode(Area::AREA_GLOBAL);
-        }
+
         $output->writeln("Get products for media for joining images and tags...");
 
         $basePath = $this->fileSystem->getRoot();
