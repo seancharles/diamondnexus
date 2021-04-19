@@ -24,7 +24,7 @@ class UpdateAttributeLabelsAndScopes implements DataPatchInterface, PatchReverta
     private $eavSetupFactory;
     
     private $labelChangeArr;
-    private $scopChangeeArr;
+    private $scopeChangeArr;
     /**
      * Constructor
      *
