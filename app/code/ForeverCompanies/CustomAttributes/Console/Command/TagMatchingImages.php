@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Console\Command;
 
+use Magento\Framework\App\Area;
+use Magento\Framework\App\State;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -10,6 +12,7 @@ use Magento\Framework\Exception\StateException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
 use Magento\Framework\App\ResourceConnection;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Filesystem\DirectoryList;
@@ -22,10 +25,12 @@ class TagMatchingImages extends Command
     protected $name = 'forevercompanies:tag-matching-images';
     
     public function __construct(
+        State $state,
         ResourceConnection $resourceConnection,
         ProductRepositoryInterface $productRepository,
         DirectoryList $fileSystem
     ) {
+        $state->setAreaCode(\Magento\Framework\App\Area::AREA_ADMINHTML);
         $this->resourceConnection = $resourceConnection;
         $this->productRepository = $productRepository;
         $this->fileSystem = $fileSystem;
@@ -43,7 +48,6 @@ class TagMatchingImages extends Command
         InputInterface $input,
         OutputInterface $output
     ) {
-
         $output->writeln("Get products for media for joining images and tags...");
 
         $basePath = $this->fileSystem->getRoot();
