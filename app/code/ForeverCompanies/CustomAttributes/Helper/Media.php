@@ -90,14 +90,16 @@ class Media extends AbstractHelper
     {
         $connection = $this->resourceConnection->getConnection();
         $mediaGallery = $connection->getTableName(Gallery::GALLERY_VALUE_TABLE);
+        
         foreach ($mediaImages as $image) {
-            $id = $image['value_id'] ?? $image['id'];
-            $optionType = $image['catalog_product_option_type_id'] ?? 0;
-            $selectionId = $image['catalog_product_bundle_selection_id'] ?? 0;
-            $tags = $image['tags'] ?? '';
-            $uiRole = $image['ui_role'] ?? '';
-            $linkedProduct = $image['matching_band_product'] ?? '';
-            $metalType = $image['metal_type'] ?? '';
+            $id = (isset($image['value_id']) === true) ? $image['value_id'] : $image['id'];
+            $optionType = (isset($image['catalog_product_option_type_id']) === true) ? $image['catalog_product_option_type_id'] : 0;
+            $selectionId = (isset($image['catalog_product_bundle_selection_id']) === true) ? $image['catalog_product_bundle_selection_id'] : 0;
+            $tags = (isset($image['tags']) === true) ? $image['tags'] : '';
+            $uiRole = (isset($image['ui_role']) === true) ? $image['ui_role'] : '';
+            $linkedProduct = (isset($image['matching_band_product']) === true) ? $image['matching_band_product'] : '';
+            $metalType = (isset($image['metal_type']) === true) ? $image['metal_type'] : '';
+            
             $connection->update(
                 $mediaGallery,
                 [
