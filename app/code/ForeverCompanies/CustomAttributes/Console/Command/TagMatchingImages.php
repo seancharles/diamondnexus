@@ -19,6 +19,26 @@ use Magento\Framework\Filesystem\DirectoryList;
 
 class TagMatchingImages extends Command
 {
+    
+    protected $metalTypes = [
+        '18K White Gold',
+        '18K Yellow Gold',
+        '14K White Gold',
+        '14K Yellow Gold',
+        '14K Rose Gold'
+    ];
+    
+    protected $uiRoles = [
+        'Default',
+        'Hover',
+        'Base',
+        'Small',
+        'Swatch',
+        'Thumbnail',
+        'Matching-Hover',
+        'Matching-Default'
+    ];
+    
     /**
      * @var string
      */
