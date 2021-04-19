@@ -42,7 +42,7 @@ class DeleteOldAttributes extends AbstractCommand
         //'filter_color',
         //'filter_metal',
         //'filter_shape',
-        'filter_ship_date',
+        //'filter_ship_date',
         'gender',
         'gift_card_amount',
         'img_matching_band',
