@@ -76,6 +76,10 @@
                 <item name="UpdateLooseDiamondVisibility" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\UpdateLooseDiamondVisibility
                 </item>
+                <item name="TagMatchingImages" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\TagMatchingImages
+                </item>
+                
             </argument>
         </arguments>
     </type>
@@ -138,6 +142,7 @@
                 type="ForeverCompanies\CustomAttributes\Plugin\Framework\Model\ActionValidator\RemoveAction"
                 sortOrder="10"/>
     </type>
+    <preference for="Magento\Catalog\Model\ResourceModel\Product\Gallery" type="ForeverCompanies\CustomAttributes\Model\ResourceModel\Product\Gallery" />
     <preference for="Magento\Bundle\Model\Product\OptionList"
                 type="ForeverCompanies\CustomAttributes\Model\Bundle\Product\OptionList"/>
     <preference for="Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\Composite"

@@ -16,7 +16,7 @@ use Magento\Framework\Json\DecoderInterface;
 use Magento\Framework\Json\EncoderInterface;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
-use ForeverCompanies\CustomLinked\Model\Product as CustomLink;
+use \ForeverCompanies\LinkProduct\Model\Accessory as LinkedProduct;
 
 /**
  * Block for gallery content.
@@ -78,7 +78,7 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
         Json $jsonHelper,
         Configurable $configurableOption,
         Option $customOption,
-        CustomLink $customLink,
+        LinkedProduct $linkedProduct,
         array $data = []
     ) {
         parent::__construct(
@@ -94,7 +94,7 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
         $this->jsonHelper = $jsonHelper;
         $this->configurableOption = $configurableOption;
         $this->customOption = $customOption;
-        $this->customLink = $customLink;
+        $this->linkedProduct = $linkedProduct;
     }
 
     /**
@@ -184,11 +184,9 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
         /** @var Product $product */
         $product = $this->getData('element')->getDataObject();
         
-        $customLinkedProduct = $this->customLink->load($product->getId());
+        $linkedProducts = $this->linkedProduct->getAccessoryProducts($product);
         
-        $products = $customLinkedProduct->getCustomlinkedProductCollection();
-        
-        foreach($products as $product) {
+        foreach($linkedProducts as $product) {
             $values[] = [
                 'id' => $product->getId(),
                 'label' => $product->getName()
