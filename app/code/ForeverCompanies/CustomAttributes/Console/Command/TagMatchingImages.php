@@ -71,6 +71,10 @@ class TagMatchingImages extends Command
         OutputInterface $output
     ) {
         try{
+            $output->writeln("Clearing all matching band related entries");
+            
+            // clear entries before running
+            $this->connection->query("DELETE FROM paulthree_magento.catalog_product_link WHERE link_type_id IN(7);");
             
             $output->writeln("Get products for media for joining images and tags...");
 
@@ -98,7 +102,14 @@ class TagMatchingImages extends Command
                 if($parentProduct->getStatus() == 1 && in_array($parentProduct->getId(), $ignoredProducts) !== true) {
                     
                     $crossSellChildList = $this->connection->fetchAll(
-                        "SELECT product_id FROM catalog_product_cross_sell c INNER JOIN catalog_product_entity e ON c.product_id = e.entity_id  WHERE parent_id = '" . $parentId . "';"
+                        "SELECT
+                            product_id
+                         FROM
+                            catalog_product_cross_sell c
+                         INNER JOIN
+                            catalog_product_entity e ON c.product_id = e.entity_id
+                         WHERE
+                            parent_id = '" . $parentId . "';"
                     );
                     
                     foreach($crossSellChildList as $crossSellChild)
@@ -124,18 +135,41 @@ class TagMatchingImages extends Command
                     // handle adding images
                     $crossSellImageList = $this->connection->fetchAll("SELECT * FROM catalog_product_cross_sell_image WHERE parent_id = '" . $parentId . "'  ORDER BY position ASC;");
                     
+                    $galleryEntries = $parentProduct->getMediaGalleryEntries();
+                    
                     foreach($crossSellImageList as $crossSellImage)
                     {
                         $path = $basePath . "/pub/" . $crossSellImage['large'];
                         
+                        $imageExists = false;
+                        
+                        // get the current images name
+                        $currentFilename = basename($crossSellImage['large'], ".jpg");
+                        $currentFileMatchName = explode("_", $currentFilename);
+                        
+                        if(isset($currentFileMatchName[0]) === true && isset($currentFileMatchName[1]) === true) {
+                            foreach ($galleryEntries as $key => $image) {
+                                $matchFilename = basename($image->getFile(), ".jpg");
+                                $matchFileParts = explode("_", $matchFilename);
+                                
+                                if(isset($matchFileParts[0]) === true && isset($matchFileParts[1]) === true) {
+                                    if($currentFileMatchName[0] == $matchFileParts[0] && $currentFileMatchName[1] == $matchFileParts[1]) {
+                                        $imageExists = true;
+                                    }
+                                }
+                            }
+                        }
+                        
                         if(file_exists($path) === true) {
-                            $parentProduct->addImageToMediaGallery($path, array('image'), false, false);
+                            if($imageExists !== true) {
+                                $parentProduct->addImageToMediaGallery($path, array('image'), false, false);
+                            } else {
+                                $output->writeln("File already exists: " . $path);
+                            }
                         } else {
-                            echo "file not found: " . $path . "<br />";
+                            $output->writeln("File not found: " . $path);
                         }
                     }
-                    
-                    $galleryEntries = $parentProduct->getMediaGalleryEntries();
                     
                     foreach ($galleryEntries as $key => $image) {
                         $params = [];                    
