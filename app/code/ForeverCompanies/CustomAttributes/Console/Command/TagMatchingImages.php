@@ -143,54 +143,57 @@ class TagMatchingImages extends Command
                         $filename = basename($image->getFile(), ".jpg");
                         $fileParts = explode("_", $filename);
                         
-                        // parse out the begining of the filename since entries with additional numbers are copies
-                        $sql = "SELECT * FROM catalog_product_cross_sell_image WHERE large LIKE '%" . $fileParts[0] . "_" . $fileParts[1] . "%';";
-                        $crossSellImageDetail = $this->connection->fetchAll($sql);
+                        if(isset($fileParts[0]) === true && isset($fileParts[1]) === true) {
                         
-                        if(isset($crossSellImageDetail[0]) === true) {
-                            // parse out the label as array
-                            $labelArray = explode(",", $crossSellImageDetail[0]['label']);
+                            // parse out the begining of the filename since entries with additional numbers are copies
+                            $sql = "SELECT * FROM catalog_product_cross_sell_image WHERE large LIKE '%" . $fileParts[0] . "_" . $fileParts[1] . "%';";
+                            $crossSellImageDetail = $this->connection->fetchAll($sql);
                             
-                            foreach($labelArray as $tag) {
-                                if($tag) {
-                                    if(in_array($tag, $this->metalTypes) === true) {
-                                        $params[] = "metal--" . $tag;
-                                    }
-                                    
-                                    if(in_array($tag, $this->uiRoles) === true) {
-                                        $params[] = "role--" . $tag;
-                                    }
-                                }
-                            }
-                            
-                            if(isset($crossSellImageDetail[0]['title_id']) === true) {
-                                switch($crossSellImageDetail[0]['title_id']) {
-                                    case 1:
-                                        $params[] = "matching-type--matching-band";
-                                        break;
-                                    case 2:
-                                        $params[] = "matching-type--earring-enhancer";
-                                        break;
-                                    case 3:
-                                        $params[] = "matching-type--pendant-enhancer";
-                                        break;
-                                    case 4:
-                                        $params[] = "matching-type--ring-enhancer";
-                                        break;
-                                    case 5:
-                                        $params[] = "matching-type--matching-chain";
-                                        break;
-                                }
-                            } else {
-                                // default to matching band, might not be a good idea?
-                                $params[] = "matching-type--matching-band";
-                            }
+                            if(isset($crossSellImageDetail[0]) === true) {
+                                // parse out the label as array
+                                $labelArray = explode(",", $crossSellImageDetail[0]['label']);
                                 
-                            $params[] = "matching-id--" . $crossSellImageDetail[0]['product_id'];
-                            
-                            $label = implode(",", $params);
-                            
-                            $image->setLabel($label);
+                                foreach($labelArray as $tag) {
+                                    if($tag) {
+                                        if(in_array($tag, $this->metalTypes) === true) {
+                                            $params[] = "metal--" . $tag;
+                                        }
+                                        
+                                        if(in_array($tag, $this->uiRoles) === true) {
+                                            $params[] = "role--" . $tag;
+                                        }
+                                    }
+                                }
+                                
+                                if(isset($crossSellImageDetail[0]['title_id']) === true) {
+                                    switch($crossSellImageDetail[0]['title_id']) {
+                                        case 1:
+                                            $params[] = "matching-type--matching-band";
+                                            break;
+                                        case 2:
+                                            $params[] = "matching-type--earring-enhancer";
+                                            break;
+                                        case 3:
+                                            $params[] = "matching-type--pendant-enhancer";
+                                            break;
+                                        case 4:
+                                            $params[] = "matching-type--ring-enhancer";
+                                            break;
+                                        case 5:
+                                            $params[] = "matching-type--matching-chain";
+                                            break;
+                                    }
+                                } else {
+                                    // default to matching band, might not be a good idea?
+                                    $params[] = "matching-type--matching-band";
+                                }
+                                    
+                                $params[] = "matching-id--" . $crossSellImageDetail[0]['product_id'];
+                                
+                                $label = implode(",", $params);
+                                
+                                $image->setLabel($label);
+                            }
                         }
                     }
                     
@@ -204,20 +207,11 @@ class TagMatchingImages extends Command
                     
                     $parentProduct->save();
                 }
-                    
-                exit;
             }
             
         } catch(Exception $e) {
             echo $e->getMessage() . "\n";
         }
-        
-        
-        
-        exit;
-            
-        // add images to products with label
-
 
         $output->writeln('Adding tags is complete! Please execute bin/magento indexer:reindex if needed and flush cache.');
     }
