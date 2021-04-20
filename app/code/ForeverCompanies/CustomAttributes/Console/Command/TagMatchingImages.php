@@ -139,35 +139,37 @@ class TagMatchingImages extends Command
                     
                     foreach($crossSellImageList as $crossSellImage)
                     {
-                        $path = $basePath . "/pub/" . $crossSellImage['large'];
-                        
-                        $imageExists = false;
-                        
-                        // get the current images name
-                        $currentFilename = basename($crossSellImage['large'], ".jpg");
-                        $currentFileMatchName = explode("_", $currentFilename);
-                        
-                        if(isset($currentFileMatchName[0]) === true && isset($currentFileMatchName[1]) === true) {
-                            foreach ($galleryEntries as $key => $image) {
-                                $matchFilename = basename($image->getFile(), ".jpg");
-                                $matchFileParts = explode("_", $matchFilename);
-                                
-                                if(isset($matchFileParts[0]) === true && isset($matchFileParts[1]) === true) {
-                                    if($currentFileMatchName[0] == $matchFileParts[0] && $currentFileMatchName[1] == $matchFileParts[1]) {
-                                        $imageExists = true;
+                        if($crossSellImage['large'] != null) {
+                            $path = $basePath . "/pub/" . $crossSellImage['large'];
+                            
+                            $imageExists = false;
+                            
+                            // get the current images name
+                            $currentFilename = basename($crossSellImage['large'], ".jpg");
+                            $currentFileMatchName = explode("_", $currentFilename);
+                            
+                            if(isset($currentFileMatchName[0]) === true && isset($currentFileMatchName[1]) === true) {
+                                foreach ($galleryEntries as $key => $image) {
+                                    $matchFilename = basename($image->getFile(), ".jpg");
+                                    $matchFileParts = explode("_", $matchFilename);
+                                    
+                                    if(isset($matchFileParts[0]) === true && isset($matchFileParts[1]) === true) {
+                                        if($currentFileMatchName[0] == $matchFileParts[0] && $currentFileMatchName[1] == $matchFileParts[1]) {
+                                            $imageExists = true;
+                                        }
                                     }
                                 }
                             }
-                        }
-                        
-                        if(file_exists($path) === true) {
-                            if($imageExists !== true) {
-                                $parentProduct->addImageToMediaGallery($path, array('image'), false, false);
+                            
+                            if(file_exists($path) === true) {
+                                if($imageExists !== true) {
+                                    $parentProduct->addImageToMediaGallery($path, array('image'), false, false);
+                                } else {
+                                    $output->writeln("File already exists: " . $path);
+                                }
                             } else {
-                                $output->writeln("File already exists: " . $path);
+                                $output->writeln("File not found: " . $path);
                             }
-                        } else {
-                            $output->writeln("File not found: " . $path);
                         }
                     }
                     
