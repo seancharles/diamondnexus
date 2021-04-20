@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Console\Command;
 
@@ -16,6 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Filesystem\DirectoryList;
+use Magento\Catalog\Api\Data\productLinkInterfaceFactory;
 
 class TagMatchingImages extends Command
 {
@@ -48,12 +48,14 @@ class TagMatchingImages extends Command
         State $state,
         ResourceConnection $resourceConnection,
         ProductRepositoryInterface $productRepository,
-        DirectoryList $fileSystem
+        DirectoryList $fileSystem,
+        productLinkInterfaceFactory $productLinkInterfaceFactory
     ) {
         $state->setAreaCode(\Magento\Framework\App\Area::AREA_ADMINHTML);
         $this->resourceConnection = $resourceConnection;
         $this->productRepository = $productRepository;
         $this->fileSystem = $fileSystem;
+        $this->productLinkInterfaceFactory = $productLinkInterfaceFactory;
 
         $this->connection = $this->resourceConnection->getConnection();
 
@@ -68,104 +70,154 @@ class TagMatchingImages extends Command
         InputInterface $input,
         OutputInterface $output
     ) {
-        $output->writeln("Get products for media for joining images and tags...");
+        try{
+            
+            $output->writeln("Get products for media for joining images and tags...");
 
-        $basePath = $this->fileSystem->getRoot();
-        
-        $crossSellList = $this->connection->fetchAll("SELECT * FROM catalog_product_cross_sell WHERE parent_id = '48962' ORDER BY position ASC;");
-        
-        foreach($crossSellList as $crossSell)
-        {
-            // insert the matching band cross sell to db
-            $this->connection->query("insert into catalog_product_link (linked_product_id, product_id,link_type_id) values (".$crossSell['product_id'].",".$crossSell['parent_id'].",7);");
-        }
-        
-        // add images to products with label
-        foreach($crossSellList as $crossSell)
-        {
-            $crossSellImageList = $this->connection->fetchAll("SELECT * FROM catalog_product_cross_sell_image WHERE parent_id = '" . $crossSell['parent_id'] . "'  ORDER BY position ASC;");
+            $basePath = $this->fileSystem->getRoot();
             
-            $product = $this->productRepository->getById($crossSell['parent_id']);
-            $product->setStoreId(0);
+            $ignoredProducts = [
+                85211
+            ];
             
-            if(count($crossSellImageList) > 0) {
-                foreach($crossSellImageList as $crossSellImage)
-                {
-                    $path = $basePath . "/pub/" . $crossSellImage['large'];
-                    
-                    if(file_exists($path) === true) {
-                        $product->addImageToMediaGallery($path, array('image'), false, false);
-                    } else {
-                        echo "file not found: " . $path . "<br />";
-                    }
-                }
+            $crossSellParentList = $this->connection->fetchAll(
+                "SELECT c.parent_id FROM catalog_product_cross_sell c INNER JOIN catalog_product_entity e ON c.parent_id = e.entity_id GROUP BY parent_id ORDER BY c.id ASC;"
+            );
+            
+            foreach($crossSellParentList as $crossSellParent)
+            {
+                $parentId = $crossSellParent['parent_id'];
                 
-                // save product images
-                $product->save();
+                $output->writeln($parentId);
                 
-                $galleryEntries = $product->getMediaGalleryEntries();
+                $links = [];
                 
-                foreach ($galleryEntries as $key => $image) {
-                    $params = [];                    
+                $parentProduct = $this->productRepository->getById($parentId);
+                $parentProduct->setStoreId(0);
+                
+                if($parentProduct->getStatus() == 1 && in_array($parentProduct->getId(), $ignoredProducts) !== true) {
                     
-                    $filename = basename($image->getFile(), ".jpg");
-                    $fileParts = explode("_", $filename);
+                    $crossSellChildList = $this->connection->fetchAll(
+                        "SELECT product_id FROM catalog_product_cross_sell c INNER JOIN catalog_product_entity e ON c.product_id = e.entity_id  WHERE parent_id = '" . $parentId . "';"
+                    );
                     
-                    // parse out the begining of the filename since entries with additional numbers are copies
-                    $sql = "SELECT * FROM catalog_product_cross_sell_image WHERE large LIKE '%" . $fileParts[0] . "_" . $fileParts[1] . "%';";
-                    $crossSellImageDetail = $this->connection->fetchAll($sql);
-                    
-                    if(isset($crossSellImageDetail[0]) === true) {
-                        // parse out the label as array
-                        $labelArray = explode(",", $crossSellImageDetail[0]['label']);
+                    foreach($crossSellChildList as $crossSellChild)
+                    {
+                        $productId = $crossSellChild['product_id'];
                         
-                        foreach($labelArray as $tag) {
-                            if($tag) {
-                                if(in_array($tag, $this->metalTypes) === true) {
-                                    $params[] = "metal--" . $tag;
-                                }
-                                
-                                if(in_array($tag, $this->uiRoles) === true) {
-                                    $params[] = "role--" . $tag;
-                                }
-                            }
-                        }
+                        $output->writeln(" - " . $productId);
                         
-                        if(isset($crossSellImageDetail[0]['title_id']) === true) {
-                            switch($crossSellImageDetail[0]['title_id']) {
-                                case 1:
-                                    $params[] = "matching-type--matching-band";
-                                    break;
-                                case 2:
-                                    $params[] = "matching-type--earring-enhancer";
-                                    break;
-                                case 3:
-                                    $params[] = "matching-type--pendant-enhancer";
-                                    break;
-                                case 4:
-                                    $params[] = "matching-type--ring-enhancer";
-                                    break;
-                                case 5:
-                                    $params[] = "matching-type--matching-chain";
-                                    break;
-                            }
-                        } else {
-                            // default to matching band, might not be a good idea?
-                            $params[] = "matching-type--matching-band";
-                        }
+                        $childProduct = $this->productRepository->getById($productId);
+                        
+                        if($childProduct->getStatus() == 1) {
+                            $productLink = $this->productLinkInterfaceFactory->create();
                             
-                        $params[] = "matching-id--" . $crossSellImageDetail[0]['product_id'];
-                        
-                        $label = implode(",", $params);
-                        
-                        $image->setLabel($label);
+                            $productLink->setSku($parentProduct->getSku())
+                                    ->setLinkType('accessory')
+                                    ->setLinkedProductSku($childProduct->getSku())
+                                    ->setLinkedProductType($childProduct->getTypeId());
+                            
+                            $links[] = $productLink;
+                        }
                     }
+                    
+                    // handle adding images
+                    $crossSellImageList = $this->connection->fetchAll("SELECT * FROM catalog_product_cross_sell_image WHERE parent_id = '" . $parentId . "'  ORDER BY position ASC;");
+                    
+                    foreach($crossSellImageList as $crossSellImage)
+                    {
+                        $path = $basePath . "/pub/" . $crossSellImage['large'];
+                        
+                        if(file_exists($path) === true) {
+                            $parentProduct->addImageToMediaGallery($path, array('image'), false, false);
+                        } else {
+                            echo "file not found: " . $path . "<br />";
+                        }
+                    }
+                    
+                    $galleryEntries = $parentProduct->getMediaGalleryEntries();
+                    
+                    foreach ($galleryEntries as $key => $image) {
+                        $params = [];                    
+                        
+                        $filename = basename($image->getFile(), ".jpg");
+                        $fileParts = explode("_", $filename);
+                        
+                        // parse out the begining of the filename since entries with additional numbers are copies
+                        $sql = "SELECT * FROM catalog_product_cross_sell_image WHERE large LIKE '%" . $fileParts[0] . "_" . $fileParts[1] . "%';";
+                        $crossSellImageDetail = $this->connection->fetchAll($sql);
+                        
+                        if(isset($crossSellImageDetail[0]) === true) {
+                            // parse out the label as array
+                            $labelArray = explode(",", $crossSellImageDetail[0]['label']);
+                            
+                            foreach($labelArray as $tag) {
+                                if($tag) {
+                                    if(in_array($tag, $this->metalTypes) === true) {
+                                        $params[] = "metal--" . $tag;
+                                    }
+                                    
+                                    if(in_array($tag, $this->uiRoles) === true) {
+                                        $params[] = "role--" . $tag;
+                                    }
+                                }
+                            }
+                            
+                            if(isset($crossSellImageDetail[0]['title_id']) === true) {
+                                switch($crossSellImageDetail[0]['title_id']) {
+                                    case 1:
+                                        $params[] = "matching-type--matching-band";
+                                        break;
+                                    case 2:
+                                        $params[] = "matching-type--earring-enhancer";
+                                        break;
+                                    case 3:
+                                        $params[] = "matching-type--pendant-enhancer";
+                                        break;
+                                    case 4:
+                                        $params[] = "matching-type--ring-enhancer";
+                                        break;
+                                    case 5:
+                                        $params[] = "matching-type--matching-chain";
+                                        break;
+                                }
+                            } else {
+                                // default to matching band, might not be a good idea?
+                                $params[] = "matching-type--matching-band";
+                            }
+                                
+                            $params[] = "matching-id--" . $crossSellImageDetail[0]['product_id'];
+                            
+                            $label = implode(",", $params);
+                            
+                            $image->setLabel($label);
+                        }
+                    }
+                    
+                    if(count($galleryEntries) > 0) {
+                        $parentProduct->setMediaGalleryEntries($galleryEntries);
+                    }
+                    
+                    if(count($links) > 0) {
+                        $parentProduct->setProductLinks($links);
+                    }
+                    
+                    $parentProduct->save();
                 }
-                
-                $product->setMediaGalleryEntries($galleryEntries);
-                $product->save();
+                    
+                exit;
             }
+            
+        } catch(Exception $e) {
+            echo $e->getMessage() . "\n";
         }
+        
+        
+        
+        exit;
+            
+        // add images to products with label
+
 
         $output->writeln('Adding tags is complete! Please execute bin/magento indexer:reindex if needed and flush cache.');
     }
