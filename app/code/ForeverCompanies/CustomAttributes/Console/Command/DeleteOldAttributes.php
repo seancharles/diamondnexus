@@ -52,14 +52,14 @@ class DeleteOldAttributes extends AbstractCommand
         'lifestyle_0',
         'limelight',
         'limited_warranty',
-        'location',
-        'miusa',
-        'product_hash',
+        //'location',
+        //'miusa',
+        //'product_hash',
         'resizing_advisory',
         'returnable',
         'ring_size_advisory',
         'tcw',
-        'video_url',
+        //'video_url',
         'youtube'
     ];
 
