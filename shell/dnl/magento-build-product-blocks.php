@@ -2,7 +2,7 @@
 
 $pid = getmypid();
 
-$root = $_SERVER['HOME'].'html/';
+$root = $_SERVER['HOME'].'magento//';
 
 $lock_file = '/tmp/product-blocks.lck';
 
@@ -34,7 +34,7 @@ fwrite($fp, $pid);
 fclose($fp);
 
 // Load Magento core
-$mageFilename = $root.'app/Mage.php';
+// $mageFilename = $root.'app/Mage.php';
 
 $i=0;
 

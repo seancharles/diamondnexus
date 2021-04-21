@@ -1,6 +1,6 @@
 <?php
 	ini_set('display_errors', '1');
-	require_once $_SERVER['HOME'].'/html/app/Mage.php';
+	// require_once $_SERVER['HOME'].'magento//Mage.php';
 	Mage::app();
 
 	// Get the current store id
@@ -11,7 +11,7 @@
 
 	class Failed_Delivery_Report_Wrapper {
 		function generateReport($order_id) {
-			return shell_exec('/usr/bin/php /home/admin/html/shell/dnl/failed-delivery-report.php '.$order_id);
+			return shell_exec('/usr/bin/php /home/admin/shell/dnl/failed-delivery-report.php '.$order_id);
 		}
 
 		function main($addTo) {

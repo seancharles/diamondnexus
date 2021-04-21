@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-require_once $_SERVER['HOME'].'/html/shell/dnl/google_api/Google/Client.php';
-require_once $_SERVER['HOME'].'/html/shell/dnl/google_api/Google/Http/Request.php';
-require_once $_SERVER['HOME'].'/html/shell/dnl/google_api/Google/Service/Exception.php';
-require_once $_SERVER['HOME'].'/html/shell/dnl/google_api/Google/Utils/URITemplate.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Client.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Http/Request.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Service/Exception.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Utils/URITemplate.php';
 
 /**
  * This class implements the RESTful transport of apiServiceRequest()'s

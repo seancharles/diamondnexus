@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-require_once $_SERVER['HOME']."/html/shell/dnl/google_api/Google/Http/Request.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Http/Request.php";
 
 /**
  * Abstract class for the Authentication in the API client

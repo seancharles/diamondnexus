@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-require_once $_SERVER['HOME'].'/html/shell/dnl/google_api/Google/Utils.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Utils.php';
 
 /**
  * HTTP Request to be executed by IO classes. Upon execution, the

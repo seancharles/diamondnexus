@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 
-require_once $_SERVER['HOME'].'magento/html/shell/dnl/google_api/Google/Auth/AssertionCredentials.php';
-require_once $_SERVER['HOME'].'magento/html/shell/dnl/google_api/Google/Cache/File.php';
-require_once $_SERVER['HOME'].'magento/html/shell/dnl/google_api/Google/Cache/Memcache.php';
-require_once $_SERVER['HOME'].'magento/html/shell/dnl/google_api/Google/Config.php';
-require_once $_SERVER['HOME'].'magento/html/shell/dnl/google_api/Google/Collection.php';
-require_once $_SERVER['HOME'].'magento/html/shell/dnl/google_api/Google/Exception.php';
-require_once $_SERVER['HOME'].'magento/html/shell/dnl/google_api/Google/IO/Curl.php';
-require_once $_SERVER['HOME'].'magento/html/shell/dnl/google_api/Google/IO/Stream.php';
-require_once $_SERVER['HOME'].'magento/html/shell/dnl/google_api/Google/Model.php';
-require_once $_SERVER['HOME'].'magento/html/shell/dnl/google_api/Google/Service.php';
-require_once $_SERVER['HOME'].'magento/html/shell/dnl/google_api/Google/Service/Resource.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Auth/AssertionCredentials.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Cache/File.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Cache/Memcache.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Config.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Collection.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Exception.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/IO/Curl.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/IO/Stream.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Model.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Service.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Service/Resource.php';
 
 /**
  * The Google API Client

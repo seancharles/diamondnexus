@@ -3,7 +3,7 @@
 	
     error_reporting(E_ALL);
 	
-	require_once $_SERVER['HOME'].'/html/app/Mage.php';
+	require_once $_SERVER['HOME'].'magento//Mage.php';
 	
 	Mage::app();
 

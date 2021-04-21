@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-require_once $_SERVER['HOME']."/html/shell/dnl/google_api/Google/Exception.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Exception.php";
 
 class Google_Cache_Exception extends Google_Exception
 {

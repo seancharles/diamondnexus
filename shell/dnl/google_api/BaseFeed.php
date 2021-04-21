@@ -1,7 +1,7 @@
 <?php
 
-require_once $_SERVER['HOME'] . 'magento/html/shell/dnl/google_api/Google/Client.php';
-require_once $_SERVER['HOME'] . 'magento/html/shell/dnl/google_api/Google/Service/Content.php';
+require_once $_SERVER['HOME'] . 'magento/shell/dnl/google_api/Google/Client.php';
+require_once $_SERVER['HOME'] . 'magento/shell/dnl/google_api/Google/Service/Content.php';
 
 abstract class BaseFeed
 {

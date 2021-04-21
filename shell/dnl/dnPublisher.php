@@ -41,29 +41,29 @@ class DnPublisher {
 
     public function publishFull() {
 	echo "Running Index\n";
-	$result = self::exec_local_command("cd ~/html/ ; /usr/bin/php shell/dnIndexer.php full");
+	$result = self::exec_local_command("cd ~/magento// ; /usr/bin/php shell/dnIndexer.php full");
 	self::buildFeeds();
 	return;
     }
 
     public function publishQuick() {
 	echo "Running Index\n";
-	$result = self::exec_local_command("cd ~/html/ ; /usr/bin/php shell/dnIndexer.php quick");
+	$result = self::exec_local_command("cd ~/magento// ; /usr/bin/php shell/dnIndexer.php quick");
 	self::buildFeeds();
 	return;
     }
 
     public function publishDropDowns(){
 	echo "Running Index\n";
-	$result = self::exec_local_command("cd ~/html/ ; /usr/bin/php shell/dnIndexer.php catalog_product_attribute");
+	$result = self::exec_local_command("cd ~/magento// ; /usr/bin/php shell/dnIndexer.php catalog_product_attribute");
 	self::buildFeeds();
 	return;
     }
     public function buildFeeds() {
 	echo "Running Cache fluffer\n";
-	$result = self::exec_local_command("cd ~/html/shell/dnl/ ; /usr/bin/php ./cache-warmer.php http://www.diamondnexus.com/sitemap.xml");
+	$result = self::exec_local_command("cd ~/magento/shell/dnl/ ; /usr/bin/php ./cache-warmer.php http://www.diamondnexus.com/sitemap.xml");
 	echo "Running Base Feed\n";
-	$result = self::exec_remote_command("/usr/bin/php /home/live/html/shell/dnl/google_api/build_feed.php update");
+	$result = self::exec_remote_command("/usr/bin/php /home/live/shell/dnl/google_api/build_feed.php update");
 	return;
     }
 

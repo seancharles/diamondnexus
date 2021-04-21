@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-require_once $_SERVER['HOME']."magento/html/shell/dnl/google_api/Google/Auth/Abstract.php";
-require_once $_SERVER['HOME']."magento/html/shell/dnl/google_api/Google/Auth/AssertionCredentials.php";
-require_once $_SERVER['HOME']."magento/html/shell/dnl/google_api/Google/Auth/Exception.php";
-require_once $_SERVER['HOME']."magento/html/shell/dnl/google_api/Google/Auth/LoginTicket.php";
-require_once $_SERVER['HOME']."magento/html/shell/dnl/google_api/Google/Client.php";
-require_once $_SERVER['HOME']."magento/html/shell/dnl/google_api/Google/Http/Request.php";
-require_once $_SERVER['HOME']."magento/html/shell/dnl/google_api/Google/Utils.php";
-require_once $_SERVER['HOME']."magento/html/shell/dnl/google_api/Google/Verifier/Pem.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Auth/Abstract.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Auth/AssertionCredentials.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Auth/Exception.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Auth/LoginTicket.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Client.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Http/Request.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Utils.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Verifier/Pem.php";
 
 /**
  * Authentication class that deals with the OAuth 2 web-server authentication flow

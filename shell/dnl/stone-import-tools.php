@@ -1,7 +1,7 @@
 <?php
 ini_set('display_errors', '1');
 ini_set('memory_limit','-1');
-require_once $_SERVER['HOME'].'/html/app/Mage.php';
+//require_once $_SERVER['HOME'].'magento//Mage.php';
 Mage::app();
 
 // Get the current store id

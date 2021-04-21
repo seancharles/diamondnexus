@@ -5,7 +5,7 @@
  *
  */
 
-    require_once $_SERVER['HOME'] . '/html/app/Mage.php';
+//    require_once $_SERVER['HOME'] . 'magento//Mage.php';
 
     Mage::app();
 
@@ -219,5 +219,5 @@ order by
     echo date('r') . ': Completed updating ' . count($productIdsAry) . ' products.';
 
 	// dnShippingCutoffFlush.php
-	// echo system('/usr/bin/php /home/admin/html/shell/dnl/redis-clear-product-page.php 10.62.37.134 6379 4');
+	// echo system('/usr/bin/php /home/admin/shell/dnl/redis-clear-product-page.php 10.62.37.134 6379 4');
 	// echo system('/usr/bin/php /home/admin/limelight/dnFlushProductsByTag.php');

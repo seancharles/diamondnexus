@@ -1,8 +1,8 @@
 <?php
-require_once $_SERVER['HOME'].'/html/app/Mage.php'; umask(0); Mage::app('default');
+// require_once $_SERVER['HOME'].'magento//Mage.php'; umask(0); Mage::app('default');
 
 setlocale(LC_MONETARY, 'en_US');
-$filename = $_SERVER['HOME']."/html/var/report/customer-balances.csv";
+$filename = $_SERVER['HOME']."magento//var/report/customer-balances.csv";
 
 unlink($filename);
 $count = 0;

@@ -19,10 +19,10 @@
  * Abstract IO base class
  */
 
-require_once $_SERVER['HOME'].'/html/shell/dnl/google_api/Google/Client.php';
-require_once $_SERVER['HOME'].'/html/shell/dnl/google_api/Google/IO/Exception.php';
-require_once $_SERVER['HOME'].'/html/shell/dnl/google_api/Google/Http/CacheParser.php';
-require_once $_SERVER['HOME'].'/html/shell/dnl/google_api/Google/Http/Request.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Client.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/IO/Exception.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Http/CacheParser.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Http/Request.php';
 
 abstract class Google_IO_Abstract
 {

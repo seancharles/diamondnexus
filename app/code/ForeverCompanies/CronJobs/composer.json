@@ -1,0 +1,14 @@
+{
+	"name" : "forevercompanies/module-cronjobs",
+	"type" : "magento2-module",
+	"license" : "OSL-3.0",
+	"minimum-stability" : "dev",
+	"autoload" : {
+		"psr-4" : {
+			"ForeverCompanies\\CronJobs\\" : ""
+		},
+		"files" : [
+			"registration.php"
+		]
+	}
+}

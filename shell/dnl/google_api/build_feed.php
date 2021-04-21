@@ -1,9 +1,9 @@
 <?php
 	ini_set('display_errors', '1');
 	ini_set('error_reporting', E_ALL);
-	require_once $_SERVER['HOME'].'/html/app/Mage.php';
-	require_once $_SERVER['HOME'].'/html/shell/dnl/encoding.php';
-	require_once $_SERVER['HOME'].'/html/shell/dnl/google_api/ProductsFeed.php';
+//	require_once $_SERVER['HOME'].'magento//Mage.php';
+	require_once $_SERVER['HOME'].'magento/shell/dnl/encoding.php';
+	require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/ProductsFeed.php';
 	Mage::app();
 
 	// Get the current store id

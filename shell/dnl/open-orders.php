@@ -1,6 +1,6 @@
 <?php
 //ini_set('display_errors', '1');
-require_once $_SERVER['HOME'].'/html/app/Mage.php';
+// require_once $_SERVER['HOME'].'magento//Mage.php';
 Mage::app();
 
 // Get the current store id
@@ -15,7 +15,7 @@ $enddate      = date('Y-m-t', strtotime('now -1 month'));  // now -1 day
 $fromDate = $date.' 00:00:00';
 $toDate = $enddate.' 23:59:59';
 
-$filename = $_SERVER['HOME'].'/html/var/report/open_orders_' . $date . '.csv';
+$filename = $_SERVER['HOME'].'magento//var/report/open_orders_' . $date . '.csv';
 
 $order_collection = Mage::getModel('sales/order')->getCollection()
 	->addAttributeToFilter('updated_at', array('from'=>$fromDate, 'to'=>$toDate))

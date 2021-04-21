@@ -1,5 +1,5 @@
 <?php
-    require_once $_SERVER['HOME'].'/html/app/Mage.php';
+//    require_once $_SERVER['HOME'].'magento//Mage.php';
     Mage::app();
     $storeId = Mage::app()->getStore()->getId();
     $userModel = Mage::getModel('admin/user');

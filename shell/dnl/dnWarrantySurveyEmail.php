@@ -9,7 +9,7 @@
     # We will run the cron once an hour and create a check alert to report any emails that didn't get sent out
     # Emails that fail will not be sent out infinitely later. After the fourth day emails will no longer attempt to send
 
-    require_once $_SERVER['HOME'] . '/html/app/Mage.php';
+//    require_once $_SERVER['HOME'] . 'magento//Mage.php';
     
     Mage::app();
     

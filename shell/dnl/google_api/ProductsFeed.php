@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER['HOME'].'magento/html/shell/dnl/google_api/BaseFeed.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/BaseFeed.php';
 
 class ProductsFeed extends BaseFeed {
   // These constants define the identifiers for all of our example products

@@ -1,9 +1,9 @@
 <?
     error_reporting(-1);
 
-    require_once $_SERVER['HOME'].'/html/app/Mage.php';
-    require_once $_SERVER['HOME'].'/html/shell/dnl/encoding.php';
-    require_once $_SERVER['HOME'].'/html/shell/dnl/hubspot-columns.php';
+  
+    require_once $_SERVER['HOME'].'magento/shell/dnl/encoding.php';
+    require_once $_SERVER['HOME'].'magento/shell/dnl/hubspot-columns.php';
     $mage = Mage::app();
     $storeId = Mage::app()->getStore()->getId();
     $userModel = Mage::getModel('admin/user');

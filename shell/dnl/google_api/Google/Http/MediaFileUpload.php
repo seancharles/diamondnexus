@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-require_once $_SERVER['HOME'].'/html/shell/dnl/google_api/Google/Client.php';
-require_once $_SERVER['HOME'].'/html/shell/dnl/google_api/Google/Exception.php';
-require_once $_SERVER['HOME'].'/html/shell/dnl/google_api/Google/Http/Request.php';
-require_once $_SERVER['HOME'].'/html/shell/dnl/google_api/Google/Http/REST.php';
-require_once $_SERVER['HOME'].'/html/shell/dnl/google_api/Google/Utils.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Client.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Exception.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Http/Request.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Http/REST.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Utils.php';
 
 /**
  * @author Chirag Shah <chirags@google.com>

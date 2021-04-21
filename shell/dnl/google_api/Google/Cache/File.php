@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-require_once $_SERVER['HOME']."/html/shell/dnl/google_api/Google/Cache/Abstract.php";
-require_once $_SERVER['HOME']."/html/shell/dnl/google_api/Google/Cache/Exception.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Cache/Abstract.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Cache/Exception.php";
 
 /*
  * This class implements a basic on disk storage. While that does

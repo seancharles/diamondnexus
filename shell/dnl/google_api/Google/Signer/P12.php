@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-require_once $_SERVER['HOME'].'/html/shell/dnl/google_api/Google/Auth/Exception.php';
-require_once $_SERVER['HOME'].'/html/shell/dnl/google_api/Google/Signer/Abstract.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Auth/Exception.php';
+require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/Google/Signer/Abstract.php';
 
 /**
  * Signs data.

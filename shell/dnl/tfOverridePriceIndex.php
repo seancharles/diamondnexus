@@ -2,7 +2,7 @@
 <?php
 
 	function index($index) {
-		return system( "/usr/bin/php ~/html/shell/indexer.php -reindex " . $index );
+		return system( "/usr/bin/php ~/magento/shell/indexer.php -reindex " . $index );
 	}
 
 	function startIndex($index = null) {

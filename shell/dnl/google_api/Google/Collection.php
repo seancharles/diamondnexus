@@ -1,6 +1,6 @@
 <?php
 
-require_once $_SERVER['HOME']."/html/shell/dnl/google_api/Google/Model.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Model.php";
 
 /**
  * Extension to the regular Google_Model that automatically

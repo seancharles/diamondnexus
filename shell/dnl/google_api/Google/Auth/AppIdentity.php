@@ -22,8 +22,8 @@
  */
 use google\appengine\api\app_identity\AppIdentityService;
 
-require_once $_SERVER['HOME']."/html/shell/dnl/google_api/Google/Auth/Abstract.php";
-require_once $_SERVER['HOME']."/html/shell/dnl/google_api/Google/Http/Request.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Auth/Abstract.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Http/Request.php";
 
 /**
  * Authentication via the Google App Engine App Identity service.

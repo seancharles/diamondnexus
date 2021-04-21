@@ -86,7 +86,7 @@ trouble=false
 while true
 do
     start_time=$(date +%s)
-    source ~/html/shell/dnl/conf.sh
+    source ~/shell/dnl/conf.sh
 
     run cd $magento
     run git fetch --all

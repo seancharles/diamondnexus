@@ -1,6 +1,6 @@
 <?php
 
-$root = $_SERVER['HOME'].'/html/';
+$root = $_SERVER['HOME'].'magento//';
 
 $lock_file = $root.'shell/dnl/inventory.lck';
 
@@ -24,7 +24,7 @@ if ( $inventory->children() ) {
 }
 
 // Load Magento core
-$mageFilename = $root.'app/Mage.php';
+// $mageFilename = $root.'app/Mage.php';
 if (!file_exists($mageFilename)) {
 				echo 'SETIError: Could not locate "app" directory or load Magento core files. Please check your script installation and try again.';
 				exit;

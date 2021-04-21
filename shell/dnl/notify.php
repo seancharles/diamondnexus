@@ -1,5 +1,5 @@
 <?php
-	require_once '/home/admin/html/app/Mage.php';
+//	require_once 'magento/home/admin/html/app/Mage.php';
 	Mage::app();
 
 	# set the time zone to CST

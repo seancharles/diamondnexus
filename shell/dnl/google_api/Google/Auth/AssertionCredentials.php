@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-require_once $_SERVER['HOME']."magento/html/shell/dnl/google_api/Google/Auth/OAuth2.php";
-require_once $_SERVER['HOME']."magento/html/shell/dnl/google_api/Google/Signer/P12.php";
-require_once $_SERVER['HOME']."magento/html/shell/dnl/google_api/Google/Utils.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Auth/OAuth2.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Signer/P12.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Utils.php";
 
 /**
  * Credentials object used for OAuth 2.0 Signed JWT assertion grants.

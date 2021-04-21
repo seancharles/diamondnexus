@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-require_once $_SERVER['HOME']."/html/shell/dnl/google_api/Google/Auth/Abstract.php";
-require_once $_SERVER['HOME']."/html/shell/dnl/google_api/Google/Http/Request.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Auth/Abstract.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Http/Request.php";
 
 /**
  * Simple API access implementation. Can either be used to make requests

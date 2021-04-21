@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 
-require_once $_SERVER['HOME'].'/html/app/Mage.php';
+// require_once $_SERVER['HOME'].'magento//Mage.php';
 Mage::app();
 
 function flushCacheKey($redis, $key = null) {
@@ -40,11 +40,11 @@ if(in_array($date, $holidayCutoffDates) == true) {
 	
 	Mage::log('Available by update started', null, $logFile, true);
 	
-	echo system('/usr/bin/php /home/admin/html/shell/dnl/dnFilterAvailablebyUpdate.php');
+	echo system('/usr/bin/php /home/admin/shell/dnl/dnFilterAvailablebyUpdate.php');
 	
 	Mage::log('Available by update completed', null, $logFile, true);
 	
-	echo system('/usr/bin/php /home/admin/html/shell/indexer.php -reindex catalog_product_attribute');
+	echo system('/usr/bin/php /home/admin/shell/indexer.php -reindex catalog_product_attribute');
 	
 	Mage::log('Reindex completed', null, $logFile, true);
 }

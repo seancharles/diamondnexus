@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-require_once $_SERVER['HOME']."/html/shell/dnl/google_api/Google/Auth/Exception.php";
+require_once $_SERVER['HOME']."magento/shell/dnl/google_api/Google/Auth/Exception.php";
 
 /**
  * Class to hold information about an authenticated login.

@@ -1,6 +1,6 @@
 <?php
 	ini_set('display_errors', '1');
-	require_once $_SERVER['HOME'].'/html/app/Mage.php';
+//	require_once $_SERVER['HOME'].'magento//Mage.php';
 	Mage::app();
 	# set the time zone to CST
 	date_default_timezone_set('America/Chicago'); 

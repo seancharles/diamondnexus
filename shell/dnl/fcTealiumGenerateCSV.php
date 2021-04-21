@@ -5,7 +5,7 @@
  */
 
 // include Mage app
-require_once $_SERVER['HOME'] . '/html/app/Mage.php';
+// require_once $_SERVER['HOME'] . 'magento//Mage.php';
 umask(0);
 
 // set current store to admin store id
