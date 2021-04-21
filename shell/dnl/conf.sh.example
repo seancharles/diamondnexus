@@ -1,0 +1,32 @@
+#!/bin/bash -eu
+# autoupdate and DN repo for dev
+
+magento=~/html
+css=~/html/skin/frontend/rwd_custom/
+theme=~/html/app/design/frontend/rwd_custom/
+repos='dn fa fc'
+
+list_issues()
+{
+python -c '
+
+# replace this with one of your oauth keys from github (no permissions needed)
+oauth = "01234567890abcdefghijklmnopqrstuvwxyz012"
+
+import requests
+issues = requests.get("https://api.github.com/search/issues", params={"q": "repo:'$1' type:pr state:open label:Staged"}, headers={"Authorization": "token %s" % oauth, "Accept": "application/vnd.github.v3+json"})
+issues.raise_for_status()
+for issue in issues.json()["items"]:
+    print(issue["number"])
+' | sort -n
+}
+
+main_branch=origin/develop
+
+magento_extra_branches=(
+    $(list_issues ForeverCompanies/magento | sed 's|^|origin/pr/|;')
+)
+
+expected_life=360
+
+ulimit -c unlimited
