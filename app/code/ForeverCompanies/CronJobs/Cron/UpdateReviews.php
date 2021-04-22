@@ -4,7 +4,7 @@ namespace ForeverCompanies\CronJobs\Cron;
 
 use ForeverCompanies\CronJobs\Model\FeedLogic;
 
-class UpateReviews
+class UpdateReviews
 {
     protected $feedModel;
 

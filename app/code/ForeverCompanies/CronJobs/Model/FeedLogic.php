@@ -685,7 +685,7 @@ class FeedLogic
     }
     
     function getProductsReviews($type) {
-        $varPathExport = $_SERVER['HOME'].'magento/export/reviews/incremental/'. $GLOBALS['argvStoreId']. '/';
+        $varPathExport = $_SERVER['HOME'].'magento/var/export/reviews/incremental/'. $GLOBALS['argvStoreId']. '/';
         if (!file_exists($varPathExport)) {
             mkdir($varPathExport, 0777, true);
         }
@@ -701,11 +701,8 @@ class FeedLogic
             ->addFieldToFilter('created_at', array('gteq' => $date))
             ->addStatusFilter($this->reviewModel::STATUS_APPROVED)
             ->setDateOrder()
-            ->addRateVotes()
-            ->load();
-            
-            $reviews = $collection->getData();
-            
+            ->addRateVotes();
+          
         } else {
             $output = fopen($varPathExport . 'reviews.xml', 'w+')  or die("Unable to open file!");
             
@@ -714,31 +711,29 @@ class FeedLogic
             ->addStoreFilter($GLOBALS['argvStoreId'])
             ->addStatusFilter($this->reviewModel::STATUS_APPROVED)
             ->setDateOrder()
-            ->addRateVotes()
-            ->load();
-            
-            $reviews = $collection->getData();
+            ->addRateVotes();
+   
         }
-    
+
+        $collection->getSelect();
         
         print "Building Reviews...\n";
         fputs($output, $this->reviewsHeader());
         fputs($output, "\t<reviews>\n");
-        foreach ($reviews as $review) {
+        foreach ($collection->getItems()  as $review) {
             
-            // Prod id $review->getEntityPkValue()
-            $product = $this->productModel->create()->setStoreId($GLOBALS['argvStoreId'])->load($review['entity_pk_value']);
-            $timestamp = date(DATE_ATOM,strtotime($review['created_at']));
+            $product = $this->productModel->create()->setStoreId($GLOBALS['argvStoreId'])->load($review->getEntityPkValue());
+            $timestamp = date(DATE_ATOM,strtotime($review->getCreatedAt()));
             
             $url =  $this->storeManager->getStore()->getBaseUrl() . $product->getUrlKey();
-            $content = preg_replace("/(\. \. \.)/",'',preg_replace("/(\.)\\1+/",'',str_replace('&', 'and', strip_tags(html_entity_decode($this->check_format($review['detail']))))));
-            $title = preg_replace("/(\. \. \.)/",'',preg_replace("/(\.)\\1+/",'',str_replace('&', 'and', strip_tags(html_entity_decode($this->check_format($review['title']))))));
-            $name = preg_replace("/(\. \. \.)/",'',preg_replace("/(\.)\\1+/",'',str_replace('&', 'and', strip_tags(html_entity_decode($this->check_format($review['nickname']))))));
+            $content = preg_replace("/(\. \. \.)/",'',preg_replace("/(\.)\\1+/",'',str_replace('&', 'and', strip_tags(html_entity_decode($this->check_format($review->getDetail()))))));
+            $title = preg_replace("/(\. \. \.)/",'',preg_replace("/(\.)\\1+/",'',str_replace('&', 'and', strip_tags(html_entity_decode($this->check_format($review->getTitle()))))));
+            $name = preg_replace("/(\. \. \.)/",'',preg_replace("/(\.)\\1+/",'',str_replace('&', 'and', strip_tags(html_entity_decode($this->check_format($review->getNickname()))))));
             $product_name = preg_replace("/(\.)\\1+/",'.',str_replace('&', 'and', strip_tags(html_entity_decode($this->check_format($product->getName())))));
             
             if (strlen($content) > 0) {
                 $prodXml = "\t\t<review>\n";
-                $prodXml .= "\t\t\t<review_id>".$review['review_id']."</review_id>\n";
+                $prodXml .= "\t\t\t<review_id>".$review->getReviewId()."</review_id>\n";
                 $prodXml .= "\t\t\t<reviewer>\n";
                 $prodXml .= "\t\t\t\t<name>".$name."</name>\n";
                 $prodXml .= "\t\t\t</reviewer>\n";
@@ -747,8 +742,7 @@ class FeedLogic
                 $prodXml .= "\t\t\t<content>".$content."</content>\n";
                 $prodXml .= "\t\t\t<review_url type='group'>".$url."?cid=".$product->getId()."</review_url>\n";
                 $prodXml .= "\t\t\t<ratings>\n";
-                // TODO Find review ratings
-                // $prodXml .= "\t\t\t\t<overall min='0' max='100'>".$this->getAverageRating($review)."</overall>\n";
+                $prodXml .= "\t\t\t\t<overall min='0' max='100'>".$this->getAverageRating($review)."</overall>\n";
                 $prodXml .= "\t\t\t</ratings>\n";
                 $prodXml .= "\t\t\t<products>\n";
                 $prodXml .= "\t\t\t\t<product>\n";
