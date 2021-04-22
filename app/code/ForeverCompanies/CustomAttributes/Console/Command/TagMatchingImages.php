@@ -74,7 +74,7 @@ class TagMatchingImages extends Command
             $output->writeln("Clearing all matching band related entries");
             
             // clear entries before running
-            $this->connection->query("DELETE FROM paulthree_magento.catalog_product_link WHERE link_type_id IN(7);");
+            $this->connection->query("DELETE FROM catalog_product_link WHERE link_type_id IN(7);");
             
             $output->writeln("Get products for media for joining images and tags...");
 
