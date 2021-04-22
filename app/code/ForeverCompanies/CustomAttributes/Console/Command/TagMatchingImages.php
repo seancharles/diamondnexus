@@ -172,6 +172,9 @@ class TagMatchingImages extends Command
                             }
                         }
                     }
+
+                    // retrieve the gallery entries again to pick up the ones added above
+                    $galleryEntries = $parentProduct->getMediaGalleryEntries();
                     
                     foreach ($galleryEntries as $key => $image) {
                         $params = [];                    
