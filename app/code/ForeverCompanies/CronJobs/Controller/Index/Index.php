@@ -73,11 +73,14 @@ class Index extends \Magento\Framework\App\Action\Action
 	
 	public function execute()
 	{
-	    // you can test here at http://yourstoreurl.com/forever-cron/index
+	    // you can test here at http://yourstoreurl.com/forever-cron/index or you can wait for the cron jobs to run.
+	    // look in var/export.
 	    echo 'fff';die;
 	    
-	    $this->feedModel->BuildCsvs(1);
-	    $this->feedModel->BuildCsvs(12);
+	    // $this->feedModel->BuildCsvs(1);
+	    // $this->feedModel->BuildCsvs(12);
+	    // $this->feedModel->createReviews(1);
+	    // $this->feedModel->updateReviews(1);
 	    
 	    
 	   // $this->feedModel->updateReviews(1);
