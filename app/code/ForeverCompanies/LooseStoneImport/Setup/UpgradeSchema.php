@@ -48,7 +48,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             )
             ->addColumn(
                 'log_date',
-                \Magento\Framework\DB\Ddl\Table::TYPE_DATE,
+                \Magento\Framework\DB\Ddl\Table::TYPE_DATETIME,
                 null,
                 ['nullable' => false,],
                 'Log Date'
