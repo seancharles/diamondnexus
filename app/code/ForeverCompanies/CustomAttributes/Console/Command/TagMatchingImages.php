@@ -81,7 +81,8 @@ class TagMatchingImages extends Command
             $basePath = $this->fileSystem->getRoot();
             
             $ignoredProducts = [
-                85211
+                85211,
+                67233
             ];
             
             $crossSellParentList = $this->connection->fetchAll(
