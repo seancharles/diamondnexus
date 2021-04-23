@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    
+    <!--  
+    <group id="default">
+        <job name="forever_loose_stone_import" instance="ForeverCompanies\CronJobs\Cron\LooseStoneImport" method="execute">
+            <schedule>00 2 * * 0</schedule>
+        </job>
+    </group>
+    -->
+    
+</config>
