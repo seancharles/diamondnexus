@@ -74,14 +74,15 @@ class TagMatchingImages extends Command
             $output->writeln("Clearing all matching band related entries");
             
             // clear entries before running
-            $this->connection->query("DELETE FROM paulthree_magento.catalog_product_link WHERE link_type_id IN(7);");
+            $this->connection->query("DELETE FROM catalog_product_link WHERE link_type_id IN(7);");
             
             $output->writeln("Get products for media for joining images and tags...");
 
             $basePath = $this->fileSystem->getRoot();
             
             $ignoredProducts = [
-                85211
+                85211,
+                67233
             ];
             
             $crossSellParentList = $this->connection->fetchAll(
@@ -172,6 +173,9 @@ class TagMatchingImages extends Command
                             }
                         }
                     }
+
+                    // retrieve the gallery entries again to pick up the ones added above
+                    $galleryEntries = $parentProduct->getMediaGalleryEntries();
                     
                     foreach ($galleryEntries as $key => $image) {
                         $params = [];                    
