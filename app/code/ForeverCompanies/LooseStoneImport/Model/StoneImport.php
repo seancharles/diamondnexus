@@ -21,11 +21,13 @@ class StoneImport
     protected $attributeSetMod;
     protected $stockItemModel;
     
+    protected $booleanMap;
     protected $csvHeaderMap;
     protected $clarityMap;
     protected $cutGradeMap;
     protected $colorMap;
     protected $shapeMap;
+    protected $supplierMap;
     
     protected $shapePopMap;
     protected $shapeAlphaMap;
@@ -61,7 +63,7 @@ class StoneImport
             
             $this->csvHeaderMap = array(
                 "Product Name" => "name",
-                "Supplier" => "supplier",
+         //       "Supplier" => "supplier",
                 "Certificate #" => "sku",
          //       "Shape" => "shape",
                 "Lab" => "lab",
@@ -106,6 +108,14 @@ class StoneImport
                 "Online" => "online"
             );
             
+            
+            $this->booleanMap = array(
+                "Yes" => "1",
+                "yes" => "1",
+                "No" => "1",
+                "no" => "1"
+            );
+            
             // clarity_sort
             $this->claritySortMap = array(
                 "SI2" => "100",
@@ -117,7 +127,9 @@ class StoneImport
                 "IF" => "2854",
                 "FL" => "3564",
                 "I1" => "2853",
-                "I3" => "3480"
+                "I3" => "3480",
+                // TODO: Remove. Adding to get through import.
+                "G" => ""
             );
             
             // cut_grade_sort
@@ -125,7 +137,9 @@ class StoneImport
                 "Good" => "100",
                 "Very Good" => "200",
                 "Excellent" => "300",
-                "Ideal" => "400"
+                "Ideal" => "400",
+                // TODO: Remove. Adding to get through import.
+                "G" => ""
             );
             
             // color_sort
@@ -221,13 +235,18 @@ class StoneImport
             
             $this->cutGradeMap = array(
                 "Excellent" => "2876",
+                "Ex" => "2876",
                 "Not Specified" => "3076",
                 "Ideal" => "2877",
                 "Very Good" => "2878",
                 "Very good" => "2878",
                 "Good" => "2879",
                 // TODO: Create this attribute option and place its value here.
-                "Fair" => ""
+                "Fair" => "",
+                // TODO: Remove. Adding to get through import.
+                "G" => "",
+                "-" => "",
+                "None" => ""
             );
             
             $this->colorMap = array(
@@ -327,6 +346,48 @@ class StoneImport
                 "Marquise" => "2851"
             );
             
+            $this->supplierMap = array(
+                "blumoon" => "3533",
+                "classic" => "3534",
+                "greenrocks" => "3535",
+                "internal" => "3536",
+                "labrilliante" => "3537",
+                "paradiam" => "3538",
+                "pdc" => "3539",
+                "stuller" => "3540",
+                "washington" => "3541",
+                "foundry" => "3542",
+                "diamondfoundry" => "3542",
+                "meylor" => "3543",
+                "ethereal" => "3544",
+                "smilingrocks" => "3545",
+                "unique" => "3546",
+                "qualitygold" => "3547",
+                "flawlessallure" => "3548",
+                "labs" => "3549",
+                "labsdiamond" => "3549",
+                "Fenix" => "3550",
+                "fenix" => "3550",
+                "brilliantdiamonds" => "3551",
+                "growndiamondcorpusa" => "3552",
+                "internationaldiamondjewelry" => "3553",
+                "ecogrown" => "3554",
+                "purestones" => "3555",
+                "proudest" => "3556",
+                "proudestlegendlimited" => "3556",
+                "dvjcorp" => "3357",
+                "dvjewelrycorporation" => "3557",
+                "indiandiamonds" => "3558",
+                "growndiamondcorp" => "3559",
+                "lush" => "3560",
+                "lushdiamonds" => "3560",
+                "altr" => "3561",
+                "Forever Grown" => "3562",
+                "internalaltr" => "3563",
+                // TODO: Create these attribute options and place their values here.
+                "bhakti" => ""
+            );
+            
             
             
             
@@ -339,36 +400,8 @@ class StoneImport
     
     function run()
     {
-        $attributeCode = 'color';
-        $entityType = 'catalog_product';
         
-        $objectManager =  \Magento\Framework\App\ObjectManager::getInstance();
-        
-        $attributeInfo = $objectManager->get(\Magento\Eav\Model\Entity\Attribute::class)
-        ->loadByCode($entityType, $attributeCode);
-        
-        $attributeId = $attributeInfo->getAttributeId();
-        $attributeOptionAll = $objectManager->get(\Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\Collection::class)
-        ->setPositionOrder('asc')
-        ->setAttributeFilter($attributeId)
-        ->setStoreFilter()
-        ->load();
-        
-        
-        echo 'colors<br /><br />';
-
-        foreach ($attributeOptionAll->getData() as $attributeOption)
-        {
-        
-            
-            echo '"' . $attributeOption['default_value'] . '" => "' . $attributeOption['option_id'] . '",<br />';
-            
-        }
-        die;
-        echo '<pre>';
-        var_dump("attribute info", $attributeOptionAll->getData());
-        
-        die;
+   //     $this->_getMapForAttribute();
         
         
         $csvArray = $this->_buildArray();
@@ -381,9 +414,11 @@ class StoneImport
         $i = 0; 
         foreach ($csvArray as $csvArr) {
             
-            if ($i == 1000)
+            if (1==0 && $i < 22388)
             {
-                break;
+                $i++;
+                continue;
+            //    break;
             }
             
             $productId = $this->productModel->getIdBySku($csvArr['Certificate #']);
@@ -393,7 +428,7 @@ class StoneImport
              
                 
                 $rowHash = hash('sha1', json_encode($csvArr)); 
-                if (1==1 || $product->getProductHash() !== $rowHash) {
+                if ($product->getProductHash() !== $rowHash) { // what if product is new?
                    
                     if (!$this->_checkForRequiredFields($csvArr)) {
                         continue;
@@ -404,14 +439,16 @@ class StoneImport
                     
                     
                     // These passed the required check and have their own maps.
+                    // Need to add isset checks for these.
                     try {
                         $product->setColor($this->colorMap[$csvArr['Color']]);
                         $product->setClarity($this->clarityMap[$csvArr['Clarity']]);
                         $product->setCutGrade($this->cutGradeMap[$csvArr['Cut Grade']]);
                         $product->setShape($this->shapeMap[$csvArr['Shape']]);
+                        $product->setSupplier($this->supplierMap[$csvArr['Supplier']]);
                     } catch(Exception $e)
                     {
-                        echo $e->getMessage();die;
+                        echo 'zzz error ' . $e->getMessage() . '<br />';
                     }
                     
                     
@@ -438,6 +475,11 @@ class StoneImport
                     if (isset($csvArr['Delivery Date']) && trim($csvArr['Delivery Date']) != "") {
                         $product->setShippingStatus($this->shippingStatusMap[$csvArr['Delivery Date']]);
                     }
+                    
+                    // Blockchain Verified
+                    if (isset($csvArr['Blockchain Verified']) && trim($csvArr['Blockchain Verified']) != "") {
+                        $product->setBlockchainVerified($this->booleanMap[$csvArr]['Blockchain Verified']);
+                    }
                    
                     // Mapped
                     foreach ($csvArr as $csvK => $csvV) {
@@ -452,6 +494,9 @@ class StoneImport
                     echo 'saved ' . $product->getName() . '<br />';
                 }
               
+            }
+            else { // else new product
+                
             }
             
             
@@ -501,6 +546,40 @@ class StoneImport
         }
       
         return true;
+    }
+    
+    protected function _getMapForAttribute()
+    {
+        $attributeCode = 'supplier';
+        $entityType = 'catalog_product';
+        
+        $objectManager =  \Magento\Framework\App\ObjectManager::getInstance();
+        
+        $attributeInfo = $objectManager->get(\Magento\Eav\Model\Entity\Attribute::class)
+        ->loadByCode($entityType, $attributeCode);
+        
+        $attributeId = $attributeInfo->getAttributeId();
+        $attributeOptionAll = $objectManager->get(\Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\Collection::class)
+        ->setPositionOrder('asc')
+        ->setAttributeFilter($attributeId)
+        ->setStoreFilter()
+        ->load();
+        
+        
+        echo $attributeCode . '<br /><br />';
+        
+        foreach ($attributeOptionAll->getData() as $attributeOption)
+        {
+            
+            
+            echo '"' . $attributeOption['default_value'] . '" => "' . $attributeOption['option_id'] . '",<br />';
+            
+        }
+        die;
+        echo '<pre>';
+        var_dump("attribute info", $attributeOptionAll->getData());
+        
+        die;
     }
     
 }
