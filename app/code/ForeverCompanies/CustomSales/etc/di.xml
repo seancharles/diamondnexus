@@ -39,6 +39,9 @@
     <type name="Magento\Sales\Model\Order">
         <plugin name="custom_sales_order" type="ForeverCompanies\CustomSales\Plugin\Order"/>
     </type>
+	<type name="Magento\Staging\Model\StagingApplier">
+		<plugin name="custom_staging_applier" type="ForeverCompanies\CustomSales\Plugin\StagingApplier"/>
+	</type>
     <type name="\Magento\Shipping\Block\Adminhtml\Create\Items">
         <plugin name="custom_sales_custom_fields" type="ForeverCompanies\CustomSales\Plugin\CustomFields"/>
     </type>
