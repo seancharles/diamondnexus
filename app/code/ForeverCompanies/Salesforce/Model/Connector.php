@@ -192,8 +192,14 @@ class Connector
         try {
             if (!isset($instance_url) || !isset($access_token) || $useFreshCredential) {
                 $login = $this->getAccessToken();
-                $instance_url = $login['instance_url'];
-                $access_token = $login['access_token'];
+                
+                if(isset($login['instance_url']) === true && isset($login['access_token']) === true) {
+                    $instance_url = $login['instance_url'];
+                    $access_token = $login['access_token'];
+                } else {
+                    echo "Unable to authenticate to salesforce. Please check credentials.";
+                    return;
+                }
             }
         } catch (\InvalidArgumentException $exception) {
             echo 'Exception Message: ' . $exception->getMessage();
@@ -353,6 +359,9 @@ class Connector
     {
         $path = "/services/apexrest/createAccount";
         $response = $this->sendRequest(\Zend_Http_Client::POST, $path, $parameter);
+        
+        print_r($response);
+        
         if (isset($response["acctId"])) {
             $id = $response["acctId"];
             return $response;
@@ -419,10 +428,14 @@ class Connector
     public function searchRecord($table, $field, $value)
     {
         $query = "SELECT Id FROM $table WHERE $field = '$value'";
-        $query .= 'LIMIT 1';
+        $query .= ' LIMIT 1';
         $path = '/services/data/v34.0/query?q=' . urlencode($query);
 
         $response = $this->sendRequest(\Zend_Http_Client::GET, $path);
+        
+        print_r($query);
+        
+        print_r($response);
         
         if(isset($response['records'][0]) == true) {
             // pull the first row from the response
