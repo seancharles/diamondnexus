@@ -76,6 +76,10 @@
                 <item name="UpdateLooseDiamondVisibility" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\UpdateLooseDiamondVisibility
                 </item>
+                <item name="TagMatchingImages" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\TagMatchingImages
+                </item>
+                
             </argument>
         </arguments>
     </type>

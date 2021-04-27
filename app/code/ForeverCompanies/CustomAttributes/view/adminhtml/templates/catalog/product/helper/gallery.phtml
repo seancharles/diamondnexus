@@ -187,6 +187,15 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                    value="<%- data.ui_role %>"
                    data-form-part="<?= /* @noEscape*/ $formName ?>"/>
 
+            <input type="hidden"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][matching_band_product]"
+                   value="<%- data.matching_band_product %>"
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
+            <input type="hidden"
+                   name="<?= /* @noEscape*/ $elementName ?>[<%- data.file_id %>][metal_type]"
+                   value="<%- data.metal_type %>"
+                   data-form-part="<?= /* @noEscape*/ $formName ?>"/>
+
             <div class="product-image-wrapper <% if (data.cldspinset) { %>cldspinset-overlay<% } %>">
                 <img class="product-image"
                      data-role="image-element"
@@ -334,6 +343,7 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                     </div>
                 </div>
 
+                <!-- role ui -->
                 <div class="admin__field field-image-product-ui-role">
                     <label class="admin__field-label">
                         <span><?= $block->escapeHtml(__('Image UI Role')) ?></span>
@@ -361,7 +371,66 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                         </ul>
                     </div>
                 </div>
+                
+                <!-- matching band product -->
+                <div class="admin__field field-image-product-matching-band-product">
+                    <label class="admin__field-label">
+                        <span><?= $block->escapeHtml(__('Matching Band Product')) ?></span>
+                    </label>
 
+                    <div class="admin__field-control">
+                        <ul class="multiselect-alt">
+                            <?php
+                            foreach ($block->getLinkedProducts() as $linkedProduct) :
+                                ?>
+                                <li class="item">
+                                    <label>
+                                        <input class="image-option-selector"
+                                               data-role="linked-product-selector"
+                                               data-form-part="<?= /* @noEscape*/ $formName ?>"
+                                               type="checkbox"
+                                               value="<?= $block->escapeHtml($linkedProduct['id']) ?>"
+                                        />
+                                        <?= /* @noEscape*/ $block->escapeHtml($linkedProduct['label']) ?>
+                                    </label>
+                                </li>
+                                <?php
+                            endforeach;
+                            ?>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- metal type -->
+                <div class="admin__field field-image-product-metal-type">
+                    <label class="admin__field-label">
+                        <span><?= $block->escapeHtml(__('Metal Type')) ?></span>
+                    </label>
+
+                    <div class="admin__field-control">
+                        <ul class="multiselect-alt">
+                            <?php
+                            foreach ($block->getMetalTypes() as $metalType) :
+                                ?>
+                                <li class="item">
+                                    <label>
+                                        <input class="image-option-selector"
+                                               data-role="metaltype-selector"
+                                               data-form-part="<?= /* @noEscape*/ $formName ?>"
+                                               type="checkbox"
+                                               value="<?= $block->escapeHtml($metalType['label']) ?>"
+                                        />
+                                        <?= /* @noEscape*/ $block->escapeHtml($metalType['label']) ?>
+                                    </label>
+                                </li>
+                                <?php
+                            endforeach;
+                            ?>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- TODO: REMOVE -->
                 <div class="admin__field field-image-product-bundle-selections">
                     <label class="admin__field-label">
                         <span><?= $block->escapeHtml(__('Product bundle selections')) ?></span>

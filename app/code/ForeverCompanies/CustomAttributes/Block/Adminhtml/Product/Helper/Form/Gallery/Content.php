@@ -15,6 +15,8 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Json\DecoderInterface;
 use Magento\Framework\Json\EncoderInterface;
 use Magento\Framework\Serialize\Serializer\Json;
+use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
+use \ForeverCompanies\LinkProduct\Model\Accessory as LinkedProduct;
 
 /**
  * Block for gallery content.
@@ -30,6 +32,21 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
      * @var Json
      */
     protected $jsonHelper;
+    
+    /**
+     * @var Magento\Catalog\Api\ProductLinkRepositoryInterface
+     */
+    protected $productLinkRepository;
+    
+    /**
+     * @var \Magento\Catalog\Model\Product\Option
+     */
+    protected $configurableOption;
+    
+    /**
+     * @var \Magento\Catalog\Model\Product\Option
+     */
+    protected $customOption;
 
     /**
      * @var string
@@ -59,6 +76,9 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
         ProductSpinsetMapFactory $productSpinsetMapFactory,
         Media $mediaHelper,
         Json $jsonHelper,
+        Configurable $configurableOption,
+        Option $customOption,
+        LinkedProduct $linkedProduct,
         array $data = []
     ) {
         parent::__construct(
@@ -72,6 +92,9 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
         );
         $this->mediaHelper = $mediaHelper;
         $this->jsonHelper = $jsonHelper;
+        $this->configurableOption = $configurableOption;
+        $this->customOption = $customOption;
+        $this->linkedProduct = $linkedProduct;
     }
 
     /**
@@ -153,5 +176,45 @@ class Content extends \Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form
             }
         }
         return $data;
+    }
+    
+    public function getLinkedProducts()
+    {
+        $values = [];
+        /** @var Product $product */
+        $product = $this->getData('element')->getDataObject();
+        
+        $linkedProducts = $this->linkedProduct->getAccessoryProducts($product);
+        
+        foreach($linkedProducts as $product) {
+            $values[] = [
+                'id' => $product->getId(),
+                'label' => $product->getName()
+            ];
+        }
+        
+        return $values;
+    }
+    
+    public function getMetalTypes()
+    {
+        $values = [];
+        /** @var Product $product */
+        $product = $this->getData('element')->getDataObject();
+        
+        $productAttributeOptions = $this->configurableOption->getConfigurableAttributesAsArray($product);
+        
+        foreach ($productAttributeOptions as $option) {
+            if($option['label'] == "Precious Metal") {
+                foreach($option['values'] as $value) {
+                    $values[] = [
+                        'id' => $value['value_index'],
+                        'label' => $value['label']
+                    ];
+                }
+            }
+        }
+        
+        return $values;
     }
 }

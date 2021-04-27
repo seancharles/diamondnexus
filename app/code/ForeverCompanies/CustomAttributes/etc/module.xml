@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="ForeverCompanies_CustomAttributes" setup_version="0.0.7">
+    <module name="ForeverCompanies_CustomAttributes" setup_version="0.0.8">
         <sequence>
             <module name="Cloudinary_Cloudinary"/>
             <module name="Magento_CatalogGraphQl"/>
-            <module name="ForeverCompanies_DynamicBundle"/>
+            <module name="Magento_Catalog"/>
         </sequence>
     </module>
 </config>

@@ -1,9 +1,10 @@
 FROM php:7.4.13-fpm
 LABEL maintainer="Forever Companies"
 
+RUN apt-get update && apt-get install sudo
 RUN groupadd -g 1000 admin
-RUN useradd -u 1000 -g 1000 -d /var/www/ admin -s /bin/bash
-RUN usermod -g www-data admin && usermod -a -G www-data,root root
+RUN echo "%admin	ALL=(ALL:ALL)	NOPASSWD: ALL" >> /etc/sudoers
+RUN useradd -u 1000 -g 1000 -d /var/www/ admin
 
 ARG BUILD
 ENV BUILD $BUILD
@@ -37,6 +38,12 @@ ENV DB_USER $DB_USER
 
 ARG DB_ROOT_PASSWORD
 ENV DB_ROOT_PASSWORD $DB_ROOT_PASSWORD
+
+ARG WP_ENV
+ENV WP_ENV $WP_ENV
+
+ARG RESOLVER
+ENV RESOLVER $RESOLVER
 
 ARG VARNISH_HOST
 ENV VARNISH_HOST $VARNISH_HOST
@@ -191,7 +198,7 @@ RUN echo "deb http://ftp.ua.debian.org/debian/ stretch main" >> /etc/apt/sources
    && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen && locale-gen \
    && apt-get install --allow-remove-essential -yf software-properties-common gnupg gnupg-agent wget \
    libzip-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev xml-core unzip libssl-dev libonig-dev \
-   libicu-dev libxml2 libxml2-dev git jq libxslt-dev ssmtp mailutils vim cron ssh-client openssh-server nano sudo \
+   libicu-dev libxml2 libxml2-dev git jq libxslt-dev ssmtp mailutils vim cron ssh-client openssh-server nano sudo nginx gettext-base \
    && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
    && docker-php-ext-install -j$(nproc) bcmath exif gettext gd zip pdo_mysql iconv opcache mysqli intl soap mbstring dom shmop sockets sysvmsg sysvsem sysvshm xsl \
    && pecl install igbinary \
@@ -200,6 +207,36 @@ RUN echo "deb http://ftp.ua.debian.org/debian/ stretch main" >> /etc/apt/sources
    && rm -rf /var/lib/apt/lists/* /usr/local/etc/php-fpm.d/* \
    && cd /tmp && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php /tmp/composer-setup.php --version=1.10.16 --install-dir=/usr/bin && php -r "unlink('composer-setup.php');" \
    && mv /usr/bin/composer.phar /usr/bin/composer
+
+COPY bin/files/ /etc/nginx/
+RUN chown 1000:1000 -R /etc/nginx/
+
+ARG htaccess
+
+RUN echo -n 'diamondnexus:' >> /var/.htpasswd
+RUN openssl passwd -apr1 passin `echo "$htaccess"` | tail -n1 >> /var/.htpasswd
+
+ENV VARNISH_VERSION 5.2.1-1~stretch
+RUN set -ex; \
+       fetchDeps=" \
+               dirmngr \
+               gnupg \
+       "; \
+       apt-get update; \
+       apt-get install -y --no-install-recommends apt-transport-https ca-certificates $fetchDeps; \
+       key=91CFD5635A1A5FAC0662BEDD2E9BA3FE86BE909D; \
+       export GNUPGHOME="$(mktemp -d)"; \
+       gpg --batch --keyserver hkp://keyserver.ubuntu.com --recv-keys $key; \
+       gpg --batch --export export $key > /etc/apt/trusted.gpg.d/varnish.gpg; \
+       gpgconf --kill all; \
+       rm -rf $GNUPGHOME; \
+       echo deb https://packagecloud.io/varnishcache/varnish52/debian/ stretch main > /etc/apt/sources.list.d/varnish.list; \
+       apt-get update; \
+       apt-get install -y --no-install-recommends varnish=$VARNISH_VERSION; \
+       apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $fetchDeps; \
+       rm -rf /var/lib/apt/lists/*
+
+COPY bin/default.vcl /etc/varnish/default.vcl
 
 RUN if [ "$XDEBUG" = "on" ] ; then pecl install xdebug \
 && docker-php-ext-enable xdebug \

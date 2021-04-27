@@ -24,7 +24,7 @@
 				
 				if ($this->profileHelper->formKeyValidator->validate($this->getRequest())) {
 					// clear cart contents
-					$this->profileHelper->clearQuote();
+					$this->profileHelper->clearCart();
 					
 					// updates the last sync time
 					$this->profileHelper->sync();
