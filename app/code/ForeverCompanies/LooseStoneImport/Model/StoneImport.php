@@ -24,6 +24,7 @@ class StoneImport
     protected $stockItemModel;
     protected $mediaTmpDir;
     protected $file;
+    protected $connection;
     
     protected $booleanMap;
     protected $csvHeaderMap;
@@ -69,6 +70,7 @@ class StoneImport
             
             $this->mediaTmpDir = $directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . 'tmp';
             $this->file->checkAndCreateFolder($this->mediaTmpDir );
+            $this->connection = $resource->getConnection();
             
             $this->csvHeaderMap = array(
                 "Product Name" => "name",
@@ -340,7 +342,10 @@ class StoneImport
                 "Emerald" => "2848",
                 "Radiant" => "2849",
                 "Pear" => "2850",
-                "Marquise" => "2851"
+                "Marquise" => "2851",
+                // TODO: Remove. Adding to get through import.
+                "RB" => "",
+                "EM" => ""
             );
             
             $this->supplierMap = array(
@@ -385,7 +390,6 @@ class StoneImport
                 "bhakti" => ""
             );
             
-            //  $this->fileName = $_SERVER['HOME'] . 'magento/var/import/stone_import.csv';
             $this->fileName = $_SERVER['HOME'] . 'magento/var/import/stone_import_full.csv';
     }
     
@@ -393,54 +397,40 @@ class StoneImport
     {   
         $csvArray = $this->_buildArray();
         
-        echo 'time before - ' . date("d-m-Y h:i:s") . '<br />';
         $i = 0; 
+        // echo 'time before - ' . date("d-m-Y h:i:s") . '<br />';;
         foreach ($csvArray as $csvArr) {
             
             if (!$this->_checkForRequiredFields($csvArr)) {
+                $this->_stoneLog($product, $csvArr, "error", "Required field invalid.");
                 continue;
             }
-            
-          //  if (1==0 && $i < 22388)
-          if ($i == 1000)
+            /*
+            if ($i == 25)
             {
                 echo 'time after - ' . date("d-m-Y h:i:s") . '<br />';;
                 die;
                 $i++;
                 continue;
-            //    break;
+            } else
+            {
+                echo 'saved ' . $product->getName() . '<br />';
+                $i++;
             }
-            
+            */
             $productId = $this->productModel->getIdBySku($csvArr['Certificate #']);
-            if (1==0 && $productId) {
-                $product = $this->productModel->load($productId); // faster from a few tests.
-                
-                
+            if ($productId) {
+                $product = $this->productModel->load($productId); 
                 $rowHash = $this->_getHash($csvArr);
-                if (1==1 || $product->getProductHash() !== $rowHash) { // what if product is new?
-                   
+                // this will be corrected once we have the hashing working elsewhere.
+                if ($product->getProductHash() !== $rowHash) { 
                     $product->setProductHash($rowHash);
-                    
                     $this->_applyCsvRowToProduct($product, $csvArr);
-                    
-                    echo 'saved ' . $product->getName() . '<br />';
+                    $this->_stoneLog($product, $csvArr, "update");
                 }
-              
             } else { // else new product
-                
                 $product = $this->productFactory->create();
                 
-                $product->setName(reset($csvArr));
-                $product->setTypeId('simple');
-                $product->setAttributeSetId(31);
-                
-                $product->setSku($csvArr['Certificate #']);
-                
-                // From the admin, the reps can use a diamond on a 1215 or FA order.  On the frontend we do not display diamonds on FA.
-                // need to assign visibility for each store somehow.
-                $product->setWebsiteIds(array(3));
-                $product->setVisibility(4);
-         
                 $imageFileName = $this->mediaTmpDir . DIRECTORY_SEPARATOR . baseName($csvArr['Image Link']);
                 $imageResult = $this->file->read($csvArr['Image Link'], $imageFileName);
                 if ($imageResult) {
@@ -449,9 +439,22 @@ class StoneImport
                         ['image', 'small_image', 'thumbnail'],
                         false,
                         false
-                    );
+                        );
+                } else {
+                    $this->_stoneLog($product, $csvArr, "add", "Product Image not created.");
+                    continue;
                 }
                 
+                $product->setName(reset($csvArr));
+                $product->setTypeId('simple');
+                $product->setAttributeSetId(31);
+                $product->setSku($csvArr['Certificate #']);
+                
+                // From the admin, the reps can use a diamond on a 1215 or FA order.  On the frontend we do not display diamonds on FA.
+                // need to assign visibility for each store somehow.
+                $product->setWebsiteIds(array(3));
+                $product->setVisibility(4);
+         
                 $product->setStockData(
                     array(
                         'use_config_manage_stock' => 0,
@@ -462,38 +465,23 @@ class StoneImport
                     '   qty' => 1
                     )
                 );
-                    
                 $product->setProductHash($this->_getHash($csvArr));
-                
                 $this->_applyCsvRowToProduct($product, $csvArr);
-                
-                die;
-          
+                $this->_stoneLog($product, $csvArr, "add");
             }
-            
-            $i++;
-            
         }
-        
-        echo 'time after - ' . date("d-m-Y h:i:s") . '<br />';;
-        
-        
     }
     
     protected function _applyCsvRowToProduct($product, $csvArr)
     {
         $product->setProductType('3569'); //diamond
         
-        // These passed the required check and have their own maps.
-        try {
-            $product->setColor($this->colorMap[$csvArr['Color']]);
-            $product->setClarity($this->clarityMap[$csvArr['Clarity']]);
-            $product->setCutGrade($this->cutGradeMap[$csvArr['Cut Grade']]);
-            $product->setShape($this->shapeMap[$csvArr['Shape']]);
-            $product->setSupplier($this->supplierMap[$csvArr['Supplier']]);
-        } catch(Exception $e) {
-            echo 'zzz error ' . $e->getMessage() . '<br />';
-        }
+        // These have been checked as required fields.
+        $product->setColor($this->colorMap[$csvArr['Color']]);
+        $product->setClarity($this->clarityMap[$csvArr['Clarity']]);
+        $product->setCutGrade($this->cutGradeMap[$csvArr['Cut Grade']]);
+        $product->setShape($this->shapeMap[$csvArr['Shape']]);
+        $product->setSupplier($this->supplierMap[$csvArr['Supplier']]);
         
         // Sorting
         if (isset($this->claritySortMap[$csvArr['Clarity']])) {
@@ -528,7 +516,6 @@ class StoneImport
                 $product->setData($this->csvHeaderMap[$csvK], $csvV);
             }
         }
-        
         $product->save();
     }
     
@@ -556,8 +543,6 @@ class StoneImport
     
     protected function _checkForRequiredFields($arr)
     {
-        //echo $arr['Product Name'];
-        // ????
         foreach ($this->requiredFieldsArr as $req) {
             if (!isset($arr[$req]) || trim($arr[$req]) == "" || $arr[$req] == "Nan") {
                 return false;
@@ -573,7 +558,7 @@ class StoneImport
     
     protected function _getMapForAttribute()
     {
-        $attributeCode = 'supplier';
+        $attributeCode = 'shape';
         $entityType = 'catalog_product';
         
         $objectManager =  \Magento\Framework\App\ObjectManager::getInstance();
@@ -588,11 +573,22 @@ class StoneImport
         ->setStoreFilter()
         ->load();
         
-        echo $attributeCode . '<br /><br />';
         foreach ($attributeOptionAll->getData() as $attributeOption) {
             echo '"' . $attributeOption['default_value'] . '" => "' . $attributeOption['option_id'] . '",<br />';
         }
         die;
+    }
+    
+    protected function _stoneLog($product, $csvArr, $action, $error = null)
+    {
+        if ($error) {
+            $query = 'INSERT INTO stone_log(sku, log_action, payload, payload_hash, errors)
+                VALUES("'. $product->getSku() . '", "' . $action . '", "'  . addslashes(json_encode($csvArr)) . '", "' . $this->_getHash($csvArr) . '", "' . $error . '")';
+        } else {
+            $query = 'INSERT INTO stone_log(sku, log_action, payload, payload_hash)
+                VALUES("'. $product->getSku() . '", "' . $action . '", "'  . addslashes(json_encode($csvArr)) . '", "' . $this->_getHash($csvArr) . '")';
+        }
+        $this->connection->query($query);
     }
     
 }
