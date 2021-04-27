@@ -18,12 +18,16 @@ class Leads
     
     public function execute()
     {
-        $this->syncHelper->runLeads();
+        if($this->syncHelper->isLeadSyncEnabled()) {
+            $this->syncHelper->runLeads();
 
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/cron.log');
-        $logger = new \Zend\Log\Logger();
-        $logger->addWriter($writer);
-        $logger->info(__METHOD__);
+            $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/cron.log');
+            $logger = new \Zend\Log\Logger();
+            $logger->addWriter($writer);
+            $logger->info(__METHOD__);
+        } else {
+            echo "Warn: leads cron disabled\n";
+        }
 
         return $this;
 

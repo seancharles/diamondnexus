@@ -99,8 +99,21 @@ class Account extends Connector
 
         if(!$sfAccountId) {
             $params = ['acct' => $params];
+            
+            if(isset($params) === true) {
+                print_r($params);
+            }
+            
             $response = $this->createAccount($params);
-            $id =  $response["acctId"];
+            
+            echo "create accout\n";
+            print_r($response);
+            
+			if(isset($response["acctId"]) == true) {
+				$id =  $response["acctId"];
+			} else {
+				$id = null;
+			}
         } elseif($sfAccountId != null) {
             $params += ['Id' => $sfAccountId];
             $params = ['acct' => $params];

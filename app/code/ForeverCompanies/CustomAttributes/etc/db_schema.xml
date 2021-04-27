@@ -12,6 +12,10 @@
                 default="0" comment="Bundle selection item ID"/>
         <column xsi:type="varchar" name="tags" nullable="true" length="255" comment="Tags"/>
         <column xsi:type="varchar" name="ui_role" nullable="true" length="255" comment="Ui Role"/>
+        
+        <column xsi:type="varchar" name="matching_band_product" nullable="true" length="255" comment="Matching Band Product"/>
+        <column xsi:type="varchar" name="metal_type" nullable="true" length="255" comment="Metal Type"/>
+        
         <index referenceId="CATALOG_PRODUCT_ENTITY_MEDIA_GALLERY_VALUE_CATALOG_PRODUCT_OPTION_ENTITY_ID"
                indexType="btree">
             <column name="catalog_product_option_type_id"/>

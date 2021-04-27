@@ -3,6 +3,7 @@
     <module name="ForeverCompanies_CustomSales" setup_version="0.0.1">
         <sequence>
             <module name="Magento_Sales"/>
+            <module name="Magento_Staging"/>
         </sequence>
     </module>
 </config>

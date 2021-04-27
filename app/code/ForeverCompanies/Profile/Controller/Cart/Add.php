@@ -9,19 +9,16 @@
 		protected $productloader;
 		protected $profileHelper;
 		protected $resultHelper;
-		protected $dataObjectFactory;
 		
 		public function __construct(
 			\Magento\Catalog\Model\ProductFactory $productloader,
 			\ForeverCompanies\Profile\Helper\Profile $profileHelper,
 			\ForeverCompanies\Profile\Helper\Result $resultHelper,
-			\Magento\Framework\DataObject\Factory $dataObjectFactory,
 			\Magento\Backend\App\Action\Context $context
 		) {
 			$this->productloader = $productloader;
 			$this->profileHelper = $profileHelper;
 			$this->resultHelper = $resultHelper;
-			$this->dataObjectFactory = $dataObjectFactory;
 			
 			parent::__construct($context);
 		}
@@ -39,9 +36,6 @@
 					$superAttributes = $this->profileHelper->getPostParam('super_attributes');
 					$options = $this->profileHelper->getPostParam('options');
 
-					// get the quote id
-					$quote = $this->profileHelper->getQuote();
-					
 					if($productId > 0) {
 						
 						$productModel = $this->productloader->create()->load($productId);
@@ -72,9 +66,7 @@
 
 							if($validationResult == false) {
 
-								$quote->addProduct($productModel, $this->dataObjectFactory->create($params));
-								
-								$this->profileHelper->saveQuote($quote);
+								$this->profileHelper->addCartItem($productId, $params);
 								
 								$message = __(
 									'You added %1 to your shopping cart.',
