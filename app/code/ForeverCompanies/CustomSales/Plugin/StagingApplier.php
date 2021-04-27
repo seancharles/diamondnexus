@@ -9,26 +9,11 @@ class StagingApplier
     public function __construct(
         \Psr\Log\LoggerInterface $logger,
 		\Magento\Staging\Api\UpdateRepositoryInterface $updateRepository,
-		\Magento\Staging\Model\VersionHistoryInterface $versionHistory,
-        \Magento\Framework\Mail\Template\TransportBuilder,
-        \Magento\Framework\App\Helper\AbstractHelper,
-        \Magento\Framework\Translate\Inline\StateInterface,
-        \Magento\Store\Model\StoreManagerInterface,
-        \GuzzleHttp\Client,
-        \GuzzleHttp\ClientFactory,
-        \GuzzleHttp\Exception\GuzzleException,
-        \GuzzleHttp\Psr7\Response,
-        \GuzzleHttp\Psr7\ResponseFactory,
-        \Magento\Framework\Webapi\Rest\Request
+		\Magento\Staging\Model\VersionHistoryInterface $versionHistory
     ){
         $this->logger = $logger;
 		$this->updateRepository = $updateRepository;
 		$this->versionHistory = $versionHistory;
-        $this->transportBuilder = $transportBuilder;
-        $this->storeManager = $storeManager;
-        $this->inlineTranslation = $state;
-        $this->clientFactory = $clientFactory;
-        $this->responseFactory = $responseFactory;
     }
 	
     /**
@@ -49,71 +34,38 @@ class StagingApplier
 		
 			$this->logger->debug("Staging Applier Plugin Completed");
             
-            $client = $this->clientFactory->create(['config' => [
-                'base_uri' => 'http://' . $_ENV['MAG_NAME'] . '-pro.1215diamonds.com'
-            ]]);
+            $params = new \Zend\Stdlib\Parameters([
+                'task' => 'exportelder--dn',
+                'source' => 'mag'
+            ]);
             
-            try {
-                $response = $client->request(
-                    "GET",
-                    "/",
-                    [
-                        'auth' => ['diamondnexus', 'L2gchVekvtjY4nvF'],
-                        'task' => 'export--dn',
-                        'source' => 'mag'
-                    ]
-                );
-            } catch (GuzzleException $exception) {
-                /** @var Response $response */
-                $response = $this->responseFactory->create([
-                    'status' => $exception->getCode(),
-                    'reason' => $exception->getMessage()
-                ]);
-                
-                // TODO: Add handling for JSON response with email notification if response is not successfull
-                
-                //if($response->getSuccess() != 'true') {
-                //    $this->sendEmail();
-                //}
-            }
+            $httpHeaders = new \Zend\Http\Headers();
+            $httpHeaders->addHeaders([
+               'Accept' => 'text/html',
+               'Content-Type' => 'text/html'
+            ]);
+            
+            $request = new \Zend\Http\Request();
+            $request->setHeaders($httpHeaders);
+            $request->setUri('http://' . $_ENV['MAG_NAME'] . '-pro.1215diamonds.com?');
+            $request->setMethod(\Zend\Http\Request::METHOD_GET);
+            $request->setQuery($params);
+            
+            $client = new \Zend\Http\Client();
+            $options = [
+                'adapter'   => 'Zend\Http\Client\Adapter\Curl',
+                'curloptions' => [CURLOPT_FOLLOWLOCATION => true],
+                'maxredirects' => 1,
+                'timeout' => 30
+            ];
+            $client->setOptions($options);
+            
+            // htauth
+            $client->setAuth('diamondnexus', 'L2gchVekvtjY4nvF');
+
+            $response = $client->send($request);
 		}
 		
 		return $result;
-    }
-    
-    protected function sendEmail()
-    {
-        $templateId = 'my_custom_email_template';
-        $fromEmail = 'it@forevercompanies.com';
-        $fromName = 'Admin';
-        $toEmail = 'it@forevercompanies.com';
- 
-        try {
-            // template variables pass here
-            $templateVars = [
-                'msg' => 'Scheduler sapper build automation error'
-            ];
- 
-            $storeId = $this->storeManager->getStore()->getId();
- 
-            $from = ['email' => $fromEmail, 'name' => $fromName];
-            $this->inlineTranslation->suspend();
- 
-            $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
-            $templateOptions = [
-                'area' => \Magento\Framework\App\Area::AREA_FRONTEND,
-                'store' => $storeId
-            ];
-            $transport = $this->transportBuilder->setTemplateIdentifier($templateId, $storeScope)
-                ->setTemplateOptions($templateOptions)
-                ->setTemplateVars($templateVars)
-                ->setFrom($from)
-                ->addTo($toEmail)
-                ->getTransport();
-            $transport->sendMessage();
-            $this->inlineTranslation->resume();
-        } catch (\Exception $e) {
-            $this->_logger->info($e->getMessage());
-        }
     }
 }
