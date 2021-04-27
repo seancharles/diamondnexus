@@ -4,22 +4,26 @@ namespace ForeverCompanies\LooseStoneImport\Model;
 
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\ProductFactory;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Eav\Api\AttributeSetRepositoryInterface;
 use Magento\CatalogInventory\Model\Stock\StockItemRepository;
 use Magento\Framework\File\Csv;
-use Magento\Catalog\Api\ProductRepositoryInterface;
-
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Filesystem\Io\File;
 
 class StoneImport
 {    
     protected $storeRepository;
     protected $storeManager;
     protected $productCollectionFactory;
+    protected $productFactory;
     protected $productModel;
     protected $resourceConnection;
     protected $attributeSetMod;
     protected $stockItemModel;
+    protected $mediaTmpDir;
+    protected $file;
     
     protected $booleanMap;
     protected $csvHeaderMap;
@@ -40,37 +44,37 @@ class StoneImport
     protected $csv;
     
     protected $fileName;
-    protected $productRepository;
     protected $requiredFieldsArr;
     
     
     public function __construct(
         CollectionFactory $collectionFactory,
-        Product $productFactory,
+        Product $prod,
+        ProductFactory $prodF,
         ResourceConnection $resource,
         AttributeSetRepositoryInterface $attributeSetRepo,
         StockItemRepository $stockItemRepo,
         Csv $cs,
-        ProductRepositoryInterface $productRepositoryInterface
+        DirectoryList $directoryList,
+        File $fil
         ) {
             $this->productCollectionFactory = $collectionFactory;
-            $this->productModel = $productFactory;
+            $this->productModel = $prod;
             $this->resourceConnection = $resource;
             $this->attributeSetMod = $attributeSetRepo;
             $this->stockItemModel = $stockItemRepo;
             $this->csv = $cs;
-            $this->productRepository = $productRepositoryInterface;
+            $this->productFactory = $prodF;
+            $this->file = $fil;
+            
+            $this->mediaTmpDir = $directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . 'tmp';
+            $this->file->checkAndCreateFolder($this->mediaTmpDir );
             
             $this->csvHeaderMap = array(
                 "Product Name" => "name",
-         //       "Supplier" => "supplier",
                 "Certificate #" => "sku",
-         //       "Shape" => "shape",
                 "Lab" => "lab",
                 "Weight" => "weight",
-        //        "Color" => "color",
-        //        "Clarity" => "clarity",
-        //        "Cut Grade" => "cut_grade",
                 "Length" => "length",
                 "Width" => "width",
                 "Depth (mm)" => "depth_mm",
@@ -83,7 +87,6 @@ class StoneImport
                 "Girdle" => "girdle",
                 "Culet" => "culet",
                 "Fluorescence" => "fluor",
-           //     "Delivery Date" => "shipping_status",
                 "Country of Origin" => "origin",
                 "As Grown" => "as_grown",
                 "Born on Date" => "born_on_date",
@@ -108,7 +111,6 @@ class StoneImport
                 "Online" => "online"
             );
             
-            
             $this->booleanMap = array(
                 "Yes" => "1",
                 "yes" => "1",
@@ -116,7 +118,6 @@ class StoneImport
                 "no" => "1"
             );
             
-            // clarity_sort
             $this->claritySortMap = array(
                 "SI2" => "100",
                 "SI1" => "200",
@@ -132,7 +133,6 @@ class StoneImport
                 "G" => ""
             );
             
-            // cut_grade_sort
             $this->cutGradeSortMap = array(
                 "Good" => "100",
                 "Very Good" => "200",
@@ -142,7 +142,6 @@ class StoneImport
                 "G" => ""
             );
             
-            // color_sort
             $this->colorSortMap = array(
                 "J" => "100",
                 "I" => "200",
@@ -153,7 +152,6 @@ class StoneImport
                 "D" => "700"
             );
             
-            // shape_pop_sort
             $this->shapePopMap = array(
                 "Round" => "100",
                 "Princess" => "200",
@@ -167,7 +165,6 @@ class StoneImport
                 "Heart" => "1000"
             );
             
-            // shape_alpha_sort
             $this->shapeAlphaMap = array(
                 "Round" => "1000",
                 "Princess" => "800",
@@ -181,7 +178,6 @@ class StoneImport
                 "Heart" => "400"
             );
             
-            // shipping_status
             $this->shippingStatusMap = array(
                 "ZeroDay" => "0 Day",
                 "Last Minute" => "0 Day",
@@ -207,7 +203,8 @@ class StoneImport
             );
             
             $this->requiredFieldsArr = array(
-            //    "Product Name",
+                // TODO: Yeah this is an interesting one. Encoding, maybe? Try it out.
+                // "Product Name", 
                 "Supplier",
                 "Certificate #",
                 "Shape",
@@ -388,117 +385,91 @@ class StoneImport
                 "bhakti" => ""
             );
             
-            
-            
-            
-        //    $this->fileName = $_SERVER['HOME'] . 'magento/var/import/stone_import.csv';
+            //  $this->fileName = $_SERVER['HOME'] . 'magento/var/import/stone_import.csv';
             $this->fileName = $_SERVER['HOME'] . 'magento/var/import/stone_import_full.csv';
-            
-            // product_type = Diamonds
-            // Attribute Set = Loose Diamonds
     }
     
     function run()
-    {
-        
-   //     $this->_getMapForAttribute();
-        
-        
+    {   
         $csvArray = $this->_buildArray();
-        
-        // product load = 8s, 10s, 8s, 7s, 8s
-        // repo load    = 9s, 8s, 10s, 8s, 8s, 8s, 
-        // date("d-m-Y h:i:s")
         
         echo 'time before - ' . date("d-m-Y h:i:s") . '<br />';
         $i = 0; 
         foreach ($csvArray as $csvArr) {
             
-            if (1==0 && $i < 22388)
+            if (!$this->_checkForRequiredFields($csvArr)) {
+                continue;
+            }
+            
+          //  if (1==0 && $i < 22388)
+          if ($i == 1000)
             {
+                echo 'time after - ' . date("d-m-Y h:i:s") . '<br />';;
+                die;
                 $i++;
                 continue;
             //    break;
             }
             
             $productId = $this->productModel->getIdBySku($csvArr['Certificate #']);
-            if ($productId) {
+            if (1==0 && $productId) {
                 $product = $this->productModel->load($productId); // faster from a few tests.
-           //   $product = $this->productRepository->getById($productId);
-             
                 
-                $rowHash = hash('sha1', json_encode($csvArr)); 
-                if ($product->getProductHash() !== $rowHash) { // what if product is new?
+                
+                $rowHash = $this->_getHash($csvArr);
+                if (1==1 || $product->getProductHash() !== $rowHash) { // what if product is new?
                    
-                    if (!$this->_checkForRequiredFields($csvArr)) {
-                        continue;
-                    }
-            //        echo $this->colorMap[$csvArr['Color']];die;
                     $product->setProductHash($rowHash);
-                    $product->setProductType('3569'); // diamond
                     
+                    $this->_applyCsvRowToProduct($product, $csvArr);
                     
-                    // These passed the required check and have their own maps.
-                    // Need to add isset checks for these.
-                    try {
-                        $product->setColor($this->colorMap[$csvArr['Color']]);
-                        $product->setClarity($this->clarityMap[$csvArr['Clarity']]);
-                        $product->setCutGrade($this->cutGradeMap[$csvArr['Cut Grade']]);
-                        $product->setShape($this->shapeMap[$csvArr['Shape']]);
-                        $product->setSupplier($this->supplierMap[$csvArr['Supplier']]);
-                    } catch(Exception $e)
-                    {
-                        echo 'zzz error ' . $e->getMessage() . '<br />';
-                    }
-                    
-                    
-                    
-                    
-                    // Sorting
-                    if (isset($this->claritySortMap[$csvArr['Clarity']])) {
-                        $product->setClaritySort($this->claritySortMap[$csvArr['Clarity']]);
-                    }
-                    if (isset($this->colorSortMap[$csvArr['Color']])) {
-                        $product->setColorSort($this->colorSortMap[$csvArr['Color']]);
-                    }
-                    if (isset($this->cutGradeSortMap[$csvArr['Cut Grade']])) {
-                        $product->setCutGradeSort($this->cutGradeSortMap[$csvArr['Cut Grade']]);
-                    }
-                    if (isset($this->shapePopMap[$csvArr['Shape']])) {
-                        $product->setShapePopSort($this->shapePopMap[$csvArr['Shape']]);
-                    }
-                    if (isset($this->shapeAlphaMap[$csvArr['Shape']])) {
-                        $product->setShapeAlphaSort($this->shapeAlphaMap[$csvArr['Shape']]);
-                    }
-                    
-                    //Delivery Date
-                    if (isset($csvArr['Delivery Date']) && trim($csvArr['Delivery Date']) != "") {
-                        $product->setShippingStatus($this->shippingStatusMap[$csvArr['Delivery Date']]);
-                    }
-                    
-                    // Blockchain Verified
-                    if (isset($csvArr['Blockchain Verified']) && trim($csvArr['Blockchain Verified']) != "") {
-                        $product->setBlockchainVerified($this->booleanMap[$csvArr]['Blockchain Verified']);
-                    }
-                   
-                    // Mapped
-                    foreach ($csvArr as $csvK => $csvV) {
-                        if (isset($this->csvHeaderMap[$csvK]) && trim($this->csvHeaderMap[$csvK]) != "") {
-                            $product->setData($this->csvHeaderMap[$csvK], $csvV);
-                        }
-                    }
-                        
-                    $product->setShape('2842');
-                    
-                    $product->save();
                     echo 'saved ' . $product->getName() . '<br />';
                 }
               
-            }
-            else { // else new product
+            } else { // else new product
                 
+                $product = $this->productFactory->create();
+                
+                $product->setName(reset($csvArr));
+                $product->setTypeId('simple');
+                $product->setAttributeSetId(31);
+                
+                $product->setSku($csvArr['Certificate #']);
+                
+                // From the admin, the reps can use a diamond on a 1215 or FA order.  On the frontend we do not display diamonds on FA.
+                // need to assign visibility for each store somehow.
+                $product->setWebsiteIds(array(3));
+                $product->setVisibility(4);
+         
+                $imageFileName = $this->mediaTmpDir . DIRECTORY_SEPARATOR . baseName($csvArr['Image Link']);
+                $imageResult = $this->file->read($csvArr['Image Link'], $imageFileName);
+                if ($imageResult) {
+                    $product->addImageToMediaGallery(
+                        $imageFileName,
+                        ['image', 'small_image', 'thumbnail'],
+                        false,
+                        false
+                    );
+                }
+                
+                $product->setStockData(
+                    array(
+                        'use_config_manage_stock' => 0,
+                        'manage_stock' => 1,
+                        'min_sale_qty' => 1,
+                        'max_sale_qty' => 1,
+                        'is_in_stock' => 1,
+                    '   qty' => 1
+                    )
+                );
+                    
+                $product->setProductHash($this->_getHash($csvArr));
+                
+                $this->_applyCsvRowToProduct($product, $csvArr);
+                
+                die;
+          
             }
-            
             
             $i++;
             
@@ -509,6 +480,58 @@ class StoneImport
         
     }
     
+    protected function _applyCsvRowToProduct($product, $csvArr)
+    {
+        $product->setProductType('3569'); //diamond
+        
+        // These passed the required check and have their own maps.
+        try {
+            $product->setColor($this->colorMap[$csvArr['Color']]);
+            $product->setClarity($this->clarityMap[$csvArr['Clarity']]);
+            $product->setCutGrade($this->cutGradeMap[$csvArr['Cut Grade']]);
+            $product->setShape($this->shapeMap[$csvArr['Shape']]);
+            $product->setSupplier($this->supplierMap[$csvArr['Supplier']]);
+        } catch(Exception $e) {
+            echo 'zzz error ' . $e->getMessage() . '<br />';
+        }
+        
+        // Sorting
+        if (isset($this->claritySortMap[$csvArr['Clarity']])) {
+            $product->setClaritySort($this->claritySortMap[$csvArr['Clarity']]);
+        }
+        if (isset($this->colorSortMap[$csvArr['Color']])) {
+            $product->setColorSort($this->colorSortMap[$csvArr['Color']]);
+        }
+        if (isset($this->cutGradeSortMap[$csvArr['Cut Grade']])) {
+            $product->setCutGradeSort($this->cutGradeSortMap[$csvArr['Cut Grade']]);
+        }
+        if (isset($this->shapePopMap[$csvArr['Shape']])) {
+            $product->setShapePopSort($this->shapePopMap[$csvArr['Shape']]);
+        }
+        if (isset($this->shapeAlphaMap[$csvArr['Shape']])) {
+            $product->setShapeAlphaSort($this->shapeAlphaMap[$csvArr['Shape']]);
+        }
+        
+        //Delivery Date
+        if (isset($csvArr['Delivery Date']) && trim($csvArr['Delivery Date']) != "") {
+            $product->setShippingStatus($this->shippingStatusMap[$csvArr['Delivery Date']]);
+        }
+        
+        // Blockchain Verified
+        if (isset($csvArr['Blockchain Verified']) && trim($csvArr['Blockchain Verified']) != "") {
+            $product->setBlockchainVerified($this->booleanMap[$csvArr]['Blockchain Verified']);
+        }
+        
+        // Mapped
+        foreach ($csvArr as $csvK => $csvV) {
+            if (isset($this->csvHeaderMap[$csvK]) && trim($this->csvHeaderMap[$csvK]) != "") {
+                $product->setData($this->csvHeaderMap[$csvK], $csvV);
+            }
+        }
+        
+        $product->save();
+    }
+    
     protected function _buildArray()
     {
         $arr = array();
@@ -516,11 +539,8 @@ class StoneImport
         $i = 0;
         
         if (file_exists($this->fileName)) {
-            
             $csvData = $this->csv->getData($this->fileName);
-            
             foreach ($csvData as $k => $val) {
-                
                 if ($k == 0) {
                     $fields = $val;
                     continue;
@@ -538,14 +558,17 @@ class StoneImport
     {
         //echo $arr['Product Name'];
         // ????
-        
         foreach ($this->requiredFieldsArr as $req) {
             if (!isset($arr[$req]) || trim($arr[$req]) == "" || $arr[$req] == "Nan") {
                 return false;
             }
         }
-      
         return true;
+    }
+
+    protected function _getHash($csvArr)
+    {
+        return hash('sha1', json_encode($csvArr)); 
     }
     
     protected function _getMapForAttribute()
@@ -565,20 +588,10 @@ class StoneImport
         ->setStoreFilter()
         ->load();
         
-        
         echo $attributeCode . '<br /><br />';
-        
-        foreach ($attributeOptionAll->getData() as $attributeOption)
-        {
-            
-            
+        foreach ($attributeOptionAll->getData() as $attributeOption) {
             echo '"' . $attributeOption['default_value'] . '" => "' . $attributeOption['option_id'] . '",<br />';
-            
         }
-        die;
-        echo '<pre>';
-        var_dump("attribute info", $attributeOptionAll->getData());
-        
         die;
     }
     
