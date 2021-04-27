@@ -470,6 +470,8 @@ class StoneImport
                 $this->_stoneLog($product, $csvArr, "add");
             }
         }
+        
+        $this->_cleanLogs();
     }
     
     protected function _applyCsvRowToProduct($product, $csvArr)
@@ -549,6 +551,14 @@ class StoneImport
             }
         }
         return true;
+    }
+    
+    protected function _cleanLogs()
+    {
+        $query = "DELETE FROM stone_log
+        WHERE log_date < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 90 DAY))";
+        
+        $this->connection->query($query);
     }
 
     protected function _getHash($csvArr)
