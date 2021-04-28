@@ -1,0 +1,14 @@
+{
+	"name" : "forevercompanies/module-stone-email",
+	"type" : "magento2-module",
+	"license" : "OSL-3.0",
+	"minimum-stability" : "dev",
+	"autoload" : {
+		"psr-4" : {
+			"ForeverCompanies\\StonesIntermediary\\" : ""
+		},
+		"files" : [
+			"registration.php"
+		]
+	}
+}
