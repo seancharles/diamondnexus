@@ -21,6 +21,7 @@ class Index extends Action
 	
 	public function execute()
 	{
+	    echo 'fff';die;
 	    $this->stoneModel->run();
 	    return;
 	}
