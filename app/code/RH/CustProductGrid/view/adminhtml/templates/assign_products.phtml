@@ -1,0 +1,30 @@
+<?php
+/**
+ * Created By : RH
+ */
+?>
+<?php
+
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$block = $objectManager->get('RH\CustProductGrid\Block\Adminhtml\AssignProducts');
+
+
+
+    $blockGrid = $block->getBlockGrid();
+    $gridJsObjectName = $blockGrid->getJsObjectName();
+?>
+<?= $block->getGridHtml() ?>
+<input type="hidden" name="rh_products" data-form-part="custom_form" id="rh_products" value=""  />
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "RH_CustProductGrid/js/assign-products": {
+                "selectedProducts":  <?= /* @escapeNotVerified */ $block->getProductsJson() ?>,
+                "gridJsObjectName": <?= /* @escapeNotVerified */ '"' . $gridJsObjectName . '"' ?: '{}' ?>
+            }
+        }
+    }
+</script>
+<script>
+    require('mage/apply/main').apply();
+</script>
