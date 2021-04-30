@@ -5,18 +5,20 @@ namespace ForeverCompanies\LooseStonesGrid\Block\Adminhtml\Tab;
 use Magento\Catalog\Model\Product\Visibility;
 use Magento\Framework\App\ObjectManager;
 use Magento\Store\Model\Store;
+use ForeverCompanies\LooseStonesGrid\Model\GridModel;
+
 class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
 {
     /**
      * @var \Magento\Framework\Registry
      */
-    protected $coreRegistry = null;
     /**
      * @var \Magento\Catalog\Model\ProductFactory
      */
     protected $productFactory;
 
     protected $productCollFactory;
+    protected $gridModel;
     /**
      * @param \Magento\Backend\Block\Template\Context    $context
      * @param \Magento\Backend\Helper\Data               $backendHelper
@@ -35,6 +37,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Framework\Registry $coreRegistry,
         \Magento\Framework\Module\Manager $moduleManager,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
+        GridModel $grid,
         Visibility $visibility = null,
         array $data = []
     ) {
@@ -44,6 +47,9 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->moduleManager = $moduleManager;
         $this->_storeManager = $storeManager;
         $this->visibility = $visibility ?: ObjectManager::getInstance()->get(Visibility::class);
+        
+        $this->gridModel = $grid;
+        
         parent::__construct($context, $backendHelper, $data);
     }
     /**
@@ -151,6 +157,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         }
         return $this;
     }
+    
     /**
      * @return Extended
      */
@@ -182,7 +189,9 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
             'supplier',
             [
                 'header' => __('Supplier'),
-                'index' => 'supplier'
+                'index' => 'supplier',
+                'type' => 'options',
+                'options' => $this->gridModel->getOptions('supplier')
             ]
         );
         $this->addColumn(
@@ -279,7 +288,9 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
             'online',
             [
                 'header' => __('Online'),
-                'index' => 'online'
+                'index' => 'online',
+                'type' => 'options',
+                'options' => $this->gridModel->getOptions('online')
             ]
         );
         $this->addColumn(
@@ -293,28 +304,36 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
             'shape',
             [
                 'header' => __('Shape'),
-                'index' => 'shape'
+                'index' => 'shape',
+                'type' => 'options',
+                'options' => $this->gridModel->getOptions('shape')
             ]
         );
         $this->addColumn(
             'color',
             [
                 'header' => __('Color'),
-                'index' => 'color'
+                'index' => 'color',
+                'type' => 'options',
+                'options' => $this->gridModel->getOptions('color')
             ]
         );
         $this->addColumn(
-            'clairty',
+            'clarity',
             [
                 'header' => __('Clarity'),
-                'index' => 'clarity'
+                'index' => 'clarity',
+                'type' => 'options',
+                'options' => $this->gridModel->getOptions('clarity')
             ]
         );
         $this->addColumn(
             'cut_grade',
             [
                 'header' => __('Cut'),
-                'index' => 'cut_grade'
+                'index' => 'cut_grade',
+                'type' => 'options',
+                'options' => $this->gridModel->getOptions('cut_grade')
             ]
         );
         $this->addColumn(

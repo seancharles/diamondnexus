@@ -2,6 +2,9 @@
     $blockGrid = $block->getBlockGrid();
     $gridJsObjectName = $blockGrid->getJsObjectName();
 ?>
+<pre>
+	<?php // var_dump($block->asdf() );?>
+</pre>
 <?= $block->getGridHtml() ?>
 <input type="hidden" name="loose_stones_grid" data-form-part="custom_form" id="loose_stones_grid" value=""  />
 <script type="text/x-magento-init">

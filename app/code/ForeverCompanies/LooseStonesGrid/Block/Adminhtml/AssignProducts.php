@@ -42,6 +42,7 @@ class AssignProducts extends \Magento\Backend\Block\Template
         $this->productFactory = $productFactory;
         parent::__construct($context, $data);
     }
+    
     /**
      * Retrieve instance of grid block
      *
