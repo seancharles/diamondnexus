@@ -39,6 +39,11 @@ class UpdateProductWeight implements DataPatchInterface
     public function apply(): void
     {
         $productCollection = $this->collectionFactory->create();
+        $productCollection->addAttributeToFilter(array(array('attribute'=>'type_id','in' => [
+            'simple',
+            'configurable',
+            'bundle'
+        ])));
         $productCollection->setPageSize(1000);
         
         $count = $productCollection->getSize();
