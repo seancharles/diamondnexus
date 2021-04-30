@@ -1,8 +1,7 @@
 <?php
-/**
- * Created By : RH
- */
-namespace RH\CustProductGrid\Block\Adminhtml;
+
+namespace ForeverCompanies\LooseStonesGrid\Block\Adminhtml;
+
 class AssignProducts extends \Magento\Backend\Block\Template
 {
     /**
@@ -56,7 +55,7 @@ class AssignProducts extends \Magento\Backend\Block\Template
     {
         if (null === $this->blockGrid) {
             $this->blockGrid = $this->getLayout()->createBlock(
-                'RH\CustProductGrid\Block\Adminhtml\Tab\Productgrid',
+                'ForeverCompanies\LooseStonesGrid\Block\Adminhtml\Tab\Productgrid',
                 'category.product.grid'
             );
         }

@@ -1,8 +1,7 @@
 <?php
-/**
- * Created By : RH
- */
-namespace RH\CustProductGrid\Block\Adminhtml\Tab;
+
+namespace ForeverCompanies\LooseStonesGrid\Block\Adminhtml\Tab;
+
 use Magento\Catalog\Model\Product\Visibility;
 use Magento\Framework\App\ObjectManager;
 use Magento\Store\Model\Store;

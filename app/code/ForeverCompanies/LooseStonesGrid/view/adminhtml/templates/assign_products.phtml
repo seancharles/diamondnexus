@@ -6,7 +6,7 @@
 <?php
 
 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-$block = $objectManager->get('RH\CustProductGrid\Block\Adminhtml\AssignProducts');
+$block = $objectManager->get('ForeverCompanies\LooseStonesGrid\Block\Adminhtml\AssignProducts');
 
 
 
@@ -14,11 +14,11 @@ $block = $objectManager->get('RH\CustProductGrid\Block\Adminhtml\AssignProducts'
     $gridJsObjectName = $blockGrid->getJsObjectName();
 ?>
 <?= $block->getGridHtml() ?>
-<input type="hidden" name="rh_products" data-form-part="custom_form" id="rh_products" value=""  />
+<input type="hidden" name="loose_stones_grid" data-form-part="custom_form" id="loose_stones_grid" value=""  />
 <script type="text/x-magento-init">
     {
         "*": {
-            "RH_CustProductGrid/js/assign-products": {
+            "ForeverCompanies/LooseStonesGrid/js/assign-products": {
                 "selectedProducts":  <?= /* @escapeNotVerified */ $block->getProductsJson() ?>,
                 "gridJsObjectName": <?= /* @escapeNotVerified */ '"' . $gridJsObjectName . '"' ?: '{}' ?>
             }

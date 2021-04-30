@@ -14,7 +14,7 @@ define([
         /**
          * Show selected product when edit form in associated product grid
          */
-        $('rh_products').value = Object.toJSON(categoryProducts);
+        $('loose_stones_grid').value = Object.toJSON(categoryProducts);
         /**
          * Register Category Product
          *
@@ -34,7 +34,7 @@ define([
                 }
                 categoryProducts.unset(element.value);
             }
-            $('rh_products').value = Object.toJSON(categoryProducts);
+            $('loose_stones_grid').value = Object.toJSON(categoryProducts);
             grid.reloadParams = {
                 'selected_products[]': categoryProducts.keys()
             };
@@ -67,7 +67,7 @@ define([
             var element = Event.element(event);
             if (element && element.checkboxElement && element.checkboxElement.checked) {
                 categoryProducts.set(element.checkboxElement.value, element.value);
-                $('rh_products').value = Object.toJSON(categoryProducts);
+                $('loose_stones_grid').value = Object.toJSON(categoryProducts);
             }
         }
         /**

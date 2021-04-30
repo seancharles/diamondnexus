@@ -13,7 +13,7 @@
             </item>
         </argument>
         <htmlContent name="html_content">
-            <argument name="block" xsi:type="object">RH\CustProductGrid\Block\Adminhtml\AssignProducts</argument>
+            <argument name="block" xsi:type="object">ForeverCompanies\LooseStonesGrid\Block\Adminhtml\AssignProducts</argument>
         </htmlContent>
     </container>
 </fieldset>

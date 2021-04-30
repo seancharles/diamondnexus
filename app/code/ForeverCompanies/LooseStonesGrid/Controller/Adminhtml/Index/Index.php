@@ -1,6 +1,6 @@
 <?php
 
-namespace RH\CustProductGrid\Controller\Adminhtml\Index;
+namespace ForeverCompanies\LooseStonesGrid\Controller\Adminhtml\Index;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
@@ -11,7 +11,7 @@ use Magento\Framework\View\Result\PageFactory;
 /**
  * Class Index
  */
-class Grids extends Action implements HttpGetActionInterface
+class Index extends Action implements HttpGetActionInterface
 {
     const MENU_ID = 'MyCompany_ExampleAdminNewPage::greetings_helloworld';
     
