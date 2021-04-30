@@ -15,9 +15,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @var \Magento\Catalog\Model\ProductFactory
      */
     protected $productFactory;
-    /**
-     * @var \RH\CustProductGrid\Model\ResourceModel\Product\CollectionFactory
-     */
+
     protected $productCollFactory;
     /**
      * @param \Magento\Backend\Block\Template\Context    $context
@@ -55,7 +53,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     protected function _construct()
     {
         parent::_construct();
-        $this->setId('rh_grid_products');
+        $this->setId('loose_stones_grid');
         $this->setDefaultSort('entity_id');
         $this->setDefaultDir('ASC');
         $this->setUseAjax(true);
@@ -80,17 +78,13 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     protected function _prepareCollection()
     {
         $store = $this->_getStore();
-        $collection = $this->productFactory->create()->getCollection()->addAttributeToSelect(
-            'sku'
-        )->addAttributeToSelect(
-            'name'
-        )->addAttributeToSelect(
-            'attribute_set_id'
-        )->addAttributeToSelect(
-            'type_id'
+        $collection = $this->productFactory->create()->getCollection()
+        ->addAttributeToSelect(
+            '*'
         )->setStore(
             $store
-        );
+        )->addAttributeToFilter('attribute_set_id','31');
+        
         if ($this->moduleManager->isEnabled('Magento_CatalogInventory')) {
             $collection->joinField(
                 'qty',
@@ -162,6 +156,8 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     protected function _prepareColumns()
     {
+        $store = $this->_getStore();
+        
         $this->addColumn(
             'in_products',
             [
@@ -174,33 +170,53 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
             ]
         );
         $this->addColumn(
-            'entity_id',
-            [
-                'header' => __('ID'),
-                'width' => '50px',
-                'index' => 'entity_id',
-                'type' => 'number',
-            ]
-        );
-        $this->addColumn(
-            'name',
-            [
-                'header' => __('Name'),
-                'index' => 'name',
-                'header_css_class' => 'col-type',
-                'column_css_class' => 'col-type',
-            ]
-        );
-        $this->addColumn(
             'sku',
             [
-                'header' => __('SKU'),
+                'header' => __('Cert #'),
                 'index' => 'sku',
                 'header_css_class' => 'col-sku',
                 'column_css_class' => 'col-sku',
             ]
         );
-        $store = $this->_getStore();
+        $this->addColumn(
+            'supplier',
+            [
+                'header' => __('Supplier'),
+                'index' => 'supplier'
+            ]
+        );
+        $this->addColumn(
+            'filter_ship_date',
+            [
+                'header' => __('Delivery Date'),
+                'index' => 'filter_ship_date'
+            ]
+        );
+        $this->addColumn(
+            'rapaport',
+            [
+                'header' => __('Rapaport'),
+                'index' => 'rapaport'
+            ]
+        );
+        $this->addColumn(
+            'pct_off_rap',
+            [
+                'header' => __('Rap %'),
+                'index' => 'pct_off_rap'
+            ]
+        );
+        $this->addColumn(
+            'msrp',
+            [
+                'header' => __('MSRP'),
+                'type' => 'price',
+                'currency_code' => $store->getBaseCurrency()->getCode(),
+                'index' => 'msrp',
+                'header_css_class' => 'col-price',
+                'column_css_class' => 'col-price',
+            ]
+        );
         $this->addColumn(
             'price',
             [
@@ -213,18 +229,256 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
             ]
         );
         $this->addColumn(
-            'position',
+            'custom_price',
             [
-                'header' => __('Position'),
-                'name' => 'position',
-                'width' => 60,
-                'type' => 'number',
-                'validate_class' => 'validate-number',
-                'index' => 'position',
-                'editable' => true,
-                'edit_only' => true,
+                'header' => __('Custom Price'),
+                'type' => 'price',
+                'currency_code' => $store->getBaseCurrency()->getCode(),
+                'index' => 'custom_price',
+                'header_css_class' => 'col-price',
+                'column_css_class' => 'col-price',
             ]
         );
+        $this->addColumn(
+            'cost',
+            [
+                'header' => __('Cost'),
+                'type' => 'price',
+                'currency_code' => $store->getBaseCurrency()->getCode(),
+                'index' => 'cost',
+                'header_css_class' => 'col-price',
+                'column_css_class' => 'col-price',
+            ]
+        );
+        $this->addColumn(
+            'custom_cost',
+            [
+                'header' => __('Custom Cost'),
+                'type' => 'price',
+                'currency_code' => $store->getBaseCurrency()->getCode(),
+                'index' => 'custom_cost',
+                'header_css_class' => 'col-price',
+                'column_css_class' => 'col-price',
+            ]
+        );
+        $this->addColumn(
+            'cert_url_key',
+            [
+                'header' => __('Cert URL'),
+                'index' => 'cert_url_key'
+            ]
+        );
+        $this->addColumn(
+            'diamond_img_url',
+            [
+                'header' => __('Image URL'),
+                'index' => 'diamond_img_url'
+            ]
+        );
+        $this->addColumn(
+            'online',
+            [
+                'header' => __('Online'),
+                'index' => 'online'
+            ]
+        );
+        $this->addColumn(
+            'lab',
+            [
+                'header' => __('Lab'),
+                'index' => 'lab'
+            ]
+        );
+        $this->addColumn(
+            'shape',
+            [
+                'header' => __('Shape'),
+                'index' => 'shape'
+            ]
+        );
+        $this->addColumn(
+            'color',
+            [
+                'header' => __('Color'),
+                'index' => 'color'
+            ]
+        );
+        $this->addColumn(
+            'clairty',
+            [
+                'header' => __('Clarity'),
+                'index' => 'clarity'
+            ]
+        );
+        $this->addColumn(
+            'cut_grade',
+            [
+                'header' => __('Cut'),
+                'index' => 'cut_grade'
+            ]
+        );
+        $this->addColumn(
+            'stone_carat',
+            [
+                'header' => __('Carat'),
+                'index' => 'stone_carat'
+            ]
+        );
+        $this->addColumn(
+            'country_of_manufacture',
+            [
+                'header' => __('Origin'),
+                'index' => 'country_of_manufacture'
+            ]
+        );
+        $this->addColumn(
+            'country_of_manufacture',
+            [
+                'header' => __('Origin'),
+                'index' => 'country_of_manufacture'
+            ]
+        );
+        $this->addColumn(
+            'country_of_manufacture',
+            [
+                'header' => __('Origin'),
+                'index' => 'country_of_manufacture'
+            ]
+        );
+        $this->addColumn(
+            'length_to_width',
+            [
+                'header' => __('Aspect'),
+                'index' => 'length_to_width'
+            ]
+        );
+        $this->addColumn(
+            'length_to_width',
+            [
+                'header' => __('Aspect'),
+                'index' => 'length_to_width'
+            ]
+        );
+        $this->addColumn(
+            'aaa',
+            [
+                'header' => __('Measurements'),
+                'index' => 'aaa'
+            ]
+        );
+        $this->addColumn(
+            'polish',
+            [
+                'header' => __('Polish'),
+                'index' => 'polish'
+            ]
+        );
+        $this->addColumn(
+            'symmetry',
+            [
+                'header' => __('Symmetry'),
+                'index' => 'symmetry'
+            ]
+        );
+        $this->addColumn(
+            'girdle',
+            [
+                'header' => __('Girdle'),
+                'index' => 'gidle'
+            ]
+        );
+        $this->addColumn(
+            'fluor',
+            [
+                'header' => __('Fluor'),
+                'index' => 'fluor'
+            ]
+        );
+        $this->addColumn(
+            'as_grown',
+            [
+                'header' => __('As Grown'),
+                'index' => 'as_grown'
+            ]
+        );
+        $this->addColumn(
+            'born_on_date',
+            [
+                'header' => __('Born on Date'),
+                'index' => 'born_on_date'
+            ]
+        );
+        $this->addColumn(
+            'carbon_neutral',
+            [
+                'header' => __('Carbon Neutral'),
+                'index' => 'carbon_neutral'
+            ]
+        );
+        $this->addColumn(
+            'blockchain_verified',
+            [
+                'header' => __('Blockchain Verified'),
+                'index' => 'blockchain_verified'
+            ]
+        );
+        $this->addColumn(
+            'charitable_contribution',
+            [
+                'header' => __('Charitable Contribution'),
+                'index' => 'charitable_contribution'
+            ]
+        );
+        $this->addColumn(
+            'cvd',
+            [
+                'header' => __('CVD'),
+                'index' => 'cvd'
+            ]
+        );
+        $this->addColumn(
+            'hpht',
+            [
+                'header' => __('HPHT'),
+                'index' => 'hpht'
+            ]
+        );
+        $this->addColumn(
+            'patented',
+            [
+                'header' => __('Patented'),
+                'index' => 'patented'
+            ]
+        );
+        $this->addColumn(
+            'custom',
+            [
+                'header' => __('Custom'),
+                'index' => 'custom'
+            ]
+        );
+        $this->addColumn(
+            'color_of_colored_diamonds',
+            [
+                'header' => __('Colored Diamond Color'),
+                'index' => 'color_of_colored_diamonds'
+            ]
+        );
+        $this->addColumn(
+            'hue',
+            [
+                'header' => __('Hue'),
+                'index' => 'hue'
+            ]
+        );
+        $this->addColumn(
+            'intensity',
+            [
+                'header' => __('Intensity'),
+                'index' => 'intensity'
+            ]
+        );
+        
         return parent::_prepareColumns();
     }
     /**
@@ -232,7 +486,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     public function getGridUrl()
     {
-        return $this->getUrl('*/index/grids', ['_current' => true]);
+        return $this->getUrl('*/stones', ['_current' => true]);
     }
     /**
      * @return array

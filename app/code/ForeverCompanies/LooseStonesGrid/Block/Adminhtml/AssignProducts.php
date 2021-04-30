@@ -22,15 +22,12 @@ class AssignProducts extends \Magento\Backend\Block\Template
      * @var \Magento\Framework\Json\EncoderInterface
      */
     protected $jsonEncoder;
-    /**
-     * @var \RH\CustProductGrid\Model\ResourceModel\Product\CollectionFactory
-     */
+
     protected $productFactory;
     /**
      * @param \Magento\Backend\Block\Template\Context                           $context
      * @param \Magento\Framework\Registry                                       $registry
      * @param \Magento\Framework\Json\EncoderInterface                          $jsonEncoder
-     * @param \RH\CustProductGrid\Model\ResourceModel\Product\CollectionFactory $productFactory
      * @param array                                                             $data
      */
     public function __construct(
@@ -81,8 +78,8 @@ class AssignProducts extends \Magento\Backend\Block\Template
         $productFactory->addFieldToFilter('entity_id', ['eq' => $entity_id]);
         $result = [];
         if (!empty($productFactory->getData())) {
-            foreach ($productFactory->getData() as $rhProducts) {
-                $result[$rhProducts['product_id']] = '';
+            foreach ($productFactory->getData() as $product) {
+                $result[$product['product_id']] = '';
             }
             return $this->jsonEncoder->encode($result);
         }

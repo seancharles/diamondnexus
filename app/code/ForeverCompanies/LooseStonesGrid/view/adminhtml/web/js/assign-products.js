@@ -1,7 +1,3 @@
-/**
- * Created by : RH
- */
-/* global $, $H */
 define([
     'mage/adminhtml/grid'
 ], function () {

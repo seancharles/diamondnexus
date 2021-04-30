@@ -7,7 +7,7 @@
     </referenceBlock>
     <body>
         <referenceContainer name="content">
-            <block class="Magento\Backend\Block\Template" template="ForeverCompanies_LooseStonesGrid::assign_products.phtml"/>
+            <block class="ForeverCompanies\LooseStonesGrid\Block\Adminhtml\AssignProducts" template="ForeverCompanies_LooseStonesGrid::assign_products.phtml"/>
         </referenceContainer>
     </body>
 </page>
