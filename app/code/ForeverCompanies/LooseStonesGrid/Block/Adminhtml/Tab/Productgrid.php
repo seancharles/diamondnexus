@@ -89,7 +89,10 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
             '*'
         )->setStore(
             $store
-        )->addAttributeToFilter('attribute_set_id','31');
+        )->addAttributeToFilter(
+            'attribute_set_id',
+            '31'
+        );
         
         if ($this->moduleManager->isEnabled('Magento_CatalogInventory')) {
             $collection->joinField(
@@ -273,15 +276,22 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->addColumn(
             'cert_url_key',
             [
-                'header' => __('Cert URL'),
+                'header' => __('Cert'),
                 'index' => 'cert_url_key'
             ]
         );
         $this->addColumn(
             'diamond_img_url',
             [
-                'header' => __('Image URL'),
+                'header' => __('Image'),
                 'index' => 'diamond_img_url'
+            ]
+        );
+        $this->addColumn(
+            'video_url',
+            [
+                'header' => __('Video'),
+                'index' => 'video_url'
             ]
         );
         $this->addColumn(
@@ -479,7 +489,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->addColumn(
             'color_of_colored_diamonds',
             [
-                'header' => __('Colored Diamond Color'),
+                'header' => __('Colored Color'),
                 'index' => 'color_of_colored_diamonds'
             ]
         );

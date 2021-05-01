@@ -20,7 +20,7 @@ class GridModel
         $options = $attribute->getSource()->getAllOptions();
         $res = [];
         foreach($options as $opt) {
-            $res[$opt['value']]=$opt['label'];
+            $res[$opt['value']] = $opt['label'];
         }
         
         return $res;
