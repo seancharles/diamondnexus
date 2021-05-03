@@ -56,8 +56,8 @@ class OrderSaveBefore implements ObserverInterface
             return $this;
         }
         
-        // only create fishbowl entries if the order has been paid in full
-        if($order->getTotalPaid() >= $order->getGrandTotal()) {
+        // only create fishbowl entries if the order has a payment or has no payment reuquired.
+        if($order->getTotalPaid() >= 0 || $order->getTotalPaid() == 0) {
             $changes = [];
             foreach ($this->checkingFields as $key) {
                 $data = $order->getData($key);
