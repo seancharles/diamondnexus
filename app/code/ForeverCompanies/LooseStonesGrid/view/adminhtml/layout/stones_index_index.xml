@@ -6,8 +6,13 @@
         </action>
     </referenceBlock>
     <body>
+    	<!--  
         <referenceContainer name="content">
             <block class="ForeverCompanies\LooseStonesGrid\Block\Adminhtml\AssignProducts" template="ForeverCompanies_LooseStonesGrid::assign_products.phtml"/>
+        </referenceContainer>
+        -->
+        <referenceContainer name="content">
+            <uiComponent name="forevercompanies_loosestonesgrid_product_listing"/>
         </referenceContainer>
     </body>
 </page>

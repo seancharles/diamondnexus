@@ -35,11 +35,6 @@ class Index extends Action implements HttpGetActionInterface
             $this->resultPageFactory = $resultPageFactory;
     }
     
-    /**
-     * Load the page defined in view/adminhtml/layout/exampleadminnewpage_helloworld_index.xml
-     *
-     * @return Page
-     */
     public function execute()
     {
         $resultPage = $this->resultPageFactory->create();

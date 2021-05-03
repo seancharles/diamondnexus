@@ -3,6 +3,7 @@ define([
 ], function () {
     'use strict';
     return function (config) {
+	console.log('uhhh');
         var selectedProducts = config.selectedProducts,
             categoryProducts = $H(selectedProducts),
             gridJsObject = window[config.gridJsObjectName],
@@ -19,6 +20,7 @@ define([
          * @param {Boolean} checked
          */
         function registerCategoryProduct(grid, element, checked) {
+	console.log('registerCategoryProduct');
             if (checked) {
                 if (element.positionElement) {
                     element.positionElement.disabled = false;
@@ -42,6 +44,7 @@ define([
          * @param {String} event
          */
         function categoryProductRowClick(grid, event) {
+	console.log('categoryProductRowClick');
             var trElement = Event.findElement(event, 'tr'),
                 isInput = Event.element(event).tagName === 'INPUT',
                 checked = false,
@@ -60,6 +63,7 @@ define([
          * @param {String} event
          */
         function positionChange(event) {
+	console.log('positionChange');
             var element = Event.element(event);
             if (element && element.checkboxElement && element.checkboxElement.checked) {
                 categoryProducts.set(element.checkboxElement.value, element.value);
@@ -73,6 +77,7 @@ define([
          * @param {String} row
          */
         function categoryProductRowInit(grid, row) {
+	console.log('categoryProductRowInit');
             var checkbox = $(row).getElementsByClassName('checkbox')[0],
                 position = $(row).getElementsByClassName('input-text')[0];
             if (checkbox && position) {

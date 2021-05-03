@@ -166,6 +166,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     protected function _prepareColumns()
     {
+        return parent::_prepareColumns();
         $store = $this->_getStore();
         
         $this->addColumn(
@@ -515,7 +516,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     public function getGridUrl()
     {
-        return $this->getUrl('*/stones', ['_current' => true]);
+        return $this->getUrl('*/', ['_current' => true]);
     }
     /**
      * @return array
