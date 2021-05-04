@@ -38,7 +38,7 @@ class AddAttributesToUiDataProvider
      */
     public function afterGetSearchResult(ProductDataProvider $subject, SearchResult $result)
     {
-        if ($result->isLoaded()) {
+        if (1==0 && $result->isLoaded()) {
             return $result;
         }
         
@@ -50,6 +50,7 @@ class AddAttributesToUiDataProvider
             $column = 'row_id';
         }
         
+        $attributeList = array();
         $attribute = $this->attributeRepository->get('catalog_product', 'name');
         
         $result->getSelect()->joinLeft(

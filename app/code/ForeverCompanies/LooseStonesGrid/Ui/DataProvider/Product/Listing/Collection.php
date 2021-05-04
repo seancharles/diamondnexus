@@ -13,7 +13,14 @@ class Collection extends SearchResult
     protected function _initSelect()
     {
         $this->addFilterToMap('entity_id', 'main_table.entity_id');
-        $this->addFilterToMap('name', 'devgridname.value');
+      
+        $this->addFilterToMap('blockchain_verified', 'main_table.blockchain_verified');
+        
+        
+        
+        
+        
+        $this->addFieldToFilter("attribute_set_id", array("eq" => 31));
         parent::_initSelect();
     }
 }
