@@ -75,24 +75,14 @@
            </item>
        </argument>
     </selectionsColumn>
- 
+    <column name="entity_id">
+      <settings>
+         <filter>textRange</filter>
+         <label translate="true">ID</label>
+         <resizeDefaultWidth>25</resizeDefaultWidth>
+      </settings>
+    </column>
    
-    <column name="sku">
-      <settings>
-         <filter>text</filter>
-         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-         <label translate="true">Cert #</label>
-      </settings>
-    </column>
-    
-    <column name="supplier">
-      <settings>
-         <filter>text</filter>
-         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-         <label translate="true">Supplier</label>
-      </settings>
-    </column>
-    
     <column name="name">
       <settings>
          <filter>text</filter>
@@ -100,304 +90,22 @@
          <label translate="true">Name</label>
       </settings>
     </column>
-    
-
-    <column name="filter_ship_date">
+    <column name="created_at" class="Magento\Ui\Component\Listing\Columns\Date" component="Magento_Ui/js/grid/columns/date">
       <settings>
-         <filter>text</filter>
-         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-         <label translate="true">Delivery Date</label>
+        <filter>dateRange</filter>
+        <dataType>date</dataType>
+        <label translate="true">Created</label>
       </settings>
     </column>
-    
-    <column name="rapaport">
-      <settings>
-         <filter>text</filter>
-         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-         <label translate="true">Rapaport#</label>
-      </settings>
-    </column>
-    
-    <column name="pct_off_rap">
-      <settings>
-         <filter>text</filter>
-         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-         <label translate="true">Rap %</label>
-      </settings>
-    </column>
-    
-    <column name="price">
-      <settings>
-         <filter>text</filter>
-         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-         <label translate="true">Price</label>
-      </settings>
-    </column>
-    
-    <column name="custom_price">
-      <settings>
-         <filter>text</filter>
-         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-         <label translate="true">Custom Price</label>
-      </settings>
-    </column>
-    
-    <column name="cost">
-      <settings>
-         <filter>text</filter>
-         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-         <label translate="true">Cost</label>
-      </settings>
-    </column>
-    
-    <column name="custom_cost">
-      <settings>
-         <filter>text</filter>
-         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-         <label translate="true">Custom Cost</label>
-      </settings>
-    </column>
-    
-    <column name="cert_url_key">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/link</bodyTmpl>
-        <label translate="true">Cert</label>
-	</settings>
-	</column>
-	
-	<column name="cert_url_key">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/link</bodyTmpl>
-        <label translate="true">Cert</label>
-	</settings>
-</column>
-
-<column name="diamond_img_url">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/link</bodyTmpl>
-        <label translate="true">Image</label>
-	</settings>
-</column>
-
-<column name="video_url">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Video</label>
-	</settings>
-</column>
-
-<column name="online">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Online</label>
-	</settings>
-</column>
-
-<column name="lab">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Lab</label>
-	</settings>
-</column>
-
-<column name="shape">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Shape</label>
-	</settings>
-</column>
-
-<column name="color">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Color</label>
-	</settings>
-</column>
-
-<column name="clarity">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Clarity</label>
-	</settings>
-</column>
-
-<column name="cut_grade">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Cut</label>
-	</settings>
-</column>
-
-<column name="stone_carat">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Carat</label>
-	</settings>
-</column>
-
-<column name="country_of_manufacture">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Origin</label>
-	</settings>
-</column>
-
-<column name="length_to_width">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Aspect</label>
-	</settings>
-</column>
-
-<column name="aaa">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Measurements</label>
-	</settings>
-</column>
-
-<column name="polish">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Polish</label>
-	</settings>
-</column>
-
-<column name="symmetry">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Symmetry</label>
-	</settings>
-</column>
-
-<column name="girdle">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Girdle</label>
-	</settings>
-</column>
-
-<column name="fluor">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Fluor</label>
-	</settings>
-</column>
-
-<column name="as_grown">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">As Grown</label>
-	</settings>
-</column>
-
-<column name="born_on_date">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Born on Date</label>
-	</settings>
-</column>
-
-<column name="carbon_neutral">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Carbon Neutral</label>
-	</settings>
-</column>
-
-<column name="blockchain_verified">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Blockchain Verified</label>
-	</settings>
-</column>
-
-<column name="charitable_contribution">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Charitable Contribution</label>
-	</settings>
-</column>
-
-<column name="cvd">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">CVD</label>
-	</settings>
-</column>
-
-<column name="hpht">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">HPHT</label>
-	</settings>
-</column>
-
-<column name="patented">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Patented</label>
-	</settings>
-</column>
-
-<column name="custom">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Custom</label>
-	</settings>
-</column>
-
-<column name="color_of_colored_diamonds">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Colored Color</label>
-	</settings>
-</column>
-
-<column name="hue">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Hue</label>
-	</settings>
-</column>
-
-<column name="intensity">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-        <label translate="true">Intensity</label>
-	</settings>
-</column>
-
- 
+    <actionsColumn name="actions" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Product\Listing\Column\Actions" sortOrder="200">
+       <argument name="data" xsi:type="array">
+          <item name="config" xsi:type="array">
+              <item name="resizeEnabled" xsi:type="boolean">false</item>
+              <item name="resizeDefaultWidth" xsi:type="string">107</item>
+              <item name="indexField" xsi:type="string">entity_id</item>
+          </item>
+       </argument>
+       <argument name="viewUrl" xsi:type="string">catalog/product/view</argument>
+    </actionsColumn>
   </columns>
 </listing>
