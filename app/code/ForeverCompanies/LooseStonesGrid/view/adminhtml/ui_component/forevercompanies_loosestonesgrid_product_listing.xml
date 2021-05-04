@@ -144,26 +144,26 @@
 		</settings>
 	</column>
     
-    <column name="cert_url_key">
+    <column name="cert_url_key" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\Link" sortOrder="70">
 	<settings>
     	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Cert</label>
+        <bodyTmpl>ui/grid/cells/html</bodyTmpl>
 	</settings>
 	</column>
 
-<column name="diamond_img_url">
+<column name="diamond_img_url" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\Link" sortOrder="70">
 	<settings>
     	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <bodyTmpl>ui/grid/cells/html</bodyTmpl>
         <label translate="true">Image</label>
 	</settings>
 </column>
 
-<column name="video_url">
+<column name="video_url" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\Link" sortOrder="70">
 	<settings>
     	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <bodyTmpl>ui/grid/cells/html</bodyTmpl>
         <label translate="true">Video</label>
 	</settings>
 </column>
@@ -171,7 +171,6 @@
 <column name="online" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="70">
 	<settings>
     	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Online</label>
 	</settings>
 </column>
@@ -187,7 +186,6 @@
 <column name="shape" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="70">
 	<settings>
     	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Shape</label>
 	</settings>
 </column>
@@ -195,7 +193,6 @@
 <column name="color" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="70">
 	<settings>
     	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Color</label>
 	</settings>
 </column>
@@ -203,7 +200,6 @@
 <column name="clarity" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="70">
 	<settings>
     	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Clarity</label>
 	</settings>
 </column>
