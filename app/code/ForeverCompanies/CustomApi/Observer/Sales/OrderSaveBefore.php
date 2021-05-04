@@ -49,35 +49,35 @@ class OrderSaveBefore implements ObserverInterface
     public function execute(Observer $observer)
     {
         /** @var Order $order */
-        $order = $observer->getData('order');
+        $order = $observer->getEvent()->getOrder();
+        
         //order is new
         if (!$order->getId()) {
             return $this;
         }
-        $history = $order->getAllStatusHistory();
-        /** @var Collection $lastMessage */
-        $lastMessage = current($history);
-        if (strpos($lastMessage->getData()['comment'], 'Order Placed by') !== false) {
-            return;
-        }
-        $changes = [];
-        foreach ($this->checkingFields as $key) {
-            $data = $order->getData($key);
-            if ($data !== null) {
-                if ($order->dataHasChangedFor($key)) {
-                    if ($key == 'shipping_address_id') {
-                        $changes[] = 'shipping_address';
-                    } elseif ($key == 'billing_address_id') {
-                        $changes[] = 'billing_address';
-                    } else {
-                        $changes[] = $key;
+        
+        // only create fishbowl entries if the order has a payment or has no payment reuquired.
+        if($order->getTotalPaid() >= 0 || $order->getTotalPaid() == 0) {
+            $changes = [];
+            foreach ($this->checkingFields as $key) {
+                $data = $order->getData($key);
+                if ($data !== null) {
+                    if ($order->dataHasChangedFor($key)) {
+                        if ($key == 'shipping_address_id') {
+                            $changes[] = 'shipping_address';
+                        } elseif ($key == 'billing_address_id') {
+                            $changes[] = 'billing_address';
+                        } else {
+                            $changes[] = $key;
+                        }
                     }
                 }
             }
+            if (count($changes) > 0) {
+                $this->extOrder->createNewExtSalesOrder((int)$order->getId(), $changes);
+            }
         }
-        if (count($changes) > 0) {
-            $this->extOrder->createNewExtSalesOrder((int)$order->getId(), $changes);
-        }
+        
         return $this;
     }
 }
