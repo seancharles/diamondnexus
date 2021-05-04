@@ -79,7 +79,9 @@
                 <item name="TagMatchingImages" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\TagMatchingImages
                 </item>
-                
+                <item name="UpdateProductWeights" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\UpdateProductWeights
+                </item>
             </argument>
         </arguments>
     </type>
