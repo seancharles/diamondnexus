@@ -93,15 +93,6 @@
       </settings>
     </column>
     
-    <column name="name">
-      <settings>
-         <filter>text</filter>
-         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-         <label translate="true">Name</label>
-      </settings>
-    </column>
-    
-
     <column name="filter_ship_date">
       <settings>
          <filter>text</filter>
@@ -114,7 +105,7 @@
       <settings>
          <filter>text</filter>
          <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-         <label translate="true">Rapaport#</label>
+         <label translate="true">Rapaport #</label>
       </settings>
     </column>
     
@@ -161,23 +152,15 @@
     <column name="cert_url_key">
 	<settings>
     	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/link</bodyTmpl>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Cert</label>
 	</settings>
 	</column>
-	
-	<column name="cert_url_key">
-	<settings>
-    	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/link</bodyTmpl>
-        <label translate="true">Cert</label>
-	</settings>
-</column>
 
 <column name="diamond_img_url">
 	<settings>
     	<filter>text</filter>
-        <bodyTmpl>ui/grid/cells/link</bodyTmpl>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Image</label>
 	</settings>
 </column>
@@ -262,7 +245,7 @@
 	</settings>
 </column>
 
-<column name="aaa">
+<column name="measurements">
 	<settings>
     	<filter>text</filter>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
