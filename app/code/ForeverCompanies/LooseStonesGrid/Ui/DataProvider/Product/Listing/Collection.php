@@ -14,6 +14,9 @@ class Collection extends SearchResult
     {
         $this->addFilterToMap('entity_id', 'main_table.entity_id');
         $this->addFilterToMap('name', 'devgridname.value');
+        
+        $this->addFieldToFilter("attribute_set_id", array("eq" => 31));
+        
         parent::_initSelect();
     }
 }
