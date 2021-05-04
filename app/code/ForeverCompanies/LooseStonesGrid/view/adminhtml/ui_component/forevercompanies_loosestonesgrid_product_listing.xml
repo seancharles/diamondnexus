@@ -85,10 +85,9 @@
       </settings>
     </column>
     
-    <column name="supplier">
+    <column name="supplier" class="Magento\Catalog\Ui\Component\Listing\Columns\AttributeSetText" sortOrder="70">
       <settings>
          <filter>text</filter>
-         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
          <label translate="true">Supplier</label>
       </settings>
     </column>
@@ -117,37 +116,33 @@
       </settings>
     </column>
     
-    <column name="price">
-      <settings>
-         <filter>text</filter>
-         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-         <label translate="true">Price</label>
-      </settings>
-    </column>
+    <column name="price" class="Magento\Catalog\Ui\Component\Listing\Columns\Price" sortOrder="70">
+		<settings>
+			<filter>textRange</filter>
+			<label translate="true">Price</label>
+		</settings>
+	</column>
     
-    <column name="custom_price">
-      <settings>
-         <filter>text</filter>
-         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-         <label translate="true">Custom Price</label>
-      </settings>
-    </column>
+    <column name="custom_price" class="Magento\Catalog\Ui\Component\Listing\Columns\Price" sortOrder="70">
+		<settings>
+			<filter>textRange</filter>
+			<label translate="true">Custom Price</label>
+		</settings>
+	</column>
     
-    <column name="cost">
-      <settings>
-         <filter>text</filter>
-         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-         <label translate="true">Cost</label>
-      </settings>
-    </column>
+    <column name="cost" class="Magento\Catalog\Ui\Component\Listing\Columns\Price" sortOrder="70">
+		<settings>
+			<filter>textRange</filter>
+			<label translate="true">Cost</label>
+		</settings>
+	</column>
     
-    <column name="custom_cost">
-      <settings>
-         <filter>text</filter>
-         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
-         <label translate="true">Custom Cost</label>
-      </settings>
-    </column>
+    <column name="custom_cost" class="Magento\Catalog\Ui\Component\Listing\Columns\Price" sortOrder="70">
+		<settings>
+			<filter>textRange</filter>
+			<label translate="true">Custom Cost</label>
+		</settings>
+	</column>
     
     <column name="cert_url_key">
 	<settings>
