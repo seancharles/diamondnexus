@@ -1,74 +1,46 @@
 <?php
-/**
- * Copyright © Magento, Inc. All rights reserved.
- * See COPYING.txt for license details.
- */
 declare(strict_types=1);
 
-namespace ForverCompanies\LooseStonesGrid\Ui\Component\Listing\Column;
+namespace ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column;
 
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Directory\Model\Currency;
+use Magento\Eav\Model\Config;
 
-/**
- * Class Price
- */
-class Price extends Column
+class AttributeText extends Column
 {
-    /**
-     * @var PriceCurrencyInterface
-     */
-    protected $priceFormatter;
-
-    /**
-     * @var Currency
-     */
-    private $currency;
-
-    /**
-     * Constructor
-     *
-     * @param ContextInterface $context
-     * @param UiComponentFactory $uiComponentFactory
-     * @param PriceCurrencyInterface $priceFormatter
-     * @param array $components
-     * @param array $data
-     * @param Currency $currency
-     */
+    protected $eavConfig;
+    
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
-        PriceCurrencyInterface $priceFormatter,
+        Config $config,
         array $components = [],
-        array $data = [],
-        Currency $currency = null
+        array $data = []
     ) {
-        $this->priceFormatter = $priceFormatter;
-        $this->currency = $currency ?: \Magento\Framework\App\ObjectManager::getInstance()
-            ->create(Currency::class);
+        $this->eavConfig = $config;    
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
-    /**
-     * Prepare Data Source
-     *
-     * @param array $dataSource
-     * @return array
-     */
     public function prepareDataSource(array $dataSource)
     {
+        $attribute = $this->eavConfig->getAttribute('catalog_product', $this->getName());
+        $options = $attribute->getSource()->getAllOptions();
+        $res = [];
+        
+        foreach($options as $opt) {
+            $res[$opt['value']] = $opt['label'];
+        }
+        
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
-                $currencyCode = isset($item['base_currency_code']) ? $item['base_currency_code'] : null;
-                $basePurchaseCurrency = $this->currency->load($currencyCode);
-                $item[$this->getData('name')] = "fff" . $basePurchaseCurrency
-                    ->format($item[$this->getData('name')], [], false);
+                if (isset($res[$item[$this->getData('name')]])) {
+                    $item[$this->getData('name')] = $res[$item[$this->getData('name')]];
+                }  
             }
         }
-
+        
         return $dataSource;
     }
 }

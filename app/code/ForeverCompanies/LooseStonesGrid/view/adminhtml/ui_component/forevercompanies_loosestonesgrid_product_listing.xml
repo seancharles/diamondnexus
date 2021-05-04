@@ -85,7 +85,7 @@
       </settings>
     </column>
     
-    <column name="supplier" class="Magento\Catalog\Ui\Component\Listing\Columns\AttributeSetText" sortOrder="70">
+    <column name="supplier" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="70">
       <settings>
          <filter>text</filter>
          <label translate="true">Supplier</label>
@@ -168,7 +168,7 @@
 	</settings>
 </column>
 
-<column name="online">
+<column name="online" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="70">
 	<settings>
     	<filter>text</filter>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
@@ -184,7 +184,7 @@
 	</settings>
 </column>
 
-<column name="shape">
+<column name="shape" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="70">
 	<settings>
     	<filter>text</filter>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
@@ -192,7 +192,7 @@
 	</settings>
 </column>
 
-<column name="color">
+<column name="color" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="70">
 	<settings>
     	<filter>text</filter>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
@@ -200,7 +200,7 @@
 	</settings>
 </column>
 
-<column name="clarity">
+<column name="clarity" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="70">
 	<settings>
     	<filter>text</filter>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
@@ -208,7 +208,7 @@
 	</settings>
 </column>
 
-<column name="cut_grade">
+<column name="cut_grade" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="70">
 	<settings>
     	<filter>text</filter>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
