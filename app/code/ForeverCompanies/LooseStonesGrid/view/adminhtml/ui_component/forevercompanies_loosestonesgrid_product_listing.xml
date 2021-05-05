@@ -74,27 +74,34 @@
       </settings>
     </column>
     
-    <column name="supplier" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="70">
+    <column name="supplier" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="10">
       <settings>
          <label translate="true">Supplier</label>
       </settings>
     </column>
     
-    <column name="filter_ship_date">
+    <column name="filter_ship_date" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="20">
       <settings>
          <bodyTmpl>ui/grid/cells/text</bodyTmpl>
          <label translate="true">Delivery Date</label>
       </settings>
     </column>
     
-    <column name="rapaport">
+    <column name="born_on_date" class="Magento\Ui\Component\Listing\Columns\Date" component="Magento_Ui/js/grid/columns/date" sortOrder="30">
+    <settings>
+        <dataType>date</dataType>
+        <label translate="true">Born on Date</label>
+    </settings>
+</column>
+    
+    <column name="rapaport" sortOrder="50">
       <settings>
          <bodyTmpl>ui/grid/cells/text</bodyTmpl>
          <label translate="true">Rapaport #</label>
       </settings>
     </column>
     
-    <column name="pct_off_rap">
+    <column name="pct_off_rap" sortOrder="60">
       <settings>
          <bodyTmpl>ui/grid/cells/text</bodyTmpl>
          <label translate="true">Rap %</label>
@@ -108,59 +115,59 @@
 		</settings>
 	</column>
     
-    <column name="custom_price" class="Magento\Catalog\Ui\Component\Listing\Columns\Price" sortOrder="70">
+    <column name="stone_import_custom_price" class="Magento\Catalog\Ui\Component\Listing\Columns\Price" sortOrder="80">
 		<settings>
 			<label translate="true">Custom Price</label>
 		</settings>
 	</column>
     
-    <column name="cost" class="Magento\Catalog\Ui\Component\Listing\Columns\Price" sortOrder="70">
+    <column name="cost" class="Magento\Catalog\Ui\Component\Listing\Columns\Price" sortOrder="90">
 		<settings>
 			<label translate="true">Cost</label>
 		</settings>
 	</column>
     
-    <column name="custom_cost" class="Magento\Catalog\Ui\Component\Listing\Columns\Price" sortOrder="70">
+    <column name="stone_import_custom_cost" class="Magento\Catalog\Ui\Component\Listing\Columns\Price" sortOrder="100">
 		<settings>
 			<label translate="true">Custom Cost</label>
 		</settings>
 	</column>
     
-    <column name="cert_url_key" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\Link" sortOrder="70">
-	<settings>
-        <label translate="true">Cert</label>
-        <bodyTmpl>ui/grid/cells/html</bodyTmpl>
-	</settings>
+    <column name="cert_url_key" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\Link" sortOrder="110">
+		<settings>
+	        <label translate="true">Cert</label>
+	        <bodyTmpl>ui/grid/cells/html</bodyTmpl>
+		</settings>
 	</column>
 
-<column name="diamond_img_url" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\Link" sortOrder="70">
+<column name="diamond_img_url" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\Link" sortOrder="120">
 	<settings>
         <bodyTmpl>ui/grid/cells/html</bodyTmpl>
         <label translate="true">Image</label>
 	</settings>
 </column>
 
-<column name="video_url" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\Link" sortOrder="70">
+<column name="video_url" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\Link" sortOrder="130">
 	<settings>
         <bodyTmpl>ui/grid/cells/html</bodyTmpl>
         <label translate="true">Video</label>
 	</settings>
 </column>
 
-<column name="online" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="70">
+<column name="online" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="140">
 	<settings>
         <label translate="true">Online</label>
 	</settings>
 </column>
 
-<column name="lab">
+<column name="lab" sortOrder="150">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Lab</label>
 	</settings>
 </column>
 
-<column name="shape" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText">
+<column name="shape" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="160">
 	<settings>
 	    <label translate="true">Shape</label>
 	    <filter>select</filter>
@@ -210,7 +217,7 @@
 	</settings>
 </column>
 
-<column name="color" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText">
+<column name="color" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="170">
 	<settings>
 	    <label translate="true">Color</label>
 	    <filter>select</filter>
@@ -264,7 +271,7 @@
 	</settings>
 </column>
 
-<column name="clarity" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText">
+<column name="clarity" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="180">
 	<settings>
 	    <label translate="true">Clarity</label>
 	    <filter>select</filter>
@@ -314,7 +321,7 @@
 	</settings>
 </column>
         
-<column name="cut_grade" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText">
+<column name="cut_grade" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="190">
 	<settings>
 	    <label translate="true">Cut</label>
 	    <filter>select</filter>
@@ -344,7 +351,7 @@
 	</settings>
 </column>
 
-<column name="stone_carat">
+<column name="stone_carat" sortOrder="200">
 	<settings>
     	<filter>textRange</filter>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
@@ -352,139 +359,139 @@
 	</settings>
 </column>
 
-<column name="country_of_manufacture">
+<column name="origin" sortOrder="210">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Origin</label>
 	</settings>
 </column>
 
-<column name="length_to_width">
+<column name="length_to_width" sortOrder="220">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Aspect</label>
 	</settings>
 </column>
 
-<column name="measurements">
+<column name="measurements" sortOrder="230">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Measurements</label>
 	</settings>
 </column>
 
-<column name="polish">
+<column name="polish" sortOrder="240">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Polish</label>
 	</settings>
 </column>
 
-<column name="symmetry">
+<column name="symmetry" sortOrder="250">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Symmetry</label>
 	</settings>
 </column>
 
-<column name="girdle">
+<column name="girdle" sortOrder="260">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Girdle</label>
 	</settings>
 </column>
 
-<column name="fluor">
+<column name="fluor" sortOrder="270">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Fluor</label>
 	</settings>
 </column>
 
-<column name="as_grown">
+<column name="as_grown" sortOrder="280">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">As Grown</label>
 	</settings>
 </column>
 
-<column name="born_on_date">
-	<settings>
-        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+
+<column name="born_on_date" class="Magento\Ui\Component\Listing\Columns\Date" component="Magento_Ui/js/grid/columns/date" sortOrder="290">
+    <settings>
+        <dataType>date</dataType>
         <label translate="true">Born on Date</label>
-	</settings>
+    </settings>
 </column>
 
-<column name="carbon_neutral">
+<column name="carbon_neutral" sortOrder="300">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Carbon Neutral</label>
 	</settings>
 </column>
 
-<column name="blockchain_verified">
+<column name="blockchain_verified" sortOrder="310">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Blockchain Verified</label>
 	</settings>
 </column>
 
-<column name="charitable_contribution">
+<column name="charitable_contribution" sortOrder="320">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Charitable Contribution</label>
 	</settings>
 </column>
 
-<column name="cvd">
+<column name="cvd" sortOrder="330">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">CVD</label>
 	</settings>
 </column>
 
-<column name="hpht">
+<column name="hpht" sortOrder="340">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">HPHT</label>
 	</settings>
 </column>
 
-<column name="patented">
+<column name="patented" sortOrder="350">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Patented</label>
 	</settings>
 </column>
 
-<column name="custom">
+<column name="custom" sortOrder="360">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Custom</label>
 	</settings>
 </column>
 
-<column name="color_of_colored_diamonds">
+<column name="color_of_colored_diamonds" sortOrder="370">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Colored Color</label>
 	</settings>
 </column>
 
-<column name="hue">
+<column name="hue" sortOrder="380">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Hue</label>
 	</settings>
 </column>
 
-<column name="intensity">
+<column name="intensity" sortOrder="390">
 	<settings>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
         <label translate="true">Intensity</label>
 	</settings>
 </column>
-
  
-  </columns>
+</columns>
 </listing>
