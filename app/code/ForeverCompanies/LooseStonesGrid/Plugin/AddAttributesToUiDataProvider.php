@@ -9,18 +9,9 @@ use Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult;
 
 class AddAttributesToUiDataProvider
 {
-    /** @var AttributeRepositoryInterface */
     private $attributeRepository;
-    
-    /** @var ProductMetadataInterface */
     private $productMetadata;
     
-    /**
-     * Constructor
-     *
-     * @param \Magento\Eav\Api\AttributeRepositoryInterface $attributeRepository
-     * @param \Magento\Framework\App\ProductMetadataInterface $productMetadata
-     */
     public function __construct(
         AttributeRepositoryInterface $attributeRepository,
         ProductMetadataInterface $productMetadata
@@ -29,13 +20,6 @@ class AddAttributesToUiDataProvider
             $this->productMetadata = $productMetadata;
     }
     
-    /**
-     * Get Search Result after plugin
-     *
-     * @param \Dev\Grid\Ui\DataProvider\Category\ListingDataProvider $subject
-     * @param \Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult $result
-     * @return \Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult
-     */
     public function afterGetSearchResult(ProductDataProvider $subject, SearchResult $result)
     {
         if ($result->isLoaded()) {
@@ -43,7 +27,6 @@ class AddAttributesToUiDataProvider
         }
         
         $edition = $this->productMetadata->getEdition();
-        
         $column = 'entity_id';
         
         if ($edition == 'Enterprise') {
@@ -55,13 +38,10 @@ class AddAttributesToUiDataProvider
             "filter_ship_date",
             "rapaport",
             "pct_off_rap",
-            
             "price",
             // "custom_price",
-            
             "cost",
             "custom_cost",
-            
             "cert_url_key",
             "diamond_img_url",
             "video_url",
@@ -74,7 +54,6 @@ class AddAttributesToUiDataProvider
             "stone_carat",
             "country_of_manufacture",
             "length_to_width",
-            
             "measurements",
             "polish",
             "symmetry",
@@ -100,7 +79,6 @@ class AddAttributesToUiDataProvider
             } catch(\Magento\Framework\Exception\NoSuchEntityException $e) {
                 
             }
-            
             if (isset($attribute)) {
                 $result->getSelect()->joinLeft(
                     ['stonesgrid_' . $attr => $attribute->getBackendTable()],
@@ -109,24 +87,9 @@ class AddAttributesToUiDataProvider
                     [$attr => 'stonesgrid_' . $attr . '.value']
                 );
             }
+             
             unset($attribute);
         }
-        
-        
-        /*
-        $attribute = $this->attributeRepository->get('catalog_product', 'supplier');
-        
-        $result->getSelect()->joinLeft(
-            ['stonesgrid_supplier' => $attribute->getBackendTable()],
-            'stonesgrid_supplier.' . $column . ' = main_table.' . $column . ' AND stonesgrid_supplier.attribute_id = '
-            . $attribute->getAttributeId(),
-            ['supplier' => 'stonesgrid_supplier.value']
-        );
-        */
-        
-    
-    //   $result->getSelect()->where('devgridname.value LIKE "B%"');
-        
         return $result;
     }
 }

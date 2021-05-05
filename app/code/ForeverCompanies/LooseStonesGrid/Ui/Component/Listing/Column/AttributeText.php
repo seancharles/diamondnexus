@@ -40,7 +40,6 @@ class AttributeText extends Column
                 }  
             }
         }
-        
         return $dataSource;
     }
 }

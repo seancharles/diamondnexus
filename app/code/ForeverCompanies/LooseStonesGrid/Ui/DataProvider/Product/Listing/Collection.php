@@ -5,15 +5,15 @@ use Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult;
 
 class Collection extends SearchResult
 {
-    /**
-     * Override _initSelect to add custom columns
-     *
-     * @return void
-     */
     protected function _initSelect()
     {
         $this->addFilterToMap('entity_id', 'main_table.entity_id');
-        $this->addFilterToMap('name', 'devgridname.value');
+        $this->addFilterToMap('clarity', 'stonesgrid_clarity.value');
+        $this->addFilterToMap('shape', 'stonesgrid_shape.value');
+        $this->addFilterToMap('color', 'stonesgrid_color.value');
+        $this->addFilterToMap('cut_grade', 'stonesgrid_cut_grade.value');
+        $this->addFilterToMap('price', 'stonesgrid_price.value');
+        $this->addFilterToMap('stone_carat', 'stonesgrid_stone_carat.value');
         
         $this->addFieldToFilter("attribute_set_id", array("eq" => 31));
         

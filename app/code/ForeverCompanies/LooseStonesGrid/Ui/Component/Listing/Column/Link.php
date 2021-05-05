@@ -35,7 +35,6 @@ class Link extends Column
                 }
             }
         }
-        
         return $dataSource;
     }
 }
