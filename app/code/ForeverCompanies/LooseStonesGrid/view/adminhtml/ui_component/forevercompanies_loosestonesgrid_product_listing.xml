@@ -31,6 +31,7 @@
   <listingToolbar name="listing_top">
     <bookmark name="bookmarks"/>
     <columnsControls name="columns_controls"/>
+    <!--  
     <massaction name="listing_massaction">
       <argument name="data" xsi:type="array">
         <item name="data" xsi:type="array">
@@ -41,6 +42,7 @@
         </item>
       </argument>
     </massaction>
+    -->
     <filters name="listing_filters">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -351,7 +353,8 @@
 	</settings>
 </column>
 
-<column name="stone_carat" sortOrder="200">
+
+<column name="weight" sortOrder="200">
 	<settings>
     	<filter>textRange</filter>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>

@@ -51,7 +51,7 @@ class AddAttributesToUiDataProvider
             "color",
             "clarity",
             "cut_grade",
-            "stone_carat",
+            "weight",
             "origin",
             "country_of_manufacture",
             "length_to_width",
