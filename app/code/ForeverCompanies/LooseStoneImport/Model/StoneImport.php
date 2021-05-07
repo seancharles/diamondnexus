@@ -569,12 +569,14 @@ class StoneImport
                     )
                 );
              
-                $this->_applyCsvRowToProduct($product, $csvArr);
+                $success = $this->_applyCsvRowToProduct($product, $csvArr);
                 
-                // 1215 storefront visibility.
-                $product->setStoreId(12)->setVisibility(4)->save();
+                if ($success) {
+                    $this->_stoneLog($product, $csvArr, "add");
+                    // 1215 storefront visibility.
+                    $product->setStoreId(12)->setVisibility(4)->save();
+                }
                 
-                $this->_stoneLog($product, $csvArr, "add");
                 
                 unset($imageFileName);
                 unset($imageResult);
