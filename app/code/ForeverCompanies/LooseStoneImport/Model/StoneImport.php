@@ -434,8 +434,6 @@ class StoneImport
             );
             
             $this->fileName = $_SERVER['HOME'] . 'magento/var/import/diamond_importer.csv';
-            $this->fileName = $_SERVER['HOME'] . 'magento/var/import/diamond_importer_05_05_2021_15_41.csv';
-            $this->fileName = $_SERVER['HOME'] . 'magento/var/import/diamond_importer_05_06_2021_14_11.csv';
             
             $this->statusEnabled = \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED; 
             $this->statusDisabled = \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED;
