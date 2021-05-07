@@ -20,14 +20,16 @@ class ManualImport extends Command
         State $state
     ) {
         parent::__construct('forevercompanies:manual-diamond-import');
+            
         
-        $state->setAreaCode('frontend');
+        $this->state = $state;
         
         $this->stoneImportModel = $stoneImport;
         $this->name = 'forevercompanies:manual-diamond-import';
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
+        $this->state->setAreaCode('frontend');
         $this->stoneImportModel->run();
         return;
     }
