@@ -9,7 +9,6 @@ class Index extends Action
 {
     protected $stoneModel;
     
-
 	public function __construct(
 		Context $context,
 	    StoneImport $stone

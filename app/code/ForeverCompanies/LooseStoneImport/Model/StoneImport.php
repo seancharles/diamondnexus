@@ -54,6 +54,8 @@ class StoneImport
     protected $statusEnabled;
     protected $statusDisabled;
     
+    protected $supplierStatuses;
+    
     
     public function __construct(
         CollectionFactory $collectionFactory,
@@ -431,13 +433,35 @@ class StoneImport
                 "bhakti" => ""
             );
             
-            // TODO: Handle this.
-            // $this->fileName = $_SERVER['HOME'] . 'magento/var/import/stone_import_full.csv';
+            $this->fileName = $_SERVER['HOME'] . 'magento/var/import/diamond_importer.csv';
             $this->fileName = $_SERVER['HOME'] . 'magento/var/import/diamond_importer_05_05_2021_15_41.csv';
             $this->fileName = $_SERVER['HOME'] . 'magento/var/import/diamond_importer_05_06_2021_14_11.csv';
             
             $this->statusEnabled = \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED; 
             $this->statusDisabled = \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED;
+            
+            $supplierData = $this->connection->fetchAll("SELECT `enabled`, `code` FROM `stones_supplier`");
+            $this->supplierStatuses = array();
+            foreach ($supplierData as $supplierD) {
+                $this->supplierStatuses[$supplierD['code']] = $supplierD['enabled'];
+                
+                if ($supplierD['code'] == "diamondfoundry") {
+                    $this->supplierStatuses["foundry"] = $supplierD['enabled'];;
+                }
+                elseif ($supplierD['code'] == "labs") {
+                    $this->supplierStatuses["labsdiamond"] = $supplierD['enabled'];;
+                }
+                elseif ($supplierD['code'] == "Fenix") {
+                    $this->supplierStatuses["fenix"] = $supplierD['enabled'];;
+                }
+                elseif ($supplierD['code'] == "proudestlegendlimited") {
+                    $this->supplierStatuses["proudest"] = $supplierD['enabled'];;
+                }
+                elseif ($supplierD['code'] == "lushdiamonds") {
+                    $this->supplierStatuses["lush"] = $supplierD['enabled'];;
+                }
+            }
+            
     }
     
     function deleteUnsoldDiamonds()
@@ -471,6 +495,7 @@ class StoneImport
     {
         $csvArray = $this->_buildArray();
         
+        $i = 0;
         foreach ($csvArray as $csvArr) {
             
             if (!$this->_checkForRequiredFields($csvArr)) {
@@ -479,18 +504,31 @@ class StoneImport
                 $this->_stoneLog($product, $csvArr, "error", "Required field invalid.");
                 continue;
             }
+            /*
+            echo 'the supplier is ' . $csvArr['Supplier'] . '<br />';
+            
+            if ($i==25) {
+                die;
+            }
+            $i++;
+            */
             
             $productId = $this->productModel->getIdBySku($csvArr['Certificate #']);
             if ($productId) {
                 $product = $this->productModel->load($productId); 
                 
-                // if product has been disabled assume it has been sold.
+                // if product has been disabled assume it has been sold(or supplier was disabled, which will end up with product being deleted later)
                 if ($product->getStatus() == $this->statusDisabled) {
+                    unset($productId);
+                    unset($product);
                     continue;
                 }
               
-                $this->_applyCsvRowToProduct($product, $csvArr);
-                $this->_stoneLog($product, $csvArr, "update");
+                $success = $this->_applyCsvRowToProduct($product, $csvArr);
+                
+                if ($success) {
+                    $this->_stoneLog($product, $csvArr, "update");
+                }
                 
             } else { // else new product
                 
@@ -539,7 +577,14 @@ class StoneImport
                 $product->setStoreId(12)->setVisibility(4)->save();
                 
                 $this->_stoneLog($product, $csvArr, "add");
+                
+                unset($imageFileName);
+                unset($imageResult);
             }
+            
+            unset($productId);
+            unset($product);
+            unset($csvArr);
         }
         
         $this->_cleanLogs();
@@ -555,6 +600,15 @@ class StoneImport
         $product->setCutGrade($this->cutGradeMap[$csvArr['Cut Grade']]);
         $product->setShape($this->shapeMap[$csvArr['Shape Name']]);
         $product->setSupplier($this->supplierMap[$csvArr['Supplier']]);
+        
+        if (isset($this->supplierStatuses[$csvArr['Supplier']])) {
+            $this->_handleStatus($csvArr['Supplier']);
+        } else {
+            $this->_stoneLog($product, $csvArr, "error", "Supplier does not exist");
+            unset($product);
+            unset($csvArr);
+            return false;
+        }
         
         // Sorting
         if (isset($this->claritySortMap[$csvArr['Clarity']])) {
@@ -590,6 +644,7 @@ class StoneImport
             }
         }
         $product->save();
+        return true;
     }
     
     protected function _buildArray()
@@ -639,7 +694,7 @@ class StoneImport
     
     protected function _getMapForAttributevfdsfvsdsfdsdfsdsfwADS()
     {
-        $attributeCode = 'shape';
+        $attributeCode = 'supplier';
         $entityType = 'catalog_product';
         
         $objectManager =  \Magento\Framework\App\ObjectManager::getInstance();
@@ -658,6 +713,15 @@ class StoneImport
             echo '"' . $attributeOption['default_value'] . '" => "' . $attributeOption['option_id'] . '",<br />';
         }
         die;
+    }
+    
+    protected function _handleStatus($supplier)
+    {
+        if($this->supplierStatuses[$supplier] == 0) {
+            return $this->statusDisabled;
+        }
+        
+        return $this->statusEnabled ;
     }
     
     protected function _stoneLog($product, $csvArr, $action, $error = null)
