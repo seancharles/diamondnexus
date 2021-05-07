@@ -20,6 +20,7 @@ class Index extends Action
 	
 	public function execute()
 	{
+	    echo 'Comment out at app/code/ForeverCompanies/LooseStoneImport/Controller/Index/Index.php';die;
 	    $this->stoneModel->run();
 	    return;
 	}
