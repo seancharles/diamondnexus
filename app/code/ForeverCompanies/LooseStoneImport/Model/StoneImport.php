@@ -11,6 +11,8 @@ use Magento\CatalogInventory\Model\Stock\StockItemRepository;
 use Magento\Framework\File\Csv;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Io\File;
+use Magento\Reports\Model\ResourceModel\Product\Sold\CollectionFactory as SoldProductCollectionFactory;
+use Magento\Catalog\Model\ProductRepository;
 
 class StoneImport
 {    
@@ -46,6 +48,11 @@ class StoneImport
     
     protected $fileName;
     protected $requiredFieldsArr;
+    protected $soldProductCollectionFactory;
+    protected $productRepo;
+    
+    protected $statusEnabled;
+    protected $statusDisabled;
     
     
     public function __construct(
@@ -57,7 +64,9 @@ class StoneImport
         StockItemRepository $stockItemRepo,
         Csv $cs,
         DirectoryList $directoryList,
-        File $fil
+        File $fil,
+        SoldProductCollectionFactory $soldProductColl,
+        ProductRepository $productR
         ) {
             $this->productCollectionFactory = $collectionFactory;
             $this->productModel = $prod;
@@ -67,6 +76,8 @@ class StoneImport
             $this->csv = $cs;
             $this->productFactory = $prodF;
             $this->file = $fil;
+            $this->soldProductCollectionFactory = $soldProductColl;
+            $this->productRepo = $productR;
             
             $this->mediaTmpDir = $directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . 'tmp';
             $this->file->checkAndCreateFolder($this->mediaTmpDir );
@@ -156,28 +167,48 @@ class StoneImport
             
             $this->shapePopMap = array(
                 "Round" => "100",
+                "round" => "100",
                 "Princess" => "200",
+                "princess" => "200",
                 "Cushion" => "300",
+                "cushion" => "300",
                 "Oval" => "400",
+                "oval" => "400",
                 "Emerald" => "500",
+                "emerald" => "500",
                 "Pear" => "600",
+                "pear" => "600",
                 "Asscher" => "700",
+                "asscher" => "700",
                 "Radiant" => "800",
+                "radiant" => "800",
                 "Marquise" => "900",
-                "Heart" => "1000"
+                "marquise" => "900",
+                "Heart" => "1000",
+                "heart" => "1000"
             );
             
             $this->shapeAlphaMap = array(
                 "Round" => "1000",
+                "round" => "1000",
                 "Princess" => "800",
+                "princess" => "800",
                 "Cushion" => "200",
+                "cushion" => "200",
                 "Oval" => "600",
+                "oval" => "600",
                 "Emerald" => "300",
+                "emerald" => "300",
                 "Pear" => "700",
+                "pear" => "700",
                 "Asscher" => "100",
+                "asscher" => "100",
                 "Radiant" => "900",
+                "radiant" => "900",
                 "Marquise" => "500",
-                "Heart" => "400"
+                "marquise" => "500",
+                "Heart" => "400",
+                "heart" => "400"
             );
             
             $this->shippingStatusMap = array(
@@ -209,7 +240,7 @@ class StoneImport
                 // "Product Name", 
                 "Supplier",
                 "Certificate #",
-                "Shape",
+                "Shape Name",
                 "Lab",
                 "Weight",
                 "Color",
@@ -334,15 +365,25 @@ class StoneImport
             
             $this->shapeMap = array(
                 "Round" => "2842",
+                "round" => "2842",
                 "Princess" => "2843",
+                "princess" => "2843",
                 "Asscher" => "2844",
+                "asscher" => "2844",
                 "Cushion" => "2845",
+                "cushion" => "2845",
                 "Heart" => "2846",
+                "heart" => "2846",
                 "Oval" => "2847",
+                "oval" => "2847",
                 "Emerald" => "2848",
+                "emerald" => "2848",
                 "Radiant" => "2849",
+                "radiant" => "2849",
                 "Pear" => "2850",
+                "pear" => "2850",
                 "Marquise" => "2851",
+                "marquise" => "2851",
                 // TODO: Remove. Adding to get through import.
                 "RB" => "",
                 "EM" => ""
@@ -390,45 +431,69 @@ class StoneImport
                 "bhakti" => ""
             );
             
-            $this->fileName = $_SERVER['HOME'] . 'magento/var/import/stone_import_full.csv';
+            // TODO: Handle this.
+            // $this->fileName = $_SERVER['HOME'] . 'magento/var/import/stone_import_full.csv';
+            $this->fileName = $_SERVER['HOME'] . 'magento/var/import/diamond_importer_05_05_2021_15_41.csv';
+            $this->fileName = $_SERVER['HOME'] . 'magento/var/import/diamond_importer_05_06_2021_14_11.csv';
+            
+            $this->statusEnabled = \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED; 
+            $this->statusDisabled = \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED;
+    }
+    
+    function deleteUnsoldDiamonds()
+    {
+        $soldColl = $this->soldProductCollectionFactory->create()
+        ->addAttributeToSelect('sku')
+        ->addOrderedQty();
+        
+        $soldArr = array();
+        foreach ($soldColl as $sold) {
+            $soldArr[] = $sold->getData("order_items_sku");
+        }
+        
+        $unsoldAndDisabledDiamondProductColl = $this->productCollectionFactory->create()
+        ->addAttributeToFilter('product_type', '3569')
+        ->addAttributeToFilter('status', $this->statusDisabled)
+        ->addAttributeToFilter('sku', array('nin' => $soldArr))
+        ->addAttributeToSelect('sku');
+        
+        unset($soldColl);
+        unset($soldArr);
+        
+        foreach ($unsoldAndDisabledDiamondProductColl as $unsoldAndDisabledDiamond) {
+            $this->productRepo->deleteById($unsoldAndDisabledDiamond->getSku());
+        }
+        
+        return $this;
     }
     
     function run()
-    {   
+    {
         $csvArray = $this->_buildArray();
         
-        $i = 0; 
-        // echo 'time before - ' . date("d-m-Y h:i:s") . '<br />';;
         foreach ($csvArray as $csvArr) {
             
             if (!$this->_checkForRequiredFields($csvArr)) {
+                $product = new \Magento\Framework\DataObject();
+                $product->setSku($csvArr['Certificate #']);
                 $this->_stoneLog($product, $csvArr, "error", "Required field invalid.");
                 continue;
             }
-            /*
-            if ($i == 25)
-            {
-                echo 'time after - ' . date("d-m-Y h:i:s") . '<br />';;
-                die;
-                $i++;
-                continue;
-            } else
-            {
-                echo 'saved ' . $product->getName() . '<br />';
-                $i++;
-            }
-            */
+            
             $productId = $this->productModel->getIdBySku($csvArr['Certificate #']);
             if ($productId) {
                 $product = $this->productModel->load($productId); 
-                $rowHash = $this->_getHash($csvArr);
-                // this will be corrected once we have the hashing working elsewhere.
-                if ($product->getProductHash() !== $rowHash) { 
-                    $product->setProductHash($rowHash);
-                    $this->_applyCsvRowToProduct($product, $csvArr);
-                    $this->_stoneLog($product, $csvArr, "update");
+                
+                // if product has been disabled assume it has been sold.
+                if ($product->getStatus() == $this->statusDisabled) {
+                    continue;
                 }
+              
+                $this->_applyCsvRowToProduct($product, $csvArr);
+                $this->_stoneLog($product, $csvArr, "update");
+                
             } else { // else new product
+                
                 $product = $this->productFactory->create();
                 
                 $imageFileName = $this->mediaTmpDir . DIRECTORY_SEPARATOR . baseName($csvArr['Image Link']);
@@ -441,7 +506,7 @@ class StoneImport
                         false
                         );
                 } else {
-                    $this->_stoneLog($product, $csvArr, "add", "Product Image not created.");
+                    $this->_stoneLog($product, $csvArr, "add", "New Product " . $csvArr['Certificate #'] . " not created.");
                     continue;
                 }
                 
@@ -449,11 +514,13 @@ class StoneImport
                 $product->setTypeId('simple');
                 $product->setAttributeSetId(31);
                 $product->setSku($csvArr['Certificate #']);
+                $product->setStatus($this->statusEnabled);
+                
+                $product->setVisibility(1);
                 
                 // From the admin, the reps can use a diamond on a 1215 or FA order.  On the frontend we do not display diamonds on FA.
                 // need to assign visibility for each store somehow.
-                $product->setWebsiteIds(array(3));
-                $product->setVisibility(4);
+                $product->setWebsiteIds(array(2,3));
          
                 $product->setStockData(
                     array(
@@ -462,11 +529,15 @@ class StoneImport
                         'min_sale_qty' => 1,
                         'max_sale_qty' => 1,
                         'is_in_stock' => 1,
-                    '   qty' => 1
+                        'qty' => 1
                     )
                 );
-                $product->setProductHash($this->_getHash($csvArr));
+             
                 $this->_applyCsvRowToProduct($product, $csvArr);
+                
+                // 1215 storefront visibility.
+                $product->setStoreId(12)->setVisibility(4)->save();
+                
                 $this->_stoneLog($product, $csvArr, "add");
             }
         }
@@ -482,7 +553,7 @@ class StoneImport
         $product->setColor($this->colorMap[$csvArr['Color']]);
         $product->setClarity($this->clarityMap[$csvArr['Clarity']]);
         $product->setCutGrade($this->cutGradeMap[$csvArr['Cut Grade']]);
-        $product->setShape($this->shapeMap[$csvArr['Shape']]);
+        $product->setShape($this->shapeMap[$csvArr['Shape Name']]);
         $product->setSupplier($this->supplierMap[$csvArr['Supplier']]);
         
         // Sorting
@@ -495,11 +566,11 @@ class StoneImport
         if (isset($this->cutGradeSortMap[$csvArr['Cut Grade']])) {
             $product->setCutGradeSort($this->cutGradeSortMap[$csvArr['Cut Grade']]);
         }
-        if (isset($this->shapePopMap[$csvArr['Shape']])) {
-            $product->setShapePopSort($this->shapePopMap[$csvArr['Shape']]);
+        if (isset($this->shapePopMap[$csvArr['Shape Name']])) {
+            $product->setShapePopSort($this->shapePopMap[$csvArr['Shape Name']]);
         }
-        if (isset($this->shapeAlphaMap[$csvArr['Shape']])) {
-            $product->setShapeAlphaSort($this->shapeAlphaMap[$csvArr['Shape']]);
+        if (isset($this->shapeAlphaMap[$csvArr['Shape Name']])) {
+            $product->setShapeAlphaSort($this->shapeAlphaMap[$csvArr['Shape Name']]);
         }
         
         //Delivery Date
@@ -566,7 +637,7 @@ class StoneImport
         return hash('sha1', json_encode($csvArr)); 
     }
     
-    protected function _getMapForAttribute()
+    protected function _getMapForAttributevfdsfvsdsfdsdfsdsfwADS()
     {
         $attributeCode = 'shape';
         $entityType = 'catalog_product';

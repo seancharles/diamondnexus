@@ -4,7 +4,7 @@ namespace ForeverCompanies\LooseStoneImport\Cron;
 
 use ForeverCompanies\LooseStoneImport\Model\StoneImport;
 
-class LooseStoneImport
+class UnsoldDiamondCleaning
 {
     protected $stoneImportModel;
 
@@ -16,7 +16,7 @@ class LooseStoneImport
 
     public function execute() 
     {
-        $this->stoneImportModel->run();
+        $this->stoneImportModel->deleteUnsoldDiamonds();
         return;
     }
 }
