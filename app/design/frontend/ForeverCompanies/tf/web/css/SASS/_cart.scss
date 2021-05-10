@@ -1,0 +1,119 @@
+.checkout-cart-index {
+    a.towishlist {
+        color: #8e7171;
+    }
+    .product-item-name {
+        font-size: 22px !important;
+    }
+    #shopping-cart-table {
+        .col {
+            span {
+                font-family: 'Gotham Bold';
+            }
+        }
+    }
+    .we-accept-cards {
+        background-image: none;
+    }
+    .order-summary {
+        font-family: 'Gotham Bold';
+    }
+    .grand.totals {
+        font-family: 'Gotham Bold';
+    }
+    #affirmfinance {
+        a {
+            text-transform: none;
+            display: block;
+            font-size: 14px;
+        }
+    }
+    .action.continue {
+        text-transform: none;
+        font-family: 'Gotham Bold';
+    }
+    .coupon {
+        display: flex;
+        .field {
+            width: 85%;
+            margin: 0;
+            .control {
+                height: 100%;
+                input {
+                    height: 100%;
+                }
+            }
+        }
+        .action {
+            text-transform: none;
+            letter-spacing: 0;
+            background: #8e7171 !important;
+            border-radius: 0 !important;
+            color: #fff !important;
+            border: none !important;
+            font-size: 14px !important;
+            padding: 15px;
+            font-weight: normal;
+            box-shadow: none !important;
+            &:hover {
+                background: #af9c9b !important;
+            }
+        }
+    }
+    .action.primary.checkout {
+        text-transform: none;
+        letter-spacing: 0;
+        background: #8e7171 !important;
+        border-radius: 0 !important;
+        color: #fff !important;
+        border: none !important;
+        font-size: 14px !important;
+        padding: 15px;
+        font-weight: normal;
+        box-shadow: none !important;
+        &:hover {
+            background: #af9c9b !important;
+        }
+    }
+    .cart-container {
+        .action.update {
+            font-family: 'Gotham Bold';
+            border: 1px solid #000;
+            border-radius: 0;
+            &:hover {
+                background: #000;
+                color: #fff;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .checkout-cart-index {
+        .cart-container {
+            display: flex;
+            flex-flow: column;
+        }
+        .form-cart {
+            order: 1 !important;
+            width: 100% !important;
+        }
+        .cart-summary {
+            position: unset !important;
+            order: 2;
+            width: 100% !important;
+        }
+        .cart-discount {
+            order: 3 !important;
+            width: 100% !important;
+        }
+        .action.update {
+            margin: 0 !important;
+        }
+        .coupon {
+            .field {
+                width: 55%;
+            }
+        }
+    }
+}

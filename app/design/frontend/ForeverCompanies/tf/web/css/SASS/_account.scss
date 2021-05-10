@@ -1,0 +1,85 @@
+.customer-account-login {
+    #login-form {
+        .actions-toolbar {
+            .primary {
+                &.action {
+                    border-color: #8e7171 !important;
+                    font-family: 'Gotham Bold' !important;
+                    text-transform: uppercase;
+                    font-size: 11px !important;
+                    border-radius: 0;
+                    height: auto !important;
+                    padding: 10px 0 !important;
+                    &:hover {
+                        background: #af9c9b !important;
+                        border-color: #d0b0b1 !important;
+                    }
+                }
+            }
+        }
+    }
+    .login-container {
+        .block-new-customer {
+            .actions-toolbar {
+                .primary {
+                    &.action {
+                        height: auto !important;
+                        padding: 15px 0 !important;
+                        border-color: #8e7171 !important;
+                        border-radius: 0;
+                        &:hover {
+                            background: #af9c9b !important;
+                            border-color: #d0b0b1 !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.account {
+    a {
+        &:hover {
+            color: #d0b0b1 !important;
+        }
+        span {
+            &:hover {
+                color: #d0b0b1 !important;
+            }
+        }
+    }
+    .nav a {
+        &:hover {
+            color: #8e7171 !important;
+        }
+    }
+    .block-collapsible-nav .item.current > strong {
+        border-color: #8e7171 !important;
+    }
+    .column {
+        display: flex;
+        flex-flow: column;
+        .account-additional-note {
+            order: 5;
+            ul {
+                margin-left: 0;
+            }
+        }
+    }
+    .box-newsletter {
+        display: none;
+    }
+    .box-title {
+        margin-bottom: 10px;
+        display: block;
+        span {
+            font-size: 16px;
+            font-family: 'Gotham Bold';
+        }
+    }
+}
+
+body:not(.customer-account-index) .account-additional-note {
+    display: none;
+}

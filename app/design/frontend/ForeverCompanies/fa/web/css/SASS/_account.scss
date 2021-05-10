@@ -1,0 +1,104 @@
+.customer-account-login {
+    a {
+        color: #000;
+        &:hover {
+            color: #000;
+        }
+    }
+    .page-title {
+        font-family: 'proxima-nova', 'Helvetica Neue', Verdana, Arial,
+            sans-serif;
+        font-weight: 900;
+    }
+    #login-form {
+        .actions-toolbar {
+            .primary {
+                &.action {
+                    text-transform: uppercase;
+                    font-size: 13px;
+                    border-radius: 0;
+                    height: auto;
+                    padding: 15px;
+                    border: none;
+                    background: #000;
+                    &:hover {
+                        background: #e0afa0;
+                    }
+                }
+            }
+        }
+    }
+    .login-container {
+        .block-new-customer {
+            .actions-toolbar {
+                .primary {
+                    &.action {
+                        height: auto;
+                        padding: 15px;
+                        border-radius: 0;
+                        font-size: 13px;
+                        border: none;
+                        background: #000;
+                        text-transform: uppercase;
+                        &:hover {
+                            background: #e0afa0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.account {
+    .page-title {
+        font-family: 'proxima-nova', 'Helvetica Neue', Verdana, Arial,
+            sans-serif;
+        font-weight: 900;
+    }
+    a {
+        color: #000;
+        &:hover {
+            color: #e0afa0 !important;
+        }
+        span {
+            &:hover {
+                color: #e0afa0 !important;
+            }
+        }
+    }
+    .nav a {
+        &:hover {
+            color: #e0afa0 !important;
+        }
+    }
+    .block-collapsible-nav .item.current > strong {
+        border-color: #e0afa0 !important;
+    }
+    .column {
+        display: flex;
+        flex-flow: column;
+        .account-additional-note {
+            order: 5;
+            ul {
+                margin-left: 0;
+            }
+        }
+    }
+    .box-newsletter,
+    .sidebar-additional,
+    .block-dashboard-orders {
+        display: none;
+    }
+    .box-title {
+        margin-bottom: 10px;
+        display: block;
+        span {
+            font-size: 16px;
+        }
+    }
+}
+
+body:not(.customer-account-index) .account-additional-note {
+    display: none;
+}

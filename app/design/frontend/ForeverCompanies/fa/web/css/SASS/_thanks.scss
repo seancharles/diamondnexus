@@ -1,0 +1,66 @@
+.checkout-onepage-success {
+    .page-main {
+        text-align: center;
+        padding: 50px 0;
+    }
+    .page-title {
+        text-align: center !important;
+        letter-spacing: 3px !important;
+        font-size: 42px !important;
+        margin-bottom: 10px !important;
+        font-family: 'proxima-nova', 'Helvetica Neue', Verdana, Arial,
+            sans-serif;
+        font-weight: 900;
+        text-transform: uppercase;
+        .base {
+            white-space: pre-line;
+            text-align: center !important;
+        }
+    }
+    .page-main > .page-title-wrapper .page-title + .action {
+        display: none;
+    }
+    .checkout-success {
+        text-align: center !important;
+        & > p {
+            margin-bottom: 0;
+            font-size: 16px;
+        }
+        p > a {
+            font-size: 16px;
+            color: #000 !important;
+            &:hover {
+                color: #000 !important;
+            }
+        }
+        .actions-toolbar {
+            .primary {
+                display: block !important;
+                float: none !important;
+                text-align: center;
+                a {
+                    font-size: 16px;
+                    text-transform: none;
+                    text-decoration: underline;
+                    color: #000 !important;
+                    padding: 0 !important;
+                    background: transparent !important;
+                    margin: 0 !important;
+                    border: none !important;
+                    line-height: unset !important;
+                    &:hover {
+                        color: #e0afa0 !important;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .checkout-onepage-success {
+        .page-title {
+            font-size: 26px !important;
+        }
+    }
+}

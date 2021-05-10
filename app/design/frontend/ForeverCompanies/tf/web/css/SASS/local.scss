@@ -1,3 +1,11 @@
+@import './_account.scss';
+@import './_create-account.scss';
+@import './_cart.scss';
+@import './_checkout.scss';
+@import './_footer.scss';
+@import './_header.scss';
+@import './_success.scss';
+
 /*For mixin /scss variable page*/
 /*Media query sizes - bottom of that size*/
 $break_380: 380px; /*m*/
@@ -45,31 +53,6 @@ $break_1920: 1920px; /*xl*/
     }
 }
 
-/*General styles*/
-
-//   @function columns($i) {
-//     @return calc(#{$i} * var(--column-unit));
-//   }
-
-//   @function gutters($i) {
-//     @return calc(#{$i} * var(--gutter-unit));
-//   }
-
-//   @function column-spans($i) {
-//     @return calc(#{$i} * var(--column-and-gutter-unit) - var(--gutter-unit));
-//   }
-
-//   @function gutter-spans($i) {
-//     @return calc(#{$i} * var(--column-and-gutter-unit) - var(--column-unit));
-//   }
-
-//   @function mix-units($columns, $gutters: $columns) {
-//     @return calc((#{$columns} * var(--column-unit)) + (#{$gutters} * var(--gutter-unit)));
-//   }
-/*
-check this out for more info on the columns set up
-https://www.smashingmagazine.com/2019/03/robust-layouts-container-units-css/
-*/
 :root {
     // Grid proportions
     --grid-width: 346;
@@ -82,7 +65,8 @@ https://www.smashingmagazine.com/2019/03/robust-layouts-container-units-css/
     // Grid proportion logic
     --column-proportion: calc(var(--grid-column-width) / var(--grid-width));
     --gutter-proportion: calc(
-        (1 - (var(--grid-columns) * var(--column-proportion))) / var(--grid-gutters)
+        (1 - (var(--grid-columns) * var(--column-proportion))) /
+            var(--grid-gutters)
     );
 
     // Container Units
@@ -124,8 +108,8 @@ https://www.smashingmagazine.com/2019/03/robust-layouts-container-units-css/
     --weight-light: 300;
     --weight-normal: 400;
     --weight-bold: 600;
-    --sans-serif: "Gotham SSm A", "Gotham SSm B", sans-serif;
-    --serif: "Didot 06 A", "Didot 06 B", serif;
+    --sans-serif: 'Gotham SSm A', 'Gotham SSm B', sans-serif;
+    --serif: 'Didot 06 A', 'Didot 06 B', serif;
 
     /*Brand Colors*/
     --color-bronze: #bfa374;
@@ -148,49 +132,49 @@ https://www.smashingmagazine.com/2019/03/robust-layouts-container-units-css/
 
 /*------------fontcss-------------*/
 
-
-@font-face {font-family: "Gotham Light";
-    src: url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.eot");
-    src: url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.eot?#iefix")
-    format("embedded-opentype"),
-    url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.woff2")
-    format("woff2"),
-    url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.woff")
-    format("woff"),
-    url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.ttf")
-    format("truetype"),
-    url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.svg#Gotham Book")
-    format("svg"); }
 @font-face {
-    font-family: "Didot";
-    src: url("//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.eot");
-    src: url("//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.eot?#iefix")
-    format("embedded-opentype"),
-    url("//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.woff2")
-    format("woff2"),
-    url("//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.woff")
-    format("woff"),
-    url("//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.ttf")
-    format("truetype"),
-    url("//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.svg#Didot")
-    format("svg");
+    font-family: 'Gotham Light';
+    src: url('//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.eot');
+    src: url('//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.eot?#iefix')
+            format('embedded-opentype'),
+        url('//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.woff2')
+            format('woff2'),
+        url('//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.woff')
+            format('woff'),
+        url('//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.ttf')
+            format('truetype'),
+        url('//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.svg#Gotham Book')
+            format('svg');
+}
+@font-face {
+    font-family: 'Didot';
+    src: url('//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.eot');
+    src: url('//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.eot?#iefix')
+            format('embedded-opentype'),
+        url('//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.woff2')
+            format('woff2'),
+        url('//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.woff')
+            format('woff'),
+        url('//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.ttf')
+            format('truetype'),
+        url('//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.svg#Didot')
+            format('svg');
 }
 
 @font-face {
-       font-family: "Gotham Bold";
-        src: url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.eot");
-        src: url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.eot?#iefix")
-        format("embedded-opentype"),
-        url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.woff2")
-        format("woff2"),
-        url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.woff")
-        format("woff"),
-        url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.ttf")
-        format("truetype"),
-        url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.svg#Gotham")
-        format("svg");
+    font-family: 'Gotham Bold';
+    src: url('//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.eot');
+    src: url('//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.eot?#iefix')
+            format('embedded-opentype'),
+        url('//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.woff2')
+            format('woff2'),
+        url('//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.woff')
+            format('woff'),
+        url('//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.ttf')
+            format('truetype'),
+        url('//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.svg#Gotham')
+            format('svg');
 }
-
 
 html,
 body {
@@ -205,8 +189,6 @@ body {
     letter-spacing: normal;
     -webkit-text-size-adjust: 100%; //fix for iOS
 }
-
-
 
 body {
     position: relative;
@@ -268,7 +250,7 @@ p {
         font-size: 14px;
     }
 }
-.h1{
+.h1 {
     font-family: var(--serif);
     font-weight: var(--weight-light);
     font-size: 40px;
@@ -289,16 +271,17 @@ p {
         }
     }
 }
-.h2, , .page-title h1 {
-           font-family: var(--serif);
-           font-weight: var(--weight-light);
-           font-size: 32px;
-           line-height: 40px;
-           @include break_1025 {
-               font-size: 40px;
-               line-height: 48px; /*44px*/
-           }
-       }
+.h2,
+.page-title h1 {
+    font-family: var(--serif);
+    font-weight: var(--weight-light);
+    font-size: 32px;
+    line-height: 40px;
+    @include break_1025 {
+        font-size: 40px;
+        line-height: 48px; /*44px*/
+    }
+}
 .h3 {
     font-family: var(--serif);
     font-weight: var(--weight-light);
@@ -342,7 +325,7 @@ p {
         display: none;
     }
 
-    .opc-estimated-wrapper .minicart-wrapper button.action.showcart{
+    .opc-estimated-wrapper .minicart-wrapper button.action.showcart {
         background: none;
         -moz-box-sizing: content-box;
         border: 0;
@@ -361,7 +344,7 @@ p {
         border-bottom: 1px solid #cccccc;
         margin-bottom: 19px;
         height: 61px;
-        background: #F9ECE8 0% 0% no-repeat padding-box;
+        background: #f9ece8 0% 0% no-repeat padding-box;
     }
     .nav-toggle {
         text-decoration: none;
@@ -373,7 +356,7 @@ p {
         height: 64px;
         width: 64px;
         left: 0px;
-        background: #8E7171 0% 0% no-repeat padding-box;
+        background: #8e7171 0% 0% no-repeat padding-box;
         top: 0px;
     }
     .nav-toggle::before {
@@ -425,14 +408,14 @@ p {
     }
 
     // my account
-    .block .title strong{
+    .block .title strong {
         font-weight: 700;
         line-height: 1.1;
         font-size: 14px;
         font-family: 'Gotham Bold';
     }
 
-    .account .page-main .page-title-wrapper .page-title{
+    .account .page-main .page-title-wrapper .page-title {
         text-align: left;
         letter-spacing: 0.26px;
         color: #000000;
@@ -442,7 +425,7 @@ p {
         text-transform: uppercase;
         padding-top: 50px;
     }
-    .account .column.main .block:not(.widget) .block-title > strong{
+    .account .column.main .block:not(.widget) .block-title > strong {
         text-align: left;
         letter-spacing: 0.26px;
         color: #000000;
@@ -455,14 +438,15 @@ p {
         font-size: 16px;
         font-family: 'Gotham Bold';
     }
-    .box-actions .edit span, .change-password {
+    .box-actions .edit span,
+    .change-password {
         margin-top: 5px;
         font-size: 14px;
         font-family: 'Gotham Bold';
         text-align: left;
         text-decoration: underline;
         letter-spacing: 0px;
-        color: #8E7171;
+        color: #8e7171;
         text-transform: capitalize;
         opacity: 1;
     }
@@ -492,16 +476,17 @@ p {
         text-align: left;
         text-decoration: underline;
         letter-spacing: 0px;
-        color: #8E7171;
+        color: #8e7171;
         text-transform: capitalize;
         opacity: 1;
     }
 
-    .block.newsletter .form.subscribe{
+    .block.newsletter .form.subscribe {
         display: none;
     }
 
-    .block-dashboard-orders , .account .sidebar-additional{
+    .block-dashboard-orders,
+    .account .sidebar-additional {
         display: none;
     }
 
@@ -519,13 +504,12 @@ p {
         color: black;
     }
 
-    .login-container .block .block-title{
+    .login-container .block .block-title {
         text-align: left;
         letter-spacing: 0.19px;
         color: #000000;
         font-family: 'Gotham Bold';
     }
-
 
     .cart-discount .block.discount {
         width: auto;
@@ -533,13 +517,9 @@ p {
         border-bottom: 1px solid #cccccc;
     }
 
-    .we-accept{
+    .we-accept {
         clear: left;
         float: left;
-    }
-
-    .we-accept-cards{
-        background: transparent url('/pub/static/frontend/ForeverCompanies/dn/en_US/images/cards.png') 0% 0% no-repeat padding-box;
     }
 
     thead {
@@ -549,7 +529,7 @@ p {
     #block-shipping {
         display: none;
     }
-    .cart.table-wrapper .item-options dt{
+    .cart.table-wrapper .item-options dt {
         clear: left;
         float: left;
         margin: 0 10px 5px 0;
@@ -557,15 +537,13 @@ p {
         font-weight: bold;
     }
 
-    .cart.table-wrapper .item-options dd{
+    .cart.table-wrapper .item-options dd {
         clear: right;
         float: right;
         margin: 0 10px 5px 0;
         font-size: 14px;
         font-weight: bold;
     }
-
-
 
     .opc-wrapper .action-show-popup {
         margin: 0 0 20px;
@@ -575,18 +553,19 @@ p {
         font-size: 17px;
     }
 
-    .product-item-name > a, .product.name a > a {
+    .product-item-name > a,
+    .product.name a > a {
         color: black;
         text-decoration: none;
         text-align: left;
         font-size: 16px;
         font-weight: bold;
     }
-    .cart.table-wrapper .col.subtotal .price-excluding-tax .price{
+    .cart.table-wrapper .col.subtotal .price-excluding-tax .price {
         font-size: 14px;
-        color:black;
+        color: black;
     }
-    .cart-summary > .title{
+    .cart-summary > .title {
         font-size: 24px;
         display: none;
         font-weight: 300;
@@ -600,7 +579,8 @@ p {
         text-align: left;
     }
 
-    .email .label span, .password .label span {
+    .email .label span,
+    .password .label span {
         font-size: 14px;
     }
 
@@ -616,10 +596,6 @@ p {
         border-color: #c0a374 !important;
     }
 
-    .actions-toolbar {
-        //display: none;
-    }
-
     .action.multicheckout {
         display: none;
     }
@@ -627,7 +603,7 @@ p {
     .action-continue {
         margin-top: 20px;
     }
-    .action-continue  a {
+    .action-continue a {
         text-decoration: none;
         color: black;
         text-transform: capitalize;
@@ -635,56 +611,52 @@ p {
         padding-left: 10px;
     }
 
-
-    #login-form .actions-toolbar > .primary .action:last-child{
-        background: #8E7171;
+    #login-form .actions-toolbar > .primary .action:last-child {
+        background: #8e7171;
         opacity: 1;
         width: 100%;
         height: 56px;
         font-family: 'Gotham Light';
         font-size: 14px;
         text-align: center;
-
     }
-    #login-form .remind{
+    #login-form .remind {
         font-family: 'Gotham Bold';
         font-size: 12px;
         text-align: center;
-        color:  #8E7171;
+        color: #8e7171;
         letter-spacing: 0px;
-        color: #FFFFFF;
+        color: #ffffff;
         text-transform: capitalize;
         opacity: 1;
     }
 
-    .block-new-customer .block-title{
+    .block-new-customer .block-title {
         font-family: 'Didot';
         font-size: 24px;
-        color:black;
+        color: black;
     }
 
-    .block-new-customer .block-content p{
+    .block-new-customer .block-content p {
         font-family: 'Gotham Light';
         font-size: 14px;
-        color:black;
+        color: black;
     }
 
-    .login-container .fieldset::after{
+    .login-container .fieldset::after {
         font-size: 12px !important;
         color: #e02b27;
         display: block;
-
     }
 
-
-    .block-new-customer .create.primary{
+    .block-new-customer .create.primary {
         width: 100%;
         height: 58px;
         font-family: 'Gotham Bold';
         font-size: 14px;
         text-transform: uppercase;
         padding-top: 17px;
-        background: #8E7171 0% 0% no-repeat padding-box;
+        background: #8e7171 0% 0% no-repeat padding-box;
     }
     .block.block-wishlist {
         display: none;
@@ -718,20 +690,20 @@ p {
         line-height: normal;
         letter-spacing: normal;
     }
-    .opc-wrapper .form-login .fieldset .field .label{
+    .opc-wrapper .form-login .fieldset .field .label {
         font-weight: bold;
     }
-    .opc-wrapper .form-login{
+    .opc-wrapper .form-login {
         padding-bottom: 0px;
         border-bottom: 0;
     }
-    .methods-shipping .actions-toolbar .action.primary{
+    .methods-shipping .actions-toolbar .action.primary {
         line-height: 2.2rem;
         font-size: 20px;
         color: white;
         background: black;
     }
-    .opc-wrapper .form-login{
+    .opc-wrapper .form-login {
         border-bottom: 0;
         padding-bottom: 0px;
     }
@@ -741,7 +713,7 @@ p {
         font-weight: bold;
         font-size: 20px;
     }
-    .opc-progress-bar-item > span{
+    .opc-progress-bar-item > span {
         display: inline-block;
         font-family: 'Gotham Light';
         font-weight: bold;
@@ -751,7 +723,7 @@ p {
         font-weight: 300;
         font-size: 20px !important;
     }
-    .opc-wrapper .form-shipping-address .fieldset .field .label{
+    .opc-wrapper .form-shipping-address .fieldset .field .label {
         font-family: 'Gotham Light';
         font-weight: bold;
     }
@@ -766,7 +738,7 @@ p {
         font-family: 'Gotham Light';
         font-weight: bold;
     }
-    .opc-block-shipping-information .shipping-information-title{
+    .opc-block-shipping-information .shipping-information-title {
         display: block;
         font-size: 22px;
         font-family: 'Didot';
@@ -776,7 +748,7 @@ p {
         display: block;
         text-align: right;
     }
-    .minicart-items .product.options .toggle > span{
+    .minicart-items .product.options .toggle > span {
         display: none;
     }
     .minicart-items .product-item-details .price-excluding-tax {
@@ -794,13 +766,13 @@ p {
         font-size: 20px;
         font-weight: 400;
     }
-    .opc-block-summary .table-totals .grand .mark{
+    .opc-block-summary .table-totals .grand .mark {
         font-size: 20px;
         border-top: 1px solid #cccccc;
         padding-right: 10px;
     }
 
-    .opc-progress-bar-item > span{
+    .opc-progress-bar-item > span {
         font-size: 20px;
     }
 
@@ -813,14 +785,6 @@ p {
         font-weight: 300;
         font-size: 20px;
     }
-    .opc-progress-bar-item._active > span::before{
-        backround: #D19F4E !important;
-        border-color: #D19F4E !important;
-    }
-    .opc-progress-bar-item._active > span::after{
-
-        border-color: #D19F4E !important;
-    }
     .checkout-payment-method .payment-method-title {
         padding: 20px 0;
         margin: 0;
@@ -828,16 +792,16 @@ p {
         font-weight: bold;
     }
 
-    .checkout-payment-method .actions-toolbar .primary{
+    .checkout-payment-method .actions-toolbar .primary {
         float: left;
         margin: 0;
         font-family: 'Gotham Light';
         font-weight: bold;
     }
-    .opc-block-summary .table-totals .grand strong{
+    .opc-block-summary .table-totals .grand strong {
         font-size: 20px;
     }
-    .opc-block-summary .table-totals .grand .amount{
+    .opc-block-summary .table-totals .grand .amount {
         font-size: 20px;
     }
 
@@ -846,7 +810,6 @@ p {
         margin: 0;
         margin-top: 10px;
     }
-
 
     /* Inline #12 | http://forevercompanies.docker.aitom.cz/checkout/#payment */
 
@@ -857,14 +820,7 @@ p {
     #giftcardaccount-placer {
         display: none;
     }
-    .opc-block-shipping-information .shipping-information-title .action-edit::before{
-
-    }
-    .opc-block-shipping-information .shipping-information-title .action-edit > span {
-
-    }
-    .opc-block-shipping-information .shipping-information-title .action-edit
-    {
+    .opc-block-shipping-information .shipping-information-title .action-edit {
         top: 0px;
         display: inline-block;
         text-decoration: none;
@@ -879,14 +835,13 @@ p {
         font-family: 'Gotham';
     }
 
-
     //checkout
     .action-continue {
         margin-top: 20px;
         margin-right: 10px;
     }
 
-    .action-continue  a {
+    .action-continue a {
         text-decoration: none;
         color: black;
         text-transform: capitalize;
@@ -913,20 +868,20 @@ p {
         line-height: normal;
         letter-spacing: normal;
     }
-    .opc-wrapper .form-login .fieldset .field .label{
+    .opc-wrapper .form-login .fieldset .field .label {
         font-weight: bold;
     }
-    .opc-wrapper .form-login{
+    .opc-wrapper .form-login {
         padding-bottom: 0px;
         border-bottom: 0;
     }
-    .methods-shipping .actions-toolbar .action.primary{
+    .methods-shipping .actions-toolbar .action.primary {
         line-height: 2.2rem;
         font-size: 20px;
         color: white;
         background: black;
     }
-    .opc-wrapper .form-login{
+    .opc-wrapper .form-login {
         border-bottom: 0;
         padding-bottom: 0px;
     }
@@ -936,7 +891,7 @@ p {
         font-family: 'Gotham Light';
         font-size: 20px;
     }
-    .opc-progress-bar-item > span{
+    .opc-progress-bar-item > span {
         display: inline-block;
         font-weight: bold;
         font-family: 'Gotham Light';
@@ -947,7 +902,7 @@ p {
         font-weight: 300;
         font-size: 20px !important;
     }
-    .opc-wrapper .form-shipping-address .fieldset .field .label{
+    .opc-wrapper .form-shipping-address .fieldset .field .label {
         font-weight: bold;
     }
     .opc-block-summary > .title {
@@ -961,7 +916,7 @@ p {
         font-family: 'Gotham Light';
         font-weight: bold;
     }
-    .opc-block-shipping-information .shipping-information-title{
+    .opc-block-shipping-information .shipping-information-title {
         display: block;
         font-size: 22px;
         font-family: 'Didot';
@@ -971,7 +926,7 @@ p {
         display: block;
         text-align: right;
     }
-    .minicart-items .product.options .toggle > span{
+    .minicart-items .product.options .toggle > span {
         display: none;
     }
     .minicart-items .product-item-details .price-excluding-tax {
@@ -989,13 +944,13 @@ p {
         font-size: 20px;
         font-weight: 400;
     }
-    .opc-block-summary .table-totals .grand .mark{
+    .opc-block-summary .table-totals .grand .mark {
         font-size: 20px;
         border-top: 1px solid #cccccc;
         padding-right: 10px;
     }
 
-    .opc-progress-bar-item > span{
+    .opc-progress-bar-item > span {
         font-size: 20px;
     }
 
@@ -1008,29 +963,26 @@ p {
         font-weight: 300;
         font-size: 20px;
     }
-    .opc-progress-bar-item._active > span::before{
-        backround: #D19F4E !important;
-        border-color: #D19F4E !important;
+    .opc-progress-bar-item._active > span::before {
+        background: #d19f4e !important;
+        border-color: #d19f4e !important;
     }
-    .opc-progress-bar-item._active > span::after{
-
-        border-color: #D19F4E !important;
+    .opc-progress-bar-item._active > span::after {
+        border-color: #d19f4e !important;
     }
 
-    .checkout-payment-method .actions-toolbar .primary{
+    .checkout-payment-method .actions-toolbar .primary {
         float: left;
         margin: 0;
         font-family: 'Gotham Light';
         font-weight: bold;
     }
-    .opc-block-summary .table-totals .grand strong{
+    .opc-block-summary .table-totals .grand strong {
         font-size: 20px;
     }
-    .opc-block-summary .table-totals .grand .amount{
+    .opc-block-summary .table-totals .grand .amount {
         font-size: 20px;
     }
-
-
 
     /* Inline #12 | http://forevercompanies.docker.aitom.cz/checkout/#payment */
 
@@ -1041,14 +993,7 @@ p {
     #giftcardaccount-placer {
         display: none;
     }
-    .opc-block-shipping-information .shipping-information-title .action-edit::before{
-
-    }
-    .opc-block-shipping-information .shipping-information-title .action-edit > span {
-
-    }
-    .opc-block-shipping-information .shipping-information-title .action-edit
-    {
+    .opc-block-shipping-information .shipping-information-title .action-edit {
         top: 0px;
         display: inline-block;
         text-decoration: none;
@@ -1081,7 +1026,7 @@ p {
         display: inline-block;
         padding: 7px 15px;
         border: 0;
-        color: #FFF;
+        color: #fff;
         font-size: 12px;
         font-weight: normal;
         font-family: var(--serif);
@@ -1118,10 +1063,10 @@ p {
         padding-bottom: 30px;
     }
 
-    .cart-totals .grand .mark{
+    .cart-totals .grand .mark {
         font-size: 18px;
     }
-    .cart-totals .grand .amount{
+    .cart-totals .grand .amount {
         font-size: 18px;
     }
 
@@ -1148,7 +1093,6 @@ p {
     .__affirm-logo {
         /* use !important to prevent issues with browser extensions that change fonts */
         font-family: 'affirm' !important;
-        speak: none;
         font-style: normal;
         font-weight: normal;
         font-variant: normal;
@@ -1158,9 +1102,9 @@ p {
         white-space: nowrap;
         /* Enable Ligatures ================ */
         letter-spacing: 0;
-        -ms-font-feature-settings: "liga" 1;
-        -webkit-font-feature-settings: "liga";
-        font-feature-settings: "liga";
+        -ms-font-feature-settings: 'liga' 1;
+        -webkit-font-feature-settings: 'liga';
+        font-feature-settings: 'liga';
         -webkit-font-variant-ligatures: discretionary-ligatures;
         font-variant-ligatures: discretionary-ligatures;
         /* Better Font Rendering =========== */
@@ -1173,7 +1117,7 @@ p {
         text-size-adjust: 100%;
     }
 
-    .page-main .block{
+    .page-main .block {
         margin-bottom: 0px;
     }
 
@@ -1191,10 +1135,9 @@ p {
         padding-right: 4%;
     }
 
-    .cart-discount .block > .title{
+    .cart-discount .block > .title {
         border-top: none;
     }
-
 
     .action.continue {
         margin-top: 39px;
@@ -1209,7 +1152,7 @@ p {
         padding-right: 10px;
     }
 
-    .cart-discount .block > .title strong{
+    .cart-discount .block > .title strong {
         color: black;
         font-weight: 400;
         font-size: 16px !important;
@@ -1230,7 +1173,7 @@ p {
         padding-top: 10px;
     }
 
-    .cart.table-wrapper .col.price .price-excluding-tax{
+    .cart.table-wrapper .col.price .price-excluding-tax {
         color: black;
         font-size: 16px;
         line-height: 1;
@@ -1239,10 +1182,8 @@ p {
         font-family: 'Gotham Light';
         padding-top: 6px;
     }
-
 }
 @media (min-width: 768px) {
-
     .box.box-newsletter {
         display: none;
     }
@@ -1250,7 +1191,7 @@ p {
     .action.primary.add {
         width: 176px;
         height: 40px;
-        background: #8E7171 0% 0% no-repeat padding-box
+        background: #8e7171 0% 0% no-repeat padding-box;
     }
     .action.primary {
         color: #ffffff;
@@ -1269,7 +1210,7 @@ p {
         display: none;
     }
 
-    .opc-estimated-wrapper .minicart-wrapper button.action.showcart{
+    .opc-estimated-wrapper .minicart-wrapper button.action.showcart {
         background: none;
         -moz-box-sizing: content-box;
         border: 0;
@@ -1285,7 +1226,7 @@ p {
     }
     //header
     .header.content {
-        background: #F9ECE8 0% 0% no-repeat padding-box;
+        background: #f9ece8 0% 0% no-repeat padding-box;
     }
 
     .logo {
@@ -1328,14 +1269,14 @@ p {
 
     // my account
     .block-collapsible-nav .item.current > strong {
-        border-color: #8E7171 !important;
+        border-color: #8e7171 !important;
         color: #000000;
         font-weight: 600;
         font-size: 14px;
         text-align: left;
     }
 
-    .account .page-main .page-title-wrapper .page-title{
+    .account .page-main .page-title-wrapper .page-title {
         font-family: 'Gotham Bold';
         font-size: 32px;
         letter-spacing: 0.32px;
@@ -1344,7 +1285,7 @@ p {
         opacity: 1;
     }
 
-    .account .column.main .block:not(.widget) .block-title{
+    .account .column.main .block:not(.widget) .block-title {
         text-align: left;
         font-family: 'Didot';
         font-size: 24px;
@@ -1361,43 +1302,42 @@ p {
         font-family: 'Gotham Light';
     }
 
-    .box-actions .edit span, .change-password {
+    .box-actions .edit span,
+    .change-password {
         margin-top: 5px;
         font-size: 14px;
         font-family: 'Gotham Bold';
         text-transform: capitalize;
         letter-spacing: 0px;
-        color: #8E7171;
+        color: #8e7171;
         opacity: 1;
         text-align: left;
         text-decoration: underline;
-
     }
     .box-content p {
         font-size: 16px;
     }
 
-    .account .column.main .block:not(.widget) .block-title > strong{
+    .account .column.main .block:not(.widget) .block-title > strong {
         text-align: left;
         font-family: 'Gotham Bold';
-        font-size: 20px
+        font-size: 20px;
     }
     .block-dashboard-addresses .block-title .action span {
         text-align: left;
         font-family: 'Gotham Bold';
         font-size: 12px;
-        color: #8E7171;
+        color: #8e7171;
     }
 
-    .box-billing-address .box-content ,
+    .box-billing-address .box-content,
     .box-billing-address .box-content address a,
     .box-shipping-address .box-content,
     .box-shipping-address .box-content address a,
     .box-address-billing .box-content,
     .box-address-billing .box-content address a,
     .box-address-shipping .box-content,
-    .box-address-shipping .box-content address a
-    {
+    .box-address-shipping .box-content address a {
         text-align: left;
         font-family: 'Gotham Light';
         font-size: 16px !important;
@@ -1413,20 +1353,19 @@ p {
     }
 
     // Customer Login
-    .customer-login .page-title{
+    .customer-login .page-title {
         font-size: 40px !important;
     }
 
-    .login-container .block .block-title{
+    .login-container .block .block-title {
         font-size: 20px !important;
         text-align: left;
         font-family: 'Gotham Bold';
-
     }
     #login-form {
         font-size: 14px;
     }
-    .fieldset > .field > .label{
+    .fieldset > .field > .label {
         font-family: 'Gotham Bold';
         font-size: 14px !important;
     }
@@ -1438,25 +1377,24 @@ p {
     #login-form .actions-toolbar .primary {
         font-family: 'Gotham Bold';
         font-size: 14px;
-        background: #8E7171;
+        background: #8e7171;
         text-align: center;
         width: 96px;
         height: 40px;
     }
 
-
     .secondary .remind span {
         font-size: 14px;
-        color: #8E7171;
+        color: #8e7171;
         margin-top: 8px;
         font-family: 'Gotham Bold';
     }
 
-    .actions-toolbar > .secondary{
+    .actions-toolbar > .secondary {
         margin-top: 5px;
     }
 
-    .actions-toolbar .secondary a.action{
+    .actions-toolbar .secondary a.action {
         margin-top: 10px;
         margin-left: 10px;
     }
@@ -1465,9 +1403,9 @@ p {
         font-size: 14px;
     }
 
-    .login-container .block-new-customer .actions-toolbar .primary{
+    .login-container .block-new-customer .actions-toolbar .primary {
         display: block;
-        background: #8E7171 0% 0% no-repeat padding-box;
+        background: #8e7171 0% 0% no-repeat padding-box;
         opacity: 1;
         width: 170px;
         height: 40px;
@@ -1475,7 +1413,6 @@ p {
         font-family: 'Gotham Bold';
         font-size: 11px;
     }
-
 
     .login-container .fieldset::after {
         //margin: 10px 0 0;
@@ -1504,37 +1441,39 @@ p {
         border-top: none;
     }
 
-    .action-continue  a {
+    .action-continue a {
         text-decoration: none;
         color: black;
         text-transform: capitalize;
         font-size: 16px;
     }
 
-    .form-address-edit .actions-toolbar .action.primary{
+    .form-address-edit .actions-toolbar .action.primary {
         width: 144px;
         height: 60px;
-        background: #8E7171;
+        background: #8e7171;
         font-family: 'Gotham Bold';
         font-size: 14px;
-  }
+    }
 
     #reorder-validate-detail .actions-toolbar {
         display: none;
     }
 
-    .cart-discount  .block.discount {
+    .cart-discount .block.discount {
         width: 100%;
         margin-bottom: 5px;
         border-bottom: 1px solid #cccccc;
     }
 
-    .we-accept{
+    .we-accept {
         clear: left;
         float: left;
     }
-    .we-accept-cards{
-        background: transparent url('/pub/static/frontend/ForeverCompanies/dn/en_US/images/cards.png') 0% 0% no-repeat padding-box;
+    .we-accept-cards {
+        background: transparent
+            url('/pub/static/frontend/ForeverCompanies/dn/en_US/images/cards.png')
+            0% 0% no-repeat padding-box;
     }
     thead {
         font-size: 14px;
@@ -1544,7 +1483,7 @@ p {
         display: none;
     }
 
-    .cart.table-wrapper .item-options dt{
+    .cart.table-wrapper .item-options dt {
         clear: left;
         float: left;
         margin: 0 10px 5px 0;
@@ -1560,19 +1499,19 @@ p {
         font-size: 17px;
     }
 
-
-    .product-item-name > a, .product.name a > a {
+    .product-item-name > a,
+    .product.name a > a {
         color: black;
         text-decoration: none;
         font-size: 18px;
         font-weight: bold;
     }
 
-    .cart.table-wrapper .col.subtotal .price-excluding-tax .price{
+    .cart.table-wrapper .col.subtotal .price-excluding-tax .price {
         font-size: 14px;
-        color:black;
+        color: black;
     }
-    .cart-summary > .title{
+    .cart-summary > .title {
         font-size: 20px;
         display: none;
         font-weight: 300;
@@ -1591,11 +1530,10 @@ p {
         opacity: 1;
     }
 
-    .account .legend > span{
+    .account .legend > span {
         font-size: 20px;
         font-family: 'Gotham Bold';
         text-align: left;
-
     }
 
     //checkout
@@ -1612,7 +1550,9 @@ p {
         font-family: 'Gotham Light';
         font-weight: bold;
     }
-    .checkout-payment-method .checkout-billing-address .billing-address-details{
+    .checkout-payment-method
+        .checkout-billing-address
+        .billing-address-details {
         line-height: 27px;
         padding: 0 0 0 23px;
         font-family: 'Gotham Light';
@@ -1630,20 +1570,20 @@ p {
         line-height: normal;
         letter-spacing: normal;
     }
-    .opc-wrapper .form-login .fieldset .field .label{
+    .opc-wrapper .form-login .fieldset .field .label {
         font-weight: bold;
     }
-    .opc-wrapper .form-login{
+    .opc-wrapper .form-login {
         padding-bottom: 0px;
         border-bottom: 0;
     }
-    .methods-shipping .actions-toolbar .action.primary{
+    .methods-shipping .actions-toolbar .action.primary {
         line-height: 2.2rem;
         font-size: 20px;
         color: white;
         background: black;
     }
-    .opc-wrapper .form-login{
+    .opc-wrapper .form-login {
         border-bottom: 0;
         padding-bottom: 0px;
     }
@@ -1653,7 +1593,7 @@ p {
         font-weight: bold;
         font-size: 20px;
     }
-    .opc-progress-bar-item > span{
+    .opc-progress-bar-item > span {
         display: inline-block;
         padding-top: 45px;
         width: 100%;
@@ -1662,7 +1602,7 @@ p {
         font-weight: 300;
         font-size: 20px !important;
     }
-    .opc-wrapper .form-shipping-address .fieldset .field .label{
+    .opc-wrapper .form-shipping-address .fieldset .field .label {
         font-weight: bold;
     }
     .opc-block-summary > .title {
@@ -1676,7 +1616,7 @@ p {
         font-family: 'Gotham Light';
         font-weight: bold;
     }
-    .opc-block-shipping-information .shipping-information-title{
+    .opc-block-shipping-information .shipping-information-title {
         display: block;
         font-size: 22px;
         font-family: 'Didot';
@@ -1686,7 +1626,7 @@ p {
         display: block;
         text-align: right;
     }
-    .minicart-items .product.options .toggle > span{
+    .minicart-items .product.options .toggle > span {
         display: none;
     }
     .minicart-items .product-item-details .price-excluding-tax {
@@ -1704,13 +1644,13 @@ p {
         font-size: 20px;
         font-weight: 400;
     }
-    .opc-block-summary .table-totals .grand .mark{
+    .opc-block-summary .table-totals .grand .mark {
         font-size: 20px;
         border-top: 1px solid #cccccc;
         padding-right: 10px;
     }
 
-    .opc-progress-bar-item > span{
+    .opc-progress-bar-item > span {
         font-size: 20px;
     }
 
@@ -1723,25 +1663,17 @@ p {
         font-weight: 300;
         font-size: 20px;
     }
-    .opc-progress-bar-item._active > span::before{
-        backround: #D19F4E !important;
-        border-color: #D19F4E !important;
-    }
-    .opc-progress-bar-item._active > span::after{
 
-        border-color: #D19F4E !important;
-    }
-
-    .checkout-payment-method .actions-toolbar .primary{
+    .checkout-payment-method .actions-toolbar .primary {
         float: left;
         margin: 0;
         font-family: 'Gotham Light';
         font-weight: bold;
     }
-    .opc-block-summary .table-totals .grand strong{
+    .opc-block-summary .table-totals .grand strong {
         font-size: 20px;
     }
-    .opc-block-summary .table-totals .grand .amount{
+    .opc-block-summary .table-totals .grand .amount {
         font-size: 20px;
     }
 
@@ -1753,7 +1685,6 @@ p {
         font-weight: bold;
     }
 
-
     /* Inline #12 | http://forevercompanies.docker.aitom.cz/checkout/#payment */
 
     .payment-option._collapsible.opc-payment-additional.discount-code {
@@ -1763,14 +1694,7 @@ p {
     #giftcardaccount-placer {
         display: none;
     }
-    .opc-block-shipping-information .shipping-information-title .action-edit::before{
-
-    }
-    .opc-block-shipping-information .shipping-information-title .action-edit > span {
-
-    }
-    .opc-block-shipping-information .shipping-information-title .action-edit
-    {
+    .opc-block-shipping-information .shipping-information-title .action-edit {
         top: 0px;
         display: inline-block;
         text-decoration: none;
@@ -1793,12 +1717,11 @@ p {
         font-weight: bold;
     }
 
-
     // checkout/cart
     .action-continue {
         margin-top: 20px;
     }
-    .action-continue  a {
+    .action-continue a {
         text-decoration: none;
         color: black;
         text-transform: capitalize;
@@ -1826,7 +1749,7 @@ p {
         display: inline-block;
         padding: 7px 15px;
         border: 0;
-        color: #FFF;
+        color: #fff;
         font-size: 12px;
         font-weight: normal;
         font-family: var(--serif);
@@ -1863,10 +1786,10 @@ p {
         padding-bottom: 30px;
     }
 
-    .cart-totals .grand .mark{
+    .cart-totals .grand .mark {
         font-size: 18px;
     }
-    .cart-totals .grand .amount{
+    .cart-totals .grand .amount {
         font-size: 18px;
     }
 
@@ -1893,7 +1816,6 @@ p {
     .__affirm-logo {
         /* use !important to prevent issues with browser extensions that change fonts */
         font-family: 'affirm' !important;
-        speak: none;
         font-style: normal;
         font-weight: normal;
         font-variant: normal;
@@ -1903,9 +1825,9 @@ p {
         white-space: nowrap;
         /* Enable Ligatures ================ */
         letter-spacing: 0;
-        -ms-font-feature-settings: "liga" 1;
-        -webkit-font-feature-settings: "liga";
-        font-feature-settings: "liga";
+        -ms-font-feature-settings: 'liga' 1;
+        -webkit-font-feature-settings: 'liga';
+        font-feature-settings: 'liga';
         -webkit-font-variant-ligatures: discretionary-ligatures;
         font-variant-ligatures: discretionary-ligatures;
         /* Better Font Rendering =========== */
@@ -1918,7 +1840,7 @@ p {
         text-size-adjust: 100%;
     }
 
-    .page-main .block{
+    .page-main .block {
         margin-bottom: 0px;
     }
 
@@ -1953,7 +1875,7 @@ p {
         opacity: 1;
     }
 
-    .cart.table-wrapper .item-options dt{
+    .cart.table-wrapper .item-options dt {
         clear: left;
         float: left;
         margin: 0 10px 5px 0;
@@ -1961,7 +1883,7 @@ p {
         font-weight: bold;
     }
 
-    .cart.table-wrapper .item-options dd{
+    .cart.table-wrapper .item-options dd {
         clear: right;
         float: right;
         margin: 0 10px 5px 0;
@@ -1969,7 +1891,7 @@ p {
         font-weight: bold;
     }
 
-    .cart-discount .block > .title strong{
+    .cart-discount .block > .title strong {
         color: black;
         font-weight: 400;
         font-size: 16px !important;
@@ -1980,9 +1902,8 @@ p {
         font-size: 12px;
         font-weight: bold;
         font-family: 'Gotham Light';
-
     }
-    .cart.table-wrapper .col.price .price-excluding-tax{
+    .cart.table-wrapper .col.price .price-excluding-tax {
         color: black;
         font-size: 14px;
         line-height: 1;
@@ -2057,7 +1978,6 @@ p {
     }
 }
 
-
 /*Links*/
 a {
     text-decoration: none;
@@ -2086,7 +2006,7 @@ a {
     &.a-arrow {
         transition: transform 1s;
         &::after {
-            content: " ";
+            content: ' ';
             display: inline-block;
             padding: 2.2px;
             margin-left: 5px;

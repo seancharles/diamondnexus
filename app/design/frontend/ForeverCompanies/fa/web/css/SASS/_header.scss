@@ -1,0 +1,46 @@
+// Need to figure out how to edit blocks for this to work
+
+// .page-header {
+//     .header.content {
+//         display:flex;
+//         justify-content:space-between;
+//         align-items: center;
+//         padding:20px;
+
+//         .logo {
+//             margin: 0;
+//             margin-top: 25px;
+//             float:none;
+//         }
+//     }
+// }
+
+@media screen and (max-width: 768px) {
+    .page-header {
+        margin-bottom: 33px;
+    }
+}
+
+.navigation ul {
+    margin-left: 0;
+
+    li {
+        font-weight: normal;
+    }
+}
+
+header .panel,
+.block-search,
+.minicart-wrapper,
+.nav-toggle {
+    display: none;
+}
+
+.page-header .logo {
+    left: 50%;
+    transform: translate(-50%);
+    margin: 10px 0;
+    svg {
+        width: 152px;
+    }
+}

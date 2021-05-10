@@ -1,0 +1,27 @@
+header .panel,
+.block-search,
+.minicart-wrapper,
+.nav-toggle {
+    display: none;
+}
+
+.header {
+    padding: 0 20px !important;
+    max-width: none !important;
+    .logo {
+        margin: 10px 0 10px 0 !important;
+        left: 50%;
+        transform: translateX(-50%);
+        svg {
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+            .\35 3a764d1-d165-4d03-a9d2-821bb53f9959 {
+                fill: #d72627;
+            }
+            &:hover {
+                fill: #d72627;
+            }
+        }
+    }
+}

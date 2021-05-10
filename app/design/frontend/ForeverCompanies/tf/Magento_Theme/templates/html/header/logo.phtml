@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
@@ -10,11 +11,19 @@
 $storeName = $block->getThemeName() ? $block->getThemeName() : $block->getLogoAlt()
 ?>
 <span data-action="toggle-nav" class="action nav-toggle"><span><?= $block->escapeHtml(__('Toggle Nav')) ?></span></span>
-
-
-<a class="logo">
-    <div class="logo-svg">
-        <div class="pad"></div>
-        <svg id="0737461a-f480-4c7e-996e-8a3fc4fc92a8" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 757.8676 48.995"><defs><style></style></defs><title>12Fifteen Logo</title><path class="53a764d1-d165-4d03-a9d2-821bb53f9959" d="M91.67,73.483h7.2483v48.6494H88.4285V84.2483l-8.42,2.0711L77.8,77.6235Z" transform="translate(-77.8003 -73.1374)"></path><path class="53a764d1-d165-4d03-a9d2-821bb53f9959" d="M165.71,89.1474l-7.4511-6.0033c4.7621-6.4858,9.3852-10.0067,18.0117-10.0067,10.2789,0,16.63,5.9357,16.63,14.9772,0,8.0745-4.1424,12.1455-12.6976,18.77l-7.8678,6.069h21.05v9.1785H157.6359v-8.4162l16.0813-13.182c6.0014-4.9686,8.3486-7.59,8.3486-11.5934,0-4.071-2.689-6.2793-6.4858-6.2793C171.8544,82.6615,169.3007,84.7308,165.71,89.1474Z" transform="translate(-77.8003 -73.1374)"></path><path class="bb86b362-3a69-4976-8a7d-492ed6a55bac" d="M287.781,78.8665h-29.26V96.1177h26.1537v4.9686H258.5214v21.0461h-5.453V73.8285H287.781Z" transform="translate(-77.8003 -73.1374)"></path><path class="bb86b362-3a69-4976-8a7d-492ed6a55bac" d="M353.2629,73.8285v48.3039h-5.4494V73.8285Z" transform="translate(-77.8003 -73.1374)"></path><path class="bb86b362-3a69-4976-8a7d-492ed6a55bac" d="M451.1139,78.8665h-29.26V96.1177H448.008v4.9686H421.8544v21.0461h-5.4531V73.8285h34.7126Z" transform="translate(-77.8003 -73.1374)"></path><path class="bb86b362-3a69-4976-8a7d-492ed6a55bac" d="M528.9441,122.1324h-5.5207V78.8665H507.2069v-5.038h37.9574v5.038h-16.22Z" transform="translate(-77.8003 -73.1374)"></path><path class="bb86b362-3a69-4976-8a7d-492ed6a55bac" d="M639.2861,78.7971H609.82V95.2877h26.36V100.26H609.82v16.9075h29.8116v4.9648H604.3669V73.8285h34.9192Z" transform="translate(-77.8003 -73.1374)"></path><path class="bb86b362-3a69-4976-8a7d-492ed6a55bac" d="M734.5082,78.7971H705.0421V95.2877h26.36V100.26h-26.36v16.9075h29.8116v4.9648H699.589V73.8285h34.9192Z" transform="translate(-77.8003 -73.1374)"></path><path class="bb86b362-3a69-4976-8a7d-492ed6a55bac" d="M830.3538,73.8285h5.3141v48.3039H831.319l-31.19-39.61v39.61h-5.3142V73.8285h5.1076l30.4313,38.7122Z" transform="translate(-77.8003 -73.1374)"></path></svg>
-    </div>
+<a class="logo" href="<?= $block->escapeUrl($block->getUrl('')) ?>" title="<?= $block->escapeHtmlAttr($storeName) ?>" aria-label="store logo">
+    <svg id="0737461a-f480-4c7e-996e-8a3fc4fc92a8" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 757.8676 48.995">
+        <defs>
+            <style></style>
+        </defs>
+        <path class="53a764d1-d165-4d03-a9d2-821bb53f9959" d="M91.67,73.483h7.2483v48.6494H88.4285V84.2483l-8.42,2.0711L77.8,77.6235Z" transform="translate(-77.8003 -73.1374)"></path>
+        <path class="53a764d1-d165-4d03-a9d2-821bb53f9959" d="M165.71,89.1474l-7.4511-6.0033c4.7621-6.4858,9.3852-10.0067,18.0117-10.0067,10.2789,0,16.63,5.9357,16.63,14.9772,0,8.0745-4.1424,12.1455-12.6976,18.77l-7.8678,6.069h21.05v9.1785H157.6359v-8.4162l16.0813-13.182c6.0014-4.9686,8.3486-7.59,8.3486-11.5934,0-4.071-2.689-6.2793-6.4858-6.2793C171.8544,82.6615,169.3007,84.7308,165.71,89.1474Z" transform="translate(-77.8003 -73.1374)"></path>
+        <path class="bb86b362-3a69-4976-8a7d-492ed6a55bac" d="M287.781,78.8665h-29.26V96.1177h26.1537v4.9686H258.5214v21.0461h-5.453V73.8285H287.781Z" transform="translate(-77.8003 -73.1374)"></path>
+        <path class="bb86b362-3a69-4976-8a7d-492ed6a55bac" d="M353.2629,73.8285v48.3039h-5.4494V73.8285Z" transform="translate(-77.8003 -73.1374)"></path>
+        <path class="bb86b362-3a69-4976-8a7d-492ed6a55bac" d="M451.1139,78.8665h-29.26V96.1177H448.008v4.9686H421.8544v21.0461h-5.4531V73.8285h34.7126Z" transform="translate(-77.8003 -73.1374)"></path>
+        <path class="bb86b362-3a69-4976-8a7d-492ed6a55bac" d="M528.9441,122.1324h-5.5207V78.8665H507.2069v-5.038h37.9574v5.038h-16.22Z" transform="translate(-77.8003 -73.1374)"></path>
+        <path class="bb86b362-3a69-4976-8a7d-492ed6a55bac" d="M639.2861,78.7971H609.82V95.2877h26.36V100.26H609.82v16.9075h29.8116v4.9648H604.3669V73.8285h34.9192Z" transform="translate(-77.8003 -73.1374)"></path>
+        <path class="bb86b362-3a69-4976-8a7d-492ed6a55bac" d="M734.5082,78.7971H705.0421V95.2877h26.36V100.26h-26.36v16.9075h29.8116v4.9648H699.589V73.8285h34.9192Z" transform="translate(-77.8003 -73.1374)"></path>
+        <path class="bb86b362-3a69-4976-8a7d-492ed6a55bac" d="M830.3538,73.8285h5.3141v48.3039H831.319l-31.19-39.61v39.61h-5.3142V73.8285h5.1076l30.4313,38.7122Z" transform="translate(-77.8003 -73.1374)"></path>
+    </svg>
 </a>
