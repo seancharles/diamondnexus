@@ -1,4 +1,20 @@
 .account {
+    button {
+        border-color: #000 !important;
+        &:hover {
+            background: #383838 !important;
+        }
+    }
+    a {
+        color: #000 !important;
+        text-decoration: underline !important;
+        &:hover {
+            text-decoration: none !important;
+        }
+    }
+    .block-collapsible-nav .item a {
+        text-decoration: none !important;
+    }
     .page-header {
         @media screen and (max-width: 768px) {
             margin-bottom: 20px;
@@ -24,7 +40,7 @@
         .fieldset {
             legend {
                 span {
-                    font-family: 'Didot';
+                    font-family: 'Didot 06 A', 'Didot 06 B', serif;
                     font-size: 24px;
                     letter-spacing: 0.19px;
                     color: #000000;

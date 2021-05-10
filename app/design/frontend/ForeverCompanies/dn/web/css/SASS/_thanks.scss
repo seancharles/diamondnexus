@@ -44,7 +44,11 @@
                     border: none !important;
                     line-height: unset !important;
                     &:hover {
-                        color: #bfa374 !important;
+                        color: #000 !important;
+                        text-decoration: none !important;
+                    }
+                    span {
+                        text-transform: none !important;
                     }
                 }
             }

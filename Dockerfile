@@ -198,7 +198,7 @@ RUN echo "deb http://ftp.ua.debian.org/debian/ stretch main" >> /etc/apt/sources
    && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen && locale-gen \
    && apt-get install --allow-remove-essential -yf software-properties-common gnupg gnupg-agent wget \
    libzip-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev xml-core unzip libssl-dev libonig-dev \
-   libicu-dev libxml2 libxml2-dev git jq libxslt-dev ssmtp mailutils vim cron ssh-client openssh-server nano sudo nginx gettext-base \
+   libicu-dev libxml2 libxml2-dev git jq libxslt-dev ssmtp mailutils vim cron ssh-client openssh-server nano sudo nginx gettext-base dnsutils \
    && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
    && docker-php-ext-install -j$(nproc) bcmath exif gettext gd zip pdo_mysql iconv opcache mysqli intl soap mbstring dom shmop sockets sysvmsg sysvsem sysvshm xsl \
    && pecl install igbinary \
@@ -256,8 +256,9 @@ COPY bin/php.ini /usr/local/etc/php/php.ini
 COPY bin/php-fpm.pool.conf /usr/local/etc/php/php-fpm.pool.conf
 
 COPY bin/entrypoint.sh /
-RUN chmod 755 /entrypoint.sh
-RUN chown 1000:1000 /entrypoint.sh
+COPY bin/cachehosts.sh /
+RUN chmod 755 /entrypoint.sh /cachehosts.sh
+RUN chown 1000:1000 /entrypoint.sh /cachehosts.sh
 
 USER admin
 WORKDIR /var/www/magento

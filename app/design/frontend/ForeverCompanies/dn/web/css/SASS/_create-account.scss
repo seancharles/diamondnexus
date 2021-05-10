@@ -1,4 +1,14 @@
 .customer-account-create {
+    .legend {
+        font-family: 'Gotham SSm A', 'Gotham SSm B', sans-serif;
+    }
+    a {
+        color: #000 !important;
+        text-decoration: underline !important;
+        &:hover {
+            text-decoration: none !important;
+        }
+    }
     .page-title {
         font-size: 40px !important;
         line-height: 48px !important;

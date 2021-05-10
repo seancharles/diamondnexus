@@ -89,6 +89,7 @@ nginx.conf.sample
 package.json.sample
 phpserver/README.md
 app/etc/env.php
+app/etc/env.php.tmp
 dev/tests/integration/testsuite/Magento/Setup/Console/Command/_files/edition
 setup/performance-toolkit/README.md
 setup/performance-toolkit/benchmark.jmx

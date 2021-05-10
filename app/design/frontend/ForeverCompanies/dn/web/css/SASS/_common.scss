@@ -1,126 +1,144 @@
-@font-face {font-family: "Gotham Light";
-    src: url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.eot");
-    src: url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.eot?#iefix")
-    format("embedded-opentype"),
-    url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.woff2")
-    format("woff2"),
-    url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.woff")
-    format("woff"),
-    url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.ttf")
-    format("truetype"),
-    url("//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.svg#Gotham Book")
-    format("svg"); }
 @font-face {
-    font-family: "Didot";
-    src: url("//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.eot");
-    src: url("//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.eot?#iefix")
-    format("embedded-opentype"),
-    url("//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.woff2")
-    format("woff2"),
-    url("//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.woff")
-    format("woff"),
-    url("//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.ttf")
-    format("truetype"),
-    url("//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.svg#Didot")
-    format("svg");
+    font-family: 'Gotham Light';
+    src: url('//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.eot');
+    src: url('//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.eot?#iefix')
+            format('embedded-opentype'),
+        url('//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.woff2')
+            format('woff2'),
+        url('//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.woff')
+            format('woff'),
+        url('//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.ttf')
+            format('truetype'),
+        url('//db.onlinewebfonts.com/t/924ee4158324c02e3e0d62e54cafd14f.svg#Gotham Book')
+            format('svg');
 }
 @font-face {
-       font-family: "Gotham Bold";
-        src: url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.eot");
-        src: url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.eot?#iefix")
-        format("embedded-opentype"),
-        url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.woff2")
-        format("woff2"),
-        url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.woff")
-        format("woff"),
-        url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.ttf")
-        format("truetype"),
-        url("//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.svg#Gotham")
-        format("svg");
+    font-family: 'Didot';
+    src: url('//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.eot');
+    src: url('//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.eot?#iefix')
+            format('embedded-opentype'),
+        url('//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.woff2')
+            format('woff2'),
+        url('//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.woff')
+            format('woff'),
+        url('//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.ttf')
+            format('truetype'),
+        url('//db.onlinewebfonts.com/t/251039e6849ad977a8bfc40b564dce89.svg#Didot')
+            format('svg');
 }
-
-
-
-
+@font-face {
+    font-family: 'Gotham Bold';
+    src: url('//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.eot');
+    src: url('//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.eot?#iefix')
+            format('embedded-opentype'),
+        url('//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.woff2')
+            format('woff2'),
+        url('//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.woff')
+            format('woff'),
+        url('//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.ttf')
+            format('truetype'),
+        url('//db.onlinewebfonts.com/t/5d6f50ed2dde0e4ad455448f896c09f0.svg#Gotham')
+            format('svg');
+}
 
 //  From typography.com. Don't forget to move fonts to server when in Production
 //  font-family: "Didot 06 A", "Didot 06 B";
 //  font-style: normal;
 //  font-weight: 300;
 
-.page-main > .page-title-wrapper .page-title, .account .page-main .page-title-wrapper .page-title {
-    font-family:'Didot';
-    font-size:40px;
+body {
+    font-family: 'Gotham SSm A', 'Gotham SSm B', sans-serif !important;
+    color: #000 !important;
+}
+
+.page-main > .page-title-wrapper .page-title,
+.account .page-main .page-title-wrapper .page-title {
+    font-family: 'Didot 06 A', 'Didot 06 B', serif;
+    font-size: 40px;
     letter-spacing: 0.32px;
-    color:#000;
+    color: #000;
+    font-weight: 400 !important;
 }
 
 .block .block-title {
-    border-bottom:1px solid #BCBCBC;
+    border-bottom: 1px solid #bcbcbc;
 
     strong {
-        font-family:'Didot';
-        font-size:24px;
-        color:#000;
+        font-family: 'Didot 06 A', 'Didot 06 B', serif;
+        font-size: 24px;
+        color: #000;
+        font-weight: 400;
     }
 }
 
-.field.note, p {
-    font-family:"Gotham Light", Arial, serif;
-    font-size:14px;
+.field.note,
+p {
+    font-family: 'Gotham SSm A', 'Gotham SSm B', sans-serif;
+    font-weight: 300 !important;
+    font-size: 14px;
 }
 
-.fieldset > .field > .label, .fieldset > .fields > .field > .label {
-    font-family: "Gotham Bold", Arial, serif;
+.fieldset > .field > .label,
+.fieldset > .fields > .field > .label {
+    font-family: 'Gotham SSm A', 'Gotham SSm B', sans-serif;
+    font-weight: 300px !important;
     font-weight: normal;
-    font-size:14px;
-    letter-spacing:0px;
+    font-size: 14px;
+    letter-spacing: 0px;
 
     &:after {
-        color:#000;
+        color: #000;
     }
 }
 
-input[type="text"], input[type="password"], input[type="url"], input[type="tel"], input[type="search"], input[type="number"], input[type="datetime"], input[type="email"] {
-    border:1px solid #BCBCBC;
+input[type='text'],
+input[type='password'],
+input[type='url'],
+input[type='tel'],
+input[type='search'],
+input[type='number'],
+input[type='datetime'],
+input[type='email'] {
+    border: 1px solid #bcbcbc;
 }
 
-.actions-toolbar > .primary .action, .actions-toolbar > .primary .action:last-child  {
+.actions-toolbar > .primary .action,
+.actions-toolbar > .primary .action:last-child {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color:#000;
-    border-radius:0;
+    background-color: #000;
+    border-radius: 0;
     height: 40px;
-    box-sizing:border-box;
+    box-sizing: border-box;
     padding: 0 15px;
     span {
-        font-family: "Gotham Bold", Arial, serif;
-        font-weight:normal;
-        font-size:14px;
+        font-family: 'Gotham SSm A', 'Gotham SSm B', sans-serif;
+        font-weight: 300;
+        font-size: 14px;
         text-transform: uppercase;
     }
 
-    @media screen and (max-width:768px) {
+    @media screen and (max-width: 768px) {
         display: flex;
-    justify-content: center;
-    align-items: center;
-        height:56px;
-        margin-bottom:24px;
+        justify-content: center;
+        align-items: center;
+        height: 56px;
+        margin-bottom: 24px;
     }
 }
 
 .actions-toolbar > .secondary .action:last-child {
-    font-family: "Gotham Bold", Arial, serif;
-    font-weight:normal;
-    font-size:14px;
-    color:#000;
+    font-family: 'Gotham SSm A', 'Gotham SSm B', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #000;
     text-transform: uppercase;
 }
 
- .fieldset:after {
-    font-family: "Gotham Light";
-    font-weight:normal;
-    font-size:14px;
-    color: #DA1E28;
+.fieldset:after {
+    font-family: 'Gotham SSm A', 'Gotham SSm B', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #da1e28;
 }
