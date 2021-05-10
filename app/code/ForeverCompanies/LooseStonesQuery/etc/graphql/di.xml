@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!--  
+    <virtualType name="Magento\Catalog\Model\Api\SearchCriteria\CollectionProcessor\ProductFilterProcessor" type="Magento\Eav\Model\Api\SearchCriteria\CollectionProcessor\FilterProcessor">
+        <arguments>
+            <argument name="customFilters" xsi:type="array">
+            	<item name="color" xsi:type="string">
+                    ForeverCompanies\LooseStonesQuery\Model\Resolver\Products\SearchCriteria\CollectionProcessor\FilterProcessor\ProductAttributeFilter
+                </item>
+                <item name="clarity" xsi:type="string">
+                    ForeverCompanies\LooseStonesQuery\Model\Resolver\Products\SearchCriteria\CollectionProcessor\FilterProcessor\ProductAttributeFilter
+                </item>
+                <item name="carat_weight" xsi:type="string">
+                    ForeverCompanies\LooseStonesQuery\Model\Resolver\Products\SearchCriteria\CollectionProcessor\FilterProcessor\ProductAttributeFilter
+                </item>
+                <item name="price" xsi:type="string	">
+                    ForeverCompanies\LooseStonesQuery\Model\Resolver\Products\SearchCriteria\CollectionProcessor\FilterProcessor\ProductAttributeFilter
+                </item>
+              
+                <item name="cut_grade" xsi:type="string">
+                    ForeverCompanies\LooseStonesQuery\Model\Resolver\Products\SearchCriteria\CollectionProcessor\FilterProcessor\ProductAttributeFilter
+                </item>
+                <item name="shape" xsi:type="string">
+                    ForeverCompanies\LooseStonesQuery\Model\Resolver\Products\SearchCriteria\CollectionProcessor\FilterProcessor\ProductAttributeFilter
+                </item>
+                
+                <item name="online" xsi:type="object">
+                    ForeverCompanies\LooseStonesQuery\Model\Resolver\Products\SearchCriteria\CollectionProcessor\FilterProcessor\ProductAttributeFilter
+                </item>
+                <item name="product_type" xsi:type="object">
+                    ForeverCompanies\LooseStonesQuery\Model\Resolver\Products\SearchCriteria\CollectionProcessor\FilterProcessor\ProductAttributeFilter
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+    -->
+</config>

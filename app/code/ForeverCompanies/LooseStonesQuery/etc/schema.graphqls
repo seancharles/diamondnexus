@@ -1,0 +1,13 @@
+type Query {
+    productCollection: ProductCollection @resolver(class: "ForeverCompanies\\LooseStonesQuery\\Model\\Resolver\\ProductsResolver") @doc(description: "Get Product collection of a store")
+}
+ 
+type ProductCollection @doc(description: "product collection comment") {
+    allProducts: [ProductRecord] @doc(description: "Product records with info")
+}
+ 
+type ProductRecord {
+    sku: String @doc(description: "Get Product sku")
+    name: String @doc(description: "Get Product name")
+    price: Float @doc(description: "Get Product price")
+}
