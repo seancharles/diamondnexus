@@ -63,7 +63,7 @@ class PaynowComplete extends \Magento\Framework\App\Action\Action implements \Ma
             $page = $this->pageFactory->create();
             /** @var \DiamondNexus\Multipay\Block\Order\Paynow $block */
             $block = $page->getLayout()->getBlock('diamondnexus_paynow');
-            $block->setData('order_id', $id);
+            $block->setData('order_id', $order->getIncrementId());
             return $page;
         } else {
             // order is invalid or the customer does not own it
