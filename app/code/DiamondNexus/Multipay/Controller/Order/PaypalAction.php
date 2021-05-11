@@ -14,25 +14,21 @@ class PaypalAction extends \Magento\Framework\App\Action\Action implements \Mage
 {
     public function __construct (
         \Magento\Framework\App\Action\Context $context,
-        \Magento\Framework\Mail\TransportInterfaceFactory $sendmail,
-        \Magento\Framework\Mail\EmailMessageFactory $messageFactory,
         \Magento\Customer\Model\Session $customerSession, 
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
         \Magento\User\Model\ResourceModel\User $userResource,
         
-        \DiamondNexus\Multipay\Helper\EmailSender $emailSender,
         \DiamondNexus\Multipay\Logger\Logger $logger,
-        \DiamondNexus\Multipay\Model\ResourceModel\Transaction $transaction
+        \DiamondNexus\Multipay\Model\ResourceModel\Transaction $transaction,
+        \ForeverCompanies\Smtp\Helper\Mail $mailHelper,
     ) {
-        $this->sendmail = $sendmail;
-        $this->messageFactory = $messageFactory;
         $this->customerSession = $customerSession;
         $this->orderRepository = $orderRepository;
         $this->userResource = $userResource;
         
-        $this->emailSender = $emailSender;
         $this->logger = $logger;
         $this->transaction = $transaction;
+        $this->mailHelper = $mailHelper;
         
         parent::__construct($context); 
     }
@@ -89,24 +85,24 @@ class PaypalAction extends \Magento\Framework\App\Action\Action implements \Mage
     {
         $salesPersonId = (int)$order->getData('sales_person_id');
         $storeId = (int)$order->getData('store_id');
+        
         $salesPersonSql = $this->userResource->getConnection()
             ->select()->from($this->userResource->getMainTable(), ['firstname','lastname', 'email'])
             ->where('user_id = ?', $salesPersonId);
         $salesPersonResult = $this->userResource->getConnection()->fetchRow($salesPersonSql);
+        
         $salesPersonEmail = $salesPersonResult['email'];
+        
         $message = "A payment of $" . $amount ." was applied to order #{$order->getIncrementId()}";
         /** @var Message $mail */
-        $mail = $this->messageFactory->create();
-        $mail->setSubject('Payment applied for order #' . $order->getIncrementId().' '.$storeId);
-        if (strlen($salesPersonEmail) > 0) {
-            $salesPersonEmail = $salesPersonResult[0]['email'];
-            $mail->addTo($salesPersonEmail);
-            $mail->addCc('jessica.nelson@diamondnexus.com');
-        } else {
-            $mail->addTo('jessica.nelson@diamondnexus.com');
-        }
-        $mail->setFromAddress('sales@diamondnexus.com', 'Diamond Nexus Sales');
-        $mail->setBodyText($message);
-        $this->sendmail->create(['message' => $mail])->sendMessage();
+
+        $this->mailHelper->setFrom(
+            'name' => 'Diamond Nexus Sales',
+            'email' => 'sales@diamondnexus.com'
+        );
+        $this->mailHelper->addTo([$salesPersonEmail,'jessica.nelson@diamondnexus.com']);
+        $this->mailHelper->setSubject('Payment applied for order #' . $order->getIncrementId().' '.$storeId);
+        $this->mailHelper->setBody($message);
+        $this->mailHelper->send();
     }
 }
