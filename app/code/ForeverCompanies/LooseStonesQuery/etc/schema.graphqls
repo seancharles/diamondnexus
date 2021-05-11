@@ -1,13 +1,50 @@
-type Query {
-    productCollection: ProductCollection @resolver(class: "ForeverCompanies\\LooseStonesQuery\\Model\\Resolver\\ProductsResolver") @doc(description: "Get Product collection of a store")
+#Custom Module
+type Query
+{
+    CustomGraphql (
+        username: String @doc(description: "Email Address/Mobile Number")
+        password: String @doc(description: "Password")
+        fieldtype: String @doc(description: "Field Type")
+        websiteId: Int = 1 @doc (description: "Website Id")
+    ): CustomGraphqlOutput @resolver(class: "ForeverCompanies\\LooseStonesQuery\\Model\\Resolver\\CustomGraphql") @doc(description:"Custom Module Datapassing")
 }
- 
-type ProductCollection @doc(description: "product collection comment") {
-    allProducts: [ProductRecord] @doc(description: "Product records with info")
+type CustomGraphqlOutput
+{
+    username: String
+    password: String
+    fieldtype: String
 }
- 
-type ProductRecord {
-    sku: String @doc(description: "Get Product sku")
-    name: String @doc(description: "Get Product name")
-    price: Float @doc(description: "Get Product price")
+
+type Query
+{
+	StonesQuery(
+		filter: ProductAttributeFilterInput
+		online: String
+		product_type: String
+        color: String
+        clarity: String
+        carat_weight__from: ProductAttributeFilterInput
+        carat_weight__to: ProductAttributeFilterInput
+        price__from: String
+        price__to: String
+        cut: String
+        shape: String
+        page: Int
+        pageSize: Int
+        currentPage: Int
+        sort: ProductAttributeSortInput
+    ): 	Products @resolver(class:"ForeverCompanies\\LooseStonesQuery\\Model\\Resolver\\StonesQuery")
+	@doc(description: "This is called the loose stones query")
+}
+
+type StonesQueryOutput
+{
+	filters: [String]
+	name: String
+	request_var: String
+	label: String
+	value_string: String
+    color: String
+    clarity: String
+    carat_weight: String
 }
