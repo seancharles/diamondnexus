@@ -148,7 +148,10 @@ class Mail extends AbstractHelper
         }
 
         $postObject = new \Magento\Framework\DataObject();
-        $postObject->setData(['body' => $this->body]);
+        $postObject->setData([
+            'body' => $this->body,
+            'subject' => $this->subject
+        ]);
 
         $transport = $this->transportBuilder
             ->setTemplateIdentifier($templateIdentifier)
