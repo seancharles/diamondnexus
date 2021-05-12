@@ -20,7 +20,7 @@ class PaypalAction extends \Magento\Framework\App\Action\Action implements \Mage
         
         \DiamondNexus\Multipay\Logger\Logger $logger,
         \DiamondNexus\Multipay\Model\ResourceModel\Transaction $transaction,
-        \ForeverCompanies\Smtp\Helper\Mail $mailHelper,
+        \ForeverCompanies\Smtp\Helper\Mail $mailHelper
     ) {
         $this->customerSession = $customerSession;
         $this->orderRepository = $orderRepository;
@@ -96,10 +96,10 @@ class PaypalAction extends \Magento\Framework\App\Action\Action implements \Mage
         $message = "A payment of $" . $amount ." was applied to order #{$order->getIncrementId()}";
         /** @var Message $mail */
 
-        $this->mailHelper->setFrom(
+        $this->mailHelper->setFrom([
             'name' => 'Diamond Nexus Sales',
             'email' => 'sales@diamondnexus.com'
-        );
+        ]);
         $this->mailHelper->addTo([$salesPersonEmail,'jessica.nelson@diamondnexus.com']);
         $this->mailHelper->setSubject('Payment applied for order #' . $order->getIncrementId().' '.$storeId);
         $this->mailHelper->setBody($message);
