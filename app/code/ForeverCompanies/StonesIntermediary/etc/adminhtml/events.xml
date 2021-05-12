@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <event name="loose_stone_supplier_disabled">
+        <observer name="disable_supplier" instance="ForeverCompanies\StonesIntermediary\Observer\DisableSupplier" />
+    </event>
+</config>
