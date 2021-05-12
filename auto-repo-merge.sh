@@ -62,21 +62,28 @@ try_merge()
     if run bash -c 'set -o pipefail; git branch --contains '$commit' | grep -qw master'
     then
         warning already $branch
+        pr_num=`echo $branch | sed 's/origin\/pr\///g'`
+        rm_conflict ForeverCompanies/magento2 $GITOAUTH $pr_num > /dev/null 2>&1
         return
     fi
     if run git merge --ff-only $branch $commit
     then
         good fast $branch $commit
+        pr_num=`echo $branch | sed 's/origin\/pr\///g'`
+        rm_conflict ForeverCompanies/magento2 $GITOAUTH $pr_num > /dev/null 2>&1
         return
     fi
     if run git merge $branch $commit
     then
         good merge $branch $commit
-	
+        pr_num=`echo $branch | sed 's/origin\/pr\///g'`
+        rm_conflict ForeverCompanies/magento2 $GITOAUTH $pr_num > /dev/null 2>&1
         return
     fi
     git merge --abort
     error abort $branch $commit
+    pr_num=`echo $branch | sed 's/origin\/pr\///g'`
+    mark_conflict ForeverCompanies/magento2 $GITOAUTH $pr_num > /dev/null 2>&1
     return
 }
 
