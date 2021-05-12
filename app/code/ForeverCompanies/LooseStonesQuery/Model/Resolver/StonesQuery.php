@@ -13,24 +13,21 @@ use Magento\Framework\GraphQl\Query\Resolver\BatchResolverInterface;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 
 
-
 class StonesQuery implements ResolverInterface
 {
     protected $productColl;
     protected $totalCountColl;
     
-    
     public function __construct(
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
         CollectionFactory $collectionFac
-        ) {
-            $this->productRepository = $productRepository;
-            $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-            $this->productColl = $collectionFac->create();
-            $this->totalCountColl = $collectionFac->create();
+    ) {
+        $this->productRepository = $productRepository;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->productColl = $collectionFac->create();
+        $this->totalCountColl = $collectionFac->create();
     }
-    
     
     public function resolve(
         Field $field,
@@ -83,17 +80,9 @@ class StonesQuery implements ResolverInterface
             $this->totalCountColl->addAttributeToFilter('price', array('lteq' =>  $priceToFilter));
             $this->totalCountColl->load();
          
-            
-            
             $this->productColl->setPageSize($pageSize);
             $this->productColl->setCurPage($currentPage);
             $this->productColl->addAttributeToSelect("*")->load();  
-            
-            
-            
-            
-            
-     //       echo 'the product coll count is ' . count($this->productColl);
             
             
             $totalCount = count($this->totalCountColl);
@@ -118,9 +107,6 @@ class StonesQuery implements ResolverInterface
             $items['data']['products']['sort_fields']['options'][] = array("label" => "Cut Grade Sort", "value" => "cut_grade_sort");
             $items['data']['products']['sort_fields']['options'][] = array("label" => "Shape Alpha Sort", "value" => "shape_alpha_sort");
             $items['data']['products']['sort_fields']['options'][] = array("label" => "Shape Popularity Sort", "value" => "shape_pop_sort");
-            
-     //       $items['data']['products']['sort_fields']['options'][] = array("la")
-            
             
             $items['data']['products']['aggregations'] = [];
             
@@ -307,14 +293,9 @@ class StonesQuery implements ResolverInterface
             
             $items['data']['products']['items'] = [];
             
-            $productCount = count($this->productColl);
             $i = 0;
             
-            
-            $productRecord['allProducts'] = [];
-            
             foreach ($this->productColl as $_product) {
-    //            echo $_product->getName() . "    ";
                 
                 $productArr = array();
                 
@@ -336,7 +317,6 @@ class StonesQuery implements ResolverInterface
                 $productArr['shape'] = array($_product->getColor() . ", "
                     . $_product->getResource()->getAttribute('shape')->getFrontend()->getValue($_product));
                 
-                // https://magecomp.com/blog/magento-2-show-lowest-highest-price-category-page-configurable-product/
                 $productArr['price_range'] = array();
                 $productArr['price_range']['minimum_price'] = array();
                 $productArr['price_range']['minimum_price']['final_price'] = array();
@@ -349,116 +329,10 @@ class StonesQuery implements ResolverInterface
                 
                 $productArr['media_gallery'] = array();
                 
-                
                 $items['data']['items'][]  = $productArr;
-                
-                
-                /*
-                 
-                 "items": [
-                {
-                  "__typename": "SimpleProduct",
-                  "id": 287639,
-                  "sku": "LG_M3D44067",
-                  "url_key": "cushion-cut-diamond-7-56-carat-d-color-vvs1-clarity-igi-lg-m3d44067",
-                  "name": "Cushion Cut Diamond 7.56 Carat D Color VVS1 Clarity IGI LG_M3D44067",
-                  "color": [
-                    "2865, D"
-                  ],
-                  "color_sort": 700,
-                  "clarity": [
-                    "2862, VVS1"
-                  ],
-                  "clarity_sort": 600,
-                  "carat_weight": 7.56,
-                  "cut_grade": [
-                    "2878, Very Good"
-                  ],
-                  "cut_grade_sort": 200,
-                  "shape": [
-                    "2842, Round"
-                  ],
-                  "price_range": {
-                    "minimum_price": {
-                      "final_price": {
-                        "currency": "USD",
-                        "value": 94334.63
-                      }
-                    },
-                    "maximum_price": {
-                      "final_price": {
-                        "currency": "USD",
-                        "value": 94334.63
-                      }
-                    }
-                  },
-                  "media_gallery": []
-                },
-                 
-                 */
             }
-            
-            echo json_encode($items);die;
-            
-            return $productRecord; 
-            return json_encode($items);
-            
-            die;
-            
-            var_dump($sortKey);
-            var_dump($sortVal);
-            die;
-            
-            
-            foreach ($args['filter'] as $argFilter) {
-                echo '<pre>';
-                var_dump($argFilter);
-            }
-            die;
-            echo '<pre>';
-            var_dump($args['filter']['online']['eq']);
-            die;
-            echo $args['filter']['online'];die;
-            
-            echo '<pre>';
-            var_dump("args", $args);
-            die;
-            
-        
-            $productsData = $this->getProductsData();
-            return $productsData;
+        echo json_encode($items);die;
     }
     
 
-    
-    private function getProductsData(): array
-    {
-        
-        try {
-            
-            $searchCriteria = $this->searchCriteriaBuilder->addFilter('sku', 'LG_M3D44067', 'eq')->create();
-            
-            
-            
-            $products = $this->productRepository->getList($searchCriteria)->getItems();
-            // echo 'the product count is ' . count($products);die;
-            
-            $productRecord['allProducts'] = [];
-           // $productId = $product->getId();
-            foreach($products as $product) {
-                
-                echo '<pre>';
-                var_dump("kes", array_keys($product->getData()));
-                die;
-                
-                
-                $productRecord['allProducts'][$productId]['sku'] = $product->getSku();
-                $productRecord['allProducts'][$productId]['name'] = $product->getName();
-                $productRecord['allProducts'][$productId]['price'] = $product->getPrice();
-            }
-        } catch (NoSuchEntityException $e) {
-            throw new GraphQlNoSuchEntityException(__($e->getMessage()), $e);
-        }
-        return $productRecord;
-    }
 }
