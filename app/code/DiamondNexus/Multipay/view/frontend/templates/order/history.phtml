@@ -56,8 +56,15 @@ use Magento\Framework\Escaper;
                             <span><?= $escaper->escapeHtml(__('View Order')) ?></span>
                         </a>
                         <?php if ($block->canPayNow($_order)) : ?>
-                            <a href="<?= $escaper->escapeUrl($block->getPayNowUrl($_order->getId())) ?>"
-                               class="action order">
+                            <a  onclick="var newwin = window.open(
+                                            '<?= $escaper->escapeUrl($block->getPayNowUrl($_order->getId())) ?>',
+                                            'newwin',
+                                            'resizable=0,menubar=0,height=600,width=475'
+                                        );
+                                        newWin.opener = null;
+                                        newWin.focus();"
+                                href="javascript:void(0)"
+                                class="action order">
                                 <span><?= $escaper->escapeHtml(__('Pay now')) ?></span>
                             </a>
                         <?php endif ?>

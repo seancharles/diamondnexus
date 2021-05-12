@@ -29,7 +29,7 @@
             try{
                 $state->setAreaCode(\Magento\Framework\App\Area::AREA_ADMINHTML);
             } catch(\Exception $e) {
-                echo $e->getMessage();
+                //echo $e->getMessage();
             }
             $this->syncHelper = $syncHelper;
             
