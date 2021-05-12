@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:ForeverCompanies_Smtp:etc/email_templates.xsd">
+    <template id="dynamic_plaintext_email" label="Dynamic Plaintext Email Template" file="plaintext.html" type="text" module="ForeverCompanies_Smtp" area="frontend"/>
+    <template id="dynamic_html_email" label="Dynamic HTML Email Template" file="html.html" type="html" module="ForeverCompanies_Smtp" area="frontend"/>
+</config>

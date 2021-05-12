@@ -1,8 +1,21 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <referenceContainer name="content">
-        <block class="DiamondNexus\Multipay\Block\Order\Paynow" name="diamondnexus_paynow"
-               template="DiamondNexus_Multipay::order/paynow.phtml"/>
-    </referenceContainer>
+    <body>
+        <referenceContainer name="header.container">
+            <referenceBlock name="navigation.sections" display="false" />
+            <referenceContainer name="catalog.topnav" remove="true" />
+            <referenceBlock name="top.search" remove="true"/>
+            <referenceBlock name="minicart" remove="true"/>
+        </referenceContainer>
+        <referenceBlock name="sidebar.main" remove="true"/>
+        <referenceBlock name="sidebar.additional" remove="true"/>
+        <referenceBlock name="catalog.topnav" remove="true"/>
+        <referenceContainer name="footer-container" remove="true"/>
+        <referenceBlock name="copyright" remove="true"/>
+        <referenceContainer name="content">
+            <block class="DiamondNexus\Multipay\Block\Order\Paynow" name="diamondnexus_paynow"
+                   template="DiamondNexus_Multipay::order/paynow.phtml"/>
+        </referenceContainer>
+    </body>
 </page>

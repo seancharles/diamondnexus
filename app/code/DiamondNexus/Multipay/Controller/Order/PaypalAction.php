@@ -2,116 +2,37 @@
 
 namespace DiamondNexus\Multipay\Controller\Order;
 
-use DiamondNexus\Multipay\Helper\EmailSender;
-use DiamondNexus\Multipay\Logger\Logger;
-use DiamondNexus\Multipay\Model\Constant;
-use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
-use Magento\Customer\Model\Session;
-use Magento\Backend\App\Action;
-use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Mail\TransportInterfaceFactory;
-use Magento\Framework\View\Result\PageFactory;
-use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Sales\Model\Order;
-use Magento\User\Model\ResourceModel\User;
 use Magento\Framework\Mail\EmailMessage as Message;
-use Magento\Framework\Mail\EmailMessageFactory as MessageFactory;
 
-class PaypalAction extends Action
+use DiamondNexus\Multipay\Model\Constant;
+
+class PaypalAction extends \Magento\Framework\App\Action\Action implements \Magento\Framework\App\CsrfAwareActionInterface
 {
-    /**
-     * Holds a list of errors
-     *
-     * @var array
-     */
-    protected $errors = [];
-
-    /**
-     * @var PageFactory
-     */
-    protected $_pageFactory;
-
-    /**
-     * @var OrderRepositoryInterface
-     */
-    protected $orderRepository;
-
-    /**
-     * @var Transaction
-     */
-    protected $transaction;
-
-    /**
-     * @var Session
-     */
-    protected $customerSession;
-
-    /**
-     * @var User
-     */
-    protected $userResource;
-
-    /**
-     * @var MessageFactory
-     */
-    protected $messageFactory;
-
-    /**
-     * @var TransportInterfaceFactory
-     */
-    protected $sendmail;
-
-    /**
-     * @var Logger
-     */
-    protected $logger;
-
-    /**
-     * @var EmailSender
-     */
-    protected $emailSender;
-
-    public function __construct(
-        Context $context,
-        PageFactory $pageFactory,
-        OrderRepositoryInterface $orderRepository,
-        Transaction $transaction,
-        Session $customerSession,
-        User $userResource,
-        MessageFactory $messageFactory,
-        TransportInterfaceFactory $sendmail,
-        EmailSender $emailSender,
-        Logger $logger
+    public function __construct (
+        \Magento\Framework\App\Action\Context $context,
+        \Magento\Customer\Model\Session $customerSession, 
+        \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
+        \Magento\User\Model\ResourceModel\User $userResource,
+        
+        \DiamondNexus\Multipay\Logger\Logger $logger,
+        \DiamondNexus\Multipay\Model\ResourceModel\Transaction $transaction,
+        \ForeverCompanies\Smtp\Helper\Mail $mailHelper
     ) {
-        $this->_pageFactory = $pageFactory;
-        $this->orderRepository = $orderRepository;
-        $this->transaction = $transaction;
         $this->customerSession = $customerSession;
+        $this->orderRepository = $orderRepository;
         $this->userResource = $userResource;
-        $this->messageFactory = $messageFactory;
-        $this->sendmail = $sendmail;
-        $this->emailSender = $emailSender;
+        
         $this->logger = $logger;
-        return parent::__construct($context);
+        $this->transaction = $transaction;
+        $this->mailHelper = $mailHelper;
+        
+        parent::__construct($context); 
     }
-
-    /**
-     *  Sanitizes a string
-     *
-     * @param string|null $str
-     * @return string
-     */
-    public function sanitize($str = null)
-    {
-        return preg_replace('/[^0-9A-Z\\.]/', '', $str);
-    }
-
-    /**
-     * @return array|ResponseInterface|ResultInterface
-     */
+    
     public function execute()
     {
         // Get the order id
@@ -141,11 +62,20 @@ class PaypalAction extends Action
                 }
             } catch (\Exception $e) {
                 $result['success'] = false;
+                $result['message'] = $e->getMessage();
             }
         }
-        return $result;
+        print_r(json_encode($result));
     }
-
+    
+    public function createCsrfValidationException( RequestInterface $request ): ?       InvalidRequestException { 
+        return null; 
+    } 
+    
+    public function validateForCsrf(RequestInterface $request): ?bool {     
+        return true; 
+    }
+    
     /**
      * @param $order
      * @param $amount
@@ -153,29 +83,26 @@ class PaypalAction extends Action
      */
     protected function sendSalesPersonEmail($order, $amount)
     {
-        /**
-         * There os old functional, maybe don't need delete that all
-         */
         $salesPersonId = (int)$order->getData('sales_person_id');
         $storeId = (int)$order->getData('store_id');
+        
         $salesPersonSql = $this->userResource->getConnection()
             ->select()->from($this->userResource->getMainTable(), ['firstname','lastname', 'email'])
             ->where('user_id = ?', $salesPersonId);
         $salesPersonResult = $this->userResource->getConnection()->fetchRow($salesPersonSql);
+        
         $salesPersonEmail = $salesPersonResult['email'];
+        
         $message = "A payment of $" . $amount ." was applied to order #{$order->getIncrementId()}";
         /** @var Message $mail */
-        $mail = $this->messageFactory->create();
-        $mail->setSubject('Payment applied for order #' . $order->getIncrementId().' '.$storeId);
-        if (strlen($salesPersonEmail) > 0) {
-            $salesPersonEmail = $salesPersonResult[0]['email'];
-            $mail->addTo($salesPersonEmail);
-            $mail->addCc('jessica.nelson@diamondnexus.com');
-        } else {
-            $mail->addTo('jessica.nelson@diamondnexus.com');
-        }
-        $mail->setFromAddress('sales@diamondnexus.com', 'Diamond Nexus Sales');
-        $mail->setBodyText($message);
-        $this->sendmail->create(['message' => $mail])->sendMessage();
+
+        $this->mailHelper->setFrom([
+            'name' => 'Diamond Nexus Sales',
+            'email' => 'sales@diamondnexus.com'
+        ]);
+        $this->mailHelper->addTo([$salesPersonEmail,'jessica.nelson@diamondnexus.com']);
+        $this->mailHelper->setSubject('Payment applied for order #' . $order->getIncrementId().' '.$storeId);
+        $this->mailHelper->setBody($message);
+        $this->mailHelper->send();
     }
 }
