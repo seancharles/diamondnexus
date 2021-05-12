@@ -26,6 +26,8 @@ class StonesQuery implements ResolverInterface
         $this->productRepository = $productRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->productColl = $collectionFac->create();
+        
+        // TODO: Figure out a better way to get the total count, if possible.
         $this->totalCountColl = $collectionFac->create();
     }
     
@@ -49,6 +51,7 @@ class StonesQuery implements ResolverInterface
             $pageSize = $args['pageSize'];
             $currentPage = $args['currentPage'];
             
+            
             foreach ($args['sort'] as $k => $v) {
                 $sortKey = $k;
                 $sortVal = $v;
@@ -56,23 +59,32 @@ class StonesQuery implements ResolverInterface
             
             $this->productColl->addAttributeToFilter('online', $onlineEqFilter);
             $this->productColl->addAttributeToFilter('product_type', $productTypeEqFilter);
-            $this->productColl->addAttributeToFilter('color', array('in' => $colorInFilter));
-            $this->productColl->addAttributeToFilter('clarity', array('in' =>  $clarityInFilter));
-            $this->productColl->addAttributeToFilter('cut_grade', array('in' =>  $cutGradeInFilter));
-            $this->productColl->addAttributeToFilter('shape', array('in' =>  $shapeInFilter));
+            
+            
+            if (!empty($colorInFilter)) {
+                $this->productColl->addAttributeToFilter('color', array('in' => $colorInFilter));
+                $this->totalCountColl->addAttributeToFilter('color', array('in' => $colorInFilter));
+            }
+            if (!empty($clarityInFilter)) {
+                $this->productColl->addAttributeToFilter('clarity', array('in' =>  $clarityInFilter));
+                $this->totalCountColl->addAttributeToFilter('clarity', array('in' =>  $clarityInFilter));
+            }
+            if (!empty($cutGradeInFilter)) {
+                $this->productColl->addAttributeToFilter('cut_grade', array('in' =>  $cutGradeInFilter));
+                $this->totalCountColl->addAttributeToFilter('cut_grade', array('in' =>  $cutGradeInFilter));
+            }
+            if (!empty($shapeInFilter)) {
+                $this->productColl->addAttributeToFilter('shape', array('in' =>  $shapeInFilter));
+                $this->totalCountColl->addAttributeToFilter('shape', array('in' =>  $shapeInFilter));
+            }
             
             $this->productColl->addAttributeToFilter('weight', array('gteq' =>  $caratWeightFromFilter));
             $this->productColl->addAttributeToFilter('weight', array('lteq' =>  $caratWeightToFilter));
             $this->productColl->addAttributeToFilter('price', array('gteq' =>  $priceFromFilter));
             $this->productColl->addAttributeToFilter('price', array('lteq' =>  $priceToFilter));
             
-            // TODO: Figure out a better way to get the total count, if possible.
             $this->totalCountColl->addAttributeToFilter('online', $onlineEqFilter);
             $this->totalCountColl->addAttributeToFilter('product_type', $productTypeEqFilter);
-            $this->totalCountColl->addAttributeToFilter('color', array('in' => $colorInFilter));
-            $this->totalCountColl->addAttributeToFilter('clarity', array('in' =>  $clarityInFilter));
-            $this->totalCountColl->addAttributeToFilter('cut_grade', array('in' =>  $cutGradeInFilter));
-            $this->totalCountColl->addAttributeToFilter('shape', array('in' =>  $shapeInFilter));
             
             $this->totalCountColl->addAttributeToFilter('weight', array('gteq' =>  $caratWeightFromFilter));
             $this->totalCountColl->addAttributeToFilter('weight', array('lteq' =>  $caratWeightToFilter));

@@ -1,20 +1,3 @@
-#Custom Module
-type Query
-{
-    CustomGraphql (
-        username: String @doc(description: "Email Address/Mobile Number")
-        password: String @doc(description: "Password")
-        fieldtype: String @doc(description: "Field Type")
-        websiteId: Int = 1 @doc (description: "Website Id")
-    ): CustomGraphqlOutput @resolver(class: "ForeverCompanies\\LooseStonesQuery\\Model\\Resolver\\CustomGraphql") @doc(description:"Custom Module Datapassing")
-}
-type CustomGraphqlOutput
-{
-    username: String
-    password: String
-    fieldtype: String
-}
-
 type Query
 {
 	StonesQuery(
