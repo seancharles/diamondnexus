@@ -149,3 +149,7 @@ $udoElements = array(
         return $tealiumData->getCmsPage();
     },
 );
+
+$data['udoElements'] = $udoElements;
+
+$this->setVars($data);
