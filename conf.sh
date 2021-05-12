@@ -18,6 +18,14 @@ for issue in issues.json()["items"]:
 ' | sort -n
 }
 
+mark_conflict() {
+  curl -d '{"labels": ["conflict"]}' -X POST -H "Authorization: token $2" -H "Accept: application/vnd.github.v3+json"   https://api.github.com/repos/$1/issues/$3/labels
+}
+
+rm_conflict() {
+  curl -X DELETE -H "Authorization: token $2" -H "Accept: application/vnd.github.v3+json"   https://api.github.com/repos/$1/issues/$3/labels/conflict
+}
+
 main_branch=origin/$BRANCH
 
 extra_branches=(
