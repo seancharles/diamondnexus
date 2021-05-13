@@ -57,6 +57,9 @@ class StonesQuery implements ResolverInterface
                 $sortVal = $v;
             }
             
+            
+            $this->productColl->setOrder($sortKey, $sortVal);
+            
             $this->productColl->addAttributeToFilter('online', $onlineEqFilter);
             $this->productColl->addAttributeToFilter('product_type', $productTypeEqFilter);
             
