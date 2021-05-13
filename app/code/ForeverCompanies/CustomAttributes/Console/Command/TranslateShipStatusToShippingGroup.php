@@ -135,11 +135,27 @@ class TranslateShipStatusToShippingGroup extends Command
             $output->writeln($productCollection->getSize() . $text . $shippingStatusKey);
 
             foreach ($productCollection as $product) {
+                $childIds = [];
+                
                 $productIds[] = $product->getId();
+                
+                // pull configurable child products and set status to match
+                if($product->getTypeId() == 'configurable') {
+                    $childProducts = $product->getTypeInstance()->getUsedProducts($product);
+
+                    foreach ($childProducts as $child){
+                        $childIds[] = $child->getId();
+                    }
+                }
+            }
+            
+            if(count($childIds) > 0) {
+                $text = " Child Product(s) found to be updated with shipping status code: ";
+                $output->writeln(count($childIds) . $text . $shippingStatusKey);
             }
 
             $this->productActionObject->updateAttributes(
-                $productIds,
+                array_merge($productIds,$childIds),
                 [
                     $hqCode => $this->shipperGroupLabelMap[
                         $this->shippingStatusTranslateMap[$shippingStatusKey]
