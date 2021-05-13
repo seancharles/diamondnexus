@@ -127,6 +127,7 @@ class TranslateShipStatusToShippingGroup extends Command
 
         foreach ($this->shippingStatusLabelMap as $shippingStatusKey => $shippingStatusId) {
             $productIds = [];
+            $childIds = [];
 
             $productCollection = $this->collectionFactory->create();
             $productCollection->addFieldToFilter("shipping_status", $shippingStatusId);
@@ -135,8 +136,6 @@ class TranslateShipStatusToShippingGroup extends Command
             $output->writeln($productCollection->getSize() . $text . $shippingStatusKey);
 
             foreach ($productCollection as $product) {
-                $childIds = [];
-                
                 $productIds[] = $product->getId();
                 
                 // pull configurable child products and set status to match
