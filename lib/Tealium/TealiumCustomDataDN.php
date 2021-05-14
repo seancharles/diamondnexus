@@ -55,6 +55,7 @@ class TealiumExtendData
         $page = TealiumExtendData::$page;
 
         $outputArray = array();
+        $outputArray['page_section_name'] = "Steve Test Prod";
         //$outputArray["custom_key"] = "value";
         // make sure any product values are in an array
 
@@ -110,9 +111,11 @@ class TealiumExtendData
     }
 }
 
+TealiumExtendData::setStore($data['store']);
+TealiumExtendData::setPage($data['page']);
 
-TealiumExtendData::setStore($this->get('store'));
-TealiumExtendData::setPage($this->get('page'));
+//TealiumExtendData::setStore($this->get('store'));
+//TealiumExtendData::setPage($this->get('page'));
 
 
 $udoElements = array(
@@ -150,6 +153,6 @@ $udoElements = array(
     },
 );
 
-$data['udoElements'] = $udoElements;
-
-$this->setVars($data);
+//$data['udoElements'] = $udoElements;
+//
+//$this->setVars($data);
