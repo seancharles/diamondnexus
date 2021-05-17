@@ -122,6 +122,9 @@ class EcomSystem extends AbstractHelper
         if ($clientToken === null) {
             $payload = array();
             $result = $this->postSession($payload);
+            if (!$result) {
+                return null;
+            }
             $clientToken = $result['sessionId'];
             $this->setClientToken($clientToken);
         }
