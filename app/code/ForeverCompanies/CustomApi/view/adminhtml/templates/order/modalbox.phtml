@@ -5,7 +5,8 @@ use Magento\Framework\Escaper;
 
 /** @var Escaper $escaper */
 /** @var $block AsdAndDeliveryModalBox */
-$extensionAttributes = $block->getData('order')->getExtensionAttributes();
+$dispatchDate = $block->getShipperDetailData('dispatch_date');
+$deliveryDate = $block->getShipperDetailData('delivery_date');
 ?>
 <div id="popup-modal">
 
@@ -15,15 +16,13 @@ $extensionAttributes = $block->getData('order')->getExtensionAttributes();
             name="dispatch_date"
             type="date"
             data-date-format="Month dd yyyy"
-            min="<?= $escaper->escapeHtml(date('Y-m-d')) ?>"
             value="<?=
-            $escaper->escapeHtml($extensionAttributes->getAnticipatedShipdate()) ?>"
+            $escaper->escapeHtml($dispatchDate) ?>"
         >
         Delivery Date <input
             name="delivery_date"
             type="date"
-            min="<?= $escaper->escapeHtml(date('Y-m-d')) ?>"
-            value="<?= $escaper->escapeHtml($extensionAttributes->getDeliveryDate()) ?>"
+            value="<?= $escaper->escapeHtml($deliveryDate) ?>"
         >
         <input name="form_key" type="hidden" value="<?= $escaper->escapeHtml($block->getFormKey()); ?>">
         <input type="submit" value="Submit" id="order-view-add-warranty">
