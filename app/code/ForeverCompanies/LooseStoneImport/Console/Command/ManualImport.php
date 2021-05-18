@@ -8,27 +8,26 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Magento\Framework\App\State;
-
 class ManualImport extends Command
 {
+    
     protected $stoneImportModel;
-    protected $name;
-    private $state;
-
+    /**
+     * @var string
+     */
+    protected $name = 'forevercompanies:manual-diamond-import';
+    protected $state;
     public function __construct(
         StoneImport $stoneImport,
         State $state
     ) {
-        parent::__construct('forevercompanies:manual-diamond-import');
-            
-        
         $this->state = $state;
-        
         $this->stoneImportModel = $stoneImport;
-        $this->name = 'forevercompanies:manual-diamond-import';
+        parent::__construct($this->name);
     }
-
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $this->state->setAreaCode('frontend');
         $this->stoneImportModel->run();
         return;
