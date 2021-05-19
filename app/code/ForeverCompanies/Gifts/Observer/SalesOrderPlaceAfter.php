@@ -8,9 +8,7 @@ use ForeverCompanies\Gifts\Helper\Purchase;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Quote\Model\Quote;
-use Magento\Checkout\Model\Cart;
-use Magento\Backend\Model\Session\Quote as AdminQuote;
+use Magento\Quote\Model\QuoteFactory;
 
 class SalesOrderPlaceAfter implements ObserverInterface
 {
@@ -20,8 +18,7 @@ class SalesOrderPlaceAfter implements ObserverInterface
     protected $giftHelper;
     protected $purchaseHelper;
     
-    protected $cart;
-    protected $adminQuote;
+    protected $quoteFactory;
 
     /**
      * ProcessQuoteObserver constructor.
@@ -30,14 +27,12 @@ class SalesOrderPlaceAfter implements ObserverInterface
     public function __construct(
         FreeGift $giftH,
         Purchase $purchaseH,
-        Cart $crt, 
-        AdminQuote $adminQ
+        QuoteFactory $quoteF
     ) {
         $this->giftHelper = $giftH;
         $this->purchaseHelper = $purchaseH;
         
-        $this->cart = $crt;
-        $this->adminQuote = $adminQ;
+        $this->quoteFactory = $quoteF;
     }
 
     /**
@@ -49,12 +44,12 @@ class SalesOrderPlaceAfter implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
-        echo 'fff';die;
         
         $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/giftlog.log');
         $logger = new \Zend\Log\Logger();
         $logger->addWriter($writer);
         $logger->info( 'observer name - ' . $observer->getEvent()->getName() );
+        $logger->info( 'order id - ' . $observer->getEvent()->getOrder()->getId() );
         
         $eventName = $observer->getEvent()->getName(); 
         
@@ -64,7 +59,7 @@ class SalesOrderPlaceAfter implements ObserverInterface
             
             $logger->info('free gift');
             
-            $quote = $this->adminQuote->getQuote();
+            $quote = $this->quoteFactory->create()->load($observer->getEvent()->getOrder()->getId());
             
             
             $giftSkus = $this->giftHelper->fillGifts($quote);
@@ -79,12 +74,10 @@ class SalesOrderPlaceAfter implements ObserverInterface
             
             $logger->info('purchase');
             
-            $quote = $this->adminQuote->getQuote();
+            $quote = $this->quoteFactory->create()->load($observer->getEvent()->getOrder()->getId());
             
             $logger->info( 'quote id - ' . $quote->getId() );
-            $logger->info('admin quote id - ' . $this->adminQuote->getQuote()->getId() );
-            
-            
+      
             
             $this->purchaseHelper->addGiftToQuote($quote);
         } 
