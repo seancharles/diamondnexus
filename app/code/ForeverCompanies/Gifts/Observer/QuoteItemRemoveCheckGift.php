@@ -10,6 +10,7 @@ use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Quote\Model\Quote;
+use Magento\Checkout\Model\Session;
 
 class QuoteItemRemoveCheckGift implements ObserverInterface
 {
@@ -27,6 +28,8 @@ class QuoteItemRemoveCheckGift implements ObserverInterface
      * @var ManagerInterface
      */
     protected $messageManager;
+    protected $checkoutSession;
+    
 
     /**
      * QuoteItemRemoveCheckGift constructor.
@@ -37,11 +40,13 @@ class QuoteItemRemoveCheckGift implements ObserverInterface
     public function __construct(
         FreeGift $freeGiftHelper,
         Purchase $purchaseHelper,
-        ManagerInterface $messageManager
+        ManagerInterface $messageManager,
+        Session $checkoutSess
     ) {
         $this->freeGiftHelper = $freeGiftHelper;
         $this->purchaseHelper = $purchaseHelper;
         $this->messageManager = $messageManager;
+        $this->checkoutSession = $checkoutSess;
     }
 
     /**

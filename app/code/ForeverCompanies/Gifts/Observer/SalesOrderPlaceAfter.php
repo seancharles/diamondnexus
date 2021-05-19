@@ -12,7 +12,7 @@ use Magento\Quote\Model\Quote;
 use Magento\Checkout\Model\Cart;
 use Magento\Backend\Model\Session\Quote as AdminQuote;
 
-class ProcessQuoteObserver implements ObserverInterface
+class SalesOrderPlaceAfter implements ObserverInterface
 {
     /**
      * @var FreeGift
@@ -49,6 +49,8 @@ class ProcessQuoteObserver implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
+        echo 'fff';die;
+        
         $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/giftlog.log');
         $logger = new \Zend\Log\Logger();
         $logger->addWriter($writer);
@@ -62,7 +64,7 @@ class ProcessQuoteObserver implements ObserverInterface
             
             $logger->info('free gift');
             
-            $quote = $this->cart->getQuote();
+            $quote = $this->adminQuote->getQuote();
             
             
             $giftSkus = $this->giftHelper->fillGifts($quote);
@@ -77,12 +79,7 @@ class ProcessQuoteObserver implements ObserverInterface
             
             $logger->info('purchase');
             
-            $quote = $this->cart->getQuote();
-            if (trim($quote->getId()) == "") {
-          //      $quote = $this->adminQuote->getQuote();
-                
-                
-            }
+            $quote = $this->adminQuote->getQuote();
             
             $logger->info( 'quote id - ' . $quote->getId() );
             $logger->info('admin quote id - ' . $this->adminQuote->getQuote()->getId() );
