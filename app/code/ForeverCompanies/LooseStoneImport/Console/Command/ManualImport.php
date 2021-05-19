@@ -28,7 +28,7 @@ class ManualImport extends Command
     
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->state->setAreaCode('frontend');
+    //    $this->state->setAreaCode('frontend');
         $this->stoneImportModel->run();
         return;
     }
