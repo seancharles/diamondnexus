@@ -2,10 +2,12 @@
 	<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
 
+	<!--  
     <event name="sales_quote_collect_totals_before">
         <observer name="forevercompanies_sales_quote_collect_totals_after"
         	instance="ForeverCompanies\Gifts\Observer\ProcessQuoteObserver" />
     </event>
+    -->
 
     <event name="free_gift_add_logic">
         <observer name="forever__gift_add_logic"

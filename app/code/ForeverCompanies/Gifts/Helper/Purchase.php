@@ -68,7 +68,7 @@ class Purchase extends AbstractHelper
             $logger->info( 'product sku - ' . $product->getSku() );
             
             
-     //       $_quoteItem->setSetId(42);
+            $_quoteItem->setSetId(42);
      //       $setIdFound = true;
             
             if ($_quoteItem->getSetId() > 0) {
