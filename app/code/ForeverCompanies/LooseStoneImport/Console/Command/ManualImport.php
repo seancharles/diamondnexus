@@ -28,6 +28,11 @@ class ManualImport extends Command
     
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        try{
+            $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_ADMINHTML);
+        } catch(\Exception $e) {
+        }
+        
         $this->stoneImportModel->run();
         return;
     }
