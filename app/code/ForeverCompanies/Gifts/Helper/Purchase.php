@@ -91,6 +91,10 @@ class Purchase extends AbstractHelper
             $product->setPrice(0);
             $product->setQty(1);
             $quote->addProduct($product);
+            
+            $quote->setTotalsCollectedFlag(true);
+        //    $quote->collectTotals();
+            
             $quote->save();
             $this->messageManager->addSuccessMessage(__($this->scopeConfig->getValue('forevercompanies_gifts/purchase/message')));
             

@@ -11,6 +11,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Quote\Model\Quote;
 use Magento\Checkout\Model\Cart;
 use Magento\Backend\Model\Session\Quote as AdminQuote;
+use Magento\Checkout\Model\Session as CheckoutSession;
 
 class ProcessQuoteObserver implements ObserverInterface
 {
@@ -22,6 +23,7 @@ class ProcessQuoteObserver implements ObserverInterface
     
     protected $cart;
     protected $adminQuote;
+    protected $checkoutSession;
 
     /**
      * ProcessQuoteObserver constructor.
@@ -31,13 +33,15 @@ class ProcessQuoteObserver implements ObserverInterface
         FreeGift $giftH,
         Purchase $purchaseH,
         Cart $crt, 
-        AdminQuote $adminQ
+        AdminQuote $adminQ,
+        CheckoutSession $checkoutS
     ) {
         $this->giftHelper = $giftH;
         $this->purchaseHelper = $purchaseH;
         
         $this->cart = $crt;
         $this->adminQuote = $adminQ;
+        $this->checkoutSession = $checkoutS;
     }
 
     /**
@@ -77,7 +81,8 @@ class ProcessQuoteObserver implements ObserverInterface
             
             $logger->info('purchase');
             
-            $quote = $this->cart->getQuote();
+           // $quote = $this->cart->getQuote();
+            $quote = $this->checkoutSession->getQuote();
             if (trim($quote->getId()) == "") {
           //      $quote = $this->adminQuote->getQuote();
                 
