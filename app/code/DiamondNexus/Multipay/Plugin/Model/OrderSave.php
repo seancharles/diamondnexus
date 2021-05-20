@@ -258,39 +258,41 @@ class OrderSave
                     $this->braintreeResource->save($transactionDetail);
                 }
             }
-            if ($order->canInvoice() && $order->getStatus() !== 'quote') {
-                $sum = $info[C::OPTION_TOTAL_DATA] == '1' ? $info[C::AMOUNT_DUE_DATA] : $info[C::OPTION_PARTIAL_DATA];
-                if ($order->getTotalDue() < $sum) {
-                    $shippingAmount = $order->getShippingInclTax();
-                } else {
-                    $amountWithoutShip = $order->getTotalDue() - $order->getShippingInclTax();
-                    if ($amountWithoutShip < $sum) {
-                        $shippingAmount = $sum - $amountWithoutShip;
+            /*
+                if ($order->canInvoice() && $order->getStatus() !== 'quote') {
+                    $sum = $info[C::OPTION_TOTAL_DATA] == '1' ? $info[C::AMOUNT_DUE_DATA] : $info[C::OPTION_PARTIAL_DATA];
+                    if ($order->getTotalDue() < $sum) {
+                        $shippingAmount = $order->getShippingInclTax();
                     } else {
-                        $shippingAmount = 0;
+                        $amountWithoutShip = $order->getTotalDue() - $order->getShippingInclTax();
+                        if ($amountWithoutShip < $sum) {
+                            $shippingAmount = $sum - $amountWithoutShip;
+                        } else {
+                            $shippingAmount = 0;
+                        }
                     }
+                    $invoice = $this->invoiceService->prepareInvoice($order);
+                    $invoice->setShippingAmount($shippingAmount);
+                    $invoice->setSubtotal($sum - $shippingAmount);
+                    $invoice->setBaseSubtotal($sum - $shippingAmount);
+                    $invoice->setGrandTotal($sum);
+                    $invoice->setBaseGrandTotal($sum);
+                    $invoice->register();
+                    $this->resourceInvoice->save($invoice);
+                    $transactionSave = $this->transaction->addObject(
+                        $invoice
+                    )->addObject(
+                        $invoice->getOrder()
+                    );
+                    $transactionSave->save();
+                    $this->invoiceSender->send($invoice);
+                    //Send Invoice mail to customer
+                    $order->addCommentToStatusHistory(
+                        __('Notified customer about invoice creation #%1.', $invoice->getId())
+                    )
+                        ->setIsCustomerNotified(true);
                 }
-                $invoice = $this->invoiceService->prepareInvoice($order);
-                $invoice->setShippingAmount($shippingAmount);
-                $invoice->setSubtotal($sum - $shippingAmount);
-                $invoice->setBaseSubtotal($sum - $shippingAmount);
-                $invoice->setGrandTotal($sum);
-                $invoice->setBaseGrandTotal($sum);
-                $invoice->register();
-                $this->resourceInvoice->save($invoice);
-                $transactionSave = $this->transaction->addObject(
-                    $invoice
-                )->addObject(
-                    $invoice->getOrder()
-                );
-                $transactionSave->save();
-                $this->invoiceSender->send($invoice);
-                //Send Invoice mail to customer
-                $order->addCommentToStatusHistory(
-                    __('Notified customer about invoice creation #%1.', $invoice->getId())
-                )
-                    ->setIsCustomerNotified(true);
-            }
+            */
         }
     }
 }

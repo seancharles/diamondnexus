@@ -116,6 +116,14 @@ if ($block->isMultipay()) {
                             <span><?= $block->escapeHtml(__('Progressive Leasing (offline)')) ?></span>
                         </label>
                     </div>
+                    <?php if($block->getBalanceAmount() > 0) : ?>
+                        <div class="admin__field-option _required">
+                            <input data-amount="<?php echo $block->getStoreCreditAmount();?>" id="multipay_method_store_credit" class="admin__control-radio" value="4" type="radio" name="multipay_payment_method" data-validate='{"required":true}' />
+                            <label class="label" for="multipay_method_store_credit">
+                                <span><?= $block->escapeHtml(__('Store Credit')) ?> (<?php echo $block->getStoreCreditAmount(); ?>)</span>
+                            </label>
+                        </div>
+                    <?php endif; ?>
                 </fieldset>
 
                 <!-- choose full payment or partial payment -->
