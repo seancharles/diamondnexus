@@ -35,17 +35,7 @@ class AddPaymentModalBox extends AbstractPayment
          */
     public function getBalanceAmount()
     {
-        $id = $this->getData('order')->getId();
-        try {
-            $transactions = $this->resource->getAllTransactionsByOrderId($id);
-        } catch (LocalizedException $e) {
-            return '';
-        }
-        $amount = $this->getData('order')->getGrandTotal();
-        foreach ($transactions as $transaction) {
-            $amount -= $transaction['amount'];
-        }
-        return $amount;
+        return $amount = $this->getData('order')->getTotalDue();
     }
     
     public function getStoreCreditAmount()
