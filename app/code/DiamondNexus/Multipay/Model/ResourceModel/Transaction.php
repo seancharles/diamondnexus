@@ -157,14 +157,16 @@ class Transaction extends AbstractDb
             // store credit updates the grand total on the order and balance amount applied
             if($paymentMethod == Constant::MULTIPAY_STORE_CREDIT_METHOD) {
                 $newGrandTotal = $order->getGrandTotal() - (float)$amount;
+                $newTotalDue = $order->getToalDue() - (float)$amount;
                 $newCustomerBalanceAmount = $order->getCustomerBalanceAmount() + (float)$amount;
                 $order->setGrandTotal($newGrandTotal);
+                $order->setTotalDue($newTotalDue);
                 $order->setCustomerBalanceAmount($newCustomerBalanceAmount);
                 
                 $customerBalance = $this->customerBalanceFactory->create();
                 $customerBalance
                     ->setCustomerId($order->getCustomerId())->loadByCustomer()
-                    ->setAmountDelta($amount)
+                    ->setAmountDelta(-$amount)
                     ->setOrder($order)
                     ->setHistoryAction(\Magento\CustomerBalance\Model\Balance\History::ACTION_USED)
                     ->save();
