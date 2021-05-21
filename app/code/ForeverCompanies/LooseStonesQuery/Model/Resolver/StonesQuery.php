@@ -22,13 +22,13 @@ class StonesQuery implements ResolverInterface
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
         CollectionFactory $collectionFac
-    ) {
-        $this->productRepository = $productRepository;
-        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->productColl = $collectionFac->create();
-        
-        // TODO: Figure out a better way to get the total count, if possible.
-        $this->totalCountColl = $collectionFac->create();
+        ) {
+            $this->productRepository = $productRepository;
+            $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+            $this->productColl = $collectionFac->create();
+            
+            // TODO: Figure out a better way to get the total count, if possible.
+            $this->totalCountColl = $collectionFac->create();
     }
     
     public function resolve(
@@ -37,7 +37,7 @@ class StonesQuery implements ResolverInterface
         ResolveInfo $info,
         array $value = null,
         array $args = null
-        ) { 
+        ) {
             $onlineEqFilter = $args['filter']['online']['eq'];
             $productTypeEqFilter = $args['filter']['product_type']['eq'];
             $colorInFilter = $args['filter']['color']['in'];
@@ -81,23 +81,23 @@ class StonesQuery implements ResolverInterface
                 $this->totalCountColl->addAttributeToFilter('shape', array('in' =>  $shapeInFilter));
             }
             
-            $this->productColl->addAttributeToFilter('weight', array('gteq' =>  $caratWeightFromFilter));
-            $this->productColl->addAttributeToFilter('weight', array('lteq' =>  $caratWeightToFilter));
+            $this->productColl->addAttributeToFilter('carat_weight', array('gteq' =>  $caratWeightFromFilter));
+            $this->productColl->addAttributeToFilter('carat_weight', array('lteq' =>  $caratWeightToFilter));
             $this->productColl->addAttributeToFilter('price', array('gteq' =>  $priceFromFilter));
             $this->productColl->addAttributeToFilter('price', array('lteq' =>  $priceToFilter));
             
             $this->totalCountColl->addAttributeToFilter('online', $onlineEqFilter);
             $this->totalCountColl->addAttributeToFilter('product_type', $productTypeEqFilter);
             
-            $this->totalCountColl->addAttributeToFilter('weight', array('gteq' =>  $caratWeightFromFilter));
-            $this->totalCountColl->addAttributeToFilter('weight', array('lteq' =>  $caratWeightToFilter));
+            $this->totalCountColl->addAttributeToFilter('carat_weight', array('gteq' =>  $caratWeightFromFilter));
+            $this->totalCountColl->addAttributeToFilter('carat_weight', array('lteq' =>  $caratWeightToFilter));
             $this->totalCountColl->addAttributeToFilter('price', array('gteq' =>  $priceFromFilter));
             $this->totalCountColl->addAttributeToFilter('price', array('lteq' =>  $priceToFilter));
             $this->totalCountColl->load();
-         
+            
             $this->productColl->setPageSize($pageSize);
             $this->productColl->setCurPage($currentPage);
-            $this->productColl->addAttributeToSelect("*")->load();  
+            $this->productColl->addAttributeToSelect("*")->load();
             
             
             $totalCount = count($this->totalCountColl);
@@ -317,15 +317,18 @@ class StonesQuery implements ResolverInterface
                 $productArr['__typename'] = ucfirst($_product->getTypeId()) . "Product";
                 $productArr['id'] = $_product->getId();
                 $productArr['sku'] = $_product->getSku();
+                $productArr['cert_url_key'] = $_product->getCertUrlKey();
+                $productArr['video_url'] = $_product->getVideoUrl();
+                
                 $productArr['url_key'] = $_product->getUrlKey();
                 $productArr['name'] = $_product->getName();
-                $productArr['color'] = array($_product->getColor() . ", " 
+                $productArr['color'] = array($_product->getColor() . ", "
                     . $_product->getResource()->getAttribute('color')->getFrontend()->getValue($_product));
                 $productArr['color_sort'] = $_product->getColorSort();
                 $productArr['clarity'] = array($_product->getColor() . ", "
                     . $_product->getResource()->getAttribute('clarity')->getFrontend()->getValue($_product));
                 $productArr['clarity_sort'] = $_product->getClaritySort();
-                $productArr['carat_weight'] = round($_product->getWeight(), 2);
+                $productArr['carat_weight'] = $_product->getCaratWeight();
                 $productArr['cut_grade'] = array($_product->getColor() . ", "
                     . $_product->getResource()->getAttribute('cut_grade')->getFrontend()->getValue($_product));
                 $productArr['cut_grade_sort'] = $_product->getCutGradeSort();
@@ -346,8 +349,8 @@ class StonesQuery implements ResolverInterface
                 
                 $items['data']['items'][]  = $productArr;
             }
-        echo json_encode($items);die;
+            echo json_encode($items);die;
     }
     
-
+    
 }
