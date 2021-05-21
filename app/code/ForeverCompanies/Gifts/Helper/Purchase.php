@@ -56,20 +56,10 @@ class Purchase extends AbstractHelper
         $sku = $this->scopeConfig->getValue('forevercompanies_gifts/purchase/product_id'); 
         $product = $this->productRepository->get($sku);
         
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/giftlog.log');
-        $logger = new \Zend\Log\Logger();
-        $logger->addWriter($writer);
-        $logger->info( 'add gift to quote' );
-        
         $setIdFound = false;
         foreach ($quote->getAllItems() as $_quoteItem) {
             
-            $logger->info( 'quote item id ' . $_quoteItem->getId() );
-            $logger->info( 'product sku - ' . $product->getSku() );
-            
-            
             $_quoteItem->setSetId(42);
-     //       $setIdFound = true;
             
             if ($_quoteItem->getSetId() > 0) {
                 $setIdFound = true;
@@ -77,27 +67,14 @@ class Purchase extends AbstractHelper
               
             if ($_quoteItem->getProduct()->getSku() == $sku) {
                 $this->quoteItem->load($_quoteItem->getItemId())->delete();
-                
-                
-                
-                //  unset($_quoteItem);
             }
         }
         
         if ($setIdFound && $quote->getSubtotal() >= $this->scopeConfig->getValue('forevercompanies_gifts/purchase/total')) {
-                
-            $logger->info( 'in' );
-            
-            $product->setPrice(0);
             $product->setQty(1);
             $quote->addProduct($product);
-            
-            $quote->setTotalsCollectedFlag(true);
-        //    $quote->collectTotals();
-            
             $quote->save();
             $this->messageManager->addSuccessMessage(__($this->scopeConfig->getValue('forevercompanies_gifts/purchase/message')));
-            
         }
     }
     

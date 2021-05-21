@@ -11,7 +11,6 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Quote\Model\Quote;
 use Magento\Checkout\Model\Cart;
 use Magento\Backend\Model\Session\Quote as AdminQuote;
-use Magento\Checkout\Model\Session as CheckoutSession;
 
 class ProcessQuoteObserver implements ObserverInterface
 {
@@ -23,7 +22,6 @@ class ProcessQuoteObserver implements ObserverInterface
     
     protected $cart;
     protected $adminQuote;
-    protected $checkoutSession;
 
     /**
      * ProcessQuoteObserver constructor.
@@ -33,15 +31,13 @@ class ProcessQuoteObserver implements ObserverInterface
         FreeGift $giftH,
         Purchase $purchaseH,
         Cart $crt, 
-        AdminQuote $adminQ,
-        CheckoutSession $checkoutS
+        AdminQuote $adminQ
     ) {
         $this->giftHelper = $giftH;
         $this->purchaseHelper = $purchaseH;
         
         $this->cart = $crt;
         $this->adminQuote = $adminQ;
-        $this->checkoutSession = $checkoutS;
     }
 
     /**
@@ -53,22 +49,12 @@ class ProcessQuoteObserver implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/giftlog.log');
-        $logger = new \Zend\Log\Logger();
-        $logger->addWriter($writer);
-        $logger->info( 'observer name - ' . $observer->getEvent()->getName() );
-        
         $eventName = $observer->getEvent()->getName(); 
-        
         
         $freeGift = false;
         if ($this->giftHelper->isEnabledFreeGift()) {
             
-            $logger->info('free gift');
-            
             $quote = $this->cart->getQuote();
-            
-            
             $giftSkus = $this->giftHelper->fillGifts($quote);
             
             foreach ($giftSkus as $sku => $qty) {
@@ -79,21 +65,7 @@ class ProcessQuoteObserver implements ObserverInterface
 
         if (!$freeGift && $this->purchaseHelper->isEnabledPurchase()) {
             
-            $logger->info('purchase');
-            
-           // $quote = $this->cart->getQuote();
-            $quote = $this->checkoutSession->getQuote();
-            if (trim($quote->getId()) == "") {
-          //      $quote = $this->adminQuote->getQuote();
-                
-                
-            }
-            
-            $logger->info( 'quote id - ' . $quote->getId() );
-            $logger->info('admin quote id - ' . $this->adminQuote->getQuote()->getId() );
-            
-            
-            
+           $quote = $this->cart->getQuote();
             $this->purchaseHelper->addGiftToQuote($quote);
         } 
         

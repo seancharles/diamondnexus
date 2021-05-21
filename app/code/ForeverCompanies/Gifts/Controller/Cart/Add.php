@@ -99,12 +99,7 @@ class Add extends CoreAdd
             $this->_eventManager->dispatch(
                 'checkout_cart_add_product_complete',
                 ['product' => $product, 'request' => $this->getRequest(), 'response' => $this->getResponse()]
-                );
-            
-            $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/giftlog.log');
-            $logger = new \Zend\Log\Logger();
-            $logger->addWriter($writer);
-            $logger->info("bbb");
+            );
             
             $this->eventManager->dispatch('free_gift_add_logic');
             

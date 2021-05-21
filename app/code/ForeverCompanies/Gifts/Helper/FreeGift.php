@@ -52,8 +52,6 @@ class FreeGift extends AbstractHelper
      */
     protected $rules = [];
     
-    protected $logger;
-    
     protected $messageManager;
     protected $quoteItem;
 
@@ -80,10 +78,6 @@ class FreeGift extends AbstractHelper
         $this->quoteItem = $quoteI;
         
         $this->fillRules();
-        
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/giftlog.log');
-        $this->logger = new \Zend\Log\Logger();
-        $this->logger->addWriter($writer);
     }
 
     /**
@@ -238,7 +232,7 @@ class FreeGift extends AbstractHelper
                     $quoteExpired = $createdAt->getTimestamp() + $expiredTime;
                     if ($now->getTimestamp() > $quoteExpired) {
                         $quote->removeItem($quoteItem->getItemId());
-                        $quote->addMessage('Free gift remove. Time was expired');
+                        $quote->addMessage('Unfortunately, your free gift has expired.');
                         continue;
                     }
                 }
@@ -279,7 +273,6 @@ class FreeGift extends AbstractHelper
                 $this->messageManager->addSuccessMessage(__("A free gift has been added to your order!"));
             }
         } catch (NoSuchEntityException $e) {
-            $this->logger->info("the error is " . $e->getMessage());
             return;
         }
     }
