@@ -144,7 +144,10 @@ class OrderSave
             switch ($method) {
                 case Constant::MULTIPAY_CREDIT_METHOD:
                 case Constant::MULTIPAY_CASH_METHOD:
+                case Constant::MULTIPAY_STORE_CREDIT_METHOD:
                 case Constant::MULTIPAY_AFFIRM_OFFLINE_METHOD:
+                case Constant::MULTIPAY_PAYPAL_OFFLINE_METHOD:
+                case Constant::MULTIPAY_PROGRESSIVE_OFFLINE_METHOD:
                     $this->saveMultipayTransaction($order, $info);
                     break;
                 case Constant::MULTIPAY_QUOTE_METHOD:
@@ -173,44 +176,47 @@ class OrderSave
         if ($order->getStatus() == Order::STATE_CANCELED) {
             return;
         }
-
-        if ($order->getState() == 'quote' && $order->getStatus() == 'quote') {
-            $requiredQuote = true;
-        }
+        
         $payment = $order->getPayment();
         $methodInstance = $payment->getMethod();
         $info = $payment->getAdditionalInformation();
+        $multipayMethod = $info[Constant::PAYMENT_METHOD_DATA];
+        
         if (!isset($info[Constant::PAYMENT_METHOD_DATA])) {
             return;
         }
-        $method = $info[Constant::PAYMENT_METHOD_DATA];
-        if ($methodInstance === Constant::MULTIPAY_METHOD && $method != Constant::MULTIPAY_QUOTE_METHOD) {
-            if (!isset($info[Constant::OPTION_TOTAL_DATA]) || $info[Constant::OPTION_TOTAL_DATA] == null) {
-                throw new ValidatorException(__('You need choose Amount option - total or partial '));
+        
+        if ($methodInstance === Constant::MULTIPAY_METHOD) {
+            if($multipayMethod != Constant::MULTIPAY_QUOTE_METHOD) {
+                if (!isset($info[Constant::OPTION_TOTAL_DATA]) || $info[Constant::OPTION_TOTAL_DATA] == null) {
+                    throw new ValidatorException(__('You need choose Amount option - total or partial '));
+                }
+            }else if($multipayMethod == Constant::MULTIPAY_CREDIT_METHOD) {
+                if ($this->state->getAreaCode() !== Area::AREA_ADMINHTML) {
+                    $result = $this->helper->sendToBraintree($order);
+                    if ($result instanceof Error) {
+                        throw new ValidatorException(__('Credit card failed verification'));
+                    }
+                }
+            }else if ($multipayMethod == Constant::MULTIPAY_QUOTE_METHOD) {
+                $order->setState('quote')->setStatus('quote');
             }
-        }
-        if ($methodInstance === Constant::MULTIPAY_METHOD && $method == Constant::MULTIPAY_CREDIT_METHOD) {
-            if ($this->state->getAreaCode() !== Area::AREA_ADMINHTML) {
-                $result = $this->helper->sendToBraintree($order);
-                if ($result instanceof Error) {
-                    throw new ValidatorException(__('Credit card failed verification'));
+
+            if ($multipayMethod != Constant::MULTIPAY_QUOTE_METHOD) {
+                if (
+                    (isset($info[Constant::OPTION_TOTAL_DATA]) == true && $info[Constant::OPTION_TOTAL_DATA] == 1)
+                    ||
+                    ($order->getGrandTotal() == $order->getTotalPaid())
+                    ||
+                    $order->getTotalDue() == 0
+                ) {
+                    $order->setState(Order::STATE_PROCESSING)->setStatus(Order::STATE_PROCESSING);
+                }
+                
+                if($order->getTotalPaid() < $order->getGrandTotal() || $order->getTotalDue() > 0) {
+                    $order->setState('pending')->setStatus('pending');
                 }
             }
-        }
-        if (isset($info[Constant::OPTION_TOTAL_DATA])) {
-            if ($methodInstance === Constant::MULTIPAY_METHOD && $info[Constant::OPTION_TOTAL_DATA] == 1) {
-                $order->setState(Order::STATE_PROCESSING)->setStatus(Order::STATE_PROCESSING);
-            }
-            if ($methodInstance === Constant::MULTIPAY_METHOD && $info[Constant::OPTION_TOTAL_DATA] == 2) {
-                $order->setState('pending')->setStatus('pending');
-            }
-        }
-        if ($methodInstance == Constant::MULTIPAY_METHOD && $method == Constant::MULTIPAY_QUOTE_METHOD) {
-            $order->setState('quote')->setStatus('quote');
-        }
-        if (isset($requiredQuote) && $requiredQuote == true) {
-            $order->setStatus('quote');
-            $order->setState('quote');
         }
     }
 
