@@ -49,43 +49,7 @@ class AddFormData implements DataPatchInterface
         
         $formData = [
             [
-                'name' => 'fa short form',
-                'website_id' => self::FA_WEBSITE_ID,
-                'active' => self::FORM_STATUS_ACTIVE,
-                'fields_json' => json_encode([
-                    'firstname' => 'First Name',
-                    'lastname' => 'Last Name',
-                    'email' => 'Email Address',
-                    'telephone' => 'Telephone',
-                    'design' => 'What do you want to design'
-                ]),
-                'fields_validation_json' => json_encode([
-                    'firstname' => 'required',
-                    'lastname' => 'required',
-                    'email' => 'required',
-                    'telephone' => 'required'
-                ]),
-            ],
-            [
-                'name' => 'fa long form',
-                'website_id' => self::FA_WEBSITE_ID,
-                'active' => self::FORM_STATUS_ACTIVE,
-                'fields_json' => json_encode([
-                    'designfor' => 'Who are you designing for?',
-                    'selectJewelryType' => 'Design insight',
-                    'selectShapePreference' => 'Shape preference',
-                    'selectMetalType' => 'Select your metal type',
-                    'selectNeedBy' => 'When do you need it by?',
-                    'txtComments' => 'Is there anything else you\'d like us to know?',
-                    'imageUploadOne' => 'Image #1',
-                    'imageUploadTwo' => 'Image #2',
-                    'imageUploadThree' => 'Image #3'
-                ]),
-                'fields_validation_json' => json_encode([
-                ]),
-            ],
-            [
-                'name' => 'dn catalog request form',
+                'name' => 'dn inline catalog request form',
                 'website_id' => self::DN_WEBSITE_ID,
                 'active' => self::FORM_STATUS_ACTIVE,
                 'fields_json' => json_encode([
@@ -107,14 +71,14 @@ class AddFormData implements DataPatchInterface
                     'firstname' => 'required',
                     'lastname' => 'required',
                     'email' => 'required',
-                    'coutry' => 'required',
+                    'country' => 'required',
                     'address1' => 'required',
                     'city' => 'required',
                     'zip' => 'required'
                 ]),
             ],
             [
-                'name' => 'dn modal form',
+                'name' => 'dn inline giveaway form',
                 'website_id' => self::DN_WEBSITE_ID,
                 'active' => self::FORM_STATUS_ACTIVE,
                 'fields_json' => json_encode([
@@ -125,18 +89,210 @@ class AddFormData implements DataPatchInterface
                 ]),
             ],
             [
-                'name' => 'fa modal form',
-                'website_id' => self::FA_WEBSITE_ID,
+                'name' => 'dn modal get started form',
+                'website_id' => self::DN_WEBSITE_ID,
                 'active' => self::FORM_STATUS_ACTIVE,
                 'fields_json' => json_encode([
-                    'firstname' => 'First Name'
+                    'firstname' => 'First Name',
+                    'lastname' => 'Last Name',
+                    'email' => 'Email Address',
+                    'telephone' => 'Telephone',
+                ]),
+                'fields_validation_json' => json_encode([
+                    'firstname' => 'required',
+                    'lastname' => 'required',
+                    'email' => 'required',
+                    'telephone' => 'required'
+                ]),
+            ],
+            [
+                'name' => 'dn modal giveaway form',
+                'website_id' => self::DN_WEBSITE_ID,
+                'active' => self::FORM_STATUS_ACTIVE,
+                'fields_json' => json_encode([
+                    'email' => 'Email Address',
+                    'gender' => 'Gender',
                 ]),
                 'fields_validation_json' => json_encode([
                     'email' => 'required'
                 ]),
             ],
             [
-                'name' => 'tf modal form',
+                'name' => 'dn modal catalog request form',
+                'website_id' => self::DN_WEBSITE_ID,
+                'active' => self::FORM_STATUS_ACTIVE,
+                'fields_json' => json_encode([
+                    'firstname' => 'First Name',
+                    'lastname' => 'Last Name',
+                    'address1' => 'Address 1',
+                    'address2' => 'Apt / Suite / Other',
+                    'city' => 'City',
+                    'state' => 'State',
+                    'zip' => 'Zip'
+                ]),
+                'fields_validation_json' => json_encode([
+                    'firstname' => 'required',
+                    'lastname' => 'required',
+                    'address1' => 'required',
+                    'city' => 'required',
+                    'state' => 'required',
+                    'zip' => 'required'
+                ]),
+            ],
+            [
+                'name' => 'fa inline giveaway form',
+                'website_id' => self::FA_WEBSITE_ID,
+                'active' => self::FORM_STATUS_ACTIVE,
+                'fields_json' => json_encode([
+                    'email' => 'Email'
+                ]),
+                'fields_validation_json' => json_encode([
+                    'email' => 'required'
+                ]),
+            ],
+            [
+                'name' => 'fa modal giveaway form',
+                'website_id' => self::FA_WEBSITE_ID,
+                'active' => self::FORM_STATUS_ACTIVE,
+                'fields_json' => json_encode([
+                    'email' => 'Email'
+                ]),
+                'fields_validation_json' => json_encode([
+                    'email' => 'required'
+                ]),
+            ],
+            [
+                'name' => 'fa inline get started form',
+                'website_id' => self::FA_WEBSITE_ID,
+                'active' => self::FORM_STATUS_ACTIVE,
+                'fields_json' => json_encode([
+                    'firstname' => 'First Name',
+                    'lastname' => 'Last Name',
+                    'email' => 'Email Address',
+                    'telephone' => 'Telephone',
+                    'design' => 'What do you want to design'
+                ]),
+                'fields_validation_json' => json_encode([
+                    'firstname' => 'required',
+                    'lastname' => 'required',
+                    'email' => 'required',
+                    'telephone' => 'required',
+                    'design' => 'required'
+                ]),
+            ],
+            [
+                'name' => 'fa inline long engagement form',
+                'website_id' => self::FA_WEBSITE_ID,
+                'active' => self::FORM_STATUS_ACTIVE,
+                'fields_json' => json_encode([
+                    'designFor' => 'Who are you designing for?',
+                    'designInsight' => 'Design Insight',
+                    'centerStoneShape' => 'Center Stone Shape',
+                    'metalType' => 'Metal Type',
+                    'ringType' => 'Ring Type',
+                    'stylePreference' => 'Style preference',
+                    'needBy' => 'When do you need it by?',
+                    'anythingElse' => 'Is there anything else you\'d like us to know?',
+                    'howManyImages' => 'How many images would you like to upload?',
+                    'imageUploadOne' => 'Image #1', 
+                    'imageUploadTwo' => 'Image #2',
+                    'imageUploadThree' => 'Image #3',
+                    'imageUploadFour' => 'Image #4',
+                    'imageUploadFive' => 'Image #5',
+                    'imageUploadSix' => 'Image #6',
+                    'imageUploadSeven' => 'Image #7',
+                    'imageUploadEight' => 'Image #8',
+                    'imageUploadNine' => 'Image #9',
+                    'imageUploadTen' => 'Image #10'
+                ]),
+                'fields_validation_json' => json_encode([
+                    'designFor' => 'required',
+                    'designInsight' => 'required',
+                    'centerStoneShape' => 'required',
+                    'metalType' => 'required',
+                    'ringType' => 'required',
+                    'stylePreference' => 'required',
+                    'needBy' => 'required',
+                    'howManyImages' => 'required'
+                ]),
+            ],
+            [
+                'name' => 'fa inline long jewelry form',
+                'website_id' => self::FA_WEBSITE_ID,
+                'active' => self::FORM_STATUS_ACTIVE,
+                'fields_json' => json_encode([
+                    'designFor' => 'Who are you designing for?',
+                    'jewelryType' => 'Jewelry Type',
+                    'designInsight' => 'Design Insight',
+                    'shapePreference' => 'Shape Preference',
+                    'metalType' => 'Metal Type',
+                    'ringType' => 'Ring Type',
+                    'stylePreference' => 'Style preference',
+                    'needBy' => 'When do you need it by?',
+                    'anythingElse' => 'Is there anything else you\'d like us to know?',
+                    'howManyImages' => 'How many images would you like to upload?',
+                    'imageUploadOne' => 'Image #1',
+                    'imageUploadTwo' => 'Image #2',
+                    'imageUploadThree' => 'Image #3',
+                    'imageUploadFour' => 'Image #4',
+                    'imageUploadFive' => 'Image #5',
+                    'imageUploadSix' => 'Image #6',
+                    'imageUploadSeven' => 'Image #7',
+                    'imageUploadEight' => 'Image #8',
+                    'imageUploadNine' => 'Image #9',
+                    'imageUploadTen' => 'Image #10'
+                ]),
+                'fields_validation_json' => json_encode([
+                    'designFor' => 'required',
+                    'jewelryType' => 'required',
+                    'designInsight' => 'required',
+                    'shapePreference' => 'required',
+                    'metalType' => 'required',
+                    'needBy' => 'required',
+                    'anythingElse' => 'Is there anything else you\'d like us to know?',
+                    'howManyImages' => 'required',
+                    'imageUploadOne' => 'Image #1',
+                    'imageUploadTwo' => 'Image #2',
+                    'imageUploadThree' => 'Image #3',
+                    'imageUploadFour' => 'Image #4',
+                    'imageUploadFive' => 'Image #5',
+                    'imageUploadSix' => 'Image #6',
+                    'imageUploadSeven' => 'Image #7',
+                    'imageUploadEight' => 'Image #8',
+                    'imageUploadNine' => 'Image #9',
+                    'imageUploadTen' => 'Image #10'
+                ]),
+            ],
+            [
+                'name' => 'fa modal contact form',
+                'website_id' => self::FA_WEBSITE_ID,
+                'active' => self::FORM_STATUS_ACTIVE,
+                'fields_json' => json_encode([
+                    'firstname' => 'First Name',
+                    'lastname' => 'Last Name',
+                    'email' => 'Email',
+                    'telephone' => 'Telephone',
+                    'additional_info' => 'Additional Info'
+                ]),
+                'fields_validation_json' => json_encode([
+                    'firstname' => 'required',
+                    'lastname' => 'required',
+                    'email' => 'required'
+                ]),
+            ],
+            [
+                'name' => 'tf inline giveaway form',
+                'website_id' => self::TF_WEBSITE_ID,
+                'active' => self::FORM_STATUS_ACTIVE,
+                'fields_json' => json_encode([
+                    'email' => 'Email Address'
+                ]),
+                'fields_validation_json' => json_encode([
+                    'email' => 'required'
+                ]),
+            ],
+            [
+                'name' => 'tf modal giveaway form',
                 'website_id' => self::TF_WEBSITE_ID,
                 'active' => self::FORM_STATUS_ACTIVE,
                 'fields_json' => json_encode([
@@ -168,5 +324,10 @@ class AddFormData implements DataPatchInterface
     public function getAliases(): array
     {
         return [];
+    }
+    
+    public static function getVersion()
+    {
+        return '2.0.0';
     }
 }
