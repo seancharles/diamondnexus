@@ -1,11 +1,28 @@
 <?php
 namespace DiamondNexus\Multipay\Block\Order;
 
-use DiamondNexus\Multipay\Model\Constant;
+use Magento\Backend\Block\Template\Context;
 use Magento\Store\Model\ScopeInterface;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\CustomerBalance\Model\BalanceFactory;
+use DiamondNexus\Multipay\Model\Constant;
+use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
 
 class Paynow extends AbstractPay
 {
+    public function __construct(
+        Context $context,
+        OrderRepositoryInterface $orderRepository,
+        Transaction $transaction,
+        ManagerInterface $messageManager,
+        BalanceFactory $balanceFactory
+    ) {
+        parent::__construct($context, $orderRepository, $transaction, $messageManager);
+        
+        $this->balanceFactory = $balanceFactory;
+    }
+    
     /**
      * @return mixed|string
      */
@@ -29,6 +46,24 @@ class Paynow extends AbstractPay
             return $this->_scopeConfig->getValue('paypal/style/logo', ScopeInterface::SCOPE_STORE, $id);
         } catch (NoSuchEntityException $e) {
             return '';
+        }
+    }
+    
+    public function getStoreCreditAmount()
+    {
+        $customerId = $this->getData('order')->getCustomerId();
+        $totalDue = $this->getData('order')->getTotalDue();
+        if($customerId > 0) {
+            $balanceModel = $this->balanceFactory->create();
+            $balanceModel->setCustomerId($customerId)->loadByCustomer();
+            
+            if($totalDue < $balanceModel->getAmount()) {
+                return $totalDue;
+            } else {
+                return $balanceModel->getAmount();
+            }
+        } else {
+            return 0;
         }
     }
     
