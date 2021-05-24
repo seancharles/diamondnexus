@@ -188,10 +188,10 @@ class AddFormData implements DataPatchInterface
                     'designFor' => 'Who are you designing for?',
                     'designInsight' => 'Design Insight',
                     'centerStoneShape' => 'Center Stone Shape',
-                    'metalType' => 'Metal Type',
-                    'ringType' => 'Ring Type',
-                    'stylePreference' => 'Style preference',
-                    'needBy' => 'When do you need it by?',
+                    'selectMetalType' => 'Metal Type',
+                    'selectRingType' => 'Ring Type',
+                    'selectStylePreference' => 'Style preference',
+                    'selectNeedBy' => 'When do you need it by?',
                     'anythingElse' => 'Is there anything else you\'d like us to know?',
                     'howManyImages' => 'How many images would you like to upload?',
                     'imageUploadOne' => 'Image #1', 
@@ -209,10 +209,10 @@ class AddFormData implements DataPatchInterface
                     'designFor' => 'required',
                     'designInsight' => 'required',
                     'centerStoneShape' => 'required',
-                    'metalType' => 'required',
-                    'ringType' => 'required',
-                    'stylePreference' => 'required',
-                    'needBy' => 'required',
+                    'selectMetalType' => 'required',
+                    'selectRingType' => 'required',
+                    'selectStylePreference' => 'required',
+                    'selectNeedBy' => 'required',
                     'howManyImages' => 'required'
                 ]),
             ],
@@ -222,13 +222,13 @@ class AddFormData implements DataPatchInterface
                 'active' => self::FORM_STATUS_ACTIVE,
                 'fields_json' => json_encode([
                     'designFor' => 'Who are you designing for?',
-                    'jewelryType' => 'Jewelry Type',
+                    'selectJewelryType' => 'Jewelry Type',
                     'designInsight' => 'Design Insight',
-                    'shapePreference' => 'Shape Preference',
-                    'metalType' => 'Metal Type',
-                    'ringType' => 'Ring Type',
-                    'stylePreference' => 'Style preference',
-                    'needBy' => 'When do you need it by?',
+                    'selectShapePreference' => 'Shape Preference',
+                    'selectMetalType' => 'Metal Type',
+                    'selectRingType' => 'Ring Type',
+                    'selectStylePreference' => 'Style preference',
+                    'selectNeedBy' => 'When do you need it by?',
                     'anythingElse' => 'Is there anything else you\'d like us to know?',
                     'howManyImages' => 'How many images would you like to upload?',
                     'imageUploadOne' => 'Image #1',
@@ -244,11 +244,11 @@ class AddFormData implements DataPatchInterface
                 ]),
                 'fields_validation_json' => json_encode([
                     'designFor' => 'required',
-                    'jewelryType' => 'required',
+                    'selectJewelryType' => 'required',
                     'designInsight' => 'required',
-                    'shapePreference' => 'required',
-                    'metalType' => 'required',
-                    'needBy' => 'required',
+                    'selectShapePreference' => 'required',
+                    'selectMetalType' => 'required',
+                    'selectNeedBy' => 'required',
                     'anythingElse' => 'Is there anything else you\'d like us to know?',
                     'howManyImages' => 'required',
                     'imageUploadOne' => 'Image #1',
@@ -328,6 +328,6 @@ class AddFormData implements DataPatchInterface
     
     public static function getVersion()
     {
-        return '2.0.0';
+        return '3.0.0';
     }
 }
