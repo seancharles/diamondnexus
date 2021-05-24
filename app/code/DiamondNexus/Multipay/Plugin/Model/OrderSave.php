@@ -24,6 +24,9 @@ use Magento\Sales\Model\Service\InvoiceService;
 use PayPal\Braintree\Api\Data\TransactionDetailDataInterfaceFactory;
 use PayPal\Braintree\Gateway\Response\PaymentDetailsHandler;
 use PayPal\Braintree\Model\TransactionDetail;
+use ShipperHQ\Shipper\Model\ResourceModel\Order\Detail;
+use ShipperHQ\Shipper\Model\ResourceModel\Order\GridDetail;
+use ForeverCompanies\CustomSales\Helper\Shipdate;
 
 class OrderSave
 {
@@ -81,6 +84,21 @@ class OrderSave
      * @var Invoice
      */
     protected $resourceInvoice;
+    
+    /**
+     * @var Detail
+     */
+    protected $shipperDetailResourceModel;
+    
+    /**
+     * @var GridDetail
+     */
+    protected $shipperGridDetailResourceModel;
+    
+    /**
+     * @var Shipdate
+     */
+    protected $shipdateHelper;
 
     /**
      * OrderSave constructor.
@@ -105,7 +123,10 @@ class OrderSave
         Invoice $resourceInvoice,
         InvoiceService $invoiceService,
         \Magento\Framework\DB\Transaction $transaction,
-        InvoiceSender $invoiceSender
+        InvoiceSender $invoiceSender,
+        Detail $shipperDetailResourceModel,
+        GridDetail $shipperGridDetailResourceModel,
+        Shipdate $shipdateHelper
     ) {
         $this->transactionDetailFactory = $transactionDetailFactory;
         $this->braintreeResource = $braintreeResource;
@@ -117,6 +138,9 @@ class OrderSave
         $this->helper = $helper;
         $this->emailSender = $emailSender;
         $this->state = $state;
+        $this->shipperDetailResourceModel = $shipperDetailResourceModel;
+        $this->shipperGridDetailResourceModel = $shipperGridDetailResourceModel;
+        $this->shipdateHelper = $shipdateHelper;
     }
 
     /**
@@ -211,6 +235,8 @@ class OrderSave
                     $order->getTotalDue() == 0
                 ) {
                     $order->setState(Order::STATE_PROCESSING)->setStatus(Order::STATE_PROCESSING);
+                    
+                    $this->updateDeliveryDates($order);
                 }
                 
                 if($order->getTotalPaid() < $order->getGrandTotal() || $order->getTotalDue() > 0) {
@@ -264,12 +290,15 @@ class OrderSave
                     $this->braintreeResource->save($transactionDetail);
                 }
             }
-            /*
-                if ($order->canInvoice() && $order->getStatus() !== 'quote') {
+
+            if ($order->canInvoice()) {
+                if($order->getGrandTotal() == 0 || $order->getTotalPaid() == $order->getGrandTotal()) {
+                    
                     $sum = $info[C::OPTION_TOTAL_DATA] == '1' ? $info[C::AMOUNT_DUE_DATA] : $info[C::OPTION_PARTIAL_DATA];
                     if ($order->getTotalDue() < $sum) {
                         $shippingAmount = $order->getShippingInclTax();
                     } else {
+                        $shippingAmount = 0;
                         $amountWithoutShip = $order->getTotalDue() - $order->getShippingInclTax();
                         if ($amountWithoutShip < $sum) {
                             $shippingAmount = $sum - $amountWithoutShip;
@@ -298,7 +327,62 @@ class OrderSave
                     )
                         ->setIsCustomerNotified(true);
                 }
-            */
+            }
         }
+    }
+    
+    protected function updateDeliveryDates(OrderInterface $order)
+    {
+        $connection = $this->shipperDetailResourceModel->getConnection();
+        $select = $connection->select()->from($this->shipperDetailResourceModel->getMainTable())
+            ->where('order_id = ?', $order->getEntityId())
+            ->order('id desc')
+            ->limit(1);
+        
+        // pull the existing order delivery dates
+        $data = $connection->fetchRow($select);
+        
+        $dispatchDate =  $data['dispatch_date'];
+        $deliveryDate = $data['delivery_date'];
+        
+        // get the number of days since the order was created
+        $daysAfterCreate = $this->shipdateHelper->getDateDifference( $order->getCreatedAt(), date('Y-m-d') );
+        $daysToShip = $this->shipdateHelper->getDateDifference( $order->getCreatedAt(), $dispatchDate );
+        $daysToDeliver = $this->shipdateHelper->getDateDifference( $order->getCreatedAt(), $deliveryDate );
+        
+        // calculate the new dates by adding x number of business days since the order was created
+        $newDispatchDate = $this->shipdateHelper->getShipdate($daysAfterCreate + $daysToShip);
+        $newDeliveryDate = $this->shipdateHelper->getShipdate($daysAfterCreate + $daysToDeliver);
+        
+        $deliveryDates = [
+            'dispatch_date' => $newDispatchDate,
+            'delivery_date' => $newDeliveryDate
+        ];
+        
+        // update the carrier block on the order detail
+        $carrierGroupDetail = json_decode($data['carrier_group_detail']);
+        
+        $carrierGroupDetail[0]->dispatch_date = date('D, M d', strtotime($newDispatchDate));
+        $carrierGroupDetail[0]->delivery_date = date('D, M d', strtotime($newDeliveryDate));
+        
+        $this->shipperDetailResourceModel->getConnection()->update(
+            $this->shipperDetailResourceModel->getMainTable(),
+            ['carrier_group_detail' => json_encode($carrierGroupDetail)],
+            'order_id = ' . $order->getEntityId()
+        );
+        
+        // update detail record
+        $this->shipperDetailResourceModel->getConnection()->update(
+            $this->shipperDetailResourceModel->getMainTable(),
+            $deliveryDates,
+            'order_id = ' . $order->getEntityId()
+        );
+        
+        // update grid record
+        $this->shipperGridDetailResourceModel->getConnection()->update(
+            $this->shipperGridDetailResourceModel->getMainTable(),
+            $deliveryDates,
+            'order_id = ' . $order->getEntityId()
+        );
     }
 }
