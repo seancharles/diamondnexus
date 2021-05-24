@@ -176,6 +176,27 @@ class Shipdate extends AbstractHelper
         return $timestamp;
     }
 
+    public function adjustDeliveryDate($date = null, $days = 0)
+    {
+        $time = strtotime($date);
+        $i = 0;
+        $businessDays = 0;
+        
+        while($businessDays < $days) {
+            $newTimestamp = $this->adjustTimestampDays($time, $i);
+            
+            if($this->isBusinessDay($newTimestamp) === true) {
+                $businessDays++;
+            }
+            
+            $i++;
+        }
+        
+        $date = date('y-m-d', $this->adjustTimestampDays($time, $businessDays));
+        
+        return $date;
+    }
+
     /**
      * Adjust the time stamp by number of days
      *
@@ -186,6 +207,16 @@ class Shipdate extends AbstractHelper
     public function adjustTimestampDays($time = 0, $days = 0)
     {
         return $time + ($days * 86400);
+    }
+    
+    public function getDateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
+    {
+        $datetime1 = date_create($date_1);
+        $datetime2 = date_create($date_2);
+       
+        $interval = date_diff($datetime1, $datetime2);
+       
+        return $interval->format($differenceFormat);
     }
 
     /**

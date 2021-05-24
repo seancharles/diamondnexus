@@ -347,12 +347,10 @@ class OrderSave
         
         // get the number of days since the order was created
         $daysAfterCreate = $this->shipdateHelper->getDateDifference( $order->getCreatedAt(), date('Y-m-d') );
-        $daysToShip = $this->shipdateHelper->getDateDifference( $order->getCreatedAt(), $dispatchDate );
-        $daysToDeliver = $this->shipdateHelper->getDateDifference( $order->getCreatedAt(), $deliveryDate );
         
         // calculate the new dates by adding x number of business days since the order was created
-        $newDispatchDate = $this->shipdateHelper->getShipdate($daysAfterCreate + $daysToShip);
-        $newDeliveryDate = $this->shipdateHelper->getShipdate($daysAfterCreate + $daysToDeliver);
+        $newDispatchDate = $this->shipdateHelper->adjustDeliveryDate($dispatchDate, $daysAfterCreate);
+        $newDeliveryDate = $this->shipdateHelper->adjustDeliveryDate($deliveryDate, $daysAfterCreate);
         
         $deliveryDates = [
             'dispatch_date' => $newDispatchDate,
