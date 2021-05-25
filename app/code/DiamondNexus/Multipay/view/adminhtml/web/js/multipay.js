@@ -62,6 +62,25 @@ define(['jquery', 'multipay'], function ($, multipay) {
                 $('.payment-method-options:nth-child(4)').css('display', 'none')
                 $('.payment-method-options:nth-child(5)').css('display', 'none')
                 $('.payment-method-options:nth-child(6)').css('display', 'none')
+            } else if ($('#multipay_method_store_credit').is(':checked')) {
+                
+                $('#multipay_method_partial_balance').prop('checked',true)
+                $('#multipay_option_partial').val($(this).data('amount'))
+                
+                var amount_to_pay = $('#multipay_option_partial').val()
+                var multipay_amount_due = $('#multipay_amount_due').val()
+                var balance_due = multipay_amount_due - amount_to_pay
+                if (balance_due > 0) {
+                    $('#multipay_new_balance').val(balance_due.toFixed(2))
+                } else {
+                    $('#multipay_new_balance').val('0.00')
+                }
+
+                $('.payment-method-options:nth-child(2)').css('display', 'none')
+                $('.payment-method-options:nth-child(3)').css('display', 'none')
+                $('.payment-method-options:nth-child(4)').css('display', 'none')
+                $('.payment-method-options:nth-child(5)').css('display', 'none')
+                $('.payment-method-options:nth-child(6)').css('display', 'none')
             }
             if ($('#multipay_method_partial_balance').is(':checked')) {
                 $('.payment-method-options:nth-child(4)').css(

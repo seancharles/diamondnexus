@@ -18,6 +18,8 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\Model\ResourceModel\Db\Context;
 use Magento\Sales\Model\Order;
+use Magento\CustomerBalance\Model\BalanceFactory;
+use Magento\CustomerBalance\Model\Balance\HistoryFactory;
 
 /**
  * Class Transaction
@@ -61,6 +63,8 @@ class Transaction extends AbstractDb
         Logger $logger,
         EmailSender $emailSender,
         ExtOrder $extOrderHelper,
+        BalanceFactory $customerBalanceFactory,
+        HistoryFactory $customerBalanceHistoryFactory,
         $connectionName = null
     ) {
         parent::__construct($context, $connectionName);
@@ -68,6 +72,9 @@ class Transaction extends AbstractDb
         $this->logger = $logger;
         $this->emailSender = $emailSender;
         $this->extOrderHelper = $extOrderHelper;
+        $this->customerBalanceFactory = $customerBalanceFactory;
+        $this->customerBalanceHistoryFactory = $customerBalanceHistoryFactory;
+        
     }
 
     /**
@@ -103,28 +110,33 @@ class Transaction extends AbstractDb
         $amount = 0;
         $change = 0;
         $orderId = $order->getId();
-        if (isset($information[Constant::CHANGE_DUE_DATA])) {
-            $change = $information[Constant::CHANGE_DUE_DATA];
-        }
-        if ((int)$information[Constant::PAYMENT_METHOD_DATA] == Constant::MULTIPAY_TOTAL_AMOUNT) {
-            if (isset($information[Constant::OPTION_PARTIAL_DATA])) {
-                $amount = $information[Constant::OPTION_PARTIAL_DATA];
+        
+        // get payment method
+        $paymentMethod = (int)$information[Constant::PAYMENT_METHOD_DATA];
+        
+        // total or partial
+        $paymentTotal = $information[Constant::OPTION_TOTAL_DATA];
+        
+        if ($paymentTotal == Constant::MULTIPAY_TOTAL_AMOUNT) {
+            if (isset($information[Constant::AMOUNT_DUE_DATA])) {
+                $amount = $information[Constant::AMOUNT_DUE_DATA];
+                $change = 0;
             }
         }
-        if ((int)$information[Constant::PAYMENT_METHOD_DATA] == Constant::MULTIPAY_PARTIAL_AMOUNT) {
+
+        if ($paymentTotal == Constant::MULTIPAY_PARTIAL_AMOUNT) {
             $amount = $information[Constant::OPTION_PARTIAL_DATA];
-            if ($change == 0 && $amount > $information[Constant::AMOUNT_DUE_DATA]) {
-                $change = $amount - $information[Constant::AMOUNT_DUE_DATA];
+            if (isset($information[Constant::CHANGE_DUE_DATA])) {
+                $change = $information[Constant::CHANGE_DUE_DATA];
             }
         }
-        if ((int)$information[Constant::OPTION_TOTAL_DATA] == 1) {
-            $amount = $information[Constant::AMOUNT_DUE_DATA];
-            $change = 0;
-            $template = $this->emailSender->mappingTemplate('- new order');
-            $this->emailSender->sendEmail($template, $order->getCustomerEmail(), ['order' => $order]);
-        } else {
-            $this->emailSender->sendEmail('Order Update', $order->getCustomerEmail(), ['order' => $order]);
-        }
+        
+        // What is this here for?
+        //$template = $this->emailSender->mappingTemplate('- new order');
+        //$this->emailSender->sendEmail($template, $order->getCustomerEmail(), ['order' => $order]);
+        
+        $this->emailSender->sendEmail('Order Update', $order->getCustomerEmail(), ['order' => $order]);
+            
         $tendered = 0;
         if (isset($information[Constant::CASH_TENDERED_DATA])) {
             $tendered = $information[Constant::CASH_TENDERED_DATA];
@@ -134,7 +146,7 @@ class Transaction extends AbstractDb
             [
                 'order_id' => $orderId,
                 'transaction_type' => Constant::MULTIPAY_SALE_ACTION,
-                'payment_method' => $information[Constant::PAYMENT_METHOD_DATA],
+                'payment_method' => $paymentMethod,
                 'amount' => $amount,
                 'tendered' => $tendered,
                 'change' => $change,
@@ -142,11 +154,33 @@ class Transaction extends AbstractDb
             ]
         );
         try {
-            if ($order->getTotalPaid() !== null) {
-                $order->setTotalPaid($order->getTotalPaid() + $amount);
+            // store credit updates the grand total on the order and balance amount applied
+            if($paymentMethod == Constant::MULTIPAY_STORE_CREDIT_METHOD) {
+                $newGrandTotal = $order->getGrandTotal() - (float)$amount;
+                $newTotalDue = $order->getToalDue() - (float)$amount;
+                $newCustomerBalanceAmount = $order->getCustomerBalanceAmount() + (float)$amount;
+                $order->setGrandTotal($newGrandTotal);
+                $order->setTotalDue($newTotalDue);
+                $order->setCustomerBalanceAmount($newCustomerBalanceAmount);
+                
+                $customerBalance = $this->customerBalanceFactory->create();
+                $customerBalance
+                    ->setCustomerId($order->getCustomerId())->loadByCustomer()
+                    ->setAmountDelta(-$amount)
+                    ->setOrder($order)
+                    ->setHistoryAction(\Magento\CustomerBalance\Model\Balance\History::ACTION_USED)
+                    ->save();
+                
                 $this->extOrderHelper->createNewExtSalesOrder((int)$orderId, ['payment']);
+                
             } else {
-                $order->setTotalPaid((float)$amount);
+                if ($order->getTotalPaid() !== null) {
+                    $order->setTotalPaid($order->getTotalPaid() + $amount);
+                    $this->extOrderHelper->createNewExtSalesOrder((int)$orderId, ['payment']);
+                } else {
+                    // Not sure why this else exists? PB
+                    $order->setTotalPaid((float)$amount);
+                }
             }
             $this->save($transaction);
         } catch (AlreadyExistsException $e) {

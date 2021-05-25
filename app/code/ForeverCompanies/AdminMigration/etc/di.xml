@@ -10,4 +10,16 @@
             </argument>
         </arguments>
     </type>
+    <type name="ForeverCompanies\AdminMigration\Console\Command\UserNames">
+      <arguments>
+         <argument name="salesperson_migration" xsi:type="string">forevercompanies:update-status-usernames</argument>
+      </arguments>
+   </type>
+   <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="salesperson_migration_command" xsi:type="object">ForeverCompanies\AdminMigration\Console\Command\UserNames</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

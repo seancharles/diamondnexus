@@ -11,6 +11,8 @@ use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use ShipperHQ\Shipper\Model\ResourceModel\Order\Detail;
+use ShipperHQ\Shipper\Model\ResourceModel\Order\GridDetail;
 
 class Shipdate extends AbstractHelper
 {
@@ -23,6 +25,16 @@ class Shipdate extends AbstractHelper
      * @var ScopeConfigInterface
      */
     protected $scopeConfig;
+    
+    /**
+     * @var Detail
+     */
+    protected $shipperDetailResourceModel;
+    
+    /**
+     * @var GridDetail
+     */
+    protected $shipperGridDetailResourceModel;
 
     const XML_PATH_BLACKOUT_SHIPDATES = 'forevercompanies_customsales/shipping/blackout_dates';
 
@@ -33,9 +45,13 @@ class Shipdate extends AbstractHelper
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
+        Detail $shipperDetailResourceModel,
+        GridDetail $shipperGridDetailResourceModel,
         Context $context
     ) {
         $this->scopeConfig = $scopeConfig;
+        $this->shipperDetailResourceModel = $shipperDetailResourceModel;
+        $this->shipperGridDetailResourceModel = $shipperGridDetailResourceModel;
 
         parent::__construct($context);
 
@@ -176,6 +192,27 @@ class Shipdate extends AbstractHelper
         return $timestamp;
     }
 
+    public function adjustDeliveryDate($date = null, $days = 0)
+    {
+        $time = strtotime($date);
+        $i = 0;
+        $businessDays = 0;
+        
+        while($businessDays < $days) {
+            $newTimestamp = $this->adjustTimestampDays($time, $i);
+            
+            if($this->isBusinessDay($newTimestamp) === true) {
+                $businessDays++;
+            }
+            
+            $i++;
+        }
+        
+        $date = date('y-m-d', $this->adjustTimestampDays($time, $businessDays));
+        
+        return $date;
+    }
+
     /**
      * Adjust the time stamp by number of days
      *
@@ -186,6 +223,69 @@ class Shipdate extends AbstractHelper
     public function adjustTimestampDays($time = 0, $days = 0)
     {
         return $time + ($days * 86400);
+    }
+    
+    public function getDateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
+    {
+        $datetime1 = date_create($date_1);
+        $datetime2 = date_create($date_2);
+       
+        $interval = date_diff($datetime1, $datetime2);
+       
+        return $interval->format($differenceFormat);
+    }
+    
+    public function updateDeliveryDates($order)
+    {
+        $connection = $this->shipperDetailResourceModel->getConnection();
+        $select = $connection->select()->from($this->shipperDetailResourceModel->getMainTable())
+            ->where('order_id = ?', $order->getEntityId())
+            ->order('id desc')
+            ->limit(1);
+        
+        // pull the existing order delivery dates
+        $data = $connection->fetchRow($select);
+        
+        $dispatchDate =  $data['dispatch_date'];
+        $deliveryDate = $data['delivery_date'];
+        
+        // get the number of days since the order was created
+        $daysAfterCreate = $this->getDateDifference( $order->getCreatedAt(), date('Y-m-d') );
+        
+        // calculate the new dates by adding x number of business days since the order was created
+        $newDispatchDate = $this->adjustDeliveryDate($dispatchDate, $daysAfterCreate);
+        $newDeliveryDate = $this->adjustDeliveryDate($deliveryDate, $daysAfterCreate);
+        
+        $deliveryDates = [
+            'dispatch_date' => $newDispatchDate,
+            'delivery_date' => $newDeliveryDate
+        ];
+        
+        // update the carrier block on the order detail
+        $carrierGroupDetail = json_decode($data['carrier_group_detail']);
+        
+        $carrierGroupDetail[0]->dispatch_date = date('D, M d', strtotime($newDispatchDate));
+        $carrierGroupDetail[0]->delivery_date = date('D, M d', strtotime($newDeliveryDate));
+        
+        $this->shipperDetailResourceModel->getConnection()->update(
+            $this->shipperDetailResourceModel->getMainTable(),
+            ['carrier_group_detail' => json_encode($carrierGroupDetail)],
+            'order_id = ' . $order->getEntityId()
+        );
+        
+        // update detail record
+        $this->shipperDetailResourceModel->getConnection()->update(
+            $this->shipperDetailResourceModel->getMainTable(),
+            $deliveryDates,
+            'order_id = ' . $order->getEntityId()
+        );
+        
+        // update grid record
+        $this->shipperGridDetailResourceModel->getConnection()->update(
+            $this->shipperGridDetailResourceModel->getMainTable(),
+            $deliveryDates,
+            'order_id = ' . $order->getEntityId()
+        );
     }
 
     /**

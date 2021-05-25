@@ -24,6 +24,7 @@ use Magento\Sales\Model\Service\InvoiceService;
 use PayPal\Braintree\Api\Data\TransactionDetailDataInterfaceFactory;
 use PayPal\Braintree\Gateway\Response\PaymentDetailsHandler;
 use PayPal\Braintree\Model\TransactionDetail;
+use ForeverCompanies\CustomSales\Helper\Shipdate;
 
 class OrderSave
 {
@@ -81,6 +82,11 @@ class OrderSave
      * @var Invoice
      */
     protected $resourceInvoice;
+    
+    /**
+     * @var Shipdate
+     */
+    protected $shipdateHelper;
 
     /**
      * OrderSave constructor.
@@ -105,7 +111,8 @@ class OrderSave
         Invoice $resourceInvoice,
         InvoiceService $invoiceService,
         \Magento\Framework\DB\Transaction $transaction,
-        InvoiceSender $invoiceSender
+        InvoiceSender $invoiceSender,
+        Shipdate $shipdateHelper
     ) {
         $this->transactionDetailFactory = $transactionDetailFactory;
         $this->braintreeResource = $braintreeResource;
@@ -117,6 +124,7 @@ class OrderSave
         $this->helper = $helper;
         $this->emailSender = $emailSender;
         $this->state = $state;
+        $this->shipdateHelper = $shipdateHelper;
     }
 
     /**
@@ -144,7 +152,10 @@ class OrderSave
             switch ($method) {
                 case Constant::MULTIPAY_CREDIT_METHOD:
                 case Constant::MULTIPAY_CASH_METHOD:
+                case Constant::MULTIPAY_STORE_CREDIT_METHOD:
                 case Constant::MULTIPAY_AFFIRM_OFFLINE_METHOD:
+                case Constant::MULTIPAY_PAYPAL_OFFLINE_METHOD:
+                case Constant::MULTIPAY_PROGRESSIVE_OFFLINE_METHOD:
                     $this->saveMultipayTransaction($order, $info);
                     break;
                 case Constant::MULTIPAY_QUOTE_METHOD:
@@ -173,44 +184,49 @@ class OrderSave
         if ($order->getStatus() == Order::STATE_CANCELED) {
             return;
         }
-
-        if ($order->getState() == 'quote' && $order->getStatus() == 'quote') {
-            $requiredQuote = true;
-        }
+        
         $payment = $order->getPayment();
         $methodInstance = $payment->getMethod();
         $info = $payment->getAdditionalInformation();
+        $multipayMethod = $info[Constant::PAYMENT_METHOD_DATA];
+        
         if (!isset($info[Constant::PAYMENT_METHOD_DATA])) {
             return;
         }
-        $method = $info[Constant::PAYMENT_METHOD_DATA];
-        if ($methodInstance === Constant::MULTIPAY_METHOD && $method != Constant::MULTIPAY_QUOTE_METHOD) {
-            if (!isset($info[Constant::OPTION_TOTAL_DATA]) || $info[Constant::OPTION_TOTAL_DATA] == null) {
-                throw new ValidatorException(__('You need choose Amount option - total or partial '));
+        
+        if ($methodInstance === Constant::MULTIPAY_METHOD) {
+            if($multipayMethod != Constant::MULTIPAY_QUOTE_METHOD) {
+                if (!isset($info[Constant::OPTION_TOTAL_DATA]) || $info[Constant::OPTION_TOTAL_DATA] == null) {
+                    throw new ValidatorException(__('You need choose Amount option - total or partial '));
+                }
+            }else if($multipayMethod == Constant::MULTIPAY_CREDIT_METHOD) {
+                if ($this->state->getAreaCode() !== Area::AREA_ADMINHTML) {
+                    $result = $this->helper->sendToBraintree($order);
+                    if ($result instanceof Error) {
+                        throw new ValidatorException(__('Credit card failed verification'));
+                    }
+                }
+            }else if ($multipayMethod == Constant::MULTIPAY_QUOTE_METHOD) {
+                $order->setState('quote')->setStatus('quote');
             }
-        }
-        if ($methodInstance === Constant::MULTIPAY_METHOD && $method == Constant::MULTIPAY_CREDIT_METHOD) {
-            if ($this->state->getAreaCode() !== Area::AREA_ADMINHTML) {
-                $result = $this->helper->sendToBraintree($order);
-                if ($result instanceof Error) {
-                    throw new ValidatorException(__('Credit card failed verification'));
+
+            if ($multipayMethod != Constant::MULTIPAY_QUOTE_METHOD) {
+                if (
+                    (isset($info[Constant::OPTION_TOTAL_DATA]) == true && $info[Constant::OPTION_TOTAL_DATA] == 1)
+                    ||
+                    ($order->getGrandTotal() == $order->getTotalPaid())
+                    ||
+                    $order->getTotalDue() == 0
+                ) {
+                    $order->setState(Order::STATE_PROCESSING)->setStatus(Order::STATE_PROCESSING);
+                    
+                    $this->shipdateHelper->updateDeliveryDates($order);
+                }
+                
+                if($order->getTotalPaid() < $order->getGrandTotal() || $order->getTotalDue() > 0) {
+                    $order->setState('pending')->setStatus('pending');
                 }
             }
-        }
-        if (isset($info[Constant::OPTION_TOTAL_DATA])) {
-            if ($methodInstance === Constant::MULTIPAY_METHOD && $info[Constant::OPTION_TOTAL_DATA] == 1) {
-                $order->setState(Order::STATE_PROCESSING)->setStatus(Order::STATE_PROCESSING);
-            }
-            if ($methodInstance === Constant::MULTIPAY_METHOD && $info[Constant::OPTION_TOTAL_DATA] == 2) {
-                $order->setState('pending')->setStatus('pending');
-            }
-        }
-        if ($methodInstance == Constant::MULTIPAY_METHOD && $method == Constant::MULTIPAY_QUOTE_METHOD) {
-            $order->setState('quote')->setStatus('quote');
-        }
-        if (isset($requiredQuote) && $requiredQuote == true) {
-            $order->setStatus('quote');
-            $order->setState('quote');
         }
     }
 
@@ -258,38 +274,43 @@ class OrderSave
                     $this->braintreeResource->save($transactionDetail);
                 }
             }
-            if ($order->canInvoice() && $order->getStatus() !== 'quote') {
-                $sum = $info[C::OPTION_TOTAL_DATA] == '1' ? $info[C::AMOUNT_DUE_DATA] : $info[C::OPTION_PARTIAL_DATA];
-                if ($order->getTotalDue() < $sum) {
-                    $shippingAmount = $order->getShippingInclTax();
-                } else {
-                    $amountWithoutShip = $order->getTotalDue() - $order->getShippingInclTax();
-                    if ($amountWithoutShip < $sum) {
-                        $shippingAmount = $sum - $amountWithoutShip;
+
+            if ($order->canInvoice()) {
+                if($order->getGrandTotal() == 0 || $order->getTotalPaid() == $order->getGrandTotal()) {
+                    
+                    $sum = $info[C::OPTION_TOTAL_DATA] == '1' ? $info[C::AMOUNT_DUE_DATA] : $info[C::OPTION_PARTIAL_DATA];
+                    if ($order->getTotalDue() < $sum) {
+                        $shippingAmount = $order->getShippingInclTax();
                     } else {
                         $shippingAmount = 0;
+                        $amountWithoutShip = $order->getTotalDue() - $order->getShippingInclTax();
+                        if ($amountWithoutShip < $sum) {
+                            $shippingAmount = $sum - $amountWithoutShip;
+                        } else {
+                            $shippingAmount = 0;
+                        }
                     }
+                    $invoice = $this->invoiceService->prepareInvoice($order);
+                    $invoice->setShippingAmount($shippingAmount);
+                    $invoice->setSubtotal($sum - $shippingAmount);
+                    $invoice->setBaseSubtotal($sum - $shippingAmount);
+                    $invoice->setGrandTotal($sum);
+                    $invoice->setBaseGrandTotal($sum);
+                    $invoice->register();
+                    $this->resourceInvoice->save($invoice);
+                    $transactionSave = $this->transaction->addObject(
+                        $invoice
+                    )->addObject(
+                        $invoice->getOrder()
+                    );
+                    $transactionSave->save();
+                    $this->invoiceSender->send($invoice);
+                    //Send Invoice mail to customer
+                    $order->addCommentToStatusHistory(
+                        __('Notified customer about invoice creation #%1.', $invoice->getId())
+                    )
+                        ->setIsCustomerNotified(true);
                 }
-                $invoice = $this->invoiceService->prepareInvoice($order);
-                $invoice->setShippingAmount($shippingAmount);
-                $invoice->setSubtotal($sum - $shippingAmount);
-                $invoice->setBaseSubtotal($sum - $shippingAmount);
-                $invoice->setGrandTotal($sum);
-                $invoice->setBaseGrandTotal($sum);
-                $invoice->register();
-                $this->resourceInvoice->save($invoice);
-                $transactionSave = $this->transaction->addObject(
-                    $invoice
-                )->addObject(
-                    $invoice->getOrder()
-                );
-                $transactionSave->save();
-                $this->invoiceSender->send($invoice);
-                //Send Invoice mail to customer
-                $order->addCommentToStatusHistory(
-                    __('Notified customer about invoice creation #%1.', $invoice->getId())
-                )
-                    ->setIsCustomerNotified(true);
             }
         }
     }
