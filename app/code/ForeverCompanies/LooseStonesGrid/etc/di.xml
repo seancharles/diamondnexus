@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+ <type name="ForeverCompanies\LooseStonesGrid\Ui\DataProvider\Product\ListingDataProvider">
+   <plugin name="forevercompanies_loosestonesgrid_attributes" type="ForeverCompanies\LooseStonesGrid\Plugin\AddAttributesToUiDataProvider"/>
+ </type>
+
+ <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+  <arguments>
+   <argument name="collections" xsi:type="array">
+     <item name="forevercompanies_loosestonesgrid_product_listing_data_source" xsi:type="string">ForeverCompaniesLooseStonesGridProductCollection</item>
+   </argument>
+  </arguments>
+ </type>
+ <virtualType name="ForeverCompaniesLooseStonesGridProductCollection" type="ForeverCompanies\LooseStonesGrid\Ui\DataProvider\Product\Listing\Collection">
+   <arguments>
+     <argument name="mainTable" xsi:type="string">catalog_product_entity</argument>
+     <argument name="resourceModel" xsi:type="string">ForeverCompanies\LooseStonesGrid\Model\ResourceModel\Product</argument>
+   </arguments>
+ </virtualType>
+</config>
