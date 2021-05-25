@@ -57,7 +57,7 @@ class Actions extends Column
                 if (isset($item['id'])) {
                     $item[$name]['view'] = [
                         'href' => $this->_urlBuilder->getUrl($this->_viewUrl, ['id' => $item['id']]),
-                        'label' => __('View/Edit')
+                        'label' => __('Edit')
                     ];
                 }
             }

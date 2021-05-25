@@ -4,8 +4,8 @@
     <acl>
         <resources>
             <resource id="Magento_Backend::admin">
-                <resource id="ForeverCompanies_StonesIntermediary::helloworld" title="Diamond Importer" sortOrder="11">
-                    <resource id="ForeverCompanies_StonesIntermediary::stones_supplier" title="Stones Supplier" />
+                <resource id="ForeverCompanies_StonesIntermediary::helloworld" title="Supplier List" sortOrder="11">
+                    <resource id="ForeverCompanies_StonesIntermediary::stones_supplier" title="Suppliers" />
                 </resource>
             </resource>
         </resources>

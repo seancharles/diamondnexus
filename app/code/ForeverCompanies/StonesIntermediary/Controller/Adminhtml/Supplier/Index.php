@@ -39,7 +39,7 @@ class Index extends Action implements HttpGetActionInterface
     {
         $resultPage = $this->pageFactory->create();
         $resultPage->setActiveMenu('ForeverCompanies_StonesIntermediary::home');
-        $resultPage->getConfig()->getTitle()->prepend(__('Stones Supplier'));
+        $resultPage->getConfig()->getTitle()->prepend(__('Suppliers'));
 
         return $resultPage;
     }
