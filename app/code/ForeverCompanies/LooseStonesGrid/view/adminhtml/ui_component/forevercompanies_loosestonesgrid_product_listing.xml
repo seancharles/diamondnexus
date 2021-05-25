@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+  <argument name="data" xsi:type="array">
+     <item name="js_config" xsi:type="array">
+        <item name="provider" xsi:type="string">forevercompanies_loosestonesgrid_product_listing.forevercompanies_loosestonesgrid_product_listing_data_source</item>
+        <item name="deps" xsi:type="string">forevercompanies_loosestonesgrid_product_listing.forevercompanies_loosestonesgrid_product_listing_data_source</item>
+     </item>
+     <item name="spinner" xsi:type="string">forevercompanies_loosestonesgrid_product_columns</item>
+  </argument>
+  <dataSource name="forevercompanies_loosestonesgrid_product_listing_data_source">
+   <argument name="dataProvider" xsi:type="configurableObject">
+       <argument name="class" xsi:type="string">ForeverCompanies\LooseStonesGrid\Ui\DataProvider\Product\ListingDataProvider</argument>
+       <argument name="name" xsi:type="string">forevercompanies_loosestonesgrid_product_listing_data_source</argument>
+       <argument name="primaryFieldName" xsi:type="string">entity_id</argument>
+       <argument name="requestFieldName" xsi:type="string">entity_id</argument>
+       <argument name="data" xsi:type="array">
+         <item name="config" xsi:type="array">
+           <item name="update_url" xsi:type="url" path="mui/index/render"/>
+           <item name="storageConfig" xsi:type="array">
+             <item name="indexField" xsi:type="string">entity_id</item>
+           </item>
+         </item>
+       </argument>
+   </argument>
+   <argument name="data" xsi:type="array">
+     <item name="js_config" xsi:type="array">
+        <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
+     </item>
+   </argument>
+  </dataSource>
+  <listingToolbar name="listing_top">
+    <bookmark name="bookmarks"/>
+    <columnsControls name="columns_controls"/>
+    <!--  
+    <massaction name="listing_massaction">
+      <argument name="data" xsi:type="array">
+        <item name="data" xsi:type="array">
+           <item name="selectProvider" xsi:type="string">forevercompanies_loosestonesgrid_product_listing.forevercompanies_loosestonesgrid_product_listing.forevercompanies_loosestonesgrid_product_columns.ids</item>
+           <item name="displayArea" xsi:type="string">bottom</item>
+           <item name="component" xsi:type="string">Magento_Ui/js/grid/tree-massactions</item>
+           <item name="indexField" xsi:type="string">entity_id</item>
+        </item>
+      </argument>
+    </massaction>
+    -->
+    <filters name="listing_filters">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="templates" xsi:type="array">
+                        <item name="filters" xsi:type="array">
+                            <item name="select" xsi:type="array">
+                                <item name="component" xsi:type="string">Magento_Ui/js/form/element/ui-select</item>
+                                <item name="template" xsi:type="string">ui/grid/filters/elements/ui-select</item>
+                            </item>
+                        </item>
+                    </item>
+                </item>
+            </argument>
+    </filters>
+    <paging name="listing_paging"/>
+  </listingToolbar>
+  <columns name="forevercompanies_loosestonesgrid_product_columns">
+    <selectionsColumn name="ids">
+       <argument name="data" xsi:type="array">
+           <item name="config" xsi:type="array">
+              <item name="indexField" xsi:type="string">entity_id</item>
+           </item>
+       </argument>
+    </selectionsColumn>
+ 
+   
+    <column name="sku">
+      <settings>
+         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+         <label translate="true">Cert #</label>
+      </settings>
+    </column>
+    
+    <column name="supplier" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="10">
+      <settings>
+         <label translate="true">Supplier</label>
+      </settings>
+    </column>
+    
+    <column name="filter_ship_date" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="20">
+      <settings>
+         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+         <label translate="true">Delivery Date</label>
+      </settings>
+    </column>
+    
+    <column name="born_on_date" class="Magento\Ui\Component\Listing\Columns\Date" component="Magento_Ui/js/grid/columns/date" sortOrder="30">
+    <settings>
+        <dataType>date</dataType>
+        <label translate="true">Born on Date</label>
+    </settings>
+</column>
+    
+    <column name="rapaport" sortOrder="50">
+      <settings>
+         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+         <label translate="true">Rapaport #</label>
+      </settings>
+    </column>
+    
+    <column name="pct_off_rap" sortOrder="60">
+      <settings>
+         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+         <label translate="true">Rap %</label>
+      </settings>
+    </column>
+    
+    <column name="price" class="Magento\Catalog\Ui\Component\Listing\Columns\Price" sortOrder="70">
+		<settings>
+			<filter>textRange</filter>
+			<label translate="true">Price</label>
+		</settings>
+	</column>
+    
+    <column name="stone_import_custom_price" class="Magento\Catalog\Ui\Component\Listing\Columns\Price" sortOrder="80">
+		<settings>
+			<label translate="true">Custom Price</label>
+		</settings>
+	</column>
+    
+    <column name="cost" class="Magento\Catalog\Ui\Component\Listing\Columns\Price" sortOrder="90">
+		<settings>
+			<label translate="true">Cost</label>
+		</settings>
+	</column>
+    
+    <column name="stone_import_custom_cost" class="Magento\Catalog\Ui\Component\Listing\Columns\Price" sortOrder="100">
+		<settings>
+			<label translate="true">Custom Cost</label>
+		</settings>
+	</column>
+    
+    <column name="cert_url_key" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\Link" sortOrder="110">
+		<settings>
+	        <label translate="true">Cert</label>
+	        <bodyTmpl>ui/grid/cells/html</bodyTmpl>
+		</settings>
+	</column>
+
+<column name="diamond_img_url" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\Link" sortOrder="120">
+	<settings>
+        <bodyTmpl>ui/grid/cells/html</bodyTmpl>
+        <label translate="true">Image</label>
+	</settings>
+</column>
+
+<column name="video_url" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\Link" sortOrder="130">
+	<settings>
+        <bodyTmpl>ui/grid/cells/html</bodyTmpl>
+        <label translate="true">Video</label>
+	</settings>
+</column>
+
+<column name="online" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="140">
+	<settings>
+        <label translate="true">Online</label>
+	</settings>
+</column>
+
+<column name="lab" sortOrder="150">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">Lab</label>
+	</settings>
+</column>
+
+<column name="shape" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="160">
+	<settings>
+	    <label translate="true">Shape</label>
+	    <filter>select</filter>
+	    <dataType>select</dataType>
+	    <options>
+	    	<option name="Round" xsi:type="array">
+	            <item name="value" xsi:type="number">2842</item>
+	            <item name="label" xsi:type="string" translate="true">Round</item>
+	        </option>
+	        <option name="Princess" xsi:type="array">
+	            <item name="value" xsi:type="number">2843</item>
+	            <item name="label" xsi:type="string" translate="true">Princess</item>
+	        </option>
+	        <option name="Asscher" xsi:type="array">
+	            <item name="value" xsi:type="number">2844</item>
+	            <item name="label" xsi:type="string" translate="true">Asscher</item>
+	        </option>
+	        <option name="Cushion" xsi:type="array">
+	            <item name="value" xsi:type="number">2845</item>
+	            <item name="label" xsi:type="string" translate="true">Cushion</item>
+	        </option>
+	        <option name="Heart" xsi:type="array">
+	            <item name="value" xsi:type="number">2846</item>
+	            <item name="label" xsi:type="string" translate="true">Heart</item>
+	        </option>
+	        <option name="Oval" xsi:type="array">
+	            <item name="value" xsi:type="number">2847</item>
+	            <item name="label" xsi:type="string" translate="true">Oval</item>
+	        </option>
+	        <option name="Emerald" xsi:type="array">
+	            <item name="value" xsi:type="number">2848</item>
+	            <item name="label" xsi:type="string" translate="true">Emerald</item>
+	        </option>
+	        <option name="Radiant" xsi:type="array">
+	            <item name="value" xsi:type="number">2849</item>
+	            <item name="label" xsi:type="string" translate="true">Radiant</item>
+	        </option>
+	        <option name="Pear" xsi:type="array">
+	            <item name="value" xsi:type="number">2850</item>
+	            <item name="label" xsi:type="string" translate="true">Pear</item>
+	        </option>
+	        <option name="Marquise" xsi:type="array">
+	            <item name="value" xsi:type="number">2851</item>
+	            <item name="label" xsi:type="string" translate="true">Marquise</item>
+	        </option>
+	    </options>
+	</settings>
+</column>
+
+<column name="color" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="170">
+	<settings>
+	    <label translate="true">Color</label>
+	    <filter>select</filter>
+	    <dataType>select</dataType>
+	    <options>
+	    	<option name="D" xsi:type="array">
+	            <item name="value" xsi:type="number">2865</item>
+	            <item name="label" xsi:type="string" translate="true">D</item>
+	        </option>
+	        <option name="E" xsi:type="array">
+	            <item name="value" xsi:type="number">2866</item>
+	            <item name="label" xsi:type="string" translate="true">E</item>
+	        </option>
+	        <option name="F" xsi:type="array">
+	            <item name="value" xsi:type="number">2867</item>
+	            <item name="label" xsi:type="string" translate="true">F</item>
+	        </option>
+	        <option name="G" xsi:type="array">
+	            <item name="value" xsi:type="number">2868</item>
+	            <item name="label" xsi:type="string" translate="true">G</item>
+	        </option>
+	        <option name="H" xsi:type="array">
+	            <item name="value" xsi:type="number">2869</item>
+	            <item name="label" xsi:type="string" translate="true">H</item>
+	        </option>
+	        <option name="I" xsi:type="array">
+	            <item name="value" xsi:type="number">2870</item>
+	            <item name="label" xsi:type="string" translate="true">I</item>
+	        </option>
+	        <option name="J" xsi:type="array">
+	            <item name="value" xsi:type="number">2871</item>
+	            <item name="label" xsi:type="string" translate="true">J</item>
+	        </option>
+	        <option name="K" xsi:type="array">
+	            <item name="value" xsi:type="number">2872</item>
+	            <item name="label" xsi:type="string" translate="true">K</item>
+	        </option>
+	        <option name="L" xsi:type="array">
+	            <item name="value" xsi:type="number">2873</item>
+	            <item name="label" xsi:type="string" translate="true">L</item>
+	        </option>
+	        <option name="M" xsi:type="array">
+	            <item name="value" xsi:type="number">2874</item>
+	            <item name="label" xsi:type="string" translate="true">M</item>
+	        </option>
+	        <option name="N" xsi:type="array">
+	            <item name="value" xsi:type="number">2875</item>
+	            <item name="label" xsi:type="string" translate="true">N</item>
+	        </option>
+	    </options>
+	</settings>
+</column>
+
+<column name="clarity" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="180">
+	<settings>
+	    <label translate="true">Clarity</label>
+	    <filter>select</filter>
+	    <dataType>select</dataType>
+	    <options>
+	    	<option name="FL" xsi:type="array">
+	            <item name="value" xsi:type="number">3564</item>
+	            <item name="label" xsi:type="string" translate="true">FL</item>
+	        </option>
+	        <option name="I1" xsi:type="array">
+	            <item name="value" xsi:type="number">2853</item>
+	            <item name="label" xsi:type="string" translate="true">I1</item>
+	        </option>
+	        <option name="I3" xsi:type="array">
+	            <item name="value" xsi:type="number">3480</item>
+	            <item name="label" xsi:type="string" translate="true">I3</item>
+	        </option>
+	        <option name="IF" xsi:type="array">
+	            <item name="value" xsi:type="number">2854</item>
+	            <item name="label" xsi:type="string" translate="true">IF</item>
+	        </option>
+	    	<option name="SI1" xsi:type="array">
+	            <item name="value" xsi:type="number">2857</item>
+	            <item name="label" xsi:type="string" translate="true">SI1</item>
+	        </option>
+	        <option name="SI2" xsi:type="array">
+	            <item name="value" xsi:type="number">2858</item>
+	            <item name="label" xsi:type="string" translate="true">SI2</item>
+	        </option>
+	        <option name="VS1" xsi:type="array">
+	            <item name="value" xsi:type="number">2859</item>
+	            <item name="label" xsi:type="string" translate="true">VS1</item>
+	        </option>
+	        <option name="VS2" xsi:type="array">
+	            <item name="value" xsi:type="number">2861</item>
+	            <item name="label" xsi:type="string" translate="true">VS2</item>
+	        </option>
+	        <option name="VVS1" xsi:type="array">
+	            <item name="value" xsi:type="number">2862</item>
+	            <item name="label" xsi:type="string" translate="true">VVS1</item>
+	        </option>
+	        <option name="VVS2" xsi:type="array">
+	            <item name="value" xsi:type="string">2863</item>
+	            <item name="label" xsi:type="string" translate="true">VVS2</item>
+	        </option>
+	    </options>
+	</settings>
+</column>
+        
+<column name="cut_grade" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="190">
+	<settings>
+	    <label translate="true">Cut</label>
+	    <filter>select</filter>
+	    <dataType>select</dataType>
+	    <options>
+	    	<option name="Excellent" xsi:type="array">
+	            <item name="value" xsi:type="number">2876</item>
+	            <item name="label" xsi:type="string" translate="true">Excellent</item>
+	        </option>
+	        <option name="Ideal" xsi:type="array">
+	            <item name="value" xsi:type="number">2877</item>
+	            <item name="label" xsi:type="string" translate="true">Ideal</item>
+	        </option>
+	        <option name="Very Good" xsi:type="array">
+	            <item name="value" xsi:type="number">2878</item>
+	            <item name="label" xsi:type="string" translate="true">Very Good</item>
+	        </option>
+	        <option name="Good" xsi:type="array">
+	            <item name="value" xsi:type="number">2879</item>
+	            <item name="label" xsi:type="string" translate="true">Good</item>
+	        </option>
+	        <option name="Not Specified" xsi:type="array">
+	            <item name="value" xsi:type="number">3076</item>
+	            <item name="label" xsi:type="string" translate="true">Not Specified</item>
+	        </option>
+	    </options>
+	</settings>
+</column>
+
+
+<column name="weight" sortOrder="200">
+	<settings>
+    	<filter>textRange</filter>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">Carat</label>
+	</settings>
+</column>
+
+<column name="origin" sortOrder="210">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">Origin</label>
+	</settings>
+</column>
+
+<column name="length_to_width" sortOrder="220">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">Aspect</label>
+	</settings>
+</column>
+
+<column name="measurements" sortOrder="230">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">Measurements</label>
+	</settings>
+</column>
+
+<column name="polish" sortOrder="240">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">Polish</label>
+	</settings>
+</column>
+
+<column name="symmetry" sortOrder="250">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">Symmetry</label>
+	</settings>
+</column>
+
+<column name="girdle" sortOrder="260">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">Girdle</label>
+	</settings>
+</column>
+
+<column name="fluor" sortOrder="270">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">Fluor</label>
+	</settings>
+</column>
+
+<column name="as_grown" sortOrder="280">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">As Grown</label>
+	</settings>
+</column>
+
+
+<column name="born_on_date" class="Magento\Ui\Component\Listing\Columns\Date" component="Magento_Ui/js/grid/columns/date" sortOrder="290">
+    <settings>
+        <dataType>date</dataType>
+        <label translate="true">Born on Date</label>
+    </settings>
+</column>
+
+<column name="carbon_neutral" sortOrder="300">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">Carbon Neutral</label>
+	</settings>
+</column>
+
+<column name="blockchain_verified" sortOrder="310">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">Blockchain Verified</label>
+	</settings>
+</column>
+
+<column name="charitable_contribution" sortOrder="320">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">Charitable Contribution</label>
+	</settings>
+</column>
+
+<column name="cvd" sortOrder="330">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">CVD</label>
+	</settings>
+</column>
+
+<column name="hpht" sortOrder="340">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">HPHT</label>
+	</settings>
+</column>
+
+<column name="patented" sortOrder="350">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">Patented</label>
+	</settings>
+</column>
+
+<column name="custom" sortOrder="360">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">Custom</label>
+	</settings>
+</column>
+
+<column name="color_of_colored_diamonds" sortOrder="370">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">Colored Color</label>
+	</settings>
+</column>
+
+<column name="hue" sortOrder="380">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">Hue</label>
+	</settings>
+</column>
+
+<column name="intensity" sortOrder="390">
+	<settings>
+        <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+        <label translate="true">Intensity</label>
+	</settings>
+</column>
+ 
+</columns>
+</listing>
