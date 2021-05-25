@@ -1,73 +1,7 @@
-.customer-account-login {
-    a {
-        color: #000;
-        &:hover {
-            color: #000;
-        }
-    }
-    .page-title {
-        font-family: 'proxima-nova', 'Helvetica Neue', Verdana, Arial,
-            sans-serif;
-        font-weight: 900;
-    }
-    #login-form {
-        .actions-toolbar {
-            .primary {
-                &.action {
-                    text-transform: uppercase;
-                    font-size: 13px;
-                    border-radius: 0;
-                    height: auto;
-                    padding: 15px;
-                    border: none;
-                    background: #000;
-                    &:hover {
-                        background: #e0afa0;
-                    }
-                }
-            }
-        }
-    }
-    .login-container {
-        .block-new-customer {
-            .actions-toolbar {
-                .primary {
-                    &.action {
-                        height: auto;
-                        padding: 15px;
-                        border-radius: 0;
-                        font-size: 13px;
-                        border: none;
-                        background: #000;
-                        text-transform: uppercase;
-                        &:hover {
-                            background: #e0afa0;
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
 .account {
-    .page-title {
-        font-family: 'proxima-nova', 'Helvetica Neue', Verdana, Arial,
-            sans-serif;
-        font-weight: 900;
-    }
-    a {
-        color: #000;
-        &:hover {
-            color: #e0afa0 !important;
-        }
-        span {
-            &:hover {
-                color: #e0afa0 !important;
-            }
-        }
-    }
     .nav a {
+        text-decoration: none !important;
+        color: #000 !important;
         &:hover {
             color: #e0afa0 !important;
         }
@@ -91,11 +25,13 @@
         display: none;
     }
     .box-title {
-        margin-bottom: 10px;
-        display: block;
         span {
-            font-size: 16px;
+            font-size: 18px !important;
         }
+    }
+    .box-billing-address .box-content,
+    .box-shipping-address .box-content {
+        font-size: 16px;
     }
 }
 

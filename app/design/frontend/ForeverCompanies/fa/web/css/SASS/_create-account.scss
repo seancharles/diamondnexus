@@ -1,63 +1,16 @@
 .customer-account-create {
-    .page-title {
-        font-family: 'proxima-nova', 'Helvetica Neue', Verdana, Arial,
-            sans-serif;
-        font-weight: 900;
-    }
-    .form-create-account {
-        .actions-toolbar {
-            .primary {
-                .action.submit.primary {
-                    @media screen and (max-width: 768px) {
-                        height: 56px;
-                    }
-                }
-            }
-        }
-
-        .fieldset {
-            &.create.account:after {
-                font-weight: normal;
-                font-size: 14px;
-                color: #da1e28;
-            }
-
-            .legend {
-                border-bottom: 1px solid #bcbcbc;
-
-                span {
-                    font-family: 'proxima-nova', 'Helvetica Neue', Verdana,
-                        Arial, sans-serif;
-                    font-weight: 900;
-                    font-size: 24px;
-                    letter-spacing: 0.19px;
-                    color: #000000;
-                }
-
-                &:after {
-                    font-size: 14px;
-                }
-            }
-        }
-
-        .fieldset.create.account:after {
+    .fieldset {
+        &.create.account:after {
+            font-weight: normal;
             font-size: 14px;
+            color: #da1e28;
         }
+        .legend {
+            border-bottom: 1px solid #bcbcbc;
+        }
+    }
 
-        .actions-toolbar {
-            .primary {
-                &.action {
-                    height: auto;
-                    padding: 15px;
-                    background: #000;
-                    border: none;
-                    border-radius: 0;
-                    text-transform: uppercase;
-                    &:hover {
-                        background: #e0afa0 !important;
-                    }
-                }
-            }
-        }
+    .fieldset.create.account:after {
+        font-size: 14px;
     }
 }

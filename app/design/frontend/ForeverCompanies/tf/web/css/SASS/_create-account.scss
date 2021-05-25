@@ -1,17 +1,8 @@
 .customer-account-create {
-    .actions-toolbar {
-        .primary {
-            &.action {
-                height: auto;
-                padding: 15px;
-                background: #000;
-                border: none;
-                border-radius: 0;
-                text-transform: uppercase;
-                &:hover {
-                    background: #af9c9b !important;
-                }
-            }
-        }
+    .form-create-account .fieldset.create.account:after {
+        font-size: 12px !important;
+    }
+    .legend > span {
+        font-size: 28px;
     }
 }
