@@ -1,0 +1,33 @@
+type Query
+{
+	StonesQuery(
+		filter: ProductAttributeFilterInput
+		online: String
+		product_type: String
+        color: String
+        clarity: String
+        carat_weight__from: ProductAttributeFilterInput
+        carat_weight__to: ProductAttributeFilterInput
+        price__from: String
+        price__to: String
+        cut: String
+        shape: String
+        page: Int
+        pageSize: Int
+        currentPage: Int
+        sort: ProductAttributeSortInput
+    ): 	Products @resolver(class:"ForeverCompanies\\LooseStonesQuery\\Model\\Resolver\\StonesQuery")
+	@doc(description: "This is called the loose stones query")
+}
+
+type StonesQueryOutput
+{
+	filters: [String]
+	name: String
+	request_var: String
+	label: String
+	value_string: String
+    color: String
+    clarity: String
+    carat_weight: String
+}
