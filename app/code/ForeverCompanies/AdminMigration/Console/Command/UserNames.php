@@ -50,8 +50,10 @@ class UserNames extends Command
         $connection->query($query);
         
         $query = 'INSERT INTO sales_order_status_history(`entity_id`, `sales_person`)
-            SELECT `entity_id`, `username` FROM `m1_sales_flat_order_status_history` `m1`
-            ON DUPLICATE KEY UPDATE `sales_person` = `m1`.`username`;';
+            SELECT `entity_id`, `username` 
+            FROM `m1_sales_flat_order_status_history` `m1`
+            WHERE m1.entity_id <= (SELECT MAX(entity_id) FROM `sales_order_status_history`)
+            ON DUPLICATE KEY UPDATE `sales_person` = `m1`.`username`';
         
         try {
             $connection->query($query);
