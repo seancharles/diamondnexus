@@ -56,6 +56,7 @@ class View extends Action implements HttpGetActionInterface, HttpPostActionInter
     public function execute()
     {
         $post = (array) $this->getRequest()->getPost();
+        
 
         if (!empty($post)) {
             $data = $this->supplierInterfaceFactory->create();
@@ -64,6 +65,10 @@ class View extends Action implements HttpGetActionInterface, HttpPostActionInter
             $data->setCode($post['code']);
             $data->setName($post['name']);
             $data->setEnabled($post['enabled'] ?? 0);
+            
+            if (!isset($post['enabled']) || $post['enabled'] == 0) {
+                $this->_eventManager->dispatch('loose_stone_supplier_disabled', ['post' => $post]);;
+            }
             $this->supplierManagement->putStonesSupplier($data);
             $this->messageManager->addSuccessMessage('Stone Supplier updated!');
             $resultRedirect = $this->resultRedirectFactory->create();
