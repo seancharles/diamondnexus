@@ -12,6 +12,8 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Serialize\Serializer\Json as Serialize;
 use Magento\Quote\Model\Quote\Item;
 use Magento\Framework\Stdlib\DateTime;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Quote\Model\Quote\Item as QuoteItem;
 
 class FreeGift extends AbstractHelper
 {
@@ -49,6 +51,9 @@ class FreeGift extends AbstractHelper
      * @var array[]
      */
     protected $rules = [];
+    
+    protected $messageManager;
+    protected $quoteItem;
 
     /**
      * Data constructor.
@@ -61,12 +66,17 @@ class FreeGift extends AbstractHelper
         Context $context,
         ProductRepository $productRepository,
         DateTime $dateTime,
-        Serialize $serialize
+        Serialize $serialize,
+        ManagerInterface $managerI,
+        QuoteItem $quoteI
     ) {
         parent::__construct($context);
         $this->productRepository = $productRepository;
         $this->serialize = $serialize;
         $this->dateTime = $dateTime;
+        $this->messageManager = $managerI;
+        $this->quoteItem = $quoteI;
+        
         $this->fillRules();
     }
 
@@ -222,7 +232,7 @@ class FreeGift extends AbstractHelper
                     $quoteExpired = $createdAt->getTimestamp() + $expiredTime;
                     if ($now->getTimestamp() > $quoteExpired) {
                         $quote->removeItem($quoteItem->getItemId());
-                        $quote->addMessage('Free gift remove. Time was expired');
+                        $quote->addMessage('Unfortunately, your free gift has expired.');
                         continue;
                     }
                 }
@@ -240,7 +250,7 @@ class FreeGift extends AbstractHelper
      * @param int $qty
      * @param bool $byId
      */
-    public function addGiftToQuote($quote, $sku, $qty, $byId = false)
+    public function addGiftToQuote($quote, $sku, $qty, $byId = false, $update = false, $eventName = false)
     {
         try {
             if ($byId) {
@@ -248,9 +258,20 @@ class FreeGift extends AbstractHelper
             } else {
                 $product = $this->productRepository->get($sku);
             }
+            if ($update) {
+                foreach ($quote->getAllItems() as $_quoteItem) {
+                    if ($_quoteItem->getProduct()->getSku() == $sku) {
+                        $this->quoteItem->load($_quoteItem->getItemId())->delete();
+                    }
+                }
+            }
             $product->setPrice(0);
             $product->setQty($qty);
             $quote->addProduct($product);
+            $quote->save();
+            if ($eventName == "free_gift_add_logic") {
+                $this->messageManager->addSuccessMessage(__("A free gift has been added to your order!"));
+            }
         } catch (NoSuchEntityException $e) {
             return;
         }
