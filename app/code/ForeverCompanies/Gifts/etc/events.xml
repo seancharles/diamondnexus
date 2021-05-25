@@ -1,19 +1,23 @@
 <?xml version="1.0"?>
+	<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
 
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
-    <!--
-    <event name="sales_quote_product_add_after">
-        <observer name="forevercompanies_gifts_add_gift"
-                  instance="ForeverCompanies\Gifts\Observer\QuoteItemAdditionCheckGift"/>
-    </event>
-    <event name="sales_quote_remove_item">
-        <observer name="forevercompanies_gifts_remove_gift"
-                  instance="ForeverCompanies\Gifts\Observer\QuoteItemRemoveCheckGift"/>
-    </event>
+	<!--  
     <event name="sales_quote_collect_totals_before">
-        <observer name="forevercompanies_gifts_totals_before"
-                  instance="ForeverCompanies\Gifts\Observer\ProcessQuoteObserver"/>
+        <observer name="forevercompanies_sales_quote_collect_totals_after"
+        	instance="ForeverCompanies\Gifts\Observer\ProcessQuoteObserver" />
     </event>
     -->
+
+    <event name="free_gift_add_logic">
+        <observer name="forever__gift_add_logic"
+        	instance="ForeverCompanies\Gifts\Observer\ProcessQuoteObserver" />
+    </event>
+    
+    <event name="free_gift_update_logic">
+        <observer name="forever_gift_update_logic"
+			instance="ForeverCompanies\Gifts\Observer\ProcessQuoteObserver" />
+    </event>
+    
 </config>
+
