@@ -56,7 +56,11 @@ class UpgradeSchema implements UpgradeSchemaInterface
             
             ('tf modal giveaway form', 3, 1, '{\"email\":\"Email Address\"}', '{\"email\":\"required\"}'),
             
-            ('tf get started form', 3, 1, '{\"firstname\":\"First Name\",\"lastname\":\"Last Name\",\"email\":\"Email Address\",\"telephone\":\"Telephone\"}', '{\"firstname\":\"required\",\"lastname\":\"required\",\"email\":\"required\",\"telephone\":\"required\"}');";
+            ('tf get started form', 3, 1, '{\"firstname\":\"First Name\",\"lastname\":\"Last Name\",\"email\":\"Email Address\",\"telephone\":\"Telephone\"}', '{\"firstname\":\"required\",\"lastname\":\"required\",\"email\":\"required\",\"telephone\":\"required\"}'),
+
+            ('tf drop a hint form', 3, 1, '{\"friendemail\":\"Friend\'s Email Address\",\"message\":\"Your Email Message\",\"name\":\"Your Name\",\"email\":\"Your Email Address\",\"copy\":\"Send me a copy of this email\",\"updates\":\"Send me 12Fifteen email updates\"}', '{\"friendemail\":\"required\",\"message\":\"required\",\"name\":\"required\",\"email\":\"required\"}')
+
+            ;";
                  
             $this->resourceConnection->getConnection()->query($query);
             
