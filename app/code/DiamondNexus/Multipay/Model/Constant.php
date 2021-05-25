@@ -30,7 +30,6 @@ class Constant
         4 => 'Store Credit',
         5 => 'Affirm (offline)',
         6 => 'Paypal (offline)',
-        7 => 'Progressive Leasing (offline)',
     ];
 
     const MULTIPAY_SALE_ACTION = 1;
