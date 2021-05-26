@@ -12,10 +12,10 @@ class TealiumExtendData
     private \Magento\Framework\App\ObjectManager $objectManager;
 
     /** @var string  */
-    private string $fcSiteBrand = 'Diamond Nexus';
+    private string $fcSiteBrand = '1215 Diamonds';
 
     /** @var int  */
-    private int $fcStoreId = 1;
+    private int $fcStoreId = 3;
 
     /**
      * TealiumExtendData constructor.
@@ -51,7 +51,7 @@ class TealiumExtendData
     public function setFcGlobals($outputAry)
     {
         $fcGlobals = [
-            'site_name' => ['diamondnexus', 'www'],
+            'site_name' => ['1215diamonds', 'www'],
             'page_name'=> $this->objectManager->get('Magento\Framework\View\Page\Title')->get()
         ];
         return array_merge($fcGlobals, $outputAry);
