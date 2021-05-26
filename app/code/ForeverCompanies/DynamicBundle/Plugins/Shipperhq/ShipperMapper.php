@@ -74,18 +74,21 @@ class ShipperMapper
             foreach ($options as $option) {
                 $values = $option->getValues();
                 
-                foreach ($values as $value) {
-                    if ($value->getShippinggroup() > 0) {
-                        if ($buyRequest['options'][$option['option_id']] == $value->getId()) {
-                            if (isset($this->aShippingGroupMap[$value->getShippinggroup()]) == true) {
-                                $aShipGroup[] = $this->getShippingGroupDays(
-                                    $this->aShippingGroupMap[$value->getShippinggroup()]
-                                );
-                                
+                if ($values) {
+                    foreach ($values as $value) {
+                        if ($value->getShippinggroup() > 0) {
+                            if ($buyRequest['options'][$option['option_id']] == $value->getId()) {
+                                if (isset($this->aShippingGroupMap[$value->getShippinggroup()]) == true) {
+                                    $aShipGroup[] = $this->getShippingGroupDays(
+                                        $this->aShippingGroupMap[$value->getShippinggroup()]
+                                        );
+                                    
+                                }
                             }
                         }
                     }
                 }
+                
             }
 
             // look for dynamic id in buy request
