@@ -188,11 +188,12 @@ class OrderSave
         $payment = $order->getPayment();
         $methodInstance = $payment->getMethod();
         $info = $payment->getAdditionalInformation();
-        $multipayMethod = $info[Constant::PAYMENT_METHOD_DATA];
         
         if (!isset($info[Constant::PAYMENT_METHOD_DATA])) {
             return;
         }
+        
+        $multipayMethod = $info[Constant::PAYMENT_METHOD_DATA];
         
         if ($methodInstance === Constant::MULTIPAY_METHOD) {
             if($multipayMethod != Constant::MULTIPAY_QUOTE_METHOD) {
