@@ -221,7 +221,12 @@ class OrderSave
                 ) {
                     $order->setState(Order::STATE_PROCESSING)->setStatus(Order::STATE_PROCESSING);
                     
-                    $this->shipdateHelper->updateDeliveryDates($order);
+                    // Steve C 5/27/2021: commenting this line out. For brand new orders that are paid in full
+                    // this coded is triggering but the $order object has not been committed yet to the DB.
+                    // thus there is no entity_id and the function updateDeliverDates() called below is using the
+                    // entity_id. This code fails currently.
+
+                    //$this->shipdateHelper->updateDeliveryDates($order);
                 }
                 
                 if($order->getTotalPaid() < $order->getGrandTotal() || $order->getTotalDue() > 0) {
