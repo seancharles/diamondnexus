@@ -208,11 +208,6 @@ class FreeGift extends AbstractHelper
     {
         $giftSkus = [];
         
-        
-        if ($this->scopeConfig->getValue('forevercompanies_gifts/free_gift_rules/active', $this->storeScope) == 0) {
-            return $giftSkus;
-        }
-        
         /** @var \ForeverCompanies\DynamicBundle\Model\Quote\Item $quoteItem */
         foreach ($quote->getAllItems() as $quoteItem) {
             $sku = $quoteItem->getSku();
