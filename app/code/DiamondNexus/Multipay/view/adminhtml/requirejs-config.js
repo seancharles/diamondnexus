@@ -1,7 +1,7 @@
 var config = {
     map: {
         '*': {
-            multipay: 'DiamondNexus_Multipay/js/multipay',
+            multipayadmin: 'DiamondNexus_Multipay/js/multipayadmin',
         },
     },
 }
