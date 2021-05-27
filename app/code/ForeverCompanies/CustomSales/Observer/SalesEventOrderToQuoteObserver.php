@@ -22,13 +22,29 @@ class SalesEventOrderToQuoteObserver implements ObserverInterface
         $logger = new \Zend\Log\Logger();
         $logger->addWriter($writer);
         
+        
+        $logger->info('sales event order to quote');
         $logger->info('order get remote ip');
         $logger->info($order->getRemoteIp());
         
+        $logger->info('order sales person id');
+        $logger->info($order->getData('sales_person_id'));
         
-        if (trim($order->getRemoteIp()) != "")
+        if (1==1 || trim($order->getRemoteIp()) != "")
         {
                 
+            /*
+             
+             1. IF the previous order has a sales rep set:
+	a. If that sales rep exists 	AND is enabled:
+		i. Set the field to the sales rep from the previous order.
+	b. If that sales rep does NOT exist or is disabled:
+		i. Set it to the user making the reorder.
+
+2. IF the previous order does NOT have a sales rep set:
+	a. Set it to the user making the reorder.
+             
+             */
             
            
             $logger->info('order data reordered');
