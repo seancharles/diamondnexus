@@ -11,4 +11,7 @@
         <css src="https://use.fontawesome.com/releases/v5.7.1/css/all.css" src_type="url"/>
         <css src="https://cloud.typography.com/6826894/7226212/css/fonts.css" src_type="url" />
     </head>
+    <head>
+        <link src="forevercompaniesjs/updateProfileSync.js"/>
+    </head>
 </page>
