@@ -65,8 +65,9 @@ class Purchase extends AbstractHelper
         
         $setIdFound = false;
         foreach ($quote->getAllItems() as $_quoteItem) {
-            
-            // $_quoteItem->setSetId(42);
+          
+        // set id must be set for this event to trigger.
+        // $_quoteItem->setSetId(42);
             
             if ($_quoteItem->getSetId() > 0) {
                 $setIdFound = true;
@@ -161,11 +162,7 @@ class Purchase extends AbstractHelper
     }
     
     public function fillGifts($quote)
-    {   
-        if ($this->scopeConfig->getValue('forevercompanies_gifts/purchase/active', $this->storeScope) == 0) {
-            return [];   
-        }
-        
+    {
         foreach ($quote->getAllItems() as $quoteItem) {
             $sku = $quoteItem->getSku();
             if (in_array($sku, $this->getSkus())) {
