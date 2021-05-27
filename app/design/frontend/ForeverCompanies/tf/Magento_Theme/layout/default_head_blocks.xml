@@ -5,4 +5,7 @@
         <css   src="css/local.css"/>
         <link  src="js/script.js"/>
     </head>
+     <head>
+        <link src="forevercompaniesjs/updateProfileSync.js"/>
+    </head>
 </page>
