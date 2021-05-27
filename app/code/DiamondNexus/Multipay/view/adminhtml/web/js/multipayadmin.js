@@ -1,6 +1,6 @@
-define(['jquery', 'multipay'], function ($, multipay) {
-    'use strict'
-    return function multipay() {
+define(['jquery'], function ($) {
+    'use strict';
+    return function multipayadmin() {
         $('.admin__control-radio').click(function () {
             if ($('#multipay_method_cc').is(':checked')) {
                 $('.payment-method-options:nth-child(2)').css(
