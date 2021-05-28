@@ -48,7 +48,7 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
 		        $websiteId = $this->storeManager->getWebsite()->getId();
 		        $formId = $this->formHelper->getSanitizedField('form_id');
 		        $email = $this->formHelper->getSanitizedField('email');
-		        $formData = $this->formHelper->getSanitizedField('form_post_json');
+		        $formData = json_encode($this->getRequest()->getParams());
 		        
 		        $model = $this->submissionFactory->create();
 		        
