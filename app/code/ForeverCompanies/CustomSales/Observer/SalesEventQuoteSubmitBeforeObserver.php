@@ -18,15 +18,6 @@ class SalesEventQuoteSubmitBeforeObserver implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
-        
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/reordertest.log');
-        $logger = new \Zend\Log\Logger();
-        $logger->addWriter($writer);
-        
-        
-        $logger->info('sales event quote submit before');
-        
-        
         $order = $observer->getData('order');
         $quote = $observer->getData('quote');
         $order->setData('sales_person_id', $quote->getData('sales_person_id'));

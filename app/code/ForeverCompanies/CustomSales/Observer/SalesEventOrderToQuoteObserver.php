@@ -6,68 +6,53 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Quote\Model\Quote;
 use Magento\Sales\Model\Order;
+use Magento\User\Model\UserFactory;
+use Magento\Backend\Model\Auth\Session;
 
 /**
  * Sales person Observer Model
  */
 class SalesEventOrderToQuoteObserver implements ObserverInterface
 {
+    protected $userFactory;
+    protected $adminSession;
+    
+    public function __construct(
+        UserFactory $userF,
+        Session $adminS
+    ) {
+        $this->userFactory = $userF;
+        $this->adminSession = $adminS;
+    }
+    
     public function execute(Observer $observer)
     {
-        /** @var Order $order */
         $order = $observer->getData('order');
-       // if (1==0 && $order->getData('reordered')) {
-       
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/reordertest.log');
-        $logger = new \Zend\Log\Logger();
-        $logger->addWriter($writer);
+        $user = $this->userFactory->create()->load($order->getData('sales_person_id'));
+        $sessionUser = $this->adminSession->getUser();
         
+        $quote = $observer->getData('quote');
         
-        $logger->info('sales event order to quote');
-        $logger->info('order get remote ip');
-        $logger->info($order->getRemoteIp());
+        /*
+            1. IF the previous order has a sales rep set:
+                a. If that sales rep exists 	AND is enabled:
+                    i. Set the field to the sales rep from the previous order.
+                b. If that sales rep does NOT exist or is disabled:
+                    i. Set it to the user making the reorder.
+            2. IF the previous order does NOT have a sales rep set:
+                a. Set it to the user making the reorder.
+        */
         
-        $logger->info('order sales person id');
-        $logger->info($order->getData('sales_person_id'));
-        
-        if (1==1 || trim($order->getRemoteIp()) != "")
-        {
-                
-            /*
-             
-             1. IF the previous order has a sales rep set:
-	a. If that sales rep exists 	AND is enabled:
-		i. Set the field to the sales rep from the previous order.
-	b. If that sales rep does NOT exist or is disabled:
-		i. Set it to the user making the reorder.
-
-2. IF the previous order does NOT have a sales rep set:
-	a. Set it to the user making the reorder.
-             
-             */
-            
-           
-            $logger->info('order data reordered');
-            $logger->info($order->getData('reordered'));
-            
-            $logger->info('order sales person id');
-            $logger->info($order->getData('sales_person_id'));
-            
-            /** @var Quote $quote */
-            $quote = $observer->getData('quote');
-            $quote->setData('sales_person_id', $order->getData('sales_person_id'));
-            
-            $logger->info('quote sales person id');
-            $logger->info($quote->getData('sales_person_id'));
-            
-            $logger->info('order data keys');
-            $logger->info(array_keys( $order->getData() ));
-            
-           
-       //     $quote->save();
-            
+        if (trim($order->getData('sales_person_id') != "")) {
+            if ($user && $user->getIsActive() == 1) {
+                $quote->setData('sales_person_id', $user->getUserId());
+            } else {
+                $quote->setData('sales_person_id', $sessionUser->getUserId());
+            }
+        } else {
+            $quote->setData('sales_person_id', $sessionUser->getUserId());
         }
-
+   
         return $this;
     }
 }
