@@ -33,8 +33,8 @@ if ($block->isMultipay()) {
         }
     </style>
     <script>
-        require(['jquery', 'multipay'], function($, multipay) {
-            multipay();
+        require(['jquery', 'multipayadmin'], function($, multipayadmin) {
+            multipayadmin();
         });
         require(
             [
@@ -110,12 +110,14 @@ if ($block->isMultipay()) {
                             <span><?= $block->escapeHtml(__('Paypal (offline)')) ?></span>
                         </label>
                     </div>
-                    <div class="admin__field-option _required">
-                        <input id="multipay_method_pl" class="admin__control-radio" value="7" type="radio" name="multipay_payment_method" data-validate='{"required":true}' />
-                        <label class="label" for="multipay_method_pl">
-                            <span><?= $block->escapeHtml(__('Progressive Leasing (offline)')) ?></span>
-                        </label>
-                    </div>
+                    <?php if($block->getBalanceAmount() > 0.01) : ?>
+                        <div class="admin__field-option _required">
+                            <input data-amount="<?php echo $block->getStoreCreditAmount();?>" id="multipay_method_store_credit" class="admin__control-radio" value="4" type="radio" name="multipay_payment_method" data-validate='{"required":true}' />
+                            <label class="label" for="multipay_method_store_credit">
+                                <span><?= $block->escapeHtml(__('Store Credit')) ?> ($<?php echo number_format($block->getStoreCreditAmount(), 2); ?>)</span>
+                            </label>
+                        </div>
+                    <?php endif; ?>
                 </fieldset>
 
                 <!-- choose full payment or partial payment -->

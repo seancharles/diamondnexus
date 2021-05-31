@@ -38,8 +38,8 @@ $code = 'multipay';
 </style>
 
 <script>
-    require(['jquery', 'multipay'], function($, multipay) {
-        multipay();
+    require(['jquery', 'multipayadmin'], function($, multipayadmin) {
+        multipayadmin();
     });
 </script>
 
@@ -72,12 +72,6 @@ $code = 'multipay';
                 <input id="multipay_method_paypal_offline" class="admin__control-radio" value="6" type="radio" name="payment[multipay_payment_method]" data-validate="{'required-entry':true}" />
                 <label class="label" for="multipay_method_paypal_offline">
                     <span><?= $block->escapeHtml(__('Paypal (offline)')) ?></span>
-                </label>
-            </div>
-            <div class="admin__field-option _required">
-                <input id="multipay_method_pl" class="admin__control-radio" value="7" type="radio" name="payment[multipay_payment_method]" data-validate="{'required-entry':true}" />
-                <label class="admin__field-label" for="multipay_method_pl">
-                    <span><?= $block->escapeHtml(__('Progressive Leasing (offline)')) ?></span>
                 </label>
             </div>
         </fieldset>
