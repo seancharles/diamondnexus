@@ -237,6 +237,11 @@ class Shipdate extends AbstractHelper
     
     public function updateDeliveryDates($order)
     {
+        // New orders don't need updated delivery dates
+        if(!$order->getEntityId()) {
+            return;
+        }
+        
         $connection = $this->shipperDetailResourceModel->getConnection();
         $select = $connection->select()->from($this->shipperDetailResourceModel->getMainTable())
             ->where('order_id = ?', $order->getEntityId())

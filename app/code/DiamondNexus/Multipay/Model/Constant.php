@@ -52,6 +52,7 @@ class Constant
     const EXP_MONTH_DATA = 'multipay_cc_exp_month';
     const EXP_YEAR_DATA = 'multipay_cc_exp_year';
     const CVV_NUMBER_DATA = 'multipay_cvv_number';
+    const PAID_IN_FULL_FLAG = 'multipay_pif_flag';
 
     const AMOUNT_DUE_DATA = 'multipay_amount_due';
     const PAYMENT_METHOD_NONCE = 'payment_method_nonce';
@@ -69,6 +70,7 @@ class Constant
         self::EXP_MONTH_DATA,
         self::EXP_YEAR_DATA,
         self::CVV_NUMBER_DATA,
+        self::PAID_IN_FULL_FLAG
     ];
 
     const CLIENT_XML = 'diamondnexus_multipay/general/client_id';
