@@ -212,30 +212,33 @@ class OrderSave
             }
 
             if ($multipayMethod != Constant::MULTIPAY_QUOTE_METHOD) {
-                if (
-                    (isset($info[Constant::OPTION_TOTAL_DATA]) == true && $info[Constant::OPTION_TOTAL_DATA] == 1)
+                
+                // added to prevent order from updating multiple times on save when other statuses are set like exchange/returned/closed
+                if(
+                    isset($info[Constant::ORDER_UPDATES_FLAG]) === false
                     ||
-                    ($order->getGrandTotal() == $order->getTotalPaid())
-                    ||
-                    $order->getTotalDue() == 0
+                    (isset($info[Constant::ORDER_UPDATES_FLAG]) === true && $info[Constant::ORDER_CREATE] == 0)
                 ) {
-                    if(
-                        isset($info[Constant::PAID_IN_FULL_FLAG]) === false
+                
+                    if (
+                        (isset($info[Constant::OPTION_TOTAL_DATA]) == true && $info[Constant::OPTION_TOTAL_DATA] == Constant::MULTIPAY_TOTAL_AMOUNT)
                         ||
-                        (isset($info[Constant::PAID_IN_FULL_FLAG]) === true && $info[Constant::PAID_IN_FULL_FLAG] == 0)
+                        $order->getGrandTotal() == $order->getTotalPaid()
+                        ||
+                        $order->getTotalDue() == 0
                     ) {
-                        // update to prevent further updates from making changes to delivery dates and order status
-                        $info[Constant::PAID_IN_FULL_FLAG] = 1;
+                        // upon PIF prevent further auto updates to delivery dates and order status
+                        $info[Constant::ORDER_UPDATES_FLAG] = 1;
                         
                         $order->setAdditionalInformation($info);
-                    
-                        $this->shipdateHelper->updateDeliveryDates($order);
-                    
+                        
                         $order->setState(Order::STATE_PROCESSING)->setStatus(Order::STATE_PROCESSING);
-                }
-                
-                if($order->getTotalPaid() < $order->getGrandTotal() || $order->getTotalDue() > 0) {
-                    $order->setState('pending')->setStatus('pending');
+                        
+                        $this->shipdateHelper->updateDeliveryDates($order);
+                        
+                    } else {
+                        $order->setState('pending')->setStatus('pending');
+                    }
                 }
             }
         }
@@ -289,24 +292,7 @@ class OrderSave
             if ($order->canInvoice()) {
                 if($order->getGrandTotal() == 0 || $order->getTotalPaid() == $order->getGrandTotal()) {
                     
-                    $sum = $info[C::OPTION_TOTAL_DATA] == '1' ? $info[C::AMOUNT_DUE_DATA] : $info[C::OPTION_PARTIAL_DATA];
-                    if ($order->getTotalDue() < $sum) {
-                        $shippingAmount = $order->getShippingInclTax();
-                    } else {
-                        $shippingAmount = 0;
-                        $amountWithoutShip = $order->getTotalDue() - $order->getShippingInclTax();
-                        if ($amountWithoutShip < $sum) {
-                            $shippingAmount = $sum - $amountWithoutShip;
-                        } else {
-                            $shippingAmount = 0;
-                        }
-                    }
                     $invoice = $this->invoiceService->prepareInvoice($order);
-                    $invoice->setShippingAmount($shippingAmount);
-                    $invoice->setSubtotal($sum - $shippingAmount);
-                    $invoice->setBaseSubtotal($sum - $shippingAmount);
-                    $invoice->setGrandTotal($sum);
-                    $invoice->setBaseGrandTotal($sum);
                     $invoice->register();
                     $this->resourceInvoice->save($invoice);
                     $transactionSave = $this->transaction->addObject(
