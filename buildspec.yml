@@ -32,6 +32,7 @@ phases:
       - apt-get -y update
       - apt-get install -y nfs-common
       - echo Cloning remote GIT repo
+      - git clone https://$username:$pass@github.com/ForeverCompanies/nginx-magento2.git --branch $BRANCH ./bin/files/
       - git log --name-status HEAD^..HEAD
       - echo Building the Docker image...
       - docker pull $REPOURL/magento:latest
