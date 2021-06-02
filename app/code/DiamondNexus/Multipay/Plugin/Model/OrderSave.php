@@ -212,25 +212,33 @@ class OrderSave
             }
 
             if ($multipayMethod != Constant::MULTIPAY_QUOTE_METHOD) {
-                if (
-                    (isset($info[Constant::OPTION_TOTAL_DATA]) == true && $info[Constant::OPTION_TOTAL_DATA] == 1)
-                    ||
-                    ($order->getGrandTotal() == $order->getTotalPaid())
-                    ||
-                    $order->getTotalDue() == 0
-                ) {
-                    $order->setState(Order::STATE_PROCESSING)->setStatus(Order::STATE_PROCESSING);
-                    
-                    // Steve C 5/27/2021: commenting this line out. For brand new orders that are paid in full
-                    // this coded is triggering but the $order object has not been committed yet to the DB.
-                    // thus there is no entity_id and the function updateDeliverDates() called below is using the
-                    // entity_id. This code fails currently.
-
-                    //$this->shipdateHelper->updateDeliveryDates($order);
-                }
                 
-                if($order->getTotalPaid() < $order->getGrandTotal() || $order->getTotalDue() > 0) {
-                    $order->setState('pending')->setStatus('pending');
+                // added to prevent order from updating multiple times on save when other statuses are set like exchange/returned/closed
+                if(
+                    isset($info[Constant::ORDER_UPDATES_FLAG]) === false
+                    ||
+                    (isset($info[Constant::ORDER_UPDATES_FLAG]) === true && $info[Constant::ORDER_CREATE] == 0)
+                ) {
+                
+                    if (
+                        (isset($info[Constant::OPTION_TOTAL_DATA]) == true && $info[Constant::OPTION_TOTAL_DATA] == Constant::MULTIPAY_TOTAL_AMOUNT)
+                        ||
+                        $order->getGrandTotal() == $order->getTotalPaid()
+                        ||
+                        $order->getTotalDue() == 0
+                    ) {
+                        // upon PIF prevent further auto updates to delivery dates and order status
+                        $info[Constant::ORDER_UPDATES_FLAG] = 1;
+                        
+                        $order->setAdditionalInformation($info);
+                        
+                        $order->setState(Order::STATE_PROCESSING)->setStatus(Order::STATE_PROCESSING);
+                        
+                        $this->shipdateHelper->updateDeliveryDates($order);
+                        
+                    } else {
+                        $order->setState('pending')->setStatus('pending');
+                    }
                 }
             }
         }
@@ -284,24 +292,7 @@ class OrderSave
             if ($order->canInvoice()) {
                 if($order->getGrandTotal() == 0 || $order->getTotalPaid() == $order->getGrandTotal()) {
                     
-                    $sum = $info[C::OPTION_TOTAL_DATA] == '1' ? $info[C::AMOUNT_DUE_DATA] : $info[C::OPTION_PARTIAL_DATA];
-                    if ($order->getTotalDue() < $sum) {
-                        $shippingAmount = $order->getShippingInclTax();
-                    } else {
-                        $shippingAmount = 0;
-                        $amountWithoutShip = $order->getTotalDue() - $order->getShippingInclTax();
-                        if ($amountWithoutShip < $sum) {
-                            $shippingAmount = $sum - $amountWithoutShip;
-                        } else {
-                            $shippingAmount = 0;
-                        }
-                    }
                     $invoice = $this->invoiceService->prepareInvoice($order);
-                    $invoice->setShippingAmount($shippingAmount);
-                    $invoice->setSubtotal($sum - $shippingAmount);
-                    $invoice->setBaseSubtotal($sum - $shippingAmount);
-                    $invoice->setGrandTotal($sum);
-                    $invoice->setBaseGrandTotal($sum);
                     $invoice->register();
                     $this->resourceInvoice->save($invoice);
                     $transactionSave = $this->transaction->addObject(
