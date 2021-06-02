@@ -257,6 +257,10 @@ class Shipdate extends AbstractHelper
         // get the number of days since the order was created
         $daysAfterCreate = $this->getDateDifference( $order->getCreatedAt(), date('Y-m-d') );
         
+        if($daysAfterCreate == 0) {
+            return;
+        }
+        
         // calculate the new dates by adding x number of business days since the order was created
         $newDispatchDate = $this->adjustDeliveryDate($dispatchDate, $daysAfterCreate);
         $newDeliveryDate = $this->adjustDeliveryDate($deliveryDate, $daysAfterCreate);
