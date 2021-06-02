@@ -6,6 +6,8 @@
 
 namespace ForeverCompanies\Utf8\Helper\Product;
 
+use Magento\Catalog\Model\Product\Attribute\LayoutUpdateManager;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\View\Result\Page as ResultPage;
 
 /**
@@ -16,7 +18,53 @@ use Magento\Framework\View\Result\Page as ResultPage;
  */
 class ProductView extends \Magento\Catalog\Helper\Product\View
 {
+ 
+    protected $messageGroups;
+    protected $_coreRegistry = null;
+    protected $_catalogProduct = null;
+    protected $_catalogDesign;
+    protected $_catalogSession;
+    protected $messageManager;
+    protected $categoryUrlPathGenerator;
+    private $string;
+    private $layoutUpdateManager;
     
+    public function __construct(
+        \Magento\Framework\App\Helper\Context $context,
+        \Magento\Catalog\Model\Session $catalogSession,
+        \Magento\Catalog\Model\Design $catalogDesign,
+        \Magento\Catalog\Helper\Product $catalogProduct,
+        \Magento\Framework\Registry $coreRegistry,
+        \Magento\Framework\Message\ManagerInterface $messageManager,
+        \Magento\CatalogUrlRewrite\Model\CategoryUrlPathGenerator $categoryUrlPathGenerator,
+        array $messageGroups = [],
+        \Magento\Framework\Stdlib\StringUtils $string = null,
+        ?LayoutUpdateManager $layoutUpdateManager = null
+        ) {
+            $this->_catalogSession = $catalogSession;
+            $this->_catalogDesign = $catalogDesign;
+            $this->_catalogProduct = $catalogProduct;
+            $this->_coreRegistry = $coreRegistry;
+            $this->messageGroups = $messageGroups;
+            $this->messageManager = $messageManager;
+            $this->categoryUrlPathGenerator = $categoryUrlPathGenerator;
+            $this->string = $string ?: ObjectManager::getInstance()->get(\Magento\Framework\Stdlib\StringUtils::class);
+            $this->layoutUpdateManager = $layoutUpdateManager
+            ?? ObjectManager::getInstance()->get(LayoutUpdateManager::class);
+            
+            parent::__construct(
+                $context,
+                $catalogSession,
+                $catalogDesign,
+                $catalogProduct,
+                $coreRegistry,
+                $messageManager,
+                $categoryUrlPathGenerator,
+                $messageGroups,
+                $this->string,
+                $layoutUpdateManager
+            );
+    }
     
     /**
      * Prepares product view page - inits layout and all needed stuff
