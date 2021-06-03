@@ -235,6 +235,23 @@ class Shipdate extends AbstractHelper
         return $interval->format($differenceFormat);
     }
     
+    public function getDeliveryDates($order)
+    {
+        $connection = $this->shipperDetailResourceModel->getConnection();
+        $select = $connection->select()->from($this->shipperDetailResourceModel->getMainTable())
+            ->where('order_id = ?', $order->getEntityId())
+            ->order('id desc')
+            ->limit(1);
+        
+        // pull the existing order delivery dates
+        $data = $connection->fetchRow($select);
+        
+        return [
+            'dispatch_date' => $data['dispatch_date'],
+            'delivery_date' => $data['delivery_date']
+        ];
+    }
+    
     public function updateDeliveryDates($order)
     {
         // New orders don't need updated delivery dates
