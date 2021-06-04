@@ -34,9 +34,6 @@ class AddOrderVars implements ObserverInterface
         
         $transport['dispatch_date'] = null;
         $transport['delivery_date'] = null;
-        $transport['tracking_provider'] = null;
-        $transport['tracking_number'] = null;
-        $transport['tracking_url'] = null;
         
         $deliveryDates = $this->shipdateHelper->getDeliveryDates($order);
         
@@ -46,24 +43,6 @@ class AddOrderVars implements ObserverInterface
         
         if(isset($deliveryDates['delivery_date']) === true) {
             $transport['delivery_date'] = $deliveryDates['delivery_date'];
-        }
-        
-        $tracksCollection = $order->getTracksCollection();
-
-        foreach ($tracksCollection->getItems() as $track) {
-            $transport['tracking_provider'] = $track->getTitle();
-            $transport['tracking_number'] = $track->getTrackNumber();
-            
-            switch($transport['tracking_provider']) {
-                case 'Federal Express':
-                    $trackingPath = '';
-                    break;
-                case 'United Parcel Service':
-                    $trackingPath = '';
-                    break;
-            }
-            
-            $transport['tracking_url'] = $track->getTrackNumber();
         }
     }
 }
