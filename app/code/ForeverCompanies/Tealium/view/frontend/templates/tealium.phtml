@@ -1,0 +1,16 @@
+<?php
+// Include site specific file via domain check
+$tealInclude = '';
+$hostAry = explode(".",$_SERVER['HTTP_HOST']);
+switch ($hostAry[1]) {
+    case 'diamondnexus': $tealInclude = 'teal-dn.min.js';
+        break;
+    case 'foreverartisans': $tealInclude = 'teal-fa.min.js';
+        break;
+    case '1215diamonds': $tealInclude = 'teal-tf.min.js';
+        break;
+}
+if (!empty($tealInclude)):
+    ?>
+    <h4>Hello - <?php echo $tealInclude ?></h4>
+<?php endif; ?>
