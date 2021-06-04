@@ -313,6 +313,43 @@ class Shipdate extends AbstractHelper
             'order_id = ' . $order->getEntityId()
         );
     }
+    
+    public function getTrackingInfo($order)
+    {
+        $tracksCollection = $order->getTracksCollection();
+        $trackingPath = false;
+
+        $result = [
+            'tracking_provider' => null,
+            'tracking_number' => null,
+            'tracking_url' => null
+        ];
+
+        foreach ($tracksCollection->getItems() as $track) {
+            switch($track->getTitle()) {
+                case "Federal Express":
+                    $trackingPath = "http://www.fedex.com/Tracking?tracknumbers=";
+                    break;
+                case "United Postal Service":
+                    $trackingPath = "https://tools.usps.com/go/TrackConfirmAction?tLabels=";
+                    break;
+                case "United Parcel Service":
+                    $trackingPath = "https://wwwapps.ups.com/tracking/tracking.cgi?tracknum=";
+                    break;
+            }
+            
+            if($trackingPath) {
+                $result['tracking_provider'] = $track->getTitle();
+                $result['tracking_number'] = $track->getTrackNumber();
+                $result['tracking_url'] = $trackingPath . $track->getTrackNumber();
+            }
+            
+            // only return for the first shipment
+            break;
+        }
+        
+        return $result;
+    }
 
     /**
      * @return bool
