@@ -429,7 +429,7 @@ return [
         'ForeverCompanies_Migration' => 1,
         'ForeverCompanies_Profile' => 1,
         'ForeverCompanies_QuoteCleaner' => 1,
-        'ForeverCompanies_Rules' => 1,
+        'ForeverCompanies_Rules' => 0,
         'ForeverCompanies_Salesforce' => 1,
         'ForeverCompanies_SearchEngine' => 1,
         'Mageplaza_Core' => 1,
