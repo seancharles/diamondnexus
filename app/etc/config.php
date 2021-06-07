@@ -418,7 +418,7 @@ return [
         'ShipperHQ_Shipper' => 1,
         'ForeverCompanies_CustomAttributes' => 1,
         'ForeverCompanies_CustomSales' => 1,
-        'ForeverCompanies_DynamicBundle' => 1,
+        'ForeverCompanies_DynamicBundle' => 0,
         'ForeverCompanies_EditOrder' => 1,
         'ForeverCompanies_Forms' => 1,
         'ForeverCompanies_Gifts' => 1,
