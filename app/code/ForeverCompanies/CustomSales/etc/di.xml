@@ -29,6 +29,9 @@
             </argument>
         </arguments>
     </type>
+    <type name="ShipperHQ\Shipper\Model\Carrier\Processor\ShipperMapper">
+        <plugin name="shipperhq-carrier-shippermapper" type="ForeverCompanies\CustomSales\Plugin\Shipperhq\ShipperMapper" />
+    </type>
     <type name="Magento\Sales\Model\Order\ShipmentRepository">
         <plugin name="ForeverCompanies_CustomSales_Plugin_ShipmentRepository" sortOrder="10"
                 type="ForeverCompanies\CustomSales\Plugin\ShipmentRepository"/>
