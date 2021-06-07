@@ -1,11 +1,23 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
 	
-	<!--  
+	<!--
 	
     <group id="default">
         <job name="custom_price_order_report" instance="ForeverCompanies\SystemCron\Cron\CustomPriceOrderReport" method="execute">
             <schedule>0 17 * * * </schedule>
+        </job>
+    </group>
+   
+    <group id="default">
+        <job name="custom_price_order_report_2" instance="ForeverCompanies\SystemCron\Cron\CustomPriceOrderReportTmp" method="execute">
+            <schedule>0 0 1 * * </schedule>
+        </job>
+    </group>
+    
+    <group id="default">
+        <job name="failed_delivery_report" instance="ForeverCompanies\SystemCron\Cron\FailedDeliveryReport" method="execute">
+            <schedule>00 1 * * * </schedule>
         </job>
     </group>
     
