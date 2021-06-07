@@ -82,6 +82,41 @@
             margin: 10px 0 !important;
         }
     }
+    #block-shipping {
+        display: none;
+    }
+
+    .product-item-name {
+        font-size: 18px;
+    }
+    .price-excluding-tax {
+        font-size: 20px !important;
+        color: #000 !important;
+    }
+
+    #affirmfinance {
+        font-size: 14px;
+        a {
+            display: block;
+        }
+    }
+
+    .action.continue,
+    .action.multicheckout {
+        font-size: 14px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .we-accept-cards {
+        background-image: none;
+        img {
+            margin-left: -10px;
+        }
+    }
+    .cart-summary > .title {
+        font-size: 22px !important;
+        font-weight: bold;
+    }
 }
 
 @media screen and (max-width: 1024px) {

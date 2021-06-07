@@ -1,16 +1,5 @@
 @charset "UTF-8";
-h1 {
-  font-family: var(--sans-serif) !important;
-  font-weight: var(--weight-bold) !important;
-  font-size: 32px !important;
-  line-height: 40px !important;
-  letter-spacing: 0.2em !important;
-  text-transform: uppercase !important; }
-  @media screen and (min-width: 768px) {
-    h1 {
-      font-size: 38px !important;
-      line-height: 46px !important; } }
-
+h1,
 h2 {
   font-family: var(--sans-serif) !important;
   font-weight: var(--weight-bold) !important;
@@ -19,6 +8,7 @@ h2 {
   letter-spacing: 0.2em !important;
   text-transform: uppercase !important; }
   @media screen and (min-width: 768px) {
+    h1,
     h2 {
       font-size: 32px !important;
       line-height: 40px !important; } }
@@ -181,6 +171,11 @@ footer {
 .customer-account-login .login-container .fieldset:after {
   font-size: 12px !important; }
 
+.customer-account-login .amazon-validate-container .block .block-title strong,
+.customer-account-login .login-container .block .block-title strong {
+  font-weight: bold;
+  font-size: 22px; }
+
 .account .nav a:hover {
   color: #8e7171 !important; }
 
@@ -204,7 +199,8 @@ footer {
     font-size: 18px !important; }
 
 .account .column.main .block:not(.widget) .block-title > strong {
-  font-size: 28px !important; }
+  font-size: 22px !important;
+  font-weight: bold; }
 
 .account .box-billing-address .box-content,
 .account .box-shipping-address .box-content {
@@ -213,14 +209,47 @@ footer {
 .account .sidebar-additional {
   display: none; }
 
+.account .box-address-billing .box-content,
+.account .box-address-shipping .box-content {
+  font-size: 16px !important; }
+
+.account .column.main .block:not(.widget) .box-title > span {
+  font-size: 16px; }
+
+.account .sidebar-additional,
+.account .block-dashboard-orders,
+.account .nav.items .nav.item:nth-of-type(7),
+.account .nav.items .nav.item:nth-of-type(9),
+.account .nav.items .nav.item:nth-of-type(11),
+.account .nav.items .nav.item:nth-of-type(12),
+.account .nav.items .nav.item:nth-of-type(14) {
+  display: none !important; }
+
 body:not(.customer-account-index) .account-additional-note {
   display: none; }
 
 .customer-account-create .form-create-account .fieldset.create.account:after {
   font-size: 12px !important; }
 
-.customer-account-create .legend > span {
-  font-size: 28px; }
+.customer-account-create .legend span {
+  font-size: 24px !important; }
+
+.customer-account-create .form.create {
+  display: flex;
+  flex-flow: wrap;
+  width: 100% !important; }
+  .customer-account-create .form.create .fieldset.create.info,
+  .customer-account-create .form.create .fieldset.create.account {
+    width: 100%;
+    padding: none; }
+    @media screen and (min-width: 768px) {
+      .customer-account-create .form.create .fieldset.create.info,
+      .customer-account-create .form.create .fieldset.create.account {
+        width: 50%;
+        padding-right: 50px; } }
+  .customer-account-create .form.create .actions-toolbar {
+    width: 100%;
+    padding-top: 20px; }
 
 .checkout-cart-index .product-item-name {
   font-size: 22px !important; }

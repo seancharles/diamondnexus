@@ -1,19 +1,4 @@
-h1 {
-    font-family: var(--serif) !important;
-    font-weight: var(--weight-light) !important;
-    font-size: 32px !important;
-    line-height: 1.25 !important;
-    letter-spacing: 0.008125em !important;
-    @media screen and (min-width: 768px) {
-        font-size: 40px !important;
-        line-height: 1.2 !important;
-        letter-spacing: 0.008em !important;
-    }
-    @media screen and (min-width: 1025px) {
-        font-size: 52px !important;
-        line-height: 1.15em !important;
-    }
-}
+h1,
 h2 {
     font-family: var(--serif) !important;
     font-weight: var(--weight-light) !important;

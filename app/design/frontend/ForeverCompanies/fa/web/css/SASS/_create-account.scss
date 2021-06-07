@@ -13,4 +13,29 @@
     .fieldset.create.account:after {
         font-size: 14px;
     }
+
+    .legend {
+        span {
+            font-size: 24px !important;
+        }
+    }
+
+    .form.create {
+        display: flex;
+        flex-flow: wrap;
+        width: 100% !important;
+        .fieldset.create.info,
+        .fieldset.create.account {
+            width: 100%;
+            padding: none;
+            @media screen and (min-width: 768px) {
+                width: 50%;
+                padding-right: 50px;
+            }
+        }
+        .actions-toolbar {
+            width: 100%;
+            padding-top: 20px;
+        }
+    }
 }

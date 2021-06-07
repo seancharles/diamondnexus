@@ -1,4 +1,16 @@
 .checkout-index-index {
+    .step-title {
+        font-size: 24px;
+        @media screen and (min-width: 768px) {
+            font-size: 32px;
+        }
+    }
+    .opc-block-summary > .title {
+        font-size: 24px;
+    }
+    .items-in-cart .title span {
+        font-size: 16px !important;
+    }
     #checkout {
         padding: 50px 0;
     }

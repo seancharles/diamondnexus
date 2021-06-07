@@ -1,7 +1,25 @@
 .checkout-index-index {
-    .title,
+    .opc-block-summary > .title,
     .step-title {
         font-family: 'Didot 06 A', 'Didot 06 B', serif;
+    }
+    .step-title {
+        font-size: 24px;
+        @media screen and (min-width: 768px) {
+            font-size: 32px;
+        }
+    }
+    .opc-block-summary > .title {
+        font-size: 24px;
+    }
+    .items-in-cart .title span {
+        font-size: 16px !important;
+    }
+    .opc-block-summary .product-item .product-item-inner {
+        display: flex !important;
+    }
+    .opc-block-summary .product-item .price {
+        font-size: 16px !important;
     }
     select {
         border: 1px solid #c2c2c2;
@@ -115,7 +133,8 @@
         font-size: 16px;
     }
     .opc-block-shipping-information .shipping-information-title {
-        font-size: 22px;
+        font-size: 24px;
+        font-family: 'Didot 06 A', 'Didot 06 B', serif;
     }
     .shipping-information button {
         background: transparent !important;

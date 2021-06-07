@@ -1,20 +1,12 @@
 @charset "UTF-8";
-h1 {
-  font-family: var(--sans-serif) !important;
-  font-weight: var(--weight-regular) !important;
-  font-size: 40px !important;
-  line-height: 48px !important; }
-  @media screen and (min-width: 1025px) {
-    h1 {
-      font-size: 56px !important;
-      line-height: 64px !important; } }
-
+h1,
 h2 {
   font-family: var(--sans-serif) !important;
   font-weight: var(--weight-regular) !important;
   font-size: 32px !important;
   line-height: 40px !important; }
   @media screen and (min-width: 1025px) {
+    h1,
     h2 {
       font-size: 48px !important;
       line-height: 56px !important; } }
@@ -83,7 +75,7 @@ button {
     text-decoration: none !important; }
 
 a {
-  color: var(--color-salmon) !important;
+  color: #000 !important;
   text-decoration: underline !important; }
   a:hover {
     text-decoration: none !important; }
@@ -162,6 +154,9 @@ footer {
 .customer-account-login .login-container .fieldset:after {
   font-size: 12px !important; }
 
+.customer-account-login .login-container .block .block-title {
+  font-size: 22px !important; }
+
 .account .nav a {
   text-decoration: none !important;
   color: #000 !important; }
@@ -191,6 +186,27 @@ footer {
 .account .box-shipping-address .box-content {
   font-size: 16px; }
 
+.account .box-address-billing .box-content,
+.account .box-address-shipping .box-content {
+  font-size: 16px !important; }
+
+.account .block-title {
+  font-size: 24px !important; }
+  .account .block-title strong {
+    font-size: 24px !important; }
+
+.account .column.main .block:not(.widget) .box-title > span {
+  font-size: 16px; }
+
+.account .sidebar-additional,
+.account .block-dashboard-orders,
+.account .nav.items .nav.item:nth-of-type(7),
+.account .nav.items .nav.item:nth-of-type(9),
+.account .nav.items .nav.item:nth-of-type(11),
+.account .nav.items .nav.item:nth-of-type(12),
+.account .nav.items .nav.item:nth-of-type(14) {
+  display: none !important; }
+
 body:not(.customer-account-index) .account-additional-note {
   display: none; }
 
@@ -204,6 +220,26 @@ body:not(.customer-account-index) .account-additional-note {
 
 .customer-account-create .fieldset.create.account:after {
   font-size: 14px; }
+
+.customer-account-create .legend span {
+  font-size: 24px !important; }
+
+.customer-account-create .form.create {
+  display: flex;
+  flex-flow: wrap;
+  width: 100% !important; }
+  .customer-account-create .form.create .fieldset.create.info,
+  .customer-account-create .form.create .fieldset.create.account {
+    width: 100%;
+    padding: none; }
+    @media screen and (min-width: 768px) {
+      .customer-account-create .form.create .fieldset.create.info,
+      .customer-account-create .form.create .fieldset.create.account {
+        width: 50%;
+        padding-right: 50px; } }
+  .customer-account-create .form.create .actions-toolbar {
+    width: 100%;
+    padding-top: 20px; }
 
 .checkout-cart-index .product-item-name {
   font-size: 22px !important; }
@@ -265,6 +301,36 @@ body:not(.customer-account-index) .account-additional-note {
 .checkout-cart-index .checkout button {
   margin: 10px 0 !important; }
 
+.checkout-cart-index #block-shipping {
+  display: none; }
+
+.checkout-cart-index .product-item-name {
+  font-size: 18px; }
+
+.checkout-cart-index .price-excluding-tax {
+  font-size: 20px !important;
+  color: #000 !important; }
+
+.checkout-cart-index #affirmfinance {
+  font-size: 14px; }
+  .checkout-cart-index #affirmfinance a {
+    display: block; }
+
+.checkout-cart-index .action.continue,
+.checkout-cart-index .action.multicheckout {
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase; }
+
+.checkout-cart-index .we-accept-cards {
+  background-image: none; }
+  .checkout-cart-index .we-accept-cards img {
+    margin-left: -10px; }
+
+.checkout-cart-index .cart-summary > .title {
+  font-size: 22px !important;
+  font-weight: bold; }
+
 @media screen and (max-width: 1024px) {
   .checkout-cart-index .cart-container {
     display: flex;
@@ -296,6 +362,18 @@ body:not(.customer-account-index) .account-additional-note {
 @media screen and (max-width: 639px) {
   .checkout-cart-index .cart-gift-item button {
     margin: 5px 0 !important; } }
+
+.checkout-index-index .step-title {
+  font-size: 24px; }
+  @media screen and (min-width: 768px) {
+    .checkout-index-index .step-title {
+      font-size: 32px; } }
+
+.checkout-index-index .opc-block-summary > .title {
+  font-size: 24px; }
+
+.checkout-index-index .items-in-cart .title span {
+  font-size: 16px !important; }
 
 .checkout-index-index #checkout {
   padding: 50px 0; }

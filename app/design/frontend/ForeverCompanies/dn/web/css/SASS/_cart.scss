@@ -2,10 +2,11 @@
     .cart {
         .item-info {
             .product-item-name {
-                font-size: 22px;
+                font-size: 18px;
             }
             .price-excluding-tax {
                 font-size: 20px !important;
+                color: #000 !important;
             }
         }
         .actions-toolbar {
@@ -16,9 +17,9 @@
         .gift-item-block {
             .title {
                 color: #000 !important;
-                font-size: 22px !important;
+                font-size: 16px !important;
                 &:after {
-                    font-size: 16px !important;
+                    font-size: 12px !important;
                 }
             }
         }
@@ -40,9 +41,9 @@
             .title {
                 strong {
                     color: #000 !important;
-                    font-size: 20px !important;
+                    font-size: 16px !important;
                     &:after {
-                        font-size: 16px !important;
+                        font-size: 12px !important;
                     }
                 }
             }
@@ -50,6 +51,9 @@
     }
     .we-accept-cards {
         background-image: none;
+        img {
+            margin-left: -10px;
+        }
     }
     .coupon {
         display: flex;
@@ -76,8 +80,8 @@
         font-family: 'Didot 06 A', 'Didot 06 B', serif;
         font-size: 24px;
     }
-    .cart-summary .block .title strong {
-        font-size: 16px;
+    #block-shipping {
+        display: none;
     }
     .grand.totals {
         th,
@@ -88,6 +92,32 @@
     .checkout {
         button {
             margin: 10px 0 !important;
+        }
+    }
+    #affirmfinance {
+        font-size: 14px;
+        a {
+            display: block;
+            font-size: 14px !important;
+        }
+    }
+    .action.continue,
+    .action.multicheckout {
+        font-size: 14px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .form-cart button {
+        background: transparent !important;
+        color: #000 !important;
+        border: 2px solid #000 !important;
+        font-size: 12px !important;
+        min-width: 180px !important;
+        padding: 12px 15px !important;
+        &:hover {
+            background: #000 !important;
+            color: #fff !important;
         }
     }
 }

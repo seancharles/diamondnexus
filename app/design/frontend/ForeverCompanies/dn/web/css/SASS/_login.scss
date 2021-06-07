@@ -1,4 +1,7 @@
 .customer-account-login {
+    .login-container .block .block-title {
+        font-size: 24px !important;
+    }
     .field.note,
     p {
         font-family: 'Gotham SSm A', 'Gotham SSm B', sans-serif;
@@ -38,6 +41,9 @@
         .secondary {
             .remind {
                 padding-top: 6px;
+                font-size: 12px;
+                text-transform: uppercase;
+                font-weight: bold;
             }
         }
     }
@@ -45,5 +51,8 @@
         &:after {
             font-size: 12px !important;
         }
+    }
+    .message.error {
+        font-size: 16px !important;
     }
 }

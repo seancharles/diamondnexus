@@ -1,13 +1,4 @@
-h1 {
-    font-family: var(--sans-serif) !important;
-    font-weight: var(--weight-regular) !important;
-    font-size: 40px !important;
-    line-height: 48px !important;
-    @media screen and (min-width: 1025px) {
-        font-size: 56px !important;
-        line-height: 64px !important;
-    }
-}
+h1,
 h2 {
     font-family: var(--sans-serif) !important;
     font-weight: var(--weight-regular) !important;
@@ -85,7 +76,7 @@ button {
 }
 
 a {
-    color: var(--color-salmon) !important;
+    color: #000 !important;
     text-decoration: underline !important;
     &:hover {
         text-decoration: none !important;

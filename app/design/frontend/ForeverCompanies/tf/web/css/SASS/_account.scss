@@ -26,7 +26,8 @@
         }
     }
     .column.main .block:not(.widget) .block-title > strong {
-        font-size: 28px !important;
+        font-size: 22px !important;
+        font-weight: bold;
     }
     .box-billing-address .box-content,
     .box-shipping-address .box-content {
@@ -34,6 +35,24 @@
     }
     .sidebar-additional {
         display: none;
+    }
+    .box-address-billing .box-content,
+    .box-address-shipping .box-content {
+        font-size: 16px !important;
+    }
+
+    .column.main .block:not(.widget) .box-title > span {
+        font-size: 16px;
+    }
+
+    .sidebar-additional,
+    .block-dashboard-orders,
+    .nav.items .nav.item:nth-of-type(7),
+    .nav.items .nav.item:nth-of-type(9),
+    .nav.items .nav.item:nth-of-type(11),
+    .nav.items .nav.item:nth-of-type(12),
+    .nav.items .nav.item:nth-of-type(14) {
+        display: none !important;
     }
 }
 

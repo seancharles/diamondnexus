@@ -33,4 +33,9 @@
     .login-container .fieldset:after {
         font-size: 12px !important;
     }
+    .amazon-validate-container .block .block-title strong,
+    .login-container .block .block-title strong {
+        font-weight: bold;
+        font-size: 22px;
+    }
 }

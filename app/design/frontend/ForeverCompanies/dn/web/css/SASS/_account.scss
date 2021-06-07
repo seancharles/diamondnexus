@@ -27,7 +27,7 @@
     }
 
     .column.main .block:not(.widget) .box-title > span {
-        font-size: 18px;
+        font-size: 16px;
     }
 
     .block-dashboard-addresses {
@@ -52,6 +52,11 @@
         }
     }
 
+    .box-address-billing .box-content,
+    .box-address-shipping .box-content {
+        font-size: 16px !important;
+    }
+
     .block-wishlist {
         display: none;
     }
@@ -60,5 +65,27 @@
         .item.current > strong {
             border-color: #bfa374 !important;
         }
+    }
+
+    .block-title {
+        font-size: 24px !important;
+        strong {
+            font-size: 24px !important;
+        }
+    }
+
+    .sidebar-additional,
+    .block-dashboard-orders,
+    .nav.items .nav.item:nth-of-type(7),
+    .nav.items .nav.item:nth-of-type(9),
+    .nav.items .nav.item:nth-of-type(11),
+    .nav.items .nav.item:nth-of-type(12),
+    .nav.items .nav.item:nth-of-type(14) {
+        display: none !important;
+    }
+    .box-actions a {
+        text-transform: uppercase !important;
+        font-size: 12px !important;
+        font-weight: bold !important;
     }
 }
