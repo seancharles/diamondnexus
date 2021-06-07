@@ -3,14 +3,14 @@
 $tealInclude = '';
 $hostAry = explode(".",$_SERVER['HTTP_HOST']);
 switch ($hostAry[1]) {
-    case 'diamondnexus': $tealInclude = 'teal-dn.min.js';
+    case 'diamondnexus': $tealInclude = 'tealium-dn.js';
         break;
-    case 'foreverartisans': $tealInclude = 'teal-fa.min.js';
+    case 'foreverartisans': $tealInclude = 'tealium-fa.js';
         break;
-    case '1215diamonds': $tealInclude = 'teal-tf.min.js';
+    case '1215diamonds': $tealInclude = 'tealium-tf.js';
         break;
 }
-if (!empty($tealInclude)):
-    ?>
-    <h4>Hello - <?php echo $tealInclude ?></h4>
+if (!empty($tealInclude)): ?>
+    <script src="<?php echo $block->getViewFileUrl('ForeverCompanies_Tealium::js/' . $tealInclude) ?>"></script>
+    <script src="<?php echo $block->getViewFileUrl('ForeverCompanies_Tealium::js/tealium-global.js') ?>"></script>
 <?php endif; ?>
