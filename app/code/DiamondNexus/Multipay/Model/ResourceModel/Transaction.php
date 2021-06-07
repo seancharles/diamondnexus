@@ -114,17 +114,14 @@ class Transaction extends AbstractDb
         // get payment method
         $paymentMethod = (int)$information[Constant::PAYMENT_METHOD_DATA];
         
-        // total or partial
-        $paymentTotal = $information[Constant::OPTION_TOTAL_DATA];
-        
-        if ($paymentTotal == Constant::MULTIPAY_TOTAL_AMOUNT) {
+        if (isset($information[Constant::OPTION_TOTAL_DATA]) == true && $information[Constant::OPTION_TOTAL_DATA] == Constant::MULTIPAY_TOTAL_AMOUNT) {
             if (isset($information[Constant::AMOUNT_DUE_DATA])) {
                 $amount = $information[Constant::AMOUNT_DUE_DATA];
                 $change = 0;
             }
         }
 
-        if ($paymentTotal == Constant::MULTIPAY_PARTIAL_AMOUNT) {
+        if (isset($information[Constant::OPTION_TOTAL_DATA]) == true && $information[Constant::OPTION_TOTAL_DATA] == Constant::MULTIPAY_PARTIAL_AMOUNT) {
             $amount = $information[Constant::OPTION_PARTIAL_DATA];
             if (isset($information[Constant::CHANGE_DUE_DATA])) {
                 $change = $information[Constant::CHANGE_DUE_DATA];
@@ -179,7 +176,7 @@ class Transaction extends AbstractDb
                     $this->extOrderHelper->createNewExtSalesOrder((int)$orderId, ['payment']);
                 } else {
                     // Not sure why this else exists? PB
-                    $order->setTotalPaid((float)$amount);
+                    $order->setTotalPaid($amount);
                 }
             }
             $this->save($transaction);

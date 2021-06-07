@@ -1,36 +1,31 @@
 .checkout-index-index {
-    button {
-        border-color: #000 !important;
-        background: #000;
-        color: #fff;
-        text-transform: uppercase;
-        font-weight: bold;
-        border-radius: 0;
-        &:hover {
-            background: #383838 !important;
-        }
-    }
-    .actions-toolbar > .primary .action span,
-    .actions-toolbar > .primary .action:last-child span {
-        font-weight: bold !important;
-    }
-    .title,
+    .opc-block-summary > .title,
     .step-title {
         font-family: 'Didot 06 A', 'Didot 06 B', serif;
     }
-    .checkout-payment-method .payment-option-title .action-toggle {
-        color: #000 !important;
+    .step-title {
+        font-size: 24px;
+        @media screen and (min-width: 768px) {
+            font-size: 32px;
+        }
+    }
+    .opc-block-summary > .title {
+        font-size: 24px;
+    }
+    .items-in-cart .title span {
+        font-size: 16px !important;
+    }
+    .opc-block-summary .product-item .product-item-inner {
+        display: flex !important;
+    }
+    .opc-block-summary .product-item .price {
+        font-size: 16px !important;
+    }
+    select {
+        border: 1px solid #c2c2c2;
     }
     #checkout {
         padding: 50px 0;
-    }
-    a {
-        text-decoration: underline !important;
-        color: #000;
-        &:hover {
-            text-decoration: none !important;
-            color: #000;
-        }
     }
     .opc-progress-bar {
         margin: 0 0 40px;
@@ -57,60 +52,24 @@
         padding-top: 50px;
     }
     .opc-progress-bar-item._active > span {
-        font-family: 'Gotham Bold';
+        font-family: var(--sans-serif);
     }
     #checkout-step-shipping form label {
-        font-family: 'Gotham Bold';
+        font-family: var(--sans-serif);
     }
     .grand.totals {
-        font-family: 'Gotham Bold';
+        font-family: var(--sans-serif);
     }
     .opc-block-shipping-information .shipping-information-title {
-        font-family: 'Gotham Bold';
+        font-family: var(--sans-serif);
     }
     .form.methods-shipping input[type='radio'] {
         margin: 0 !important;
+        width: 18px !important;
+        height: 18px !important;
     }
     .checkout-step-shipping_method .actions-toolbar {
         padding-top: 20px;
-    }
-    .checkout-shipping-method .actions-toolbar .action.primary.button {
-        cursor: pointer;
-        text-align: center;
-        margin: auto;
-        color: #fff !important;
-        display: flex !important;
-        background-color: #000;
-        border: none;
-        letter-spacing: normal;
-        line-height: 1;
-        text-transform: uppercase;
-        font-weight: bold;
-        font-size: 14px;
-        padding: 16px 24px;
-        width: 100% !important;
-        &:hover {
-            background-color: #383838;
-        }
-    }
-    .checkout-payment-method .actions-toolbar .primary.checkout {
-        cursor: pointer;
-        text-align: center;
-        margin: auto;
-        color: #fff !important;
-        display: flex !important;
-        background-color: #000;
-        border: none;
-        letter-spacing: normal;
-        line-height: 1;
-        text-transform: uppercase;
-        font-weight: bold;
-        font-size: 14px;
-        padding: 16px 24px;
-        width: 100% !important;
-        &:hover {
-            background-color: #383838;
-        }
     }
     .minicart-items .product > .product-image-container {
         width: 60px !important;
@@ -140,58 +99,47 @@
             }
             .actions-toolbar {
                 margin-left: 0;
-                .primary {
-                    margin: 0 !important;
-                    .action-apply {
-                        cursor: pointer;
-                        text-align: center;
-                        margin: auto;
-                        height: auto;
-                        color: #fff !important;
-                        background-color: #000;
-                        border: none;
-                        letter-spacing: normal;
-                        line-height: 1;
-                        text-transform: uppercase;
-                        font-weight: bold;
-                        font-size: 14px;
-                        padding: 16px 24px;
-                        border-radius: 0;
-                        width: 100% !important;
-                        &:hover {
-                            background-color: #383838;
-                            border: none !important;
-                        }
-                    }
-                }
             }
         }
     }
-    .form-giftcard-account {
-        .actions-toolbar {
-            .action-add,
-            .action-check {
-                cursor: pointer;
-                text-align: center;
-                margin: auto;
-                color: #fff !important;
-                background-color: #000;
-                border: none;
-                letter-spacing: normal;
-                line-height: 1;
-                text-transform: uppercase;
-                height: auto;
-                border-radius: 0;
-                font-weight: bold;
-                font-size: 14px;
-                padding: 16px 24px;
-                width: 100% !important;
-                &:hover {
-                    background-color: #383838;
-                    border: none !important;
-                }
-            }
-        }
+    .field.choice {
+        display: flex;
+    }
+    input[type='radio'] {
+        width: 18px;
+        height: 18px;
+        margin-right: 5px;
+        border: 1px solid #000;
+    }
+    input[type='radio']:not([disabled]):checked {
+        background-color: #000 !important;
+    }
+    input[type='checkbox'] {
+        height: 22px;
+        width: 23px;
+        margin-right: 10px;
+    }
+    .braintree-credit-card-selected {
+        width: 32px;
+    }
+    .payment-method-braintree .cvv .field-tooltip {
+        top: 0 !important;
+    }
+    .checkout-payment-method .payment-option-title .action-toggle {
+        color: #000;
+    }
+    .opc-block-summary .table-totals .grand .amount,
+    .opc-block-summary .table-totals .grand .mark {
+        font-size: 16px;
+    }
+    .opc-block-shipping-information .shipping-information-title {
+        font-size: 24px;
+        font-family: 'Didot 06 A', 'Didot 06 B', serif;
+    }
+    .shipping-information button {
+        background: transparent !important;
+        padding: 0 !important;
+        min-width: auto !important;
     }
 }
 
@@ -229,7 +177,7 @@
 @media screen and (max-width: 767px) {
     .checkout-index-index {
         .opc-estimated-wrapper .estimated-block {
-            font-family: 'Gotham Bold';
+            font-family: var(--sans-serif);
         }
         .checkout-payment-method .actions-toolbar .primary {
             float: none;
@@ -238,5 +186,10 @@
         .checkout-payment-method .payment-methods {
             margin: 0 !important;
         }
+    }
+}
+@media screen and (max-width: 639px) {
+    .opc-wrapper .step-title {
+        font-size: 32px !important;
     }
 }

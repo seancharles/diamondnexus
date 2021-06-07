@@ -14,6 +14,7 @@ use Magento\Quote\Model\Quote\Item;
 use Magento\Framework\Stdlib\DateTime;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Quote\Model\Quote\Item as QuoteItem;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class FreeGift extends AbstractHelper
 {
@@ -54,6 +55,9 @@ class FreeGift extends AbstractHelper
     
     protected $messageManager;
     protected $quoteItem;
+    
+    protected $scopeConfig;
+    protected $storeScope;
 
     /**
      * Data constructor.
@@ -68,7 +72,8 @@ class FreeGift extends AbstractHelper
         DateTime $dateTime,
         Serialize $serialize,
         ManagerInterface $managerI,
-        QuoteItem $quoteI
+        QuoteItem $quoteI,
+        ScopeConfigInterface $scopeC
     ) {
         parent::__construct($context);
         $this->productRepository = $productRepository;
@@ -76,6 +81,9 @@ class FreeGift extends AbstractHelper
         $this->dateTime = $dateTime;
         $this->messageManager = $managerI;
         $this->quoteItem = $quoteI;
+        
+        $this->scopeConfig = $scopeC;
+        $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
         
         $this->fillRules();
     }
@@ -199,6 +207,7 @@ class FreeGift extends AbstractHelper
     public function fillGifts($quote)
     {
         $giftSkus = [];
+        
         /** @var \ForeverCompanies\DynamicBundle\Model\Quote\Item $quoteItem */
         foreach ($quote->getAllItems() as $quoteItem) {
             $sku = $quoteItem->getSku();
@@ -299,6 +308,6 @@ class FreeGift extends AbstractHelper
      */
     protected function getGiftRules(string $config)
     {
-        return $this->scopeConfig->getValue('forevercompanies_gifts/free_gift_rules/' . $config);
+        return $this->scopeConfig->getValue('forevercompanies_gifts/free_gift_rules/' . $config, $this->storeScope);
     }
 }

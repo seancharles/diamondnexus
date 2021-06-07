@@ -99,22 +99,26 @@ class SalesOrderPlaceAfter implements ObserverInterface
     
     protected function _addFreeItemToOrder($order)
     {
-        $quote = $this->quoteRepository->get($order->getQuoteId());
         $freeItem = false;
-        $giftSkus = $this->giftHelper->fillGifts($quote);
+        $quote = $this->quoteRepository->get($order->getQuoteId());
+        
+        if ($this->giftHelper->isEnabledFreeGift()) {
+            $giftSkus = $this->giftHelper->fillGifts($quote);
             
-        if (count($giftSkus) > 0) {
-            $freeItem = true;
-            foreach ($giftSkus as $sku => $qty) {
-                   $freeSku = $sku;
-                   break;
+            if (count($giftSkus) > 0) {
+                $freeItem = true;
+                foreach ($giftSkus as $sku => $qty) {
+                    $freeSku = $sku;
+                    break;
+                }
             }
         }
             
-        if(!$freeItem) {
+        if(!$freeItem && $this->purchaseHelper->isEnabledPurchase()) {
             foreach ($quote->getAllItems() as $_quoteItem) {
                 
-                $_quoteItem->setSetId(42);
+                // this needs to be set for purchase to work
+            //    $_quoteItem->setSetId(42);
                 
                 if ($_quoteItem->getSetId() > 0) {
                     if ($quote->getSubtotal() >= $this->scopeConfig->getValue('forevercompanies_gifts/purchase/total', $this->storeScope)) {

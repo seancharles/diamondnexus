@@ -1,92 +1,94 @@
 {
-    "name": "magento/project-enterprise-edition",
-    "description": "eCommerce Platform for Growth (Enterprise Edition)",
-    "type": "project",
-    "license": [
-        "proprietary"
-    ],
-    "config": {
-        "preferred-install": "dist",
-        "sort-packages": true
-    },
-    "require": {
-        "affirm/magento2": "^3.0",
-        "cloudinary/cloudinary-magento2": "^1.11",
-        "cweagans/composer-patches": "^1.7",
-        "fooman/printorderpdf-m2": "^3.3",
-        "lcobucci/jwt": "3.3",
-        "magento/composer-root-update-plugin": "~1.0",
-        "magento/data-migration-tool": "2.3.4",
-        "magento/magento2-functional-testing-framework": "dev-develop",
-        "magento/product-enterprise-edition": "2.4.1",
-        "mageplaza/module-core": "^1.4",
-        "mageplaza/module-smtp": "^1.4",
-        "shipperhq/module-address-autocomplete": "^20.3",
-        "shipperhq/module-shipper": "20.39.7"
-    },
-    "require-dev": {
-        "allure-framework/allure-phpunit": "~1.2.0",
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
-        "friendsofphp/php-cs-fixer": "~2.16.0",
-        "lusitanian/oauth": "~0.8.10",
-        "magento/magento-coding-standard": "~4.0.0",
-        "pdepend/pdepend": "~2.7.1",
-        "phpcompatibility/php-compatibility": "^9.3",
-        "phpmd/phpmd": "^2.8.0",
-        "phpstan/phpstan": ">=0.12.3 <=0.12.23",
-        "phpunit/phpunit": "^9",
-        "sebastian/phpcpd": "~5.0.0",
-        "squizlabs/php_codesniffer": "~3.5.4"
-    },
-    "conflict": {
-        "gene/bluefoot": "*"
-    },
-    "autoload": {
-        "psr-4": {
-            "Magento\\Framework\\": "lib/internal/Magento/Framework/",
-            "Magento\\Setup\\": "setup/src/Magento/Setup/",
-            "Magento\\": "app/code/Magento/",
-            "Zend\\Mvc\\Controller\\": "setup/src/Zend/Mvc/Controller/"
-        },
-        "psr-0": {
-            "": [
-                "app/code/",
-                "generated/code/"
-            ]
-        },
-        "files": [
-            "app/etc/NonComposerComponentRegistration.php"
-        ],
-        "exclude-from-classmap": [
-            "**/dev/**",
-            "**/update/**",
-            "**/Test/**"
-        ]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Magento\\Sniffs\\": "dev/tests/static/framework/Magento/Sniffs/",
-            "Magento\\Tools\\": "dev/tools/Magento/Tools/",
-            "Magento\\Tools\\Sanity\\": "dev/build/publication/sanity/Magento/Tools/Sanity/",
-            "Magento\\TestFramework\\Inspection\\": "dev/tests/static/framework/Magento/TestFramework/Inspection/",
-            "Magento\\TestFramework\\Utility\\": "dev/tests/static/framework/Magento/TestFramework/Utility/"
-        }
-    },
-    "version": "2.3.6",
-    "minimum-stability": "stable",
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://repo.magento.com/"
-        }
-    ],
-    "extra": {
-        "magento-force": "override",
-        "composer-exit-on-patch-failure": true,
-        "patches": {
-            "magento/module-related-product-graph-ql": {
-                "Remove related products that not exist in map list": "app/code/ForeverCompanies/Graphql/patches/abstractLikedProducts.patch"
-            }
-        }
-    }
+	"name" : "magento/project-enterprise-edition",
+	"description" : "eCommerce Platform for Growth (Enterprise Edition)",
+	"type" : "project",
+	"license" : "proprietary",
+	"config" : {
+		"preferred-install" : "dist",
+		"sort-packages" : true
+	},
+	"require" : {
+		"affirm/magento2": "^3.0",
+		"cloudinary/cloudinary-magento2": "^1.11",
+		"cweagans/composer-patches": "^1.7",
+		"fooman/printorderpdf-m2": "^3.3",
+		"lcobucci/jwt": "~3.4.2",
+		"magento/composer-root-update-plugin": "~1.0",
+		"magento/data-migration-tool": "2.3.4",
+		"magento/magento2-functional-testing-framework": "dev-develop",
+		"magento/product-enterprise-edition": "2.4.1",
+		"mageplaza/module-core": "^1.4",
+		"mageplaza/module-smtp": "^1.4",
+		"shipperhq/library-graphql": "20.2.0",
+		"shipperhq/library-shipper": "20.14.0",
+		"shipperhq/library-ws": "20.5.0",
+		"shipperhq/module-address-autocomplete": "20.3.3",
+		"shipperhq/module-common": "20.9.3",
+		"shipperhq/module-logger": "20.5.0",
+		"shipperhq/module-shipper": "20.43.2"
+	},
+	"require-dev" : {
+		"allure-framework/allure-phpunit" : "~1.2.0",
+		"dealerdirect/phpcodesniffer-composer-installer" : "^0.5.0",
+		"friendsofphp/php-cs-fixer" : "~2.16.0",
+		"lusitanian/oauth" : "~0.8.10",
+		"magento/magento-coding-standard" : "~4.0.0",
+		"pdepend/pdepend" : "~2.7.1",
+		"phpcompatibility/php-compatibility" : "^9.3",
+		"phpmd/phpmd" : "^2.8.0",
+		"phpstan/phpstan" : ">=0.12.3 <=0.12.23",
+		"phpunit/phpunit" : "^9",
+		"sebastian/phpcpd" : "~5.0.0",
+		"squizlabs/php_codesniffer" : "~3.5.4"
+	},
+	"conflict" : {
+		"gene/bluefoot" : "*"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"Magento\\Framework\\" : "lib/internal/Magento/Framework/",
+			"Magento\\Setup\\" : "setup/src/Magento/Setup/",
+			"Magento\\" : "app/code/Magento/",
+			"Zend\\Mvc\\Controller\\" : "setup/src/Zend/Mvc/Controller/"
+		},
+		"psr-0" : {
+			"" : [
+				"app/code/",
+				"generated/code/"
+			]
+		},
+		"files" : [
+			"app/etc/NonComposerComponentRegistration.php"
+		],
+		"exclude-from-classmap" : [
+			"**/dev/**",
+			"**/update/**",
+			"**/Test/**"
+		]
+	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"Magento\\Sniffs\\" : "dev/tests/static/framework/Magento/Sniffs/",
+			"Magento\\Tools\\" : "dev/tools/Magento/Tools/",
+			"Magento\\Tools\\Sanity\\" : "dev/build/publication/sanity/Magento/Tools/Sanity/",
+			"Magento\\TestFramework\\Inspection\\" : "dev/tests/static/framework/Magento/TestFramework/Inspection/",
+			"Magento\\TestFramework\\Utility\\" : "dev/tests/static/framework/Magento/TestFramework/Utility/"
+		}
+	},
+	"version" : "2.3.6",
+	"minimum-stability" : "stable",
+	"repositories" : [{
+			"type" : "composer",
+			"url" : "https://repo.magento.com/"
+		}
+	],
+	"extra" : {
+		"magento-force" : "override",
+		"composer-exit-on-patch-failure" : true,
+		"patches" : {
+			"magento/module-related-product-graph-ql" : {
+				"Remove related products that not exist in map list" : "app/code/ForeverCompanies/Graphql/patches/abstractLikedProducts.patch"
+			}
+		}
+	}
 }

@@ -1,0 +1,41 @@
+.customer-account-login {
+    .actions-toolbar > .primary .action:last-child {
+        cursor: pointer !important;
+        font-family: var(--sans-serif) !important;
+        display: inline-block;
+        text-align: center !important;
+        margin: auto !important;
+        background-color: var(--color-primary) !important;
+        border: 2px solid var(--color-primary) !important;
+        letter-spacing: normal !important;
+        line-height: 1 !important;
+        font-weight: var(--weight-normal) !important;
+        font-size: 14px !important;
+        min-width: 191px !important;
+        padding: 16px 24px !important;
+        color: var(--color-white) !important;
+        width: 100% !important;
+        border-radius: 3px !important;
+        box-sizing: border-box !important;
+        text-decoration: none;
+        @media screen and (min-width: 768px) {
+            width: auto !important;
+        }
+        &:hover {
+            background-color: var(--color-lightprimary) !important;
+            border-color: var(--color-lightprimary) !important;
+            color: var(--color-white) !important;
+        }
+    }
+    .secondary {
+        margin: 5px 0 0 10px;
+    }
+    .login-container .fieldset:after {
+        font-size: 12px !important;
+    }
+    .amazon-validate-container .block .block-title strong,
+    .login-container .block .block-title strong {
+        font-weight: bold;
+        font-size: 22px;
+    }
+}
