@@ -8,10 +8,10 @@ use Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Exception\LocalizedException;
-
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Quote\Model\Quote\Item as QuoteItem;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class Purchase extends AbstractHelper
 {
@@ -28,6 +28,9 @@ class Purchase extends AbstractHelper
     protected $productRepository;
     protected $messageManager;
     protected $quoteItem;
+    
+    protected $scopeConfig;
+    protected $storeScope;
 
     /**
      * Data constructor.
@@ -41,7 +44,8 @@ class Purchase extends AbstractHelper
         Config $eav,
         ProductRepository $productR,
         ManagerInterface $managerI,
-        QuoteItem $quoteI
+        QuoteItem $quoteI,
+        ScopeConfigInterface $scopeC
     ) {
         parent::__construct($context);
         $this->eav = $eav;
@@ -49,17 +53,21 @@ class Purchase extends AbstractHelper
         $this->productRepository = $productR;
         $this->messageManager = $managerI;
         $this->quoteItem = $quoteI;
+        
+        $this->scopeConfig = $scopeC;
+        $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
     
     public function addGiftToQuote($quote)
     {
-        $sku = $this->scopeConfig->getValue('forevercompanies_gifts/purchase/product_id'); 
+        $sku = $this->scopeConfig->getValue('forevercompanies_gifts/purchase/product_id', $this->storeScope); 
         $product = $this->productRepository->get($sku);
         
         $setIdFound = false;
         foreach ($quote->getAllItems() as $_quoteItem) {
-            
-            $_quoteItem->setSetId(42);
+          
+        // set id must be set for this event to trigger.
+        // $_quoteItem->setSetId(42);
             
             if ($_quoteItem->getSetId() > 0) {
                 $setIdFound = true;
@@ -70,11 +78,11 @@ class Purchase extends AbstractHelper
             }
         }
         
-        if ($setIdFound && $quote->getSubtotal() >= $this->scopeConfig->getValue('forevercompanies_gifts/purchase/total')) {
+        if ($setIdFound && $quote->getSubtotal() >= $this->scopeConfig->getValue('forevercompanies_gifts/purchase/total', $this->storeScope)) {
             $product->setQty(1);
             $quote->addProduct($product);
             $quote->save();
-            $this->messageManager->addSuccessMessage(__($this->scopeConfig->getValue('forevercompanies_gifts/purchase/message')));
+            $this->messageManager->addSuccessMessage(__($this->scopeConfig->getValue('forevercompanies_gifts/purchase/message', $this->storeScope)));
         }
     }
     
@@ -135,7 +143,7 @@ class Purchase extends AbstractHelper
      */
     protected function getPurchaseConfig(string $config)
     {
-        return $this->scopeConfig->getValue('forevercompanies_gifts/purchase/' . $config);
+        return $this->scopeConfig->getValue('forevercompanies_gifts/purchase/' . $config, $this->storeScope);
     }
 
     /**
@@ -155,7 +163,6 @@ class Purchase extends AbstractHelper
     
     public function fillGifts($quote)
     {
-        
         foreach ($quote->getAllItems() as $quoteItem) {
             $sku = $quoteItem->getSku();
             if (in_array($sku, $this->getSkus())) {

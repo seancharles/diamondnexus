@@ -11,5 +11,14 @@
         <plugin name="forevercompanies_customadmon_orders_grid_add_data_to_orders_grid"
                 type="ForeverCompanies\CustomAdmin\Plugin\AddDataToOrdersGrid" sortOrder="10"/>
     </type>
-     <preference for="Magento\Sales\Helper\Reorder" type="ForeverCompanies\CustomAdmin\Helper\Reorder" />
+    
+    <preference
+        for="Magento\CustomerBalance\Block\Adminhtml\Customer\Edit\Tab\Customerbalance\Form"
+        type="ForeverCompanies\CustomAdmin\Block\Adminhtml\Customer\Edit\Tab\Customerbalance\Form"
+    />
+    
+    <preference
+        for="Magento\Sales\Helper\Reorder"
+        type="ForeverCompanies\CustomAdmin\Helper\Reorder"
+     />
 </config>

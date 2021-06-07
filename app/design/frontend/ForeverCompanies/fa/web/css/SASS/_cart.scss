@@ -1,114 +1,121 @@
 .checkout-cart-index {
-    .page-title {
-        font-family: 'proxima-nova', 'Helvetica Neue', Verdana, Arial,
-            sans-serif;
-        font-weight: 900;
-    }
-    a,
-    .action.clear span,
-    .gift-item-block .title,
-    .title strong,
-    .affirm-modal-trigger {
-        color: #000 !important;
-        &:hover {
-            color: #e0afa0 !important;
-        }
-    }
     .product-item-name {
         font-size: 22px !important;
+    }
+    .price-excluding-tax {
+        font-size: 20px !important;
+    }
+    .actions-toolbar {
+        padding-bottom: 30px;
     }
     .we-accept-cards {
         background-image: none;
     }
-
-    #affirmfinance {
-        a {
-            text-transform: none;
-            display: block;
-            font-size: 14px;
-        }
-    }
-    .action.continue {
-        text-transform: none;
-    }
     .coupon {
         display: flex;
         .field {
-            width: 85%;
+            width: 75%;
             margin: 0;
             .control {
                 height: 100%;
                 input {
-                    height: 100%;
+                    height: 46px;
                 }
             }
         }
-        .action {
-            text-transform: none;
-            letter-spacing: 0;
-            background: #000 !important;
-            border-radius: 0 !important;
-            color: #fff !important;
-            border: none !important;
-            font-size: 14px !important;
-            padding: 15px;
-            font-weight: normal;
-            box-shadow: none !important;
-            &:hover {
-                background: #e0afa0 !important;
+    }
+    .cart-gift-item {
+        .gift-item-block {
+            .title {
+                color: #000 !important;
+                font-size: 22px !important;
+                &:after {
+                    font-size: 16px !important;
+                }
             }
         }
-    }
-    .action.primary.checkout,
-    .actions-toolbar .secondary .action-update {
-        text-transform: none;
-        letter-spacing: 0;
-        background: #000 !important;
-        border-radius: 0 !important;
-        color: #fff !important;
-        border: none !important;
-        font-size: 14px !important;
-        padding: 15px;
-        font-weight: normal;
-        box-shadow: none !important;
-        &:hover {
-            background: #e0afa0 !important;
+        .gift-options-title {
+            font-size: 18px !important;
         }
-    }
-    .actions-toolbar .secondary .action-cancel {
-        color: #000;
-        margin-top: 15px !important;
-        &:hover {
-            color: #e0afa0;
-        }
-    }
-    .cart-container {
-        .action.update {
-            border: 1px solid #000;
-            border-radius: 0;
-            background: transparent;
-            &:hover {
-                background: #000;
-                color: #fff;
+        .field.choice {
+            display: flex;
+            label {
+                margin: 3px 0 0 8px;
             }
+        }
+        button {
+            margin: 0 5px !important;
         }
     }
     .cart-discount {
         .block.discount {
             width: 100%;
+            .title {
+                strong {
+                    color: #000 !important;
+                    font-size: 20px !important;
+                    &:after {
+                        font-size: 16px !important;
+                    }
+                }
+            }
         }
     }
     .cart-summary {
-        .title {
-            font-family: 'proxima-nova', 'Helvetica Neue', Verdana, Arial,
-                sans-serif;
-            font-weight: 900;
-        }
         .checkout-methods-items {
             .action.primary.checkout {
                 margin: 10px 0;
             }
         }
+    }
+    .cart-summary .block .title strong {
+        font-size: 16px;
+    }
+    .grand.totals {
+        th,
+        td {
+            font-size: 16px;
+        }
+    }
+    .checkout {
+        button {
+            margin: 10px 0 !important;
+        }
+    }
+    #block-shipping {
+        display: none;
+    }
+
+    .product-item-name {
+        font-size: 18px;
+    }
+    .price-excluding-tax {
+        font-size: 20px !important;
+        color: #000 !important;
+    }
+
+    #affirmfinance {
+        font-size: 14px;
+        a {
+            display: block;
+        }
+    }
+
+    .action.continue,
+    .action.multicheckout {
+        font-size: 14px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .we-accept-cards {
+        background-image: none;
+        img {
+            margin-left: -10px;
+        }
+    }
+    .cart-summary > .title {
+        font-size: 22px !important;
+        font-weight: bold;
     }
 }
 
@@ -142,5 +149,21 @@
         .we-accept {
             padding: 20px;
         }
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .cart .action.clear,
+    .cart .action.update {
+        margin: 5px !important;
+    }
+    .cart.main.actions {
+        margin: 10px;
+    }
+}
+
+@media screen and (max-width: 639px) {
+    .checkout-cart-index .cart-gift-item button {
+        margin: 5px 0 !important;
     }
 }

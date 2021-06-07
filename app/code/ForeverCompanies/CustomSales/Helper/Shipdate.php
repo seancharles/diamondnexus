@@ -235,8 +235,30 @@ class Shipdate extends AbstractHelper
         return $interval->format($differenceFormat);
     }
     
+    public function getDeliveryDates($order)
+    {
+        $connection = $this->shipperDetailResourceModel->getConnection();
+        $select = $connection->select()->from($this->shipperDetailResourceModel->getMainTable())
+            ->where('order_id = ?', $order->getEntityId())
+            ->order('id desc')
+            ->limit(1);
+        
+        // pull the existing order delivery dates
+        $data = $connection->fetchRow($select);
+        
+        return [
+            'dispatch_date' => $data['dispatch_date'],
+            'delivery_date' => $data['delivery_date']
+        ];
+    }
+    
     public function updateDeliveryDates($order)
     {
+        // New orders don't need updated delivery dates
+        if(!$order->getEntityId()) {
+            return;
+        }
+        
         $connection = $this->shipperDetailResourceModel->getConnection();
         $select = $connection->select()->from($this->shipperDetailResourceModel->getMainTable())
             ->where('order_id = ?', $order->getEntityId())
@@ -251,6 +273,10 @@ class Shipdate extends AbstractHelper
         
         // get the number of days since the order was created
         $daysAfterCreate = $this->getDateDifference( $order->getCreatedAt(), date('Y-m-d') );
+        
+        if($daysAfterCreate == 0) {
+            return;
+        }
         
         // calculate the new dates by adding x number of business days since the order was created
         $newDispatchDate = $this->adjustDeliveryDate($dispatchDate, $daysAfterCreate);
@@ -286,6 +312,43 @@ class Shipdate extends AbstractHelper
             $deliveryDates,
             'order_id = ' . $order->getEntityId()
         );
+    }
+    
+    public function getTrackingInfo($order)
+    {
+        $tracksCollection = $order->getTracksCollection();
+        $trackingPath = false;
+
+        $result = [
+            'tracking_provider' => null,
+            'tracking_number' => null,
+            'tracking_url' => null
+        ];
+
+        foreach ($tracksCollection->getItems() as $track) {
+            switch($track->getTitle()) {
+                case "Federal Express":
+                    $trackingPath = "http://www.fedex.com/Tracking?tracknumbers=";
+                    break;
+                case "United Postal Service":
+                    $trackingPath = "https://tools.usps.com/go/TrackConfirmAction?tLabels=";
+                    break;
+                case "United Parcel Service":
+                    $trackingPath = "https://wwwapps.ups.com/tracking/tracking.cgi?tracknum=";
+                    break;
+            }
+            
+            if($trackingPath) {
+                $result['tracking_provider'] = $track->getTitle();
+                $result['tracking_number'] = $track->getTrackNumber();
+                $result['tracking_url'] = $trackingPath . $track->getTrackNumber();
+            }
+            
+            // only return for the first shipment
+            break;
+        }
+        
+        return $result;
     }
 
     /**
