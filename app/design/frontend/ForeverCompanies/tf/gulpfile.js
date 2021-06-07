@@ -6,7 +6,7 @@ var gulp = require('gulp'),
     notify = require('gulp-notify')
 
 var config = {
-    src: './web/css/SAS/*.scss',
+    src: './web/css/SASS/*.scss',
     dest: './web/css/',
 }
 
@@ -32,4 +32,5 @@ gulp.task('styles', function () {
     return stream.pipe(gulp.dest('./web/css/'))
 })
 
+// added this to avoid having to enter the terminal command every time like some kind of animal
 exports.default = watch(config.src, gulp.task('styles'))
