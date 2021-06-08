@@ -39,6 +39,12 @@
         </job>
     </group>
     
+    <group id="default">
+        <job name="four_day_shipping_report" instance="ForeverCompanies\SystemCron\Cron\FourDayShippingReport" method="execute">
+            <schedule>00 18 * * *</schedule>
+        </job>
+    </group>
+    
     -->
     
 </config>
