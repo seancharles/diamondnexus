@@ -3,12 +3,15 @@ namespace ForeverCompanies\SystemCron\Cron;
 
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 use Magento\Sales\Model\OrderFactory;
+use Magento\Framework\Filesystem;
+use Magento\Framework\App\Filesystem\DirectoryList;
 
 class FailedDeliveryReport
 {
     protected $orderCollectionFactory;
     protected $orderFactory;
     protected $date;
+    protected $directory;
     
     public function __construct(
         OrderCollectionFactory $orderCollectionF,
@@ -17,6 +20,7 @@ class FailedDeliveryReport
         $this->orderCollectionFactory = $orderCollectionF;
         $this->orderFactory = $orderF;
         $this->date = date('Y-m-d', strtotime('now'));
+        $this->directory = $fileS->getDirectoryWrite(DirectoryList::VAR_DIR);
     }
     
     public function execute()
@@ -36,6 +40,9 @@ class FailedDeliveryReport
             $filename = $_SERVER['HOME'].'/var/www/magento/var/report/failed_delivery_' . $this->date  . '_' . $date_range . '.csv';
             
             $track_count = array();
+            
+            $stream = $this->directory->openFile($filename, 'w+');
+            $stream->lock();
             
             foreach ($order_collection as $or) {
                 foreach($or->getTracksCollection() as $track) {
@@ -74,15 +81,12 @@ class FailedDeliveryReport
                     }
                     
                     if (strlen($report_line) > 2) {
-                        $report[] = explode(",", $report_line);
+                        $stream->writeCsv(explode(",", $report_line));
                     }
                 }
             }
             
             $date_range -= 5;
-            file_put_contents($file_lock, $date_range);
-            $csv = new Varien_File_Csv();
-            $csv->saveData($filename, $report);
         }
         
     }
