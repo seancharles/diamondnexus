@@ -141,7 +141,7 @@ class FraudReport
                  }
                  */
                 if (!($has_transactions)) {
-                    //    continue;
+                    continue;
                 }
                 
                 

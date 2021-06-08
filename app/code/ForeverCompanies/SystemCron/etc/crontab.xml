@@ -33,6 +33,12 @@
         </job>
     </group>
     
+    <group id="default">
+        <job name="open_order_report" instance="ForeverCompanies\SystemCron\Cron\OpenOrderReport" method="execute">
+            <schedule>00 6 1 * *</schedule>
+        </job>
+    </group>
+    
     -->
     
 </config>
