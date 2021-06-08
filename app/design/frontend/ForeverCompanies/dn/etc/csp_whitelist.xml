@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright  Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp/etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="script-src">
+            <values>
+                <!--CDN-->
+                <value id="cloudflare" type="host">*.cloudflare.com</value>
+
+                <!--Google-->
+                <value id="google-analytics" type="host">www.google-analytics.com</value>
+                <value id="google" type="host">*.google.com</value>
+                <value id="google" type="host">'self' *.google.com</value>
+                <value id="google" type="host">'unsafe-inline' *.google.com</value>
+                <value id="google" type="host">'unsafe-eval' *.google.com</value>
+                <value id="gstatic" type="host">www.gstatic.com</value>
+                <value id="gstatic" type="host">www.gstatic.com</value>
+                <value id="gstatic" type="host">www.gstatic.com</value>
+                <value id="gstatic" type="host">www.gstatic.com</value>
+  
+                <!--Functions-->
+                <value id="trustedshops" type="host">*.trustedshops.com</value>
+                <value id="usercentrics" type="host">*.usercentrics.eu</value>
+                <value id="affirm" type="host">*.affirm.com</value>
+                <value id="affirm" type="host">'self' *.affirm.com</value>
+                <value id="affirm" type="host">'unsafe-inline' *.affirm.com</value>
+                <value id="affirm" type="host">'unsafe-eval' *.affirm.com</value>
+  
+            </values>
+        </policy>
+        <policy id="style-src">
+            <values>
+                <!--CDN-->
+                <value id="cloudflare" type="host">*.cloudflare.com</value>
+
+                <!--Design-->
+                <value id="typekit" type="host">*.typekit.net</value>
+                <value id="cloudtypography" type="host">cloud.typography.com</value>
+                <value id="cloudtypography" type="host">'self' cloud.typography.com</value>
+                <value id="cloudtypography" type="host">'unsafe-inline' cloud.typography.com</value>
+                <value id="assetsdiamondnexus" type="host">*.diamondnexus.com</value>
+                <value id="assetsdiamondnexus" type="host">'self' *.diamondnexus.com</value>
+                <value id="assetsdiamondnexus" type="host">'unsafe-inline' *.diamondnexus.com</value>
+
+
+                <!--Functions-->
+                <value id="trustedshops" type="host">*.trustedshops.com</value>
+                <value id="usercentrics" type="host">*.usercentrics.eu</value>
+            </values>
+        </policy>
+        <policy id="frame-src">
+            <values>
+                <value id="affirm" type="host">*.affirm.com</value>
+                <value id="google" type="host">*.google.com</value>
+            </values>
+        </policy>
+        <policy id="img-src">
+            <values>
+                <!--CDN-->
+                <value id="cloudflare" type="host">*.cloudflare.com</value>
+                <value id="klarna-base" type="host">https://cdn.klarna.com</value>
+
+                <!--Payments-->
+                <value id="paypal" type="host">*.paypal.com</value>
+
+                <!--Video-->
+                <value id="vimeocdn" type="host">*.vimeocdn.com</value>
+                <value id="youtube-img" type="host">https://s.ytimg.com</value>
+
+                <!--Functions-->
+                <value id="usercentrics" type="host">*.usercentrics.eu</value>
+            </values>
+        </policy>
+        <policy id="connect-src">
+            <values>
+                <!--CDN-->
+                <value id="cloudflare" type="host">*.cloudflare.com</value>
+
+                <!--Payments-->
+                <value id="paypal" type="host">*.paypal.com</value>
+                <value id="affirm" type="host">*.affirm.com</value>
+
+            </values>
+        </policy>
+        <policy id="font-src">
+            <values>
+                <!--CDN-->
+                <value id="cloudflare" type="host">*.cloudflare.com</value>
+
+                <value id="data" type="host">'self' data:</value>
+                <value id="data" type="host">'unsafe-inline' data:</value>
+
+                <!--Design-->
+                <value id="typekit" type="host">*.typekit.net</value>
+                <value id="typography" type="host">*.typography.com</value>
+                <!--Functions-->
+                <value id="trustedshops" type="host">*.trustedshops.com</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>
