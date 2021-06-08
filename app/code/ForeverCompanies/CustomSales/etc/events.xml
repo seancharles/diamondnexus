@@ -4,4 +4,8 @@
     <event name="sales_order_save_after">
         <observer name="customsales_auto_invoice" instance="ForeverCompanies\CustomSales\Observer\AutoInvoiceOrder" />
     </event>
+    <event name="email_order_set_template_vars_before">
+        <observer name="fc_customsales_add_order_email_vars" 
+            instance="ForeverCompanies\CustomSales\Observer\Email\AddOrderVars" />
+    </event>
 </config> 

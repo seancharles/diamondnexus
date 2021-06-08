@@ -29,7 +29,7 @@ phases:
       - echo Build started on `date`
       - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
       - apt-get -y update
-      - apt-get install -y nfs-common
+      - apt-get install -y nfs-common rsync
       - rm -rf *
       - echo Cloning remote GIT repo
       - git clone https://$username:$pass@github.com/ForeverCompanies/magento2.git --branch $BRANCH
@@ -44,7 +44,7 @@ phases:
       - echo Building the Docker image...
       - echo $REPOURL/magento:latest $REPOURL/magento:$IMAGE_TAG
       - docker pull $REPOURL/magento:latest
-      - docker build -t magento --cache-from magento:latest --build-arg REDIS_HOST=$redis --build-arg DB_HOST=$dbhost --build-arg DB_NAME=$dbname --build-arg DB_USER=$dbuser --build-arg DB_ROOT_PASSWORD=$dbrootpassword --build-arg VARNISH_HOST=$varnishhost --build-arg RABBIT_HOST=$rabbithost --build-arg RABBIT_PORT=$rabbitport --build-arg RABBIT_SSL=$rabbitssl --build-arg RABBIT_VHOST=$rabbitvhost --build-arg RABBIT_USER=$rabbituser --build-arg RABBIT_PASSWORD=$rabbitpassword --build-arg MAG_NAME=$magname --build-arg ELASTICSEARCH7_SERVER_HOSTNAME=$elasticsearchserverhostname --build-arg ELASTICSEARCH7_ENGINE=$catalogsearchengine --build-arg ELASTICSEARCH7_SERVER_PORT=$elasticsearchserverport --build-arg CRYPT=$CRYPT --build-arg MAG_ENV=$MAGENV --build-arg MAGENTO=$MAGENTO --build-arg NGINX_HOST=$NGINXHOST --build-arg VARNISH_BACKEND_HOST=$VARNISHBACKENDHOST --build-arg VARNISH_ACCESS_LIST=$VARNISHACCESSLIST --build-arg ADMIN_URL=$ADMINURL --build-arg DN_BASE_URL=$DNBASEURL --build-arg FA_BASE_URL=$FABASEURL --build-arg TF_BASE_URL=$TFBASEURL --build-arg BUILD=dev --build-arg RESOLVER=$RESOLVER --build-arg WP_ENV=$WP_ENV --build-arg htaccess=$htauth .
+      - docker build -t magento --cache-from $REPOURL/magento:latest --build-arg REDIS_HOST=$redis --build-arg REDIS_HOSTTWO=$redistwo --build-arg DB_HOST=$dbhost --build-arg DB_NAME=$dbname --build-arg DB_USER=$dbuser --build-arg DB_ROOT_PASSWORD=$dbrootpassword --build-arg VARNISH_HOST=$varnishhost --build-arg RABBIT_HOST=$rabbithost --build-arg RABBIT_PORT=$rabbitport --build-arg RABBIT_SSL=$rabbitssl --build-arg RABBIT_VHOST=$rabbitvhost --build-arg RABBIT_USER=$rabbituser --build-arg RABBIT_PASSWORD=$rabbitpassword --build-arg MAG_NAME=$magname --build-arg ELASTICSEARCH7_SERVER_HOSTNAME=$elasticsearchserverhostname --build-arg ELASTICSEARCH7_ENGINE=$catalogsearchengine --build-arg ELASTICSEARCH7_SERVER_PORT=$elasticsearchserverport --build-arg CRYPT=$CRYPT --build-arg MAG_ENV=$MAGENV --build-arg MAGENTO=$MAGENTO --build-arg NGINX_HOST=$NGINXHOST --build-arg VARNISH_BACKEND_HOST=$VARNISHBACKENDHOST --build-arg VARNISH_ACCESS_LIST=$VARNISHACCESSLIST --build-arg ADMIN_URL=$ADMINURL --build-arg DN_BASE_URL=$DNBASEURL --build-arg FA_BASE_URL=$FABASEURL --build-arg TF_BASE_URL=$TFBASEURL --build-arg BUILD=dev --build-arg RESOLVER=$RESOLVER --build-arg WP_ENV=$WP_ENV --build-arg htaccess=$htauth .
       - docker tag magento:latest $REPOURL/magento:latest
       - docker tag magento:latest $REPOURL/magento:$IMAGE_TAG
       - docker images 
@@ -52,10 +52,11 @@ phases:
       - CONTAINER=$(docker ps -a | grep magento | awk '{print $1}')
       - docker ps -a 
       - echo $CONTAINER
-      - mkdir nfsmount
+      - mkdir nfsmount static
       - mount -t nfs -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport $MOUNTNFS:/ ./nfsmount/
-      - docker cp -a $CONTAINER:/var/www/magento/pub/static/ ./nfsmount/magento/pub/
-      - chown 1000:1000 -R ./nfsmount/magento/pub/static/
+      - docker cp -a $CONTAINER:/var/www/magento/pub/static/ ./static/
+      - rsync -ar --delete ./static/ ./nfsmount/magento/pub/
+      - chown 1000:1000 -R ./nfsmount/magento/pub/
       - sleep 3
       - echo Pushing the Docker images...
       - echo $REPOURL/magento:latest $REPOURL/magento:$IMAGE_TAG

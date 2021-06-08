@@ -1,0 +1,43 @@
+.customer-account-login {
+    .actions-toolbar {
+        .primary {
+            .action.create {
+                cursor: pointer !important;
+                font-family: var(--sans-serif) !important;
+                display: inline-block;
+                text-align: center !important;
+                margin: auto !important;
+                background-color: var(--color-salmon) !important;
+                border: 2px solid var(--color-salmon) !important;
+                letter-spacing: 0.1em !important;
+                line-height: 1 !important;
+                text-transform: capitalize !important;
+                font-weight: bold !important;
+                font-size: 14px !important;
+                min-width: 191px !important;
+                padding: 16px 32px !important;
+                color: var(--color-white) !important;
+                width: 100% !important;
+                border-radius: 6px !important;
+                text-decoration: none !important;
+                @media screen and (min-width: 640px) {
+                    width: auto !important;
+                }
+                &:hover {
+                    background-color: var(--color-salmondark) !important;
+                    border-color: var(--color-salmondark) !important;
+                    text-decoration: none !important;
+                }
+            }
+        }
+        .secondary {
+            margin: 8px 0 0 10px !important;
+        }
+    }
+    .login-container .fieldset:after {
+        font-size: 12px !important;
+    }
+    .login-container .block .block-title {
+        font-size: 22px !important;
+    }
+}
