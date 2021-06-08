@@ -2,13 +2,14 @@
       layout="2columns-left"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
+        <link src="forevercompaniesjs/updateProfileSync.js"/>
+    </head>
+    <head>
         <css src="css/local.css"/>
         <link src="js/script.js"/>
         <css src="/fccss/global_css.css?123"  src_type="url" rel="stylesheet" type="text/css"/>
         <css src="https://cloud.typography.com/6826894/7160612/css/fonts.css" src_type="url" rel="stylesheet" type="text/css" />
         <css src="https://cloud.typography.com/6826894/6960612/css/fonts.css" src_type="url" rel="stylesheet" type="text/css" />
     </head>
-     <head>
-        <link src="forevercompaniesjs/updateProfileSync.js"/>
-    </head>
+
 </page>

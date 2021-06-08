@@ -1,6 +1,6 @@
 var config = {
-
-    deps: [
-        "js/script",
-    ]
-};
+    // paths: {
+    //     DOMPurify: 'forevercompaniesjs/dompurify/dompurify.min.js',
+    // },
+    deps: ['js/script'],
+}
