@@ -27,6 +27,12 @@
         </job>
     </group>
     
+    <group id="default">
+        <job name="fraud_report" instance="ForeverCompanies\SystemCron\Cron\FraudReport" method="execute">
+            <schedule>00 6 * * *</schedule>
+        </job>
+    </group>
+    
     -->
     
 </config>
