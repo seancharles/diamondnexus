@@ -5,19 +5,25 @@
 	
     <group id="default">
         <job name="custom_price_order_report" instance="ForeverCompanies\SystemCron\Cron\CustomPriceOrderReport" method="execute">
-            <schedule>0 17 * * * </schedule>
+            <schedule>0 17 * * *</schedule>
         </job>
     </group>
    
     <group id="default">
         <job name="custom_price_order_report_2" instance="ForeverCompanies\SystemCron\Cron\CustomPriceOrderReportTmp" method="execute">
-            <schedule>0 0 1 * * </schedule>
+            <schedule>0 0 1 * *</schedule>
         </job>
     </group>
     
     <group id="default">
         <job name="failed_delivery_report" instance="ForeverCompanies\SystemCron\Cron\FailedDeliveryReport" method="execute">
-            <schedule>00 1 * * * </schedule>
+            <schedule>00 1 * * *</schedule>
+        </job>
+    </group>
+    
+    <group id="default">
+        <job name="sales_person_report" instance="ForeverCompanies\SystemCron\Cron\SalespersonReport" method="execute">
+            <schedule>00 6 * * *</schedule>
         </job>
     </group>
     

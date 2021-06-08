@@ -4,8 +4,11 @@ namespace ForeverCompanies\SystemCron\Controller\Index;
 
 use Psr\Log\LoggerInterface;
 use Magento\Framework\App\Action\Context;
+
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 use Magento\User\Model\UserFactory;
+use Magento\Framework\Filesystem;
+use Magento\Framework\App\Filesystem\DirectoryList;
 
 class Index extends \Magento\Framework\App\Action\Action
 {
@@ -13,129 +16,74 @@ class Index extends \Magento\Framework\App\Action\Action
 	
 	protected $orderCollectionFactory;
 	protected $userFactory;
+	protected $directory;
 
 	public function __construct(
 		Context $context,
 	    LoggerInterface $logger,
 	    OrderCollectionFactory $orderCollectionF,
-	    UserFactory $userF
+	    UserFactory $userF,
+	    Filesystem $fileS
 	) {
 		$this->logger = $logger;
 		
 		$this->orderCollectionFactory = $orderCollectionF;
 		$this->userFactory = $userF;
+		$this->directory = $fileS->getDirectoryWrite(DirectoryList::VAR_DIR);
 		
 		return parent::__construct($context);
 	}
 	
 	public function execute()
 	{
-	    $orders = $this->orderCollectionFactory->create();
+	    // Date
+	    $date      = date('Y-m-d', strtotime('now -20 day'));  // now -1 day
+	    $fromDate = $date.' 06:00:00';
+	    $tosdate      = date('Y-m-d', strtotime('now'));  // now -1 day
+	    $toDate = $tosdate.' 06:00:00';
 	    
-	    $orders->addAttributeToFilter('created_at', array('gt' => date('Y-m-d H:i:s', strtotime('yesterday'))));
-	    $orders->addAttributeToFilter('created_at', array('lt' => date('Y-m-d H:i:s', strtotime('now'))));
+	    $filename = '/var/www/magento/var/report/sp_' . $date . '.csv';
 	    
-	    $orders->load();
+	    $order_collection = $this->orderCollectionFactory->create()
+	    ->addAttributeToFilter('updated_at', array('from' => $fromDate, 'to' =>    $toDate))
+	    ->load();
 	    
-	    $itemList = array();
 	    
-	    foreach($orders as &$order) {
+	    $report[0] = array("Order Id", "Sales Person","Email");
+	    $stream = $this->directory->openFile($filename, 'w+');
+	    $stream->lock();
+	    foreach ($order_collection as $order) {
 	        
-	        $items = $order->getAllVisibleItems();
+	        $sales_person = $this->userFactory->create()->load($order->getSalesPersonId())->getUserName();
 	        
-	        foreach($items as $item) {
-	            
-	            if( $item->getOriginalPrice() != $item->getPrice() && $item->getOriginalPrice() > 0 ) {
-	                
-	                $temp = $item->toArray();
-	                
-	                $temp['color'] = '#eeeeee';
-	                $temp['increment_id'] = $order->getIncrementId();
-	                $temp['created_at'] = $order->getCreatedAt();
-	                
-	                if ($order->getData('sales_person_id') && $order->getData('sales_person_id') != "0") {
-	                    
-	                    $user = $this->userFactory->create()->load($order->getData('sales_person_id'));
-	                    $temp['sales_person'] = $user->getUserName();
-	                } else {
-	                    $temp['sales_person'] = "Frontend";
-	                }
-	                
-	                
-	                $itemList[] = $temp;
-	            }
+	        if (empty($sales_person)) {
+	            $sales_person = 'Web';
 	        }
+	        $stream->writeCsv(array($order->getIncrementId(), $sales_person, $order->getCustomerEmail()));
 	    }
 	    
-	    ob_start();
-	    ?>
-
-<h1>Summary</h1>
-
-<table border='0' cellpadding='3' cellspacing="1" style="border:solid 1px;">
-
-	<tr>
-		<th bgcolor="lightgray">Orders Checked</th>
-		<td><?php echo count($orders); ?></td>
-	</tr>
-	<tr>
-		<th bgcolor="lightgray">Orders With Custom Price</th>
-		<td><?php echo count($itemList); ?></td>
-	</tr>
-</table>
-
-<h1>Details</h1>
-
-<table border='0' cellpadding='3' cellspacing="1" style="border:solid 1px;">
-	<tr>
-		<th bgcolor="lightgray">Order</th>
-		<th bgcolor="lightgray">Order Date</th>
-		<th bgcolor="lightgray">Sales Person</th>
-		<th bgcolor="lightgray">Item</th>
-		<th bgcolor="lightgray">List Price</th>
-		<th bgcolor="lightgray">Sold For Price</th>
-		<th bgcolor="lightgray">Amount Discounted</th>
-		<th bgcolor="lightgray">Percent Discounted</th>
-	</tr>
-	<?php if( count($itemList) > 0 ) { ?>
-		<?php foreach($itemList as $item) { ?>
-			<tr>
-				<td bgcolor="<?php echo $item['color']; ?>"><?php echo $item['increment_id']; ?></td>
-				<td bgcolor="<?php echo $item['color']; ?>"><?php echo $item['created_at']; ?></td>
-				<td bgcolor="<?php echo $item['color']; ?>"><?php echo $item['sales_person']; ?></td>
-				<td bgcolor="<?php echo $item['color']; ?>"><?php echo $item['name']; ?></td>
-				<td bgcolor="<?php echo $item['color']; ?>"><?php echo number_format($item['original_price'], 2); ?></td>
-				<td bgcolor="<?php echo $item['color']; ?>"><?php echo number_format($item['price'], 2); ?></td>
-				<td bgcolor="<?php echo $item['color']; ?>">$<?php echo number_format($item['original_price'] - $item['price'], 2); ?></td>
-				<?php if ($item['original_price'] > 0): ?>
-					<td bgcolor="<?php echo $item['color']; ?>"><?php echo number_format(((1 - ($item['price'] / $item['original_price'])) * 100 ), 2); ?>%</td>
-				<?php endif; ?>
-			</tr>
-		<?php } ?>
-	<?php } else { ?>
-		<tr>
-			<td colspan="6">No problems found</td>
-		</tr>
-	<?php } ?>
-</table>
-
-<br />
-<br />
-
-<span style="font-size:10px;">
-    <?php echo "Sent From <strong>@mag4:{$_SERVER['PWD']}/{$_SERVER['SCRIPT_FILENAME']}</strong>\n"; ?>
-</span>
-
-<?php
-	$content = ob_get_clean();
-	
-	echo '<pre>';
-	var_dump("content", $content);
-	
-	# sends to email forwarder group
-    mail('CustomPriceOrderReportList@diamondnexus.com','Custom Price Report',$content,'Content-type: text/html');
-	
-	echo "Complete\n";
-
+	    
+	    $mail = new \Zend_Mail();
+	    $mail->setBodyHtml("All Sales Person Report - " . $date. " \r\n")
+	    ->setFrom('it@diamondnexus.com', 'Diamond Nexus Reports')
+	    ->setReplyTo('epasek@forevercompanies.com', 'Edie Pasek')
+	    ->addTo('epasek@forevercompanies.com')
+	    ->addTo('bill.tait@forevercompanies.com')
+	    ->addTo('jessica.nelson@diamondnexus.com')
+	    ->addTo('ken.licau@forevercompanies.com')
+	    ->addTo('andrew.roberts@forevercompanies.com')
+	    ->addTo('mitch.stark@forevercompanies.com')
+	    ->setSubject('Sales Person Report - ' . $date);
+	    
+	    $content = file_get_contents($filename);
+	    $attachment = new \Zend_Mime_Part($content);
+	    $attachment->type = mime_content_type($filename);
+	    $attachment->disposition = \Zend_Mime::DISPOSITION_ATTACHMENT;
+	    $attachment->encoding = \Zend_Mime::ENCODING_BASE64;
+	    $attachment->filename = 'sp_' . $date . '.csv';
+	    
+	    $mail->addAttachment($attachment);
+	    
+	    $mail->send();
 	}
 }
