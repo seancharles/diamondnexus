@@ -55,7 +55,9 @@ phases:
       - mkdir nfsmount static
       - mount -t nfs -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport $MOUNTNFS:/ ./nfsmount/
       - docker cp -a $CONTAINER:/var/www/magento/pub/static/ ./static/
+      - ls -l ./static/
       - chown 1000:1000 -R ./static/
+      - ls -l ./static/
       - rsync -rlD --delete ./static/ ./nfsmount/magento/pub/
       - sleep 3
       - echo Pushing the Docker images...
