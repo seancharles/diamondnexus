@@ -35,15 +35,16 @@ class SalespersonReport
         $filename = '/var/www/magento/var/report/sp_' . $date . '.csv';
         
         $order_collection = $this->orderCollectionFactory->create()
-        ->addAttributeToFilter('updated_at', array('from' => $fromDate, 'to' =>    $toDate))
+        ->addAttributeToFilter('updated_at', array('from' => $fromDate, 'to' => $toDate))
         ->load();
         
+        $stream->writeCsv(
+            array("Order Id", "Sales Person","Email")
+        );
         
-        $report[0] = array("Order Id", "Sales Person","Email");
         $stream = $this->directory->openFile($filename, 'w+');
         $stream->lock();
         foreach ($order_collection as $order) {
-            
             $sales_person = $this->userFactory->create()->load($order->getSalesPersonId())->getUserName();
             
             if (empty($sales_person)) {
@@ -51,7 +52,6 @@ class SalespersonReport
             }
             $stream->writeCsv(array($order->getIncrementId(), $sales_person, $order->getCustomerEmail()));
         }
-        
         
         $mail = new \Zend_Mail();
         $mail->setBodyHtml("All Sales Person Report - " . $date. " \r\n")
@@ -73,7 +73,6 @@ class SalespersonReport
         $attachment->filename = 'sp_' . $date . '.csv';
         
         $mail->addAttachment($attachment);
-        
         $mail->send();
     }
 }

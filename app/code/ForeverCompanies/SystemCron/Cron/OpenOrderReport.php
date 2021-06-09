@@ -44,7 +44,20 @@ class OpenOrderReport
         ->addAttributeToFilter('updated_at', array('from'=>$fromDate, 'to'=>$toDate))
         ->addFieldToFilter('status', array('in' => array('Processing', 'Pending')));
         
-        $report[0] = array("Order Id","Order Date", "Order Status", "Email", "Sub Total", "Total Due", "Sales Person", "Total Refunded","Shipping Amount","Discount Amount");
+        $stream->writeCsv(
+            array(
+                "Order Id",
+                "Order Date",
+                "Order Status",
+                "Email",
+                "Sub Total",
+                "Total Due",
+                "Sales Person",
+                "Total Refunded",
+                "Shipping Amount",
+                "Discount Amount"
+            )
+        );
         
         foreach ($order_collection as $order) {
             $sales_person = $this->userFactory->create()->load($order->getSalesPersonId())->getUserName();
@@ -64,7 +77,7 @@ class OpenOrderReport
                     $order->getShippingAmount(),
                     $order->getDiscountAmount()
                 )
-                );
+            );
         }
         
         $mail = new \Zend_Mail();

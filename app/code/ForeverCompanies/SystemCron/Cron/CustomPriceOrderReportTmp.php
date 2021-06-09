@@ -52,7 +52,7 @@ class CustomPriceOrderReportTmp
 	                
 	                $items = $recentlyShippedOrder->getAllVisibleItems();
 	                
-	                foreach($items as $item){
+	                foreach($items as $item) {
 	                    
 	                    if( $item->getOriginalPrice() != $item->getPrice() && $item->getOriginalPrice() > 0 ) {
 	                     

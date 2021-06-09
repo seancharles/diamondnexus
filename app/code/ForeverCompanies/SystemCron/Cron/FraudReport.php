@@ -42,7 +42,7 @@ class FraudReport
     
     public function execute()
     {
-        $date      = date('Y-m-d', strtotime('now -1 day'));  // now -1 day
+        $date = date('Y-m-d', strtotime('now -1 day'));  // now -1 day
         $fromDate = $date.' 00:00:00';
         $toDate = $date.' 23:59:59';
         
@@ -59,7 +59,6 @@ class FraudReport
         ->addAttributeToFilter('updated_at', array('from'=>$fromDate, 'to'=>$toDate))
         ->addFieldToFilter('status', array('nin' => array('fraud', 'canceled_fraud', 'quote', 'pending')))
         ->load();
-        
         
         $bad_emails = array();
         $row = 1;
@@ -108,7 +107,25 @@ class FraudReport
             }
         }
         
-        $report[0] = array("Order Id", "Order Total", "Payment Method", "Sales Person", "ASD", "Fraud Score", "Items", "New/First", "Over 499", "Over 999", "Address Mismatch", "1 day ship", "New/First & Over 299", "Do Not Sell", "Bad Email Address");
+        $stream->writeCsv(
+            array(
+                "Order Id",
+                "Order Total",
+                "Payment Method",
+                "Sales Person",
+                "ASD",
+                "Fraud Score",
+                "Items",
+                "New/First",
+                "Over 499",
+                "Over 999",
+                "Address Mismatch",
+                "1 day ship",
+                "New/First & Over 299",
+                "Do Not Sell",
+                "Bad Email Address"
+            )
+        );
         
         foreach ($order_collection as $order) {
             
