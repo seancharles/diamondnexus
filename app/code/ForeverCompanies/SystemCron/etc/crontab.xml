@@ -51,6 +51,12 @@
         </job>
     </group>
     
+    <group id="default">
+        <job name="dn_daily_catalog_requests" instance="ForeverCompanies\SystemCron\Cron\DnDailyCatalogRequests" method="execute">
+            <schedule>00 6 * * *</schedule>
+        </job>
+    </group>
+    
     -->
     
 </config>

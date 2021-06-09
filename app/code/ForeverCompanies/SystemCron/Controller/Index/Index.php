@@ -14,7 +14,7 @@ use Magento\Framework\App\ResourceConnection;
 use Magento\Store\Model\StoreManagerInterface;
 
 class Index extends \Magento\Framework\App\Action\Action
-{   
+{
 	protected $logger;
 	
 	protected $orderCollectionFactory;	
@@ -48,100 +48,84 @@ class Index extends \Magento\Framework\App\Action\Action
 	
 	public function execute()
 	{
+	    $date = date('Y-m-d', strtotime('now -1 day'));  // now -1 day
+	    $tosdate = date('Y-m-d', strtotime('now'));  // now -1 day
+	    
+	    
 	    $date = date('Y-m-d', strtotime('yesterday'));
 	    
-	    $bodyHTML = null;
+	    $fromDate = $date.' 06:00:00';
+	    $toDate = $tosdate.' 06:00:00';
 	    
-	    $filename = '/var/www/magento/var/report/progressive-leasing-delivery-' . $date . '.csv';
+	    $filename = '/var/www/magento/var/report/cr-' . $date . '.csv';
 	    
 	    $stream = $this->directory->openFile($filename, 'w+');
 	    $stream->lock();
 	    
-	    $orderQuery = "SELECT
-            o.store_id,
-            o.increment_id,
-            #o.lease_id,
-            CONCAT(o.customer_firstname, ' ', o.customer_lastname) name,
-            o.grand_total,
-            o.status,
-            MIN(h.created_at) delivery_date,
-            o.created_at
-            
-            FROM sales_order o
-            INNER JOIN sales_order_payment p ON o.entity_id = p.parent_id
-            INNER JOIN sales_order_status_history h ON o.entity_id = h.parent_id
-            WHERE p.multipay_payment_method = 7
-            AND o.created_at > CURRENT_DATE - INTERVAL 180 DAY
-            AND h.status IN('delivered')
-            AND o.status IN('delivered')
-            GROUP BY o.entity_id;";
+	    $catalogQuery = "SELECT
+            * FROM fc_form_submission
+            WHERE created_at BETWEEN '" . $fromDate . "' AND '" . $toDate . "'
+            AND form_id = 5
+            ORDER BY created_at ASC;";
 	    
-	    $orderResult = $this->connection->fetchAll($orderQuery);
+	    echo $catalogQuery . "\n";
 	    
-	    echo count($orderResult) . " rows found!\n";
+	    $leadsResult = $this->connection->fetchAll($catalogQuery);
 	    
-	    $stream->writeCsv(
+	    $stream->writeCsv( 
 	        array(
-    	        "Store Name",
-    	        "Lease ID",
-    	        "Client Name",
-    	        "Invoice Amount",
-    	        "Delivery Date"
+    	        "Email Address",
+    	        "Phone",
+    	        "Engagement Ring Shopping",
+    	        "Need By",
+    	        "Type Need",
+    	        "Items of Interest",
+    	        
+    	        "Gender",
+    	        "First Name",
+    	        "Last Name",
+    	        "Address",
+    	        "City",
+    	        "Region",
+    	        "Postal Code",
+    	        "Country",
+    	        
+    	        "Date",
+    	        "Slider Source",
+    	        "Referer"
 	       )
 	    );
 	    
-	    $bodyHTML .= '<table border="1">';
-	    $bodyHTML .= '<tr>';
-	    $bodyHTML .= '<th>Store Name</th>';
-	    $bodyHTML .= '<th>Lease ID </th>';
-	    $bodyHTML .= '<th>Client Name</th>';
-	    $bodyHTML .= '<th>Invoice Amount</th>';
-	    $bodyHTML .= '<th>Delivery Date</th>';
-	    $bodyHTML .= '<th>Order ID</th>';
-	    $bodyHTML .= '</tr>';
-	    
-	    foreach($orderResult as $order) {
-	        
-	        $storeName = "Admin";
-	        if( $order['store_id'] > 0 ) {
-	            $storeName = $this->storeManager->getStore($order['store_id'])->getName();
-	        }
-	        
-	        // TODO: Lease ID.
-	        $temp = array(
-	            'store_name' => $storeName,
-                //'lease_id' => $order['lease_id'],
-	            'client_name' => $order['name'],
-	            'invoice_amount' => $order['grand_total'],
-	            'delivery_date' => date("m/d/y", strtotime($order['delivery_date']))
-	        );
-	        
+	    foreach($leadsResult as $lead) {
 	        $stream->writeCsv(
-	            $temp
+	            array(
+    	            $lead['email_address'],
+    	            $lead['phone_number'],
+    	            
+    	            $lead['engagement_ring'],
+    	            $lead['need_by'],
+    	            $lead['type_need'],
+    	            $lead['items_of_interest'],
+    	            $lead['info_gender'],
+    	            
+    	            $lead['first_name'],
+    	            $lead['last_name'],
+    	            $lead['address_1'],
+    	            $lead['city'],
+    	            $lead['region'],
+    	            $lead['postal_code'],
+    	            $lead['country'],
+    	            
+    	            $lead['submitted_at'],
+    	            $lead['slider_source'],
+    	            $lead['http_referer']
+                )
 	        );
-	        
-	        $report[] = $temp;
-	        
-	        $bodyHTML .= '<tr>';
-	        $bodyHTML .= '<td>'.$temp['store_name'].'</td>';
-	        // $bodyHTML .= '<td>'.$temp['lease_id'].'</td>';
-	        $bodyHTML .= '<td>'.$temp['client_name'].'</td>';
-	        $bodyHTML .= '<td>'.$temp['invoice_amount'].'</td>';
-	        $bodyHTML .= '<td>'.$temp['delivery_date'].'</td>';
-	        $bodyHTML .= '<td>'.$order['increment_id'].'</td>';
-	        $bodyHTML .= '</tr>';
 	    }
-	    
-	    $bodyHTML .= '</table>';
 	    
 	    $mail = new \Zend_Mail();
 	    $mail->setBodyHtml(
-	        "Daily Progressive Leasing Delivery Report - " . $date .
-	        "<br />" .
-	        "<br />" .
-	        $bodyHTML .
-	        "<br />" .
-	        "Forward spreadsheet with Lease Id column populated to readytofund@progleasing.com" .
+	        "Daily Catalog Request Report - " . $date .
 	        "<br />" .
 	        "<br />" .
 	        "<span style='font-size:10px;'>" .
@@ -149,24 +133,28 @@ class Index extends \Magento\Framework\App\Action\Action
 	        "</span>"
         )
         ->setFrom('reports@forevercompanies.com', 'Forever Companies Reports')
-        ->setReplyTo('no-reply@forevercompanies.com', 'No Reply')
-        ->addTo('paul.baum@forevercompanies.com')
-        ->addTo('accounting@forevercompanies.com')
+        ->setReplyTo('paul.baum@forevercompanies.com', 'Paul Baum')
+        ->addTo('zlbjux@gmail.com')
+        /*
+        ->addTo('mike.yarbrough@diamondnexus.com')
+        ->addTo('tyler.kaminski@diamondnexus.com')
         ->addTo('jessica.nelson@diamondnexus.com')
-	    ->setSubject('Daily Progressive Leasing Delivery Report - ' . $date . ((count($orderResult) == 0) ? ': No Orders Found' : '' ));
-	    
-	    $content = file_get_contents($filename);
-	    $attachment = new \Zend_Mime_Part($content);
-	    $attachment->type = mime_content_type($filename);
-	    $attachment->disposition = \Zend_Mime::DISPOSITION_ATTACHMENT;
-	    $attachment->encoding = \Zend_Mime::ENCODING_BASE64;
-	    $attachment->filename = 'progressive-leasing-delivery-' . $date . '.csv';
-	    
-	    if( count($orderResult) > 0 ) {
-	        $mail->addAttachment($attachment);
-	    }
-	    
-	    $mail->send();
-	    echo "Email sent!\n";
+        ->addTo('paul.baum@forevercompanies.com')
+        */
+        ->setSubject('Daily Catalog Request Report - ' . $date . ( (count($leadsResult) == 0) ? ': No Leads Submitted' : '' ) );
+        
+        $content = file_get_contents($filename);
+        $attachment = new \Zend_Mime_Part($content);
+        $attachment->type = mime_content_type($filename);
+        $attachment->disposition = \Zend_Mime::DISPOSITION_ATTACHMENT;
+        $attachment->encoding = \Zend_Mime::ENCODING_BASE64;
+        $attachment->filename = 'cr-' . $date . '.csv';
+        
+        if( count($leadsResult) > 0 ) {
+            $mail->addAttachment($attachment);
+        }
+        
+        $mail->send();
+        echo "Email sent!\n";
 	}
 }
