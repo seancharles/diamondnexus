@@ -48,84 +48,80 @@ class Index extends \Magento\Framework\App\Action\Action
 	
 	public function execute()
 	{
-	    $date = date('Y-m-d', strtotime('now -1 day'));  // now -1 day
+	    $date = date('Y-m-d', strtotime('now -30 day'));  // now -30 day
 	    $tosdate = date('Y-m-d', strtotime('now'));  // now -1 day
 	    
+	    $fromDate = $date.' 00:00:00';
+	    $toDate = $tosdate.' 23:59:59';
 	    
-	    $date = date('Y-m-d', strtotime('yesterday'));
-	    
-	    $fromDate = $date.' 06:00:00';
-	    $toDate = $tosdate.' 06:00:00';
-	    
-	    $filename = '/var/www/magento/var/report/cr-' . $date . '.csv';
+	    $filename = '/var/www/magento/var/report/csr-' . $date . '.csv';
 	    
 	    $stream = $this->directory->openFile($filename, 'w+');
 	    $stream->lock();
 	    
-	    $catalogQuery = "SELECT
-            * FROM fc_form_submission
-            WHERE created_at BETWEEN '" . $fromDate . "' AND '" . $toDate . "'
-            AND form_id = 5
-            ORDER BY created_at ASC;";
+	    $orderQuery = "
+            SELECT
+            so.increment_id,
+            CONCAT(a.firstname,' ', a.lastname) sales_rep,
+            so.status,
+            CONCAT(so.customer_firstname,' ',so.customer_lastname) customer_name,
+            so.customer_email,
+            ba.telephone billing_phone,
+            so.created_at,
+            so.grand_total
+            FROM
+                sales_order so
+            LEFT JOIN
+                admin_user a ON so.sales_person_id = a.user_id
+            LEFT JOIN
+                sales_order_address ba ON so.billing_address_id = ba.entity_id
+            WHERE
+                so.created_at BETWEEN ' 00:00:00' AND ' 23:59:59'
+            AND
+                so.status NOT IN('canceled')
+            AND
+                so.store_id = 5
+            ORDER BY
+                increment_id DESC
+        ";
 	    
-	    echo $catalogQuery . "\n";
+	    echo $orderQuery . "\n";
 	    
-	    $leadsResult = $this->connection->fetchAll($catalogQuery);
+	    $orderResult = $this->connection->fetchAll($orderQuery);
 	    
-	    $stream->writeCsv( 
+	    echo count($orderResult) . " rows found!\n";
+	    
+	    $stream->writeCsv(
 	        array(
-    	        "Email Address",
-    	        "Phone",
-    	        "Engagement Ring Shopping",
-    	        "Need By",
-    	        "Type Need",
-    	        "Items of Interest",
-    	        
-    	        "Gender",
-    	        "First Name",
-    	        "Last Name",
-    	        "Address",
-    	        "City",
-    	        "Region",
-    	        "Postal Code",
-    	        "Country",
-    	        
-    	        "Date",
-    	        "Slider Source",
-    	        "Referer"
-	       )
+	            "Order Id",
+	            "Sales Rep",
+	            "Status",
+	            "Name",
+	            "Email",
+	            "Phone",
+	            "Date",
+	            "Grand Total"
+	        )
 	    );
 	    
-	    foreach($leadsResult as $lead) {
+	    foreach($orderResult as $order) {
 	        $stream->writeCsv(
 	            array(
-    	            $lead['email_address'],
-    	            $lead['phone_number'],
-    	            
-    	            $lead['engagement_ring'],
-    	            $lead['need_by'],
-    	            $lead['type_need'],
-    	            $lead['items_of_interest'],
-    	            $lead['info_gender'],
-    	            
-    	            $lead['first_name'],
-    	            $lead['last_name'],
-    	            $lead['address_1'],
-    	            $lead['city'],
-    	            $lead['region'],
-    	            $lead['postal_code'],
-    	            $lead['country'],
-    	            
-    	            $lead['submitted_at'],
-    	            $lead['slider_source'],
-    	            $lead['http_referer']
-                )
+    	            $order['increment_id'],
+    	            $order['sales_rep'],
+    	            $order['status'],
+    	            $order['customer_name'],
+    	            $order['customer_email'],
+    	            $order['billing_phone'],
+    	            $order['created_at'],
+    	            $order['grand_total']
+	            )
 	        );
 	    }
 	    
 	    $mail = new \Zend_Mail();
 	    $mail->setBodyHtml(
-	        "Daily Catalog Request Report - " . $date .
+	        "Daily CSR Report - " . $date .
 	        "<br />" .
 	        "<br />" .
 	        "<span style='font-size:10px;'>" .
@@ -134,14 +130,12 @@ class Index extends \Magento\Framework\App\Action\Action
         )
         ->setFrom('reports@forevercompanies.com', 'Forever Companies Reports')
         ->setReplyTo('paul.baum@forevercompanies.com', 'Paul Baum')
-        ->addTo('zlbjux@gmail.com')
         /*
-        ->addTo('mike.yarbrough@diamondnexus.com')
-        ->addTo('tyler.kaminski@diamondnexus.com')
         ->addTo('jessica.nelson@diamondnexus.com')
         ->addTo('paul.baum@forevercompanies.com')
         */
-        ->setSubject('Daily Catalog Request Report - ' . $date . ( (count($leadsResult) == 0) ? ': No Leads Submitted' : '' ) );
+        ->addTo('zlbjux@gmail.com')
+        ->setSubject('Daily CSR Report - ' . $date . ( (count($orderResult) == 0) ? ': No Orders Found' : '' ));
         
         $content = file_get_contents($filename);
         $attachment = new \Zend_Mime_Part($content);
@@ -150,11 +144,12 @@ class Index extends \Magento\Framework\App\Action\Action
         $attachment->encoding = \Zend_Mime::ENCODING_BASE64;
         $attachment->filename = 'cr-' . $date . '.csv';
         
-        if( count($leadsResult) > 0 ) {
+        if( count($orderResult) > 0 ) {
             $mail->addAttachment($attachment);
         }
         
         $mail->send();
+        
         echo "Email sent!\n";
 	}
 }

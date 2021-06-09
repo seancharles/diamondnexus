@@ -57,6 +57,12 @@
         </job>
     </group>
     
+    <group id="default">
+        <job name="dn_daily_order_csr" instance="ForeverCompanies\SystemCron\Cron\DnDailyOrderCsr" method="execute">
+            <schedule>00 6 * * *</schedule>
+        </job>
+    </group>
+    
     -->
     
 </config>

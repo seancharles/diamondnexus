@@ -25,8 +25,8 @@ class FourDayShippingReport
 	
 	public function execute()
 	{
-	    $date      = date('Y-m-01', strtotime('now -120 day'));  // now -1 day
-	    $enddate      = date('Y-m-t', strtotime('now'));  // now -1 day
+	    $date = date('Y-m-01', strtotime('now -120 day'));  // now -1 day
+	    $enddate  = date('Y-m-t', strtotime('now'));  // now -1 day
 	    $fromDate = $date.' 00:00:00';
 	    $toDate = $enddate.' 23:59:59';
 	    
@@ -71,9 +71,8 @@ class FourDayShippingReport
 	                    $order->getCustomerEmail(),
 	                    $shipped_date
 	                )
-	                );
+	            );
 	        }
 	    }
 	}
-	
 }
