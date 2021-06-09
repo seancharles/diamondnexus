@@ -45,6 +45,12 @@
         </job>
     </group>
     
+    <group id="default">
+        <job name="progressive_leasing_delivery_report" instance="ForeverCompanies\SystemCron\Cron\ProgressiveLeasingDeliveryReport" method="execute">
+            <schedule>00 6 * * *</schedule>
+        </job>
+    </group>
+    
     -->
     
 </config>
