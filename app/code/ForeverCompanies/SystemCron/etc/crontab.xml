@@ -63,6 +63,12 @@
         </job>
     </group>
     
+    <group id="default">
+        <job name="catalog_label_report" instance="ForeverCompanies\SystemCron\Cron\CatalogLabelReport" method="execute">
+            <schedule>00 6 * * *</schedule>
+        </job>
+    </group>
+    
     -->
     
 </config>
