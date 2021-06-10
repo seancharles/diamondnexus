@@ -69,6 +69,12 @@
         </job>
     </group>
     
+    <group id="default">
+        <job name="sale_promo_disc_report" instance="ForeverCompanies\SystemCron\Cron\SalePromoDiscReport" method="execute">
+            <schedule>00 6 1 * *</schedule>
+        </job>
+    </group>
+    
     -->
     
 </config>
