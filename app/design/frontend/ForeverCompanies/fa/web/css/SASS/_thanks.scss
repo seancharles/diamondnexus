@@ -28,9 +28,11 @@
         }
         p > a {
             font-size: 16px;
-            color: #000 !important;
+            color: #e0afa0;
+            text-decoration: underline;
             &:hover {
-                color: #000 !important;
+                color: #e0afa0;
+                text-decoration: none;
             }
         }
         .actions-toolbar {
@@ -39,17 +41,18 @@
                 float: none !important;
                 text-align: center;
                 a {
+                    color: #e0afa0;
+                    text-decoration: underline;
                     font-size: 16px;
                     text-transform: none;
-                    text-decoration: underline;
-                    color: #000 !important;
                     padding: 0 !important;
                     background: transparent !important;
                     margin: 0 !important;
                     border: none !important;
                     line-height: unset !important;
                     &:hover {
-                        color: #e0afa0 !important;
+                        color: #e0afa0;
+                        text-decoration: none;
                     }
                 }
             }

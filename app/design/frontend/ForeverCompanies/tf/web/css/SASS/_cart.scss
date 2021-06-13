@@ -1,41 +1,17 @@
 .checkout-cart-index {
-    a.towishlist {
-        color: #8e7171;
-    }
     .product-item-name {
         font-size: 22px !important;
     }
-    #shopping-cart-table {
-        .col {
-            span {
-                font-family: 'Gotham Bold';
-            }
-        }
+    .price-excluding-tax {
+        font-size: 20px !important;
     }
     .we-accept-cards {
         background-image: none;
     }
-    .order-summary {
-        font-family: 'Gotham Bold';
-    }
-    .grand.totals {
-        font-family: 'Gotham Bold';
-    }
-    #affirmfinance {
-        a {
-            text-transform: none;
-            display: block;
-            font-size: 14px;
-        }
-    }
-    .action.continue {
-        text-transform: none;
-        font-family: 'Gotham Bold';
-    }
     .coupon {
         display: flex;
         .field {
-            width: 85%;
+            width: 75%;
             margin: 0;
             .control {
                 height: 100%;
@@ -44,46 +20,59 @@
                 }
             }
         }
-        .action {
-            text-transform: none;
-            letter-spacing: 0;
-            background: #8e7171 !important;
-            border-radius: 0 !important;
-            color: #fff !important;
-            border: none !important;
-            font-size: 14px !important;
-            padding: 15px;
-            font-weight: normal;
-            box-shadow: none !important;
-            &:hover {
-                background: #af9c9b !important;
+    }
+    .cart-gift-item {
+        .gift-item-block {
+            .title {
+                color: #000 !important;
+                font-size: 22px !important;
+                &:after {
+                    font-size: 16px !important;
+                }
+            }
+        }
+        .gift-options-title {
+            font-size: 18px !important;
+        }
+        .field.choice {
+            display: flex;
+            label {
+                margin: 3px 0 0 8px;
+            }
+        }
+        button {
+            margin: 0 5px !important;
+        }
+    }
+    .cart-discount {
+        .discount {
+            width: 100% !important;
+            .title {
+                strong {
+                    color: #000 !important;
+                    font-size: 20px !important;
+                    &:after {
+                        font-size: 16px !important;
+                    }
+                }
             }
         }
     }
-    .action.primary.checkout {
-        text-transform: none;
-        letter-spacing: 0;
-        background: #8e7171 !important;
-        border-radius: 0 !important;
-        color: #fff !important;
-        border: none !important;
-        font-size: 14px !important;
-        padding: 15px;
-        font-weight: normal;
-        box-shadow: none !important;
-        &:hover {
-            background: #af9c9b !important;
+    .order-summary {
+        font-size: 24px;
+    }
+    .cart-summary .block .title strong {
+        font-size: 16px;
+    }
+    .grand.totals {
+        th,
+        td {
+            font-size: 16px;
         }
     }
-    .cart-container {
-        .action.update {
-            font-family: 'Gotham Bold';
-            border: 1px solid #000;
-            border-radius: 0;
-            &:hover {
-                background: #000;
-                color: #fff;
-            }
+    .checkout {
+        button {
+            margin: 10px 0 !important;
         }
     }
 }
@@ -113,6 +102,38 @@
         .coupon {
             .field {
                 width: 55%;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .cart .action.clear,
+    .cart .action.update {
+        margin: 5px !important;
+    }
+    .cart.main.actions {
+        margin: 10px;
+    }
+}
+
+@media screen and (max-width: 639px) {
+    .checkout-cart-index .cart-gift-item button {
+        margin: 5px 0 !important;
+    }
+    .checkout-cart-index .coupon {
+        flex-flow: wrap;
+        .field {
+            width: 100%;
+            height: 45px;
+        }
+        .actions-toolbar {
+            width: 100%;
+            .primary {
+                width: 100%;
+                button {
+                    width: 100%;
+                }
             }
         }
     }

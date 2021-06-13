@@ -6,8 +6,9 @@ header .panel,
 }
 
 .header {
-    padding: 0 20px !important;
+    padding: 40px 20px 20px !important;
     max-width: none !important;
+    background-color: #f9ece8;
     .logo {
         margin: 10px 0 10px 0 !important;
         left: 50%;
@@ -16,11 +17,27 @@ header .panel,
             position: relative;
             top: 50%;
             transform: translateY(-50%);
+            width: 300px;
             .\35 3a764d1-d165-4d03-a9d2-821bb53f9959 {
                 fill: #d72627;
             }
             &:hover {
                 fill: #d72627;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 639px) {
+    .header {
+        padding: 30px 20px 20px !important;
+        .logo {
+            margin: 0 !important;
+            max-width: initial !important;
+            svg {
+                top: 0;
+                transform: none;
+                width: 200px;
             }
         }
     }
