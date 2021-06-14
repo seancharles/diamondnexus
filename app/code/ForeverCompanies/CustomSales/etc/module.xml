@@ -4,6 +4,8 @@
         <sequence>
             <module name="Magento_Sales"/>
             <module name="Magento_Staging"/>
+            <module name="Magento_OfflineShipping"/>
         </sequence>
     </module>
 </config>
+
