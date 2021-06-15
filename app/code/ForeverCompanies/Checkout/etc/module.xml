@@ -3,6 +3,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
     <module name="ForeverCompanies_Checkout" setup_version="0.0.1">
         <sequence>
+            <module name="ForeverCompanies_Forms"/>
             <module name="Magento_Checkout"/>
         </sequence>
     </module>
