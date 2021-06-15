@@ -2628,7 +2628,7 @@ final class ForeverCompanies_S3Request
  * @link http://undesigned.org.za/2007/10/22/amazon-s3-php-class
  * @version 0.5.0-dev
  */
-class ForeverCompanies_S3Exception extends Exception
+class ForeverCompanies_S3Exception extends \Magento\Framework\Exception\LocalizedException
 {
     /**
      * Class constructor
