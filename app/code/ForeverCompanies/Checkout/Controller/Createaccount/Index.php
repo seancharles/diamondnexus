@@ -79,22 +79,31 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
                             $customer->setConfirmation(null);
                             $customer->save();
 
-                            // save the billing address
-                            $customAddress = $this->addressFactory->create();
-                            $customAddress->setData($order->getBillingAddress())
-                                          ->setCustomerId($customer->getId())
-                                          ->setIsDefaultBilling('1')
-                                          ->setIsDefaultShipping('1')
-                                          ->setSaveInAddressBook('1');
-                            $customAddress->save();
-                            
-                            // save shipping address
-                            $customAddress = $this->addressFactory->create();
-                            $customAddress->setData($order->getShippingAddress())
-                                          ->setCustomerId($customer->getId())
-                                          ->setIsDefaultShipping('1')
-                                          ->setSaveInAddressBook('1');
-                            $customAddress->save();
+                            // update the order customer_id if the customer was created
+                            if ($order->getId() && !$order->getCustomerId()) {
+                                $order->setCustomerId($customer->getId());
+                                $order->setCustomerIsGuest(0);
+                                $this->orderRepository->save($order);
+                            }
+
+                            if($customer->getId()) {
+                                // save the billing address
+                                $customAddress = $this->addressFactory->create();
+                                $customAddress->setData($order->getBillingAddress())
+                                              ->setCustomerId($customer->getId())
+                                              ->setIsDefaultBilling('1')
+                                              ->setIsDefaultShipping('1')
+                                              ->setSaveInAddressBook('1');
+                                $customAddress->save();
+                                
+                                // save shipping address
+                                $customAddress = $this->addressFactory->create();
+                                $customAddress->setData($order->getShippingAddress())
+                                              ->setCustomerId($customer->getId())
+                                              ->setIsDefaultShipping('1')
+                                              ->setSaveInAddressBook('1');
+                                $customAddress->save();
+                            }
                     
                             // clear out the guest order id
                             $this->checkoutSession->setGuestOrderId('');
