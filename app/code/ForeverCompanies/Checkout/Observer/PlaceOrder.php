@@ -20,10 +20,8 @@ class PlaceOrder implements ObserverInterface
         $item = $observer->getEvent()->getData('quote_item');
         
         $orderId = $observer->getEvent()->getOrderIds()[0];
-
-        $order = $this->orderRepository->get($orderId);\
         
         // set the order id for the customer in their session
-        $this->_checkoutSession->setGuestOrderId($order->getId());
+        $this->_checkoutSession->setGuestOrderId($orderId);
     }
 }

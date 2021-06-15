@@ -21,7 +21,7 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
         \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory $cookieMetadataFactory,
         \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Customer\Model\CustomerFactory $customerFactory,
-        \Magento\Sales\Model\OrderFactory $orderFactory,
+        \Magento\Sales\Model\OrderRepository $orderRepository,
         \Magento\Customer\Model\AddressFactory $addressFactory
 	) {
 		parent::__construct($context);
@@ -32,7 +32,7 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
         $this->cookieMetadataFactory = $cookieMetadataFactory;
         $this->checkoutSession = $checkoutSession;
         $this->customerFactory = $customerFactory;
-        $this->orderFactory = $orderFactory;
+        $this->orderRepository = $orderRepository;
         $this->addressFactory = $addressFactory;
 	}
 
@@ -52,14 +52,16 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
         $password = $post['password'];
         
         // check for valid form key
-        if ($this->formKeyValidator->validate($this->getRequest()) == false) {
+        if ($this->formKeyValidator->validate($this->getRequest()) === true) {
             $result['message'] = 'Invalid form key';
         } else {
             // check the session for guest order id set via observer
             if($guestOrderId > 0) {
-                $order = $this->orderFactory->get($guestOrderId);
+                $order = $this->orderRepository->get($guestOrderId);
                 
-                $customer = $customerFactory->setWebsiteId($websiteId)->loadByEmail($order->getEmail());
+                $customer = $this->customerFactory->create();
+                $customer->setWebsiteId($websiteId);
+                $customer->loadByEmail($order->getEmail());
                 
                 if ($customer->getId()) {
                     $result['message'] = 'Account already exists.';
