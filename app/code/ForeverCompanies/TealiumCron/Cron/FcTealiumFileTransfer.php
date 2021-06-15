@@ -2,7 +2,6 @@
 namespace ForeverCompanies\TealiumCron\Cron;
 
 use Psr\Log\LoggerInterface;
-use Magento\Framework\App\Action\Context;
 use ForeverCompanies\TealiumCron\Controller\Index\S3;
 use Magento\Framework\Filesystem\Io\File;
 
@@ -19,20 +18,17 @@ const S3_REGION = 'us-east-1';
 // file extension for files we want to transfer
 const FILE_EXTENSION = 'csv';
 
-class CatalogLabelReport
+class FcTealiumFileTransfer
 {   
     protected $ioFile;
     protected $logger;
     
     public function __construct(
-        Context $context,
         LoggerInterface $logger,
         File $ioF
         ) {
             $this->logger = $logger;
             $this->ioFile = $ioF;
-            
-            return parent::__construct($context);
     }
     
     public function execute()

@@ -2,11 +2,19 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
 	
 	<!--  
+	
     <group id="default">
         <job name="tealium_file_transfer" instance="ForeverCompanies\TealiumCron\Cron\FcTealiumFileTransfer" method="execute">
-            <schedule>50 1</schedule>
+            <schedule>50 1 * * * </schedule>
         </job>
     </group>
+    
+    <group id="default">
+        <job name="tealium_populate_queue" instance="ForeverCompanies\TealiumCron\Cron\FcTealiumPopulateQueue" method="execute">
+            <schedule>30 1 * * * </schedule>
+        </job>
+    </group>
+    
     -->
     
  </config>
