@@ -6,4 +6,7 @@
     <event name="sales_quote_remove_item">
         <observer name="fc_checkout_quote_remove_item" instance="ForeverCompanies\Checkout\Observer\QuoteRemoveItem" />
     </event>
+    <event name="checkout_onepage_controller_success_action">
+        <observer name="fc_after_place_order" instance="ForeverCompanies\Checkout\Observer\PlaceOrder"/>
+    </event>
 </config>
