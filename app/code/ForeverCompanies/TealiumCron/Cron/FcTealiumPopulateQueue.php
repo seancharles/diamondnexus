@@ -4,6 +4,7 @@ namespace ForeverCompanies\TealiumCron\Cron;
 use Psr\Log\LoggerInterface;
 use Magento\Framework\App\Action\Context;
 use ForeverCompanies\TealiumCron\Controller\Index\S3;
+use ForeverCompanies\TealiumCron\Model\Event;
 
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 
@@ -19,13 +20,18 @@ class FcTealiumPopulateQueue
     
     protected $orderCollectionFactory;
     
+    protected $eventModel;
+    
     public function __construct(
         Context $context,
         LoggerInterface $logger,
-        OrderCollectionFactory $orderCollectionF
+        OrderCollectionFactory $orderCollectionF,
+        Event $ev
     ) {
         $this->logger = $logger;
         $this->orderCollectionFactory = $orderCollectionF;
+        
+        $this->eventModel = $ev;
     }
     
     
@@ -89,12 +95,8 @@ class FcTealiumPopulateQueue
                 
                 foreach ($orders as $order) {
                     try {
-                        /*
-                         // load our event model
-                         $event = Mage::getModel('forevercompanies_tealium/event');
-                         
                          // Set the transaction data
-                         $event->setData([
+                         $this->eventModel->setData([
                          'event' => 'order',
                          'entity_id' => $order->getEntityId(),
                          'entity_type' => 'sales_order',
@@ -103,20 +105,16 @@ class FcTealiumPopulateQueue
                          //Mage::log("i= " . $i . ", entityId=" . $order->getEntityId(), null, 'tealium-cron.log');
                          
                          // Save the transaction
-                         $event->save();
-                         */
+                         $this->eventModel->save();
+                        
                     } catch (Exception $e) {
-                        Mage::logException($e);
+                        $this->logger->info($e->getMessage());
                     }
                 }
                 
                 // make the collection unload the data in memory so it will pick up the next page when load() is called.
-                $orders->clear();
-            }
-            
-            
-            
-            
+        $orders->clear();
+        }
     }
     
 }
