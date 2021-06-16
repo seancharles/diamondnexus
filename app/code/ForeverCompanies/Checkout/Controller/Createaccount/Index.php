@@ -52,7 +52,7 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
         $password = $post['password'];
         
         // check for valid form key
-        if ($this->formKeyValidator->validate($this->getRequest()) === true) {
+        if ($this->formKeyValidator->validate($this->getRequest()) === false) {
             $result['message'] = 'Invalid form key';
         } else {
             // check the session for guest order id set via observer
