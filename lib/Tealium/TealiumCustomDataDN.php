@@ -182,7 +182,7 @@ class TealiumExtendData
     /**
      * Get the categories for the given product
      * @param $product
-     * @return array|string
+     * @return array
      */
     public function fcTealGetProductCats($product)
     {
@@ -197,7 +197,7 @@ class TealiumExtendData
                 $output[$levelType][] = $catSrc[$cid];
             }
         }
-        return empty($output) ? '' : $output;
+        return $output;
     }
 
     /**
