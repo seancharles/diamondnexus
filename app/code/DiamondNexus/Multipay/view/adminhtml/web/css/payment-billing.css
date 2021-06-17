@@ -1,0 +1,17 @@
+@media screen and (min-width: 768px) {
+    .order-billing-address,
+    .order-billing-method,
+    .order-history,
+    .order-information,
+    .order-payment-method,
+    .order-comments-history {
+        float: right !important;
+    }
+
+    .order-shipping-address,
+    .order-shipping-method,
+    .order-totals,
+    .order-view-account-information .order-account-information {
+        float: left !important;
+    }
+}
