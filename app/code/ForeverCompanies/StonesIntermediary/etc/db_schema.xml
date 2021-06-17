@@ -96,20 +96,4 @@
             <column name="id"/>
         </constraint>
     </table>
-    <table name="stones_supplier">
-        <column xsi:type="int" name="id" padding="10" unsigned="false" nullable="false" identity="true"
-                comment="Supplier ID"/>
-        <column comment="Name" length="32" name="name" nullable="false"
-                xsi:type="varchar"/>
-        <column comment="Code" length="32" name="code" nullable="false"
-                xsi:type="varchar"/>
-        <column xsi:type="datetime" name="email" on_update="false" comment="Born on date"/>
-        <column comment="Email" length="255" name="carbon_neutral" nullable="true"
-                xsi:type="varchar"/>
-        <column xsi:type="tinyint" name="enabled" unsigned="true" nullable="false" identity="false"
-                comment="Is Supplier Enabled"/>
-        <constraint xsi:type="primary" referenceId="PRIMARY">
-            <column name="id"/>
-        </constraint>
-    </table>
 </schema>
