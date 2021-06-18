@@ -88,6 +88,9 @@
 		"patches" : {
 			"magento/module-related-product-graph-ql" : {
 				"Remove related products that not exist in map list" : "app/code/ForeverCompanies/Graphql/patches/abstractLikedProducts.patch"
+			},
+			"magento/module-asynchronous-operations" : {
+				"Fix Bulk Action (patched in 2.4.2)" : "./app/code/ForeverCompanies/CustomAdmin/Setup/Patch/moduleAsynchronousOperations.patch"
 			}
 		}
 	}
