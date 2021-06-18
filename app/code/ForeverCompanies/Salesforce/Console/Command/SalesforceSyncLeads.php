@@ -26,11 +26,6 @@
             \ForeverCompanies\Salesforce\Helper\Sync $syncHelper,
             \Magento\Framework\App\State $state
         ) {
-            try{
-                $state->setAreaCode(\Magento\Framework\App\Area::AREA_ADMINHTML);
-            } catch(\Exception $e) {
-                //echo $e->getMessage();
-            }
             $this->syncHelper = $syncHelper;
             
             parent::__construct($this->name);
@@ -56,6 +51,7 @@
          */
         protected function execute(InputInterface $input, OutputInterface $output)
         {
+            $state->setAreaCode(\Magento\Framework\App\Area::AREA_ADMINHTML);
             $this->syncHelper->runLeads();
         }
     }
