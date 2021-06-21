@@ -2,6 +2,8 @@
 
 namespace ForeverCompanies\Checkout\Controller\Createaccount;
 
+use Magento\Framework\Exception\NoSuchEntityException;
+
 class Index extends \ForeverCompanies\Forms\Controller\ApiController
 {
 	protected $formKeyValidator;
@@ -14,6 +16,7 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
     protected $encryptor;
     protected $orderRepository;
 	protected $formHelper;
+    protected $addressRepository;
     protected $addressFactory;
     
     const COOKIE_NAME = 'submission_key';
@@ -30,7 +33,8 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
         \Magento\Framework\Encryption\Encryptor $encryptor,
         \Magento\Sales\Model\OrderRepository $orderRepository,
-        \Magento\Customer\Model\AddressFactory $addressFactory
+        \Magento\Customer\Api\AddressRepositoryInterface $addressRepository,
+        \Magento\Customer\Api\Data\AddressInterfaceFactory $addressFactory
 	) {
 		parent::__construct($context);
 		
@@ -43,6 +47,7 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
         $this->customerRepository = $customerRepository;
         $this->encryptor = $encryptor;
         $this->orderRepository = $orderRepository;
+        $this->addressRepository = $addressRepository;
         $this->addressFactory = $addressFactory;
 	}
 
@@ -69,9 +74,13 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
             if($guestOrderId > 0) {
                 $order = $this->orderRepository->get($guestOrderId);
                 
-                $customer = $this->customerRepository->get($order->getCustomerEmail());
+                try{
+                    $customer = $this->customerRepository->get($order->getCustomerEmail());
+                } catch(NoSuchEntityException $e) {
+                    // do nothing
+                }
                 
-                if ($customer->getId()) {
+                if (isset($customer) === true && $customer->getId()) {
                     $result['message'] = 'Account already exists.';
                 } else {
                     if($password != null) {
@@ -81,10 +90,8 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
                             $customer->setEmail($order->getCustomerEmail());
                             $customer->setFirstname($order->getCustomerFirstName());
                             $customer->setLastname($order->getCustomerLastName());
-                            $customer->setPassword($password);
 
                             $passwordHash = $this->encryptor->getHash($password, true);
-                            
                             $customer = $this->customerRepository->save($customer, $passwordHash);
 
                             //$customer->setConfirmation(null);
@@ -98,22 +105,40 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
                             }
 
                             if($customer->getId()) {
+                                $billingAddress = $order->getBillingAddress();
+                                $shippingAddress = $order->getShippingAddress();
+                                
                                 // save the billing address
                                 $customAddress = $this->addressFactory->create();
-                                $customAddress->setData($order->getBillingAddress())
-                                              ->setCustomerId($customer->getId())
-                                              ->setIsDefaultBilling('1')
-                                              ->setIsDefaultShipping('1')
-                                              ->setSaveInAddressBook('1');
-                                $customAddress->save();
+                                $customAddress->setCustomerId($customer->getId())
+                                                ->setFirstname($billingAddress->getFirstName())
+                                                ->setLastname($billingAddress->getLastname())
+                                                ->setCountryId($billingAddress->getCountryId())
+                                                ->setPostcode($billingAddress->getPostcode())
+                                                ->setCity($billingAddress->getCity())
+                                                ->setRegionId($billingAddress->getRegionId())
+                                                ->setTelephone($billingAddress->getTelephone())
+                                                ->setCompany($billingAddress->getCompany())
+                                                ->setStreet($billingAddress->getStreet())
+                                                ->setIsDefaultBilling(true)
+                                                ->setIsDefaultShipping(false);
+                                $this->addressRepository->save($customAddress);
                                 
                                 // save shipping address
                                 $customAddress = $this->addressFactory->create();
-                                $customAddress->setData($order->getShippingAddress())
-                                              ->setCustomerId($customer->getId())
-                                              ->setIsDefaultShipping('1')
-                                              ->setSaveInAddressBook('1');
-                                $customAddress->save();
+                                $customAddress->setCustomerId($customer->getId())
+                                                ->setFirstname($shippingAddress->getFirstName())
+                                                ->setLastname($shippingAddress->getLastname())
+                                                ->setCountryId($shippingAddress->getCountryId())
+                                                ->setPostcode($shippingAddress->getPostcode())
+                                                ->setCity($shippingAddress->getCity())
+                                                ->setRegionId($shippingAddress->getRegionId())
+                                                ->setTelephone($shippingAddress->getTelephone())
+                                                ->setCompany($shippingAddress->getCompany())
+                                                ->setStreet($shippingAddress->getStreet())
+                                                ->setIsDefaultBilling(false)
+                                                ->setIsDefaultShipping(true);
+                                $this->addressRepository->save($customAddress);
                             }
                     
                             // clear out the guest order id
