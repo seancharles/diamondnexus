@@ -2,11 +2,10 @@ h1,
 h2 {
     font-family: var(--serif) !important;
     font-weight: var(--weight-light) !important;
-    font-size: 24px !important;
+    font-size: 32px !important;
     line-height: 1.33 !important;
     letter-spacing: 0.0079em !important;
     @media screen and (min-width: 768px) {
-        font-size: 32px !important;
         line-height: 1.25 !important;
         letter-spacing: 0.008125em !important;
     }

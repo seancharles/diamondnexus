@@ -1,4 +1,7 @@
 .checkout-cart-index {
+    .account-additional-note {
+        display: none;
+    }
     .cart {
         .item-info {
             .product-item-name {
@@ -119,6 +122,13 @@
             background: #000 !important;
             color: #fff !important;
         }
+    }
+    .cart-price span {
+        font-size: 14px;
+        font-weight: normal !important;
+    }
+    .item-options {
+        font-size: 12px;
     }
 }
 

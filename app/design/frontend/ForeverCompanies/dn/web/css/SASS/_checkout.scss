@@ -1,4 +1,13 @@
 .checkout-index-index {
+    .account-additional-note {
+        display: none;
+    }
+    .page-header:nth-of-type(2) {
+        display: none;
+    }
+    .authentication-wrapper {
+        margin-top: 0 !important;
+    }
     .opc-block-summary > .title,
     .step-title {
         font-family: 'Didot 06 A', 'Didot 06 B', serif;
@@ -189,7 +198,12 @@
     }
 }
 @media screen and (max-width: 639px) {
-    .opc-wrapper .step-title {
-        font-size: 32px !important;
+    .checkout-index-index .authentication-wrapper {
+        padding-bottom: 40px;
+        float: none !important;
+        max-width: 100% !important;
+    }
+    .checkout-index-index #checkout {
+        padding: 0;
     }
 }
