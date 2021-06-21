@@ -7,8 +7,14 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
 	protected $formKeyValidator;
 	protected $storeManager;
     protected $cookieManager;
-	protected $submissionFactory;
+    protected $cookieMetadataFactory;
+    protected $checkoutSession;
+	protected $customerFactory;
+    protected $customerRepository;
+    protected $encryptor;
+    protected $orderRepository;
 	protected $formHelper;
+    protected $addressFactory;
     
     const COOKIE_NAME = 'submission_key';
     const COOKIE_DURATION = 86400; // lifetime in seconds
@@ -20,7 +26,9 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
         \Magento\Framework\Stdlib\CookieManagerInterface $cookieManager,
         \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory $cookieMetadataFactory,
         \Magento\Checkout\Model\Session $checkoutSession,
-        \Magento\Customer\Model\CustomerFactory $customerFactory,
+        \Magento\Customer\Api\Data\CustomerInterfaceFactory $customerFactory,
+        \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
+        \Magento\Framework\Encryption\Encryptor $encryptor,
         \Magento\Sales\Model\OrderRepository $orderRepository,
         \Magento\Customer\Model\AddressFactory $addressFactory
 	) {
@@ -32,6 +40,8 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
         $this->cookieMetadataFactory = $cookieMetadataFactory;
         $this->checkoutSession = $checkoutSession;
         $this->customerFactory = $customerFactory;
+        $this->customerRepository = $customerRepository;
+        $this->encryptor = $encryptor;
         $this->orderRepository = $orderRepository;
         $this->addressFactory = $addressFactory;
 	}
@@ -59,9 +69,7 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
             if($guestOrderId > 0) {
                 $order = $this->orderRepository->get($guestOrderId);
                 
-                $customer = $this->customerFactory->create();
-                $customer->setWebsiteId($websiteId);
-                $customer->loadByEmail($order->getEmail());
+                $customer = $this->customerRepository->get($order->getCustomerEmail());
                 
                 if ($customer->getId()) {
                     $result['message'] = 'Account already exists.';
@@ -70,14 +78,17 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
                         try {
                             $customer = $this->customerFactory->create();
                             $customer->setWebsiteId($websiteId);
-                            $customer->setEmail($order->getEmail());
-                            $customer->setFirstname($order->getFirstName());
-                            $customer->setLastname($order->getLastName());
+                            $customer->setEmail($order->getCustomerEmail());
+                            $customer->setFirstname($order->getCustomerFirstName());
+                            $customer->setLastname($order->getCustomerLastName());
                             $customer->setPassword($password);
-                            $customer->save();
 
-                            $customer->setConfirmation(null);
-                            $customer->save();
+                            $passwordHash = $this->encryptor->getHash($password, true);
+                            
+                            $customer = $this->customerRepository->save($customer, $passwordHash);
+
+                            //$customer->setConfirmation(null);
+                            //$customer->save();
 
                             // update the order customer_id if the customer was created
                             if ($order->getId() && !$order->getCustomerId()) {
