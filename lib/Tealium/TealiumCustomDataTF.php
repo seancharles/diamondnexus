@@ -539,10 +539,16 @@ class TealiumExtendData
         $productImgs =
         $productUrls = [];
 
-        $orderModel = $this->objectManager->get('Magento\Sales\Model\Order');
+        $order = false;
 
-        if ($orderModel) {
-            $order = $orderModel->loadByIncrementId($page->getOrderId());
+        // load order... using Magento\Sales\Model\Order->loadByIncrementId() doesn't work here, instead we must use
+        // Magento\Checkout\Model\Session and get the last order via the session
+        if ($this->objectManager->create('Magento\Sales\Model\Order')) {
+            $checkoutSession = $this->objectManager->get('Magento\Checkout\Model\Session');
+            $order = $checkoutSession->getLastRealOrder();
+            $mediaUrl = $this->objectManager->get('Magento\Store\Model\StoreManagerInterface')
+                    ->getStore()
+                    ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
 
             foreach ($order->getAllVisibleItems() as $item) {
 
@@ -563,13 +569,12 @@ class TealiumExtendData
                 $primaryProduct = $this->fcGetProduct($tmpPrimaryProduct->getId());
                 $childProduct = $this->fcGetProduct($tmpChildProduct->getId());
 
-
                 $productIds[] = $primaryProduct->getId();
                 $simpleProductIds[] = $childProduct->getId();
                 $productBrands[] = $this->fcSiteBrand;
                 $productPromoCodes[] = '';
                 $productOnPage[] = '';
-                $productImg = $primaryProduct->getImageUrl();
+                $productImg = $mediaUrl . $primaryProduct->getImage(); // $primaryProduct->getImageUrl();
                 $productImgs[] = (!empty($productImg)) ? $productImg : '';
                 $productUrls[] = (!empty($primaryProduct->getProductUrl())) ? $primaryProduct->getProductUrl() : '';
 
@@ -611,26 +616,32 @@ class TealiumExtendData
             $outputArray["product_url"] = $productUrls;
         }
 
-        $outputArray["customer_street_1"] = $order->getBillingAddress()->getStreet1();
-        $outputArray["customer_street_2"] = $order->getBillingAddress()->getStreet2();
-        $outputArray["customer_city"] = $order->getBillingAddress()->getCity(); // $order->getBillingAddress()->getData('city')
-        $outputArray["country_code"] = $order->getBillingAddress()->getCountryId();
-        $outputArray["customer_postal_code"] = $order->getBillingAddress()->getPostcode();
-        $outputArray["customer_first_name"] = $order->getCustomerFirstname();
-        $outputArray["customer_last_name"] = $order->getCustomerLastname();
-        $outputArray["customer_country"] = $order->getBillingAddress()->getCountryId();
-        $outputArray["customer_state"] = $order->getBillingAddress()->getRegion();
-        $outputArray["order_currency_code"] = $order->getOrderCurrencyCode();
-        $outputArray["order_discount_amount"] = $order->getDiscountAmount();
-        $outputArray["order_merchandise_total"] = $order->getGrandTotal();
-        $outputArray["order_promo_code"] = "";
-        $outputArray["order_shipping_amount"] = $order->getShippingAmount();
-        $outputArray["order_shipping_type"] = $order->getShippingDescription();
+        // get billing address
+        $billingAddress = $order && $order->getBillingAddress() ? $order->getBillingAddress() : false;
 
-        $outputArray["order_store"] = $order->getStoreId();
-        $outputArray["order_tax_amount"] = $order->getTaxAmount();
+        // billing address street is an array with one or two key/values
+        $billingAddressStreet = $billingAddress && $billingAddress->getStreet() ? $billingAddress->getStreet() : [];
+
+        $outputArray["customer_street_1"] = array_key_exists(0, $billingAddressStreet) ? $billingAddressStreet[0] : "";
+        $outputArray["customer_street_2"] =array_key_exists(1, $billingAddressStreet) ? $billingAddressStreet[1] : "";
+        $outputArray["customer_city"] = $billingAddress && $billingAddress->getCity() ? $billingAddress->getCity() : ""; // $order->getBillingAddress()->getData('city')
+        $outputArray["country_code"] = $billingAddress && $billingAddress->getCountryId() ? $billingAddress->getCountryId() : "";
+        $outputArray["customer_postal_code"] = $billingAddress && $billingAddress->getPostcode() ? $billingAddress->getPostcode() : "";
+        $outputArray["customer_first_name"] = $order && $order->getCustomerFirstname() ? $order->getCustomerFirstname() : "";
+        $outputArray["customer_last_name"] = $order && $order->getCustomerLastname() ? $order->getCustomerLastname() : "";
+        $outputArray["customer_country"] = $billingAddress && $billingAddress->getCountryId() ? $billingAddress->getCountryId() : "";
+        $outputArray["customer_state"] = $billingAddress && $billingAddress->getRegion() ? $billingAddress->getRegion() : "";
+        $outputArray["order_currency_code"] = $order && $order->getOrderCurrencyCode() ? $order->getOrderCurrencyCode() : "";
+        $outputArray["order_discount_amount"] = $order && $order->getDiscountAmount() ? $order->getDiscountAmount() : "";
+        $outputArray["order_merchandise_total"] = $order && $order->getGrandTotal() ? $order->getGrandTotal() : "";
+        $outputArray["order_promo_code"] = "";
+        $outputArray["order_shipping_amount"] = $order && $order->getShippingAmount() ? $order->getShippingAmount() : "";
+        $outputArray["order_shipping_type"] = $order && $order->getShippingDescription() ? $order->getShippingDescription() : "";
+
+        $outputArray["order_store"] = $order && $order->getStoreId() ? $order->getStoreId() : "";
+        $outputArray["order_tax_amount"] = $order && $order->getTaxAmount() ? $order->getTaxAmount() : "";
         $outputArray["order_type"] = 'www';
-        $outputArray["order_status"] = $order->getStatus();
+        $outputArray["order_status"] = $order && $order->getStatus() ? $order->getStatus() : "";
 
         return $outputArray;
     }
