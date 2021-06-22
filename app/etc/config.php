@@ -432,6 +432,8 @@ return [
         'ForeverCompanies_Rules' => 0,
         'ForeverCompanies_Salesforce' => 1,
         'ForeverCompanies_SearchEngine' => 1,
+        'ForeverCompanies_Tealium' => 0,
+        'ForeverCompanies_Utf8' => 1,
         'Mageplaza_Core' => 1,
         'ForeverCompanies_StoneEmail' => 1,
         'ForeverCompanies_StonesIntermediary' => 1,
