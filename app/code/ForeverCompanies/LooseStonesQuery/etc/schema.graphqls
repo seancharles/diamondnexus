@@ -3,7 +3,7 @@ type Query
 	StonesQuery(
 		filter: ProductAttributeFilterInput
 		online: String
-		product_type: String
+		fc_product_type: String
         color: String
         clarity: String
         carat_weight__from: ProductAttributeFilterInput

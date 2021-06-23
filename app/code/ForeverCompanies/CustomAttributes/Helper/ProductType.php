@@ -90,7 +90,7 @@ class ProductType extends AbstractHelper
         $this->logger = $logger;
         $this->attrSetRepository = $attributeSetRepository;
         try {
-            $this->eavConfig = $eavConfig->getAttribute(Product::ENTITY, 'product_type')->getSource();
+            $this->eavConfig = $eavConfig->getAttribute(Product::ENTITY, 'fc_product_type')->getSource();
         } catch (LocalizedException $e) {
             $this->logger->error('Can\t get product_type attribute source - ' . $e->getMessage());
         }
@@ -102,12 +102,12 @@ class ProductType extends AbstractHelper
      */
     public function setProductType(Product $product)
     {
-        if ($product->getData('product_type') == null) {
+        if ($product->getData('fc_product_type') == null) {
             $attributeSetName = $this->attrSetRepository->get($product->getAttributeSetId())->getAttributeSetName();
             $productType = $this->attributeSetToProductType($attributeSetName);
-            $product->setCustomAttribute('product_type', $productType);
-            $product->setData('product_type', $productType);
-            if ($product->getCustomAttribute('product_type') == 'Stone') {
+            $product->setCustomAttribute('fc_product_type', $productType);
+            $product->setData('fc_product_type', $productType);
+            if ($product->getCustomAttribute('fc_product_type') == 'Stone') {
                 $product->setCustomAttribute('allow_in_bundles', 1);
             }
         }
@@ -120,7 +120,7 @@ class ProductType extends AbstractHelper
      */
     public function getProductType(Product $product): string
     {
-        if ($product->getData('product_type') == null) {
+        if ($product->getData('fc_product_type') == null) {
             $attributeSetName = $this->attrSetRepository->get($product->getAttributeSetId())->getAttributeSetName();
             return $this->attributeSetToProductType($attributeSetName);
         } else {

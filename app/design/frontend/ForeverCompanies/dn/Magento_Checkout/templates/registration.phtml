@@ -7,9 +7,42 @@
 /** @var $block \Magento\Checkout\Block\Registration */
 ?>
 
-<form method="post" action="/fccheckout/createaccount/">
+<script>
+require(['jquery'],function(){
+    jQuery(document).ready(function() {
+        jQuery("#create_account_form").submit(function(){
+
+            var txtFormKey = jQuery("input[name='form_key']").val();
+            var txtPassword = jQuery("input[name='password']").val();
+            var url = "/fccheckout/createaccount/";
+            
+            jQuery.ajax({
+            url: url,
+            dataType: "json",
+            type: "POST",
+            data: {
+                form_key:txtFormKey,
+                password:txtPassword
+            },
+            cache: false,
+            success: function(response){
+                if(response.success == true) {
+                    alert("Account was created!");
+                } else {
+                    alert(response.message);
+                }
+            }
+        });
+        return false;
+        });
+    });
+});
+</script>
+
+<form id="create_account_form" method="post" action="/fccheckout/createaccount/">
     <?php echo $block->getBlockHtml('formkey')?>
     <label>Password</label>
     <input type="text" name="password" />
     <button type="submit">Create Account</button>
 </form>
+

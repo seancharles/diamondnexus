@@ -268,15 +268,15 @@ class Shipdate extends AbstractHelper
         // pull the existing order delivery dates
         $data = $connection->fetchRow($select);
         
-        $dispatchDate =  $data['dispatch_date'];
-        $deliveryDate = $data['delivery_date'];
-        
         // get the number of days since the order was created
         $daysAfterCreate = $this->getDateDifference( $order->getCreatedAt(), date('Y-m-d') );
         
-        if($daysAfterCreate == 0) {
+        if($daysAfterCreate == 0 || isset($data['dispatch_date']) === false || isset($data['delivery_date']) === false) {
             return;
         }
+        
+        $dispatchDate =  $data['dispatch_date'];
+        $deliveryDate = $data['delivery_date'];
         
         // calculate the new dates by adding x number of business days since the order was created
         $newDispatchDate = $this->adjustDeliveryDate($dispatchDate, $daysAfterCreate);

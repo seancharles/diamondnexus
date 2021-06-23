@@ -57,7 +57,7 @@ class PostOrderLogic implements ObserverInterface
                 continue;
             }
             
-            if ($orderItem->getProduct()->getProductType() == "3569") { // if is diamond
+            if ($orderItem->getProduct()->getFcProductType() == "3569") { // if is diamond
                 
                 $storeName = $order->getStore()->getGroup()->getName();
                 $product = $this->productFactory->create()->load($orderItem->getProduct()->getId());
