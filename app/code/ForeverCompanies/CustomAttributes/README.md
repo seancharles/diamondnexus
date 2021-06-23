@@ -47,7 +47,7 @@
 
 ## Attributes
 
- - Product - Product Type (product_type)
+ - Product - Product Type (fc_product_type)
 
  - Product - Allow in bundles (allow_in_bundles)
 

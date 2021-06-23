@@ -361,7 +361,7 @@ class TransformData extends AbstractHelper
     {
         try {
             $product = $this->productRepository->getById($entityId);
-            if ($product->getData('product_type') == null) {
+            if ($product->getData('fc_product_type') == null) {
                 $this->productTypeHelper->setProductType($product);
                 $this->productRepository->save($product);
             }
@@ -433,7 +433,7 @@ class TransformData extends AbstractHelper
             $replace = 'have our jewelers set a Nexus Diamond™ alternative in a setting';
             $description = str_replace($search, $replace, $description);
             $product->setData('description', $description);
-            if ($product->getData('product_type') == null) {
+            if ($product->getData('fc_product_type') == null) {
                 $this->productTypeHelper->setProductType($product);
             }
             $this->productRepository->save($product);
@@ -500,8 +500,8 @@ class TransformData extends AbstractHelper
         try {
             $product = $this->productRepository->get($sku);
             if ($product->getData('price_view') == '0' || $product->getData('price_view') == null) {
-                // check if product_type is not set, and set it
-                if ($product->getData('product_type') == null) {
+                // check if fc_product_type is not set, and set it
+                if ($product->getData('fc_product_type') == null) {
                     $this->productTypeHelper->setProductType($product);
                 }
                 $product->setData('price_view', '1');
@@ -637,7 +637,7 @@ class TransformData extends AbstractHelper
             $flag = false;
 
             // check if product_type is not set, and set it
-            if ($product->getData('product_type') == null) {
+            if ($product->getData('fc_product_type') == null) {
                 $this->productTypeHelper->setProductType($product);
                 $flag = true;
             }
@@ -872,7 +872,7 @@ class TransformData extends AbstractHelper
             if ($product == null) {
                 return;
             }
-            if ($product->getData('product_type') == null) {
+            if ($product->getData('fc_product_type') == null) {
                 $this->productTypeHelper->setProductType($product);
             }
             $options = $product->getOptions();
@@ -1108,7 +1108,7 @@ class TransformData extends AbstractHelper
             // save the product
             try {
                 // check if product_type is not set, and set it
-                if ($product->getData('product_type') == null) {
+                if ($product->getData('fc_product_type') == null) {
                     $this->productTypeHelper->setProductType($product);
                 }
                 $this->productRepository->save($product);

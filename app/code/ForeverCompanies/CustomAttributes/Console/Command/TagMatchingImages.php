@@ -51,7 +51,6 @@ class TagMatchingImages extends Command
         DirectoryList $fileSystem,
         productLinkInterfaceFactory $productLinkInterfaceFactory
     ) {
-        $state->setAreaCode(\Magento\Framework\App\Area::AREA_ADMINHTML);
         $this->resourceConnection = $resourceConnection;
         $this->productRepository = $productRepository;
         $this->fileSystem = $fileSystem;
@@ -71,6 +70,8 @@ class TagMatchingImages extends Command
         OutputInterface $output
     ) {
         try{
+            $state->setAreaCode(\Magento\Framework\App\Area::AREA_ADMINHTML);
+
             $output->writeln("Clearing all matching band related entries");
             
             // clear entries before running

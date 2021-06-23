@@ -601,7 +601,7 @@ class Mapping extends AbstractHelper
                     $bundleSku = substr($sku, 11, 13);
                     $product->setData('bundle_sku', $bundleSku);
                     $product->setCustomAttribute('bundle_sku', $bundleSku);
-                    if ($product->getData('product_type') == null) {
+                    if ($product->getData('fc_product_type') == null) {
                         $this->productTypeHelper->setProductType($product);
                     }
                     $this->productRepository->save($product);

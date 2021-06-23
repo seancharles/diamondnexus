@@ -52,16 +52,16 @@ class AddProductTypeProductAttribute implements DataPatchInterface, PatchReverta
     {
         $this->moduleDataSetup->getConnection()->startSetup();
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $attribute = $eavSetup->getAttribute(Product::ENTITY, 'product_type');
+        $attribute = $eavSetup->getAttribute(Product::ENTITY, 'fc_product_type');
         if ($attribute) {
             $eavSetup->removeAttribute(
                 Product::ENTITY,
-                'product_type'
+                'fc_product_type'
             );
         }
         $eavSetup->addAttribute(
             Product::ENTITY,
-            'product_type',
+            'fc_product_type',
             [
                 'type' => 'int',
                 'label' => 'Product Type',
@@ -113,7 +113,7 @@ class AddProductTypeProductAttribute implements DataPatchInterface, PatchReverta
     {
         $this->moduleDataSetup->getConnection()->startSetup();
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $eavSetup->removeAttribute(Product::ENTITY, 'product_type');
+        $eavSetup->removeAttribute(Product::ENTITY, 'fc_product_type');
 
         $this->moduleDataSetup->getConnection()->endSetup();
     }
