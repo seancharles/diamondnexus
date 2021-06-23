@@ -80,7 +80,7 @@ class SetProductType extends Command
                 foreach ($productTypeData as $productType => $entityIds) {
                     $this->productActionObject->updateAttributes(
                         $entityIds,
-                        ['product_type' => $productType],
+                        ['fc_product_type' => $productType],
                         0
                     );
                 }
@@ -98,7 +98,7 @@ class SetProductType extends Command
     protected function configure()
     {
         $this->setName($this->name);
-        $this->setDescription("Set Product Types - update the product_type attribute");
+        $this->setDescription("Set Product Types - update the fc_product_type attribute");
         parent::configure();
     }
 }

@@ -74,7 +74,7 @@ class BundlePriceUse extends AbstractHelper
             } catch (StateException $e) {
                 $this->logger->info("Can\t save bundle_price ($price) for $sku, " . $e->getMessage());
             } catch (NoSuchEntityException $e) {
-                $this->logger->error("Can't set product_type for $sku - {$e->getMessage()}");
+                $this->logger->error("Can't set fc_product_type for $sku - {$e->getMessage()}");
             }
         }
         if ($product->getData('bundle_price_use') !== $price) {
