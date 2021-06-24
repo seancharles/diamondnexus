@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e26cf4536f08897ea806f8ca0ad749eb",
+    "content-hash": "f316afdd39141fea5bbadf1b76912859",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -8734,7 +8734,7 @@
             "type": "magento2-module",
             "extra": {
                 "patches_applied": {
-                    "Fix Bulk Action": "./app/code/ForeverCompanies/CustomAdmin/Setup/Patch/moduleAsynchronousOperations.patch"
+                    "Fix Bulk Action (patched in 2.4.2)": "./app/code/ForeverCompanies/CustomAdmin/Setup/Patch/moduleAsynchronousOperations.patch"
                 }
             },
             "autoload": {
@@ -25579,6 +25579,66 @@
             ],
             "description": "Magento Shipping integration with ShipperHQ",
             "time": "2021-04-29T17:20:47+00:00"
+        },
+        {
+            "name": "signifyd/module-connect",
+            "version": "4.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/signifyd/magento2.git",
+                "reference": "779bd3cfb4e32ee3223637f37b71b62cd5543124"
+            },
+            "require": {
+                "monolog/monolog": ">=1.16.0",
+                "php": ">=5.5.22",
+                "signifyd/signifyd-php": "3.0.1"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Signifyd\\Connect\\": ""
+                }
+            },
+            "description": "Signifyd integration for Magento",
+            "time": "2021-05-25T15:25:07+00:00"
+        },
+        {
+            "name": "signifyd/signifyd-php",
+            "version": "3.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/signifyd/php.git",
+                "reference": "4aed24c0ae077b645a9aae526504e6dda5bffca5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/signifyd/php/zipball/4aed24c0ae077b645a9aae526504e6dda5bffca5",
+                "reference": "4aed24c0ae077b645a9aae526504e6dda5bffca5",
+                "shasum": ""
+            },
+            "require": {
+                "monolog/monolog": ">=1.16.0",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "php": ">=5.5.0",
+                "phpunit/phpunit": "^7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Signifyd\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Signifyd client API plugin for PHP",
+            "time": "2021-03-05T20:58:11+00:00"
         },
         {
             "name": "spomky-labs/otphp",
