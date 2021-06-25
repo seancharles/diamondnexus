@@ -1,4 +1,9 @@
 #!/bin/bash
+cd /var/www/magento/
+for x in `php bin/magento indexer:status | grep "Processing" | awk '{print $2}'`
+do 
+  php bin/magento indexer:reset $x
+done
 if php -d memory_limit=-1 bin/magento cron:install
 then
   echo "Cron Installed"
