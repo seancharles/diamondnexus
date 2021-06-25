@@ -29,7 +29,7 @@ phases:
       - echo Build started on `date`
       - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
       - apt-get -y update
-      - apt-get install -y nfs-common rsync
+      - apt-get install -y nfs-common rsync mysql-client
       - rm -rf *
       - echo Cloning remote GIT repo
       - git clone https://$username:$pass@github.com/ForeverCompanies/magento2.git --branch $BRANCH
@@ -41,6 +41,9 @@ phases:
       - git config --global user.name "CI CD build"
       - chmod +x auto-repo-merge.sh
       - bash auto-repo-merge.sh
+      - aws ecs update-service --service $REPO-cron --cluster $cluster --desired-count 0
+      - sleep 15
+      - mysql $dbname -h $dbhost -u $dbuser --password=$dbrootpassword -e "truncate cron_schedule;"
       - echo Building the Docker image...
       - echo $REPOURL/magento:latest $REPOURL/magento:$IMAGE_TAG
       - docker pull $REPOURL/magento:latest
@@ -88,6 +91,7 @@ phases:
       - docker push $REPOURL/magento:latest
       - docker push $REPOURL/magento:$IMAGE_TAG
       - aws ecs update-service --force-new-deployment --service $REPO --cluster $cluster
+      - aws ecs update-service --service $REPO-cron --cluster $cluster --desired-count 1
       - aws ecs update-service --force-new-deployment --service $REPO-cron --cluster $cluster
   post_build:
     commands:
