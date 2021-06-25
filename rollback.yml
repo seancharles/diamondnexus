@@ -33,6 +33,9 @@ phases:
       - apt-get install -y nfs-common
       - echo Cloning remote GIT repo
       - git log --name-status HEAD^..HEAD
+      - aws ecs update-service --service $REPO-cron --cluster $cluster --desired-count 0
+      - sleep 15
+      - mysql $dbname -h $dbhost -u $dbuser --password=$dbrootpassword -e "truncate cron_schedule;"
       - echo Building the Docker image...
       - docker build -t magento --cache-from $REPOURL/magento:latest
         --build-arg REDIS_HOST=$redis
