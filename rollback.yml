@@ -79,7 +79,9 @@ phases:
       - echo Pushing the Docker images...
       - docker push $REPOURL/magento:latest
       - docker push $REPOURL/magento:$IMAGE_TAG
-      - aws sns publish --topic-arn $snstopic --message "datasync perfomed"
+      - aws ecs update-service --force-new-deployment --service $REPO --cluster $cluster
+      - aws ecs update-service --service $REPO-cron --cluster $cluster --desired-count 1
+      - aws ecs update-service --force-new-deployment --service $REPO-cron --cluster $cluster
   post_build:
     commands:
       - echo Build completed on `date`
