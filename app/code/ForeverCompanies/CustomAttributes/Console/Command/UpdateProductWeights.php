@@ -62,8 +62,16 @@ class UpdateProductWeights extends Command
 
         // get product collection
         $productCollection = $this->collectionFactory->create();
-        $productCollection->addAttributeToSelect('*');
-        $productCollection->addAttributeToFilter('status', Status::STATUS_ENABLED);
+        $productCollection->addAttributeToSelect(['entity_id', 'sku', 'weight']);
+        //$productCollection->addAttributeToFilter('status', Status::STATUS_ENABLED);
+        $productCollection->addAttributeToFilter(
+            [
+                ['attribute' => 'weight', 'null' => true],
+                ['attribute' => 'weight', 'eq' => '']
+            ],
+            '',
+            'left'
+        );
         $productCollection->addAttributeToFilter(array(array('attribute'=>'type_id','in' => [
             Type::TYPE_SIMPLE,
             Type::TYPE_BUNDLE,
