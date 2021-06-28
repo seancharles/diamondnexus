@@ -21,23 +21,22 @@ class UpdateProductWeights extends Command
     /**
      * @var string
      */
-    protected $name = 'forevercompanies:update-product-weights';
+    protected string $name = 'forevercompanies:update-product-weights';
 
     /**
      * @var CollectionFactory
      */
-    protected $collectionFactory;
+    protected CollectionFactory $collectionFactory;
 
     /**
      * @var Action
      */
-    protected $productActionObject;
+    protected Action $productActionObject;
 
     /**
      * CreateLooseDiamondsCategory constructor.
      * @param CollectionFactory $collectionFactory
      * @param Action $action
-     * @param TransformData $helper
      */
     public function __construct(
         CollectionFactory $collectionFactory,
