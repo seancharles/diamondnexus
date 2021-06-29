@@ -38,9 +38,28 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
 		$this->formHelper = $formHelper;
 	}
 
+    protected function setCompatibleFormKey()
+    {
+        // parse the json post
+        $json = file_get_contents('php://input');
+
+        // Converts it into a PHP object
+        $data = json_decode($json);
+
+        if(isset($data->form_key) == true) {
+            // get form key
+            $formKey = $data->form_key;
+            
+            // translate ajax post object to form value to validate
+            $this->request->setPostValue('form_key', $formKey);
+        }
+    }
+
 	public function execute()
 	{
-		if ($this->formKeyValidator->validate($this->getRequest()) == false) {
+        $this->setCompatibleFormKey();
+        
+		if ($this->formKeyValidator->validate($this->getRequest()) !== false) {
 	
 		    // if field is populated a bot filled out the honey pot.
 		    if (trim($this->formHelper->getSanitizedField('email_confirm')) == "") {

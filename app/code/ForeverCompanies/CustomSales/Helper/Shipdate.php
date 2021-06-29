@@ -237,6 +237,11 @@ class Shipdate extends AbstractHelper
     
     public function getDeliveryDates($order)
     {
+        $deliveryDates = [
+            'dispatch_date' => null,
+            'delivery_date' => null
+        ];
+        
         $connection = $this->shipperDetailResourceModel->getConnection();
         $select = $connection->select()->from($this->shipperDetailResourceModel->getMainTable())
             ->where('order_id = ?', $order->getEntityId())
@@ -246,10 +251,15 @@ class Shipdate extends AbstractHelper
         // pull the existing order delivery dates
         $data = $connection->fetchRow($select);
         
-        return [
-            'dispatch_date' => $data['dispatch_date'],
-            'delivery_date' => $data['delivery_date']
-        ];
+        if(isset($deliveryDates['dispatch_date']) === true) {
+            $deliveryDates[''] = $data['dispatch_date'];
+        }
+        
+        if(isset($deliveryDates['delivery_date']) === true) {
+            $deliveryDates = $data['delivery_date'];
+        }
+        
+        return $deliveryDates;
     }
     
     public function updateDeliveryDates($order)
