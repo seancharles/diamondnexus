@@ -7,33 +7,33 @@
 -->
 <classmap xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
           xs:noNamespaceSchemaLocation="urn:magento:module:Magento_DataMigrationTool:etc/class-map.xsd">
-	<!-- custom -->
-	<rename>
-			<from>affirm/source_mfpType</from>
-			<to></to>
-	</rename>
-	<rename>
-			<from>mana_filters/source_filterable</from>
-			<to></to>
-	</rename>
-	<rename>
-			<from>mana_filters/source_display</from>
-			<to></to>
-	</rename>
-	<rename>
-			<from>import/source_supplier</from>
-			<to></to>
-	</rename>
-	<rename>
-			<from>mana_filters/filter</from>
-			<to></to>
-	</rename>
-	<rename>
-			<from>mana_filters/filter_attribute_collection</from>
-			<to></to>
-	</rename>
-	<!-- custom -->
-	
+    <!-- custom -->
+    <rename>
+        <from>affirm/source_mfpType</from>
+        <to></to>
+    </rename>
+    <rename>
+        <from>mana_filters/source_filterable</from>
+        <to></to>
+    </rename>
+    <rename>
+        <from>mana_filters/source_display</from>
+        <to></to>
+    </rename>
+    <rename>
+        <from>import/source_supplier</from>
+        <to></to>
+    </rename>
+    <rename>
+        <from>mana_filters/filter</from>
+        <to></to>
+    </rename>
+    <rename>
+        <from>mana_filters/filter_attribute_collection</from>
+        <to></to>
+    </rename>
+    <!-- custom -->
+
     <rename>
         <from>catalogrule/rule_condition_combine</from>
         <to>Magento\CatalogRule\Model\Rule\Condition\Combine</to>

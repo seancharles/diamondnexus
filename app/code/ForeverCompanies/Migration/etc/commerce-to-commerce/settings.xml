@@ -59,7 +59,7 @@
         <ignore>
             <path>payment/*</path>
         </ignore>
-		<!-- what is this? -->
+        <!-- what is this? -->
         <ignore>
             <path>rewrite_matchers/category/priority</path>
         </ignore>
@@ -105,17 +105,17 @@
         <ignore>
             <path>currency/*</path>
         </ignore>
-		
-		
-		<!--
-			rename paths have all been removed
-			
-			example:
-			<rename>
-				<path>system/enterprise_import_export_log/time</path>
-				<to>system/magento_scheduled_import_export_log/time</to>
-			</rename>
-		-->
+
+
+        <!--
+            rename paths have all been removed
+
+            example:
+            <rename>
+                <path>system/enterprise_import_export_log/time</path>
+                <to>system/magento_scheduled_import_export_log/time</to>
+            </rename>
+        -->
     </key>
     <value>
         <transform>

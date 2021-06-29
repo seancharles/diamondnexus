@@ -15,37 +15,37 @@
             </rename>
         </document_rules>
         <field_rules>
-		
-			<!-- custom -->
-			<ignore>
-				<field>eav_attribute.is_visible_on_front</field>
-			</ignore>
-			<ignore>
-				<field>eav_attribute.sorting_order</field>
-			</ignore>
-			<ignore>
-				<field>eav_attribute.checkout_step</field>
-			</ignore>
-			<ignore>
-				<field>eav_attribute.show_on_grid</field>
-			</ignore>
-			<ignore>
-				<field>eav_attribute.store_ids</field>
-			</ignore>
-			<ignore>
-				<field>eav_attribute.save_selected</field>
-			</ignore>
-			<ignore>
-				<field>eav_attribute.parent_dropdown</field>
-			</ignore>
-			<ignore>
-				<field>eav_attribute.include_pdf</field>
-			</ignore>
-			<ignore>
-				<field>eav_attribute.apply_default</field>
-			</ignore>
-			<!-- custom -->
-			
+
+            <!-- custom -->
+            <ignore>
+                <field>eav_attribute.is_visible_on_front</field>
+            </ignore>
+            <ignore>
+                <field>eav_attribute.sorting_order</field>
+            </ignore>
+            <ignore>
+                <field>eav_attribute.checkout_step</field>
+            </ignore>
+            <ignore>
+                <field>eav_attribute.show_on_grid</field>
+            </ignore>
+            <ignore>
+                <field>eav_attribute.store_ids</field>
+            </ignore>
+            <ignore>
+                <field>eav_attribute.save_selected</field>
+            </ignore>
+            <ignore>
+                <field>eav_attribute.parent_dropdown</field>
+            </ignore>
+            <ignore>
+                <field>eav_attribute.include_pdf</field>
+            </ignore>
+            <ignore>
+                <field>eav_attribute.apply_default</field>
+            </ignore>
+            <!-- custom -->
+
             <transform>
                 <field>eav_attribute.attribute_model</field>
                 <handler class="\Migration\Handler\EavAttribute\ConvertModel" />

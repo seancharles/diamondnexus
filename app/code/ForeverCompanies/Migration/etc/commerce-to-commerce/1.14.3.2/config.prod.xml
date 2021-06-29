@@ -116,10 +116,10 @@
             <volume>Migration\Step\Map\Volume</volume>
         </step>
         <!-- start -->
-        <!--step title="Log Step">
+        <step title="Log Step">
             <delta>Migration\Step\Log\Delta</delta>
             <volume>Migration\Step\Log\Volume</volume>
-        </step-->
+        </step>
         <step title="SalesOrder Step">
             <delta>Migration\Step\SalesOrder\Delta</delta>
             <volume>Migration\Step\SalesOrder\Volume</volume>
