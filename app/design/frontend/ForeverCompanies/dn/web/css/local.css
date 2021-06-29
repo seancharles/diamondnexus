@@ -2,13 +2,12 @@ h1,
 h2 {
   font-family: var(--serif) !important;
   font-weight: var(--weight-light) !important;
-  font-size: 24px !important;
+  font-size: 32px !important;
   line-height: 1.33 !important;
   letter-spacing: 0.0079em !important; }
   @media screen and (min-width: 768px) {
     h1,
     h2 {
-      font-size: 32px !important;
       line-height: 1.25 !important;
       letter-spacing: 0.008125em !important; } }
   @media screen and (min-width: 1025px) {
@@ -137,12 +136,20 @@ footer {
 
 .copyright {
   background: transparent;
-  color: #000; }
+  color: #000;
+  font-size: 11.9px;
+  padding-bottom: 40px; }
   .copyright a {
     color: #000; }
     .copyright a:hover {
       color: #000;
       text-decoration: underline; }
+
+.customer-account-forgotpassword .account-additional-note {
+  display: none; }
+
+.customer-account-login .account-additional-note {
+  display: none; }
 
 .customer-account-login .login-container .block .block-title {
   font-size: 24px !important; }
@@ -192,6 +199,9 @@ footer {
 .customer-account-login .message.error {
   font-size: 16px !important; }
 
+.customer-account-create .account-additional-note {
+  display: none; }
+
 .customer-account-create .legend span {
   font-size: 24px !important; }
 
@@ -223,6 +233,13 @@ footer {
 
 .account .block-collapsible-nav .item a {
   text-decoration: none !important; }
+
+.account .column {
+  display: flex;
+  flex-flow: column; }
+  .account .column .account-additional-note {
+    order: 5;
+    padding-top: 35px; }
 
 @media screen and (max-width: 768px) {
   .account .page-main {
@@ -272,6 +289,7 @@ footer {
 
 .account .sidebar-additional,
 .account .block-dashboard-orders,
+.account .nav.items .nav.item:nth-of-type(3),
 .account .nav.items .nav.item:nth-of-type(7),
 .account .nav.items .nav.item:nth-of-type(9),
 .account .nav.items .nav.item:nth-of-type(11),
@@ -283,6 +301,9 @@ footer {
   text-transform: uppercase !important;
   font-size: 12px !important;
   font-weight: bold !important; }
+
+.checkout-cart-index .account-additional-note {
+  display: none; }
 
 .checkout-cart-index .cart .item-info .product-item-name {
   font-size: 18px; }
@@ -374,6 +395,13 @@ footer {
     background: #000 !important;
     color: #fff !important; }
 
+.checkout-cart-index .cart-price span {
+  font-size: 14px;
+  font-weight: normal !important; }
+
+.checkout-cart-index .item-options {
+  font-size: 12px; }
+
 @media screen and (max-width: 1024px) {
   .checkout-cart-index .cart-container {
     display: flex;
@@ -403,6 +431,15 @@ footer {
 @media screen and (max-width: 639px) {
   .checkout-cart-index .cart-gift-item button {
     margin: 5px 0 !important; } }
+
+.checkout-index-index .account-additional-note {
+  display: none; }
+
+.checkout-index-index .page-header:nth-of-type(2) {
+  display: none; }
+
+.checkout-index-index .authentication-wrapper {
+  margin-top: 0 !important; }
 
 .checkout-index-index .opc-block-summary > .title,
 .checkout-index-index .step-title {
@@ -570,8 +607,15 @@ footer {
     margin: 0 !important; } }
 
 @media screen and (max-width: 639px) {
-  .opc-wrapper .step-title {
-    font-size: 32px !important; } }
+  .checkout-index-index .authentication-wrapper {
+    padding-bottom: 40px;
+    float: none !important;
+    max-width: 100% !important; }
+  .checkout-index-index #checkout {
+    padding: 0; } }
+
+.checkout-onepage-success .account-additional-note {
+  display: none; }
 
 .checkout-onepage-success .page-main {
   text-align: center;

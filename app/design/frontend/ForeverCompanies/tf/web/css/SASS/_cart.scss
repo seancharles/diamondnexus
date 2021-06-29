@@ -1,12 +1,12 @@
 .checkout-cart-index {
     .product-item-name {
-        font-size: 22px !important;
+        font-size: 18px !important;
+        a {
+            color: #383838 !important;
+        }
     }
-    .price-excluding-tax {
-        font-size: 20px !important;
-    }
-    .we-accept-cards {
-        background-image: none;
+    #block-shipping {
+        display: none;
     }
     .coupon {
         display: flex;
@@ -21,13 +21,25 @@
             }
         }
     }
+    .form-cart button {
+        background: transparent !important;
+        color: #000 !important;
+        border: 2px solid #000 !important;
+        font-size: 12px !important;
+        min-width: 180px !important;
+        padding: 12px 15px !important;
+        &:hover {
+            background: #000 !important;
+            color: #fff !important;
+        }
+    }
     .cart-gift-item {
         .gift-item-block {
             .title {
                 color: #000 !important;
-                font-size: 22px !important;
+                font-size: 16px !important;
                 &:after {
-                    font-size: 16px !important;
+                    font-size: 12px !important;
                 }
             }
         }
@@ -50,19 +62,28 @@
             .title {
                 strong {
                     color: #000 !important;
-                    font-size: 20px !important;
+                    font-size: 16px !important;
                     &:after {
-                        font-size: 16px !important;
+                        font-size: 12px !important;
                     }
                 }
             }
         }
     }
     .order-summary {
-        font-size: 24px;
+        font-size: 22px;
+        font-weight: bold;
     }
     .cart-summary .block .title strong {
         font-size: 16px;
+        font-weight: normal;
+    }
+    .cart-price span {
+        font-weight: 400 !important;
+        font-size: 14px;
+    }
+    .item-options {
+        font-size: 12px;
     }
     .grand.totals {
         th,
@@ -74,6 +95,16 @@
         button {
             margin: 10px 0 !important;
         }
+    }
+    .we-accept-cards {
+        background-image: none;
+        padding-top: 10px;
+        img {
+            margin-left: -10px;
+        }
+    }
+    .cart.table-wrapper .actions-toolbar {
+        min-height: 25px !important;
     }
 }
 
@@ -114,6 +145,9 @@
     }
     .cart.main.actions {
         margin: 10px;
+    }
+    .action-continue.we-accept {
+        padding: 15px;
     }
 }
 

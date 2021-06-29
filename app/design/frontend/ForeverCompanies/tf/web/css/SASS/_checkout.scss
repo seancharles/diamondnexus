@@ -1,4 +1,10 @@
 .checkout-index-index {
+    .page-header:nth-of-type(2) {
+        display: none;
+    }
+    .authentication-wrapper {
+        margin-top: 0 !important;
+    }
     #checkout {
         padding: 50px 0;
     }
@@ -29,8 +35,17 @@
         font-size: 16px !important;
         padding-top: 50px;
     }
+    .opc-block-summary > .title {
+        font-size: 22px;
+        font-weight: bold;
+    }
+    .opc-block-summary .items-in-cart > .title strong {
+        font-size: 16px;
+    }
     .opc-wrapper .step-title {
-        font-size: 28px;
+        font-size: 24px;
+        font-weight: bold;
+        text-transform: uppercase;
     }
     .form.methods-shipping input[type='radio'] {
         margin: 0 !important;
@@ -78,6 +93,7 @@
     }
     .opc-block-shipping-information .shipping-information-title {
         font-size: 22px;
+        font-weight: bold;
     }
     .shipping-information button {
         background: transparent !important;
@@ -88,6 +104,12 @@
         input[type='text'] {
             height: 47px !important;
         }
+    }
+    .product-item-inner {
+        display: flex !important;
+    }
+    .opc-block-summary .product-item .price {
+        font-size: 16px !important;
     }
 }
 
@@ -120,7 +142,12 @@
 }
 
 @media screen and (max-width: 639px) {
-    .opc-wrapper .step-title {
-        font-size: 32px !important;
+    .checkout-index-index .authentication-wrapper {
+        padding-bottom: 40px;
+        float: none !important;
+        max-width: 100% !important;
+    }
+    .checkout-index-index #checkout {
+        padding: 0;
     }
 }
