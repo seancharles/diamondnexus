@@ -5,25 +5,31 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Message\ManagerInterface;
+use Magento\Catalog\Model\ProductFactory;
 
 class Index extends Action
 {
     protected $connection;
     protected $messageManager;
+    protected $productFactory;
     
 	public function __construct(
 		Context $context,
 	    ResourceConnection $resourceC,
-	    ManagerInterface $managerI
+	    ManagerInterface $managerI,
+	    ProductFactory $productF
 	) {
 		$this->connection = $resourceC->getConnection();
 		$this->messageManager = $managerI;
+		$this->productFactory = $productF;
 	    
 		return parent::__construct($context);
 	}
 
 	public function execute()
 	{
+	    echo 'ffff';die;
+	    
 	    ini_set('auto_detect_line_endings',TRUE);
 	    
 	    $params = $this->getRequest()->getParams();
@@ -123,41 +129,58 @@ class Index extends Action
 	                
 	                foreach($products as $sku => $product) {
 	                    
+	                    /*
 	                    echo '<pre>';
 	                    var_dump("sku", $sku);
 	                    var_dump("product", $product);
 	                    
 	                    die;
+	                    */
+	                    
+	                    /*
+	                     
+	                     string(3) "sku"
+                            string(10) "LG10219101"
+                            string(7) "product"
+                            array(4) {
+                              ["cost"]=>
+                              string(4) "4500"
+                              ["price"]=>
+                              string(4) "5000"
+                              ["id"]=>
+                              string(5) "79175"
+                              ["supplier"]=>
+                              string(1) "4"
+                            }
+	                     
+	                     */
 	                    
 	                    if(!$product['id'] > 0) {
 	                        $this->messageManager->addError("unable to find sku: " . $sku);
 	                    } else {
+	                        $this->messageManager->addError("this is working ok");
+	                        $modifyThisProduct = $this->productFactory->create()->load($product['id']);
 	                        
 	                        if( $product['supplier'] == "34" || $product['supplier'] == "36" ) {
 	                            // update stones intermediary
-	                            $db->query("UPDATE stones_intermediary SET final_cost = '" . $product['cost'] . "' WHERE certificate_number = '" . $sku . "';");
+	                            $this->connection->query("UPDATE stones_intermediary SET final_cost = '" . $product['cost'] . "' WHERE certificate_number = '" . $sku . "';");
 	                            
-	                            Mage::getResourceSingleton('catalog/product_action')->updateAttributes(
-	                                [$product['id']],
-	                                [
-	                                    'stone_import_price_override' => ($product['price'] > 0) ? '1' : '0',
-	                                    'price' => $product['price'],
-	                                    'stone_import_cost_override' => ($product['cost'] > 0) ? '1' : '0',
-	                                    'stone_import_custom_cost' => $product['cost']
-	                                ],
-	                                Mage_Core_Model_App::ADMIN_STORE_ID
-	                                );
+	                            
+	                            
+	                            $modifyThisProduct->setStoneImportPriceOverride(($product['price'] > 0) ? '1' : '0');
+	                            $modifyThisProduct->setPrice($product['price']);
+	                            $modifyThisProduct->setStoneImportCostOverride(($product['cost'] > 0) ? '1' : '0');
+	                            $modifyThisProduct->setStoneImportCustomCost($product['cost']);
+	                            
+	                            
+	                    //        echo 'the product name is ' . $product->getName();die;
+	                            
 	                        } else {
-	                            // all other vendors we leave cost as is
-	                            Mage::getResourceSingleton('catalog/product_action')->updateAttributes(
-	                                [$product['id']],
-	                                [
-	                                    'stone_import_price_override' => ($product['price'] > 0) ? '1' : '0',
-	                                    'price' => $product['price']
-	                                ],
-	                                Mage_Core_Model_App::ADMIN_STORE_ID
-	                            );
+	                            $modifyThisProduct->setStoneImportPriceOverride(($product['price'] > 0) ? '1' : '0');
+	                            $modifyThisProduct->setPrice($product['price']);
 	                        }
+	                        $modifyThisProduct->save();
+	                        unset($modifyThisProduct);
 	                        $rowsUpdated++;
 	                    }
 	                }
