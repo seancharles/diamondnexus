@@ -10,7 +10,7 @@
     <source>
         <document_rules>
 
-<!-- start custom ignores -->
+            <!-- start custom ignores -->
             <ignore>
                 <document>adjicon</document>
             </ignore>
@@ -114,28 +114,16 @@
                 <document>diamond_nexus_sale_item</document>
             </ignore>
             <ignore>
-                <document>diamondnexus_affirm_webhook</document>
-            </ignore>
-            <ignore>
                 <document>diamondnexus_calendar</document>
             </ignore>
             <ignore>
                 <document>diamondnexus_email_log</document>
             </ignore>
             <ignore>
-                <document>diamondnexus_multipay_transaction</document>
-            </ignore>
-            <ignore>
                 <document>diamondnexus_postpurchase_email</document>
             </ignore>
             <ignore>
                 <document>diamondnexus_refund_contest</document>
-            </ignore>
-            <ignore>
-                <document>diamondnexus_slider</document>
-            </ignore>
-            <ignore>
-                <document>diamondnexus_slider_submission</document>
             </ignore>
             <ignore>
                 <document>diamondnexus_social_photo</document>
@@ -148,6 +136,12 @@
             </ignore>
             <ignore>
                 <document>eltrino_region_entity</document>
+            </ignore>
+            <ignore>
+                <document>enterprise_logging_event</document>
+            </ignore>
+            <ignore>
+                <document>enterprise_logging_event_changes</document>
             </ignore>
             <ignore>
                 <document>ewcore_config_data</document>
@@ -175,9 +169,6 @@
             </ignore>
             <ignore>
                 <document>foreverartisans_getstarted</document>
-            </ignore>
-            <ignore>
-                <document>forevercompanies_tealium_event</document>
             </ignore>
             <ignore>
                 <document>forms</document>
@@ -374,7 +365,7 @@
             <ignore>
                 <document>warranty_payment</document>
             </ignore>
-<!-- end custom document ignore -->
+            <!-- end custom document ignore -->
 
 
             <ignore>
@@ -1322,14 +1313,14 @@
                 <document>enterprise_invitation_track</document>
                 <to>magento_invitation_track</to>
             </rename>
-            <rename>
+            <!--rename>
                 <document>enterprise_logging_event</document>
                 <to>magento_logging_event</to>
             </rename>
             <rename>
                 <document>enterprise_logging_event_changes</document>
                 <to>magento_logging_event_changes</to>
-            </rename>
+            </rename-->
             <rename>
                 <document>enterprise_reminder_rule</document>
                 <to>magento_reminder_rule</to>
@@ -1404,6 +1395,106 @@
             </rename>
         </document_rules>
         <field_rules>
+
+            <!-- custom source field moves -->
+            <move>
+                <field>diamondnexus_affirm_webhook.event</field>
+                <to>diamondnexus_affirm_webhook.affirm_event</to>
+            </move>
+            <move>
+                <field>diamondnexus_multipay_transaction._type</field>
+                <to>diamondnexus_multipay_transaction.card_type</to>
+            </move>
+            <move>
+                <field>diamondnexus_multipay_transaction.timestamp</field>
+                <to>diamondnexus_multipay_transaction.transaction_timestamp</to>
+            </move>
+            <move>
+                <field>diamondnexus_multipay_transaction.action</field>
+                <to>diamondnexus_multipay_transaction.transaction_type</to>
+            </move>
+            <move>
+                <field>diamondnexus_multipay_transaction.method</field>
+                <to>diamondnexus_multipay_transaction.payment_method</to>
+            </move>
+            <move>
+                <field>diamondnexus_slider.action</field>
+                <to>diamondnexus_slider.slider_action</to>
+            </move>
+            <move>
+                <field>diamondnexus_slider_submission.action</field>
+                <to>diamondnexus_slider_submission.submission_action</to>
+            </move>
+            <move>
+                <field>forevercompanies_tealium_event.event</field>
+                <to>forevercompanies_tealium_event.tealium_event</to>
+            </move>
+            <move>
+                <field>sales_flat_order_payment.multipay_amount</field>
+                <to>sales_order_payment.multipay_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order_payment.multipay_option_total</field>
+                <to>sales_order_payment.multipay_option_total</to>
+            </move>
+            <move>
+                <field>sales_flat_order_payment.multipay_option_partial</field>
+                <to>sales_order_payment.multipay_option_partial</to>
+            </move>
+            <move>
+                <field>sales_flat_order_payment.multipay_change_due</field>
+                <to>sales_order_payment.multipay_change_due</to>
+            </move>
+            <move>
+                <field>sales_flat_order_payment.multipay_payment_method</field>
+                <to>sales_order_payment.multipay_payment_method</to>
+            </move>
+            <move>
+                <field>sales_flat_order_payment.multipay_cash_tendered</field>
+                <to>sales_order_payment.multipay_cash_tendered</to>
+            </move>
+            <move>
+                <field>sales_flat_quote.sales_person_id</field>
+                <to>quote.sales_person_id</to>
+            </move>
+            <move>
+                <field>sales_flat_quote.anticipated_shipdate</field>
+                <to>quote.anticipated_shipdate</to>
+            </move>
+            <move>
+                <field>sales_flat_quote.delivery_date</field>
+                <to>quote.delivery_date</to>
+            </move>
+            <move>
+                <field>sales_flat_quote.internal_due_date</field>
+                <to>quote.internal_due_date</to>
+            </move>
+            <move>
+                <field>sales_flat_quote_payment.multipay_amount</field>
+                <to>quote_payment.multipay_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_quote_payment.multipay_option_total</field>
+                <to>quote_payment.multipay_option_total</to>
+            </move>
+            <move>
+                <field>sales_flat_quote_payment.multipay_option_partial</field>
+                <to>quote_payment.multipay_option_partial</to>
+            </move>
+            <move>
+                <field>sales_flat_quote_payment.multipay_change_due</field>
+                <to>quote_payment.multipay_change_due</to>
+            </move>
+            <move>
+                <field>sales_flat_quote_payment.multipay_payment_method</field>
+                <to>quote_payment.multipay_payment_method</to>
+            </move>
+            <move>
+                <field>sales_flat_quote_payment.multipay_cash_tendered</field>
+                <to>quote_payment.multipay_cash_tendered</to>
+            </move>
+            <!-- end custom source field moves -->
+
             <move>
                 <field>cms_page.root_template</field>
                 <to>cms_page.page_layout</to>
@@ -1724,14 +1815,14 @@
                 <field>sales_flat_invoice_item.weee_tax_applied</field>
                 <handler class="Migration\Handler\SerializeToJson" />
             </transform>
-            <transform>
+            <!--transform>
                 <field>enterprise_logging_event.ip</field>
                 <handler class="Migration\Handler\ConvertIp" />
             </transform>
             <transform>
                 <field>enterprise_logging_event.x_forwarded_ip</field>
                 <handler class="Migration\Handler\ConvertIp" />
-            </transform>
+            </transform-->
             <transform>
                 <field>rating_option_vote.remote_ip_long</field>
                 <handler class="Migration\Handler\ConvertIp" />
@@ -1949,7 +2040,7 @@
                     <param name="value" value="1" />
                 </handler>
             </transform>
-            <transform>
+            <!--transform>
                 <field>enterprise_logging_event.info</field>
                 <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
@@ -1960,7 +2051,7 @@
             <transform>
                 <field>enterprise_logging_event_changes.result_data</field>
                 <handler class="\Migration\Handler\SerializeToJson" />
-            </transform>
+            </transform-->
             <transform>
                 <field>enterprise_rma_item_entity.product_options</field>
                 <handler class="\Migration\Handler\SerializeToJson" />
@@ -1990,9 +2081,7 @@
                 <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
 
-
-
-<!-- custom source fields rules -->
+            <!-- custom source fields ignores -->
             <ignore>
                 <field>eav_attribute_option.parent_option_id</field>
             </ignore>
@@ -2147,40 +2236,10 @@
                 <field>sales_flat_order_payment.change_due</field>
             </ignore>
             <ignore>
-                <field>sales_flat_order_payment.multipay_amount</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order_payment.multipay_option_total</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order_payment.multipay_option_partial</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order_payment.multipay_change_due</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order_payment.multipay_payment_method</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order_payment.multipay_cash_tendered</field>
-            </ignore>
-            <ignore>
                 <field>sales_flat_order_status_history.username</field>
             </ignore>
             <ignore>
                 <field>sales_flat_order_status_history.userrole</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_quote.sales_person_id</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_quote.anticipated_shipdate</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_quote.delivery_date</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_quote.internal_due_date</field>
             </ignore>
             <ignore>
                 <field>sales_flat_quote.lead_source</field>
@@ -2336,24 +2395,6 @@
                 <field>sales_flat_quote_payment.change_due</field>
             </ignore>
             <ignore>
-                <field>sales_flat_quote_payment.multipay_amount</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_quote_payment.multipay_option_total</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_quote_payment.multipay_option_partial</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_quote_payment.multipay_change_due</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_quote_payment.multipay_payment_method</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_quote_payment.multipay_cash_tendered</field>
-            </ignore>
-            <ignore>
                 <field>sales_flat_shipment.commercial_invoice_url</field>
             </ignore>
             <ignore>
@@ -2395,11 +2436,7 @@
             <ignore>
                 <field>salesrule.points_max_qty</field>
             </ignore>
-<!-- end custom source fields rules -->
-
-
-
-
+            <!-- end custom source fields rules -->
 
             <ignore>
                 <field>admin_rule.role_type</field>
@@ -2754,14 +2791,24 @@
     <destination>
         <document_rules>
 
-
-
             <!-- custom destination ignores -->
+            <ignore>
+                <document>mageplaza_smtp_abandonedcart</document>
+            </ignore>
+            <ignore>
+                <document>mageplaza_smtp_log</document>
+            </ignore>
             <ignore>
                 <document>astound_affirm_attribute</document>
             </ignore>
             <ignore>
                 <document>astound_affirm_rule</document>
+            </ignore>
+            <ignore>
+                <document>braintree_credit_prices</document>
+            </ignore>
+            <ignore>
+                <document>braintree_transaction_details</document>
             </ignore>
             <ignore>
                 <document>catalogrule_group_websitee256e0a9</document>
@@ -2773,35 +2820,38 @@
                 <document>cloudinary_media_library_map</document>
             </ignore>
             <ignore>
+                <document>cloudinary_product_gallery_api_queue</document>
+            </ignore>
+            <ignore>
+                <document>cloudinary_product_spinset_map</document>
+            </ignore>
+            <ignore>
                 <document>cloudinary_synchronisation</document>
             </ignore>
             <ignore>
                 <document>cloudinary_transformation</document>
             </ignore>
             <ignore>
-                <document>braintree_credit_prices</document>
+                <document>diamondnexus_affirm_event</document>
             </ignore>
-            <ignore>
-                <document>braintree_transaction_details</document>
-            </ignore>
-<!--            <ignore>-->
-<!--                <document>catalog_product_bundle_option_rule</document>-->
-<!--            </ignore>-->
-<!--            <ignore>-->
-<!--                <document>cloudinary_media_library_map</document>-->
-<!--            </ignore>-->
-<!--            <ignore>-->
-<!--                <document>cloudinary_synchronisation</document>-->
-<!--            </ignore>-->
-<!--            <ignore>-->
-<!--                <document>cloudinary_transformation</document>-->
-<!--            </ignore>-->
-<!--            <ignore>-->
-<!--                <document>icp_catalog_product_default_super_link</document>-->
-<!--            </ignore>-->
-<!--            <ignore>-->
-<!--                <document>icp_product_attributes</document>-->
-<!--            </ignore>-->
+            <!--            <ignore>-->
+            <!--                <document>catalog_product_bundle_option_rule</document>-->
+            <!--            </ignore>-->
+            <!--            <ignore>-->
+            <!--                <document>cloudinary_media_library_map</document>-->
+            <!--            </ignore>-->
+            <!--            <ignore>-->
+            <!--                <document>cloudinary_synchronisation</document>-->
+            <!--            </ignore>-->
+            <!--            <ignore>-->
+            <!--                <document>cloudinary_transformation</document>-->
+            <!--            </ignore>-->
+            <!--            <ignore>-->
+            <!--                <document>icp_catalog_product_default_super_link</document>-->
+            <!--            </ignore>-->
+            <!--            <ignore>-->
+            <!--                <document>icp_product_attributes</document>-->
+            <!--            </ignore>-->
             <ignore>
                 <document>run_as_root_prometheus_metrics</document>
             </ignore>
@@ -2841,13 +2891,7 @@
             <ignore>
                 <document>shqlogger_log</document>
             </ignore>
-<!--            <ignore>-->
-<!--                <document>sm_products_filter</document>-->
-<!--            </ignore>-->
             <!-- end custom ignores -->
-
-
-
 
             <ignore>
                 <document>magento_acknowledged_bulk</document>
@@ -3752,7 +3796,19 @@
             </transform>
 
 
-<!-- custom destination fields -->
+            <!-- custom destination fields -->
+            <ignore>
+                <field>quote.mp_smtp_ace_token</field>
+            </ignore>
+            <ignore>
+                <field>quote.mp_smtp_ace_sent</field>
+            </ignore>
+            <ignore>
+                <field>quote.mp_smtp_ace_log_ids</field>
+            </ignore>
+            <ignore>
+                <field>quote.mp_smtp_ace_log_data</field>
+            </ignore>
             <ignore>
                 <field>quote_address.carrier_type</field>
             </ignore>
@@ -3799,6 +3855,12 @@
                 <field>quote_item.carriergroup_shipping</field>
             </ignore>
             <ignore>
+                <field>quote_item.is_leasable</field>
+            </ignore>
+            <ignore>
+                <field>quote_item.is_used</field>
+            </ignore>
+            <ignore>
                 <field>quote_shipping_rate.carrier_type</field>
             </ignore>
             <ignore>
@@ -3828,7 +3890,13 @@
             <ignore>
                 <field>sales_order_item.carriergroup_shipping</field>
             </ignore>
-<!-- end custom destination fields -->
+            <ignore>
+                <field>sales_order_item.is_leasable</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.is_used</field>
+            </ignore>
+            <!-- end custom destination fields -->
 
 
 

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+     xs:noNamespaceSchemaLocation="urn:magento:module:Magento_DataMigrationTool:etc/map.xsd">
+    <source>
+        <document_rules>
+            <rename>
+                <document>sales_flat_order</document>
+                <to>sales_order</to>
+            </rename>
+        </document_rules>
+        <field_rules>
+
+            <!-- sales_flat_order ignore fields start -->
+            <ignore>
+                <field>sales_flat_order.lead_source</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.dc_order_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.delivery_duty_type</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.import_duty_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.base_import_duty_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.import_duty_tax_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.base_import_duty_tax_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.import_duty_tax_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.base_import_duty_tax_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.failed_calculation</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.import_duty</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.base_import_duty</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.sales_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.base_sales_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.delivery_duty_user_choice</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.dc_service_fee</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.base_dc_service_fee</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.new_customer</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.hubspot_user_token</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.rewards_base_discount_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.order_abtest</field>
+            </ignore>
+            <!-- sales_flat_order ignore fields end -->
+
+            <ignore>
+                <field>sales_flat_order.reward_points_balance_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.reward_salesrule_points</field>
+            </ignore>
+
+            <!-- sales_flat_order moves start -->
+            <move>
+                <field>sales_flat_order.sales_person_id</field>
+                <to>sales_order.sales_person_id</to>
+            </move>
+            <move>
+                <field>sales_flat_order.anticipated_shipdate</field>
+                <to>sales_order.anticipated_shipdate</to>
+            </move>
+            <move>
+                <field>sales_flat_order.delivery_date</field>
+                <to>sales_order.delivery_date</to>
+            </move>
+            <move>
+                <field>sales_flat_order.internal_due_date</field>
+                <to>sales_order.internal_due_date</to>
+            </move>
+            <!-- sales_flat_order moves end -->
+
+            <move>
+                <field>sales_flat_order.hidden_tax_amount</field>
+                <to>sales_order.discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order.base_hidden_tax_amount</field>
+                <to>sales_order.base_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order.shipping_hidden_tax_amount</field>
+                <to>sales_order.shipping_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order.base_shipping_hidden_tax_amnt</field>
+                <to>sales_order.base_shipping_discount_tax_compensation_amnt</to>
+            </move>
+            <move>
+                <field>sales_flat_order.hidden_tax_invoiced</field>
+                <to>sales_order.discount_tax_compensation_invoiced</to>
+            </move>
+            <move>
+                <field>sales_flat_order.base_hidden_tax_invoiced</field>
+                <to>sales_order.base_discount_tax_compensation_invoiced</to>
+            </move>
+            <move>
+                <field>sales_flat_order.hidden_tax_refunded</field>
+                <to>sales_order.discount_tax_compensation_refunded</to>
+            </move>
+            <move>
+                <field>sales_flat_order.base_hidden_tax_refunded</field>
+                <to>sales_order.base_discount_tax_compensation_refunded</to>
+            </move>
+            <ignore>
+                <datatype>sales_flat_order.customer_group_id</datatype>
+            </ignore>
+            <transform>
+                <field>sales_flat_order.gift_cards</field>
+                <handler class="\Migration\Handler\SerializeToJson" />
+            </transform>
+        </field_rules>
+    </source>
+    <destination>
+        <field_rules>
+
+            <!-- sales_order ignores start -->
+            <ignore>
+                <field>sales_order.carrier_type</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.carrier_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.carriergroup_shipping_details</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.carriergroup_shipping_html</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.destination_type</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.validation_status</field>
+            </ignore>
+            <!-- sales_order ignores end -->
+
+            <ignore>
+                <field>sales_order.send_email</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.coupon_rule_name</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <datatype>sales_order.customer_group_id</datatype>
+            </ignore>
+        </field_rules>
+    </destination>
+</map>

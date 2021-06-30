@@ -39,7 +39,7 @@ class StonesQuery implements ResolverInterface
         array $args = null
         ) {
             $onlineEqFilter = $args['filter']['online']['eq'];
-            $productTypeEqFilter = $args['filter']['product_type']['eq'];
+            $productTypeEqFilter = $args['filter']['fc_product_type']['eq'];
             $colorInFilter = $args['filter']['color']['in'];
             $clarityInFilter = $args['filter']['clarity']['in'];
             $caratWeightFromFilter = $args['filter']['carat_weight']['from'];
@@ -61,7 +61,7 @@ class StonesQuery implements ResolverInterface
             $this->productColl->setOrder($sortKey, $sortVal);
             
             $this->productColl->addAttributeToFilter('online', $onlineEqFilter);
-            $this->productColl->addAttributeToFilter('product_type', $productTypeEqFilter);
+            $this->productColl->addAttributeToFilter('fc_product_type', $productTypeEqFilter);
             
             
             if (!empty($colorInFilter)) {
@@ -87,7 +87,7 @@ class StonesQuery implements ResolverInterface
             $this->productColl->addAttributeToFilter('price', array('lteq' =>  $priceToFilter));
             
             $this->totalCountColl->addAttributeToFilter('online', $onlineEqFilter);
-            $this->totalCountColl->addAttributeToFilter('product_type', $productTypeEqFilter);
+            $this->totalCountColl->addAttributeToFilter('fc_product_type', $productTypeEqFilter);
             
             $this->totalCountColl->addAttributeToFilter('carat_weight', array('gteq' =>  $caratWeightFromFilter));
             $this->totalCountColl->addAttributeToFilter('carat_weight', array('lteq' =>  $caratWeightToFilter));
@@ -298,7 +298,7 @@ class StonesQuery implements ResolverInterface
                 ]
             );
             $items['data']['products']['aggregations'][] = array(
-                "attribute_code" => "product_type",
+                "attribute_code" => "fc_product_type",
                 "label" => "Product Type",
                 "count" => 1,
                 "options" => [

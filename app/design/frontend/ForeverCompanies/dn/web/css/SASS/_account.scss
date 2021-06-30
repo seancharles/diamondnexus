@@ -3,6 +3,15 @@
         text-decoration: none !important;
     }
 
+    .column {
+        display: flex;
+        flex-flow: column;
+        .account-additional-note {
+            order: 5;
+            padding-top: 35px;
+        }
+    }
+
     .page-main {
         @media screen and (max-width: 768px) {
             padding-top: 56px;
@@ -76,6 +85,7 @@
 
     .sidebar-additional,
     .block-dashboard-orders,
+    .nav.items .nav.item:nth-of-type(3),
     .nav.items .nav.item:nth-of-type(7),
     .nav.items .nav.item:nth-of-type(9),
     .nav.items .nav.item:nth-of-type(11),
