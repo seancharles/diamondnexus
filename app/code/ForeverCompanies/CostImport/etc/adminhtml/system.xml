@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <system>
+        <section id="forevercompanies_cost_import" translate="label" type="text" sortOrder="180" showInDefault="1"
+                 showInWebsite="1" showInStore="1">
+            <label>Loose Stone Cost/Price Import</label>
+            <tab>forevercompanies</tab>
+             <resource>ForeverCompanies_Gifts::config</resource>
+             
+            <group id="cost_import" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+                   
+	            <label>Custom Cost Import</label>
+	            
+				<field id="csv_file" translate="label" type="Magento\Config\Block\System\Config\Form\Field\File" sortOrder="10"
+					showInDefault="1" showInWebsite="1" showInStore="1">
+				    <label>Upload CSV</label>
+				    <backend_model>ForeverCompanies\CostImport\Model\Config\Backend\CustomFileType</backend_model>
+				    <upload_dir config="system">custom_cost_uploads</upload_dir>
+				</field>
+            </group>
+		</section>
+	</system>
+</config>

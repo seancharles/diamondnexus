@@ -21,23 +21,22 @@ class UpdateProductWeights extends Command
     /**
      * @var string
      */
-    protected $name = 'forevercompanies:update-product-weights';
+    protected string $name = 'forevercompanies:update-product-weights';
 
     /**
      * @var CollectionFactory
      */
-    protected $collectionFactory;
+    protected CollectionFactory $collectionFactory;
 
     /**
      * @var Action
      */
-    protected $productActionObject;
+    protected Action $productActionObject;
 
     /**
      * CreateLooseDiamondsCategory constructor.
      * @param CollectionFactory $collectionFactory
      * @param Action $action
-     * @param TransformData $helper
      */
     public function __construct(
         CollectionFactory $collectionFactory,
@@ -62,8 +61,16 @@ class UpdateProductWeights extends Command
 
         // get product collection
         $productCollection = $this->collectionFactory->create();
-        $productCollection->addAttributeToSelect('*');
-        $productCollection->addAttributeToFilter('status', Status::STATUS_ENABLED);
+        $productCollection->addAttributeToSelect(['entity_id', 'sku', 'weight']);
+        //$productCollection->addAttributeToFilter('status', Status::STATUS_ENABLED);
+        $productCollection->addAttributeToFilter(
+            [
+                ['attribute' => 'weight', 'null' => true],
+                ['attribute' => 'weight', 'eq' => '']
+            ],
+            '',
+            'left'
+        );
         $productCollection->addAttributeToFilter(array(array('attribute'=>'type_id','in' => [
             Type::TYPE_SIMPLE,
             Type::TYPE_BUNDLE,

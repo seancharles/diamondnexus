@@ -1,5 +1,6 @@
 .account {
     .nav a {
+        color: #575757 !important;
         &:hover {
             color: #8e7171 !important;
         }
@@ -47,6 +48,7 @@
 
     .sidebar-additional,
     .block-dashboard-orders,
+    .nav.items .nav.item:nth-of-type(3),
     .nav.items .nav.item:nth-of-type(7),
     .nav.items .nav.item:nth-of-type(9),
     .nav.items .nav.item:nth-of-type(11),
