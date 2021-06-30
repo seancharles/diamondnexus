@@ -34,7 +34,6 @@ phases:
       - echo Cloning remote GIT repo
       - git clone https://$username:$pass@github.com/ForeverCompanies/magento2.git --branch $BRANCH
       - cd magento2
-      - git clone https://$username:$pass@github.com/ForeverCompanies/nginx-magento2.git --branch $BRANCH ./bin/files/
       - git log --name-status HEAD^..HEAD
       - git config --global --add remote.origin.fetch "+refs/pull/*/head:refs/remotes/origin/pr/*"
       - git config --global user.email "webdevlive@diamondnexus.com"
