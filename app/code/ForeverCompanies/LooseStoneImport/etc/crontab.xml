@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+
+    <!-- 
+    	Monday, 10am, 12pm, 4pm
+		Tuesday-Sunday, 8am, 12pm, 6pm
+	-->
+		
+	<group id="default">
+        <job name="forever_loose_stone_import_monday_early" instance="ForeverCompanies\CronJobs\Cron\LooseStoneImport" method="execute">
+            <schedule>0 10 * * 1</schedule>
+        </job>
+    </group>
+    
+    <group id="default">
+        <job name="forever_loose_stone_import_monday_mid" instance="ForeverCompanies\CronJobs\Cron\LooseStoneImport" method="execute">
+            <schedule>0 12 * * 1</schedule>
+        </job>
+    </group>
+    
+    <group id="default">
+        <job name="forever_loose_stone_import_monday_late" instance="ForeverCompanies\CronJobs\Cron\LooseStoneImport" method="execute">
+            <schedule>0 16 * * 1</schedule>
+        </job>
+    </group>
+    
+    <group id="default">
+        <job name="forever_loose_stone_import_early" instance="ForeverCompanies\CronJobs\Cron\LooseStoneImport" method="execute">
+            <schedule>0 8 * * 2-6,0</schedule>
+        </job>
+    </group>
+    
+    <group id="default">
+        <job name="forever_loose_stone_import_mid" instance="ForeverCompanies\CronJobs\Cron\LooseStoneImport" method="execute">
+            <schedule>0 12 * * 2-6,0</schedule>
+        </job>
+    </group>
+    
+    <group id="default">
+        <job name="forever_loose_stone_import_late" instance="ForeverCompanies\CronJobs\Cron\LooseStoneImport" method="execute">
+            <schedule>0 18 * * 2-6,0</schedule>
+        </job>
+    </group>
+    
+    <group id="default">
+        <job name="forever_loose_stone_delete_unsold_diamonds" instance="ForeverCompanies\CronJobs\Cron\UnsoldDiamondCleaning" method="execute">
+            <schedule>0 0 * * *</schedule>
+        </job>
+   	</group>
+</config>
