@@ -32,7 +32,6 @@ phases:
       - apt-get -y update
       - apt-get install -y nfs-common
       - echo Cloning remote GIT repo
-      - git clone https://$username:$pass@github.com/ForeverCompanies/nginx-magento2.git --branch $BRANCH ./bin/files/
       - git log --name-status HEAD^..HEAD
       - if [ $(aws cloudfront get-distribution-config --id E206DWJUE94NO9 | grep DomainName | awk 'NF{ print $NF }') = '"mag2-prod-cluster-LoadBalancer-88293620.us-east-1.elb.amazonaws.com",' ]; then RABBIT=$rabbithosttwo; else RABBIT=$rabbithost; fi
       - echo $RABBIT
