@@ -1,0 +1,14 @@
+{
+	"name" : "forevercompanies/module-system-cron",
+	"type" : "magento2-module",
+	"license" : "OSL-3.0",
+	"minimum-stability" : "dev",
+	"autoload" : {
+		"psr-4" : {
+			"ForeverCompanies\\StonesIntermediary\\" : ""
+		},
+		"files" : [
+			"registration.php"
+		]
+	}
+}

@@ -182,9 +182,15 @@ footer {
 .account .box-title span {
   font-size: 18px !important; }
 
+.account .block-title a {
+  font-size: 16px; }
+
 .account .box-billing-address .box-content,
 .account .box-shipping-address .box-content {
   font-size: 16px; }
+
+.account .block-title strong {
+  font-weight: bold !important; }
 
 .account .box-address-billing .box-content,
 .account .box-address-shipping .box-content {
@@ -200,6 +206,7 @@ footer {
 
 .account .sidebar-additional,
 .account .block-dashboard-orders,
+.account .nav.items .nav.item:nth-of-type(3),
 .account .nav.items .nav.item:nth-of-type(7),
 .account .nav.items .nav.item:nth-of-type(9),
 .account .nav.items .nav.item:nth-of-type(11),
