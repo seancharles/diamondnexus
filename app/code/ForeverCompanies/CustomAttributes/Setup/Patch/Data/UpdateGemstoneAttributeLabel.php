@@ -3,8 +3,12 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\CustomAttributes\Setup\Patch\Data;
 
-use Magento\Catalog\Model\Product;
+use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
+use Magento\Eav\Api\Data\AttributeFrontendLabelInterfaceFactory;
 use Magento\Eav\Setup\EavSetupFactory;
+use Magento\Framework\Exception\InputException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Exception\StateException;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 
@@ -21,17 +25,34 @@ class UpdateGemstoneAttributeLabel implements DataPatchInterface
     private EavSetupFactory $eavSetupFactory;
 
     /**
+     * @var ProductAttributeRepositoryInterface
+     */
+    private ProductAttributeRepositoryInterface $productAttributeRepository;
+
+    /**
+     * @var AttributeFrontendLabelInterfaceFactory
+     */
+    private AttributeFrontendLabelInterfaceFactory $attributeFrontendLabelInterfaceFactory;
+
+
+    /**
      * Constructor
      *
      * @param ModuleDataSetupInterface $moduleDataSetup
      * @param EavSetupFactory $eavSetupFactory
+     * @param ProductAttributeRepositoryInterface $productAttributeRepository
+     * @param AttributeFrontendLabelInterfaceFactory $attributeFrontendLabelInterfaceFactory
      */
     public function __construct(
         ModuleDataSetupInterface $moduleDataSetup,
-        EavSetupFactory $eavSetupFactory
+        EavSetupFactory $eavSetupFactory,
+        ProductAttributeRepositoryInterface $productAttributeRepository,
+        AttributeFrontendLabelInterfaceFactory $attributeFrontendLabelInterfaceFactory
     ) {
         $this->moduleDataSetup = $moduleDataSetup;
         $this->eavSetupFactory = $eavSetupFactory;
+        $this->productAttributeRepository = $productAttributeRepository;
+        $this->attributeFrontendLabelInterfaceFactory = $attributeFrontendLabelInterfaceFactory;
     }
 
     /**
@@ -40,20 +61,19 @@ class UpdateGemstoneAttributeLabel implements DataPatchInterface
     public function apply()
     {
         $this->moduleDataSetup->getConnection()->startSetup();
-        $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $attribute = $eavSetup->getAttribute(Product::ENTITY, 'gemstone');
-        if ($attribute) {
-            $eavSetup->updateAttribute(
-                Product::ENTITY,
-                'gemstone',
-                [
-                    'frontend_label' => [
-                        0 => 'Center Stone Size',
-                        1 => null
-                    ]
-                ]
-            );
+
+        try {
+            $attribute = $this->productAttributeRepository->get('gemstone');
+            $frontendLabels = [
+                $this->attributeFrontendLabelInterfaceFactory->create()
+                    ->setStoreId(0)
+                    ->setLabel('Center Stone Size'),
+            ];
+            $attribute->setFrontendLabels($frontendLabels);
+            $this->productAttributeRepository->save($attribute);
+        } catch (InputException | NoSuchEntityException | StateException $e) {
         }
+
         $this->moduleDataSetup->getConnection()->endSetup();
     }
 
