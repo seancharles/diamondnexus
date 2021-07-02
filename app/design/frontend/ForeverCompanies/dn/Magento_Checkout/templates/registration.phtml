@@ -44,8 +44,8 @@
     <?php echo $block->getBlockHtml('formkey') ?>
     <h2 class="h2">Create an account to stay up to date on the status of your order.</h2>
     <div class="form-fields">
-        <label>Password</label>
-        <input type="text" name="password" />
+        <label>Password (8 characters minimum)</label>
+        <input type="text" name="password" pattern=".{8,}" required />
         <button type="submit">Create Account</button>
     </div>
 </form>
