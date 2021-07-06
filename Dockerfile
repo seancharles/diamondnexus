@@ -116,6 +116,14 @@ RUN echo "deb http://ftp.ua.debian.org/debian/ stretch main" >> /etc/apt/sources
    && cd /tmp && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php /tmp/composer-setup.php --version=1.10.16 --install-dir=/usr/bin && php -r "unlink('composer-setup.php');" \
    && mv /usr/bin/composer.phar /usr/bin/composer
 
+RUN curl -L https://download.newrelic.com/php_agent/release/newrelic-php5-9.17.1.301-linux.tar.gz | tar -C /tmp -zx && \
+  export NR_INSTALL_USE_CP_NOT_LN=1 && \
+  export NR_INSTALL_SILENT=1 && \
+  /tmp/newrelic-php5-*/newrelic-install install && \
+  rm -rf /tmp/newrelic-php5-* /tmp/nrinstall*
+RUN chown admin:admin /usr/local/etc/php/conf.d/newrelic.ini
+RUN chown admin:admin /var/log/newrelic/
+
 RUN if [ "$XDEBUG" = "on" ] ; then pecl install xdebug \
 && docker-php-ext-enable xdebug \
 && touch /var/log/xdebug_remote.log \
@@ -140,8 +148,7 @@ RUN chown 1000:1000 /entrypoint.sh /entrypoint-sidecar.sh
 USER admin
 WORKDIR /var/www/magento
 
-RUN sudo chown admin:admin -R /usr/local/etc/php/php.ini
-RUN sudo chown admin:admin -R /usr/local/etc/php/php-fpm.pool.conf
+RUN sudo chown admin:admin -R /usr/local/etc/php/
 RUN sudo chown -R admin: /var/www
 RUN sudo mkdir /var/www/.ssh/
 RUN sudo chown admin:admin -R /var/www/.ssh/
