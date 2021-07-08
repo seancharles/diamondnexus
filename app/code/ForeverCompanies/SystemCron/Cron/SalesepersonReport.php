@@ -5,27 +5,36 @@ use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollection
 use Magento\User\Model\UserFactory;
 use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class SalespersonReport
 {
     protected $orderCollectionFactory;
     protected $userFactory;
     protected $directory;
+    protected $scopeConfig;
+    protected $storeScope;
     
     public function __construct(
         OrderCollectionFactory $orderCollectionF,
         UserFactory $userF,
-        Filesystem $fileS
+        Filesystem $fileS,
+        ScopeConfigInterface $scopeC
     ) {
         $this->logger = $logger;
-        
         $this->orderCollectionFactory = $orderCollectionF;
         $this->userFactory = $userF;
         $this->directory = $fileS->getDirectoryWrite(DirectoryList::VAR_DIR);
+        $this->scopeConfig = $scopeC;
+        $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
     
     public function execute()
     {
+        if (!$this->scopeConfig->getValue('forevercompanies_cron_controls/report/salesperson_report', $this->storeScope)) {
+            return $this;
+        }
+        
         // Date
         $date      = date('Y-m-d', strtotime('now -20 day'));  // now -1 day
         $fromDate = $date.' 06:00:00';

@@ -4,25 +4,35 @@ namespace ForeverCompanies\SystemCron\Cron;
 use Magento\Sales\Model\OrderFactory;
 use Magento\User\Model\ResourceModel\User\CollectionFactory as UserCollectionFactory;
 use Magento\Sales\Model\ResourceModel\Order\Shipment\Collection as OrderShipmentCollection;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class CustomPriceOrderReportTmp
 {
 	protected $orderFactory;
 	protected $userCollectionFactory;
 	protected $orderShipmentCollection;
+	protected $scopeConfig;
+	protected $storeScope;
 
 	public function __construct(
 	    OrderFactory $orderF,
 	    UserCollectionFactory $userCollectionF,
-	    OrderShipmentCollection $orderShipmentC
+	    OrderShipmentCollection $orderShipmentC,
+	    ScopeConfigInterface $scopeC
 	) {
 		$this->orderFactory = $orderF;
 		$this->userCollectionFactory = $userCollectionF;
 		$this->orderShipmentCollection = $orderShipmentC;
+		$this->scopeConfig = $scopeC;
+		$this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
 	}
 	
 	public function execute()
 	{
+	    if (!$this->scopeConfig->getValue('forevercompanies_cron_controls/report/custom_price_order_report_tmp', $this->storeScope)) {
+	        return $this;
+	    }
+	    
 	    $userList = array();
 	    $orderList = array();
 	    $itemList = array();
