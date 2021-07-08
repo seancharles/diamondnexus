@@ -3,6 +3,47 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
     <system>
+		<section id="forevercompanies_producer" translate="label" type="text" sortOrder="0" showInDefault="1">
+            <label>Producer</label>
+            <tab>forevercompanies</tab>
+            <resource>ForeverCompanies_CustomSales::producer_config</resource>
+            <group id="producer_connection" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1">
+				<label>Connection</label>
+				<field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Enable Producer Sync</label>
+                    <comment>Enables automated elderjs PWA site generation when content is scheduled in Magento</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+				<field id="use_ssl" translate="label" type="select" sortOrder="20" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Use SSL</label>
+                    <comment>(this should always be on)</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+				<field id="host" translate="label" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Producer Host Name</label>
+                    <comment>Example: m2-dev-pro.1215diamonds.com</comment>
+                </field>
+            </group>
+            <group id="producer_basic_auth" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1">
+				<label>Basic Auth</label>
+				<field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Enable Basic Auth</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+				<field id="user" translate="label" type="text" sortOrder="20" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>User</label>
+                </field>
+				<field id="pass" translate="label" type="obscure" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Password</label>
+                </field>
+            </group>
+        </section>
 		<section id="forevercompanies_customsales" translate="label" type="text" sortOrder="100" showInDefault="1">
             <label>Shipdate Calendar</label>
             <tab>forevercompanies</tab>
