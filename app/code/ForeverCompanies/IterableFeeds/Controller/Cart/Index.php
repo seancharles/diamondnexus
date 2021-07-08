@@ -38,10 +38,7 @@ class Index extends \Magento\Framework\App\Action\Action
 
         if (isset($request['qid']) == true) {
 
-            $quoteId = $request['qid'];
-            
-            //
-            // $quoteId = $this->cart->getQuote()->getId();
+            $quoteId = (int) $request['qid'];
 
             try {
                 $quote = $this->_quoteRepository->get($quoteId);
