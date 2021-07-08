@@ -19,9 +19,6 @@
                 <value id="google" type="host">'unsafe-inline' *.google.com</value>
                 <value id="google" type="host">'unsafe-eval' *.google.com</value>
                 <value id="gstatic" type="host">www.gstatic.com</value>
-                <value id="gstatic" type="host">www.gstatic.com</value>
-                <value id="gstatic" type="host">www.gstatic.com</value>
-                <value id="gstatic" type="host">www.gstatic.com</value>
   
                 <!--Functions-->
                 <value id="trustedshops" type="host">*.trustedshops.com</value>
@@ -31,6 +28,17 @@
                 <value id="affirm" type="host">'unsafe-inline' *.affirm.com</value>
                 <value id="affirm" type="host">'unsafe-eval' *.affirm.com</value>
   
+                <value id="tealium" type="host">tags.tiqcdn.com</value>
+                <value id="signifyd" type="host">*.signifyd.com</value>
+                <value id="site24x7rum" type="host">*.site24x7rum.com</value>
+                <value id="batbing" type="host">bat.bing.com</value>
+                <value id="deploytealium" type="host">deploytealium.com</value>
+                <value id="connectfacebooknet" type="host">connect.facebook.net</value>
+                <value id="facebookcom" type="host">*.facebook.com</value>
+
+                <value id="spinimgcom" type="host">s.pinimg.com</value>
+                <value id="googleadsgdoubleclicknet" type="host">googleads.g.doubleclick.net</value>
+                <value id="tealiumiqcom" type="host">*.tealiumiq.com</value>
             </values>
         </policy>
         <policy id="style-src">
@@ -43,6 +51,12 @@
                 <value id="cloudtypography" type="host">cloud.typography.com</value>
                 <value id="cloudtypography" type="host">'self' cloud.typography.com</value>
                 <value id="cloudtypography" type="host">'unsafe-inline' cloud.typography.com</value>
+                <value id="assetsforeverartisans" type="host">*.1215diamonds.com</value>
+                <value id="assetsforeverartisans" type="host">'self' *.1215diamonds.com</value>
+                <value id="assetsforeverartisans" type="host">'unsafe-inline' *.1215diamonds.com</value>
+                <value id="assetsforeverartisans" type="host">*.foreverartisans.com</value>
+                <value id="assetsforeverartisans" type="host">'self' *.foreverartisans.com</value>
+                <value id="assetsforeverartisanss" type="host">'unsafe-inline' *.foreverartisans.com</value>
                 <value id="assetsdiamondnexus" type="host">*.diamondnexus.com</value>
                 <value id="assetsdiamondnexus" type="host">'self' *.diamondnexus.com</value>
                 <value id="assetsdiamondnexus" type="host">'unsafe-inline' *.diamondnexus.com</value>
@@ -57,6 +71,9 @@
             <values>
                 <value id="affirm" type="host">*.affirm.com</value>
                 <value id="google" type="host">*.google.com</value>
+                <value id="doubleclick" type="host">'self'  bid.g.doubleclick.net</value>
+
+               
             </values>
         </policy>
         <policy id="img-src">
@@ -74,6 +91,13 @@
 
                 <!--Functions-->
                 <value id="usercentrics" type="host">*.usercentrics.eu</value>
+
+                <value id="google" type="host">*.google.com</value>
+
+                <value id="pinterestcom" type="host">*.pinterest.com</value>
+                <value id="batbing" type="host">bat.bing.com</value>
+                <value id="facebookcom" type="host">www.facebook.com</value>
+                <value id="googleadsgdoubleclicknet" type="host">googleads.g.doubleclick.net</value>
             </values>
         </policy>
         <policy id="connect-src">
@@ -84,6 +108,12 @@
                 <!--Payments-->
                 <value id="paypal" type="host">*.paypal.com</value>
                 <value id="affirm" type="host">*.affirm.com</value>
+
+                <value id="collecttealiumiq" type="host">collect.tealiumiq.com</value>
+                <value id="googleanalytics" type="host">*.google-analytics.com</value>
+                <value id="pinterest" type="host">*.pinterest.com</value>
+                <value id="doubleclick" type="host">stats.g.doubleclick.net</value>
+
 
             </values>
         </policy>
@@ -101,7 +131,6 @@
                 <value id="fontsgoogleapis" type="host">fonts.googleapis.com</value>
                 <value id="fontsgstatic" type="host">fonts.gstatic.com</value>
                 <value id="yotpo" type="host">*.yotpo.com</value>
-
                 <!--Functions-->
                 <value id="trustedshops" type="host">*.trustedshops.com</value>
             </values>
