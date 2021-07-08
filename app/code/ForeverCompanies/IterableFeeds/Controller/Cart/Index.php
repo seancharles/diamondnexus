@@ -66,6 +66,11 @@ class Index extends \Magento\Framework\App\Action\Action
                 ]);
 
             } catch (NoSuchEntityException $exception) {
+                
+                $result = $result->setData([
+                    'message' => "Unable to find quote"
+                ]);
+                
                 $this->_logger->error(
                     'Quote does not exist',
                     [$exception->getMessage()]
