@@ -5,12 +5,25 @@ namespace ForeverCompanies\CustomSales\Plugin;
 class StagingApplier
 {
 	protected $logger;
+    protected $updateRepository;
+    protected $versionHistory;
+    protected $resourceConnection;
+    protected $scopeConfig;
 	
+    const PRODUCER_CONNECTION_ENABLED   = 'forevercompanies_producer/connection/enabled';
+    const PRODUCER_CONNECTION_USE_SSL   = 'forevercompanies_producer/connection/use_ssl';
+    const PRODUCER_CONNECTION_HOST      = 'forevercompanies_producer/connection/host';
+    
+    const PRODUCER_AUTH_ENABLED   = 'forevercompanies_producer/basic_auth/enabled';
+    const PRODUCER_AUTH_USER      = 'forevercompanies_producer/basic_auth/user';
+    const PRODUCER_AUTH_PASS      = 'forevercompanies_producer/basic_auth/pass';
+    
     public function __construct(
         \Psr\Log\LoggerInterface $logger,
 		\Magento\Staging\Api\UpdateRepositoryInterface $updateRepository,
 		\Magento\Staging\Model\VersionHistoryInterface $versionHistory,
-        \Magento\Framework\App\ResourceConnection $resourceConnection
+        \Magento\Framework\App\ResourceConnection $resourceConnection,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     ){
         $this->logger = $logger;
 		$this->updateRepository = $updateRepository;
@@ -22,6 +35,14 @@ class StagingApplier
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function afterExecute($subject, $result) {
+        
+        $isProducerEnabled = $this->scopeConfig->getValue(self::PRODUCER_CONNECTION_ENABLED);
+        $useSSL = $this->scopeConfig->getValue(self::PRODUCER_CONNECTION_USE_SSL);
+        $producerHost = $this->scopeConfig->getValue(self::PRODUCER_CONNECTION_HOST);
+        
+        $useBasicAuth = $this->scopeConfig->getValue(self::PRODUCER_AUTH_ENABLED);
+        $authUser = $this->scopeConfig->getValue(self::PRODUCER_AUTH_USER);
+        $authPass = $this->scopeConfig->getValue(self::PRODUCER_AUTH_PASS);
         
         $siteCodes = [
             1 => 'dn',
@@ -55,7 +76,7 @@ class StagingApplier
             
             $websiteList = $connection->fetchAll($query);
             
-            if(isset($websiteList) === true) {
+            if($isProducerEnabled && strlen($producerHost) > 0 && isset($websiteList) === true) {
                 
                 foreach($websiteList as $row) {
                     $websiteCode = $siteCodes[$row['website_id']];
@@ -75,7 +96,7 @@ class StagingApplier
                     
                     $request = new \Zend\Http\Request();
                     $request->setHeaders($httpHeaders);
-                    $request->setUri('http://' . $_ENV['MAG_NAME'] . '-pro.1215diamonds.com?');
+                    $request->setUri( (($useSSL == 1) ? 'https://' : 'http://' ) . $producerHost);
                     $request->setMethod(\Zend\Http\Request::METHOD_GET);
                     $request->setQuery($params);
                     
@@ -88,8 +109,10 @@ class StagingApplier
                     ];
                     $client->setOptions($options);
                     
-                    // htauth
-                    $client->setAuth('diamondnexus', 'L2gchVekvtjY4nvF');
+                    // conditionally use basic auth
+                    if($useBasicAuth) {
+                        $client->setAuth($authUser, $authPass);
+                    }
 
                     $response = $client->send($request);
                 }

@@ -7,7 +7,7 @@
             <label>Producer</label>
             <tab>forevercompanies</tab>
             <resource>ForeverCompanies_CustomSales::producer_config</resource>
-            <group id="producer_connection" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1">
+            <group id="connection" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1">
 				<label>Connection</label>
 				<field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1"
                        showInWebsite="1" showInStore="1">
@@ -27,7 +27,7 @@
                     <comment>Example: m2-dev-pro.1215diamonds.com</comment>
                 </field>
             </group>
-            <group id="producer_basic_auth" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1">
+            <group id="basic_auth" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1">
 				<label>Basic Auth</label>
 				<field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1"
                        showInWebsite="1" showInStore="1">
