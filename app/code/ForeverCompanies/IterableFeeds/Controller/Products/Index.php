@@ -65,6 +65,7 @@ class Index extends \Magento\Framework\App\Action\Action
                     'price' => $product->getPriceInfo()->getPrice('regular_price')->getAmount()->getBaseAmount(),
                     'special_price' => $product->getFinalPrice(),
                     'attribute_set_id' => $product->getAttributeSetId(),
+                    'url' => $product->getProductUrl(true),
                     'img' => $product->getMediaConfig()->getMediaUrl($product->getImage())
                 ];
             }
