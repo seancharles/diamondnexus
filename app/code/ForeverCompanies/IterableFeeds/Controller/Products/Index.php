@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\IterableFeeds\Controller\Products;
 
-use Magento\Framework\Api\Filter;
-use Magento\ConfigurableProduct\Model\Product\Type\Configurable as ConfigurableType;
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Serialize\Serializer\Json;
 
-class Index extends \Magento\Framework\App\Action\Action
+class Index extends Action
 {
     protected $_searchCriteriaBuilder;
     protected $_productRepositoryInterface;
@@ -15,11 +19,11 @@ class Index extends \Magento\Framework\App\Action\Action
     protected $_jsonResultFactory;
 
     public function __construct(
-        \Magento\Framework\App\Action\Context $context,
-        \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepositoryInterface,
-        \Magento\Framework\Controller\Result\JsonFactory $jsonResultFactory,
-        \Magento\Framework\Json\Helper\Data $jsonHelper
+        Context $context,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        ProductRepositoryInterface $productRepositoryInterface,
+        JsonFactory $jsonResultFactory,
+        Json $jsonHelper
     ) {
         parent::__construct($context);
 
@@ -46,7 +50,7 @@ class Index extends \Magento\Framework\App\Action\Action
         if (isset($request['pids']) == true) {
             $pids = $request['pids'];
 
-            $pidsAry = $this->_jsonHelper->jsonDecode($pids);
+            $pidsAry = $this->_jsonHelper->unserialize($pids);
 
             // filter products by id
             $searchCriteria = $this->_searchCriteriaBuilder

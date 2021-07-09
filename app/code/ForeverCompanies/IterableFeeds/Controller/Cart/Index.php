@@ -2,9 +2,15 @@
 
 namespace ForeverCompanies\IterableFeeds\Controller\Cart;
 
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\UrlInterface;
+use Magento\Quote\Api\CartRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
-class Index extends \Magento\Framework\App\Action\Action
+class Index extends Action
 {
     protected $_logger;
     protected $_jsonResultFactory;
@@ -13,12 +19,11 @@ class Index extends \Magento\Framework\App\Action\Action
     protected $_cart;
 
     public function __construct(
-        \Magento\Framework\App\Action\Context $context,
-        \Psr\Log\LoggerInterface $logger,
-        \Magento\Framework\Controller\Result\JsonFactory $jsonResultFactory,
-        \Magento\Framework\UrlInterface $urlInterface,
-        \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
-        \Magento\Checkout\Model\Cart $cart
+        Context $context,
+        LoggerInterface $logger,
+        JsonFactory $jsonResultFactory,
+        UrlInterface $urlInterface,
+        CartRepositoryInterface $quoteRepository
     ) {
         parent::__construct($context);
 
@@ -38,12 +43,11 @@ class Index extends \Magento\Framework\App\Action\Action
 
         if (isset($request['qid']) == true) {
 
-            $quoteId = (int) $request['qid'];
+            $quoteId = (int)$request['qid'];
 
             try {
                 $quote = $this->_quoteRepository->get($quoteId);
 
-                $storeId = $quote->getStoreId();
                 $quoteItems = $quote->getAllVisibleItems();
 
                 foreach ($quoteItems as $item) {
@@ -51,7 +55,7 @@ class Index extends \Magento\Framework\App\Action\Action
                     $product = $item->getProduct();
 
                     $productsArray[] = [
-                        'id' => $item->getProductId(),
+                        'id' => $item->getData('product_id'),
                         'name' => $item->getName(),
                         'price' => $product->getPriceInfo()->getPrice('regular_price')->getAmount()->getBaseAmount(),
                         'special_price' => $product->getFinalPrice(),
@@ -66,11 +70,11 @@ class Index extends \Magento\Framework\App\Action\Action
                 ]);
 
             } catch (NoSuchEntityException $exception) {
-                
+
                 $result = $result->setData([
                     'message' => "Unable to find quote"
                 ]);
-                
+
                 $this->_logger->error(
                     'Quote does not exist',
                     [$exception->getMessage()]
