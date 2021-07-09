@@ -39,6 +39,10 @@
                 <value id="spinimgcom" type="host">s.pinimg.com</value>
                 <value id="googleadsgdoubleclicknet" type="host">googleads.g.doubleclick.net</value>
                 <value id="tealiumiqcom" type="host">*.tealiumiq.com</value>
+                <value id="forcecom" type="host">*.force.com</value>
+                <value id="criteocom" type="host">*.criteo.com</value>
+                <value id="salesforceliveagent" type="host">*.salesforceliveagent.com</value>
+                
             </values>
         </policy>
         <policy id="style-src">
@@ -51,9 +55,9 @@
                 <value id="cloudtypography" type="host">cloud.typography.com</value>
                 <value id="cloudtypography" type="host">'self' cloud.typography.com</value>
                 <value id="cloudtypography" type="host">'unsafe-inline' cloud.typography.com</value>
-                <value id="assetsforeverartisans" type="host">*.1215diamonds.com</value>
-                <value id="assetsforeverartisans" type="host">'self' *.1215diamonds.com</value>
-                <value id="assetsforeverartisans" type="host">'unsafe-inline' *.1215diamonds.com</value>
+                <value id="assets1215diamonds" type="host">*.1215diamonds.com</value>
+                <value id="assets1215diamonds" type="host">'self' *.1215diamonds.com</value>
+                <value id="assets1215diamonds" type="host">'unsafe-inline' *.1215diamonds.com</value>
                 <value id="assetsforeverartisans" type="host">*.foreverartisans.com</value>
                 <value id="assetsforeverartisans" type="host">'self' *.foreverartisans.com</value>
                 <value id="assetsforeverartisanss" type="host">'unsafe-inline' *.foreverartisans.com</value>
@@ -72,8 +76,6 @@
                 <value id="affirm" type="host">*.affirm.com</value>
                 <value id="google" type="host">*.google.com</value>
                 <value id="doubleclick" type="host">'self'  bid.g.doubleclick.net</value>
-
-               
             </values>
         </policy>
         <policy id="img-src">
@@ -98,6 +100,10 @@
                 <value id="batbing" type="host">bat.bing.com</value>
                 <value id="facebookcom" type="host">www.facebook.com</value>
                 <value id="googleadsgdoubleclicknet" type="host">googleads.g.doubleclick.net</value>
+
+                <value id="assetsforeverartisans" type="host">*.foreverartisans.com</value>
+                <value id="assets1215diamonds" type="host">*.1215diamonds.com</value>
+                <value id="assetsdiamondnexus" type="host">*.diamondnexus.com</value>
             </values>
         </policy>
         <policy id="connect-src">

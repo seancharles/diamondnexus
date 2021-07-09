@@ -3,6 +3,9 @@
 	"type" : "magento2-module",
 	"license" : "OSL-3.0",
 	"minimum-stability" : "dev",
+	"require": {
+		"forevercompanies/forevercompanies/module-stones-intermediary" : "*"
+	},
 	"autoload" : {
 		"psr-4" : {
 			"ForeverCompanies\\CronJobs\\" : ""

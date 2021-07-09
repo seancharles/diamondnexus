@@ -3,8 +3,8 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
         <link src="forevercompaniesjs/updateProfileSync.js"/>
-    </head>
-    <head>
+        <link src="forevercompaniesjs/successTemplate.js"/>
+        <css src="forevercompaniesjs/flatpickr/flatpickr.min.css" />
         <css src="css/local.css"/>
         <link src="js/script.js"/>
         <css src="/fccss/global_css.css?123"  src_type="url" rel="stylesheet" type="text/css"/>
