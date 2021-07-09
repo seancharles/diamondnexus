@@ -1,0 +1,14 @@
+--- etc/config.xml 2021-07-09 14:15:10.000000000 +0000
++++ etc/config.xml 2021-07-09 14:15:10.000000000 +0000
+@@ -45,6 +45,11 @@
+                 <use_rewrites>0</use_rewrites>
+             </seo>
+         </web>
++        <advanced>
++            <modules_disable_output>
++                <Magento_Banner>1</Magento_Banner>
++           </modules_disable_output>
++        </advanced>
+     </default>
+     <stores>
+         <admin>
