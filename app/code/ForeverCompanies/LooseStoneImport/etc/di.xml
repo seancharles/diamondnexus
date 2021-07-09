@@ -3,6 +3,7 @@
 	<preference for="Magento\Framework\Model\ActionValidator\RemoveAction" 
 		type="Magento\Framework\Model\ActionValidator\RemoveAction\Allowed" />
 		
+	<!--  
 	<type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">
@@ -12,4 +13,5 @@
             </argument>
         </arguments>
     </type>
+    -->
 </config>
