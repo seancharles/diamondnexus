@@ -51,12 +51,126 @@
             }
         }
     }
+
+    .success-content {
+        padding: 30px 0;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .success-page-features {
+        display: flex;
+        gap: 15px;
+        padding: 30px 0;
+        .additional-success-blocks {
+            width: 50%;
+            .email-block {
+                margin-bottom: 15px;
+                padding: 20px;
+                border: 1px solid #ccc;
+                svg {
+                    width: 80px;
+                    padding-bottom: 10px;
+                    fill: #8e7171;
+                }
+            }
+            .featured-block {
+                border: 1px solid #ccc;
+                background-image: url('https://res.cloudinary.com/foco/images/v1607740505/diamond_nexus/blog/2016/june/1/trendy-ring-styles-for-summer-2016/hero/hero.jpg');
+                background-size: cover;
+                background-position: center;
+                padding: 200px 20px 20px 20px;
+            }
+        }
+
+        .calendar {
+            width: 50%;
+            border: 1px solid #ccc;
+            padding: 10px 0;
+            .calendar-title {
+                padding-bottom: 5px;
+                border-bottom: 1px solid #ccc;
+                text-transform: uppercase;
+                font-weight: bold;
+            }
+            .delivery-date {
+                padding-top: 20px;
+                .month {
+                    text-transform: uppercase;
+                    font-size: 18px;
+                }
+                .day {
+                    font-size: 90px;
+                    line-height: 1;
+                    color: #8e7171;
+                }
+            }
+            .flatpickr-calendar {
+                box-shadow: none;
+                margin: 10px auto 0;
+                .flatpickr-months {
+                    display: none;
+                }
+                .flatpickr-weekdays {
+                    .flatpickr-weekday {
+                        color: #bbb;
+                    }
+                }
+                .flatpickr-days {
+                    .today {
+                        border: none;
+                    }
+                    .selected {
+                        background: #8e7171;
+                        border-color: #8e7171;
+                    }
+                    .dayContainer {
+                        pointer-events: none;
+                    }
+                }
+            }
+        }
+    }
+
+    #create_account_form {
+        padding: 30px 200px;
+        border: 1px solid #ccc;
+        .form-fields {
+            max-width: 350px;
+            margin: 0 auto;
+            label {
+                display: block;
+                text-align: left;
+                padding-top: 20px;
+                font-weight: bold;
+            }
+            button {
+                margin-top: 20px !important;
+            }
+        }
+    }
 }
 
 @media screen and (max-width: 767px) {
     .checkout-onepage-success {
         .page-title {
             font-size: 26px !important;
+        }
+        #create_account_form {
+            padding: 30px 50px;
+        }
+        .success-content {
+            padding: 30px 10px;
+        }
+        .success-page-features {
+            display: block;
+            .calendar {
+                width: 100%;
+            }
+            .additional-success-blocks {
+                width: 100%;
+                margin-top: 15px;
+            }
         }
     }
 }
