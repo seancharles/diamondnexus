@@ -419,7 +419,6 @@ return [
         'ForeverCompanies_CustomAttributes' => 1,
         'ForeverCompanies_CustomSales' => 1,
         'ForeverCompanies_DynamicBundle' => 0,
-        'ForeverCompanies_EditOrder' => 1,
         'ForeverCompanies_Checkout' => 1,
         'ForeverCompanies_Gifts' => 1,
         'ForeverCompanies_Graphql' => 1,
@@ -428,10 +427,7 @@ return [
         'ForeverCompanies_LooseStonesQuery' => 1,
         'ForeverCompanies_Migration' => 1,
         'ForeverCompanies_Profile' => 1,
-        'ForeverCompanies_QuoteCleaner' => 1,
-        'ForeverCompanies_Rules' => 0,
         'ForeverCompanies_Salesforce' => 1,
-        'ForeverCompanies_SearchEngine' => 1,
         'Mageplaza_Core' => 1,
         'ForeverCompanies_StoneEmail' => 1,
         'ForeverCompanies_StonesIntermediary' => 1,
@@ -696,13 +692,6 @@ return [
             ],
             'klarna' => [
 
-            ],
-            'mpeditorder' => [
-                'general' => [
-                    'enabled' => '1',
-                    'enabled_quick_edit' => '1',
-                    'auto_recalculate_shipping_fee' => '0'
-                ]
             ],
             'shqlogmenu' => [
 
