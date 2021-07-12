@@ -704,7 +704,27 @@ return [
 
         ],
         'websites' => [
-
+            'base' => [
+                'design' => [
+                    'head' => [
+                        'includes' => '',
+                    ],
+                ],
+            ],
+            'www_fa' => [
+                'design' => [
+                    'head' => [
+                        'includes' => '',
+                    ],
+                ],
+            ],
+            'www_1215' => [
+                'design' => [
+                    'head' => [
+                        'includes' => '',
+                    ],
+                ],
+            ],
         ],
         'website' => [
 
