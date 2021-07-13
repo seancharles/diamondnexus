@@ -9,11 +9,11 @@ class BuildFeedsarly
 
     public function __construct(
         FeedLogic $feed
-        ) {
+    ) {
         $this->feedModel = $feed;
     }
 
-    public function execute() 
+    public function execute()
     {
         // TODO Schedules are currently hard-coded but can be moved into config at a later date.
         $this->feedModel->BuildCsvs(1);

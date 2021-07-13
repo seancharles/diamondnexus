@@ -10,11 +10,11 @@ class UpdateReviews
 
     public function __construct(
         FeedLogic $feed
-        ) {
+    ) {
         $this->feedModel = $feed;
     }
 
-    public function execute() 
+    public function execute()
     {
         $this->feedModel->updateReviews(1);
     }

@@ -14,7 +14,7 @@ class BuildFeedsLate
         $this->feedModel = $feed;
     }
 
-    public function execute() 
+    public function execute()
     {
         $this->feedModel->BuildCsvs(1);
         $this->feedModel->BuildCsvs(12);
