@@ -6,7 +6,7 @@
 
 namespace ForeverCompanies\Forms\Controller\Index;
 
-if( !class_exists( 'IterableClass' ) ) {
+// if( !class_exists( 'IterableClass' ) ) {
     class IterableClass {
         private $api_key = '';
         private $api_url = 'https://api.iterable.com:443/api/';
@@ -487,4 +487,5 @@ if( !class_exists( 'IterableClass' ) ) {
             return $result;
         }
     }
-}
+    
+// }

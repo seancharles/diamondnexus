@@ -3,10 +3,12 @@
 namespace ForeverCompanies\Forms\Controller\Post;
 
 use ForeverCompanies\Forms\Model\DataExampleFactory;
+use ForeverCompanies\Forms\Model\IterableClass;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\App\Action\Context;
 
-include_once("IterableClass.php");
+
+// include_once("IterableClass.php");
 
 class Index extends \ForeverCompanies\Forms\Controller\ApiController
 {
@@ -15,6 +17,7 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
     protected $cookieManager;
 	protected $submissionFactory;
 	protected $formHelper;
+	protected $iterableModel;
     
     const COOKIE_NAME = 'submission_key';
     const COOKIE_DURATION = 86400; // lifetime in seconds
@@ -26,7 +29,8 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
         \Magento\Framework\Stdlib\CookieManagerInterface $cookieManager,
         \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory $cookieMetadataFactory,
 		\ForeverCompanies\Forms\Model\SubmissionFactory  $submissionFactory,
-		\ForeverCompanies\Forms\Helper\Form $formHelper
+		\ForeverCompanies\Forms\Helper\Form $formHelper,
+	    IterableClass $iterableC
 	) {
 		parent::__construct($context);
 		
@@ -36,6 +40,7 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
         $this->cookieMetadataFactory = $cookieMetadataFactory;
 		$this->submissionFactory = $submissionFactory;
 		$this->formHelper = $formHelper;
+		$this->iterableModel = $iterableC;
 	}
 
     protected function setCompatibleFormKey()

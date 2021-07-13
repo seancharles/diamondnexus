@@ -1,5 +1,4 @@
 <?php
-
 namespace ForeverCompanies\Forms\Helper;
  
 class Form
@@ -15,7 +14,8 @@ class Form
 		return $this->request->getParam($fieldName);
 	}
 	
-	public function sanitize($value) {
+	public function sanitize($value)
+	{
 		return $value;
 	}
 }

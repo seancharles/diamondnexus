@@ -10,10 +10,10 @@ use Magento\Framework\App\ResourceConnection;
 class UpgradeSchema implements UpgradeSchemaInterface
 {
     protected $resourceConnection;
+    
     public function __construct(
         ResourceConnection $resourceConn
-        )
-    {
+    ) {
         $this->resourceConnection = $resourceConn;
     }
     
