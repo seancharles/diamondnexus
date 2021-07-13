@@ -307,7 +307,6 @@ class Field extends AbstractModel
                     'tax_amount'               => 'Tax Amount',
                     'subtotal'                 => 'Sub Total',
                     'grand_total'              => 'Grand Total',
-                    'remote_ip'                => 'Remote IP',
                 ];
                 break;
             default:
