@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @TODO this could be refactored as a plugin vs a preference but
+ * due to time constraints we need to get this live ASAP.
+ */
+
 namespace ForeverCompanies\ProductUrlPrefix\Model;
 
 use Magento\UrlRewrite\Model\UrlFinderInterface;
@@ -22,6 +27,12 @@ class Url extends \Magento\Catalog\Model\Product\Url
         $this->storeManager = $storeManager;
     }
 
+    /**
+     * @param \Magento\Catalog\Model\Product $product
+     * @param array $params
+     * @return string
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
     public function getUrl(\Magento\Catalog\Model\Product $product, $params = []): string
     {
         $requestPath = $product->getRequestPath();
