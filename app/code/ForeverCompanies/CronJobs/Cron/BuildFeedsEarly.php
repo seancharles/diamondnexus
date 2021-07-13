@@ -19,7 +19,7 @@ class BuildFeedsarly
         $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
 
-    public function execute() 
+    public function execute()
     {
         if (!$this->scopeConfig->getValue('forevercompanies_cron_controls/feed/build_feeds_early', $this->storeScope)) {
             return $this;

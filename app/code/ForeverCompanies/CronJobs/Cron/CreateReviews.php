@@ -14,13 +14,13 @@ class CreateReviews
     public function __construct(
         FeedLogic $feed,
         ScopeConfigInterface $scopeC
-        ) {
+    ) {
         $this->feedModel = $feed;
         $this->scopeConfig = $scopeC;
         $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
 
-    public function execute() 
+    public function execute()
     {
         if (!$this->scopeConfig->getValue('forevercompanies_cron_controls/feed/create_reviews', $this->storeScope)) {
             return $this;
