@@ -7,9 +7,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use ForeverCompanies\CronJobs\Model\FeedLogic;
 
-/**
- * Class SomeCommand
- */
 class Feedonomics extends Command
 {
     const NAME = 'run_feedonomics';
@@ -55,9 +52,5 @@ class Feedonomics extends Command
         $this->feedModel->BuildCsvs(1);
         $this->feedModel->BuildCsvs(12);
         return;
-        
-        $output->writeln('<info>Success Message.</info>');
-        $output->writeln('<error>An error encountered.</error>');
-        $output->writeln('<comment>Some Comment.</comment>');
     }
 }

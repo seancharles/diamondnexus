@@ -14,6 +14,7 @@ use Magento\CatalogInventory\Model\Stock\StockItemRepository;
 use Magento\Review\Model\Review;
 use Magento\Review\Model\ResourceModel\Review\CollectionFactory as ReviewCollectionFactory;
 use ForeverCompanies\CronJobs\Dnl\Encoding;
+use ForeverCompanies\ProductUrlPrefix\Model\Url as ProductUrlPrefixModel;
 
 class FeedLogic
 {
@@ -28,6 +29,7 @@ class FeedLogic
     protected $reviewModel;
     protected $reviewCollection;
     protected $encoder;
+    protected $productUrlPrefixModel;
 
     public function __construct(
         LoggerInterface $logger,
@@ -40,7 +42,8 @@ class FeedLogic
         StockItemRepository $stockItemRepo,
         Review $rev,
         ReviewCollectionFactory $coll,
-        Encoding $enc
+        Encoding $enc,
+        ProductUrlPrefixModel $productUrlPrefixM
     ) {
         $this->logger = $logger;
         $this->storeRepository = $storeRepositoryInterface;
@@ -53,6 +56,7 @@ class FeedLogic
         $this->reviewModel = $rev;
         $this->reviewCollection = $coll;
         $this->encoder = $enc;
+        $this->productUrlPrefixModel = $productUrlPrefixM;
     }
 
     public function buildCsvs($storeId)
@@ -362,7 +366,12 @@ class FeedLogic
         $name = $product->getName();
         $status = $product->getStatus();
         $visiblility = $product->getVisibility();
-        $url =  $this->storeManager->getStore()->getBaseUrl() . $product->getUrlKey();
+        
+        // *** zzz asdf here
+        // $url =  $this->storeManager->getStore()->getBaseUrl() . $product->getUrlKey();
+        
+        $url = $this->productUrlPrefixModel->getUrl($product);
+        
         $main_image = $this->storeManager->getStore()->getBaseUrl(
             \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
         ) . 'catalog/product' . $product->getImage();
@@ -507,9 +516,13 @@ class FeedLogic
         }
         $size_display = "";
         
+        // var_dump("sizes", $Sizes);
+        
+        
         // Exception #0 (Exception): Warning: count(): Parameter must be an array or an object that implements Countable
         // Returns a string. Not countable.
         if (strlen($this->unique_display($Sizes)) > 0) {
+            // *** zzz asdf this is wrong. need to iterate through size array, apparently.
             $size_display = "Varies";
         }
         $title = preg_replace('~[[:cntrl:]]~', '', preg_replace('/(\s)+/', ' ', preg_replace('/s$/', '', $title)));
@@ -591,6 +604,7 @@ class FeedLogic
                             $description,
                             $Gender,
                             $image,
+                            // *** zzz asdf here
                             $url . "?precious-metal=" . preg_replace(
                                 '/ /',
                                 '-',
@@ -644,6 +658,7 @@ class FeedLogic
                 $Colors[] = $product->getAttributeText('color');
                 $Metals[] = $product->getAttributeText('metal_type');
                 $image = $this->getProdImage($product, $product->getId(), $product->getAttributeText('metal_type'));
+                // *** zzz asdf here
                 $Gemstones[] = $product->getAttributeText('gemstone');
                 $simpleTitleMods = $Gemstones[0] . " " . $Cuts[0] . " " . $Colors[0] . " " . $Metals[0];
                 $title = preg_replace(
@@ -668,6 +683,8 @@ class FeedLogic
                 break;
         }
         
+        // var_dump("gemstones", $Gemstones);
+        
         $cuts_display = "";
         if (strlen($this->unique_display($Cuts)) > 0) {
             $cuts_display = "Varies";
@@ -682,6 +699,7 @@ class FeedLogic
         }
         $gems_display = "";
         if (strlen($this->unique_display($Gemstones)) > 0) {
+            // *** zzz asdf here no this is wrong, probably going to have to iterate over each gemstone as its own product
             $gems_display = "Varies";
         }
         
@@ -937,7 +955,12 @@ class FeedLogic
                 $GLOBALS['argvStoreId']
             )->load($review->getEntityPkValue());
             $timestamp = date(DATE_ATOM, strtotime($review->getCreatedAt()));
-            $url =  $this->storeManager->getStore()->getBaseUrl() . $product->getUrlKey();
+            
+            // *** zzz asdf here
+            // $url =  $this->storeManager->getStore()->getBaseUrl() . $product->getUrlKey();
+            
+            $url = $this->productUrlPrefixModel->getUrl($product);
+            
             $content = preg_replace(
                 "/(\. \. \.)/",
                 '',
