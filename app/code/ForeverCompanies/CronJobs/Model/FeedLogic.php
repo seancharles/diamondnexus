@@ -63,6 +63,7 @@ class FeedLogic
     {
         $GLOBALS['argvStoreId'] = $storeId;
         $listing = $this->getAllProductList();
+        
         $this->createCSV($listing);
         $this->createYahooCSV($listing);
         $this->createFBCSV($listing);
@@ -367,9 +368,6 @@ class FeedLogic
         $status = $product->getStatus();
         $visiblility = $product->getVisibility();
         
-        // *** zzz asdf here
-        // $url =  $this->storeManager->getStore()->getBaseUrl() . $product->getUrlKey();
-        
         $url = $this->productUrlPrefixModel->getUrl($product);
         
         $main_image = $this->storeManager->getStore()->getBaseUrl(
@@ -516,13 +514,9 @@ class FeedLogic
         }
         $size_display = "";
         
-        // var_dump("sizes", $Sizes);
-        
-        
         // Exception #0 (Exception): Warning: count(): Parameter must be an array or an object that implements Countable
         // Returns a string. Not countable.
         if (strlen($this->unique_display($Sizes)) > 0) {
-            // *** zzz asdf this is wrong. need to iterate through size array, apparently.
             $size_display = "Varies";
         }
         $title = preg_replace('~[[:cntrl:]]~', '', preg_replace('/(\s)+/', ' ', preg_replace('/s$/', '', $title)));
@@ -596,6 +590,7 @@ class FeedLogic
                                 )
                             )
                         );
+
                         $childs[] = array(
                             $attributeSetName,
                             "Adult",
@@ -604,12 +599,11 @@ class FeedLogic
                             $description,
                             $Gender,
                             $image,
-                            // *** zzz asdf here
-                            $url . "?precious-metal=" . preg_replace(
-                                '/ /',
-                                '-',
-                                $SMetal
-                            ) . "&cid=" . $_product->getId(),
+                            $url .  $this->buildConfigurableUrlString(
+                                $SMetal,
+                                $_product->getAttributeText('gemstone'),
+                                $_product->getAttributeText('ring_size')
+                            ),
                             $SPrice,
                             $_product->getSku(),
                             "1",
@@ -658,7 +652,6 @@ class FeedLogic
                 $Colors[] = $product->getAttributeText('color');
                 $Metals[] = $product->getAttributeText('metal_type');
                 $image = $this->getProdImage($product, $product->getId(), $product->getAttributeText('metal_type'));
-                // *** zzz asdf here
                 $Gemstones[] = $product->getAttributeText('gemstone');
                 $simpleTitleMods = $Gemstones[0] . " " . $Cuts[0] . " " . $Colors[0] . " " . $Metals[0];
                 $title = preg_replace(
@@ -699,7 +692,6 @@ class FeedLogic
         }
         $gems_display = "";
         if (strlen($this->unique_display($Gemstones)) > 0) {
-            // *** zzz asdf here no this is wrong, probably going to have to iterate over each gemstone as its own product
             $gems_display = "Varies";
         }
         
@@ -759,6 +751,30 @@ class FeedLogic
                 'Children' => $childs
             );
         }
+    }
+    
+    protected function buildConfigurableUrlString($metal, $gemstone, $ringSize)
+    {
+        $ret =  "?precious-metal=" . $this->stripUrlString($metal);
+        
+        if (trim($gemstone) != "" && $gemstone != 0) {
+            $ret .= "&gemstone=" . $this->stripUrlString($gemstone);
+        }
+        if (trim($ringSize) != "") {
+            $ret .= "&ring-size=" . $this->stripUrlString($ringSize);
+        }
+        
+        return strtolower($ret);
+    }
+    
+    protected function stripUrlString($str)
+    {
+        $str = str_replace(" ", "-", $str);
+        $str = str_replace(",", "-", $str);
+        $str = str_replace("\\", "-", $str);
+        $str = str_replace("'", "-", $str);
+        $str = str_replace("_", "-", $str);
+        return $str;
     }
     
     public function cleanFeed()
@@ -956,9 +972,6 @@ class FeedLogic
             )->load($review->getEntityPkValue());
             $timestamp = date(DATE_ATOM, strtotime($review->getCreatedAt()));
             
-            // *** zzz asdf here
-            // $url =  $this->storeManager->getStore()->getBaseUrl() . $product->getUrlKey();
-            
             $url = $this->productUrlPrefixModel->getUrl($product);
             
             $content = preg_replace(
@@ -1042,7 +1055,7 @@ class FeedLogic
                 $prodXml .= "\t\t\t<review_timestamp>".$timestamp."</review_timestamp>\n";
                 $prodXml .= "\t\t\t<title>".$title."</title>\n";
                 $prodXml .= "\t\t\t<content>".$content."</content>\n";
-                $prodXml .= "\t\t\t<review_url type='group'>".$url."?cid=".$product->getId()."</review_url>\n";
+                $prodXml .= "\t\t\t<review_url type='group'>".$url."</review_url>\n";
                 $prodXml .= "\t\t\t<ratings>\n";
                 $prodXml .= "\t\t\t\t<overall min='0' max='100'>".$this->getAverageRating($review)."</overall>\n";
                 $prodXml .= "\t\t\t</ratings>\n";
@@ -1060,7 +1073,7 @@ class FeedLogic
                 $prodXml .= "\t\t\t\t\t\t</brands>\n";
                 $prodXml .= "\t\t\t\t\t</product_ids>\n";
                 $prodXml .= "\t\t\t\t\t<product_name>".$product_name."</product_name>\n";
-                $prodXml .= "\t\t\t\t\t<product_url>".$url."?cid=".$product->getId()."</product_url>\n";
+                $prodXml .= "\t\t\t\t\t<product_url>".$url."</product_url>\n";
                 $prodXml .= "\t\t\t\t</product>\n";
                 $prodXml .= "\t\t\t</products>\n";
                 $prodXml .= "\t\t\t<is_spam>false</is_spam>\n";
