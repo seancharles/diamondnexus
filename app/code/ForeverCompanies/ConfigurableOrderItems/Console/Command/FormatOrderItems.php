@@ -93,15 +93,8 @@ class FormatOrderItems extends Command
 
         $buyRequest = $item->getBuyRequest()->toArray();
 
-        //$connection = $this->resourceConnection->getConnection();
-
         $newBuyRequest = [
-            'attributes_info' => [],
-            "giftcard_email_template" => null,
-	        "giftcard_is_redeemable" => 0,
-	        "giftcard_lifetime" => null,
-	        "giftcard_type" => null,
-            'info_buyRequest' => [
+            'info_buyRequest' => $this->_jsonHelper->serialize([
                 'item' => $item->getProductId(),
                 'product' => $item->getProductId(),
                 'qty' => $item->getQtyOrdered(),
@@ -109,9 +102,16 @@ class FormatOrderItems extends Command
                 'selected_configurable_option' => 0,
                 'super_attribute' => $buyRequest['super_attribute'],
                 'options' => $item->getOptions()
-            ],
+            ]),
+            'attributes_info' => [],
             'simple_name' => $item->getName(),
-            'simple_sku' => $item->getSku()
+            'simple_sku' => $item->getSku(),
+            'product_calculations' => 1,
+            'shipment_type' => 0,
+            "giftcard_email_template" => null,
+	        "giftcard_is_redeemable" => 0,
+	        "giftcard_lifetime" => null,
+	        "giftcard_type" => null
         ];
         
         foreach($buyRequest['super_attribute'] as $attributeId => $attributeOptionId) {
@@ -180,10 +180,7 @@ class FormatOrderItems extends Command
                     if ($ordersResult->getTotalCount() > 0) {
                         foreach ($ordersResult->getItems() as $order) {
                             $orderItems = $order->getAllItems();
-
                             foreach ($orderItems as $item) {
-                                echo $item->getData('is_translated_m2') . "\n";
-
                                 if ($item && $item->getData('is_translated_m2') == 0) {
                                     if ($item->getProductType() == 'configurable') {
                                         $newBuyRequest = $this->reformatBuyRequest($item);
@@ -205,7 +202,7 @@ class FormatOrderItems extends Command
                                     }
                                 } else {
                                     // log error
-                                    echo "item error\n";
+                                    echo "item error" . $item->getItemId() . "\n";
                                 }
                             }
                         };
