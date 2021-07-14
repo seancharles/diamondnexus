@@ -33,7 +33,7 @@ class FormatOrderItems extends Command
     protected $_jsonHelper;
     protected $_resourceConnection;
     
-    const PAGE_SIZE = 100;
+    const PAGE_SIZE = 2500;
 
     public function __construct(
         ProductAttributeRepositoryInterface $attributeRepository,
@@ -197,8 +197,6 @@ class FormatOrderItems extends Command
                                         echo $sql . "\n";
 
                                         $connection->query($sql);
-                                    } else {
-                                        echo "simple\n";
                                     }
                                 } else {
                                     // log error
