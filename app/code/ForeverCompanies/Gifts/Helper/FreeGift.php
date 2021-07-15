@@ -58,6 +58,7 @@ class FreeGift extends AbstractHelper
     
     protected $scopeConfig;
     protected $storeScope;
+    protected $expiredTime;
 
     /**
      * Data constructor.
@@ -86,6 +87,7 @@ class FreeGift extends AbstractHelper
         $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
         
         $this->fillRules();
+        $this->expiredTime = $this->getExpiredTime();
     }
 
     /**
@@ -140,9 +142,6 @@ class FreeGift extends AbstractHelper
      */
     public function getSkus()
     {
-        if (count($this->giftSkus) == 0) {
-            $this->fillRules();
-        }
         return $this->giftSkus;
     }
 
@@ -151,9 +150,6 @@ class FreeGift extends AbstractHelper
      */
     public function getMetalTypes()
     {
-        if (count($this->metalTypes) == 0) {
-            $this->fillRules();
-        }
         return $this->metalTypes;
     }
 
@@ -162,9 +158,6 @@ class FreeGift extends AbstractHelper
      */
     public function getAttributeSetIds()
     {
-        if (count($this->attributeSetIds) == 0) {
-            $this->fillRules();
-        }
         return $this->attributeSetIds;
     }
 
@@ -173,9 +166,6 @@ class FreeGift extends AbstractHelper
      */
     public function getFreeGiftRules()
     {
-        if (count($this->rules) == 0) {
-            $this->fillRules();
-        }
         return $this->rules;
     }
 
@@ -226,28 +216,27 @@ class FreeGift extends AbstractHelper
         if (count($giftSkus) == 0) {
             return $giftSkus;
         }
-        if ($this->isEnabledExpiredTime() && $this->getExpiredTime() !== '0') {
+        if ($this->isEnabledExpiredTime() && $this->expiredTime !== '0') {
             $now = new \DateTime();
-            $expiredTime = $this->getExpiredTime();
-        }
-        foreach ($quote->getAllItems() as $quoteItem) {
-            $sku = $quoteItem->getSku();
-            if (isset($giftSkus[$sku]) && isset($now)) {
-                if ($quoteItem->getCreatedAt() == null) {
-                    $quoteItem->setCreatedAt($this->dateTime->formatDate(true));
-                }
-                if (isset($expiredTime)) {
-                    $createdAt = new \DateTime($quoteItem->getCreatedAt());
-                    $quoteExpired = $createdAt->getTimestamp() + $expiredTime;
-                    if ($now->getTimestamp() > $quoteExpired) {
-                        $quote->removeItem($quoteItem->getItemId());
-                        $quote->addMessage('Unfortunately, your free gift has expired.');
-                        continue;
+            foreach ($quote->getAllItems() as $quoteItem) {
+                $sku = $quoteItem->getSku();
+                if (isset($giftSkus[$sku])) {
+                    if ($quoteItem->getCreatedAt() == null) {
+                        $quoteItem->setCreatedAt($this->dateTime->formatDate(true));
                     }
+                    if (isset($this->expiredTime)) {
+                        $createdAt = new \DateTime($quoteItem->getCreatedAt());
+                        $quoteExpired = $createdAt->getTimestamp() + $this->expiredTime;
+                        if ($now->getTimestamp() > $quoteExpired) {
+                            $quote->removeItem($quoteItem->getItemId());
+                            $quote->addMessage('Unfortunately, your free gift has expired.');
+                            continue;
+                        }
+                    }
+                    $quoteItem->setQty($giftSkus[$sku]);
+                    $quoteItem->addMessage('Free gift added');
+                    unset($giftSkus[$sku]);
                 }
-                $quoteItem->setQty($giftSkus[$sku]);
-                $quoteItem->addMessage('Free gift added');
-                unset($giftSkus[$sku]);
             }
         }
         return $giftSkus;
