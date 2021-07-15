@@ -497,8 +497,6 @@ class StoneImport
         foreach ($csvArray as $csvArr) {
             
             if (!$this->_checkForRequiredFields($csvArr)) {
-                $product = new \Magento\Framework\DataObject();
-                $product->setSku($csvArr['Certificate #']);
                 $this->_stoneLog($product, $csvArr, "error", "Required field invalid.");
                 continue;
             }
