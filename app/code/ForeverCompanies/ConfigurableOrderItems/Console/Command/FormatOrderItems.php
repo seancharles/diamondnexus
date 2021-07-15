@@ -14,6 +14,8 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SortOrderBuilder;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\App\ResourceConnection;
+use Magento\Catalog\Model\Product\OptionFactory;
+use Magento\Catalog\Api\ProductRepositoryInterface;
 
 /**
  * Class FormatOrderItems
@@ -36,6 +38,8 @@ class FormatOrderItems extends Command
     protected $_state;
     protected $_jsonHelper;
     protected $_resourceConnection;
+    protected $_optionFactory;
+    protected $_productRepository;
 
     protected $_startDate;
     protected $_endDate;
@@ -51,7 +55,9 @@ class FormatOrderItems extends Command
         SortOrderBuilder $sortOrderBuilder,
         State $state,
         Json $jsonHelper,
-        ResourceConnection $resourceConnection
+        ResourceConnection $resourceConnection,
+        OptionFactory $optionFactory,
+        ProductRepositoryInterface $productRepository
     ) {
         $this->_attributeRepository = $attributeRepository;
         $this->_orderRepository = $orderRepository;
@@ -60,6 +66,8 @@ class FormatOrderItems extends Command
         $this->_state = $state;
         $this->_jsonHelper = $jsonHelper;
         $this->_resourceConnection = $resourceConnection;
+        $this->_optionFactory = $optionFactory;
+        $this->_productRepository = $productRepository;
 
         parent::__construct($this->name);
     }
@@ -140,16 +148,26 @@ class FormatOrderItems extends Command
                     if ($ordersResult->getTotalCount() > 0) {
                         foreach ($ordersResult->getItems() as $order) {
                             $orderItems = $order->getAllItems();
+                            $orderId = $order->getId();
                             foreach ($orderItems as $item) {
                                 if ($item && $item->getData('is_translated_m2') == 0) {
-                                    if ($item->getProductType() == 'configurable') {
-                                        $newBuyRequest = $this->reformatBuyRequest($item);
+                                    $buyRequest = $item->getBuyRequest()->toArray();
+
+                                    // if the product is a configurable use the cpid param to fetch the actual config product
+                                    if (isset($buyRequest['cpid']) === true && $buyRequest['cpid'] > 0) {
+                                        $configBuyRequest = $this->reformatBuyRequest($item, $buyRequest);
+                                        $simpleBuyRequest = $this->reformatBuyRequestSimple($item, $buyRequest);
+
+                                        $configId = $buyRequest['cpid'];
+                                        $simpleId = $item->getProductId();
 
                                         $sql = "UPDATE
                                                     sales_order_item
                                                 SET
+                                                    product_id = " . $configId . ",
+                                                    product_type = 'configurable',
                                                     m1_buy_request = product_options,
-                                                    product_options = '" . $newBuyRequest . "',
+                                                    product_options = '" . $configBuyRequest . "',
                                                     is_translated_m2 = '1'
                                                 WHERE
                                                       item_id = '" . $item->getItemId() . "';";
@@ -157,6 +175,29 @@ class FormatOrderItems extends Command
                                         echo $sql . "\n";
 
                                         $connection->query($sql);
+
+                                        $sql = "INSERT INTO
+                                                    sales_order_item
+                                                SET
+                                                    order_id = $orderId,
+                                                    store_id = " . $item->getStoreId() . ",
+                                                    created_at = '" . $item->getCreatedAt() . "',
+                                                    product_id = " . $simpleId . ",
+                                                    product_type = 'simple',
+                                                    parent_item_id = '" . $item->getItemId() . "',
+                                                    product_options = '" . $simpleBuyRequest . "',
+                                                    sku = '" . $item->getSku() . "',
+                                                    name = '" . $item->getName() . "',
+                                                    qty_canceled = '" . $item->getQtyCanceled() . "',
+                                                    qty_invoiced = '" . $item->getQtyInvoiced() . "',
+                                                    qty_ordered = '" . $item->getQtyOrdered() . "',
+                                                    qty_refunded = '" . $item->getQtyRefunded() . "',
+                                                    qty_shipped = '" . $item->getQtyShipped() . "',
+                                                    is_translated_m2 = 1;";
+
+                                        $connection->query($sql);
+
+                                        echo $sql . "\n";
                                     }
                                 } else {
                                     // log error
@@ -217,20 +258,43 @@ class FormatOrderItems extends Command
         return $countResult->getTotalCount();
     }
 
-    protected function reformatBuyRequest($item) {
+    protected function reformatBuyRequest($item, $buyRequest) {
+        $options = [];
+        $productId = $buyRequest['cpid'];
 
-        $buyRequest = $item->getBuyRequest()->toArray();
+        if (isset($buyRequest['options']) === true) {
+            $selectedOptions = $buyRequest['options'];
+
+            $product = $this->_productRepository->getById($productId);
+            $customOptions = $this->_optionFactory->create()
+                ->getProductOptionCollection($product);
+
+            foreach ($customOptions as $customOption) {
+                if (isset($selectedOptions[$customOption->getId()]) === true) {
+                    $values = $customOption->getValues();
+                    foreach ($values as $value) {
+                        if(isset($selectedOptions[$customOption->getOptionId()]) === true && $selectedOptions[$customOption->getOptionId()] == $value->getOptionTypeId())
+                        $options[] = [
+                            'label' => $customOption->getTitle(),
+                            'value' => $value->getTitle(),
+                            'print_value' => $value->getTitle(),
+                            'option_id' => $customOption->getOptionId(),
+                            'option_type' => $customOption->getType(),
+                            'option_value' => $value->getOptionTypeId()
+                        ];
+                    }
+                }
+            }
+        }
 
         $newBuyRequest = [
-            'info_buyRequest' => $this->_jsonHelper->serialize([
-                'item' => $item->getProductId(),
-                'product' => $item->getProductId(),
+            'info_buyRequest' => [
                 'qty' => $item->getQtyOrdered(),
                 'related_product' => "",
                 'selected_configurable_option' => 0,
                 'super_attribute' => $buyRequest['super_attribute'],
-                'options' => $item->getOptions()
-            ]),
+                'options' => $options
+            ],
             'attributes_info' => [],
             'simple_name' => $item->getName(),
             'simple_sku' => $item->getSku(),
@@ -253,6 +317,25 @@ class FormatOrderItems extends Command
                 "value" => $attribute->getSource()->getOptionText($attributeOptionId)
             ];
         }
+
+        return $this->_jsonHelper->serialize($newBuyRequest);
+    }
+
+    protected function reformatBuyRequestSimple($item, $buyRequest) {
+        $productId = $item->getProductId();
+
+        $newBuyRequest = [
+            'info_buyRequest' => [
+                'product' => $productId,
+                'qty' => $item->getQtyOrdered(),
+                'super_attribute' => $buyRequest['super_attribute'],
+                'options' => $item->getOptions()
+            ],
+            "giftcard_email_template" => null,
+            "giftcard_is_redeemable" => 0,
+            "giftcard_lifetime" => null,
+            "giftcard_type" => null
+        ];
 
         return $this->_jsonHelper->serialize($newBuyRequest);
     }
