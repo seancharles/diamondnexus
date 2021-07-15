@@ -3,22 +3,32 @@ namespace ForeverCompanies\SystemCron\Cron;
 
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 use Magento\User\Model\UserFactory;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class CustomPriceOrderReport
 {
 	protected $orderCollectionFactory;
 	protected $userFactory;
+	protected $scopeConfig;
+	protected $storeScope;
 
 	public function __construct(
 	    OrderCollectionFactory $orderCollectionF,
-	    UserFactory $userF
+	    UserFactory $userF,
+	    ScopeConfigInterface $scopeC
 	) {
 		$this->orderCollectionFactory = $orderCollectionF;
 		$this->userFactory = $userF;
+		$this->scopeConfig = $scopeC;
+		$this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
 	}
 	
 	public function execute()
 	{
+	    if (!$this->scopeConfig->getValue('forevercompanies_cron_controls/report/custom_price_order_report', $this->storeScope)) {
+	        return $this;
+	    }
+	    
 	    $orders = $this->orderCollectionFactory->create();
 	    
 	    $orders->addAttributeToFilter('created_at', array('gt' => date('Y-m-d H:i:s', strtotime('yesterday'))));

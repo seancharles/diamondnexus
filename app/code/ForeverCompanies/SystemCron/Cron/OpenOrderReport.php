@@ -5,31 +5,36 @@ use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollection
 use Magento\User\Model\UserFactory;
 use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class OpenOrderReport
 {
     protected $orderCollectionFactory;
-    
     protected $userFactory;
     protected $directory;
-    
     protected $transactionFactory;
+    protected $scopeConfig;
+    protected $storeScope;
     
     public function __construct(
         OrderCollectionFactory $orderCollectionF,
         UserFactory $userF,
-        Filesystem $fileS
-        ) {
-            $this->orderCollectionFactory = $orderCollectionF;
-            
-            
-            $this->userFactory = $userF;
-            $this->directory = $fileS->getDirectoryWrite(DirectoryList::VAR_DIR);
-            
+        Filesystem $fileS,
+        ScopeConfigInterface $scopeC
+    ) {
+        $this->orderCollectionFactory = $orderCollectionF;
+        $this->userFactory = $userF;
+        $this->directory = $fileS->getDirectoryWrite(DirectoryList::VAR_DIR);
+        $this->scopeConfig = $scopeC;
+        $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
     
     public function execute()
     {
+        if (!$this->scopeConfig->getValue('forevercompanies_cron_controls/report/open_order_report', $this->storeScope)) {
+            return $this;
+        }
+        
         $date      = date('Y-m-01', strtotime('now -1 month'));  // now -1 day
         $enddate      = date('Y-m-t', strtotime('now -1 month'));  // now -1 day
         $fromDate = $date.' 00:00:00';

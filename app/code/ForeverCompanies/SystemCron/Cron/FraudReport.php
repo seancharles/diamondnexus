@@ -4,23 +4,22 @@ namespace ForeverCompanies\SystemCron\Cron;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 use Magento\Customer\Model\ResourceModel\Customer\CollectionFactory as CustomerCollectionFactory;
 use Magento\Sales\Model\Order\ItemFactory as OrderItemFactory;
-
 use Magento\User\Model\UserFactory;
 use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
-
 use Magento\Sales\Api\Data\TransactionSearchResultInterfaceFactory;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class FraudReport
 {
     protected $orderCollectionFactory;
     protected $customerCollectionFactory;
     protected $orderItemFactory;
-    
     protected $userFactory;
     protected $directory;
-    
     protected $transactionFactory;
+    protected $scopeConfig;
+    protected $storeScope;
     
     public function __construct(
         OrderCollectionFactory $orderCollectionF,
@@ -28,20 +27,25 @@ class FraudReport
         UserFactory $userF,
         Filesystem $fileS,
         TransactionSearchResultInterfaceFactory $transactions,
-        OrderItemFactory $orderItemF
+        OrderItemFactory $orderItemF,
+        ScopeConfigInterface $scopeC
     ) {
         $this->orderCollectionFactory = $orderCollectionF;
         $this->customerCollectionFactory = $customerCollectionF;
-        
         $this->transactionFactory = $transactions;
         $this->orderItemFactory = $orderItemF;
-        
         $this->userFactory = $userF;
         $this->directory = $fileS->getDirectoryWrite(DirectoryList::VAR_DIR);
+        $this->scopeConfig = $scopeC;
+        $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
     
     public function execute()
     {
+        if (!$this->scopeConfig->getValue('forevercompanies_cron_controls/report/fraud_report', $this->storeScope)) {
+            return $this;
+        }
+        
         $date = date('Y-m-d', strtotime('now -1 day'));  // now -1 day
         $fromDate = $date.' 00:00:00';
         $toDate = $date.' 23:59:59';
