@@ -2,6 +2,7 @@
 namespace ForeverCompanies\Forms\Model;
 
 use Magento\Framework\Model\AbstractModel;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 // if( !class_exists( 'IterableClass' ) ) {
 class IterableClass extends AbstractModel
@@ -9,7 +10,27 @@ class IterableClass extends AbstractModel
     private $api_key = '';
     private $api_url = 'https://api.iterable.com:443/api/';
     private $debug = false;
+    
+    protected $scopeConfig;
+    protected $storeScope;
 
+    /*
+    public function __construct( $api_key, $debug = false ) {
+        $this->api_key = $api_key;
+        $this->debug = $debug;
+    }
+    */
+    
+    public function __construct(
+        ScopeConfigInterface $scopeC
+        ) {
+        //  $this->api_key = $api_key;
+        //  $this->debug = $debug;
+        
+        $this->scopeConfig = $scopeC;
+        $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+    }
+    
     private function set_optionals( &$array, $values ) {
         foreach( $values as $key => $value ) {
             if( $value !== false ) {
@@ -100,13 +121,7 @@ class IterableClass extends AbstractModel
         }
     }
 
-    public function __construct( $api_key, $debug = false ) {
-        $this->api_key = $api_key;
-        $this->debug = $debug;
-    }
-
     /* Lists */
-
     public function lists() {
         $result = $this->send_request( 'lists' );
         if( $result[ 'success' ] ) {
