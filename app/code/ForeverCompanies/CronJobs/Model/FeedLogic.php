@@ -30,6 +30,7 @@ class FeedLogic
     protected $reviewCollection;
     protected $encoder;
     protected $productUrlPrefixModel;
+    protected $configurableProductAttrArr;
 
     public function __construct(
         LoggerInterface $logger,
@@ -57,6 +58,7 @@ class FeedLogic
         $this->reviewCollection = $coll;
         $this->encoder = $enc;
         $this->productUrlPrefixModel = $productUrlPrefixM;
+        $this->configurableProductAttrArr = array();
     }
 
     public function buildCsvs($storeId)
@@ -243,6 +245,7 @@ class FeedLogic
         foreach ($productArr as $product) {
             $prebuilts[] = $this->displayProd($product);
         }
+        
         return array('count' => $product_count, 'list' => $prebuilts);
     }
     
@@ -564,6 +567,15 @@ class FeedLogic
                         $SGemstone = ($_product->getAttributeText('gemstone') == '')
                             ? "None" : $_product->getAttributeText('gemstone');
                         
+                    
+                        
+                        foreach ($_product->getData() as $k => $v)
+                        {
+                            if (!in_array($k, $this->configurableProductAttrArr)) {
+                                $this->configurableProductAttrArr[]= $k;
+                            }
+                        }
+                        
                         $image = $this->getProdImage($product, $product->getId(), $SMetal);
                         
                         $Cuts[] = $SCut;
@@ -602,7 +614,9 @@ class FeedLogic
                             $url .  $this->buildConfigurableUrlString(
                                 $SMetal,
                                 $_product->getAttributeText('gemstone'),
-                                $_product->getAttributeText('ring_size')
+                                $_product->getAttributeText('ring_size'),
+                                $_product->getAttributeText('chain_length'),
+                                $_product->getAttributeText('certified_stone')
                             ),
                             $SPrice,
                             $_product->getSku(),
@@ -675,8 +689,6 @@ class FeedLogic
             default:
                 break;
         }
-        
-        // var_dump("gemstones", $Gemstones);
         
         $cuts_display = "";
         if (strlen($this->unique_display($Cuts)) > 0) {
@@ -753,9 +765,9 @@ class FeedLogic
         }
     }
     
-    protected function buildConfigurableUrlString($metal, $gemstone, $ringSize)
+    protected function buildConfigurableUrlString($metal, $gemstone, $ringSize, $chainLength, $certifiedStone)
     {
-        $ret =  "?precious-metal=" . $this->stripUrlString($metal);
+        $ret = "?precious-metal=" . $this->stripUrlString($metal);
         
         if (trim($gemstone) != "" && $gemstone != 0) {
             $ret .= "&gemstone=" . $this->stripUrlString($gemstone);
@@ -763,7 +775,12 @@ class FeedLogic
         if (trim($ringSize) != "") {
             $ret .= "&ring-size=" . $this->stripUrlString($ringSize);
         }
-        
+        if (trim($chainLength) != "") {
+            $ret .= "&chain-length=" . $this->stripUrlString($chainLength);
+        }
+        if (trim($certifiedStone) != "") {
+            $ret .= "&certified-stone=" . $this->stripUrlString($certifiedStone);
+        }
         return strtolower($ret);
     }
     
