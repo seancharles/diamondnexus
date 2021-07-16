@@ -19,6 +19,7 @@ use Magento\Framework\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\Order\Status\HistoryFactory;
 use Magento\Sales\Controller\Adminhtml\Order as AdminOrder;
 use Psr\Log\LoggerInterface;
 
@@ -36,6 +37,11 @@ class Order extends AdminOrder implements HttpPostActionInterface
      * @var GridDetail
      */
     protected $shipperResourceModel;
+
+    /**
+     * @var HistoryFactory
+     */
+    protected $orderHistoryFactory;
 
     /**
      * @var ExtOrder
@@ -56,6 +62,7 @@ class Order extends AdminOrder implements HttpPostActionInterface
      * @param OrderRepositoryInterface $orderRepository
      * @param LoggerInterface $logger
      * @param GridDetail $shipperResourceModel
+     * @param HistoryFactory $orderHistoryFactory
      * @param ExtOrder $extOrder
      */
     public function __construct(
@@ -72,6 +79,7 @@ class Order extends AdminOrder implements HttpPostActionInterface
         LoggerInterface $logger,
         Detail $shipperDetailResourceModel,
         GridDetail $shipperGridDetailResourceModel,
+        HistoryFactory $orderHistoryFactory,
         ExtOrder $extOrder
     ) {
         parent::__construct(
@@ -89,6 +97,7 @@ class Order extends AdminOrder implements HttpPostActionInterface
         );
         $this->shipperDetailResourceModel = $shipperDetailResourceModel;
         $this->shipperGridDetailResourceModel = $shipperGridDetailResourceModel;
+        $this->orderHistoryFactory = $orderHistoryFactory;
         $this->extOrder = $extOrder;
     }
 
@@ -157,6 +166,8 @@ class Order extends AdminOrder implements HttpPostActionInterface
                         'order_id = ' . $order->getEntityId()
                     );
                     $this->extOrder->createNewExtSalesOrder($order->getEntityId(), array_keys($changes));
+                    
+                    $this->addUpdateComment($order, $changes);
                 }
             }
             $resultRedirect->setPath('sales/order/view', ['order_id' => $order->getId()]);
@@ -164,5 +175,35 @@ class Order extends AdminOrder implements HttpPostActionInterface
         }
         $resultRedirect->setPath('sales/*/');
         return $resultRedirect;
+    }
+    
+    protected function addUpdateComment($order, $changes) {
+       $comment = "Delivery dates updated: ";
+       
+       if (isset($changes['dispatch_date']) === true) {
+           $comment .= " shipping " . date("F j, Y", strtotime($changes['dispatch_date'])) . " ";
+       }
+       
+       if (isset($changes['delivery_date']) === true) {
+           $comment .= " estimated delivery on " . date("F j, Y", strtotime($changes['delivery_date']));
+       }
+       
+       try {
+           if ($order->canComment()) {
+               $history = $this->orderHistoryFactory->create()
+                   ->setEntityName(\Magento\Sales\Model\Order::ENTITY)
+                   ->setComment(
+                       __('%1.', $comment)
+                   );
+
+               $history->setIsCustomerNotified(false)
+                       ->setIsVisibleOnFront(false);
+
+               $order->addStatusHistory($history);
+               $this->orderRepository->save($order);
+           }
+       } catch (NoSuchEntityException $exception) {
+           $this->logger->error($exception->getMessage());
+       }
     }
 }
