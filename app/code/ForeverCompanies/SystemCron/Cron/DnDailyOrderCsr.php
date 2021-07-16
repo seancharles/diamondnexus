@@ -4,22 +4,32 @@ namespace ForeverCompanies\SystemCron\Cron;
 use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\ResourceConnection;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class DnDailyOrderCsr
 {   
     protected $directory;
     protected $connection;
+    protected $scopeConfig;
+    protected $storeScope;
     
     public function __construct(
         Filesystem $fileS,
-        ResourceConnection $resourceC
+        ResourceConnection $resourceC,
+        ScopeConfigInterface $scopeC
     ) {
         $this->directory = $fileS->getDirectoryWrite(DirectoryList::VAR_DIR);
         $this->connection = $resourceC->getConnection();
+        $this->scopeConfig = $scopeC;
+        $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
     
     public function execute()
     {
+        if (!$this->scopeConfig->getValue('forevercompanies_cron_controls/report/dn_daily_order_csr', $this->storeScope)) {
+            return $this;
+        }
+        
         $date = date('Y-m-d', strtotime('now -30 day'));  // now -30 day
         $tosdate = date('Y-m-d', strtotime('now'));  // now -1 day
         

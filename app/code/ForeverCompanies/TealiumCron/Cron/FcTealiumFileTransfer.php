@@ -4,10 +4,10 @@ namespace ForeverCompanies\TealiumCron\Cron;
 use Psr\Log\LoggerInterface;
 use ForeverCompanies\TealiumCron\Controller\Index\S3;
 use Magento\Framework\Filesystem\Io\File;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 require_once '/var/www/magento/app/code/ForeverCompanies/TealiumCron/Controller/Index/ForeverCompanies_Pid.php';
 require_once '/var/www/magento/app/code/ForeverCompanies/TealiumCron/Controller/Index/S3.php';
-
 
 const S3_ACCESS_KEY = 'AKIASITVWH2FANWSIFVT';
 const S3_SECRET_KEY = '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';
@@ -22,17 +22,26 @@ class FcTealiumFileTransfer
 {   
     protected $ioFile;
     protected $logger;
+    protected $scopeConfig;
+    protected $storeScope;
     
     public function __construct(
         LoggerInterface $logger,
-        File $ioF
-        ) {
-            $this->logger = $logger;
-            $this->ioFile = $ioF;
+        File $ioF,
+        ScopeConfigInterface $scopeC
+    ) {
+        $this->logger = $logger;
+        $this->ioFile = $ioF;
+        $this->scopeConfig = $scopeC;
+        $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
     
     public function execute()
     {
+        if (!$this->scopeConfig->getValue('forevercompanies_cron_controls/tealium/fc_tealium_file_transfer', $this->storeScope)) {
+            return $this;
+        }
+        
         // base output directory
         $baseDirectory = '/var/www/magento/' . DS . 'export' . DS . 'call_center_orders';
         

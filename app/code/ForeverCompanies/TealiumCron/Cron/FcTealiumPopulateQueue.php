@@ -5,8 +5,8 @@ use Psr\Log\LoggerInterface;
 use Magento\Framework\App\Action\Context;
 use ForeverCompanies\TealiumCron\Controller\Index\S3;
 use ForeverCompanies\TealiumCron\Model\Event;
-
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 require_once '/var/www/magento/app/code/ForeverCompanies/TealiumCron/Controller/Index/ForeverCompanies_Pid.php';
 require_once '/var/www/magento/app/code/ForeverCompanies/TealiumCron/Controller/Index/S3.php';
@@ -17,26 +17,32 @@ class FcTealiumPopulateQueue
 {   
     
     protected $logger;
-    
     protected $orderCollectionFactory;
-    
     protected $eventModel;
+    protected $scopeConfig;
+    protected $storeScope;
     
     public function __construct(
         Context $context,
         LoggerInterface $logger,
         OrderCollectionFactory $orderCollectionF,
-        Event $ev
+        Event $ev,
+        ScopeConfigInterface $scopeC
     ) {
         $this->logger = $logger;
         $this->orderCollectionFactory = $orderCollectionF;
-        
         $this->eventModel = $ev;
+        $this->scopeConfig = $scopeC;
+        $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
     
     
     public function execute()
     {
+        if (!$this->scopeConfig->getValue('forevercompanies_cron_controls/tealium/fc_tealium_populate_queue', $this->storeScope)) {
+            return $this;
+        }
+        
         // include PID class and check if process already running; if so, kill script
         // require_once '/var/www/magento/lib/ForeverCompanies/Pid.php';
         try {
