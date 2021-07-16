@@ -17,6 +17,7 @@ use Magento\Framework\Translate\InlineInterface;
 use Magento\Framework\View\Result\LayoutFactory;
 use Magento\Framework\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order\Status\HistoryFactory;
@@ -61,7 +62,8 @@ class Order extends AdminOrder implements HttpPostActionInterface
      * @param OrderManagementInterface $orderManagement
      * @param OrderRepositoryInterface $orderRepository
      * @param LoggerInterface $logger
-     * @param GridDetail $shipperResourceModel
+     * @param Detail $shipperDetailResourceModel
+     * @param GridDetail $shipperGridDetailResourceModel
      * @param HistoryFactory $orderHistoryFactory
      * @param ExtOrder $extOrder
      */
