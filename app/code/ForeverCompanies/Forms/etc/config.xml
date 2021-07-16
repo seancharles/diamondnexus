@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <forevercompanies_forms>
+        	<iterable>
+        		<api_key>98ae3d33e12843f3b2cfbeb4e27ea0ad</api_key>
+        		<api_url>https://api.iterable.com:443/api/</api_url>
+        	</iterable>
+        </forevercompanies_forms>
+	</default>
+</config>
