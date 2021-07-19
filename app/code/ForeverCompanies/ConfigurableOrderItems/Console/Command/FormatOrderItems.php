@@ -293,8 +293,9 @@ class FormatOrderItems extends Command
                 'related_product' => "",
                 'selected_configurable_option' => 0,
                 'super_attribute' => $buyRequest['super_attribute'],
-                'options' => $options
+                'options' => $item->getOptions()
             ],
+            'options' => $options,
             'attributes_info' => [],
             'simple_name' => $item->getName(),
             'simple_sku' => $item->getSku(),
