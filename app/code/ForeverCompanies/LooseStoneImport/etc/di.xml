@@ -2,7 +2,14 @@
 
 	<preference for="Magento\Framework\Model\ActionValidator\RemoveAction" 
 		type="Magento\Framework\Model\ActionValidator\RemoveAction\Allowed" />
-		
+		<type name="Magento\Framework\Console\CommandListInterface">
+			<arguments>
+	            <argument name="commands" xsi:type="array">
+	                <item name="run_stone_import" xsi:type="object">ForeverCompanies\LooseStoneImport\Console\Command\ManualImport</item>
+	            </argument>
+	        </arguments>
+        </type>
+        
 	<!--  
 	<type name="Magento\Framework\Console\CommandList">
         <arguments>
