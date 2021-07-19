@@ -2,6 +2,7 @@
 
 namespace ForeverCompanies\CustomAttributes\Setup\Patch\Data;
 
+use Magento\Catalog\Model\Product;
 use Magento\Eav\Setup\EavSetupFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
@@ -45,12 +46,15 @@ class RenameProductTypeAttributeCode implements DataPatchInterface
     public function apply()
     {
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $eavSetup->updateAttribute(
-            \Magento\Catalog\Model\Product::ENTITY,
-            'product_type',
-            'attribute_code',
-            'fc_product_type'
-        );
+        $attribute = $eavSetup->getAttribute(Product::ENTITY, 'product_type');
+        if ($attribute) {
+            $eavSetup->updateAttribute(
+                \Magento\Catalog\Model\Product::ENTITY,
+                'product_type',
+                'attribute_code',
+                'fc_product_type'
+            );
+        }
     }
 
     /**

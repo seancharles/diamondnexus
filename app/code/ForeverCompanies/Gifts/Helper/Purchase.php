@@ -1,5 +1,4 @@
 <?php
-
 namespace ForeverCompanies\Gifts\Helper;
 
 use Magento\Catalog\Model\Product;
@@ -60,32 +59,29 @@ class Purchase extends AbstractHelper
     
     public function addGiftToQuote($quote)
     {
-        $sku = $this->scopeConfig->getValue('forevercompanies_gifts/purchase/product_id', $this->storeScope); 
+        $sku = $this->scopeConfig->getValue('forevercompanies_gifts/purchase/product_id', $this->storeScope);
         $product = $this->productRepository->get($sku);
-        
         $setIdFound = false;
         foreach ($quote->getAllItems() as $_quoteItem) {
-          
-        // set id must be set for this event to trigger.
-        // $_quoteItem->setSetId(42);
-            
+            // set id must be set for this event to trigger.
+            //$_quoteItem->setSetId(42);
             if ($_quoteItem->getSetId() > 0) {
                 $setIdFound = true;
             }
-              
             if ($_quoteItem->getProduct()->getSku() == $sku) {
                 $this->quoteItem->load($_quoteItem->getItemId())->delete();
             }
         }
-        
-        if ($setIdFound && $quote->getSubtotal() >= $this->scopeConfig->getValue('forevercompanies_gifts/purchase/total', $this->storeScope)) {
+        if ($setIdFound && $quote->getSubtotal() >=
+            $this->scopeConfig->getValue('forevercompanies_gifts/purchase/total', $this->storeScope)) {
             $product->setQty(1);
             $quote->addProduct($product);
             $quote->save();
-            $this->messageManager->addSuccessMessage(__($this->scopeConfig->getValue('forevercompanies_gifts/purchase/message', $this->storeScope)));
+            $this->messageManager->addSuccessMessage(
+                __($this->scopeConfig->getValue('forevercompanies_gifts/purchase/message', $this->storeScope))
+            );
         }
     }
-    
 
     /**
      * @return bool
@@ -175,33 +171,6 @@ class Purchase extends AbstractHelper
                 }
             } catch (NoSuchEntityException $e) {
                 $this->_logger->error($e->getMessage());
-            }
-        }
-        if (count($giftSkus) == 0) {
-            return $giftSkus;
-        }
-        if ($this->isEnabledExpiredTime() && $this->getExpiredTime() !== '0') {
-            $now = new \DateTime();
-            $expiredTime = $this->getExpiredTime();
-        }
-        foreach ($quote->getAllItems() as $quoteItem) {
-            $sku = $quoteItem->getSku();
-            if (isset($giftSkus[$sku]) && isset($now)) {
-                if ($quoteItem->getCreatedAt() == null) {
-                    $quoteItem->setCreatedAt($this->dateTime->formatDate(true));
-                }
-                if (isset($expiredTime)) {
-                    $createdAt = new \DateTime($quoteItem->getCreatedAt());
-                    $quoteExpired = $createdAt->getTimestamp() + $expiredTime;
-                    if ($now->getTimestamp() > $quoteExpired) {
-                        $quote->removeItem($quoteItem->getItemId());
-                        $quote->addMessage('Free gift remove. Time was expired');
-                        continue;
-                    }
-                }
-                $quoteItem->setQty($giftSkus[$sku]);
-                $quoteItem->addMessage('Free gift added');
-                unset($giftSkus[$sku]);
             }
         }
         return $giftSkus;

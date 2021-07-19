@@ -3,28 +3,37 @@ namespace ForeverCompanies\SystemCron\Cron;
 
 use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
-
 use Magento\Framework\App\ResourceConnection;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class ProgressiveLeasingDeliveryReport
 {
     protected $directory;
     protected $connection;
     protected $storeManager;
+    protected $scopeConfig;
+    protected $storeScope;
     
     public function __construct(
         Filesystem $fileS,
         ResourceConnection $resourceC,
-        StoreManagerInterface $storeManagerI
-        ) {
-            $this->directory = $fileS->getDirectoryWrite(DirectoryList::VAR_DIR);
-            $this->connection = $resourceC->getConnection();
-            $this->storeManager = $storeManagerI;
+        StoreManagerInterface $storeManagerI,
+        ScopeConfigInterface $scopeC
+    ) {
+        $this->directory = $fileS->getDirectoryWrite(DirectoryList::VAR_DIR);
+        $this->connection = $resourceC->getConnection();
+        $this->storeManager = $storeManagerI;
+        $this->scopeConfig = $scopeC;
+        $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
     
     public function execute()
     {
+        if (!$this->scopeConfig->getValue('forevercompanies_cron_controls/report/progressive_leasing_delivery_report', $this->storeScope)) {
+            return $this;
+        }
+        
         $date = date('Y-m-d', strtotime('yesterday'));
         
         $bodyHTML = null;

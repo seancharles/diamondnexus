@@ -40,7 +40,11 @@ class Url extends \Magento\Catalog\Model\Product\Url
             $params['_direct'] = $requestPath;
         }
         $baseUrl = $this->storeManager->getStore()->getBaseUrl();
+
+//      $productUrl = $this->getUrlInstance()->setScope($product->getStoreId())->getUrl(' ', $params);
+
         $productUrl = $this->getUrlInstance()->setScope($product->getStoreId())->getUrl($product->getUrlKey(), $params);
+
         $remainingUrl = str_replace($baseUrl, '', $productUrl);
         return $baseUrl . "products/" . $remainingUrl;
     }

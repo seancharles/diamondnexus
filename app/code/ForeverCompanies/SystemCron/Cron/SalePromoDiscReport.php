@@ -1,7 +1,6 @@
 <?php
 namespace ForeverCompanies\SystemCron\Cron;
 
-
 use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
@@ -10,7 +9,7 @@ use Magento\Store\Model\StoreManagerInterface;
 use Magento\Sales\Model\OrderFactory;
 use Magento\Catalog\Model\ProductFactory;
 use Magento\Store\Api\WebsiteRepositoryInterface;
-
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class SalePromoDiscReport
 {
@@ -21,7 +20,8 @@ class SalePromoDiscReport
     protected $orderFactory;
     protected $productFactory;
     protected $websiteRepository;
-    
+    protected $scopeConfig;
+    protected $storeScope;
     
     public function __construct(
         Filesystem $fileS,
@@ -30,7 +30,8 @@ class SalePromoDiscReport
         StoreManagerInterface $storeManagagerI,
         OrderFactory $orderF,
         ProductFactory $productF,
-        WebsiteRepositoryInterface $websiteRepositoryI
+        WebsiteRepositoryInterface $websiteRepositoryI,
+        ScopeConfigInterface $scopeC
     ) {
         $this->directory = $fileS->getDirectoryWrite(DirectoryList::VAR_DIR);
         $this->orderCollectionFactory = $orderCollectionF;
@@ -39,10 +40,16 @@ class SalePromoDiscReport
         $this->orderFactory = $orderF;
         $this->productFactory = $productF;
         $this->websiteRepository = $websiteRepositoryI;
+        $this->scopeConfig = $scopeC;
+        $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
     
     public function execute()
     {
+        if (!$this->scopeConfig->getValue('forevercompanies_cron_controls/report/sale_promo_disc_report', $this->storeScope)) {
+            return $this;
+        }
+        
         $date = date('Y-m-01', strtotime('now -1 month'));  // now -1 day
         $enddate = date('Y-m-t', strtotime('now -1 month'));  // now -1 day
         $fromDate = $date.' 00:00:00';

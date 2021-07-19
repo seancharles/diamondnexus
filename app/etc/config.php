@@ -503,7 +503,7 @@ return [
             ],
             'customer' => [
                 'account_share' => [
-                    'scope' => '1'
+                    'scope' => '0'
                 ],
                 'captcha' => [
 
