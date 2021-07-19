@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <system>
+		<section id="forevercompanies_cron_controls" translate="label" type="text" sortOrder="200" showInDefault="1"
+			showInWebsite="1" showInStore="1">
+            <label>Cron Controls</label>
+            <tab>forevercompanies</tab>
+             <resource>ForeverCompanies_Gifts::config</resource>
+             
+            <group id="report" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+	            <label>Report Cron Jobs</label>
+	            
+	            <field id="custom_price_order_report" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>Custom Price Order Report</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+    			
+    			<field id="custom_price_order_report_tmp" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>Custom Price Order Report Tmp</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+    			
+    			<field id="dn_daily_catalog_requests" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>DN Daily Catalog Requests</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+    			
+    			<field id="dn_daily_order_csr" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>DN Daily Order Csr</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+    			
+    			<field id="fraud_report" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>Fraud Report</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+    			
+    			<field id="open_order_report" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>Open Order Report</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+    			
+    			<field id="progressive_leasing_delivery_report" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>Progressive Leasing Delivery Report</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+    			
+    			<field id="sale_promo_disc_report" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>Sale Promo Disc Report</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+    			
+    			<field id="salesperson_report" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>Salesperson Report</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+			</group>
+			
+			 <group id="tealium" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+	            <label>Tealium Cron Jobs</label>
+	            
+	            <field id="fc_tealium_file_transfer" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>FC Tealium File Transfer</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+    			
+    			<field id="fc_tealium_generate_csv" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>FC Tealium Generate CSV</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+    			
+    			<field id="fc_tealium_populate_queue" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>FC Tealium Populate Queue</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+    			
+	         </group>
+	         
+	         <group id="feed" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+	            <label>Feed Cron Jobs</label>
+	            
+	            <field id="build_feeds_early" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>Build Feeds Early Job</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+    			
+    			<field id="build_feeds_late" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>Build Feeds Late Job</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+    			
+    			<field id="create_reviews" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>Create Reviews</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+    			
+    			<field id="update_reviews" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>Update Reviews</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+	            	
+	         </group>
+	         
+	         <group id="loose_stone" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+	         	<label>Loose Stone Cron Jobs</label>
+	            
+	            <field id="loose_stone_import" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>Loose Stone Import</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+    			
+    			<field id="unsold_diamond_cleaning" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>Unsold Diamond Cleaning</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+    			
+	         </group>
+	         
+		</section>
+	</system>
+</config>

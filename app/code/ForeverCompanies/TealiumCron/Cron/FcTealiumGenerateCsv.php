@@ -6,14 +6,12 @@ use Psr\Log\LoggerInterface;
 use Magento\Sales\Api\Data\OrderInterfaceFactory;
 use Magento\Catalog\Model\ProductFactory;
 use Magento\Framework\Filesystem\Io\File;
-
 use ForeverCompanies\TealiumCron\Model\Event;
-
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
 use Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable as ConfigurableProduct;
 use Magento\Framework\File\Csv;
-
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 require_once '/var/www/magento/app/code/ForeverCompanies/TealiumCron/Controller/Index/ForeverCompanies_Pid.php';
 require_once '/var/www/magento/app/code/ForeverCompanies/TealiumCron/Controller/Index/S3.php';
@@ -110,16 +108,15 @@ class FcTealiumGenerateCsv
 {   
     protected $ioFile;
     protected $logger;
-    
     protected $orderFactory;
     protected $productFactory;
-    
     protected $eventModel;
     protected $storeManager;
-    
     protected $categoryCollectionFactory;
     protected $configurableProduct;
     protected $csvProcessor;
+    protected $scopeConfig;
+    protected $storeScope;
     
     public function __construct(
         LoggerInterface $logger,
@@ -130,25 +127,28 @@ class FcTealiumGenerateCsv
         StoreManagerInterface $storeManagerI,
         CategoryCollectionFactory $categoryCollectionF,
         ConfigurableProduct $configurableP,
-        Csv $cs
-        ) {
+        Csv $cs,
+        ScopeConfigInterface $scopeC
+        ) { 
             $this->logger = $logger;
             $this->ioFile = $ioF;
-            
             $this->orderFactory = $orderInterfaceF;
             $this->productFactory = $productF;
-            
             $this->eventModel = $event;
-            
             $this->storeManager = $storeManagerI;
             $this->categoryCollectionFactory = $categoryCollectionF;
             $this->configurableProduct = $configurableP;
             $this->csvProcessor = $cs;
-            
+            $this->scopeConfig = $scopeC;
+            $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
     
     public function execute()
     {
+        if (!$this->scopeConfig->getValue('forevercompanies_cron_controls/tealium/fc_tealium_generate_csv', $this->storeScope)) {
+            return $this;
+        }
+        
         // include PID class and check if process already running; if so, kill script
         // require_once '/var/www/magento/lib/ForeverCompanies/Pid.php';
         try {

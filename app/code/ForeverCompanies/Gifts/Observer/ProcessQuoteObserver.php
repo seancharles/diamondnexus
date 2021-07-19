@@ -30,12 +30,11 @@ class ProcessQuoteObserver implements ObserverInterface
     public function __construct(
         FreeGift $giftH,
         Purchase $purchaseH,
-        Cart $crt, 
+        Cart $crt,
         AdminQuote $adminQ
     ) {
         $this->giftHelper = $giftH;
         $this->purchaseHelper = $purchaseH;
-        
         $this->cart = $crt;
         $this->adminQuote = $adminQ;
     }
@@ -49,8 +48,7 @@ class ProcessQuoteObserver implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
-        $eventName = $observer->getEvent()->getName(); 
-        
+        $eventName = $observer->getEvent()->getName();
         $freeGift = false;
         if ($this->giftHelper->isEnabledFreeGift()) {
             
@@ -59,17 +57,14 @@ class ProcessQuoteObserver implements ObserverInterface
             
             foreach ($giftSkus as $sku => $qty) {
                 $freeGift = true;
-                $this->giftHelper->addGiftToQuote($quote, $sku, $qty, false, true, $observer->getEvent()->getName() );
+                $this->giftHelper->addGiftToQuote($quote, $sku, $qty, false, true, $observer->getEvent()->getName());
             }
         }
 
         if (!$freeGift && $this->purchaseHelper->isEnabledPurchase()) {
-            
-           $quote = $this->cart->getQuote();
+            $quote = $this->cart->getQuote();
             $this->purchaseHelper->addGiftToQuote($quote);
-        } 
-        
-        return;
+        }
+        return $this;
     }
-    
 }

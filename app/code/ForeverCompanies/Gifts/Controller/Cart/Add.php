@@ -10,17 +10,15 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Checkout\Controller\Cart\Add as CoreAdd;
 
-use Magento\Framework\Event\ManagerInterface as EventManager;;
-
+use Magento\Framework\Event\ManagerInterface as EventManager;
 
 class Add extends CoreAdd
 {
-    
     /**
      * @var ProductRepositoryInterface
      */
     protected $productRepository;
-    
+    protected $url;
     private $eventManager;
     
     /**
@@ -42,28 +40,27 @@ class Add extends CoreAdd
         CustomerCart $cart,
         ProductRepositoryInterface $productRepository,
         EventManager $eventM
-        ) {
-            parent::__construct(
-                $context,
-                $scopeConfig,
-                $checkoutSession,
-                $storeManager,
-                $formKeyValidator,
-                $cart,
-                $productRepository
-                );
-            $this->productRepository = $productRepository;
-            $this->eventManager = $eventM;
+    ) {
+        parent::__construct(
+            $context,
+            $scopeConfig,
+            $checkoutSession,
+            $storeManager,
+            $formKeyValidator,
+            $cart,
+            $productRepository
+        );
+        $this->productRepository = $productRepository;
+        $this->eventManager = $eventM;
+        $this->url = $context->getUrl();
     }
-    
     
     public function execute()
     {
-        
         if (!$this->_formKeyValidator->validate($this->getRequest())) {
             $this->messageManager->addErrorMessage(
                 __('Your session has expired')
-                );  
+            );
             return $this->resultRedirectFactory->create()->setPath('*/*/');
         }
         
@@ -73,8 +70,8 @@ class Add extends CoreAdd
                 $filter = new \Zend_Filter_LocalizedToNormalized(
                     ['locale' => $this->_objectManager->get(
                         \Magento\Framework\Locale\ResolverInterface::class
-                        )->getLocale()]
-                    );
+                    )->getLocale()]
+                );
                 $params['qty'] = $filter->filter($params['qty']);
             }
             
@@ -92,7 +89,6 @@ class Add extends CoreAdd
             }
             $this->cart->save();
             
-            
             /**
              * @todo remove wishlist observer \Magento\Wishlist\Observer\AddToCart
              */
@@ -108,7 +104,7 @@ class Add extends CoreAdd
                     $message = __(
                         'You added %1 to your shopping cart.',
                         $product->getName()
-                        );
+                    );
                     $this->messageManager->addSuccessMessage($message);
                 } else {
                     $this->messageManager->addComplexSuccessMessage(
@@ -117,7 +113,7 @@ class Add extends CoreAdd
                             'product_name' => $product->getName(),
                             'cart_url' => $this->getCartUrl(),
                         ]
-                        );
+                    );
                 }
                 if ($this->cart->getQuote()->getHasError()) {
                     $errors = $this->cart->getQuote()->getErrors();
@@ -132,13 +128,13 @@ class Add extends CoreAdd
             if ($this->_checkoutSession->getUseNotice(true)) {
                 $this->messageManager->addNoticeMessage(
                     $this->_objectManager->get(\Magento\Framework\Escaper::class)->escapeHtml($e->getMessage())
-                    );
+                );
             } else {
                 $messages = array_unique(explode("\n", $e->getMessage()));
                 foreach ($messages as $message) {
                     $this->messageManager->addErrorMessage(
                         $this->_objectManager->get(\Magento\Framework\Escaper::class)->escapeHtml($message)
-                        );
+                    );
                 }
             }
             
@@ -152,7 +148,7 @@ class Add extends CoreAdd
             $this->messageManager->addExceptionMessage(
                 $e,
                 __('We can\'t add this item to your shopping cart right now.')
-                );
+            );
             $this->_objectManager->get(\Psr\Log\LoggerInterface::class)->critical($e);
             return $this->goBack();
         }
@@ -168,4 +164,8 @@ class Add extends CoreAdd
         );
     }
     
+    private function getCartUrl()
+    {
+        return $this->url->getUrl('checkout/cart', ['_secure' => true]);
+    }
 }

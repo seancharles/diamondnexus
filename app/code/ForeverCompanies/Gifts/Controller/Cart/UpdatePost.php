@@ -1,16 +1,11 @@
 <?php
-/**
- * Copyright © Magento, Inc. All rights reserved.
- * See COPYING.txt for license details.
- */
 namespace ForeverCompanies\Gifts\Controller\Cart;
 
 use Magento\Checkout\Model\Cart\RequestQuantityProcessor;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Checkout\Controller\Cart\UpdatePost as CoreUpdatePost;
-
-use Magento\Framework\Event\ManagerInterface as EventManager;;
+use Magento\Framework\Event\ManagerInterface as EventManager;
 
 /**
  * Post update shopping cart.
@@ -50,12 +45,9 @@ class UpdatePost extends CoreUpdatePost
             $formKeyValidator,
             $cart
         );
-        
         $this->eventManager = $eventM;
-
         $this->quantityProcessor = $quantityProcessor ?: $this->_objectManager->get(RequestQuantityProcessor::class);
     }
-
 
     /**
      * Update customer's shopping cart
@@ -65,7 +57,6 @@ class UpdatePost extends CoreUpdatePost
     protected function _updateShoppingCart()
     {
         $this->eventManager->dispatch('free_gift_update_logic');
-        
         try {
             $cartData = $this->getRequest()->getParam('cart');
             if (is_array($cartData)) {
