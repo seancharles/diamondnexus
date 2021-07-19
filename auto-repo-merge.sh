@@ -64,6 +64,7 @@ try_merge()
         warning already $branch
         pr_num=`echo $branch | sed 's/origin\/pr\///g'`
         rm_conflict ForeverCompanies/magento2 $GITOAUTH $pr_num > /dev/null 2>&1
+        mark_deployed ForeverCompanies/magento2 $GITOAUTH $pr_num > /dev/null 2>&1
         return
     fi
     if run git merge --ff-only $branch $commit
@@ -71,6 +72,7 @@ try_merge()
         good fast $branch $commit
         pr_num=`echo $branch | sed 's/origin\/pr\///g'`
         rm_conflict ForeverCompanies/magento2 $GITOAUTH $pr_num > /dev/null 2>&1
+        mark_deployed ForeverCompanies/magento2 $GITOAUTH $pr_num > /dev/null 2>&1
         return
     fi
     if run git merge $branch $commit
@@ -78,12 +80,14 @@ try_merge()
         good merge $branch $commit
         pr_num=`echo $branch | sed 's/origin\/pr\///g'`
         rm_conflict ForeverCompanies/magento2 $GITOAUTH $pr_num > /dev/null 2>&1
+        mark_deployed ForeverCompanies/magento2 $GITOAUTH $pr_num > /dev/null 2>&1
         return
     fi
     git merge --abort
     error abort $branch $commit
     pr_num=`echo $branch | sed 's/origin\/pr\///g'`
     mark_conflict ForeverCompanies/magento2 $GITOAUTH $pr_num > /dev/null 2>&1
+    rm_deployed ForeverCompanies/magento2 $GITOAUTH $pr_num > /dev/null 2>&1
     return
 }
 
