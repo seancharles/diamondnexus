@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <forevercompanies_cron_controls>
+            <report>
+                <custom_price_order_report>1</custom_price_order_report>
+                <custom_price_order_report_tmp>1</custom_price_order_report_tmp>
+                <dn_daily_catalog_requests>1</dn_daily_catalog_requests>
+                <dn_daily_order_csr>1</dn_daily_order_csr>
+                <fraud_report>1</fraud_report>
+                <open_order_report>1</open_order_report>
+                <progressive_leasing_delivery_report>1</progressive_leasing_delivery_report>
+                <sale_promo_disc_report>1</sale_promo_disc_report>
+                <salesperson_report>1</salesperson_report>
+            </report>
+            <tealium>
+            	<fc_tealium_file_transfer>1</fc_tealium_file_transfer>
+            	<fc_tealium_generate_csv>1</fc_tealium_generate_csv>
+            	<fc_tealium_populate_queue>1</fc_tealium_populate_queue>
+            </tealium>
+            <feed>
+            	<build_feeds_early>1</build_feeds_early>
+            	<build_feeds_late>1</build_feeds_late>
+            	<create_reviews>1</create_reviews>
+            	<update_reviews>1</update_reviews>
+            </feed>
+            <loose_stone>
+            	<loose_stone_import>1</loose_stone_import>
+            	<unsold_diamond_cleaning>1</unsold_diamond_cleaning>
+            </loose_stone>
+        </forevercompanies_cron_controls>
+    </default>
+</config>

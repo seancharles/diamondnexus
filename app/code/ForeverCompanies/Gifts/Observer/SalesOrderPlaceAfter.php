@@ -11,7 +11,6 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Quote\Model\QuoteFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
-
 class SalesOrderPlaceAfter implements ObserverInterface
 {
     /**
@@ -19,9 +18,7 @@ class SalesOrderPlaceAfter implements ObserverInterface
      */
     protected $giftHelper;
     protected $purchaseHelper;
-    
     protected $quoteFactory;
-    
     
     /**
      * @var \Magento\Sales\Api\OrderRepositoryInterface
@@ -47,11 +44,9 @@ class SalesOrderPlaceAfter implements ObserverInterface
      * @var \Magento\Sales\Model\Order\ItemFactory
      */
     protected $orderItemFactory;
-    
     protected $scopeConfig;
     protected $storeScope;
     
-
     /**
      * ProcessQuoteObserver constructor.
      * @param FreeGift $helper
@@ -70,16 +65,12 @@ class SalesOrderPlaceAfter implements ObserverInterface
         
         $this->giftHelper = $giftH;
         $this->purchaseHelper = $purchaseH;
-        
         $this->quoteFactory = $quoteF;
-        
-        
         $this->productRepository    = $productRepository;
         $this->orderRepository      = $orderRepository;
         $this->cartItemFactory      = $cartItemFactory;
         $this->quoteRepository      = $quoteRepository;
         $this->orderItemFactory     = $orderItemFactory;
-        
         $this->scopeConfig = $scopeConfig;
         $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
@@ -94,14 +85,13 @@ class SalesOrderPlaceAfter implements ObserverInterface
     public function execute(Observer $observer)
     {
         $this->_addFreeItemToOrder($observer->getEvent()->getOrder());
-        return;
+        return $this;
     }
     
     protected function _addFreeItemToOrder($order)
     {
         $freeItem = false;
         $quote = $this->quoteRepository->get($order->getQuoteId());
-        
         if ($this->giftHelper->isEnabledFreeGift()) {
             $giftSkus = $this->giftHelper->fillGifts($quote);
             
@@ -114,19 +104,24 @@ class SalesOrderPlaceAfter implements ObserverInterface
             }
         }
             
-        if(!$freeItem && $this->purchaseHelper->isEnabledPurchase()) {
+        if (!$freeItem && $this->purchaseHelper->isEnabledPurchase()) {
             foreach ($quote->getAllItems() as $_quoteItem) {
                 
                 // this needs to be set for purchase to work
             //    $_quoteItem->setSetId(42);
                 
                 if ($_quoteItem->getSetId() > 0) {
-                    if ($quote->getSubtotal() >= $this->scopeConfig->getValue('forevercompanies_gifts/purchase/total', $this->storeScope)) {
+                    if ($quote->getSubtotal() >=
+                            $this->scopeConfig->getValue('forevercompanies_gifts/purchase/total', $this->storeScope)) {
                         $freeItem = true;
-                        $freeSku = $this->scopeConfig->getValue('forevercompanies_gifts/purchase/product_id', $this->storeScope);
+                        $freeSku =
+                            $this->scopeConfig->getValue(
+                                'forevercompanies_gifts/purchase/product_id',
+                                $this->storeScope
+                            );
                         break;
                     }
-                }   
+                }
             }
         }
         
