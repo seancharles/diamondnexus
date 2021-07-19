@@ -49,8 +49,8 @@ class Feedonomics extends Command
         if ($name = $input->getOption(self::NAME)) {
             $output->writeln('<info>Provided name is `' . $name . '`</info>');
         }
-        $this->feedModel->BuildCsvs(1);
-        $this->feedModel->BuildCsvs(12);
+        $this->feedModel->buildCsvs(1);
+        $this->feedModel->buildCsvs(12);
         return;
     }
 }

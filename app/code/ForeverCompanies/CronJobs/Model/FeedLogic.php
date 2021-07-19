@@ -94,7 +94,10 @@ class FeedLogic
     public function min_display($arrayName)
     {
         $udisplay = '';
-        $udisplay = min(array_unique($arrayName));
+        if (!empty($arrayName)) {
+            $udisplay = min(array_unique($arrayName));
+        }
+        
         return $udisplay;
     }
     
@@ -205,9 +208,10 @@ class FeedLogic
         
         $this->storeManager->setCurrentStore($GLOBALS['argvStoreId']);
         
-        
-        $products = $this->productCollectionFactory->create()->setFlag('has_stock_status_filter', false)->load();
+        //  $products = $this->productCollectionFactory->create()->setFlag('has_stock_status_filter', false)->load();FF
+        $products = $this->productCollectionFactory->create();
         // https://github.com/magento/magento2/issues/15187
+        /*
         $products->joinField(
             'store_id',
             'catalog_category_product_index',
@@ -225,7 +229,12 @@ class FeedLogic
             'inner',
             1
         );
+        */
+        $products->addStoreFilter($GLOBALS['argvStoreId']);
         $products->addFieldToFilter('visibility', array('4'));
+        $products->addAttributeToFilter('status',\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED);
+        
+        $products->load();
         
         $productArr = array();
         
@@ -233,15 +242,18 @@ class FeedLogic
             try {
                 $stockItem = $this->stockItemModel->get($product->getId());
             } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
-                continue;
+            //    continue;
             }
-            if ($stockItem->getIsInStock() == 1) {
-                continue;
+    //        echo $stockItem->getIsInStock() . '    ';
+            if ($stockItem->getIsInStock() !== 1) {
+           //     continue;
             }
             $productArr[] = $product;
         }
         
         $product_count = count($productArr);
+        
+        echo 'the product count is ' . $product_count . '<br />';
         foreach ($productArr as $product) {
             $prebuilts[] = $this->displayProd($product);
         }
@@ -1166,18 +1178,28 @@ class FeedLogic
     
     public function createFBCSV($listing)
     {
-        $varPathExport = $_SERVER['HOME'].'magento/var/export/';
+        $varPathExport = $_SERVER['HOME'] . 'magento/var/export/';
+        
         if (!file_exists($varPathExport)) {
             mkdir($varPathExport, 0777, true);
         }
         
+        $childCount = 0;
+        $parentCount = 0;
+        
         $output = fopen($varPathExport.'base_feed_fb_store_'. $GLOBALS['argvStoreId'] .'.txt', 'w+');
         fputcsv($output, $this->fileheaderFB(), "\t", '"');
+        
         foreach ($listing['list'] as $result) {
+            
             if (!empty($result)) {
+                
+            //    echo count($result['Children']) . '    ';
+                
                 if (count($result['Children']) > 0) {
                     foreach ($result['Children'] as $childProduct) {
                         if ($childProduct[16] != "") {
+                            $childCount++;
                             $fb_line = array(
                                 $childProduct[16],
                                 "available for order",
@@ -1199,29 +1221,35 @@ class FeedLogic
                         }
                     }
                 } else {
-                    if (1==0 && $product[16] != "") {
+                    
+                    if (isset($result['Result'][16]) &&  trim($result['Result'][16]) != "") {
+                        
+                        $parentCount++;
+                        
                         $fb_line = array(
-                            $product[16],
+                            $result['Result'][16],
                             "available for order",
                             "new",
-                            $product[4],
-                            $product[6],
-                            $product[7],
+                            $result['Result'][4],
+                            $result['Result'][6],
+                            $result['Result'][7],
                             substr(
-                                $product[14],
+                                $result['Result'][14],
                                 0,
                                 100
                             ),
-                            $product[8],
-                            $product[9],
-                            $product[21],
-                            $product[22] . "/" . $product[23]
+                            $result['Result'][8],
+                            $result['Result'][9],
+                            $result['Result'][21],
+                            $result['Result'][22] . "/" . $result['Result'][23]
                         );
                         fputcsv($output, $fb_line, "\t", '"');
                     }
                 }
             }
         }
+        
+        echo 'the child count is ' . $childCount . ' and the parent count is ' . $parentCount . '  ';
     }
     
     public function getWebsiteName()
