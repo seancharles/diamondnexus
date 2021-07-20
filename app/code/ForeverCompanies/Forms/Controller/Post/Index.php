@@ -115,7 +115,7 @@ class Index extends \ForeverCompanies\Forms\Controller\ApiController
                     $copy = $this->formHelper->getSanitizedField('copy');
                     $updates = $this->formHelper->getSanitizedField('updates');
                    
-                    $this->iterableModel->event_track(
+                    $this->iterableModel->eventTrack(
                         $email,
                         'tf_drop_hint',
                         time(),
