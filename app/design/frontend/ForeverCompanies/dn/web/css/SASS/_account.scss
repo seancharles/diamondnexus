@@ -71,7 +71,8 @@
     }
 
     .block-collapsible-nav {
-        .item.current > strong {
+        .item.current > strong,
+        .item.current > a {
             border-color: #bfa374 !important;
         }
     }
@@ -97,5 +98,40 @@
         text-transform: uppercase !important;
         font-size: 12px !important;
         font-weight: bold !important;
+    }
+
+    .order-details-items .product-item-name {
+        font-size: 16px;
+    }
+    .price .price-excluding-tax,
+    .subtotal .price-excluding-tax {
+        font-size: 18px !important;
+        color: #000 !important;
+    }
+
+    .order-date {
+        margin-top: 10px !important;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .block-collapsible-nav-title {
+        strong {
+            font-size: 14px !important;
+        }
+    }
+    .nav {
+        .item {
+            a,
+            strong {
+                font-size: 14px;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 639px) {
+    .order-status {
+        margin: 0 !important;
     }
 }
