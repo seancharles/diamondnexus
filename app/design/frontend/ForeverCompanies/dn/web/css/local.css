@@ -108,6 +108,43 @@ a {
   font-size: 24px;
   color: #000; }
 
+.message.info {
+  font-size: 16px !important; }
+
+.pages-items .action.next,
+.pages-items .action.previous {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #000;
+  background: 0 0;
+  cursor: pointer;
+  border-radius: 0; }
+  .pages-items .action.next:before,
+  .pages-items .action.previous:before {
+    color: #000 !important;
+    font-weight: bold !important; }
+  .pages-items .action.next:hover,
+  .pages-items .action.previous:hover {
+    background: #efefef 0 0 no-repeat padding-box;
+    box-shadow: none; }
+
+.pages-items .item:not(.pages-item-next) {
+  padding: 0 10px; }
+  .pages-items .item:not(.pages-item-next) .page {
+    background: transparent;
+    line-height: 1.5rem;
+    padding: 13px 13px 7px; }
+  .pages-items .item:not(.pages-item-next) strong.page {
+    font-weight: normal !important;
+    color: #bfa374;
+    border-bottom: 2px solid #bfa374; }
+  .pages-items .item:not(.pages-item-next) a.page:hover {
+    color: #bfa374 !important;
+    border-bottom: 2px solid #bfa374; }
+
 @media screen and (max-width: 768px) {
   .page-header {
     margin-bottom: 33px; } }
@@ -262,7 +299,8 @@ footer {
 .account .block-wishlist {
   display: none; }
 
-.account .block-collapsible-nav .item.current > strong {
+.account .block-collapsible-nav .item.current > strong,
+.account .block-collapsible-nav .item.current > a {
   border-color: #bfa374 !important; }
 
 .account .block-title {
@@ -283,6 +321,28 @@ footer {
   text-transform: uppercase !important;
   font-size: 12px !important;
   font-weight: bold !important; }
+
+.account .order-details-items .product-item-name {
+  font-size: 16px; }
+
+.account .price .price-excluding-tax,
+.account .subtotal .price-excluding-tax {
+  font-size: 18px !important;
+  color: #000 !important; }
+
+.account .order-date {
+  margin-top: 10px !important; }
+
+@media screen and (max-width: 767px) {
+  .block-collapsible-nav-title strong {
+    font-size: 14px !important; }
+  .nav .item a,
+  .nav .item strong {
+    font-size: 14px; } }
+
+@media screen and (max-width: 639px) {
+  .order-status {
+    margin: 0 !important; } }
 
 .checkout-cart-index .cart .item-info .product-item-name {
   font-size: 18px; }
