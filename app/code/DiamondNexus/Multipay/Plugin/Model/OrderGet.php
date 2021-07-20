@@ -57,7 +57,12 @@ class OrderGet
         $orderExtension = $extensionAttributes ? $extensionAttributes : $this->orderExtensionFactory->create();
         $allTransactionsByOrderId = $this->transactionResource->getAllTransactionsByOrderId($resultOrder->getId());
         foreach ($allTransactionsByOrderId as &$transaction) {
-            if (isset($transaction['payment_method'])) {
+            
+            // Adding isset for orders that were not originally paid with multipay possibly or have other bug in data
+            // TODO: resolve origin of this error
+            // Notice: Undefined offset: 0 in /var/www/magento/app/code/DiamondNexus/Multipay/Plugin/Model/OrderGet.php on line 61
+            
+            if (isset($transaction['payment_method']) && isset(Constant::MULTIPAY_METHOD_LABEL[$transaction['payment_method']])) {
                 $transaction['payment_method'] = Constant::MULTIPAY_METHOD_LABEL[$transaction['payment_method']];
             }
         }
