@@ -784,13 +784,13 @@ class FeedLogic
         if (trim($gemstone) != "" && $gemstone != 0) {
             $ret .= "&gemstone=" . $this->stripUrlString($gemstone);
         }
-        if (trim($ringSize) != "") {
+        if (trim($ringSize) != "" && $ringSize != 0) {
             $ret .= "&ring-size=" . $this->stripUrlString($ringSize);
         }
-        if (trim($chainLength) != "") {
+        if (trim($chainLength) != "" && $chainLength != 0) {
             $ret .= "&chain-length=" . $this->stripUrlString($chainLength);
         }
-        if (trim($certifiedStone) != "") {
+        if (trim($certifiedStone) != "" && $certifiedStone != 0) {
             $ret .= "&certified-stone=" . $this->stripUrlString($certifiedStone);
         }
         return strtolower($ret);
@@ -798,10 +798,12 @@ class FeedLogic
     
     protected function stripUrlString($str)
     {
+        $str = str_replace(".", "-", $str);
+        $str = str_replace("  ", " ", $str);
         $str = str_replace(" ", "-", $str);
-        $str = str_replace(",", "-", $str);
+        $str = str_replace(",", "", $str);
         $str = str_replace("\\", "-", $str);
-        $str = str_replace("'", "-", $str);
+        $str = str_replace("'", "", $str);
         $str = str_replace("_", "-", $str);
         return $str;
     }
