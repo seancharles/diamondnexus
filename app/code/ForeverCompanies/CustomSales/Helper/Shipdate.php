@@ -10,7 +10,10 @@ namespace ForeverCompanies\CustomSales\Helper;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\Order\Status\HistoryFactory;
 use ShipperHQ\Shipper\Model\ResourceModel\Order\Detail;
 use ShipperHQ\Shipper\Model\ResourceModel\Order\GridDetail;
 
@@ -30,6 +33,16 @@ class Shipdate extends AbstractHelper
      * @var Detail
      */
     protected $shipperDetailResourceModel;
+
+    /**
+     * @var OrderRepositoryInterface
+     */
+    protected $orderRepository;
+
+    /**
+     * @var HistoryFactory
+     */
+    protected $orderHistoryFactory;
     
     /**
      * @var GridDetail
@@ -41,17 +54,25 @@ class Shipdate extends AbstractHelper
     /**
      * SalesPerson constructor.
      * @param ScopeConfigInterface $scopeConfig
+     * @param Detail $shipperDetailResourceModel
+     * @param GridDetail $shipperGridDetailResourceModel
+     * @param OrderRepositoryInterface $orderRepository
+     * @param HistoryFactory $orderHistoryFactory
      * @param Context $context
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         Detail $shipperDetailResourceModel,
         GridDetail $shipperGridDetailResourceModel,
+        OrderRepositoryInterface $orderRepository,
+        HistoryFactory $orderHistoryFactory,
         Context $context
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->shipperDetailResourceModel = $shipperDetailResourceModel;
         $this->shipperGridDetailResourceModel = $shipperGridDetailResourceModel;
+        $this->orderRepository = $orderRepository;
+        $this->orderHistoryFactory = $orderHistoryFactory;
 
         parent::__construct($context);
 
@@ -297,6 +318,8 @@ class Shipdate extends AbstractHelper
             'delivery_date' => $newDeliveryDate
         ];
         
+        $this->addUpdateComment($order, $deliveryDates);
+        
         // update the carrier block on the order detail
         $carrierGroupDetail = json_decode($data['carrier_group_detail']);
         
@@ -359,6 +382,36 @@ class Shipdate extends AbstractHelper
         }
         
         return $result;
+    }
+    
+    protected function addUpdateComment($order, $changes) {
+       $comment = "Delivery dates updated: ";
+       
+       if (isset($changes['dispatch_date']) === true) {
+           $comment .= " shipping " . date("F j, Y", strtotime($changes['dispatch_date'])) . " ";
+       }
+       
+       if (isset($changes['delivery_date']) === true) {
+           $comment .= " estimated delivery on " . date("F j, Y", strtotime($changes['delivery_date']));
+       }
+       
+       try {
+           if ($order->canComment()) {
+               $history = $this->orderHistoryFactory->create()
+                   ->setEntityName(\Magento\Sales\Model\Order::ENTITY)
+                   ->setComment(
+                       __('%1.', $comment)
+                   );
+
+               $history->setIsCustomerNotified(false)
+                       ->setIsVisibleOnFront(false);
+
+               $order->addStatusHistory($history);
+               $this->orderRepository->save($order);
+           }
+       } catch (NoSuchEntityException $exception) {
+           $this->logger->error($exception->getMessage());
+       }
     }
 
     /**
