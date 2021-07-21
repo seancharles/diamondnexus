@@ -22,8 +22,7 @@ class CatalogControllerCategoryInitAfter implements ObserverInterface
     public function execute(Observer $observer)
     {
         $category = $observer->getEvent()->getCategory();
-        $controllerAction = $observer->getEvent()->getControllerAction();
-        $redirectUrl= $this->url->getUrl('collections/' . $category->getUrlKey());
+        $redirectUrl = $this->url->getUrl('collections/' . $category->getUrlKey());
         $this->responseFactory->create()->setRedirect($redirectUrl)->sendResponse();
         return $observer;
     }
