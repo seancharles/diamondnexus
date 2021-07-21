@@ -1,5 +1,4 @@
 <?php
-
 namespace ForeverCompanies\CronJobs\Model;
 
 require_once $_SERVER['HOME'].'magento/shell/dnl/google_api/ProductsFeed.php';
@@ -15,11 +14,10 @@ use Magento\CatalogInventory\Model\Stock\StockItemRepository;
 use Magento\Review\Model\Review;
 use Magento\Review\Model\ResourceModel\Review\CollectionFactory as ReviewCollectionFactory;
 use ForeverCompanies\CronJobs\Dnl\Encoding;
-
+use ForeverCompanies\ProductUrlPrefix\Model\Url as ProductUrlPrefixModel;
 
 class FeedLogic
-{    
-
+{
     protected $logger;
     protected $storeRepository;
     protected $storeManager;
@@ -31,7 +29,9 @@ class FeedLogic
     protected $reviewModel;
     protected $reviewCollection;
     protected $encoder;
-    
+    protected $productUrlPrefixModel;
+    protected $configurableProductAttrArr;
+
     public function __construct(
         LoggerInterface $logger,
         StoreRepositoryInterface $storeRepositoryInterface,
@@ -43,125 +43,226 @@ class FeedLogic
         StockItemRepository $stockItemRepo,
         Review $rev,
         ReviewCollectionFactory $coll,
-        Encoding $enc
-        ) {
-            $this->logger = $logger;
-            
-            $this->storeRepository = $storeRepositoryInterface;
-            $this->storeManager = $storeManagerInterface;
-            $this->productCollectionFactory = $collectionFactory;
-            $this->productModel = $productFactory;
-            $this->resourceConnection = $resource;
-            $this->attributeSetMod = $attributeSetRepo;
-            $this->stockItemModel = $stockItemRepo;
-            $this->reviewModel = $rev;
-            $this->reviewCollection = $coll;
-            $this->encoder = $enc;
+        Encoding $enc,
+        ProductUrlPrefixModel $productUrlPrefixM
+    ) {
+        $this->logger = $logger;
+        $this->storeRepository = $storeRepositoryInterface;
+        $this->storeManager = $storeManagerInterface;
+        $this->productCollectionFactory = $collectionFactory;
+        $this->productModel = $productFactory;
+        $this->resourceConnection = $resource;
+        $this->attributeSetMod = $attributeSetRepo;
+        $this->stockItemModel = $stockItemRepo;
+        $this->reviewModel = $rev;
+        $this->reviewCollection = $coll;
+        $this->encoder = $enc;
+        $this->productUrlPrefixModel = $productUrlPrefixM;
+        $this->configurableProductAttrArr = array();
     }
-    
-    function buildCsvs($storeId)
+
+    public function buildCsvs($storeId)
     {
         $GLOBALS['argvStoreId'] = $storeId;
-        
         $listing = $this->getAllProductList();
+        
         $this->createCSV($listing);
         $this->createYahooCSV($listing);
         $this->createFBCSV($listing);
     }
-    
-    function createReviews($storeId)
+
+    public function createReviews($storeId)
     {
         $GLOBALS['argvStoreId'] = $storeId;
-        
         $this->getProductsReviews('full');
     }
-    
-    function updateReviews($storeId)
+
+    public function updateReviews($storeId)
     {
         $GLOBALS['argvStoreId'] = $storeId;
-        
         $this->getProductsReviews('inc');
     }
-    
-    function check_format($text) {
-        
+
+    public function check_format($text)
+    {
         // TODO there is no recode_string function in php 7.4.x.
         // https://www.php.net/manual/en/function.iconv.php
         return $this->encoder->fixALL($text);
-        return recode_string("us..flat",$this->encoder->fixALL($text));
+        return recode_string("us..flat", $this->encoder->fixALL($text));
     }
     
-    function min_display($arrayName) {
+    public function min_display($arrayName)
+    {
         $udisplay = '';
-        $udisplay = min(array_unique($arrayName));
+        if (!empty($arrayName)) {
+            $udisplay = min(array_unique($arrayName));
+        }
+        
         return $udisplay;
     }
     
-    function unique_display($arrayName, $delimter=' / ') {
+    public function unique_display($arrayName, $delimter = ' / ')
+    {
         $udisplay = '';
         foreach (array_unique($arrayName) as $Name) {
             $udisplay .= $Name.$delimter;
         }
-        $udisplay = substr($udisplay,0,-(strlen($delimter)));
-        if(strlen($udisplay) == 0) {
+        $udisplay = substr($udisplay, 0, -(strlen($delimter)));
+        if (strlen($udisplay) == 0) {
             $udisplay = "May Vary";
         }
         return $udisplay;
     }
     
-    function fileheader() {
+    public function fileheader()
+    {
         // Header
-        return array("setAdwordsGrouping","setAgeGroup","setBrand","setCondition","setDescription","setGender","setImageLink","setProductLink","setPrice","setMpn","setShippingWeight","setColor","setMaterial","addSize","setTitle","setGoogleProductCategory","setAtomId","setAvailability","setItemGroupId","setProductType","setSKU", "setSalePrice","sale_price_effective_date","Recommendable","custom label 1","custom label 2","custom label 3");
+        return array(
+            "setAdwordsGrouping",
+            "setAgeGroup",
+            "setBrand",
+            "setCondition",
+            "setDescription",
+            "setGender",
+            "setImageLink",
+            "setProductLink",
+            "setPrice",
+            "setMpn",
+            "setShippingWeight",
+            "setColor",
+            "setMaterial",
+            "addSize",
+            "setTitle",
+            "setGoogleProductCategory",
+            "setAtomId",
+            "setAvailability",
+            "setItemGroupId",
+            "setProductType",
+            "setSKU",
+            "setSalePrice",
+            "sale_price_effective_date",
+            "Recommendable",
+            "custom label 1",
+            "custom label 2",
+            "custom label 3"
+        );
     }
     
-    function fileheaderYahoo() {
+    public function fileheaderYahoo()
+    {
         // Header
-        return array("bingads_grouping","AgeGroup","Brand","Condition","Description","Gender","ImageURL","ProductURL","Price","MPN","ShippingWeight","Color","Material","addSize","Title","MerchantCategory","MPID","Availability","GroupId","ProductType","SKU","pricewithdiscount","sale_price_effective_date","custom_label_0","custom_label_1","custom_label_2","custom_label_3");
+        return array(
+            "bingads_grouping",
+            "AgeGroup",
+            "Brand",
+            "Condition",
+            "Description",
+            "Gender",
+            "ImageURL",
+            "ProductURL",
+            "Price",
+            "MPN",
+            "ShippingWeight",
+            "Color",
+            "Material",
+            "addSize",
+            "Title",
+            "MerchantCategory",
+            "MPID",
+            "Availability",
+            "GroupId",
+            "ProductType",
+            "SKU",
+            "pricewithdiscount",
+            "sale_price_effective_date",
+            "custom_label_0",
+            "custom_label_1",
+            "custom_label_2",
+            "custom_label_3"
+        );
     }
     
-    function fileheaderFB() {
+    public function fileheaderFB()
+    {
         // Header
-        return array("id","availability","condition", "description", "image_link", "link", "title", "price", "mpn", "sale_price", "sale_price_effective_date");
+        return array(
+            "id",
+            "availability",
+            "condition",
+            "description",
+            "image_link",
+            "link",
+            "title",
+            "price",
+            "mpn",
+            "sale_price",
+            "sale_price_effective_date"
+        );
     }
     
-    function getAllProductList() {
+    public function getAllProductList()
+    {
         // Build Profile
         //     $storeId = Mage::app()->getStore($GLOBALS['argvStoreId']);
         //     Mage::app()->setCurrentStore($storeId);
         
         $this->storeManager->setCurrentStore($GLOBALS['argvStoreId']);
         
-        
-        $products = $this->productCollectionFactory->create()->setFlag('has_stock_status_filter', false)->load();
+        //  $products = $this->productCollectionFactory->create()->setFlag('has_stock_status_filter', false)->load();FF
+        $products = $this->productCollectionFactory->create();
         // https://github.com/magento/magento2/issues/15187
-        $products->joinField('store_id', 'catalog_category_product_index', 'store_id', 'product_id=entity_id', '{{table}}.store_id = '.$GLOBALS['argvStoreId'], 'left');
+        /*
+        $products->joinField(
+            'store_id',
+            'catalog_category_product_index',
+            'store_id',
+            'product_id=entity_id',
+            '{{table}}.store_id = ' . $GLOBALS['argvStoreId'],
+            'left'
+        );
         $products->getSelect()->distinct(true);
-        $products->joinAttribute('visibility', 'catalog_product/visibility', 'entity_id', null, 'inner', 1);
-        $products->addFieldToFilter('visibility',array('4'));
+        $products->joinAttribute(
+            'visibility',
+            'catalog_product/visibility',
+            'entity_id',
+            null,
+            'inner',
+            1
+        );
+        */
+        $products->addStoreFilter($GLOBALS['argvStoreId']);
+        $products->addFieldToFilter('visibility', array('4'));
+        $products->addAttributeToFilter('status',\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED);
+        
+        $products->load();
         
         $productArr = array();
         
         foreach ($products as $product) {
             try {
                 $stockItem = $this->stockItemModel->get($product->getId());
+            } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+            //    continue;
             }
-            catch(\Magento\Framework\Exception\NoSuchEntityException $e) {
-                continue;
-            }
-            if ($stockItem->getIsInStock() == 1){
-                continue;
+    //        echo $stockItem->getIsInStock() . '    ';
+            if ($stockItem->getIsInStock() !== 1) {
+           //     continue;
             }
             $productArr[] = $product;
         }
         
         $product_count = count($productArr);
+        
+        echo 'the product count is ' . $product_count . '<br />';
         foreach ($productArr as $product) {
             $prebuilts[] = $this->displayProd($product);
         }
+        
         return array('count' => $product_count, 'list' => $prebuilts);
     }
     
-    function getRecentProductList() {
+    public function getRecentProductList()
+    {
         $date = date('Y-m-d', strtotime("now - 1 day"));
         // Build Profile
         $this->storeManager->setCurrentStore($GLOBALS['argvStoreId']);
@@ -169,18 +270,24 @@ class FeedLogic
         $products = $this->productCollectionFactory->create()->setFlag('has_stock_status_filter', false)->load();
         $products->addAttributeToSelect('*');
         $products->addAttributeToFilter('updated_at', array('gteq' => $date));
-        $products->joinField('store_id', 'catalog_category_product_index', 'store_id', 'product_id=entity_id', '{{table}}.store_id = '.$GLOBALS['argvStoreId'], 'left');
+        $products->joinField(
+            'store_id',
+            'catalog_category_product_index',
+            'store_id',
+            'product_id=entity_id',
+            '{{table}}.store_id = '. $GLOBALS['argvStoreId'],
+            'left'
+        );
         $products->getSelect()->distinct(true);
         $products->joinAttribute('visibility', 'catalog_product/visibility', 'entity_id', null, 'inner', 1);
-        $products->addFieldToFilter('visibility',array('4'));
+        $products->addFieldToFilter('visibility', array('4'));
         
         $productArr = array();
         
         foreach ($products as $product) {
             try {
                 $stockItem = $this->stockItemModel->get($product->getId());
-            }
-            catch(\Magento\Framework\Exception\NoSuchEntityException $e) {
+            } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
                 continue;
             }
             if ($stockItem->getIsInStock() == 1) {
@@ -196,7 +303,8 @@ class FeedLogic
         return array('count' => $product_count, 'list' => $prebuilts);
     }
     
-    function getOneProduct($pid) {
+    public function getOneProduct($pid)
+    {
         // Build Profile
         $products = $this->productModel->create()->load($pid);
         $product_count = count($products);
@@ -207,7 +315,8 @@ class FeedLogic
         return array('count' => $product_count, 'list' => $prebuilts);
     }
     
-    function getProdImage($product,$pid,$metal) {
+    public function getProdImage($product, $pid, $metal)
+    {
         $fcDbRead = $this->resourceConnection->getConnection();
         $fcDbQuery = 'select
 		        mg.*,
@@ -234,17 +343,22 @@ class FeedLogic
         
         $fcDbQueryResults = $fcDbRead->fetchAll($fcDbQuery);
         
-        if( isset($fcDbQueryResults[0]) && strlen($fcDbQueryResults[0]['value']) > 0 ) {
+        if (isset($fcDbQueryResults[0]) && strlen($fcDbQueryResults[0]['value']) > 0) {
             //    $image = $product->getMediaConfig()->getMediaUrl($fcDbQueryResults[0]['value']);
-            $image = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product' . $fcDbQueryResults[0]['value'];
+            $image = $this->storeManager->getStore()->getBaseUrl(
+                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+            ) . 'catalog/product' . $fcDbQueryResults[0]['value'];
         } else {
             //    $image = $product->getMediaConfig()->getMediaUrl($product->getData('image'));
-            $image = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product' . $product->getImage();
+            $image = $this->storeManager->getStore()->getBaseUrl(
+                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+            ) . 'catalog/product' . $product->getImage();
         }
         return $image;
     }
     
-    function displayProd($productModel) {
+    public function displayProd($productModel)
+    {
         // Get Product
         $product = $this->productModel->create()
         ->setStoreId($GLOBALS['argvStoreId'])
@@ -268,8 +382,12 @@ class FeedLogic
         $name = $product->getName();
         $status = $product->getStatus();
         $visiblility = $product->getVisibility();
-        $url =  $this->storeManager->getStore()->getBaseUrl() . $product->getUrlKey();
-        $main_image = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product' . $product->getImage();
+        
+        $url = $this->productUrlPrefixModel->getUrl($product);
+        
+        $main_image = $this->storeManager->getStore()->getBaseUrl(
+            \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+        ) . 'catalog/product' . $product->getImage();
         $sale_start_uf = new \DateTime($product->getSpecialFromDate());
         $sale_start = $sale_start_uf->format(\DateTime::ATOM);
         $sale_end_uf = new \DateTime($product->getSpecialToDate());
@@ -280,10 +398,10 @@ class FeedLogic
         $ProductType = $Category;
         $high_margin = '';
         $bestseller = '';
-        if (preg_match('/No/',$product->getAttributeText("high_margin"))) {
+        if (preg_match('/No/', $product->getAttributeText("high_margin"))) {
             $high_margin = "High Margin";
         }
-        if (preg_match('/No/',$product->getAttributeText("bestseller"))) {
+        if (preg_match('/No/', $product->getAttributeText("bestseller"))) {
             $bestseller = "Bestseller";
         }
         switch (substr($sku, 0, 1)) {
@@ -297,8 +415,7 @@ class FeedLogic
                 $Gender = "unisex";
                 break;
         }
-        
-        switch($attributeSetName) {
+        switch ($attributeSetName) {
             case "Rings":
             case "Ring":
             case "Mens Rings":
@@ -397,7 +514,7 @@ class FeedLogic
         // Custom Options
         $Sizes = array();
         foreach ($options_cus as $option) {
-            switch($option->getTitle()) {
+            switch ($option->getTitle()) {
                 case 'Ring Size':
                 case 'Band Width':
                 case 'Chain Length':
@@ -417,7 +534,7 @@ class FeedLogic
         if (strlen($this->unique_display($Sizes)) > 0) {
             $size_display = "Varies";
         }
-        $title = preg_replace('~[[:cntrl:]]~','',preg_replace('/(\s)+/',' ',preg_replace('/s$/','',$title)));
+        $title = preg_replace('~[[:cntrl:]]~', '', preg_replace('/(\s)+/', ' ', preg_replace('/s$/', '', $title)));
         
         $Cuts = array();
         $Prices = array();
@@ -426,14 +543,16 @@ class FeedLogic
         $Gemstones = array();
         $SalePrices = array();
         $childs = array();
-        switch($product->getTypeId()) {
+        switch ($product->getTypeId()) {
             case 'configurable':
                 $itemGroupId = $sku;
                 $childProducts = $product->getTypeInstance()->getUsedProducts($product);
                 foreach ($childProducts as $simpleModel) {
                     // Future reference displayProd($simpleModel); will generate the simple
-                    $_product = $this->productModel->create()->setStoreId($GLOBALS['argvStoreId'])->load($simpleModel->getId());
-                    if($_product->getStatus() == 1) {
+                    $_product = $this->productModel->create()->setStoreId(
+                        $GLOBALS['argvStoreId']
+                    )->load($simpleModel->getId());
+                    if ($_product->getStatus() == 1) {
                         $SPrice = $_product->getPrice();
                         $sale_start_uf = new \DateTime($_product->getSpecialFromDate());
                         $ssale_start = $sale_start_uf->format(\DateTime::ATOM);
@@ -441,19 +560,35 @@ class FeedLogic
                         $ssale_end = $sale_end_uf->format(\DateTime::ATOM);
                         $today = date('Y-m-dT00:00:00+00:00');
                         
-                        if (($today >= $ssale_start) && ($today < $ssale_end) && ($_product->getPrice() != $_product->getFinalPrice())) {
+                        if (($today >= $ssale_start)
+                            && ($today < $ssale_end)
+                            && ($_product->getPrice() != $_product->getFinalPrice())
+                        ) {
                             $SSalePrice = $_product->getFinalPrice();
                             $onsale = "On Sale";
                         } else {
                             $SSalePrice = "";
                             $onsale = "";
                         }
-                        $SCut = ($_product->getAttributeText('cut_type') == '') ? "None" : $_product->getAttributeText('cut_type');
-                        $SColor = ($_product->getAttributeText('color') == '') ? "None" : $_product->getAttributeText('color');
-                        $SMetal = ($_product->getAttributeText('metal_type') == '') ? "None" : $_product->getAttributeText('metal_type');
-                        $SGemstone = ($_product->getAttributeText('gemstone') == '') ? "None" : $_product->getAttributeText('gemstone');
+                        $SCut = ($_product->getAttributeText('cut_type') == '')
+                            ? "None" : $_product->getAttributeText('cut_type');
+                        $SColor = ($_product->getAttributeText('color') == '')
+                            ? "None" : $_product->getAttributeText('color');
+                        $SMetal = ($_product->getAttributeText('metal_type') == '')
+                            ? "None" : $_product->getAttributeText('metal_type');
+                        $SGemstone = ($_product->getAttributeText('gemstone') == '')
+                            ? "None" : $_product->getAttributeText('gemstone');
                         
-                        $image = $this->getProdImage($product,$product->getId(),$SMetal);
+                    
+                        
+                        foreach ($_product->getData() as $k => $v)
+                        {
+                            if (!in_array($k, $this->configurableProductAttrArr)) {
+                                $this->configurableProductAttrArr[]= $k;
+                            }
+                        }
+                        
+                        $image = $this->getProdImage($product, $product->getId(), $SMetal);
                         
                         $Cuts[] = $SCut;
                         $Prices[] = $SPrice;
@@ -462,8 +597,60 @@ class FeedLogic
                         $Gemstones[] = $SGemstone;
                         $SalePrices[] = $SSalePrice;
                         $simpleTitleMods = $SGemstone." ".$SCut." ".$SColor." ".$SMetal;
-                        $simpleTitle = preg_replace('~[[:cntrl:]]~','',preg_replace('/(\s)+/',' ',preg_replace('/s$/','',preg_replace('/ None/','',$title." ".$simpleTitleMods))));
-                        $childs[] = array($attributeSetName,"Adult", $this->getWebsiteName(),"New",$description,$Gender,$image,$url."?precious-metal=".preg_replace('/ /','-',$SMetal)."&cid=".$_product->getId(),$SPrice,$_product->getSku(),"1",$SColor,$SMetal,$size_display,$simpleTitle,$Category,$_product->getId(),"In Stock",$itemGroupId,$ProductType,$sku,$SSalePrice,$ssale_start,$ssale_end,$recom,$onsale,$bestseller,$high_margin);
+                        $simpleTitle = preg_replace(
+                            '~[[:cntrl:]]~',
+                            '',
+                            preg_replace(
+                                '/(\s)+/',
+                                ' ',
+                                preg_replace(
+                                    '/s$/',
+                                    '',
+                                    preg_replace(
+                                        '/ None/',
+                                        '',
+                                        $title . " " . $simpleTitleMods
+                                    )
+                                )
+                            )
+                        );
+
+                        $childs[] = array(
+                            $attributeSetName,
+                            "Adult",
+                            $this->getWebsiteName(),
+                            "New",
+                            $description,
+                            $Gender,
+                            $image,
+                            $url .  $this->buildConfigurableUrlString(
+                                $SMetal,
+                                $_product->getAttributeText('gemstone'),
+                                $_product->getAttributeText('ring_size'),
+                                $_product->getAttributeText('chain_length'),
+                                $_product->getAttributeText('certified_stone')
+                            ),
+                            $SPrice,
+                            $_product->getSku(),
+                            "1",
+                            $SColor,
+                            $SMetal,
+                            $size_display,
+                            $simpleTitle,
+                            $Category,
+                            $_product->getId(),
+                            "In Stock",
+                            $itemGroupId,
+                            $ProductType,
+                            $sku,
+                            $SSalePrice,
+                            $ssale_start,
+                            $ssale_end,
+                            $recom,
+                            $onsale,
+                            $bestseller,
+                            $high_margin
+                        );
                     }
                 }
                 $price = $this->min_display($Prices);
@@ -477,7 +664,10 @@ class FeedLogic
                 $sale_end_uf = new \DateTime($product->getSpecialToDate());
                 $ssale_end = $sale_end_uf->format(\DateTime::ATOM);
                 $today = date('Y-m-dT00:00:00+00:00');
-                if (($today >= $ssale_start) && ($today < $ssale_end) && ($product->getPrice() != $product->getFinalPrice())) {
+                if (($today >= $ssale_start)
+                    && ($today < $ssale_end)
+                    && ($product->getPrice() != $product->getFinalPrice())
+                ) {
                     $saleprice = $product->getFinalPrice();
                     $onsale = "On Sale";
                 } else {
@@ -487,10 +677,26 @@ class FeedLogic
                 $Cuts[] = $product->getAttributeText('cut_type');
                 $Colors[] = $product->getAttributeText('color');
                 $Metals[] = $product->getAttributeText('metal_type');
-                $image = $this->getProdImage($product,$product->getId(),$product->getAttributeText('metal_type'));
+                $image = $this->getProdImage($product, $product->getId(), $product->getAttributeText('metal_type'));
                 $Gemstones[] = $product->getAttributeText('gemstone');
-                $simpleTitleMods = $Gemstones[0]." ".$Cuts[0]." ".$Colors[0]." ".$Metals[0];
-                $title = preg_replace('~[[:cntrl:]]~','',preg_replace('/(\s)+/',' ',preg_replace('/s$/','',preg_replace('/ None/','',$title." ".$simpleTitleMods))));
+                $simpleTitleMods = $Gemstones[0] . " " . $Cuts[0] . " " . $Colors[0] . " " . $Metals[0];
+                $title = preg_replace(
+                    '~[[:cntrl:]]~',
+                    '',
+                    preg_replace(
+                        '/(\s)+/',
+                        ' ',
+                        preg_replace(
+                            '/s$/',
+                            '',
+                            preg_replace(
+                                '/ None/',
+                                '',
+                                $title . " " . $simpleTitleMods
+                            )
+                        )
+                    )
+                );
                 break;
             default:
                 break;
@@ -514,7 +720,7 @@ class FeedLogic
         }
         
         // Checks
-        if((strlen($description) > 2000) || (strlen($description) == 0)) {
+        if ((strlen($description) > 2000) || (strlen($description) == 0)) {
             //print '"'.$pid.'","'.$sku.'","description too short"'."\n";
             return;
         } elseif (preg_match('/USLSPC/', $sku)) {
@@ -535,18 +741,80 @@ class FeedLogic
             //print " no sku\n";
             return;
         } else {
-            return array('Result' => array($attributeSetName,"Adult", $this->getWebsiteName(),"New",$description,$Gender,$main_image,$url,$price,$sku,"1",$color_display,$metal_display,$size_display,$title,$Category,$pid,"In Stock",$itemGroupId,$ProductType,$sku,$saleprice,$sale_start,$sale_end,$recom,$onsale,$bestseller,$high_margin), 'Children' => $childs);
+            return array(
+                'Result' => array(
+                    $attributeSetName,
+                    "Adult",
+                    $this->getWebsiteName(),
+                    "New",
+                    $description,
+                    $Gender,
+                    $main_image,
+                    $url,
+                    $price,
+                    $sku,
+                    "1",
+                    $color_display,
+                    $metal_display,
+                    $size_display,
+                    $title,
+                    $Category,
+                    $pid,
+                    "In Stock",
+                    $itemGroupId,
+                    $ProductType,
+                    $sku,
+                    $saleprice,
+                    $sale_start,
+                    $sale_end,
+                    $recom,
+                    $onsale,
+                    $bestseller,
+                    $high_margin
+                ),
+                'Children' => $childs
+            );
         }
     }
     
-    function cleanFeed() {
+    protected function buildConfigurableUrlString($metal, $gemstone, $ringSize, $chainLength, $certifiedStone)
+    {
+        $ret = "?precious-metal=" . $this->stripUrlString($metal);
+        
+        if (trim($gemstone) != "" && $gemstone != 0) {
+            $ret .= "&gemstone=" . $this->stripUrlString($gemstone);
+        }
+        if (trim($ringSize) != "") {
+            $ret .= "&ring-size=" . $this->stripUrlString($ringSize);
+        }
+        if (trim($chainLength) != "") {
+            $ret .= "&chain-length=" . $this->stripUrlString($chainLength);
+        }
+        if (trim($certifiedStone) != "") {
+            $ret .= "&certified-stone=" . $this->stripUrlString($certifiedStone);
+        }
+        return strtolower($ret);
+    }
+    
+    protected function stripUrlString($str)
+    {
+        $str = str_replace(" ", "-", $str);
+        $str = str_replace(",", "-", $str);
+        $str = str_replace("\\", "-", $str);
+        $str = str_replace("'", "-", $str);
+        $str = str_replace("_", "-", $str);
+        return $str;
+    }
+    
+    public function cleanFeed()
+    {
         $client = new ProductsFeed($GLOBALS['argvStoreId']);
         $productFeed = $client->listProducts();
         foreach ($productFeed as $product) {
             $product_exists = $this->productModel->create()
             ->setStoreId($GLOBALS['argvStoreId'])
             ->load($product);
-            if (!(is_numeric($product)) && (!(preg_match('/online:en:US:/',$product)))) {
+            if (!(is_numeric($product)) && (!(preg_match('/online:en:US:/', $product)))) {
                 print $product.": needs to die\n";
                 #$client->deleteProduct($product);
             } elseif (!($this->productModel->create()->setStoreId($GLOBALS['argvStoreId'])->load($product))) {
@@ -559,15 +827,16 @@ class FeedLogic
         }
     }
     
-    function doCheckFeed($listing) {
+    public function doCheckFeed($listing)
+    {
         $client = new ProductsFeed($GLOBALS['argvStoreId']);
         foreach ($listing['list'] as $disProd) {
-            if(!empty($disProd)) {
+            if (!empty($disProd)) {
                 $feedproduct = $client->createProduct($disProd['Result']);
                 try {
                     $result = $client->getProduct($feedproduct->getOfferId());
                 } catch (Exception $e) {
-                    if($product->getId() > 0) {
+                    if ($product->getId() > 0) {
                         try {
                             $feed = $client->insertProduct($feedproduct);
                         } catch (Exception $e) {
@@ -580,15 +849,20 @@ class FeedLogic
         }
     }
     
-    function doFeed($listing) {
+    public function doFeed($listing)
+    {
         $client = new ProductsFeed($GLOBALS['argvStoreId']);
         print "Building Feed. START: ".date(DATE_ATOM)."\n";
         $feed_insert_count = 0;
         foreach ($listing['list'] as $disProd) {
             $feedproduct = "";
             $shopproduct = "";
-            if(!empty($disProd)) {
-                print $disProd['result'][16]." ".$feed_insert_count." ".$disProd['Result'][9]." ".$disProd['Result'][22]." ".$disProd['Result'][23]."\n";
+            if (!empty($disProd)) {
+                print $disProd['result'][16] .
+                " " . $feed_insert_count . " " .
+                $disProd['Result'][9] . " " .
+                $disProd['Result'][22] . " " .
+                $disProd['Result'][23]."\n";
                 $feedproduct = $client->createAdsProduct($disProd['Result']);
                 if (is_numeric($feedproduct->getOfferId()) && ($feedproduct->getOfferId() > 0)) {
                     $feed[$feedproduct->getOfferId()] = $feedproduct;
@@ -622,7 +896,7 @@ class FeedLogic
                         }
                         $no_kids = false;
                     }
-                    if($no_kids) {
+                    if ($no_kids) {
                         $shopproduct = $client->createShopProduct($disProd['Result']);
                         if (is_numeric($shopproduct->getOfferId()) && ($shopproduct->getOfferId() > 0)) {
                             $feed[$shopproduct->getOfferId()] = $shopproduct;
@@ -641,11 +915,12 @@ class FeedLogic
         print "###### Feed Complete ######\n";
     }
     
-    function getAverageRating( Review $review ) {
+    public function getAverageRating(Review $review)
+    {
         $avg = 0;
-        if( count($review->getRatingVotes()) ) {
+        if (count($review->getRatingVotes())) {
             $ratings = array();
-            foreach( $review->getRatingVotes() as $rating ) {
+            foreach ($review->getRatingVotes() as $rating) {
                 $ratings[] = $rating->getPercent();
             }
             $avg = array_sum($ratings)/count($ratings);
@@ -653,9 +928,13 @@ class FeedLogic
         return $avg;
     }
     
-    function reviewsHeader() {
+    public function reviewsHeader()
+    {
         $reviewHeader = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
-        $reviewHeader .= '<feed xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.google.com/shopping/reviews/schema/product/2.2/product_reviews.xsd">'."\n";
+        $reviewHeader .= '<feed xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"'
+        . 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'
+        . 'xsi:noNamespaceSchemaLocation="'
+        . 'http://www.google.com/shopping/reviews/schema/product/2.2/product_reviews.xsd">'."\n";
         $reviewHeader .= '<aggregator>'."\n";
         $reviewHeader .= '		<name>'. $this->getWebsiteName() . ' Reviews</name>'."\n";
         $reviewHeader .= '</aggregator>'."\n";
@@ -665,13 +944,15 @@ class FeedLogic
         return $reviewHeader;
     }
     
-    function updateAccount() {
+    public function updateAccount()
+    {
         $client = new ProductsFeed($GLOBALS['argvStoreId']);
         $account = $client->updateMerchant();
         return $account;
     }
     
-    function getAccountInfo() {
+    public function getAccountInfo()
+    {
         $client = new ProductsFeed($GLOBALS['argvStoreId']);
         $account = $client->getMerchantAccount();
         print "Name: ".$account->name." ID: ".$account->id."\n";
@@ -684,17 +965,16 @@ class FeedLogic
         }
     }
     
-    function getProductsReviews($type) {
+    public function getProductsReviews($type)
+    {
         $varPathExport = $_SERVER['HOME'].'magento/var/export/reviews/incremental/'. $GLOBALS['argvStoreId']. '/';
         if (!file_exists($varPathExport)) {
             mkdir($varPathExport, 0777, true);
         }
-        
         if ($type == 'inc') {
             $date = date('Y-m-d', (time() - 6048000));
             $datestamp = date('Y_m_d', time());
             $output = fopen($varPathExport . $datestamp.'_reviews.xml', 'w+')  or die("Unable to open file!");
-            
             $collection = $this->reviewCollection->create()
             ->addFieldToSelect('*')
             ->addStoreFilter($GLOBALS['argvStoreId'])
@@ -702,35 +982,99 @@ class FeedLogic
             ->addStatusFilter($this->reviewModel::STATUS_APPROVED)
             ->setDateOrder()
             ->addRateVotes();
-          
         } else {
             $output = fopen($varPathExport . 'reviews.xml', 'w+')  or die("Unable to open file!");
-            
             $collection = $this->reviewCollection->create()
             ->addFieldToSelect('*')
             ->addStoreFilter($GLOBALS['argvStoreId'])
             ->addStatusFilter($this->reviewModel::STATUS_APPROVED)
             ->setDateOrder()
             ->addRateVotes();
-   
         }
-
         $collection->getSelect();
-        
         print "Building Reviews...\n";
         fputs($output, $this->reviewsHeader());
         fputs($output, "\t<reviews>\n");
-        foreach ($collection->getItems()  as $review) {
+        foreach ($collection->getItems() as $review) {
+            $product = $this->productModel->create()->setStoreId(
+                $GLOBALS['argvStoreId']
+            )->load($review->getEntityPkValue());
+            $timestamp = date(DATE_ATOM, strtotime($review->getCreatedAt()));
             
-            $product = $this->productModel->create()->setStoreId($GLOBALS['argvStoreId'])->load($review->getEntityPkValue());
-            $timestamp = date(DATE_ATOM,strtotime($review->getCreatedAt()));
+            $url = $this->productUrlPrefixModel->getUrl($product);
             
-            $url =  $this->storeManager->getStore()->getBaseUrl() . $product->getUrlKey();
-            $content = preg_replace("/(\. \. \.)/",'',preg_replace("/(\.)\\1+/",'',str_replace('&', 'and', strip_tags(html_entity_decode($this->check_format($review->getDetail()))))));
-            $title = preg_replace("/(\. \. \.)/",'',preg_replace("/(\.)\\1+/",'',str_replace('&', 'and', strip_tags(html_entity_decode($this->check_format($review->getTitle()))))));
-            $name = preg_replace("/(\. \. \.)/",'',preg_replace("/(\.)\\1+/",'',str_replace('&', 'and', strip_tags(html_entity_decode($this->check_format($review->getNickname()))))));
-            $product_name = preg_replace("/(\.)\\1+/",'.',str_replace('&', 'and', strip_tags(html_entity_decode($this->check_format($product->getName())))));
-            
+            $content = preg_replace(
+                "/(\. \. \.)/",
+                '',
+                preg_replace(
+                    "/(\.)\\1+/",
+                    '',
+                    str_replace(
+                        '&',
+                        'and',
+                        strip_tags(
+                            html_entity_decode(
+                                $this->check_format(
+                                    $review->getDetail()
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+            $title = preg_replace(
+                "/(\. \. \.)/",
+                '',
+                preg_replace(
+                    "/(\.)\\1+/",
+                    '',
+                    str_replace(
+                        '&',
+                        'and',
+                        strip_tags(
+                            html_entity_decode(
+                                $this->check_format(
+                                    $review->getTitle()
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+            $name = preg_replace(
+                "/(\. \. \.)/",
+                '',
+                preg_replace(
+                    "/(\.)\\1+/",
+                    '',
+                    str_replace(
+                        '&',
+                        'and',
+                        strip_tags(
+                            html_entity_decode(
+                                $this->check_format(
+                                    $review->getNickname()
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+            $product_name = preg_replace(
+                "/(\.)\\1+/",
+                '.',
+                str_replace(
+                    '&',
+                    'and',
+                    strip_tags(
+                        html_entity_decode(
+                            $this->check_format(
+                                $product->getName()
+                            )
+                        )
+                    )
+                )
+            );
             if (strlen($content) > 0) {
                 $prodXml = "\t\t<review>\n";
                 $prodXml .= "\t\t\t<review_id>".$review->getReviewId()."</review_id>\n";
@@ -740,7 +1084,7 @@ class FeedLogic
                 $prodXml .= "\t\t\t<review_timestamp>".$timestamp."</review_timestamp>\n";
                 $prodXml .= "\t\t\t<title>".$title."</title>\n";
                 $prodXml .= "\t\t\t<content>".$content."</content>\n";
-                $prodXml .= "\t\t\t<review_url type='group'>".$url."?cid=".$product->getId()."</review_url>\n";
+                $prodXml .= "\t\t\t<review_url type='group'>".$url."</review_url>\n";
                 $prodXml .= "\t\t\t<ratings>\n";
                 $prodXml .= "\t\t\t\t<overall min='0' max='100'>".$this->getAverageRating($review)."</overall>\n";
                 $prodXml .= "\t\t\t</ratings>\n";
@@ -758,7 +1102,7 @@ class FeedLogic
                 $prodXml .= "\t\t\t\t\t\t</brands>\n";
                 $prodXml .= "\t\t\t\t\t</product_ids>\n";
                 $prodXml .= "\t\t\t\t\t<product_name>".$product_name."</product_name>\n";
-                $prodXml .= "\t\t\t\t\t<product_url>".$url."?cid=".$product->getId()."</product_url>\n";
+                $prodXml .= "\t\t\t\t\t<product_url>".$url."</product_url>\n";
                 $prodXml .= "\t\t\t\t</product>\n";
                 $prodXml .= "\t\t\t</products>\n";
                 $prodXml .= "\t\t\t<is_spam>false</is_spam>\n";
@@ -770,23 +1114,24 @@ class FeedLogic
         print "Complete!\n";
     }
     
-    function createCSV($listing) {
+    public function createCSV($listing)
+    {
         $varPathExport = $_SERVER['HOME'].'magento/var/export/';
         if (!file_exists($varPathExport)) {
             mkdir($varPathExport, 0777, true);
         }
         
         $output = fopen($varPathExport. '/base_feed_store_'. $GLOBALS['argvStoreId'] .'.csv', 'w+');
-        fputcsv($output,$this->fileheader(),'|','"');
+        fputcsv($output, $this->fileheader(), '|', '"');
         foreach ($listing['list'] as $result) {
-            if(!empty($result)) {
+            if (!empty($result)) {
                 if ($result['Result'][22] != $result['Result'][23] && $result['Result'][21] > 0) {
                     $result['Result'][22] .= "/". $result['Result'][23];
                 } else {
                     $result['Result'][22] = '';
                 }
                 unset($result['Result'][23]);
-                fputcsv($output,$result['Result'],'|','"');
+                fputcsv($output, $result['Result'], '|', '"');
                 foreach ($result['Children'] as $childProduct) {
                     if ($childProduct[22] != $childProduct[23] && $childProduct[21] > 0) {
                         $childProduct[22] .= "/". $childProduct[23];
@@ -794,29 +1139,30 @@ class FeedLogic
                         $childProduct[22] = '';
                     }
                     unset($childProduct[23]);
-                    fputcsv($output,$childProduct,'|','"');
+                    fputcsv($output, $childProduct, '|', '"');
                 }
             }
         }
     }
     
-    function createYahooCSV($listing) {
+    public function createYahooCSV($listing)
+    {
         $varPathExport = $_SERVER['HOME'].'magento/var/export/';
         if (!file_exists($varPathExport)) {
             mkdir($varPathExport, 0777, true);
         }
         
         $output = fopen($varPathExport.'base_feed_yahoo_store_'. $GLOBALS['argvStoreId'] .'.txt', 'w+');
-        fputcsv($output,$this->fileheaderYahoo(),"\t",'"');
+        fputcsv($output, $this->fileheaderYahoo(), "\t", '"');
         foreach ($listing['list'] as $result) {
-            if(!empty($result)) {
+            if (!empty($result)) {
                 if ($result['Result'][22] != $result['Result'][23] && $result['Result'][21] > 0) {
                     $result['Result'][22] .= "/". $result['Result'][23];
                 } else {
                     $result['Result'][22] = '';
                 }
                 unset($result['Result'][23]);
-                fputcsv($output,$result['Result'],"\t",'"');
+                fputcsv($output, $result['Result'], "\t", '"');
                 foreach ($result['Children'] as $childProduct) {
                     if ($childProduct[22] != $childProduct[23] && $childProduct[21] > 0) {
                         $childProduct[22] .= "/". $childProduct[23];
@@ -824,44 +1170,95 @@ class FeedLogic
                         $childProduct[22] = '';
                     }
                     unset($childProduct[23]);
-                    fputcsv($output,$childProduct,"\t",'"');
+                    fputcsv($output, $childProduct, "\t", '"');
                 }
             }
         }
     }
     
-    function createFBCSV($listing) {
-        $varPathExport = $_SERVER['HOME'].'magento/var/export/';
+    public function createFBCSV($listing)
+    {
+        $varPathExport = $_SERVER['HOME'] . 'magento/var/export/';
+        
         if (!file_exists($varPathExport)) {
             mkdir($varPathExport, 0777, true);
         }
         
+        $childCount = 0;
+        $parentCount = 0;
+        
         $output = fopen($varPathExport.'base_feed_fb_store_'. $GLOBALS['argvStoreId'] .'.txt', 'w+');
-        fputcsv($output,$this->fileheaderFB(),"\t",'"');
+        fputcsv($output, $this->fileheaderFB(), "\t", '"');
+        
         foreach ($listing['list'] as $result) {
-            if(!empty($result)) {
+            
+            if (!empty($result)) {
+                
+            //    echo count($result['Children']) . '    ';
+                
                 if (count($result['Children']) > 0) {
                     foreach ($result['Children'] as $childProduct) {
-                        if($childProduct[16] != "") {
-                            $fb_line = array($childProduct[16], "available for order", "new", $childProduct[4], $childProduct[6], $childProduct[7], substr($childProduct[14], 0, 100), $childProduct[8], $childProduct[9], $childProduct[21], $childProduct[22]."/".$childProduct[23]);
-                            fputcsv($output,$fb_line,"\t",'"');
+                        if ($childProduct[16] != "") {
+                            $childCount++;
+                            $fb_line = array(
+                                $childProduct[16],
+                                "available for order",
+                                "new",
+                                $childProduct[4],
+                                $childProduct[6],
+                                $childProduct[7],
+                                substr(
+                                    $childProduct[14],
+                                    0,
+                                    100
+                                ),
+                                $childProduct[8],
+                                $childProduct[9],
+                                $childProduct[21],
+                                $childProduct[22] . "/" . $childProduct[23]
+                            );
+                            fputcsv($output, $fb_line, "\t", '"');
                         }
                     }
                 } else {
-                    if(1==0 && $product[16] != "") {
-                        $fb_line = array($product[16], "available for order", "new", $product[4], $product[6], $product[7], substr($product[14], 0, 100), $product[8], $product[9], $product[21], $product[22]."/".$product[23]);
-                        fputcsv($output,$fb_line,"\t",'"');
+                    
+                    if (isset($result['Result'][16]) &&  trim($result['Result'][16]) != "") {
+                        
+                        $parentCount++;
+                        
+                        $fb_line = array(
+                            $result['Result'][16],
+                            "available for order",
+                            "new",
+                            $result['Result'][4],
+                            $result['Result'][6],
+                            $result['Result'][7],
+                            substr(
+                                $result['Result'][14],
+                                0,
+                                100
+                            ),
+                            $result['Result'][8],
+                            $result['Result'][9],
+                            $result['Result'][21],
+                            $result['Result'][22] . "/" . $result['Result'][23]
+                        );
+                        fputcsv($output, $fb_line, "\t", '"');
                     }
                 }
             }
         }
+        
+        echo 'the child count is ' . $childCount . ' and the parent count is ' . $parentCount . '  ';
     }
     
-    function getWebsiteName() {
+    public function getWebsiteName()
+    {
         return $this->storeManager->getStore($GLOBALS['argvStoreId'])->getWebsite()->getName();
     }
     
-    function usage() {
+    public function usage()
+    {
         print "build_feed.php <action> (StoreId) (ProdId)\n";
         print "status - Check feed statuses\n";
         print "single (ProdId) - Add single product to base feed\n";
@@ -873,5 +1270,4 @@ class FeedLogic
         print "help - this menu.\n";
         exit;
     }
-    
 }
