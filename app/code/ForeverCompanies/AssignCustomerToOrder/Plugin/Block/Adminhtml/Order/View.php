@@ -54,7 +54,7 @@ class View
             'class' => 'assign_customer_to_order_btn-button',
             'id'    => 'assign-customer-to-order-btn',
             //'onclick' => "confirmSetLocation('{$message}', '{$url}')"
-            'onclick' => "gustToCustomerButtonClick('{$url}', '{$order->getId()}', '{$message}')",
+            'onclick' => "guestToCustomerButtonClick('{$url}', '{$order->getId()}', '{$message}')",
         ]);
 
         return [$layout];

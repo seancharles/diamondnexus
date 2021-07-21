@@ -4,8 +4,11 @@ define([
     'Magento_Ui/js/modal/confirm'
 ], function ($, alert, confirm) {
 
-    window.gustToCustomerButtonClick = function(url, orderId, msg){
-        displayMsg(url, orderId, msg); return;
+
+$(document).ready(function() {
+	
+    window.guestToCustomerButtonClick = function(url, orderId, msg){
+		postData(url, orderId);
     };
 
     var displayMsg = function(url, orderId, msg){
@@ -47,7 +50,7 @@ define([
 
         });
     }
-
+});
 
 
 });
