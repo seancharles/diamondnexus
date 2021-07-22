@@ -1,4 +1,5 @@
 <?php
+
 return [
     'modules' => [
         'Magento_AdminAnalytics' => 1,
@@ -701,7 +702,30 @@ return [
             ]
         ],
         'stores' => [
-
+            'www_1215diamonds_com' => [
+                'tealium_tags' => [
+                    'general' => [
+                        'custom_udo_enable' => '1',
+                        'udo' => '/var/www/magento/lib/Tealium/TealiumCustomDataTF.php',
+                    ],
+                ],
+            ],
+            'default' => [
+                'tealium_tags' => [
+                    'general' => [
+                        'custom_udo_enable' => '1',
+                        'udo' => '/var/www/magento/lib/Tealium/TealiumCustomDataDN.php',
+                    ],
+                ],
+            ],
+            'www_foreverartisans_com' => [
+                'tealium_tags' => [
+                    'general' => [
+                        'custom_udo_enable' => '1',
+                        'udo' => '/var/www/magento/lib/Tealium/TealiumCustomDataFA.php',
+                    ],
+                ],
+            ],
         ],
         'websites' => [
 
