@@ -15,7 +15,7 @@ class TealiumExtendData
     private string $fcSiteBrand = 'Forever Artisans';
 
     /** @var int  */
-    private int $fcStoreId = 1;
+    private int $fcStoreId = 2;
 
     /**
      * TealiumExtendData constructor.

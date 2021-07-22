@@ -30,8 +30,8 @@ define([
 					if (dataObject['cart_total_value'].length > 0) {
 						utag_data.cart_total_value = dataObject['cart_total_value'];
             		}
-					console.log(utag_data);
-					console.log('bbb utag lib');
+					//console.log(utag_data);
+					//console.log('bbb utag lib');
 				  	var LibURL = $.trim($('.utagLib').html());
 				  if(typeof window.utag == 'undefined')
 					{
@@ -58,8 +58,8 @@ define([
 		console.log('bbb utag lib');
 		});
 		*/
-		console.log(utag_data);
-		console.log('aaaaa utag lib');
+		//console.log(utag_data);
+		//console.log('aaaaa utag lib');
    
 		 
 	//	alert('hello');
