@@ -1,6 +1,21 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
-	<event name="sales_order_address_save_before">
-		<observer name="fc_sales_order_address_save_before" instance="ForeverCompanies\Salesforce\Observer\SalesOrderAddressBeforeSave" />
+	<event name="customer_save_after_data_object">
+		<observer name="fc_customer_save_after" instance="ForeverCompanies\Salesforce\Observer\Customer\CustomerSaveAfter" />
+	</event>
+	<event name="customer_address_save_after">
+		<observer name="fc_customer_address_save_after" instance="ForeverCompanies\Salesforce\Observer\Customer\CustomerAddressSaveAfter" />
+	</event>
+	<event name="sales_order_save_after">
+		<observer name="fc_sales_order_save_after" instance="ForeverCompanies\Salesforce\Observer\Sales\OrderSaveAfter" />
+	</event>
+	<event name="sales_order_address_save_after">
+		<observer name="fc_sales_order_address_save_after" instance="ForeverCompanies\Salesforce\Observer\Sales\OrderAddressSaveAfter" />
+	</event>
+	<event name="sales_order_status_history_save_after">
+		<observer name="fc_sales_order_status_history_save_after" instance="ForeverCompanies\Salesforce\Observer\Sales\OrderStatusHistorySaveAfter" />
+	</event>
+	<event name="forms_submission_save_after">
+		<observer name="fc_forms_submission_save_after" instance="ForeverCompanies\Salesforce\Observer\Forms\SubmissionSaveAfter" />
 	</event>
 </config>

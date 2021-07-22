@@ -242,7 +242,7 @@ class Field extends AbstractModel
                     'bill_company'    => 'Billing Company',
                     'bill_street'     => 'Billing Street',
                     'bill_city'       => 'Billing City',
-                    'bill_region'     => 'Billing State/Province',
+                    'bill_region'     => 'Billing State',
                     'bill_country_id' => 'Billing Country',
                     'bill_postcode'   => 'Billing Zip/Postal Code',
                     'bill_telephone'  => 'Billing Telephone',
@@ -282,6 +282,7 @@ class Field extends AbstractModel
                     'bill_street'              => 'Billing Street',
                     'bill_city'                => 'Billing City',
                     'bill_region'              => 'Billing State/Province',
+                    'bill_region_id'           => 'Billing Region/ID',
                     'bill_postcode'            => 'Billing Zip/Postal Code',
                     'bill_telephone'           => 'Billing Telephone',
                     'bill_country_id'          => 'Billing Country',
@@ -307,6 +308,7 @@ class Field extends AbstractModel
                     'tax_amount'               => 'Tax Amount',
                     'subtotal'                 => 'Sub Total',
                     'grand_total'              => 'Grand Total',
+                    'sales_person_id'          => 'Sales Person'
                 ];
                 break;
             default:

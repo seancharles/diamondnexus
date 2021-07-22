@@ -1,21 +1,17 @@
 <?xml version="1.0"?>
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
-    <table name="sales_order">
-        <column comment="SF Order ID" xsi:type="varchar" name="sf_orderid" />
-        <column comment="Last Sync" xsi:type="datetime" name="lastsync_at" />
+    <table name="fc_salesforce_queue" resource="default" engine="innodb" comment="Forever Salesforce Update Queue">
+        <column comment="Row Id" xsi:type="int" name="queue_id" unsigned="true" nullable="false" identity="true" />
+        <column comment="Object Id" xsi:type="int" name="entity_id" unsigned="true" default="0" />
+        <column comment="Object Type" xsi:type="varchar" name="entity_type" default="" />
+        <column comment="Created At" xsi:type="timestamp" name="created_at" />
+        <column comment="Last Sync" xsi:type="timestamp" name="synced_at" />
+        <column comment="Tries" xsi:type="tinyint" name="try_count" default="0" />
+        <column comment="Error Count" xsi:type="tinyint" name="error_count" default="0" />
+        <column comment="Errors Text" xsi:type="text" name="error_text" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="queue_id"/>
+        </constraint>
     </table>
-    <table name="sales_order_item">
-        <column comment="SF Order Item ID" xsi:type="varchar" name="sf_order_itemid"
-                nullable="true" default="0" />
-        <column comment="Last Sync" xsi:type="datetime" name="lastsync_at"
-                nullable="true" default="0" />
-    </table>
-	<table name="sales_order_address">
-        <column comment="Updated At" xsi:type="timestamp" name="address_updated_at"
-                on_update="false" nullable="true" default="0" />
-		<index referenceId="SALES_ORDER_ADDRESS_ADDRESS_UPDATED_AT" indexType="btree">
-			<column name="address_updated_at"/>
-		</index>
-	</table>
 </schema>

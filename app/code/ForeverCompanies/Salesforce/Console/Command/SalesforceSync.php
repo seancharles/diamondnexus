@@ -30,6 +30,7 @@
             \Magento\Framework\App\State $state
         ) {
             $this->syncHelper = $syncHelper;
+            $this->state = $state;
             
             parent::__construct($this->name);
         }
@@ -54,7 +55,7 @@
          */
         protected function execute(InputInterface $input, OutputInterface $output)
         {
-            $state->setAreaCode(\Magento\Framework\App\Area::AREA_ADMINHTML);
+            $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_ADMINHTML);
             $this->syncHelper->run();
         }
     }
