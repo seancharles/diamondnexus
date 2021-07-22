@@ -84,6 +84,9 @@
     }
     .item-options {
         font-size: 12px;
+        dt {
+            font-weight: bold;
+        }
     }
     .grand.totals {
         th,
@@ -105,6 +108,15 @@
     }
     .cart.table-wrapper .actions-toolbar {
         min-height: 25px !important;
+    }
+    .cart.table-wrapper .cart thead tr th.col {
+        font-weight: bold;
+    }
+    a.affirm-modal-trigger,
+    a.action.continue {
+        font-size: 14px;
+        font-weight: bold;
+        display: block;
     }
 }
 
