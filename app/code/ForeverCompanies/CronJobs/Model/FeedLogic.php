@@ -579,10 +579,8 @@ class FeedLogic
                         $SGemstone = ($_product->getAttributeText('gemstone') == '')
                             ? "None" : $_product->getAttributeText('gemstone');
                         
-                    
                         
-                        foreach ($_product->getData() as $k => $v)
-                        {
+                        foreach ($_product->getData() as $k => $v) {
                             if (!in_array($k, $this->configurableProductAttrArr)) {
                                 $this->configurableProductAttrArr[]= $k;
                             }
@@ -615,6 +613,7 @@ class FeedLogic
                             )
                         );
 
+                        
                         $childs[] = array(
                             $attributeSetName,
                             "Adult",
@@ -790,7 +789,7 @@ class FeedLogic
         if (trim($chainLength) != "" && $chainLength != 0) {
             $ret .= "&chain-length=" . $this->stripUrlString($chainLength);
         }
-        if (trim($certifiedStone) != "" && $certifiedStone != 0) {
+        if (trim($certifiedStone) != "" && $certifiedStone != "None") {
             $ret .= "&certified-stone=" . $this->stripUrlString($certifiedStone);
         }
         return strtolower($ret);
