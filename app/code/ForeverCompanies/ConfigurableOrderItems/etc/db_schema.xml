@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="sales_order_item">
+        <column xsi:type="tinyint" name="is_translated_m2" unsigned="true" nullable="false" identity="false"
+                comment="Is Translate to M2" />
+        <column xsi:type="text" name="m1_buy_request" nullable="true"
+                comment="Backup of buy request data before transformation" />
+    </table>
+</schema>

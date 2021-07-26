@@ -1,21 +1,21 @@
 <?php
-
 namespace ForeverCompanies\Forms\Helper;
  
 class Form
 {
-	public function __construct(
+    public function __construct(
         \Magento\Framework\App\RequestInterface $request
     ) {
-		$this->request = $request;
-	}
-	
-	public function getSanitizedField($fieldName = null)
-	{
-		return $this->request->getParam($fieldName);
-	}
-	
-	public function sanitize($value) {
-		return $value;
-	}
+        $this->request = $request;
+    }
+    
+    public function getSanitizedField($fieldName = null)
+    {
+        return filter_var($this->request->getParam($fieldName), FILTER_SANITIZE_SPECIAL_CHARS);
+    }
+    
+    public function sanitize($value)
+    {
+        return $value;
+    }
 }

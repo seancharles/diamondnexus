@@ -10,10 +10,10 @@ use Magento\Framework\App\ResourceConnection;
 class UpgradeSchema implements UpgradeSchemaInterface
 {
     protected $resourceConnection;
+    
     public function __construct(
         ResourceConnection $resourceConn
-        )
-    {
+    ) {
         $this->resourceConnection = $resourceConn;
     }
     
@@ -23,7 +23,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
     public function upgrade(
         SchemaSetupInterface $setup,
         ModuleContextInterface $context
-        ) {
+    ) {
             $installer = $setup;
             
             $installer->startSetup();
@@ -65,6 +65,5 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $this->resourceConnection->getConnection()->query($query);
             
             $installer->endSetup();
-        }
-    
+    }
 }

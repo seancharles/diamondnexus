@@ -20,7 +20,7 @@ class UpdateReviews
         $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
 
-    public function execute() 
+    public function execute()
     {
         if (!$this->scopeConfig->getValue('forevercompanies_cron_controls/feed/update_reviews', $this->storeScope)) {
             return $this;

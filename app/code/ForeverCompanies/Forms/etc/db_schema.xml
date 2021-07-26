@@ -21,7 +21,7 @@
         <column xsi:type="varchar" name="email" comment="Email Address"/>
 		<column xsi:type="text" name="form_post_json" comment="Form Post JSON"/>
         <column xsi:type="varchar" name="lastsync_at" comment="Salesforce Sync timestamp"/>
-		<column xsi:type="datetime" name="created_at" on_update="false" comment="Date"/>
+		<column xsi:type="datetime" name="created_at" nullable="false" on_update="true" default="CURRENT_TIMESTAMP" comment="Date"/>
 		<constraint xsi:type="primary" referenceId="PRIMARY">
 			<column name="submission_id"/>
 		</constraint>
