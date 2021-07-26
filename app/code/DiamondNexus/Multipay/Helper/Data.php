@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace DiamondNexus\Multipay\Helper;
 
 use Braintree\Result\Error;
@@ -147,7 +145,11 @@ class Data extends AbstractHelper
             'shippingAmount' => $order->getShippingAmount(),
             'shipsFromPostalCode' => null
         ];
-        return $this->brainTreeAdapter->sale($attributes);
+
+        // removing for PCI compliance
+        //return $this->brainTreeAdapter->sale($attributes);
+
+        return false;
     }
 
     public function updateOrderStatus($post, $order)

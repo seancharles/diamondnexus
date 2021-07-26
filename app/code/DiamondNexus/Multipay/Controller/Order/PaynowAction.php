@@ -131,11 +131,11 @@ class PaynowAction implements \Magento\Framework\App\Action\HttpPostActionInterf
         $errors = [];
         
         $resultRedirect = $this->resultRedirectFactory->create();
-        
+
+        $params = $this->getRequest()->getParams();
+
         /*
             **** DISABLED FOR PCI COMPLIANCE ****
-        
-            $params = $this->getRequest()->getParams();
 
             $order = $this->orderRepository->get($params['order_id']);
 

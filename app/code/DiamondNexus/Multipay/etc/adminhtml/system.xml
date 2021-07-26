@@ -40,13 +40,20 @@
             <label>Multipay</label>
             <tab>diamondnexus</tab>
             <resource>DiamondNexus_Multipay::config</resource>
-            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
-                   showInStore="1">
-                <label>Paypal Settings</label>
-                <field id="client_id" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="60" translate="label" type="text">
-                    <label>Client ID</label>
-                </field>
-            </group>
+			<group id="paypal" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
+				   showInStore="1">
+				<label>Paypal Settings</label>
+				<field id="client_id" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="60" translate="label" type="text">
+					<label>Client ID</label>
+				</field>
+			</group>
+			<group id="paynow" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
+				   showInStore="1">
+				<label>Email Settings</label>
+				<field id="notification_email_address" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="60" translate="label" type="text">
+					<label>Payment Notification Email Address</label>
+				</field>
+			</group>
         </section>
 	</system>
 </config>

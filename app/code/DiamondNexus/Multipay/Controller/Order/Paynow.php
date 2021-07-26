@@ -82,34 +82,37 @@ class Paynow implements \Magento\Framework\App\Action\HttpGetActionInterface
      */
     public function execute()
     {
-        $id = (int) $this->getRequest()->getParam('order_id');
-        $openForm = $this->getRequest()->getParam('openform');
-        
-        /** @var Order $order */
-        $order = $this->orderRepository->get($id);
-
-        $totalDue = $order->getGrandTotal() - $order->getTotalPaid();
-
         $resultRedirect = $this->resultRedirectFactory->create();
 
-        $customerId = (int) $this->customerSession->getCustomer()->getId();
+        if ($this->customerSession->isLoggedIn() === true) {
+            $id = (int) $this->getRequest()->getParam('order_id');
+            $openForm = (bool) $this->getRequest()->getParam('openform');
 
-        if($customerId > 0 && $order->getCustomerId() == $customerId) {
-            if( round($order->getTotalPaid(),2) >= round($order->getGrandTotal(),2) ) {
-                $this->messageManager->addError(__("Order is already paid in full."));
-                
-                return $resultRedirect->setPath('sales/order/history');
+            /** @var Order $order */
+            $order = $this->orderRepository->get($id);
+
+            $totalDue = $order->getGrandTotal() - $order->getTotalPaid();
+
+            $customerId = (int) $this->customerSession->getCustomer()->getId();
+
+            if($customerId > 0 && $order->getCustomerId() == $customerId) {
+                if( round($order->getTotalPaid(),2) >= round($order->getGrandTotal(),2) ) {
+                    $this->messageManager->addError(__("Order is already paid in full."));
+
+                    return $resultRedirect->setPath('sales/order/history');
+                }
+
+                $page = $this->pageFactory->create();
+                /** @var \DiamondNexus\Multipay\Block\Order\Paynow $block */
+                $block = $page->getLayout()->getBlock('diamondnexus_paynow');
+                $block->setData('order_id', $id);
+                $block->setData('total_due', $totalDue);
+                $block->setData('open_form', $openForm);
+                return $page;
+            } else {
+                return $resultRedirect->setPath('customer/account/login/');
             }
-            
-            $page = $this->pageFactory->create();
-            /** @var \DiamondNexus\Multipay\Block\Order\Paynow $block */
-            $block = $page->getLayout()->getBlock('diamondnexus_paynow');
-            $block->setData('order_id', $id);
-            $block->setData('total_due', $totalDue);
-            $block->setData('open_form', $openForm);
-            return $page;
         } else {
-            // order is invalid or the customer does not own it
             return $resultRedirect->setPath('customer/account/login/');
         }
     }

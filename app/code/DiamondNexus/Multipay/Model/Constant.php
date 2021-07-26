@@ -1,9 +1,4 @@
 <?php
-/**
- * Copyright ©  All rights reserved.
- * See COPYING.txt for license details.
- */
-declare(strict_types=1);
 
 namespace DiamondNexus\Multipay\Model;
 
@@ -74,5 +69,6 @@ class Constant
         self::ORDER_UPDATES_FLAG
     ];
 
-    const CLIENT_XML = 'diamondnexus_multipay/general/client_id';
+    const CLIENT_XML = 'diamondnexus_multipay/paypal/client_id';
+    const PAYMENT_NOTIFICATION_EMAIL = 'diamondnexus_multipay/paynow/notification_email_address';
 }
