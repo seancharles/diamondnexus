@@ -112,7 +112,7 @@ class Order extends AdminOrder implements HttpPostActionInterface
                 // add custom logic for amount with store credit
                 
             }elseif ($paymentMethod !== Constant::MULTIPAY_QUOTE_METHOD) {
-                $this->helper->sendToBraintree($order);
+                //$this->helper->sendToBraintree($order);
             }
             $this->resource->createNewTransaction($order, $post);
             $this->helper->updateOrderStatus($post, $order);

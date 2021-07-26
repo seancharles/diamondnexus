@@ -116,13 +116,13 @@ class Transaction extends AbstractDb
         
         if (isset($information[Constant::OPTION_TOTAL_DATA]) == true && $information[Constant::OPTION_TOTAL_DATA] == Constant::MULTIPAY_TOTAL_AMOUNT) {
             if (isset($information[Constant::AMOUNT_DUE_DATA])) {
-                $amount = $information[Constant::AMOUNT_DUE_DATA];
+                $amount = round($information[Constant::AMOUNT_DUE_DATA],2);
                 $change = 0;
             }
         }
 
         if (isset($information[Constant::OPTION_TOTAL_DATA]) == true && $information[Constant::OPTION_TOTAL_DATA] == Constant::MULTIPAY_PARTIAL_AMOUNT) {
-            $amount = $information[Constant::OPTION_PARTIAL_DATA];
+            $amount = round($information[Constant::OPTION_PARTIAL_DATA],2);
             if (isset($information[Constant::CHANGE_DUE_DATA])) {
                 $change = $information[Constant::CHANGE_DUE_DATA];
             }
@@ -136,7 +136,7 @@ class Transaction extends AbstractDb
             
         $tendered = 0;
         if (isset($information[Constant::CASH_TENDERED_DATA])) {
-            $tendered = $information[Constant::CASH_TENDERED_DATA];
+            $tendered = round($information[Constant::CASH_TENDERED_DATA],2);
         }
         $transaction = $this->transactionFactory->create();
         $transaction->setData(
@@ -153,9 +153,9 @@ class Transaction extends AbstractDb
         try {
             // store credit updates the grand total on the order and balance amount applied
             if($paymentMethod == Constant::MULTIPAY_STORE_CREDIT_METHOD) {
-                $newGrandTotal = $order->getGrandTotal() - (float)$amount;
-                $newTotalDue = $order->getToalDue() - (float)$amount;
-                $newCustomerBalanceAmount = $order->getCustomerBalanceAmount() + (float)$amount;
+                $newGrandTotal = $order->getGrandTotal() - round($amount,2);
+                $newTotalDue = $order->getToalDue() - round($amount,2);
+                $newCustomerBalanceAmount = $order->getCustomerBalanceAmount() + round($amount,2);
                 $order->setGrandTotal($newGrandTotal);
                 $order->setTotalDue($newTotalDue);
                 $order->setCustomerBalanceAmount($newCustomerBalanceAmount);

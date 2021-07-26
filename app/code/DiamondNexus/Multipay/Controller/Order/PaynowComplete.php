@@ -19,6 +19,15 @@ use DiamondNexus\Multipay\Model\Constant;
 
 class PaynowComplete extends \Magento\Framework\App\Action\Action implements \Magento\Framework\App\CsrfAwareActionInterface
 {
+    protected $pageFactory;
+    protected $request;
+    protected $response;
+    protected $resultRedirectFactory;
+    protected $resultFactory;
+    protected $orderRepository;
+    protected $customerSession;
+    protected $messageManager;
+    
     public function __construct (
         Context $context,
         PageFactory $pageFactory,
@@ -43,7 +52,7 @@ class PaynowComplete extends \Magento\Framework\App\Action\Action implements \Ma
      */
     public function execute()
     {
-        $id = $this->getRequest()->getParam('order_id');
+        $id = (int) $this->getRequest()->getParam('order_id');
         $openForm = $this->getRequest()->getParam('openform');
         
         /** @var Order $order */
@@ -54,7 +63,7 @@ class PaynowComplete extends \Magento\Framework\App\Action\Action implements \Ma
         $customerId = $this->customerSession->getCustomer()->getId();
 
         if($customerId > 0 && $order->getCustomerId() == $customerId) {
-            if($order->getTotalPaid() < $order->getGrandTotal()) {
+            if(float($order->getTotalPaid(),2) < float($order->getGrandTotal(),2)) {
                 $this->messageManager->addError(__("Order is not paid in full."));
                 
                 return $resultRedirect->setPath('sales/order/history');

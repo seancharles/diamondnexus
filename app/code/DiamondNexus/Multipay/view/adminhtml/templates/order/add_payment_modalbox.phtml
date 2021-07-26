@@ -86,10 +86,20 @@ if ($block->isMultipay()) {
                 <!-- choose the payment method -->
                 <fieldset class="admin__fieldset payment-method-options multipay-fieldset" id="payment_form_multipay_method">
 
+                    <!--
+                    <?php /*
+                        <div class="admin__field-option _required">
+                            <input id="multipay_method_cc" class="admin__control-radio" value="1" type="radio" name="multipay_payment_method" data-validate='{"required":true}' />
+                            <label class="label" for="multipay_method_cc">
+                                <span><?= $block->escapeHtml(__('Credit Card')) ?></span>
+                            </label>
+                        </div>
+                    */ ?>
+                    -->
                     <div class="admin__field-option _required">
-                        <input id="multipay_method_cc" class="admin__control-radio" value="1" type="radio" name="multipay_payment_method" data-validate='{"required":true}' />
-                        <label class="label" for="multipay_method_cc">
-                            <span><?= $block->escapeHtml(__('Credit Card')) ?></span>
+                        <input id="multipay_method_credit_offline" class="admin__control-radio" value="7" type="radio" name="multipay_payment_method" data-validate='{"required":true}' />
+                        <label class="label" for="multipay_method_credit_offline">
+                            <span><?= $block->escapeHtml(__('Credit (offline)')) ?></span>
                         </label>
                     </div>
                     <div class="admin__field-option _required">
@@ -112,9 +122,9 @@ if ($block->isMultipay()) {
                     </div>
                     <?php if($block->getBalanceAmount() > 0.01) : ?>
                         <div class="admin__field-option _required">
-                            <input data-amount="<?php echo $block->getStoreCreditAmount();?>" id="multipay_method_store_credit" class="admin__control-radio" value="4" type="radio" name="multipay_payment_method" data-validate='{"required":true}' />
+                            <input data-amount="<?php $escaper->escapeHtml(__($block->getStoreCreditAmount()));?>" id="multipay_method_store_credit" class="admin__control-radio" value="4" type="radio" name="multipay_payment_method" data-validate='{"required":true}' />
                             <label class="label" for="multipay_method_store_credit">
-                                <span><?= $block->escapeHtml(__('Store Credit')) ?> ($<?php echo number_format($block->getStoreCreditAmount(), 2); ?>)</span>
+                                <span><?= $block->escapeHtml(__('Store Credit')) ?> ($<?php $escaper->escapeHtml(__(number_format($block->getStoreCreditAmount(), 2))); ?>)</span>
                             </label>
                         </div>
                     <?php endif; ?>

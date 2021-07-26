@@ -50,10 +50,20 @@ $code = 'multipay';
         <!-- choose the payment method -->
         <fieldset class="admin__fieldset payment-method-options multipay-fieldset" id="payment_form_multipay_method">
 
+            <!--
+            <? /*
+                <div class="admin__field-option _required">
+                    <input id="multipay_method_cc" class="admin__control-radio" value="1" type="radio" name="payment[multipay_payment_method]" data-validate="{'required-entry':true}" />
+                    <label class="admin__field-label" for="multipay_method_cc">
+                        <span><?= $block->escapeHtml(__('Credit Card')) ?></span>
+                    </label>
+                </div>
+            */ ?>
+            -->
             <div class="admin__field-option _required">
-                <input id="multipay_method_cc" class="admin__control-radio" value="1" type="radio" name="payment[multipay_payment_method]" data-validate="{'required-entry':true}" />
-                <label class="admin__field-label" for="multipay_method_cc">
-                    <span><?= $block->escapeHtml(__('Credit Card')) ?></span>
+                <input id="multipay_method_credit_offline" class="admin__control-radio" value="7" type="radio" name="payment[multipay_payment_method]" data-validate="{'required-entry':true}" />
+                <label class="admin__field-label" for="multipay_method_credit_offline">
+                    <span><?= $block->escapeHtml(__('Credit (offline)')) ?></span>
                 </label>
             </div>
             <div class="admin__field-option _required">
@@ -126,6 +136,8 @@ $code = 'multipay';
         </div>
 
         <!-- credit card info form -->
+        <?php /*
+            REMOVED FOR PCI COMPLIANCE
         <div class="payment-method-options multipay-fieldset">
             <div class="admin__field-control">
                 <label class="label admin__field-label">
@@ -177,6 +189,29 @@ $code = 'multipay';
                 </div>
             <?php endif; ?>
         </div>
+        */ ?>
+
+        <!-- credit offline -->
+        <div class="payment-method-options multipay-fieldset">
+            <div class="admin__field">
+                <label class="label admin__field-label" for="multipay_cash_tendered">
+                    <span><?= $block->escapeHtml(__('Cash Tendered')) ?></span>
+                </label>
+            </div>
+            <div class="admin__field-control control">
+                <input id="multipay_cash_tendered" class="input-text admin__control-text" value="" type="text" name="payment[multipay_cash_tendered]" />
+            </div>
+
+            <div class="admin__field multipay-add-margin-top">
+                <label class="label admin__field-label" for="multipay_change_due">
+                    <span><?= $block->escapeHtml(__('Change Due')) ?></span>
+                </label>
+            </div>
+            <div class="admin__field-control control">
+                <input id="multipay_change_due" class="input-text admin__control-text disabled" value="" type="text" readonly="readonly" name="payment[multipay_change_due]" />
+            </div>
+        </div>
+        <!-- end credit offline -->
 
         <!-- cash form -->
         <div class="payment-method-options multipay-fieldset">

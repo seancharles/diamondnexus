@@ -30,6 +30,7 @@ class Constant
         4 => 'Store Credit',
         5 => 'Affirm (offline)',
         6 => 'Paypal (offline)',
+        7 => 'Credit (offline)',
     ];
 
     const MULTIPAY_SALE_ACTION = 1;
@@ -66,10 +67,10 @@ class Constant
         self::PAYMENT_METHOD_NONCE,
         self::NEW_BALANCE_DATA,
         self::AMOUNT_DUE_DATA,
-        self::CC_NUMBER_DATA,
-        self::EXP_MONTH_DATA,
-        self::EXP_YEAR_DATA,
-        self::CVV_NUMBER_DATA,
+        //self::CC_NUMBER_DATA,
+        //self::EXP_MONTH_DATA,
+        //self::EXP_YEAR_DATA,
+        //self::CVV_NUMBER_DATA,
         self::ORDER_UPDATES_FLAG
     ];
 

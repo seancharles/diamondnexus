@@ -2,7 +2,26 @@ define(['jquery'], function ($) {
     'use strict';
     return function multipayadmin() {
         $('.admin__control-radio').click(function () {
-            if ($('#multipay_method_cc').is(':checked')) {
+            /*
+                if ($('#multipay_method_cc').is(':checked')) {
+                    $('.payment-method-options:nth-child(2)').css(
+                        'display',
+                        'block'
+                    )
+                    $('.payment-method-options:nth-child(3)').css(
+                        'display',
+                        'block'
+                    )
+                    $('.payment-method-options:nth-child(4)').css('display', 'none')
+                    $('.payment-method-options:nth-child(5)').css(
+                        'display',
+                        'block'
+                    )
+                    $('.payment-method-options:nth-child(6)').css('display', 'none')
+                }
+            */
+            
+            if ($('#multipay_method_credit_offline').is(':checked')) {
                 $('.payment-method-options:nth-child(2)').css(
                     'display',
                     'block'
@@ -12,10 +31,7 @@ define(['jquery'], function ($) {
                     'block'
                 )
                 $('.payment-method-options:nth-child(4)').css('display', 'none')
-                $('.payment-method-options:nth-child(5)').css(
-                    'display',
-                    'block'
-                )
+                $('.payment-method-options:nth-child(5)').css('display', 'none')
                 $('.payment-method-options:nth-child(6)').css('display', 'none')
             } else if ($('#multipay_method_cash').is(':checked')) {
                 $('.payment-method-options:nth-child(2)').css(

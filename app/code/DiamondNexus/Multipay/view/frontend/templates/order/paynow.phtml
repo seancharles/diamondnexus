@@ -5,15 +5,15 @@ use Magento\Framework\Escaper;
 /** @var Paynow $block */
 
 $code = 'multipay';
-$orderId = $block->getData('order_id');
+$orderId = (int) $block->getData('order_id');
 
 # load the increment id
-$incrementId = $block->getIncrementId();
+$incrementId = $escaper->escapeHtml($block->getIncrementId());
 # get the amount due
 $amountDue = $escaper->escapeHtml($block->getTotalDue());
 
-$paypalClientId = $block->getClientId();
-$openForm = $block->getOpenForm();
+$paypalClientId = $escaper->escapeHtml($block->getClientId());
+$openForm = $escaper->escapeHtml($block->getOpenForm());
 $btn = $escaper->escapeHtml('.paypal-button-widget');
 $errorAlert = "There was an error processing your payment. Please call customer service.";
 $src = $escaper->escapeHtml('https://www.paypal.com/sdk/js?client-id=' . $paypalClientId);
@@ -104,9 +104,12 @@ $maxYear = $currentYear + 12;
     </div>
     <div class="payment-buttons-container">
         <div id="paypal-button-container"></div>
-        <button class="debit-credit-button btn">
-            <span>Debit or Credit Card</span>
-        </button>
+        <!--
+            **** Removed for PCI Compliance ****
+            <button class="debit-credit-button btn">
+                <span>Debit or Credit Card</span>
+            </button>
+        -->
     </div>
     
     <script>
@@ -119,10 +122,12 @@ $maxYear = $currentYear + 12;
                 jQuery(".cc-form").fadeIn();
             <?php endif; ?>
             
-            jQuery(".debit-credit-button").on( "click", function() {
-                jQuery(".payment-buttons-container").hide();
-                jQuery(".cc-form").fadeIn();
-            });
+            /*
+                jQuery(".debit-credit-button").on( "click", function() {
+                    jQuery(".payment-buttons-container").hide();
+                    jQuery(".cc-form").fadeIn();
+                });
+            */
             
             function sendPayment(details) {
                 
@@ -138,9 +143,9 @@ $maxYear = $currentYear + 12;
                     }
                 }).done(function (response) {
                     if (response.success == true) {
-                        location.href = "<?= /** @noEscape */ $block->getPaypalPaymentCompleteUrl($orderId) ?>";
+                        location.href = "<?=$block->getPaypalPaymentCompleteUrl($orderId)?>";
                     } else {
-                        alert('<?=/** @noEscape */ $errorAlert ?>');
+                        alert('<?=$errorAlert?>');
                         //jQuery.fancybox.hideLoading();
                     }
                 });
@@ -189,6 +194,7 @@ $maxYear = $currentYear + 12;
     </script>
 
     <div class="cc-form">
+        <?php /*
         <form action="<?= $block->escapeUrl($block->getFormUrl()) ?>" method="post"
               id="order-view-add-warranty-add-payment-form"
               data-mage-init='{"validation":{"rules": {"multipay_payment_method": {"required":true}}}}'>
@@ -291,7 +297,7 @@ $maxYear = $currentYear + 12;
                                         class="admin__control-select hosted-control hosted-date">
                                             <option value="">Year</option>
                                         <?php for($i=$currentYear; $i <= $maxYear; $i++): ?>
-                                            <option><?php echo $i; ?></option>
+                                            <option><?php echo (int) $i; ?></option>
                                         <?php endfor; ?>
                                     <select>
                                 </div>
@@ -306,5 +312,6 @@ $maxYear = $currentYear + 12;
                 </div>
             </fieldset>
         </form>
+        */ ?>
     </div>
 </div>

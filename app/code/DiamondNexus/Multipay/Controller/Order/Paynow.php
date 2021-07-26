@@ -82,7 +82,7 @@ class Paynow implements \Magento\Framework\App\Action\HttpGetActionInterface
      */
     public function execute()
     {
-        $id = $this->getRequest()->getParam('order_id');
+        $id = (int) $this->getRequest()->getParam('order_id');
         $openForm = $this->getRequest()->getParam('openform');
         
         /** @var Order $order */
@@ -92,10 +92,10 @@ class Paynow implements \Magento\Framework\App\Action\HttpGetActionInterface
 
         $resultRedirect = $this->resultRedirectFactory->create();
 
-        $customerId = $this->customerSession->getCustomer()->getId();
+        $customerId = (int) $this->customerSession->getCustomer()->getId();
 
         if($customerId > 0 && $order->getCustomerId() == $customerId) {
-            if($order->getTotalPaid() >= $order->getGrandTotal()) {
+            if( round($order->getTotalPaid(),2) >= round($order->getGrandTotal(),2) ) {
                 $this->messageManager->addError(__("Order is already paid in full."));
                 
                 return $resultRedirect->setPath('sales/order/history');

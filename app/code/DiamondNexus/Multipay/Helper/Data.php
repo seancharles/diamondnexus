@@ -64,12 +64,12 @@ class Data extends AbstractHelper
         $billingAddress = $order->getBillingAddress();
         $amount = 0;
         if (isset($info[Constant::OPTION_PARTIAL_DATA])) {
-            $amount = $info[Constant::OPTION_PARTIAL_DATA];
+            $amount = float($info[Constant::OPTION_PARTIAL_DATA],2);
         }
         if (isset($info[Constant::OPTION_TOTAL_DATA]) && (int)$info[Constant::OPTION_TOTAL_DATA] == 1) {
-            $amount = $info[Constant::AMOUNT_DUE_DATA];
+            $amount = float($info[Constant::AMOUNT_DUE_DATA],2);
         } else {
-            if ($order->getTotalDue() < $amount) {
+            if (float($order->getTotalDue(),2) < $amount) {
                 throw new ValidatorException(__('You can\'t pay more than order total price'));
             }
         }
