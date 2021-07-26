@@ -1,7 +1,27 @@
 define(['jquery'], function ($) {
     'use strict';
     return function multipayadmin() {
-        $('.admin__control-radio').click(function () {
+
+        $('.admin__control-radio').click(function (event) {
+
+            let shippingMethod = $('input[name="order[shipping_method]"]:checked ').val();
+
+            console.log(shippingMethod)
+
+            if (typeof shippingMethod == 'undefined') {
+                switch($(this).attr('id')) {
+                    case 'multipay_method_credit_offline':
+                    case 'multipay_method_cash':
+                    case 'multipay_method_quote':
+                    case 'multipay_method_paypal_offline':
+                    case 'multipay_method_total_balance':
+                    case 'multipay_method_partial_balance':
+                        alert('Please specify a shipping method.')
+                        event.preventDefault()
+                        break
+                }
+            }
+
             /*
                 if ($('#multipay_method_cc').is(':checked')) {
                     $('.payment-method-options:nth-child(2)').css(
