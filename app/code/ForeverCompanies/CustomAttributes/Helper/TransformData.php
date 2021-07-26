@@ -621,7 +621,7 @@ class TransformData extends AbstractHelper
         $attributeSetId = $this->getAttributeSetId('Migration_Loose Diamonds');
         $collection = $this->productCollectionFactory->create();
         $collection->addAttributeToSelect('*');
-        $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
+        //$collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
         $collection->addAttributeToFilter('attribute_set_id', ['eq' => $attributeSetId]);
         return $collection;
     }
