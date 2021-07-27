@@ -223,7 +223,7 @@ class Result
 					$this->errors[self::PRODUCT_CONFIGURABLE_OPTION][$optionId] = "Invalid option for attribute " . $config[0]['super_attribute_label'];
 					
 					foreach($config as $option){
-						if($params['super_attribute'][$optionId] == $option['value_index']) {
+					    if(isset($params['super_attribute'][$optionId]) && $params['super_attribute'][$optionId] == $option['value_index']) {
 							unset($this->errors[self::PRODUCT_CONFIGURABLE_OPTION][$optionId]);
 						}
 					}
