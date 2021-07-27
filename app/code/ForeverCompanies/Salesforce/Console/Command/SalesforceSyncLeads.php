@@ -17,6 +17,9 @@
          */
         protected $name = 'forevercompanies:salesforce:leads:sync';
 
+        protected $syncHelper;
+        protected $state;
+
         /**
          * SalesforceSync constructor.
          * @param \ForeverCompanies\Salesforce\Helper\Sync $syncHelper
@@ -27,6 +30,7 @@
             \Magento\Framework\App\State $state
         ) {
             $this->syncHelper = $syncHelper;
+            $this->state = $state;
             
             parent::__construct($this->name);
         }
@@ -40,7 +44,7 @@
             $this->setDescription("Sync magento Leads to Salesforce");
             parent::configure();
         }
-        
+
         /**
          * Execute the command
          *
@@ -48,10 +52,11 @@
          * @param OutputInterface $output
          *
          * @return null|int
+         * @throws \Magento\Framework\Exception\LocalizedException
          */
         protected function execute(InputInterface $input, OutputInterface $output)
         {
-            $state->setAreaCode(\Magento\Framework\App\Area::AREA_ADMINHTML);
+            $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_ADMINHTML);
             $this->syncHelper->runLeads();
         }
     }

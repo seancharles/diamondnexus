@@ -1,15 +1,11 @@
 <?php
-/**
- * Copyright ©  All rights reserved.
- * See COPYING.txt for license details.
- */
-declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Model\Sync;
 
 use ForeverCompanies\Salesforce\Model\RequestLogFactory;
 use ForeverCompanies\Salesforce\Model\Connector;
 use ForeverCompanies\Salesforce\Model\Data;
+use Magento\Config\Model\Config;
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Cache\TypeListInterface;
@@ -21,7 +17,7 @@ class Account extends Connector
     const SALESFORCE_ACCOUNT_ATTRIBUTE_CODE = 'sf_acctid';
 
     /**
-     * @var \Magento\Customer\Model\CustomerFactory
+     * @var CustomerFactory
      */
     protected $customerFactory;
 
@@ -29,15 +25,18 @@ class Account extends Connector
      * @var Data
      */
     protected $data;
+    protected $_type;
 
     /**
      * Order constructor.
      * @param ScopeConfigInterface $scopeConfig
+     * @param WriterInterface $configWriter
+     * @param TypeListInterface $cacheTypeList
      * @param ResourceModelConfig $resourceConfig
-     * @param ReportFactory $reportFactory
      * @param Data $data
-     * @param CustomerFactory $orderFactory
      * @param RequestLogFactory $requestLogFactory
+     * @param Config $configModel
+     * @param CustomerFactory $customerFactory
      */
 
     public function __construct(
@@ -47,7 +46,7 @@ class Account extends Connector
         ResourceModelConfig $resourceConfig,
         Data $data,
         RequestLogFactory $requestLogFactory,
-        \Magento\Config\Model\Config $configModel,
+        Config $configModel,
         CustomerFactory $customerFactory
     ) {
         parent::__construct(
@@ -66,8 +65,8 @@ class Account extends Connector
     /**
      * Create or update new Account in Salesforce
      *
-     * @param  int     $accountId
-     * @param  string  $salesforceId
+     * @param $magAccountId
+     * @param bool $sfAccountId
      * @return string
      */
     public function sync($magAccountId, $sfAccountId = false)
@@ -77,7 +76,7 @@ class Account extends Connector
         $id = null;
         
         $data  = $this->data->getCustomer($customer, $this->_type);
-        
+
         $params = [
             'Web_Account_Id__c' => $data['entity_id'],
             'FirstName' => $data['firstname'],
@@ -97,6 +96,16 @@ class Account extends Connector
             'ShippingPostalCode' => $data['ship_postcode']
         ];
 
+        if ($data['bill_country_id'] != 'United States') {
+            $params['BillingState'] = null;
+            $params['BillingCountry'] = null;
+        }
+
+        if ($data['ship_country_id'] != 'United States') {
+            $params['ShippingState'] = null;
+            $params['ShippingCountry'] = null;
+        }
+
         if(!$sfAccountId) {
             $params = ['acct' => $params];
             
@@ -106,7 +115,7 @@ class Account extends Connector
             
             $response = $this->createAccount($params);
             
-            echo "create accout\n";
+            echo "create account\n";
             print_r($response);
             
 			if(isset($response["acctId"]) == true) {

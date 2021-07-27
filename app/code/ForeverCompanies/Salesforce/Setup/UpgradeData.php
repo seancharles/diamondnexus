@@ -1,9 +1,4 @@
 <?php
-/**
- * Copyright ©  All rights reserved.
- * See COPYING.txt for license details.
- */
-declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Setup;
 
@@ -36,6 +31,8 @@ class UpgradeData implements UpgradeDataInterface
      * @var AttributeSetFactory
      */
     private $attributeSetFactory;
+    protected $eavSetupFactory;
+    protected $salesSetupFactory;
 
     public function __construct(
         EavSetupFactory $eavSetupFactory,
@@ -148,6 +145,10 @@ class UpgradeData implements UpgradeDataInterface
             $salesSetup->addAttribute('order', 'lastsync_at', $attributeOptions);
             $salesSetup->addAttribute('order_item', 'sf_order_itemid', $attributeOptions);
             $salesSetup->addAttribute('order_item', 'lastsync_at', $attributeOptions);
+        }
+
+        if (version_compare($context->getVersion(), '1.0.5') < 0) {
+            // TODO: Add remove attributes
         }
         
         $setup->endSetup();

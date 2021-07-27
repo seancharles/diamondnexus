@@ -1,15 +1,11 @@
 <?php
-/**
- * Copyright ©  All rights reserved.
- * See COPYING.txt for license details.
- */
-declare(strict_types=1);
 
 namespace ForeverCompanies\Salesforce\Model\Sync;
 
 use ForeverCompanies\Salesforce\Model\RequestLogFactory;
 use ForeverCompanies\Salesforce\Model\Connector;
 use ForeverCompanies\Salesforce\Model\Data;
+use Magento\Config\Model\Config;
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Cache\TypeListInterface;
@@ -17,45 +13,61 @@ use Magento\Config\Model\ResourceModel\Config as ResourceModelConfig;
 use Magento\Customer\Model\CustomerFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\OrderFactory;
+use Magento\User\Model\UserFactory;
+use Magento\Directory\Model\RegionFactory;
+use ShipperHQ\Shipper\Model\ResourceModel\Order\Detail;
+use Magento\Framework\Exception\LocalizedException;
 
 class Order extends Connector
 {
-    const SALESFORCE_ORDER_ATTRIBUTE_CODE = 'sf_orderid';
-    const SALESFORCE_ACCOUNT_ATTRIBUTE_CODE = 'sf_acctid';
-    const SALESFORCE_ORDER_ATTRIBUTE_CODE_ITEM_ID = 'sf_order_itemid';
-
     /**
-     * @var \Magento\Sales\Api\OrderRepositoryInterface
+     * @var OrderRepositoryInterface
      */
     protected $orderRepository;
 
     /**
-     * @var \Magento\Sales\Model\OrderFactory
+     * @var OrderFactory
      */
     protected $orderFactory;
     
     /**
-     * @var \Magento\Customer\Model\CustomerFactory
+     * @var CustomerFactory
      */
     protected $customerFactory;
 
     /**
-     * @var \ForeverCompanies\Salesforce\Model\Sync\Account
+     * @var RegionFactory
+     */
+    protected $regionFactory;
+
+    /**
+     * @var Account
      */
     protected $account;
+    protected $userFactory;
+    protected $shipperDetailResourceModel;
 
     /**
      * @var Data
      */
     protected $data;
+    protected $_type;
+
     /**
      * Order constructor.
      * @param ScopeConfigInterface $scopeConfig
+     * @param WriterInterface $configWriter
+     * @param TypeListInterface $cacheTypeList
      * @param ResourceModelConfig $resourceConfig
      * @param Data $data
      * @param RequestLogFactory $requestLogFactory
+     * @param Config $configModel
+     * @param OrderRepositoryInterface $orderRepository
      * @param OrderFactory $orderFactory
      * @param CustomerFactory $customerFactory
+     * @param UserFactory $userFactory
+     * @param RegionFactory $regionFactory
+     * @param Detail $shipperDetailResourceModel
      */
 
     public function __construct(
@@ -65,10 +77,13 @@ class Order extends Connector
         ResourceModelConfig $resourceConfig,
         Data $data,
         RequestLogFactory $requestLogFactory,
-        \Magento\Config\Model\Config $configModel,
+        Config $configModel,
         OrderRepositoryInterface $orderRepository,
         OrderFactory $orderFactory,
-        CustomerFactory $customerFactory
+        CustomerFactory $customerFactory,
+        UserFactory $userFactory,
+        RegionFactory $regionFactory,
+        Detail $shipperDetailResourceModel
     ) {
         parent::__construct(
             $scopeConfig,
@@ -81,6 +96,9 @@ class Order extends Connector
         $this->orderFactory = $orderFactory;
         $this->orderRepository = $orderRepository;
         $this->customerFactory = $customerFactory;
+        $this->userFactory = $userFactory;
+        $this->regionFactory = $regionFactory;
+        $this->shipperDetailResourceModel = $shipperDetailResourceModel;
         $this->data   = $data;
         $this->_type = 'Order';
     }
@@ -88,45 +106,67 @@ class Order extends Connector
     /**
      * Create or Update an Order in Salesforce
      *
-     * @param $salesforceCustomerId
      * @param $increment_id
-     * @param $guest
-     * @param $salesforceOrderId
+     * @param $sfOrderId
+     * @param $sfAccountId
      * @return string|void
      */
     public function sync($increment_id, $sfOrderId, $sfAccountId)
     {
         $order = $this->orderFactory->create()->loadByIncrementId($increment_id);
-        
         $params = $this->data->getOrder($order, $this->_type);
-        
+        $salesPersonId = $params['sales_person_id'];
+        $shipDate = null;
+
+        if ($salesPersonId > 0) {
+            $user = $this->userFactory->create()->load($salesPersonId);
+            $salesRep = strtolower($user->getFirstName() . "." . $user->getLastName());
+        } else {
+            $salesRep = "Web";
+        }
+
+        $connection = $this->shipperDetailResourceModel->getConnection();
+        $select = $connection->select()->from($this->shipperDetailResourceModel->getMainTable())
+            ->where('order_id = ?', $order->getEntityId())
+            ->order('id desc')
+            ->limit(1);
+        $shipperData = $connection->fetchRow($select);
+
+        if(isset($shipperData['dispatch_date']) === true) {
+            $shipDate = $shipperData['dispatch_date'];
+        }
+
         $date = date('Y-m-d', time());
-        
+
         $data = [
             'Web_Order_Id__c' => $params['entity_id'],
             'Web_Order_Number__c' => $params['increment_id'],
             'Store_Name__c' => $params['store_name'],
             'EffectiveDate' => $date,
             'Status' => 'Draft',
-            
+
             'First_Name__c' => $params['customer_firstname'],
             'Last_Name__c' => $params['customer_lastname'],
             'Email' => $params['customer_email'],
             'Phone__c' => $params['bill_telephone'],
-            
-            'BillingStreet' => $params['bill_street'],
-            'BillingCity' => $params['bill_city'],
-            'BillingState' => $params['bill_region'],
-            'BillingPostalCode' => $params['bill_postcode'],
-            'BillingCountryCode' => $params['bill_country_id'],
-            
+
             'Order_Subtotal__c' => $params['subtotal'],
             'Discount_Amount__c' => $params['discount_amount'],
             'Order_Total__c' => $params['grand_total'],
             'Order_Status__c' => $params['status'],
             'Ship_Method__c' => $params['shipping_method'],
-            'Tax_Amount__c' => $params['tax_amount']
+            'Tax_Amount__c' => $params['tax_amount'],
+            'Sales_Rep__c' => $salesRep,
+            'Ship_Date__c' => $shipDate
         ];
+
+        if($params['bill_country_id'] == "US") {
+            $data['Billing_City__c'] = $params['bill_city'];
+            $data['Billing_State__c'] = $params['bill_region'];
+            $data['Billing_Country__c'] = $params['bill_country_id'];
+            $data['Billing_Postal_Code__c'] = $params['bill_postcode'];
+            $data['Billing_Street__c'] = $params['bill_street'];
+        }
 
         // todo: add handling for guest order updates (will need to pull customer by email)
         //
@@ -153,44 +193,29 @@ class Order extends Connector
         return false;
     }
     
-    public function syncLineItems($orderId, $lastsyncAt)
+    public function syncLineItems($orderId, $sfOrderId)
     {
         // load order
         $order = $this->orderRepository->get($orderId);
         
-        // get sf order id
-        $sfOrderId = $order->getData('sf_orderid');
-        
         $orderItems = $order->getAllItems();
         
         if($sfOrderId) {
-            $this->clearOrderLines($sfOrderId);
+            $this->clearOrderLines(['id' =>$sfOrderId]);
             
             foreach($orderItems as $item) {
-                
-                $sfItemId = $item->getData('sf_order_itemid');
-                
                 $data = [
                     'Order__c' => $sfOrderId,
                     'Web_Product_Id__c' => $item->getSku(),
                     'Amount__c' => $item->getPrice(),
                     'Name' => $item->getName()
                 ];
-                
-                if($sfItemId) {
-                    $data['Id'] = $sfItemId;
-                    $result = ['line' => $data];
-                    $this->updateOrderLine($result);
-                } else {
-                    $result = ['line' => $data];
-                    $sfItemId = $this->createOrderLine($result);
+
+                $lineId = $this->createOrderLine(['line' => $data]);
+
+                if($lineId === false) {
+                    echo "Unable to add order item " . $item->getSku();
                 }
-                
-                if($sfItemId) {
-                    $item->setData('sf_order_itemid', $sfItemId)->save();
-                    $item->setData('lastsync_at', $lastsyncAt)->save();
-                }
-                
             }
         } else {
             echo "Unable to sync items order id missing.";

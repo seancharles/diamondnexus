@@ -3,6 +3,7 @@
 namespace ForeverCompanies\CustomApi\Controller\Adminhtml\Order;
 
 use ForeverCompanies\CustomApi\Helper\ExtOrder;
+use ForeverCompanies\Salesforce\Model\QueueFactory;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpPostActionInterface;
@@ -50,6 +51,11 @@ class Order extends AdminOrder implements HttpPostActionInterface
     protected $extOrder;
 
     /**
+     * @var QueueFactory
+     */
+    protected $queueFactory;
+
+    /**
      * Order constructor.
      * @param Context $context
      * @param Registry $coreRegistry
@@ -82,7 +88,8 @@ class Order extends AdminOrder implements HttpPostActionInterface
         Detail $shipperDetailResourceModel,
         GridDetail $shipperGridDetailResourceModel,
         HistoryFactory $orderHistoryFactory,
-        ExtOrder $extOrder
+        ExtOrder $extOrder,
+        QueueFactory  $queueFactory
     ) {
         parent::__construct(
             $context,
@@ -101,6 +108,7 @@ class Order extends AdminOrder implements HttpPostActionInterface
         $this->shipperGridDetailResourceModel = $shipperGridDetailResourceModel;
         $this->orderHistoryFactory = $orderHistoryFactory;
         $this->extOrder = $extOrder;
+        $this->queueFactory = $queueFactory;
     }
 
     /**
@@ -168,7 +176,16 @@ class Order extends AdminOrder implements HttpPostActionInterface
                         'order_id = ' . $order->getEntityId()
                     );
                     $this->extOrder->createNewExtSalesOrder($order->getEntityId(), array_keys($changes));
-                    
+
+                    // insert entry to queue
+                    $queueModel = $this->queueFactory->create();
+                    $queueModel->addData([
+                        "entity_id" => (int) $order->getId(),
+                        "entity_type" => "order",
+                        "created_at" => date("Y-m-d h:i:s")
+                    ]);
+                    $queueModel->save();
+
                     $this->addUpdateComment($order, $changes);
                 }
             }
