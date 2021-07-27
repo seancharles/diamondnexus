@@ -632,7 +632,10 @@ class TransformData extends AbstractHelper
     public function cleanOptions($sku)
     {
         try {
-            $product = $this->productRepository->get($sku);
+            //$product = $this->productRepository->get($sku);
+
+            // $sku is a product id in this instance
+            $product = $this->productRepository->getById($sku);
 
             $flag = false;
 

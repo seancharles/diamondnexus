@@ -38,7 +38,8 @@ class DiamondOptionsCleanup extends AbstractCommand
         $output->writeln('Products for cleaning: ' . $productCollection->count());
         foreach ($productCollection->getItems() as $item) {
             $output->writeln('In process product ID = ' . $item->getData('entity_id'));
-            $this->helper->cleanOptions($item->getData('sku'));
+            //$this->helper->cleanOptions($item->getData('sku'));
+            $this->helper->cleanOptions($item->getData('entity_id'));
         }
         $output->writeln('Migration loose diamond\'s options cleared! Execute bin/magento indexer:reindex');
     }
