@@ -83,7 +83,7 @@ class FeedLogic
         $this->getProductsReviews('inc');
     }
 
-    public function check_format($text)
+    public function checkFormat($text)
     {
         // TODO there is no recode_string function in php 7.4.x.
         // https://www.php.net/manual/en/function.iconv.php
@@ -91,7 +91,7 @@ class FeedLogic
         return recode_string("us..flat", $this->encoder->fixALL($text));
     }
     
-    public function min_display($arrayName)
+    public function minDisplay($arrayName)
     {
         $udisplay = '';
         if (!empty($arrayName)) {
@@ -101,7 +101,7 @@ class FeedLogic
         return $udisplay;
     }
     
-    public function unique_display($arrayName, $delimter = ' / ')
+    public function uniqueDisplay($arrayName, $delimter = ' / ')
     {
         $udisplay = '';
         foreach (array_unique($arrayName) as $Name) {
@@ -232,7 +232,10 @@ class FeedLogic
         */
         $products->addStoreFilter($GLOBALS['argvStoreId']);
         $products->addFieldToFilter('visibility', array('4'));
-        $products->addAttributeToFilter('status',\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED);
+        $products->addAttributeToFilter(
+            'status',
+            \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED
+        );
         
         $products->load();
         
@@ -393,7 +396,7 @@ class FeedLogic
         $sale_start = $sale_start_uf->format(\DateTime::ATOM);
         $sale_end_uf = new \DateTime($product->getSpecialToDate());
         $sale_end = $sale_end_uf->format(\DateTime::ATOM);
-        $description = preg_replace('/\s+/S', " ", $this->check_format(strip_tags($product->getDescription())));
+        $description = preg_replace('/\s+/S', " ", $this->checkFormat(strip_tags($product->getDescription())));
         $title = $name;
         $Category = "Apparel & Accessories > Jewelry";
         $ProductType = $Category;
@@ -532,7 +535,7 @@ class FeedLogic
         
         // Exception #0 (Exception): Warning: count(): Parameter must be an array or an object that implements Countable
         // Returns a string. Not countable.
-        if (strlen($this->unique_display($Sizes)) > 0) {
+        if (strlen($this->uniqueDisplay($Sizes)) > 0) {
             $size_display = "Varies";
         }
         $title = preg_replace('~[[:cntrl:]]~', '', preg_replace('/(\s)+/', ' ', preg_replace('/s$/', '', $title)));
@@ -546,7 +549,6 @@ class FeedLogic
         $childs = array();
         switch ($product->getTypeId()) {
             case 'configurable':
-                
                 $configurableOptions = $product->getTypeInstance()->getConfigurableOptions($product);
                 
                 $childAttributeCodes = array();
@@ -564,7 +566,6 @@ class FeedLogic
                         $GLOBALS['argvStoreId']
                     )->load($simpleModel->getId());
                     if ($_product->getStatus() == 1) {
-                        
                         $SPrice = $_product->getPrice();
                         $sale_start_uf = new \DateTime($_product->getSpecialFromDate());
                         $ssale_start = $sale_start_uf->format(\DateTime::ATOM);
@@ -665,8 +666,8 @@ class FeedLogic
                         );
                     }
                 }
-                $price = $this->min_display($Prices);
-                $saleprice = $this->min_display($SalePrices);
+                $price = $this->minDisplay($Prices);
+                $saleprice = $this->minDisplay($SalePrices);
                 break;
             case 'simple':
                 $itemGroupId = false;
@@ -715,19 +716,19 @@ class FeedLogic
         }
         
         $cuts_display = "";
-        if (strlen($this->unique_display($Cuts)) > 0) {
+        if (strlen($this->uniqueDisplay($Cuts)) > 0) {
             $cuts_display = "Varies";
         }
         $color_display = "";
-        if (strlen($this->unique_display($Colors)) > 0) {
+        if (strlen($this->uniqueDisplay($Colors)) > 0) {
             $color_display = "Varies";
         }
         $metal_display = "";
-        if (strlen($this->unique_display($Metals)) > 0) {
+        if (strlen($this->uniqueDisplay($Metals)) > 0) {
             $metal_display = "Varies";
         }
         $gems_display = "";
-        if (strlen($this->unique_display($Gemstones)) > 0) {
+        if (strlen($this->uniqueDisplay($Gemstones)) > 0) {
             $gems_display = "Varies";
         }
         
@@ -789,21 +790,52 @@ class FeedLogic
         }
     }
     
-    protected function buildConfigurableUrlString($metal, $gemstone, $ringSize, $chainLength, $certifiedStone, $childAttributeCodes)
-    {
-        $ret = "?precious-metal=" . $this->stripUrlString($metal);
+    protected function buildConfigurableUrlString(
+        $metal,
+        $gemstone,
+        $ringSize,
+        $chainLength,
+        $certifiedStone,
+        $childAttributeCodes
+    ) {
+        $ret = "?";
+        $count = 0;
         
+        if (in_array("metal_type", $childAttributeCodes) && trim($metal) != "" && $metal != 0) {
+            if ($count != 0) {
+                $ret.= "&";
+            }
+            $ret .= "precious-metal=" . $this->stripUrlString($metal);
+            $count++;
+        }
         if (in_array("gemstone", $childAttributeCodes) && trim($gemstone) != "" && $gemstone != 0) {
-            $ret .= "&gemstone=" . $this->stripUrlString($gemstone);
+            if ($count != 0) {
+                $ret.= "&";
+            }
+            $ret .= "gemstone=" . $this->stripUrlString($gemstone);
+            $count++;
         }
         if (in_array("ring_size", $childAttributeCodes) && trim($ringSize) != "" && $ringSize != 0) {
-            $ret .= "&ring-size=" . $this->stripUrlString($ringSize);
+            if ($count != 0) {
+                $ret.= "&";
+            }
+            $ret .= "ring-size=" . $this->stripUrlString($ringSize);
+            $count++;
         }
         if (in_array("chain_length", $childAttributeCodes) && trim($chainLength) != "" && $chainLength != 0) {
-            $ret .= "&chain-length=" . $this->stripUrlString($chainLength);
+            if ($count != 0) {
+                $ret.= "&";
+            }
+            $ret .= "chain-length=" . $this->stripUrlString($chainLength);
+            $count++;
         }
-        if (in_array("certified_stone", $childAttributeCodes) && trim($certifiedStone) != "" && $certifiedStone != "None") {
-            $ret .= "&certified-stone=" . $this->stripUrlString($certifiedStone);
+        if (in_array("certified_stone", $childAttributeCodes)
+            && trim($certifiedStone) != "" && $certifiedStone != "None") {
+            if ($count != 0) {
+                $ret.= "&";
+            }
+            $ret .= "certified-stone=" . $this->stripUrlString($certifiedStone);
+            $count++;
         }
         
         return strtolower($ret);
@@ -1029,7 +1061,7 @@ class FeedLogic
                         'and',
                         strip_tags(
                             html_entity_decode(
-                                $this->check_format(
+                                $this->checkFormat(
                                     $review->getDetail()
                                 )
                             )
@@ -1048,7 +1080,7 @@ class FeedLogic
                         'and',
                         strip_tags(
                             html_entity_decode(
-                                $this->check_format(
+                                $this->checkFormat(
                                     $review->getTitle()
                                 )
                             )
@@ -1067,7 +1099,7 @@ class FeedLogic
                         'and',
                         strip_tags(
                             html_entity_decode(
-                                $this->check_format(
+                                $this->checkFormat(
                                     $review->getNickname()
                                 )
                             )
@@ -1083,7 +1115,7 @@ class FeedLogic
                     'and',
                     strip_tags(
                         html_entity_decode(
-                            $this->check_format(
+                            $this->checkFormat(
                                 $product->getName()
                             )
                         )
@@ -1206,9 +1238,7 @@ class FeedLogic
         fputcsv($output, $this->fileheaderFB(), "\t", '"');
         
         foreach ($listing['list'] as $result) {
-            
             if (!empty($result)) {
-                
             //    echo count($result['Children']) . '    ';
                 
                 if (count($result['Children']) > 0) {
@@ -1236,9 +1266,7 @@ class FeedLogic
                         }
                     }
                 } else {
-                    
                     if (isset($result['Result'][16]) &&  trim($result['Result'][16]) != "") {
-                        
                         $parentCount++;
                         
                         $fb_line = array(
