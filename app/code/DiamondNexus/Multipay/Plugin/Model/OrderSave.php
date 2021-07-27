@@ -291,9 +291,10 @@ class OrderSave
 
             if ($order->canInvoice()) {
                 if ( (int) $order->getGrandTotal() == 0 || round($order->getTotalPaid(),2) == round($order->getGrandTotal(),2)) {
-                    
+
                     $invoice = $this->invoiceService->prepareInvoice($order);
                     $invoice->register();
+                    $invoice->save();
                     $this->resourceInvoice->save($invoice);
                     $transactionSave = $this->transaction->addObject(
                         $invoice

@@ -52,7 +52,7 @@ class PaypalAction extends \Magento\Framework\App\Action\Action implements \Mage
     
     public function execute()
     {
-        $resultJson = $this->resultJsonFactory->create();
+        $resultJson = $this->jsonResult->create();
 
         $result = [
             'success' => true,
