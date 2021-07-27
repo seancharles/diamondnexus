@@ -1,5 +1,4 @@
 <?php
-
 return [
     'modules' => [
         'Magento_AdminAnalytics' => 1,
@@ -358,7 +357,7 @@ return [
         'Magento_StagingPageBuilder' => 1,
         'Magento_CatalogUrlRewriteStaging' => 1,
         'Magento_UrlRewriteGraphQl' => 1,
-        'Magento_Support' => 1,
+        'Magento_Support' => 0,
         'Magento_Swagger' => 1,
         'Magento_SwaggerWebapi' => 1,
         'Magento_SwaggerWebapiAsync' => 1,
@@ -415,24 +414,35 @@ return [
         'ForeverCompanies_AdminMigration' => 1,
         'ForeverCompanies_AssignCustomerToOrder' => 1,
         'ForeverCompanies_Forms' => 1,
+        'ForeverCompanies_ConfigurableOrderItems' => 1,
+        'ForeverCompanies_CostImport' => 1,
+        'ForeverCompanies_CronControls' => 1,
+        'ForeverCompanies_CronJobs' => 1,
         'ForeverCompanies_CustomAdmin' => 1,
         'ShipperHQ_Shipper' => 1,
         'ForeverCompanies_CustomAttributes' => 1,
         'ForeverCompanies_CustomSales' => 1,
+        'ForeverCompanies_Delighted' => 1,
         'ForeverCompanies_DynamicBundle' => 0,
         'ForeverCompanies_Checkout' => 1,
         'ForeverCompanies_Gifts' => 1,
         'ForeverCompanies_Graphql' => 1,
+        'ForeverCompanies_IterableCore' => 1,
+        'ForeverCompanies_IterableFeeds' => 1,
         'ForeverCompanies_LinkProduct' => 1,
+        'ForeverCompanies_StonesIntermediary' => 1,
         'ForeverCompanies_LooseStonesGrid' => 1,
         'ForeverCompanies_LooseStonesQuery' => 1,
         'ForeverCompanies_Migration' => 1,
+        'ForeverCompanies_ProductUrlPrefix' => 1,
         'ForeverCompanies_Profile' => 1,
         'ForeverCompanies_Salesforce' => 1,
         'Mageplaza_Core' => 1,
         'ForeverCompanies_StoneEmail' => 1,
-        'ForeverCompanies_StonesIntermediary' => 1,
+        'ForeverCompanies_LooseStoneImport' => 1,
+        'ForeverCompanies_SystemCron' => 1,
         'ForeverCompanies_Tealium' => 0,
+        'ForeverCompanies_TealiumCron' => 1,
         'ForeverCompanies_Utf8' => 0,
         'ForeverCompanies_ZeroPriceProducts' => 1,
         'ForeverCompanies_dn' => 1,
@@ -451,6 +461,7 @@ return [
         'ShipperHQ_Common' => 1,
         'ShipperHQ_Logger' => 1,
         'ForeverCompanies_CustomApi' => 1,
+        'Signifyd_Connect' => 1,
         'Tealium_Tags' => 1,
         'Temando_ShippingRemover' => 1,
         'Vertex_Tax' => 0,
@@ -706,26 +717,26 @@ return [
                 'tealium_tags' => [
                     'general' => [
                         'custom_udo_enable' => '1',
-                        'udo' => '/var/www/magento/lib/Tealium/TealiumCustomDataTF.php',
-                    ],
-                ],
+                        'udo' => '/var/www/magento/lib/Tealium/TealiumCustomDataTF.php'
+                    ]
+                ]
             ],
             'default' => [
                 'tealium_tags' => [
                     'general' => [
                         'custom_udo_enable' => '1',
-                        'udo' => '/var/www/magento/lib/Tealium/TealiumCustomDataDN.php',
-                    ],
-                ],
+                        'udo' => '/var/www/magento/lib/Tealium/TealiumCustomDataDN.php'
+                    ]
+                ]
             ],
             'www_foreverartisans_com' => [
                 'tealium_tags' => [
                     'general' => [
                         'custom_udo_enable' => '1',
-                        'udo' => '/var/www/magento/lib/Tealium/TealiumCustomDataFA.php',
-                    ],
-                ],
-            ],
+                        'udo' => '/var/www/magento/lib/Tealium/TealiumCustomDataFA.php'
+                    ]
+                ]
+            ]
         ],
         'websites' => [
 

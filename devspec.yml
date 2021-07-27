@@ -71,6 +71,7 @@ phases:
         --build-arg FA_BASE_URL=$FABASEURL 
         --build-arg TF_BASE_URL=$TFBASEURL 
         --build-arg BUILD=dev 
+        --build-arg LOGGING=$LOGGING
         --build-arg WP_ENV=$WP_ENV .
       - docker tag magento:latest $REPOURL/magento:latest
       - docker tag magento:latest $REPOURL/magento:$IMAGE_TAG
