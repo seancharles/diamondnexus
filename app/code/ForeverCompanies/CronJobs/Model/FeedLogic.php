@@ -357,6 +357,7 @@ class FeedLogic
         return $image;
     }
     
+    
     public function displayProd($productModel)
     {
         // Get Product
@@ -545,6 +546,16 @@ class FeedLogic
         $childs = array();
         switch ($product->getTypeId()) {
             case 'configurable':
+                
+                $configurableOptions = $product->getTypeInstance()->getConfigurableOptions($product);
+                
+                $childAttributeCodes = array();
+                foreach ($configurableOptions as $configurableOpt) {
+                    if (!empty($configurableOpt)) {
+                        $childAttributeCodes[] = $configurableOpt[0]['attribute_code'];
+                    }
+                }
+                
                 $itemGroupId = $sku;
                 $childProducts = $product->getTypeInstance()->getUsedProducts($product);
                 foreach ($childProducts as $simpleModel) {
@@ -553,6 +564,7 @@ class FeedLogic
                         $GLOBALS['argvStoreId']
                     )->load($simpleModel->getId());
                     if ($_product->getStatus() == 1) {
+                        
                         $SPrice = $_product->getPrice();
                         $sale_start_uf = new \DateTime($_product->getSpecialFromDate());
                         $ssale_start = $sale_start_uf->format(\DateTime::ATOM);
@@ -627,7 +639,8 @@ class FeedLogic
                                 $_product->getAttributeText('gemstone'),
                                 $_product->getAttributeText('ring_size'),
                                 $_product->getAttributeText('chain_length'),
-                                $_product->getAttributeText('certified_stone')
+                                $_product->getAttributeText('certified_stone'),
+                                $childAttributeCodes
                             ),
                             $SPrice,
                             $_product->getSku(),
@@ -776,22 +789,23 @@ class FeedLogic
         }
     }
     
-    protected function buildConfigurableUrlString($metal, $gemstone, $ringSize, $chainLength, $certifiedStone)
+    protected function buildConfigurableUrlString($metal, $gemstone, $ringSize, $chainLength, $certifiedStone, $childAttributeCodes)
     {
         $ret = "?precious-metal=" . $this->stripUrlString($metal);
         
-        if (trim($gemstone) != "" && $gemstone != 0) {
+        if (in_array("gemstone", $childAttributeCodes) && trim($gemstone) != "" && $gemstone != 0) {
             $ret .= "&gemstone=" . $this->stripUrlString($gemstone);
         }
-        if (trim($ringSize) != "" && $ringSize != 0) {
+        if (in_array("ring_size", $childAttributeCodes) && trim($ringSize) != "" && $ringSize != 0) {
             $ret .= "&ring-size=" . $this->stripUrlString($ringSize);
         }
-        if (trim($chainLength) != "" && $chainLength != 0) {
+        if (in_array("chain_length", $childAttributeCodes) && trim($chainLength) != "" && $chainLength != 0) {
             $ret .= "&chain-length=" . $this->stripUrlString($chainLength);
         }
-        if (trim($certifiedStone) != "" && $certifiedStone != "None") {
+        if (in_array("certified_stone", $childAttributeCodes) && trim($certifiedStone) != "" && $certifiedStone != "None") {
             $ret .= "&certified-stone=" . $this->stripUrlString($certifiedStone);
         }
+        
         return strtolower($ret);
     }
     
