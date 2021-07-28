@@ -41,14 +41,16 @@ class UpdatePost implements ObserverInterface
 
         //product search whose quantity has changed
 
-        foreach ($requestParamList['cart'] as $id => $itemData) {
-            foreach ($quoteList as $quoteItem) {
-                if ($quoteItem->getItemId() == $id and $quoteItem->getQty() != $itemData['qty']) {
-                    array_push($result, $id);
+        if (isset($requestParamList['cart'])) {
+            foreach ($requestParamList['cart'] as $id => $itemData) {
+                foreach ($quoteList as $quoteItem) {
+                    if ($quoteItem->getItemId() == $id and $quoteItem->getQty() != $itemData['qty']) {
+                        array_push($result, $id);
+                    }
                 }
             }
         }
-
+        
         $this->_customerSession->setTealiumQty($result);
         
         return $this;
