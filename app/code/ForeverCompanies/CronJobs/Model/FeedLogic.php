@@ -30,8 +30,9 @@ class FeedLogic
     protected $reviewCollection;
     protected $encoder;
     protected $productUrlPrefixModel;
-    protected $configurableProductAttrArr;
+    protected $invalidValueArr;
 
+    
     public function __construct(
         LoggerInterface $logger,
         StoreRepositoryInterface $storeRepositoryInterface,
@@ -58,7 +59,8 @@ class FeedLogic
         $this->reviewCollection = $coll;
         $this->encoder = $enc;
         $this->productUrlPrefixModel = $productUrlPrefixM;
-        $this->configurableProductAttrArr = array();
+        $this->invalidValueArr = array("0", "None", "");
+        
     }
 
     public function buildCsvs($storeId)
@@ -592,13 +594,6 @@ class FeedLogic
                         $SGemstone = ($_product->getAttributeText('gemstone') == '')
                             ? "None" : $_product->getAttributeText('gemstone');
                         
-                        
-                        foreach ($_product->getData() as $k => $v) {
-                            if (!in_array($k, $this->configurableProductAttrArr)) {
-                                $this->configurableProductAttrArr[]= $k;
-                            }
-                        }
-                        
                         $image = $this->getProdImage($product, $product->getId(), $SMetal);
                         
                         $Cuts[] = $SCut;
@@ -636,11 +631,7 @@ class FeedLogic
                             $Gender,
                             $image,
                             $url .  $this->buildConfigurableUrlString(
-                                $SMetal,
-                                $_product->getAttributeText('gemstone'),
-                                $_product->getAttributeText('ring_size'),
-                                $_product->getAttributeText('chain_length'),
-                                $_product->getAttributeText('certified_stone'),
+                                $_product,
                                 $childAttributeCodes
                             ),
                             $SPrice,
@@ -791,54 +782,31 @@ class FeedLogic
     }
     
     protected function buildConfigurableUrlString(
-        $metal,
-        $gemstone,
-        $ringSize,
-        $chainLength,
-        $certifiedStone,
+        $product,
         $childAttributeCodes
     ) {
         $ret = "?";
         $count = 0;
         
-        if (in_array("metal_type", $childAttributeCodes) && trim($metal) != "" && $metal != 0) {
-            if ($count != 0) {
-                $ret.= "&";
+        foreach ($childAttributeCodes as $childAttributeCode) {
+            if ($this->isValidConfigurableAttributeValue($childAttributeCode)) {
+                if ($count != 0) {
+                    $ret.= "&";
+                }
+                $count++;
+                $ret .= $this->stripUrlString($childAttributeCode) . "=" . $this->stripUrlString($product->getAttributeText($childAttributeCode));
             }
-            $ret .= "precious-metal=" . $this->stripUrlString($metal);
-            $count++;
-        }
-        if (in_array("gemstone", $childAttributeCodes) && trim($gemstone) != "" && $gemstone != 0) {
-            if ($count != 0) {
-                $ret.= "&";
-            }
-            $ret .= "gemstone=" . $this->stripUrlString($gemstone);
-            $count++;
-        }
-        if (in_array("ring_size", $childAttributeCodes) && trim($ringSize) != "" && $ringSize != 0) {
-            if ($count != 0) {
-                $ret.= "&";
-            }
-            $ret .= "ring-size=" . $this->stripUrlString($ringSize);
-            $count++;
-        }
-        if (in_array("chain_length", $childAttributeCodes) && trim($chainLength) != "" && $chainLength != 0) {
-            if ($count != 0) {
-                $ret.= "&";
-            }
-            $ret .= "chain-length=" . $this->stripUrlString($chainLength);
-            $count++;
-        }
-        if (in_array("certified_stone", $childAttributeCodes)
-            && trim($certifiedStone) != "" && $certifiedStone != "None") {
-            if ($count != 0) {
-                $ret.= "&";
-            }
-            $ret .= "certified-stone=" . $this->stripUrlString($certifiedStone);
-            $count++;
         }
         
         return strtolower($ret);
+    }
+    
+    protected function isValidConfigurableAttributeValue($val)
+    {
+        if (in_array(trim($val), $this->invalidValueArr)) {
+            return false;
+        }
+        return true;
     }
     
     protected function stripUrlString($str)
