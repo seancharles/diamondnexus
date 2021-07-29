@@ -58,7 +58,6 @@ button {
   padding: 16px 24px !important;
   color: var(--color-white) !important;
   width: 100% !important;
-  border-radius: 3px !important;
   box-sizing: border-box !important;
   text-decoration: none !important;
   border: none !important; }
@@ -314,6 +313,8 @@ body:not(.customer-account-index) .account-additional-note {
 
 .checkout-cart-index .item-options {
   font-size: 12px; }
+  .checkout-cart-index .item-options dt {
+    font-weight: bold; }
 
 .checkout-cart-index .grand.totals th,
 .checkout-cart-index .grand.totals td {
@@ -330,6 +331,15 @@ body:not(.customer-account-index) .account-additional-note {
 
 .checkout-cart-index .cart.table-wrapper .actions-toolbar {
   min-height: 25px !important; }
+
+.checkout-cart-index .cart.table-wrapper .cart thead tr th.col {
+  font-weight: bold; }
+
+.checkout-cart-index a.affirm-modal-trigger,
+.checkout-cart-index a.action.continue {
+  font-size: 14px;
+  font-weight: bold;
+  display: block; }
 
 @media screen and (max-width: 1024px) {
   .checkout-cart-index .cart-container {
