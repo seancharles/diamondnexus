@@ -32,7 +32,6 @@ class FeedLogic
     protected $productUrlPrefixModel;
     protected $invalidValueArr;
 
-    
     public function __construct(
         LoggerInterface $logger,
         StoreRepositoryInterface $storeRepositoryInterface,
@@ -60,7 +59,6 @@ class FeedLogic
         $this->encoder = $enc;
         $this->productUrlPrefixModel = $productUrlPrefixM;
         $this->invalidValueArr = array("0", "None", "");
-        
     }
 
     public function buildCsvs($storeId)
@@ -789,15 +787,15 @@ class FeedLogic
         $count = 0;
         
         foreach ($childAttributeCodes as $childAttributeCode) {
-            if ($this->isValidConfigurableAttributeValue($childAttributeCode)) {
+            $attributeText = $product->getAttributeText($childAttributeCode); 
+            if ($this->isValidConfigurableAttributeValue($attributeText)) {
                 if ($count != 0) {
                     $ret.= "&";
                 }
                 $count++;
-                $ret .= $this->stripUrlString($childAttributeCode) . "=" . $this->stripUrlString($product->getAttributeText($childAttributeCode));
+                $ret .= $this->stripUrlString($childAttributeCode) . "=" . $this->stripUrlString($attributeText);
             }
         }
-        
         return strtolower($ret);
     }
     
