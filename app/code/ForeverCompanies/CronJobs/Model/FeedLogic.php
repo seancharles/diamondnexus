@@ -814,6 +814,7 @@ class FeedLogic
         $str = str_replace(" ", "-", $str);
         $str = str_replace(",", "", $str);
         $str = str_replace("\\", "-", $str);
+        $str = str_replace("/", "-", $str);
         $str = str_replace("'", "", $str);
         $str = str_replace("_", "-", $str);
         return $str;
