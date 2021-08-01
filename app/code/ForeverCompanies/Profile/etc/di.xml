@@ -2,4 +2,6 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 	<preference for="Magento\ConfigurableProduct\Model\Quote\Item\CartItemProcessor"
 	    type="ForeverCompanies\Profile\Model\Quote\Item\CartItemProcessor" />
+	<preference for="Magento\Checkout\Controller\Cart\Delete"
+	    type="ForeverCompanies\Profile\Controller\Cart\Delete" />
 </config>
