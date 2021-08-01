@@ -94,9 +94,12 @@ class Rebuild extends \ForeverCompanies\Profile\Controller\ApiController
 			$this->resultHelper->addExceptionError($e);
 		}
         
+		/*
 		$this->cart->getQuote()->setTotalsCollectedFlag(false);
 		$this->cart->getQuote()->collectTotals();
 		$this->cart->save();
+		*/
+		
         // TBD redirect to public ring builder URL or change response
 		$this->_redirect('checkout/cart/');
 	//	$this->resultHelper->getResult();
