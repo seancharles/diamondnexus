@@ -107,13 +107,6 @@ if ($block->isMultipay()) {
                         </label>
                     </div>
                     <div class="admin__field-option _required">
-                        <input id="multipay_method_quote" class="admin__control-radio" value="3" type="radio"
-                               name="multipay_payment_method" data-validate='{"required":true}' />
-                        <label class="label" for="multipay_method_quote">
-                            <span><?= $block->escapeHtml(__('Quote')) ?></span>
-                        </label>
-                    </div>
-                    <div class="admin__field-option _required">
                         <input id="multipay_method_paypal_offline" class="admin__control-radio" value="6" type="radio"
                                name="multipay_payment_method" data-validate='{"required":true}' />
                         <label class="label" for="multipay_method_paypal_offline">

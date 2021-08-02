@@ -146,5 +146,29 @@ define(['jquery'], function ($) {
                 $('#multipay_change_due').val('0.00')
             }
         })
+
+        $('#multipay_option_partial').bind('blur', function () {
+            let amount_to_pay = $('#multipay_option_partial').val()
+            $('#multipay_option_partial').val(Number.parseFloat(amount_to_pay).toFixed(2))
+
+            var multipay_amount_due = $('#multipay_amount_due').val()
+            var balance_due = multipay_amount_due - amount_to_pay
+            if (balance_due > 0) {
+                $('#multipay_new_balance').val(balance_due.toFixed(2))
+            } else {
+                $('#multipay_new_balance').val('0.00')
+            }
+        })
+
+        $('#multipay_cash_tendered').bind('blur', function () {
+            let cash_tendered = $('#multipay_cash_tendered').val()
+            $('#multipay_cash_tendered').val(Number.parseFloat(cash_tendered).toFixed(2))
+
+            if (change_due > 0) {
+                $('#multipay_change_due').val(change_due.toFixed(2))
+            } else {
+                $('#multipay_change_due').val('0.00')
+            }
+        })
     }
 })
