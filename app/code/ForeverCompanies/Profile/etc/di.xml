@@ -4,4 +4,6 @@
 	    type="ForeverCompanies\Profile\Model\Quote\Item\CartItemProcessor" />
 	<preference for="Magento\Checkout\Controller\Cart\Delete"
 	    type="ForeverCompanies\Profile\Controller\Cart\Delete" />
+	<preference for="Magento\Checkout\Controller\Cart\Index"
+	    type="ForeverCompanies\Profile\Controller\Cart\Index" />
 </config>
