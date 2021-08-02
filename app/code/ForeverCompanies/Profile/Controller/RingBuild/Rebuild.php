@@ -4,27 +4,27 @@ namespace ForeverCompanies\Profile\Controller\RingBuild;
 
 class Rebuild extends \ForeverCompanies\Profile\Controller\ApiController
 {
-	protected $profileHelper;
-	protected $resultHelper;
+    protected $profileHelper;
+    protected $resultHelper;
     
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Quote\Model\ResourceModel\Quote\Item\CollectionFactory $quoteItemCollectionFactory,
         \Magento\Checkout\Model\Cart $cart,
-		\ForeverCompanies\Profile\Helper\Profile $profileHelper,
-		\ForeverCompanies\Profile\Helper\Result $resultHelper
+        \ForeverCompanies\Profile\Helper\Profile $profileHelper,
+        \ForeverCompanies\Profile\Helper\Result $resultHelper
     ) {
         $this->quoteItemCollectionFactory = $quoteItemCollectionFactory;
         $this->cart = $cart;
-		$this->profileHelper = $profileHelper;
-		$this->resultHelper = $resultHelper;
+        $this->profileHelper = $profileHelper;
+        $this->resultHelper = $resultHelper;
         
         parent::__construct($context);
     }
     
-	public function execute()
-	{
-		try {
+    public function execute()
+    {
+        try {
             $this->profileHelper->getPost(
                 \ForeverCompanies\Profile\Helper\Profile::POST_TYPE_ARRAY,
                 $this->getRequest()->getPostValue()
@@ -41,29 +41,45 @@ class Rebuild extends \ForeverCompanies\Profile\Controller\ApiController
                 $collection->addFieldToFilter('quote_id', $quoteId);
                 $collection->addFieldToFilter('set_id', $setId);
                 
-                if($collection) {
-                    foreach($collection as $item) {
+                if ($collection) {
+                    foreach ($collection as $item) {
                         $option = $item->getOptionByCode('info_buyRequest');
                         
-                        if($option) {
+                        if ($option) {
                             $optionArray = (array) json_decode($option->getValue());
                             
                             // check for the item type and set it to the ring builder session component
-                            if ($item->getProduct()->getAttributeSetId() == 18 || $item->getProduct()->getAttributeSetId() == 32) {
+                            if ($item->getProduct()->getAttributeSetId() == 18
+                                || $item->getProduct()->getAttributeSetId() == 32) {
                                 // values are stored in checkout session
                                 $this->profileHelper->setProfileSessionKey('set_type', 'ring');
-                                $this->profileHelper->setProfileSessionKey('set_setting', $optionArray);
-                                $this->profileHelper->setProfileSessionKey('set_setting_sku', $item->getProduct()->getSku());
+                                $this->profileHelper->setProfileSessionKey(
+                                    'set_setting',
+                                    $optionArray
+                                );
+                                $this->profileHelper->setProfileSessionKey(
+                                    'set_setting_sku',
+                                    $item->getProduct()->getSku()
+                                );
 
                                 // update the current profile instance
                                 $this->profileHelper->setProfileBuilderKey('type', 'ring');
                                 $this->profileHelper->setProfileBuilderKey('setting', $optionArray);
-                                $this->profileHelper->setProfileBuilderKey('setting_sku', $item->getProduct()->getSku());
+                                $this->profileHelper->setProfileBuilderKey(
+                                    'setting_sku',
+                                    $item->getProduct()->getSku()
+                                );
                                 
-                            } elseif($item->getProduct()->getAttributeSetId() == 31) {
+                            } elseif ($item->getProduct()->getAttributeSetId() == 31) {
                                 // values are stored in checkout session
-                                $this->profileHelper->setProfileSessionKey('set_stone', $optionArray);
-                                $this->profileHelper->setProfileSessionKey('set_stone_sku', $item->getProduct()->getSku());
+                                $this->profileHelper->setProfileSessionKey(
+                                    'set_stone',
+                                    $optionArray
+                                );
+                                $this->profileHelper->setProfileSessionKey(
+                                    'set_stone_sku',
+                                    $item->getProduct()->getSku()
+                                );
 
                                 // update the current profile instance
                                 $this->profileHelper->setProfileBuilderKey('stone', $optionArray);
@@ -73,7 +89,6 @@ class Rebuild extends \ForeverCompanies\Profile\Controller\ApiController
                         
                         // remove the item from cart
                         $this->cart->removeItem($item->getId());
-                    //    $item->delete();
                     }
                 }
                 
@@ -87,21 +102,19 @@ class Rebuild extends \ForeverCompanies\Profile\Controller\ApiController
                     $this->profileHelper->getProfile()
                 );
                 
-			} else {
-				$this->resultHelper->addFormKeyError();
-			}
-		} catch (\Exception $e) {
-			$this->resultHelper->addExceptionError($e);
-		}
+            } else {
+                $this->resultHelper->addFormKeyError();
+            }
+        } catch (\Exception $e) {
+            $this->resultHelper->addExceptionError($e);
+        }
         
-		
-		$this->cart->getQuote()->setTotalsCollectedFlag(false);
-		$this->cart->getQuote()->collectTotals();
-		$this->cart->save();
-		
-		
+        $this->cart->getQuote()->setTotalsCollectedFlag(false);
+        $this->cart->getQuote()->collectTotals();
+        $this->cart->save();
+        
         // TBD redirect to public ring builder URL or change response
-		$this->_redirect('checkout/cart/');
-	//	$this->resultHelper->getResult();
-	}
+        $this->_redirect('checkout/cart/');
+    //    $this->resultHelper->getResult();
+    }
 }

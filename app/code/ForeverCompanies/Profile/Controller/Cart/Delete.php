@@ -17,10 +17,9 @@ use Magento\Checkout\Controller\Cart\Delete as OrigDelete;
  * Deletes item from cart.
  */
 class Delete extends \Magento\Checkout\Controller\Cart implements HttpPostActionInterface
-{   
+{
     protected $quoteRepository;
     protected $sessionModel;
-    
     
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
@@ -31,13 +30,12 @@ class Delete extends \Magento\Checkout\Controller\Cart implements HttpPostAction
         CustomerCart $cart,
         QuoteRepository $quoteR,
         Session $sessionM
-    ) {     
+    ) {
         $this->quoteRepository = $quoteR;
         $this->sessionModel = $sessionM;
         
         parent::__construct($context, $scopeConfig, $checkoutSession, $storeManager, $formKeyValidator, $cart);
     }
-    
     
     /**
      * Delete shopping cart item action

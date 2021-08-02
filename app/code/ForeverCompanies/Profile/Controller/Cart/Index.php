@@ -60,7 +60,6 @@ class Index extends OrigCart implements HttpGetActionInterface
         $this->cart->getQuote()->collectTotals();
         $this->cart->save();
         
-        
         $resultPage = $this->resultPageFactory->create();
         $resultPage->getConfig()->getTitle()->set(__('Shopping Cart'));
         return $resultPage;
