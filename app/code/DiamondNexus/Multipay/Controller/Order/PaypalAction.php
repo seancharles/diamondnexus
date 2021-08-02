@@ -2,6 +2,7 @@
 
 namespace DiamondNexus\Multipay\Controller\Order;
 
+use Magento\Framework\App\Action\Action;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
@@ -9,10 +10,11 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Mail\EmailMessage as Message;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\CsrfAwareActionInterface;
 
 use DiamondNexus\Multipay\Model\Constant;
 
-class PaypalAction extends \Magento\Framework\App\Action\Action implements \Magento\Framework\App\CsrfAwareActionInterface
+class PaypalAction extends Action implements CsrfAwareActionInterface
 {
     const XML_PATH_EMAIL_RECIPIENT = '';
 
@@ -25,12 +27,11 @@ class PaypalAction extends \Magento\Framework\App\Action\Action implements \Mage
     protected $jsonResult;
     protected $scopeConfig;
 
-    public function __construct (
+    public function __construct(
         \Magento\Framework\App\Action\Context $context,
-        \Magento\Customer\Model\Session $customerSession, 
+        \Magento\Customer\Model\Session $customerSession,
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
         \Magento\User\Model\ResourceModel\User $userResource,
-        
         \DiamondNexus\Multipay\Logger\Logger $logger,
         \DiamondNexus\Multipay\Model\ResourceModel\Transaction $transaction,
         \ForeverCompanies\Smtp\Helper\Mail $mailHelper,
@@ -47,7 +48,7 @@ class PaypalAction extends \Magento\Framework\App\Action\Action implements \Mage
         $this->jsonResult = $jsonResult;
         $this->scopeConfig = $scopeConfig;
 
-        parent::__construct($context); 
+        parent::__construct($context);
     }
     
     public function execute()
@@ -97,12 +98,14 @@ class PaypalAction extends \Magento\Framework\App\Action\Action implements \Mage
         return $resultJson->setData($result);
     }
     
-    public function createCsrfValidationException( RequestInterface $request ): ?       InvalidRequestException { 
-        return null; 
-    } 
+    public function createCsrfValidationException(RequestInterface $request): ?       InvalidRequestException
+    {
+        return null;
+    }
     
-    public function validateForCsrf(RequestInterface $request): ?bool {     
-        return true; 
+    public function validateForCsrf(RequestInterface $request): ?bool
+    {
+        return true;
     }
     
     /**
@@ -137,15 +140,15 @@ class PaypalAction extends \Magento\Framework\App\Action\Action implements \Mage
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         );
 
-        if($salesPersonEmail) {
+        if ($salesPersonEmail) {
             $to[] = $salesPersonEmail;
         }
 
-        if($ccEmail) {
+        if ($ccEmail) {
             $to[] = $ccEmail;
         }
 
-        if(count($to) > 0) {
+        if (count($to) > 0) {
             $this->mailHelper->addTo($to);
             $this->mailHelper->setSubject('Payment applied for order #' . $order->getIncrementId().' '.$storeId);
             $this->mailHelper->setBody($message);

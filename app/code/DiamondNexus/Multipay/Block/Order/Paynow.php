@@ -1,13 +1,14 @@
 <?php
 namespace DiamondNexus\Multipay\Block\Order;
 
-use Magento\Backend\Block\Template\Context;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\CustomerBalance\Model\BalanceFactory;
 use DiamondNexus\Multipay\Model\Constant;
 use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
+use Magento\Backend\Block\Template\Context;
+use Magento\CustomerBalance\Model\BalanceFactory;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Store\Model\ScopeInterface;
 
 class Paynow extends AbstractPay
 {
@@ -55,11 +56,11 @@ class Paynow extends AbstractPay
     {
         $customerId = $this->getData('order')->getCustomerId();
         $totalDue = $this->getData('order')->getTotalDue();
-        if($customerId > 0) {
+        if ($customerId > 0) {
             $balanceModel = $this->balanceFactory->create();
             $balanceModel->setCustomerId($customerId)->loadByCustomer();
 
-            if(round($totalDue,2) < round($balanceModel->getAmount(),2)) {
+            if (round($totalDue, 2) < round($balanceModel->getAmount(), 2)) {
                 return $totalDue;
             } else {
                 return $balanceModel->getAmount();

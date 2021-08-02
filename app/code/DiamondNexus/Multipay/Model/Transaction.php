@@ -1,16 +1,11 @@
 <?php
 
-
 namespace DiamondNexus\Multipay\Model;
 
 use DiamondNexus\Multipay\Api\Data\TransactionInterface;
 use Magento\Cron\Exception;
 use Magento\Framework\Model\AbstractModel;
 
-/**
- * Class  Transaction
- * @package DiamondNexus\Multipay\Model
- */
 class Transaction extends AbstractModel implements TransactionInterface
 {
     /**

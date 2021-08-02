@@ -95,8 +95,8 @@ class Paynow implements \Magento\Framework\App\Action\HttpGetActionInterface
 
             $customerId = (int) $this->customerSession->getCustomer()->getId();
 
-            if($customerId > 0 && $order->getCustomerId() == $customerId) {
-                if( round($order->getTotalPaid(),2) >= round($order->getGrandTotal(),2) ) {
+            if ($customerId > 0 && $order->getCustomerId() == $customerId) {
+                if (round($order->getTotalPaid(), 2) >= round($order->getGrandTotal(), 2)) {
                     $this->messageManager->addError(__("Order is already paid in full."));
 
                     return $resultRedirect->setPath('sales/order/history');

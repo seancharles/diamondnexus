@@ -70,14 +70,14 @@ abstract class AbstractPay extends Template
     {
         /** @var Order $order */
         $order = $this->orderRepository->get($this->getData('order_id'));
-        $fullPrice = round($order->getGrandTotal(),2);
+        $fullPrice = round($order->getGrandTotal(), 2);
         $payedPart = 0;
         try {
             $transactions = $this->transaction->getAllTransactionsByOrderId($this->getData('order_id'));
             foreach ($transactions as $transaction) {
                 $payedPart += (float)$transaction['amount'];
                 if ($transaction['amount'] == 0) {
-                    $payedPart += round($transaction['tendered'],2);
+                    $payedPart += round($transaction['tendered'], 2);
                 }
             }
             return $fullPrice - $payedPart;

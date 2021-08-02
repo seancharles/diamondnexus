@@ -12,7 +12,7 @@ use Magento\Sales\Helper\Reorder;
 ?>
 <?php $_orders = $block->getOrders(); ?>
 <?= $block->getChildHtml('info') ?>
-<?php if ($_orders && count($_orders)) : ?>
+<?php if ($_orders && count($_orders)): ?>
     <div class="table-wrapper orders-history">
         <table class="data table table-order-items history" id="my-orders-table">
             <caption class="table-caption"><?= $escaper->escapeHtml(__('Orders')) ?></caption>
@@ -28,7 +28,7 @@ use Magento\Sales\Helper\Reorder;
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($_orders as $_order) : ?>
+            <?php foreach ($_orders as $_order): ?>
                 <?php $name = $_order->getShippingAddress()->getName(); ?>
                 <tr>
                     <td data-th="<?= $escaper->escapeHtmlAttr(__('Order #')) ?>"
@@ -36,7 +36,7 @@ use Magento\Sales\Helper\Reorder;
                     <td data-th="<?= $escaper->escapeHtmlAttr(__('Date')) ?>" class="col date"><?= /* @noEscape */
                         $block->formatDate($_order->getCreatedAt()) ?></td>
                     <?php /** @var Container $extra */$extra = $block->getChildBlock('extra.container'); ?>
-                    <?php try { if ($extra) : ?>
+                    <?php try { if ($extra): ?>
                             <?php $extra->setOrder($_order); ?>
                             <?= $extra->getChildHtml() ?>
                     <?php endif;
@@ -54,7 +54,7 @@ use Magento\Sales\Helper\Reorder;
                         <a href="<?= $escaper->escapeUrl($block->getViewUrl($_order)) ?>" class="action view">
                             <span><?= $escaper->escapeHtml(__('View Order')) ?></span>
                         </a>
-                        <?php if ($block->canPayNow($_order)) : ?>
+                        <?php if ($block->canPayNow($_order)): ?>
                             <a  onclick="var newwin = window.open(
                                             '<?= $escaper->escapeUrl($block->getPayNowUrl($_order->getId())) ?>',
                                             'newwin',
@@ -73,9 +73,9 @@ use Magento\Sales\Helper\Reorder;
             </tbody>
         </table>
     </div>
-    <?php if ($block->getPagerHtml()) : ?>
+    <?php if ($block->getPagerHtml()): ?>
         <div class="order-products-toolbar toolbar bottom"><?= $block->getPagerHtml() ?></div>
     <?php endif ?>
-<?php else : ?>
+<?php else: ?>
     <div class="message info empty"><span><?= $escaper->escapeHtml(__('You have placed no orders.')) ?></span></div>
 <?php endif ?>

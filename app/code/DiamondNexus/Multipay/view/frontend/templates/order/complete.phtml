@@ -1,8 +1,8 @@
 <?php
 /** @var Template $block */
-$orderId = (int) $block->getData('order_id');
+$orderId = $block->getData('order_id');
 ?>
 <div class="content-container">
-    <h3>Payment for order #<?=$orderId?> Complete</h3>
+    <h3>Payment for order #<?=(int) $orderId?> Complete</h3>
     <div>Thank you!</div>
 </div>

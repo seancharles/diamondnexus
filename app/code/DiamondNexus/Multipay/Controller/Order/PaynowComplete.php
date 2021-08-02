@@ -3,6 +3,7 @@
 namespace DiamondNexus\Multipay\Controller\Order;
 
 use DiamondNexus\Multipay\Block\Order\Paynow;
+use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ResponseInterface;
@@ -15,10 +16,11 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Customer\Model\Session;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
+use Magento\Framework\App\CsrfAwareActionInterface;
 
 use DiamondNexus\Multipay\Model\Constant;
 
-class PaynowComplete extends \Magento\Framework\App\Action\Action implements \Magento\Framework\App\CsrfAwareActionInterface
+class PaynowComplete extends Action implements CsrfAwareActionInterface
 {
     protected $pageFactory;
     protected $request;
@@ -29,7 +31,7 @@ class PaynowComplete extends \Magento\Framework\App\Action\Action implements \Ma
     protected $customerSession;
     protected $messageManager;
     
-    public function __construct (
+    public function __construct(
         Context $context,
         PageFactory $pageFactory,
         OrderRepositoryInterface $orderRepository,
@@ -45,7 +47,7 @@ class PaynowComplete extends \Magento\Framework\App\Action\Action implements \Ma
         $this->customerSession = $customerSession;
         $this->messageManager = $messageManager;
         
-        parent::__construct($context); 
+        parent::__construct($context);
     }
     
     /**
@@ -65,8 +67,8 @@ class PaynowComplete extends \Magento\Framework\App\Action\Action implements \Ma
 
             $customerId = $this->customerSession->getCustomer()->getId();
 
-            if($customerId > 0 && $order->getCustomerId() == $customerId) {
-                if(float($order->getTotalPaid(),2) < float($order->getGrandTotal(),2)) {
+            if ($customerId > 0 && $order->getCustomerId() == $customerId) {
+                if (float($order->getTotalPaid(), 2) < float($order->getGrandTotal(), 2)) {
                     $this->messageManager->addError(__("Order is not paid in full."));
 
                     return $resultRedirect->setPath('sales/order/history');
@@ -85,11 +87,13 @@ class PaynowComplete extends \Magento\Framework\App\Action\Action implements \Ma
         }
     }
     
-    public function createCsrfValidationException( RequestInterface $request ): ?       InvalidRequestException { 
-        return null; 
-    } 
+    public function createCsrfValidationException(RequestInterface $request): ?       InvalidRequestException
+    {
+        return null;
+    }
     
-    public function validateForCsrf(RequestInterface $request): ?bool {     
-        return true; 
+    public function validateForCsrf(RequestInterface $request): ?bool
+    {
+        return true;
     }
 }

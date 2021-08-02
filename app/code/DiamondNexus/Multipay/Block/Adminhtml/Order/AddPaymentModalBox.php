@@ -6,10 +6,6 @@ use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
 use Magento\Backend\Block\Template\Context;
 use Magento\CustomerBalance\Model\BalanceFactory;
 
-/**
- * Class AddPaymentModalBox
- * @package DiamondNexus\Multipay\Block\Adminhtml\Order
- */
 class AddPaymentModalBox extends AbstractPayment
 {
     protected $balanceFactory;

@@ -146,9 +146,9 @@ $jsCheckout = "$('#paypal-in-context-checkout " . $btn;
             <div class="page-title">
                 <h1>Payment for order #<?= $escaper->escapeHtml($incrementId); ?></h1>
             </div>
-            <?php if ($block->getErrors()) : ?>
+            <?php if ($block->getErrors()): ?>
                 <ul class="errors">
-                    <?php foreach ($block->getErrors() as $error) : ?>
+                    <?php foreach ($block->getErrors() as $error): ?>
                         <li><?= $block->escapeHtml($error) ?></li>
                     <?php endforeach ?>
                 </ul>
@@ -226,9 +226,10 @@ $jsCheckout = "$('#paypal-in-context-checkout " . $btn;
                                             onApprove: function (data, actions) {
                                                 // This function captures the funds from the transaction.
                                                 return actions.order.capture().then(function (details) {
-                                                    if (details.intent == "CAPTURE"
-                                                        && details.status == "COMPLETED"
-                                                        && details.purchase_units[0].amount.value == <?= $amount; ?>) {
+                                                    if (details.intent == "CAPTURE" &&
+                                                        details.status == "COMPLETED" &&
+                                                        details.purchase_units[0].amount.value == <?=
+                                                            $escaper->escapeHtml($amount)?>) {
                                                         sendPayment(details);
                                                     } else {
                                                         alert('<?=$escaper->escapeHtml($errorAlert) ?>');

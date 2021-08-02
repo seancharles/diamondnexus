@@ -2,10 +2,6 @@
 
 namespace DiamondNexus\Multipay\Model;
 
-/**
- * Class Constant
- * @package DiamondNexus\Multipay\Model
- */
 class Constant
 {
     const MULTIPAY_METHOD = 'multipay';
