@@ -140,18 +140,15 @@ class PaypalAction extends Action implements CsrfAwareActionInterface
         );
 
         if ($salesPersonEmail) {
-            $to[] = $salesPersonEmail;
+            $this->mailHelper->addTo($salesPersonEmail);
         }
 
         if ($ccEmail) {
-            $to[] = $ccEmail;
+            $this->mailHelper->addTo($ccEmail);
         }
 
-        if (count($to) > 0) {
-            $this->mailHelper->addTo($to);
-            $this->mailHelper->setSubject('Payment applied for order #' . $order->getIncrementId().' '.$storeId);
-            $this->mailHelper->setBody($message);
-            $this->mailHelper->send();
-        }
+        $this->mailHelper->setSubject('Payment applied for order #' . $order->getIncrementId().' '.$storeId);
+        $this->mailHelper->setBody($message);
+        $this->mailHelper->send();
     }
 }
