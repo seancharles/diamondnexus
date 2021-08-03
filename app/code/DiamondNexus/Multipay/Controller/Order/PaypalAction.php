@@ -61,7 +61,6 @@ class PaypalAction extends Action implements CsrfAwareActionInterface
         ];
 
         if ($this->customerSession->isLoggedIn() === true) {
-
             $orderId = $this->getRequest()->getParam('order_id');
 
             if ($orderId > 0) {

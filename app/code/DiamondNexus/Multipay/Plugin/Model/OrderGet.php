@@ -57,7 +57,6 @@ class OrderGet
         $orderExtension = $extensionAttributes ? $extensionAttributes : $this->orderExtensionFactory->create();
         $allTransactionsByOrderId = $this->transactionResource->getAllTransactionsByOrderId($resultOrder->getId());
         foreach ($allTransactionsByOrderId as &$transaction) {
-            
             // Adding isset for orders that were not originally paid with multipay possibly or have other bug in data
             // TODO: resolve origin of this error
             // Notice: Undefined offset:

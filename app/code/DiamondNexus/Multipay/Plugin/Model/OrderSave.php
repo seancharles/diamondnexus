@@ -211,7 +211,6 @@ class OrderSave
                 if (isset($info[Constant::ORDER_UPDATES_FLAG]) === false
                     || (isset($info[Constant::ORDER_UPDATES_FLAG]) === true && $info[Constant::ORDER_CREATE] == 0)
                 ) {
-
                     if ((isset($info[Constant::OPTION_TOTAL_DATA]) == true &&
                             $info[Constant::OPTION_TOTAL_DATA] == Constant::MULTIPAY_TOTAL_AMOUNT)
                             ||
@@ -227,7 +226,6 @@ class OrderSave
                         $order->setState(Order::STATE_PROCESSING)->setStatus(Order::STATE_PROCESSING);
                         
                         $this->shipdateHelper->updateDeliveryDates($order);
-                        
                     } else {
                         $order->setState('pending')->setStatus('pending');
                     }
@@ -284,7 +282,6 @@ class OrderSave
             if ($order->canInvoice()) {
                 if ((int)$order->getGrandTotal() == 0 ||
                     round($order->getTotalPaid(), 2) == round($order->getGrandTotal(), 2)) {
-
                     $invoice = $this->invoiceService->prepareInvoice($order);
                     $invoice->register();
                     $invoice->save();

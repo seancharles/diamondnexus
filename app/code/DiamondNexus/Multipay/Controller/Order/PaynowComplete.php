@@ -58,7 +58,6 @@ class PaynowComplete extends Action implements CsrfAwareActionInterface
         $resultRedirect = $this->resultRedirectFactory->create();
 
         if ($this->customerSession->isLoggedIn() === true) {
-
             $id = (int) $this->getRequest()->getParam('order_id');
             $openForm = (bool) $this->getRequest()->getParam('openform');
 
