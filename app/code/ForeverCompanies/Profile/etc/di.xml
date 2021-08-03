@@ -6,4 +6,6 @@
 	    type="ForeverCompanies\Profile\Controller\Cart\Delete" />
 	<preference for="Magento\Checkout\Controller\Cart\Index"
 	    type="ForeverCompanies\Profile\Controller\Cart\Index" />
+	<preference for="Magento\Catalog\Model\ProductRepository"
+	    type="ForeverCompanies\Profile\Model\ProductRepository" />
 </config>
