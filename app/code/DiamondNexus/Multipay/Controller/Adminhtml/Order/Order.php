@@ -108,11 +108,11 @@ class Order extends AdminOrder implements HttpPostActionInterface
             unset($info['form_key']);
             $order->getPayment()->setAdditionalInformation($info);
             $paymentMethod = $post[Constant::PAYMENT_METHOD_DATA];
-            if($paymentMethod == Constant::MULTIPAY_STORE_CREDIT_METHOD) {
-                // add custom logic for amount with store credit
-                
-            }elseif ($paymentMethod !== Constant::MULTIPAY_QUOTE_METHOD) {
-                $this->helper->sendToBraintree($order);
+            if ($paymentMethod == Constant::MULTIPAY_STORE_CREDIT_METHOD) {
+                // TODO: add custom logic for amount with store credit
+            } elseif ($paymentMethod !== Constant::MULTIPAY_QUOTE_METHOD) {
+                // REMOVED FOR PCI COMPLIANCE
+                //$this->helper->sendToBraintree($order);
             }
             $this->resource->createNewTransaction($order, $post);
             $this->helper->updateOrderStatus($post, $order);

@@ -1,26 +1,9 @@
 define(['jquery'], function ($) {
     'use strict';
-    return function multipayadmin()
+    return function multipayadminaddpayment()
     {
 
         $('.admin__control-radio').click(function (event) {
-
-            let shippingMethod = $('input[name="order[shipping_method]"]:checked ').val();
-
-            if (typeof shippingMethod == 'undefined') {
-                switch ($(this).attr('id')) {
-                    case 'multipay_method_credit_offline':
-                    case 'multipay_method_cash':
-                    case 'multipay_method_quote':
-                    case 'multipay_method_paypal_offline':
-                    case 'multipay_method_total_balance':
-                    case 'multipay_method_partial_balance':
-                        alert('Please specify a shipping method.')
-                        event.preventDefault()
-                        break
-                }
-            }
-
             /*
                 if ($('#multipay_method_cc').is(':checked')) {
                     $('.payment-method-options:nth-child(2)').css(
@@ -39,7 +22,7 @@ define(['jquery'], function ($) {
                     $('.payment-method-options:nth-child(6)').css('display', 'none')
                 }
             */
-            
+
             if ($('#multipay_method_credit_offline').is(':checked')) {
                 $('.payment-method-options:nth-child(2)').css(
                     'display',
@@ -100,7 +83,7 @@ define(['jquery'], function ($) {
             } else if ($('#multipay_method_store_credit').is(':checked')) {
                 $('#multipay_method_partial_balance').prop('checked',true)
                 $('#multipay_option_partial').val($(this).data('amount'))
-                
+
                 var amount_to_pay = $('#multipay_option_partial').val()
                 var multipay_amount_due = $('#multipay_amount_due').val()
                 var balance_due = multipay_amount_due - amount_to_pay

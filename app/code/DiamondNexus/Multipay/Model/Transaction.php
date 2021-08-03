@@ -1,10 +1,4 @@
 <?php
-/**
- * Copyright ©  All rights reserved.
- * See COPYING.txt for license details.
- */
-declare(strict_types=1);
-
 
 namespace DiamondNexus\Multipay\Model;
 
@@ -12,10 +6,6 @@ use DiamondNexus\Multipay\Api\Data\TransactionInterface;
 use Magento\Cron\Exception;
 use Magento\Framework\Model\AbstractModel;
 
-/**
- * Class  Transaction
- * @package DiamondNexus\Multipay\Model
- */
 class Transaction extends AbstractModel implements TransactionInterface
 {
     /**

@@ -7,10 +7,6 @@ use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
 use Magento\Sales\Model\Order;
 
-/**
- * Class AddPaymentModalBox
- * @package DiamondNexus\Multipay\Block\Adminhtml\Order
- */
 class AbstractPayment extends Template
 {
     /**

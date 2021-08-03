@@ -1,9 +1,4 @@
 <?php
-/**
- * Copyright ©  All rights reserved.
- * See COPYING.txt for license details.
- */
-declare(strict_types=1);
 
 namespace DiamondNexus\Multipay\Model\ResourceModel;
 
@@ -13,18 +8,15 @@ use DiamondNexus\Multipay\Model\Constant;
 use DiamondNexus\Multipay\Model\TransactionFactory;
 use Exception;
 use ForeverCompanies\CustomApi\Helper\ExtOrder;
+use Magento\Catalog\Model\Layer\ContextInterface;
+use Magento\CustomerBalance\Model\Balance\HistoryFactory;
+use Magento\CustomerBalance\Model\BalanceFactory;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\Model\ResourceModel\Db\Context;
 use Magento\Sales\Model\Order;
-use Magento\CustomerBalance\Model\BalanceFactory;
-use Magento\CustomerBalance\Model\Balance\HistoryFactory;
 
-/**
- * Class Transaction
- * @package DiamondNexus\Multipay\Model\ResourceModel
- */
 class Transaction extends AbstractDb
 {
     /**
@@ -55,6 +47,8 @@ class Transaction extends AbstractDb
     /**
      * @var ExtOrder
      */
+    protected $customerBalanceFactory;
+    protected $customerBalanceHistoryFactory;
     protected $extOrderHelper;
 
     public function __construct(
@@ -74,7 +68,6 @@ class Transaction extends AbstractDb
         $this->extOrderHelper = $extOrderHelper;
         $this->customerBalanceFactory = $customerBalanceFactory;
         $this->customerBalanceHistoryFactory = $customerBalanceHistoryFactory;
-        
     }
 
     /**
@@ -113,18 +106,20 @@ class Transaction extends AbstractDb
         
         // get payment method
         $paymentMethod = (int)$information[Constant::PAYMENT_METHOD_DATA];
-        
-        if (isset($information[Constant::OPTION_TOTAL_DATA]) == true && $information[Constant::OPTION_TOTAL_DATA] == Constant::MULTIPAY_TOTAL_AMOUNT) {
+
+        if (isset($information[Constant::OPTION_TOTAL_DATA]) == true &&
+            $information[Constant::OPTION_TOTAL_DATA] == Constant::MULTIPAY_TOTAL_AMOUNT) {
             if (isset($information[Constant::AMOUNT_DUE_DATA])) {
-                $amount = $information[Constant::AMOUNT_DUE_DATA];
+                $amount = $this->parseCurrency($information[Constant::AMOUNT_DUE_DATA]);
                 $change = 0;
             }
         }
 
-        if (isset($information[Constant::OPTION_TOTAL_DATA]) == true && $information[Constant::OPTION_TOTAL_DATA] == Constant::MULTIPAY_PARTIAL_AMOUNT) {
-            $amount = $information[Constant::OPTION_PARTIAL_DATA];
+        if (isset($information[Constant::OPTION_TOTAL_DATA]) == true &&
+            $information[Constant::OPTION_TOTAL_DATA] == Constant::MULTIPAY_PARTIAL_AMOUNT) {
+            $amount = $this->parseCurrency($information[Constant::OPTION_PARTIAL_DATA]);
             if (isset($information[Constant::CHANGE_DUE_DATA])) {
-                $change = $information[Constant::CHANGE_DUE_DATA];
+                $change = $this->parseCurrency($information[Constant::CHANGE_DUE_DATA]);
             }
         }
         
@@ -136,7 +131,7 @@ class Transaction extends AbstractDb
             
         $tendered = 0;
         if (isset($information[Constant::CASH_TENDERED_DATA])) {
-            $tendered = $information[Constant::CASH_TENDERED_DATA];
+            $tendered = $this->parseCurrency($information[Constant::CASH_TENDERED_DATA]);
         }
         $transaction = $this->transactionFactory->create();
         $transaction->setData(
@@ -152,10 +147,10 @@ class Transaction extends AbstractDb
         );
         try {
             // store credit updates the grand total on the order and balance amount applied
-            if($paymentMethod == Constant::MULTIPAY_STORE_CREDIT_METHOD) {
-                $newGrandTotal = $order->getGrandTotal() - (float)$amount;
-                $newTotalDue = $order->getToalDue() - (float)$amount;
-                $newCustomerBalanceAmount = $order->getCustomerBalanceAmount() + (float)$amount;
+            if ($paymentMethod == Constant::MULTIPAY_STORE_CREDIT_METHOD) {
+                $newGrandTotal = $order->getGrandTotal() - $amount;
+                $newTotalDue = $order->getToalDue() - $amount;
+                $newCustomerBalanceAmount = $order->getCustomerBalanceAmount() + $amount;
                 $order->setGrandTotal($newGrandTotal);
                 $order->setTotalDue($newTotalDue);
                 $order->setCustomerBalanceAmount($newCustomerBalanceAmount);
@@ -169,7 +164,6 @@ class Transaction extends AbstractDb
                     ->save();
                 
                 $this->extOrderHelper->createNewExtSalesOrder((int)$orderId, ['payment']);
-                
             } else {
                 if ($order->getTotalPaid() !== null) {
                     $order->setTotalPaid($order->getTotalPaid() + $amount);
@@ -206,5 +200,16 @@ class Transaction extends AbstractDb
             return 0;
         }
         return $paidPart;
+    }
+
+    public function parseCurrency($amount = 0)
+    {
+        $return = (double) filter_var($amount, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+
+        if (abs($return) > 0) {
+            return bcdiv($return, 1, 2);
+        } else {
+            return 0;
+        }
     }
 }

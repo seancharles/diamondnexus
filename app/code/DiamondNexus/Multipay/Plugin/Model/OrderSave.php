@@ -3,13 +3,12 @@
 namespace DiamondNexus\Multipay\Plugin\Model;
 
 use Braintree\Result\Error;
-use DiamondNexus\Multipay\Helper\Data;
 use DiamondNexus\Multipay\Helper\EmailSender;
 use DiamondNexus\Multipay\Model\Constant;
-use DiamondNexus\Multipay\Model\Constant as C;
 use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
 use DiamondNexus\Multipay\Model\TransactionFactory;
 use Exception;
+use ForeverCompanies\CustomSales\Helper\Shipdate;
 use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\AlreadyExistsException;
@@ -24,7 +23,6 @@ use Magento\Sales\Model\Service\InvoiceService;
 use PayPal\Braintree\Api\Data\TransactionDetailDataInterfaceFactory;
 use PayPal\Braintree\Gateway\Response\PaymentDetailsHandler;
 use PayPal\Braintree\Model\TransactionDetail;
-use ForeverCompanies\CustomSales\Helper\Shipdate;
 
 class OrderSave
 {
@@ -37,11 +35,6 @@ class OrderSave
      * @var Transaction
      */
     protected $resource;
-
-    /**
-     * @var Data
-     */
-    protected $helper;
 
     /**
      * @var EmailSender
@@ -91,7 +84,6 @@ class OrderSave
     /**
      * OrderSave constructor.
      * @param Transaction $resource
-     * @param Data $helper
      * @param EmailSender $emailSender
      * @param State $state
      * @param TransactionDetailDataInterfaceFactory $transactionDetailFactory
@@ -103,7 +95,6 @@ class OrderSave
      */
     public function __construct(
         Transaction $resource,
-        Data $helper,
         EmailSender $emailSender,
         State $state,
         TransactionDetailDataInterfaceFactory $transactionDetailFactory,
@@ -121,7 +112,6 @@ class OrderSave
         $this->transaction = $transaction;
         $this->invoiceSender = $invoiceSender;
         $this->resource = $resource;
-        $this->helper = $helper;
         $this->emailSender = $emailSender;
         $this->state = $state;
         $this->shipdateHelper = $shipdateHelper;
@@ -196,36 +186,37 @@ class OrderSave
         $multipayMethod = $info[Constant::PAYMENT_METHOD_DATA];
         
         if ($methodInstance === Constant::MULTIPAY_METHOD) {
-            if($multipayMethod != Constant::MULTIPAY_QUOTE_METHOD) {
+            if ($multipayMethod != Constant::MULTIPAY_QUOTE_METHOD) {
                 if (!isset($info[Constant::OPTION_TOTAL_DATA]) || $info[Constant::OPTION_TOTAL_DATA] == null) {
                     throw new ValidatorException(__('You need choose Amount option - total or partial '));
                 }
-            }else if($multipayMethod == Constant::MULTIPAY_CREDIT_METHOD) {
+            } elseif ($multipayMethod == Constant::MULTIPAY_CREDIT_METHOD) {
                 if ($this->state->getAreaCode() !== Area::AREA_ADMINHTML) {
-                    $result = $this->helper->sendToBraintree($order);
-                    if ($result instanceof Error) {
-                        throw new ValidatorException(__('Credit card failed verification'));
-                    }
+                    /*
+                     * REMOVED FOR PCI COMPLIANCE
+                     *
+                        $result = $this->helper->sendToBraintree($order);
+                        if ($result instanceof Error) {
+                            throw new ValidatorException(__('Credit card failed verification'));
+                        }
+                    */
                 }
-            }else if ($multipayMethod == Constant::MULTIPAY_QUOTE_METHOD) {
+            } elseif ($multipayMethod == Constant::MULTIPAY_QUOTE_METHOD) {
                 $order->setState('quote')->setStatus('quote');
             }
 
             if ($multipayMethod != Constant::MULTIPAY_QUOTE_METHOD) {
-                
-                // added to prevent order from updating multiple times on save when other statuses are set like exchange/returned/closed
-                if(
-                    isset($info[Constant::ORDER_UPDATES_FLAG]) === false
-                    ||
-                    (isset($info[Constant::ORDER_UPDATES_FLAG]) === true && $info[Constant::ORDER_CREATE] == 0)
+                // added to prevent order from updating multiple times on
+                // save when other statuses are set like exchange/returned/closed
+                if (isset($info[Constant::ORDER_UPDATES_FLAG]) === false
+                    || (isset($info[Constant::ORDER_UPDATES_FLAG]) === true && $info[Constant::ORDER_CREATE] == 0)
                 ) {
-                
-                    if (
-                        (isset($info[Constant::OPTION_TOTAL_DATA]) == true && $info[Constant::OPTION_TOTAL_DATA] == Constant::MULTIPAY_TOTAL_AMOUNT)
-                        ||
-                        $order->getGrandTotal() == $order->getTotalPaid()
-                        ||
-                        $order->getTotalDue() == 0
+                    if ((isset($info[Constant::OPTION_TOTAL_DATA]) == true &&
+                            $info[Constant::OPTION_TOTAL_DATA] == Constant::MULTIPAY_TOTAL_AMOUNT)
+                            ||
+                            $order->getGrandTotal() == $order->getTotalPaid()
+                            ||
+                            $order->getTotalDue() == 0
                     ) {
                         // upon PIF prevent further auto updates to delivery dates and order status
                         $info[Constant::ORDER_UPDATES_FLAG] = 1;
@@ -235,7 +226,6 @@ class OrderSave
                         $order->setState(Order::STATE_PROCESSING)->setStatus(Order::STATE_PROCESSING);
                         
                         $this->shipdateHelper->updateDeliveryDates($order);
-                        
                     } else {
                         $order->setState('pending')->setStatus('pending');
                     }
@@ -290,10 +280,11 @@ class OrderSave
             }
 
             if ($order->canInvoice()) {
-                if($order->getGrandTotal() == 0 || $order->getTotalPaid() == $order->getGrandTotal()) {
-                    
+                if ((int)$order->getGrandTotal() == 0 ||
+                    round($order->getTotalPaid(), 2) == round($order->getGrandTotal(), 2)) {
                     $invoice = $this->invoiceService->prepareInvoice($order);
                     $invoice->register();
+                    $invoice->save();
                     $this->resourceInvoice->save($invoice);
                     $transactionSave = $this->transaction->addObject(
                         $invoice

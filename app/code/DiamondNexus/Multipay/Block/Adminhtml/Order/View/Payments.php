@@ -10,10 +10,6 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 
-/**
- * Class AddPaymentModalBox
- * @package DiamondNexus\Multipay\Block\Adminhtml\Order
- */
 class Payments extends AbstractPayment
 {
     /**

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace DiamondNexus\Multipay\Helper;
 
 use Magento\Email\Model\ResourceModel\Template\CollectionFactory;

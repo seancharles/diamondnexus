@@ -1,16 +1,19 @@
 <?php
 namespace DiamondNexus\Multipay\Block\Order;
 
-use Magento\Backend\Block\Template\Context;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\CustomerBalance\Model\BalanceFactory;
 use DiamondNexus\Multipay\Model\Constant;
 use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
+use Magento\Backend\Block\Template\Context;
+use Magento\CustomerBalance\Model\BalanceFactory;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Store\Model\ScopeInterface;
 
 class Paynow extends AbstractPay
 {
+    protected $balanceFactory;
+
     public function __construct(
         Context $context,
         OrderRepositoryInterface $orderRepository,
@@ -19,10 +22,10 @@ class Paynow extends AbstractPay
         BalanceFactory $balanceFactory
     ) {
         parent::__construct($context, $orderRepository, $transaction, $messageManager);
-        
+
         $this->balanceFactory = $balanceFactory;
     }
-    
+
     /**
      * @return mixed|string
      */
@@ -35,7 +38,7 @@ class Paynow extends AbstractPay
             return '';
         }
     }
-    
+
     /**
      * @return mixed|string
      */
@@ -48,16 +51,16 @@ class Paynow extends AbstractPay
             return '';
         }
     }
-    
+
     public function getStoreCreditAmount()
     {
         $customerId = $this->getData('order')->getCustomerId();
         $totalDue = $this->getData('order')->getTotalDue();
-        if($customerId > 0) {
+        if ($customerId > 0) {
             $balanceModel = $this->balanceFactory->create();
             $balanceModel->setCustomerId($customerId)->loadByCustomer();
-            
-            if($totalDue < $balanceModel->getAmount()) {
+
+            if (round($totalDue, 2) < round($balanceModel->getAmount(), 2)) {
                 return $totalDue;
             } else {
                 return $balanceModel->getAmount();
@@ -66,7 +69,7 @@ class Paynow extends AbstractPay
             return 0;
         }
     }
-    
+
     /**
      * @return MessageInterface|MessageInterface[]
      */
@@ -74,12 +77,12 @@ class Paynow extends AbstractPay
     {
         return $this->messageManager->getMessages()->getErrors();
     }
-    
+
     public function getPaypalActionUrl()
     {
         return $this->getUrl('diamondnexus/order/paypalAction');
     }
-    
+
     public function getPaypalPaymentCompleteUrl($orderId = 0)
     {
         return $this->getUrl('diamondnexus/order/paynowComplete/', ['order_id' => $orderId]);

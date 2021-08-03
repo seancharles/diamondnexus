@@ -5,10 +5,6 @@ namespace DiamondNexus\Multipay\Plugin\Block\Adminhtml\Order;
 use DiamondNexus\Multipay\Block\Adminhtml\Order\AddPaymentModalBox;
 use Magento\Framework\Exception\LocalizedException;
 
-/**
- * Class View
- * @package DiamondNexus\Multipay\Plugin\Block\Adminhtml\Order
- */
 class View
 {
 

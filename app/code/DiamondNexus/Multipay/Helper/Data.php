@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace DiamondNexus\Multipay\Helper;
 
 use Braintree\Result\Error;
@@ -59,95 +57,10 @@ class Data extends AbstractHelper
      */
     public function sendToBraintree(OrderInterface $order)
     {
-        $shippingAddress = $order->getShippingAddress();
-        $info = $order->getPayment()->getAdditionalInformation();
-        $billingAddress = $order->getBillingAddress();
-        $amount = 0;
-        if (isset($info[Constant::OPTION_PARTIAL_DATA])) {
-            $amount = $info[Constant::OPTION_PARTIAL_DATA];
-        }
-        if (isset($info[Constant::OPTION_TOTAL_DATA]) && (int)$info[Constant::OPTION_TOTAL_DATA] == 1) {
-            $amount = $info[Constant::AMOUNT_DUE_DATA];
-        } else {
-            if ($order->getTotalDue() < $amount) {
-                throw new ValidatorException(__('You can\'t pay more than order total price'));
-            }
-        }
-        $items = [];
-        foreach ($order->getItems() as $orderItem) {
-            if ($orderItem->getPrice() == 0) {
-                continue;
-            }
-            $items[] = [
-                'name' => substr($orderItem->getName(), 0, 35),
-                'kind' => 'debit',
-                'quantity' => $orderItem->getQtyOrdered(),
-                'unitAmount' => $orderItem->getPrice(),
-                'unitOfMeasure' => $orderItem->getProductType(),
-                'totalAmount' => $orderItem->getRowTotal(),
-                'taxAmount' => $orderItem->getTaxAmount(),
-                'discountAmount' => $orderItem->getDiscountAmount(),
-                'productCode' => substr($orderItem->getSku(), 0, 12),
-                'commodityCode' => substr($orderItem->getSku(), 0, 12)
-            ];
-        }
-        $attributes = [
-            'customer' =>
-                [
-                    'firstName' => $order->getCustomerFirstname(),
-                    'lastName' => $order->getCustomerLastname(),
-                    'company' => $shippingAddress->getCompany() ?? '',
-                    'phone' => $shippingAddress->getTelephone() ?? '',
-                    'email' => $order->getCustomerEmail()
-                ],
-            'amount' => $amount,
-            'creditCard' => [
-                'cvv' => $info[Constant::CVV_NUMBER_DATA],
-                'expirationMonth' => $info[Constant::EXP_MONTH_DATA],
-                'expirationYear' => $info[Constant::EXP_YEAR_DATA],
-                'number' => $info[Constant::CC_NUMBER_DATA]
-            ],
-            'orderId' => $order->getId(),
-            'channel' => 'Magento2GeneBT',
-            'options' =>
-                [
-                    'skipAdvancedFraudChecking' => false,
-                    'storeInVaultOnSuccess' => true
-                ],
-            'transactionSource' => 'moto',
-            'customFields' => [],
-            'billing' => [
-                'firstName' => $billingAddress->getFirstname(),
-                'lastName' => $billingAddress->getLastname(),
-                'company' => $billingAddress->getCompany(),
-                'streetAddress' => $billingAddress->getStreet()[0],
-                'extendedAddress' => $billingAddress->getStreet()[1] ?? '',
-                'locality' => $billingAddress->getCity(),
-                'region' => $billingAddress->getRegionCode(),
-                'postalCode' => $billingAddress->getPostcode(),
-                'countryCodeAlpha2' => $billingAddress->getCountryId()
-            ],
-            'shipping' =>
-                [
-                    'firstName' => $shippingAddress->getFirstname(),
-                    'lastName' => $shippingAddress->getLastname(),
-                    'company' => $shippingAddress->getCompany(),
-                    'streetAddress' => $shippingAddress->getStreet()[0],
-                    'extendedAddress' => '',
-                    'locality' => $shippingAddress->getCity(),
-                    'region' => $shippingAddress->getRegionCode(),
-                    'postalCode' => $shippingAddress->getPostcode(),
-                    'countryCodeAlpha2' => $shippingAddress->getCountryId(),
-                    'countryCodeAlpha3' => $this->iso3166->alpha2($shippingAddress->getCountryId())['alpha3']
-                ],
-            'purchaseOrderNumber' => $order->getId(),
-            'taxAmount' => $order->getTaxAmount(),
-            'discountAmount' => $order->getDiscountAmount(),
-            'lineItems' => $items,
-            'shippingAmount' => $order->getShippingAmount(),
-            'shipsFromPostalCode' => null
-        ];
-        return $this->brainTreeAdapter->sale($attributes);
+        // removing for PCI compliance
+        //return $this->brainTreeAdapter->sale($attributes);
+
+        return false;
     }
 
     public function updateOrderStatus($post, $order)
@@ -169,5 +82,16 @@ class Data extends AbstractHelper
             $order->setStatus($status)->setState($status);
         }
         $this->orderRepository->save($order);
+    }
+
+    public function parseCurrency($amount = 0)
+    {
+        $return = (double) filter_var($amount, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+
+        if (abs($return) > 0) {
+            return bcdiv($return, 1, 2);
+        } else {
+            return 0;
+        }
     }
 }

@@ -2,17 +2,14 @@
 
 namespace DiamondNexus\Multipay\Block\Adminhtml\Order;
 
-use Magento\Backend\Block\Template\Context;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\CustomerBalance\Model\BalanceFactory;
 use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
+use Magento\Backend\Block\Template\Context;
+use Magento\CustomerBalance\Model\BalanceFactory;
 
-/**
- * Class AddPaymentModalBox
- * @package DiamondNexus\Multipay\Block\Adminhtml\Order
- */
 class AddPaymentModalBox extends AbstractPayment
 {
+    protected $balanceFactory;
+
     /**
      * AddPaymentModalBox constructor.
      * @param Context $context
@@ -35,21 +32,21 @@ class AddPaymentModalBox extends AbstractPayment
          */
     public function getBalanceAmount()
     {
-        return $amount = $this->getData('order')->getTotalDue();
+        return round($this->getData('order')->getTotalDue(), 2);
     }
-    
+
     public function getStoreCreditAmount()
     {
         $customerId = $this->getData('order')->getCustomerId();
-        $totalDue = $this->getData('order')->getTotalDue();
-        if($customerId > 0) {
+        $totalDue = round($this->getData('order')->getTotalDue(), 2);
+        if ($customerId > 0) {
             $balanceModel = $this->balanceFactory->create();
             $balanceModel->setCustomerId($customerId)->loadByCustomer();
-            
-            if($totalDue < $balanceModel->getAmount()) {
+
+            if (round($totalDue, 2) < round($balanceModel->getAmount(), 2)) {
                 return $totalDue;
             } else {
-                return $balanceModel->getAmount();
+                return round($balanceModel->getAmount(), 2);
             }
         } else {
             return 0;

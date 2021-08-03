@@ -3,6 +3,7 @@ namespace DiamondNexus\Multipay\Block\Order;
 
 use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Sales\Api\OrderRepositoryInterface;
@@ -21,7 +22,7 @@ abstract class AbstractPay extends Template
     protected $transaction;
 
     /**
-     * @var \Magento\Framework\Message\ManagerInterface
+     * @var ManagerInterface
      */
     protected $messageManager;
 
@@ -29,7 +30,7 @@ abstract class AbstractPay extends Template
         Context $context,
         OrderRepositoryInterface $orderRepository,
         Transaction $transaction,
-        \Magento\Framework\Message\ManagerInterface $messageManager
+        ManagerInterface $messageManager
     ) {
         parent::__construct($context);
         $this->orderRepository = $orderRepository;
@@ -69,14 +70,14 @@ abstract class AbstractPay extends Template
     {
         /** @var Order $order */
         $order = $this->orderRepository->get($this->getData('order_id'));
-        $fullPrice = (float)$order->getGrandTotal();
+        $fullPrice = round($order->getGrandTotal(), 2);
         $payedPart = 0;
         try {
             $transactions = $this->transaction->getAllTransactionsByOrderId($this->getData('order_id'));
             foreach ($transactions as $transaction) {
                 $payedPart += (float)$transaction['amount'];
                 if ($transaction['amount'] == 0) {
-                    $payedPart += (float)$transaction['tendered'];
+                    $payedPart += round($transaction['tendered'], 2);
                 }
             }
             return $fullPrice - $payedPart;

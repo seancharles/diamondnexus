@@ -5,7 +5,6 @@ use Magento\Framework\Data\Helper\PostHelper;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Block\Order\History\Container;
 use Magento\Sales\Helper\Reorder;
-use Magento\Framework\Escaper;
 
 /** @var History $block */
 /** @var Escaper $escaper */
@@ -13,7 +12,7 @@ use Magento\Framework\Escaper;
 ?>
 <?php $_orders = $block->getOrders(); ?>
 <?= $block->getChildHtml('info') ?>
-<?php if ($_orders && count($_orders)) : ?>
+<?php if ($_orders && count($_orders)): ?>
     <div class="table-wrapper orders-history">
         <table class="data table table-order-items history" id="my-orders-table">
             <caption class="table-caption"><?= $escaper->escapeHtml(__('Orders')) ?></caption>
@@ -29,7 +28,7 @@ use Magento\Framework\Escaper;
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($_orders as $_order) : ?>
+            <?php foreach ($_orders as $_order): ?>
                 <?php $name = $_order->getShippingAddress()->getName(); ?>
                 <tr>
                     <td data-th="<?= $escaper->escapeHtmlAttr(__('Order #')) ?>"
@@ -37,7 +36,7 @@ use Magento\Framework\Escaper;
                     <td data-th="<?= $escaper->escapeHtmlAttr(__('Date')) ?>" class="col date"><?= /* @noEscape */
                         $block->formatDate($_order->getCreatedAt()) ?></td>
                     <?php /** @var Container $extra */$extra = $block->getChildBlock('extra.container'); ?>
-                    <?php try { if ($extra) : ?>
+                    <?php try { if ($extra): ?>
                             <?php $extra->setOrder($_order); ?>
                             <?= $extra->getChildHtml() ?>
                     <?php endif;
@@ -55,7 +54,7 @@ use Magento\Framework\Escaper;
                         <a href="<?= $escaper->escapeUrl($block->getViewUrl($_order)) ?>" class="action view">
                             <span><?= $escaper->escapeHtml(__('View Order')) ?></span>
                         </a>
-                        <?php if ($block->canPayNow($_order)) : ?>
+                        <?php if ($block->canPayNow($_order)): ?>
                             <a  onclick="var newwin = window.open(
                                             '<?= $escaper->escapeUrl($block->getPayNowUrl($_order->getId())) ?>',
                                             'newwin',
@@ -74,9 +73,9 @@ use Magento\Framework\Escaper;
             </tbody>
         </table>
     </div>
-    <?php if ($block->getPagerHtml()) : ?>
+    <?php if ($block->getPagerHtml()): ?>
         <div class="order-products-toolbar toolbar bottom"><?= $block->getPagerHtml() ?></div>
     <?php endif ?>
-<?php else : ?>
+<?php else: ?>
     <div class="message info empty"><span><?= $escaper->escapeHtml(__('You have placed no orders.')) ?></span></div>
 <?php endif ?>

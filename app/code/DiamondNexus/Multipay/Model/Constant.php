@@ -1,16 +1,7 @@
 <?php
-/**
- * Copyright ©  All rights reserved.
- * See COPYING.txt for license details.
- */
-declare(strict_types=1);
 
 namespace DiamondNexus\Multipay\Model;
 
-/**
- * Class Constant
- * @package DiamondNexus\Multipay\Model
- */
 class Constant
 {
     const MULTIPAY_METHOD = 'multipay';
@@ -30,6 +21,7 @@ class Constant
         4 => 'Store Credit',
         5 => 'Affirm (offline)',
         6 => 'Paypal (offline)',
+        7 => 'Credit (offline)',
     ];
 
     const MULTIPAY_SALE_ACTION = 1;
@@ -66,12 +58,13 @@ class Constant
         self::PAYMENT_METHOD_NONCE,
         self::NEW_BALANCE_DATA,
         self::AMOUNT_DUE_DATA,
-        self::CC_NUMBER_DATA,
-        self::EXP_MONTH_DATA,
-        self::EXP_YEAR_DATA,
-        self::CVV_NUMBER_DATA,
+        //self::CC_NUMBER_DATA,
+        //self::EXP_MONTH_DATA,
+        //self::EXP_YEAR_DATA,
+        //self::CVV_NUMBER_DATA,
         self::ORDER_UPDATES_FLAG
     ];
 
-    const CLIENT_XML = 'diamondnexus_multipay/general/client_id';
+    const CLIENT_XML = 'diamondnexus_multipay/paypal/client_id';
+    const PAYMENT_NOTIFICATION_EMAIL = 'diamondnexus_multipay/paynow/notification_email_address';
 }
