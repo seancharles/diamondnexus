@@ -13,6 +13,7 @@ use Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface;
 
 class UpdateAttributeLabelsAndScopesAgain implements DataPatchInterface, PatchRevertableInterface
 {
+    
     /**
      * @var ModuleDataSetupInterface
      */
