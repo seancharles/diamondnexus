@@ -67,14 +67,15 @@ class PaypalAction extends Action implements CsrfAwareActionInterface
                 try {
                     /** @var Order $order */
                     $order = $this->orderRepository->get($orderId);
-                    $amountDue = $order->getGrandTotal() - $this->transaction->getPaidPart($orderId);
+                    $amountDue = $order->getGrandTotal() - $order->getTotalPaid();
                     $customerId = $this->customerSession->getCustomer()->getId();
                     // make sure the current customer owns the order
                     if ($order->getCustomerId() == $customerId) {
                         $this->transaction->createNewTransaction($order, [
                             Constant::PAYMENT_METHOD_DATA => Constant::MULTIPAY_PAYPAL_OFFLINE_METHOD,
                             Constant::OPTION_TOTAL_DATA => Constant::MULTIPAY_TOTAL_AMOUNT,
-                            Constant::AMOUNT_DUE_DATA => $amountDue
+                            Constant::AMOUNT_DUE_DATA => $amountDue,
+                            CONSTANT::NEW_BALANCE_DATA => $amountDue
                         ]);
                         // Send salesperson an email
                         $this->sendSalesPersonEmail($order, $amountDue);
@@ -114,8 +115,6 @@ class PaypalAction extends Action implements CsrfAwareActionInterface
      */
     protected function sendSalesPersonEmail($order, $amount)
     {
-        $to = [];
-
         $salesPersonId = (int)$order->getData('sales_person_id');
         $storeId = (int)$order->getData('store_id');
         
