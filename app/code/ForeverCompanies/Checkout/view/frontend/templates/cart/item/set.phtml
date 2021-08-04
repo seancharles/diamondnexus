@@ -16,16 +16,10 @@ $isVisibleProduct = $product->isVisibleInSiteVisibility();
 $helper = $this->helper(Magento\Msrp\Helper\Data::class);
 $canApplyMsrp = $helper->isShowBeforeOrderConfirm($product) && $helper->isMinimalPriceLessMsrp($product);
 
-<<<<<<< HEAD
-=======
 // initialize object manager to load models
 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 $product = $objectManager->create('Magento\Catalog\Model\Product')->load($product->getId() );
-
->>>>>>> cart fixes
 ?>
-
-
 
 <?php if($_item->getSetId() > 0): ?>
     <?php if($product->getAttributeSetId() == 32 || $product->getAttributeSetId() == 18): ?>
