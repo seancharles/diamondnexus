@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <system>
+        <section id="forevercompanies_stone_ftp" translate="label" type="text" sortOrder="185" showInDefault="1"
+        	showInWebsite="1" showInStore="1">
+            <label>Loose Stone FTP Creds</label>
+            <tab>forevercompanies</tab>
+            <resource>ForeverCompanies_LooseStoneImport::config</resource>
+            <group id="creds" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+                <label>Creds</label>
+                <field id="host" translate="label comment" type="text" sortOrder="10" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Host</label>
+                </field>
+                <field id="port" translate="label comment" type="text" sortOrder="20" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Port</label>
+                 </field>
+                 <field id="user" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>User</label>
+                </field>
+                <field id="pass" translate="label comment" type="text" sortOrder="40" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Pass</label>
+                </field>
+                <field id="pattern" translate="label comment" type="text" sortOrder="50" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>File Pattern</label>
+                </field>
+			</group>
+		</section>
+	</system>
+</config>
