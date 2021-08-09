@@ -3,4 +3,6 @@
     <type name="Magento\Quote\Model\Quote\Item">
         <plugin name="forevercompanies-quote-item" type="ForeverCompanies\Checkout\Plugins\Quote\Item" />
     </type>
+    <preference for="Magento\ConfigurableProduct\Block\Cart\Item\Renderer\Configurable"
+                type="ForeverCompanies\Checkout\Block\Cart\Item\ConfigurableRenderer" />
 </config>
