@@ -16,20 +16,18 @@ $isVisibleProduct = $product->isVisibleInSiteVisibility();
 $helper = $this->helper(Magento\Msrp\Helper\Data::class);
 $canApplyMsrp = $helper->isShowBeforeOrderConfirm($product) && $helper->isMinimalPriceLessMsrp($product);
 
-// initialize object manager to load models
-$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 ?>
 
 <?php if($_item->getSetId() > 0): ?>
     <?php if($product->getAttributeSetId() == 32 || $product->getAttributeSetId() == 18): ?>
     <?php
-        $priceHelper = $objectManager->create('Magento\Framework\Pricing\PriceCurrencyInterface');
+        $priceHelper = $block->getPriceHelper();
 
         // default diamond item
         $diamondItem = null;
     
         // pull set stone item from quote collection
-        $collection = $objectManager->create('\Magento\Quote\Model\ResourceModel\Quote\Item\CollectionFactory')->create();
+        $collection = $block->getItemsCollection();
 		$collection->addFieldToFilter('quote_id', $_item->getQuoteId());
         $collection->addFieldToFilter('set_id', $_item->getSetId());
         
@@ -182,7 +180,10 @@ $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 <?php else :?>
                     <span class="product-item-photo">
                 <?php endif;?>
-                <?= $block->getImage($block->getProductForThumbnail(), 'cart_page_product_thumbnail')->toHtml() ?>
+                <?php //$block->getImage($block->getProductForThumbnail(), 'cart_page_product_thumbnail')->toHtml() ?>
+                <span class="product-image-container product-image-container-48962" style="width: 165px;">
+                    <span class="product-image-wrapper" style="padding-bottom: 100%;"><?= $block->getTaggedImage($product->getId()) ?></span>
+                </span>
                 <?php if ($block->hasProductUrl()) :?>
                     </a>
                 <?php else :?>
