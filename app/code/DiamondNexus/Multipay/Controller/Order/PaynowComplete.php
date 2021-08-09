@@ -49,10 +49,7 @@ class PaynowComplete extends Action implements CsrfAwareActionInterface
         
         parent::__construct($context);
     }
-    
-    /**
-     * @return ResponseInterface|ResultInterface|Page
-     */
+
     public function execute()
     {
         $resultRedirect = $this->resultRedirectFactory->create();
@@ -67,7 +64,7 @@ class PaynowComplete extends Action implements CsrfAwareActionInterface
             $customerId = $this->customerSession->getCustomer()->getId();
 
             if ($customerId > 0 && $order->getCustomerId() == $customerId) {
-                if (float($order->getTotalPaid(), 2) < float($order->getGrandTotal(), 2)) {
+                if (round($order->getTotalPaid(), 2) < round($order->getGrandTotal(), 2)) {
                     $this->messageManager->addError(__("Order is not paid in full."));
 
                     return $resultRedirect->setPath('sales/order/history');

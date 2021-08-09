@@ -191,9 +191,9 @@ class Transaction extends AbstractDb
         try {
             $transactions = $this->getAllTransactionsByOrderId($orderId);
             foreach ($transactions as $transaction) {
-                $paidPart += (float)$transaction['amount'];
+                $paidPart += round($transaction['amount'], 2);
                 if ($transaction['amount'] == 0) {
-                    $paidPart += (float)$transaction['tendered'];
+                    $paidPart += round($transaction['tendered'], 2);
                 }
             }
         } catch (LocalizedException $e) {
