@@ -59,6 +59,7 @@ button {
     box-sizing: border-box !important;
     text-decoration: none !important;
     border: none !important;
+    border-radius: 0 !important;
     @media screen and (min-width: 768px) {
         width: auto !important;
         text-decoration: none !important;

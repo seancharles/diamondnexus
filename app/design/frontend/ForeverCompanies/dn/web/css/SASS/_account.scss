@@ -114,6 +114,36 @@
     }
 }
 
+@media screen and (max-width: 1024px) {
+    .account {
+        .table-wrapper {
+            font-size: 13px;
+        }
+        .pages-items .item:not(.pages-item-next) {
+            padding: 0 2px;
+            margin: 0;
+        }
+        .pages-items .item:not(.pages-item-next) .page {
+            padding: 13px 10px 7px;
+        }
+        .pages-items .action.next,
+        .pages-items .action.previous {
+            width: 30px;
+            height: 30px;
+            margin: 0;
+            &:before {
+                font-size: 12px;
+            }
+        }
+        p.toolbar-amount {
+            font-size: 14px;
+        }
+        .limiter {
+            font-size: 14px;
+        }
+    }
+}
+
 @media screen and (max-width: 767px) {
     .block-collapsible-nav-title {
         strong {
