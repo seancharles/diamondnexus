@@ -65,12 +65,11 @@ class Index extends Action
                 foreach ($quoteItems as $item) {
                     $images = [];
                     $product = $this->productRepository->getById($item->getProductId());
+                    $imageGallery = $product->getMediaGalleryImages();
 
                     $configOptions = $item->getBuyRequest()->getSuperAttribute();
 
                     if(isset($configOptions[145]) === true) {
-                        $imageGallery = $product->getMediaGalleryImages();
-
                         foreach($imageGallery as $image) {
                             $label = strtolower($image->getLabel());
 
@@ -86,16 +85,18 @@ class Index extends Action
                         }
                     }
 
-                    $images[] = $item->getProduct()->getMediaConfig()->getMediaUrl(
-                        $item->getProduct()->getImage()
-                    );
+                    // used as a default in case a tagged image isn't found
+                    foreach($imageGallery as $image) {
+                        $images[] = $image->getUrl();
+                        break;
+                    }
 
                     $productsArray[] = [
                         'id' => $item->getData('product_id'),
                         'name' => $item->getName(),
                         'price' => $product->getPriceInfo()->getPrice('regular_price')->getAmount()->getBaseAmount(),
                         'special_price' => $product->getFinalPrice(),
-                        'img' => $images[0],
+                        'img' => $this->formatCloudinaryImagePath($images[0]),
                         'url' => $product->getProductUrl(true)
                     ];
                 }
@@ -119,5 +120,25 @@ class Index extends Action
         }
 
         return $result;
+    }
+
+    protected function formatCloudinaryImagePath($path = null, $width = 0, $quality = 90)
+    {
+        $host = 'https://res-2.cloudinary.com/foco/image/upload/';
+
+        if(strpos($path, $host) !== false) {
+            $folderPosition = strpos($path,"/v1/media");
+
+            // get the cloudinary parameters from uri
+            $params = substr($path, strlen($host), $folderPosition - strlen($host));
+
+            // get the actual path to the file from uri
+            $file = substr($path, $folderPosition);
+
+            // return uri with modified params
+            return $host . $params . ",w_200" . $file;
+        } else {
+            return $path;
+        }
     }
 }
