@@ -87,7 +87,7 @@ class PaypalAction extends Action implements CsrfAwareActionInterface
                         $this->transaction->createNewTransaction($order, $params);
                         $this->helper->updateOrderStatus($params, $order);
                         // Send salesperson an email
-                        //$this->sendSalesPersonEmail($order, $amountDue);
+                        $this->sendSalesPersonEmail($order, $amountDue);
                     } else {
                         $result['success'] = false;
                     }
