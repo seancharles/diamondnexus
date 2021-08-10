@@ -133,10 +133,10 @@ class ConfigurableRenderer extends \Magento\ConfigurableProduct\Block\Cart\Item\
         $metalMap = [];
 
         $configOptions = $this->getItem()->getBuyRequest()->getSuperAttribute();
+        $product = $this->productRepository->getById($this->getItem()->getProductId());
+        $imageGallery = $product->getMediaGalleryImages();
 
         if(isset($configOptions[145]) === true) {
-            $product = $this->productRepository->getById($this->getItem()->getProductId());
-            $imageGallery = $product->getMediaGalleryImages();
             $metalOptions = $this->attributeRepository->get('metal_type')->getOptions();
 
             foreach($metalOptions as $metalOption) {
@@ -158,17 +158,40 @@ class ConfigurableRenderer extends \Magento\ConfigurableProduct\Block\Cart\Item\
             }
         }
 
-        $images[] = $this->getItem()->getProduct()->getMediaConfig()->getMediaUrl(
-            $this->getItem()->getProduct()->getImage()
-        );
+        // used as a default in case a tagged image isn't found
+        foreach($imageGallery as $image) {
+            $images[] = $image->getUrl();
+            break;
+        }
 
         return '<img
             class="product-image-photo cloudinary-lazyload-processed"
-            src="' . $images[0] . '"
-            data-original="' . $images[0] . '"
-            width="165" height="165" alt="' . $product->getName() . '"
+            src="' . $this->formatCloudinaryImagePath($images[0], 100) . '"
+            data-original="' . $this->formatCloudinaryImagePath($images[0], 100) . '"
+            width="165" height="165" alt="' . $this->getItem()->getName() . '"
             style="display: block;" 
         />';
+    }
+
+    protected function formatCloudinaryImagePath($path = null, $width = 0, $quality = 90)
+    {
+        $host = 'https://res-2.cloudinary.com/foco/image/upload/';
+
+        if(strpos($path, $host) !== false) {
+            $folderPosition = strpos($path,"/v1/media");
+
+            // get the cloudinary parameters from uri
+            $params = substr($path, strlen($host), $folderPosition - strlen($host));
+
+            // get the actual path to the file from uri
+            $file = substr($path, $folderPosition);
+
+            // return uri with modified params
+            //return $host . $params . ",w_165" . $file;
+            return $path;
+        } else {
+            return $path;
+        }
     }
 
     protected function getPriceHelper()

@@ -7,65 +7,102 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
+use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
+use Magento\Catalog\Model\Product\Attribute\Repository;
 use Psr\Log\LoggerInterface;
 
 class Index extends Action
 {
-    protected $_logger;
-    protected $_jsonResultFactory;
-    protected $_urlInterface;
-    protected $_quoteRepository;
-    protected $_cart;
+    protected $logger;
+    protected $jsonResultFactory;
+    protected $urlInterface;
+    protected $productRepository;
+    protected $quoteRepository;
+    protected $attributeRepository;
 
     public function __construct(
         Context $context,
         LoggerInterface $logger,
         JsonFactory $jsonResultFactory,
         UrlInterface $urlInterface,
-        CartRepositoryInterface $quoteRepository
-    ) {
+        ProductRepositoryInterface $productRepository,
+        CartRepositoryInterface $quoteRepository,
+        Repository $attributeRepository
+    )
+    {
         parent::__construct($context);
 
-        $this->_logger = $logger;
-        $this->_jsonResultFactory = $jsonResultFactory;
-        $this->_urlInterface = $urlInterface;
-        $this->_quoteRepository = $quoteRepository;
+        $this->logger = $logger;
+        $this->jsonResultFactory = $jsonResultFactory;
+        $this->urlInterface = $urlInterface;
+        $this->productRepository = $productRepository;
+        $this->quoteRepository = $quoteRepository;
+        $this->attributeRepository = $attributeRepository;
     }
 
     public function execute()
     {
         $productsArray = [];
+        $metalMap = [];
 
         $request = $this->getRequest()->getParams();
-
-        $result = $this->_jsonResultFactory->create();
+        $result = $this->jsonResultFactory->create();
 
         if (isset($request['qid']) == true) {
-
-            $quoteId = (int)$request['qid'];
+            $quoteId = (int) $request['qid'];
 
             try {
-                $quote = $this->_quoteRepository->get($quoteId);
+                $metalOptions = $this->attributeRepository->get('metal_type')->getOptions();
 
+                foreach($metalOptions as $metalOption) {
+                    $metalMap[$metalOption->getValue()] = strtolower($metalOption->getLabel());
+                }
+
+                $quote = $this->quoteRepository->get($quoteId);
                 $quoteItems = $quote->getAllVisibleItems();
 
                 foreach ($quoteItems as $item) {
+                    $images = [];
+                    $product = $this->productRepository->getById($item->getProductId());
+                    $imageGallery = $product->getMediaGalleryImages();
 
-                    $product = $item->getProduct();
+                    $configOptions = $item->getBuyRequest()->getSuperAttribute();
+
+                    if(isset($configOptions[145]) === true) {
+                        foreach($imageGallery as $image) {
+                            $label = strtolower($image->getLabel());
+
+                            if(strlen($label) > 0) {
+                                if(strpos($label,"default") !== false) {
+                                    $metalType = $metalMap[$configOptions[145]];
+
+                                    if(strpos($label, $metalType) !== false) {
+                                        $images[] = $image->getUrl();
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // used as a default in case a tagged image isn't found
+                    foreach($imageGallery as $image) {
+                        $images[] = $image->getUrl();
+                        break;
+                    }
 
                     $productsArray[] = [
                         'id' => $item->getData('product_id'),
                         'name' => $item->getName(),
                         'price' => $product->getPriceInfo()->getPrice('regular_price')->getAmount()->getBaseAmount(),
                         'special_price' => $product->getFinalPrice(),
-                        'img' => $product->getMediaConfig()->getMediaUrl($product->getImage()),
+                        'img' => $this->formatCloudinaryImagePath($images[0]),
                         'url' => $product->getProductUrl(true)
                     ];
                 }
 
                 $result = $result->setData([
-                    'url' => $this->_urlInterface->getUrl('checkout/cart/rebuild', ['id' => $quoteId]),
+                    'url' => $this->urlInterface->getUrl('checkout/cart/rebuild', ['id' => $quoteId]),
                     'products' => $productsArray
                 ]);
 
@@ -75,7 +112,7 @@ class Index extends Action
                     'message' => "Unable to find quote"
                 ]);
 
-                $this->_logger->error(
+                $this->logger->error(
                     'Quote does not exist',
                     [$exception->getMessage()]
                 );
@@ -83,5 +120,25 @@ class Index extends Action
         }
 
         return $result;
+    }
+
+    protected function formatCloudinaryImagePath($path = null, $width = 0, $quality = 90)
+    {
+        $host = 'https://res-2.cloudinary.com/foco/image/upload/';
+
+        if(strpos($path, $host) !== false) {
+            $folderPosition = strpos($path,"/v1/media");
+
+            // get the cloudinary parameters from uri
+            $params = substr($path, strlen($host), $folderPosition - strlen($host));
+
+            // get the actual path to the file from uri
+            $file = substr($path, $folderPosition);
+
+            // return uri with modified params
+            return $host . $params . ",w_200" . $file;
+        } else {
+            return $path;
+        }
     }
 }
