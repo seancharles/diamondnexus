@@ -7,6 +7,7 @@
 ?>
 <?php /** @var $block \Magento\Checkout\Block\Onepage\Success */ ?>
 <div class="checkout-success">
+    <h1 class="page-title">HOORAY!<br>You just ordered something amazing!</h1>
     <?php if ($block->getOrderId()) : ?>
         <?php if ($block->getCanViewOrder()) : ?>
             <p><?= $block->escapeHtml(__('Your order number is: %1.', sprintf('<a href="%s" class="order-number"><strong>%s</strong></a>', $block->escapeUrl($block->getViewOrderUrl()), $block->getOrderId())), ['a', 'strong']) ?></p>
@@ -48,10 +49,11 @@
         </div>
         <div class="additional-success-blocks">
             <div class="email-block">
-                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1024 896">
-                    <path d="M1023 168q1-3 1-6t-1-6l-2-6q-12-54-77-54H112q-30 0-57.5 11T13 137l-5 5q-10 11-7 26q-1 2-1 4v516q0 40 36 76t76 36h832q37 0 58.5-34t21.5-78V170.5l-1-2.5zm-911-8h832L512 505L81 161q8-1 31-1zm832 576H112q-9 0-20.5-8T72 708.5T64 688V230l427 341q9 8 21 8q12-1 21-8l427-341v462q0 44-16 44z" />
-                    <rect x="0" y="0" width="1024" height="896" fill="rgba(0, 0, 0, 0)" /></svg>
-                <h3 class="h3">Watch your email for updates. We'll be in touch every step of the way!</h3>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16">
+                    <path id="Union_54" data-name="Union 54" d="M0,16V0H24V16Zm1.75-1.75h20.5v-8.5L12.189,9.864,1.75,5.871ZM12.167,7.982,22.25,3.857V1.75H1.75V4Z" />
+                </svg>
+
+                <h3 class="h3">Watch your email for updates.<br>We'll be in touch every step of the way!</h3>
             </div>
             <div class="featured-block">
                 <h3 class="h3">Featured Collections</h3>

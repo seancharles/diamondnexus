@@ -105,6 +105,10 @@ a {
     padding-bottom: 40px;
 }
 
+.page-header {
+    border: none;
+}
+
 .block-title,
 .legend {
     font-family: 'Didot 06 A', 'Didot 06 B', serif;
@@ -139,10 +143,12 @@ a {
     }
     .item:not(.pages-item-next) {
         padding: 0 10px;
+        margin: 0;
         .page {
             background: transparent;
             line-height: 1.5rem;
             padding: 13px 13px 7px;
+            font-size: 16px;
         }
         strong.page {
             font-weight: normal !important;
