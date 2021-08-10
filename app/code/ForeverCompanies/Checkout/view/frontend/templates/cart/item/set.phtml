@@ -16,6 +16,9 @@ $isVisibleProduct = $product->isVisibleInSiteVisibility();
 $helper = $this->helper(Magento\Msrp\Helper\Data::class);
 $canApplyMsrp = $helper->isShowBeforeOrderConfirm($product) && $helper->isMinimalPriceLessMsrp($product);
 
+// initialize object manager to load models
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$product = $objectManager->create('Magento\Catalog\Model\Product')->load($product->getId() );
 ?>
 
 <?php if($_item->getSetId() > 0): ?>
@@ -92,7 +95,17 @@ $canApplyMsrp = $helper->isShowBeforeOrderConfirm($product) && $helper->isMinima
                         <?php if($diamondItem != null): ?>
                             <?php echo $diamondItem->getName(); ?>
                         <?php endif; ?>
-                    </div>
+                        
+                        <?php 
+                        if( !$product->getData('returnable')): ?>
+                        	<br /><strong style='padding-top:10px; color:red;'><?php echo __("This item is is not returnable") ?></strong>
+                     	<?php endif; ?>
+
+                		 <?php if($product->getAttributeText('limited_warranty') == 'Yes'): ?>
+                		 	<br /><strong style='padding-top:10px; color:red;'><?php echo __("This item has a limited warranty") ?></strong>
+                         <?php endif; ?>
+         
+         			</div>
                 </td>
 
                 <?php if ($canApplyMsrp) :?>
@@ -223,6 +236,16 @@ $canApplyMsrp = $helper->isShowBeforeOrderConfirm($product) && $helper->isMinima
                     <?php if ($addInfoBlock) :?>
                         <?= $addInfoBlock->setItem($_item)->toHtml() ?>
                     <?php endif;?>
+
+                        <?php 
+                        if( !$product->getData('returnable')): ?>
+                        	<br /><strong style="padding-top:10px; color:red;"><?php echo __("This item is is not returnable") ?></strong>
+                     	<?php endif; ?>
+
+                		 <?php if($product->getAttributeText('limited_warranty') == 'Yes'): ?>
+                		 	<br /><strong style="padding-top:10px; color:red;"><?php echo __("This item has a limited warranty") ?></strong>
+                         <?php endif; ?>
+                         
                 </div>
             </td>
 
