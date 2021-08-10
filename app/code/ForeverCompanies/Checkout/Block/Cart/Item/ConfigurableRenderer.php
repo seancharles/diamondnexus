@@ -194,12 +194,12 @@ class ConfigurableRenderer extends \Magento\ConfigurableProduct\Block\Cart\Item\
         }
     }
 
-    protected function getPriceHelper()
+    public function getPriceHelper()
     {
         return $this->priceCurrency;
     }
 
-    protected function getItemsCollection()
+    public function getItemsCollection()
     {
         return $this->itemCollection->create();
     }
