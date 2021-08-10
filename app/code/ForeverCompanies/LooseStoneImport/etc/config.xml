@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+	<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    	xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <forevercompanies_stone_ftp>
+            <creds>
+                <host>ftp.forevercompanies.com</host>
+                <port>990</port>
+                <user>forevercompanies</user>
+                <pass>wmmpU8ge</pass>
+                <pattern>diamond_importer_*.csv</pattern>
+            </creds>
+        </forevercompanies_stone_ftp>
+    </default>
+</config>

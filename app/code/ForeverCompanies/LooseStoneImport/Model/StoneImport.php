@@ -13,6 +13,7 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Io\File;
 use Magento\Reports\Model\ResourceModel\Product\Sold\CollectionFactory as SoldProductCollectionFactory;
 use Magento\Catalog\Model\ProductRepository;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class StoneImport
 {    
@@ -56,6 +57,8 @@ class StoneImport
     
     protected $supplierStatuses;
     
+    protected $scopeConfig;
+    protected $storeScope;
     
     public function __construct(
         CollectionFactory $collectionFactory,
@@ -68,7 +71,8 @@ class StoneImport
         DirectoryList $directoryList,
         File $fil,
         SoldProductCollectionFactory $soldProductColl,
-        ProductRepository $productR
+        ProductRepository $productR,
+        ScopeConfigInterface $scopeC
         ) {
             $this->productCollectionFactory = $collectionFactory;
             $this->productModel = $prod;
@@ -84,6 +88,8 @@ class StoneImport
             $this->mediaTmpDir = $directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . 'tmp';
             $this->file->checkAndCreateFolder($this->mediaTmpDir );
             $this->connection = $resource->getConnection();
+            $this->scopeConfig = $scopeC;
+            $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
             
             $this->csvHeaderMap = array(
                 "Product Name" => "name",
@@ -491,7 +497,7 @@ class StoneImport
     
     function run()
     {
-        
+        $this->_updateCsv();
         $csvArray = $this->_buildArray();
         
         $i = 0;
@@ -738,6 +744,32 @@ class StoneImport
                 VALUES("'. $product->getSku() . '", "' . $action . '", "'  . addslashes(json_encode($csvArr)) . '", "' . $this->_getHash($csvArr) . '")';
         }
         $this->connection->query($query);
+    }
+    
+    protected function _updateCsv()
+    {
+        $ftp = ftp_connect(
+            $this->scopeConfig->getValue('forevercompanies_stone_ftp/creds/host', $this->storeScope),
+            $this->scopeConfig->getValue('forevercompanies_stone_ftp/creds/port', $this->storeScope)
+        );
+        
+        $login_result = ftp_login(
+            $ftp,
+            $this->scopeConfig->getValue('forevercompanies_stone_ftp/creds/user', $this->storeScope),
+            $this->scopeConfig->getValue('forevercompanies_stone_ftp/creds/pass', $this->storeScope)
+        );
+        ftp_pasv($ftp, true);
+        
+        $files = ftp_nlist(
+            $ftp,
+            ftp_pwd($ftp) . DS . $this->scopeConfig->getValue('forevercompanies_stone_ftp/creds/pattern', $this->storeScope)
+        );
+        
+        foreach ($files as $file) {
+            ftp_get($ftp, '/var/www/magento/var/import/diamond_importer.csv', $file);
+        }
+        
+        ftp_close($ftp);
     }
     
 }
