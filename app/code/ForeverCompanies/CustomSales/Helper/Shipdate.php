@@ -361,7 +361,7 @@ class Shipdate extends AbstractHelper
         foreach ($tracksCollection->getItems() as $track) {
             switch($track->getTitle()) {
                 case "Federal Express":
-                    $trackingPath = "http://www.fedex.com/Tracking?tracknumbers=";
+                    $trackingPath = "https://www.fedex.com/Tracking?tracknumbers=";
                     break;
                 case "United Postal Service":
                     $trackingPath = "https://tools.usps.com/go/TrackConfirmAction?tLabels=";
