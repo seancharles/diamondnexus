@@ -9,71 +9,69 @@ use Magento\Framework\App\ResourceConnection;
 
 class UpgradeSchema implements UpgradeSchemaInterface
 {
-    protected $resourceConnection;
+    protected ResourceConnection $resourceConnection;
+
     public function __construct(
         ResourceConnection $resourceConn
-        )
-    {
+    ) {
         $this->resourceConnection = $resourceConn;
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function upgrade(
         SchemaSetupInterface $setup,
         ModuleContextInterface $context
-        ) {
-            $installer = $setup;
-            
-            $installer->startSetup();
-           
-            $query = "DROP TABLE IF EXISTS `stones_supplier`;";
-            $this->resourceConnection->getConnection()->query($query);
-            
-      
-            if (!$installer->tableExists('stones_supplier')) {
+    ) {
+        $installer = $setup;
+
+        $installer->startSetup();
+
+        $query = "DROP TABLE IF EXISTS `stones_supplier`;";
+        $this->resourceConnection->getConnection()->query($query);
+
+        if (!$installer->tableExists('stones_supplier')) {
             $table = $installer->getConnection()
-            ->newTable($installer->getTable('stones_supplier'))
-            ->addColumn(
-                'id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_BIGINT,
-                null,
-                ['identity' => true, 'unsigned' => true, 'nullable' =>
-                    false, 'primary' => true],
-                'Supplier ID'
-            )
-            ->addColumn(
-                'name',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                32,
-                ['nullable' => false],
-                'Name'
-            )
-            ->addColumn(
-                'code',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                32,
-                ['nullable' => false],
-                'Code'
-            )
-            ->addColumn(
-                'email',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                256,
-                ['nullable' => false],
-                'Email'
-            )
-            ->addColumn(
-                'enabled',
-                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
-                1,
-                ['nullable' => false, 'default' => 1],
-                'Is Supplier Enabled'
-            );
+                ->newTable($installer->getTable('stones_supplier'))
+                ->addColumn(
+                    'id',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_BIGINT,
+                    null,
+                    ['identity' => true, 'unsigned' => true, 'nullable' =>
+                        false, 'primary' => true],
+                    'Supplier ID'
+                )
+                ->addColumn(
+                    'name',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    32,
+                    ['nullable' => false],
+                    'Name'
+                )
+                ->addColumn(
+                    'code',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    32,
+                    ['nullable' => false],
+                    'Code'
+                )
+                ->addColumn(
+                    'email',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    256,
+                    ['nullable' => false],
+                    'Email'
+                )
+                ->addColumn(
+                    'enabled',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                    1,
+                    ['nullable' => false, 'default' => 1],
+                    'Is Supplier Enabled'
+                );
             $installer->getConnection()->createTable($table);
-            
-            
+
             $query = "INSERT IGNORE INTO stones_supplier(id, name, code, email, enabled)
                 VALUES (1,'Blumoon','blumoon','sales.veebluemoon@gmail.com',1),
                 (2,'Classic','classic','nitigya@classicgrowndiamonds.com, sales@classicgrowndiamonds.com',1),
@@ -103,12 +101,15 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 (31,'indiandiamonds','indiandiamonds','sales@indiandcorp.com',1),
                 (32,'growndiamondcorp','growndiamondcorp','gulrez@growndiamondcorp.com',0),
                 (33,'lushdiamonds','lushdiamonds','thelushdiamonds@gmail.com',0),
-                (34,'ALTR','ALTR','orders@riamgroup.com',1);";
-            
+                (34,'ALTR','ALTR','orders@riamgroup.com',1),
+                (35,'Forever Grown','Forever Grown','nick@forevergrowndiamonds.com',0),
+                (36,'internalaltr','internalaltr','fulfillment@forevercompanies.com, pd@forevercompanies.com, amanda.ybarra@forevercompanies.com',1),
+                (37,'bhaktidiamond','bhaktidiamond','bhaktidiamondllc@gmail.com',1);";
+
             $this->resourceConnection->getConnection()->query($query);
-            
+
             $query = "update eav_attribute set source_model = 'ForeverCompanies\\\StonesIntermediary\\\Model\\\Config\\\Source\\\Supplier' where attribute_code = 'supplier';";
-            
+
             $this->resourceConnection->getConnection()->query($query);
         }
         $installer->endSetup();
