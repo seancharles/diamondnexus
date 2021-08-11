@@ -106,6 +106,10 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 (34,'ALTR','ALTR','orders@riamgroup.com',1);";
             
             $this->resourceConnection->getConnection()->query($query);
+            
+            $query = "update eav_attribute set source_model = 'ForeverCompanies\\\StonesIntermediary\\\Model\\\Config\\\Source\\\Supplier' where attribute_code = 'supplier';";
+            
+            $this->resourceConnection->getConnection()->query($query);
         }
         $installer->endSetup();
     }
