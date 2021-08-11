@@ -433,10 +433,11 @@ class StoneImport
                 "lush" => "33",
                 "lushdiamonds" => "33",
                 "altr" => "34",
-                "ALTR" => "34"
+                "ALTR" => "34",
+                "Forever Grown" => "35",
+                "internalaltr" => "36",
+                "bhaktidiamond" => "37"
                 // TODO: Create these attribute options and place their values here.
-                // "Forever Grown" => "3562",
-                // "internalaltr" => "3563",
                 // "bhakti" => ""
             );
             
