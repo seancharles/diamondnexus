@@ -72,7 +72,7 @@ class StagingApplier
                     INNER JOIN
                         catalogrule_website crw ON cr.row_id = crw.row_id
                     WHERE
-                        su.id = '" . $versionId . "';";
+                        su.id = '" . filter_var($versionId, FILTER_SANITIZE_SPECIAL_CHARS) . "';";
             
             $websiteList = $connection->fetchAll($query);
 
