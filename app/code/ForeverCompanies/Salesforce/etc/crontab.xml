@@ -2,10 +2,10 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
 	<group id="default">
 		<job instance="ForeverCompanies\Salesforce\Cron\Sync" method="execute" name="forevercompanies_salesforce_cron">
-			<schedule>*/1 * * * *</schedule>
+			<schedule>*/30 * * * *</schedule>
 		</job>
 		<job instance="ForeverCompanies\Salesforce\Cron\Leads" method="execute" name="forevercompanies_salesforce_leads_cron">
-			<schedule>*/1 * * * *</schedule>
+			<schedule>*/30 * * * *</schedule>
 		</job>
 	</group>
 </config>
