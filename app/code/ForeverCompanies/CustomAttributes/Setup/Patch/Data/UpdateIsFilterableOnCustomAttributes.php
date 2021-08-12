@@ -104,6 +104,9 @@ class UpdateIsFilterableOnCustomAttributes implements DataPatchInterface, PatchR
      */
     public static function getDependencies()
     {
-        return [RenameProductTypeAttributeCode::class];
+        return [
+            RenameProductTypeAttributeCode::class,
+            AddProductTypeProductAttribute::class
+        ];
     }
 }

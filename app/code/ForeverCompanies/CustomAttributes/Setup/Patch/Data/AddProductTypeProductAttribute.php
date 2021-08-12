@@ -132,7 +132,7 @@ class AddProductTypeProductAttribute implements DataPatchInterface, PatchReverta
     public static function getDependencies()
     {
         return [
-
+            RenameProductTypeAttributeCode::class
         ];
     }
 
