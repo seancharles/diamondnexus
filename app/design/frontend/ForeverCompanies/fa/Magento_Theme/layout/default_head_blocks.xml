@@ -5,6 +5,8 @@
         <link src="forevercompaniesjs/updateProfileSync.js"/>
     </head>
     <head>
+    	<link src="js/jquery-migrate-3.3.2.min.js" />
+    	
         <css src="css/local.css" />
         <link src="js/script.js"/>
         <css src="/fccss/global_css.css?123"  src_type="url" rel="stylesheet" type="text/css"/>
