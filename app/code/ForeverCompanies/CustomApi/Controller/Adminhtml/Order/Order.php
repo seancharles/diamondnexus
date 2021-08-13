@@ -24,6 +24,7 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order\Status\HistoryFactory;
 use Magento\Sales\Controller\Adminhtml\Order as AdminOrder;
 use Psr\Log\LoggerInterface;
+use Magento\Framework\Serialize\Serializer\Json;
 
 use ShipperHQ\Shipper\Model\ResourceModel\Order\Detail;
 use ShipperHQ\Shipper\Model\ResourceModel\Order\GridDetail;
@@ -54,6 +55,8 @@ class Order extends AdminOrder implements HttpPostActionInterface
      * @var QueueFactory
      */
     protected $queueFactory;
+    
+    protected $jsonEncoder;
 
     /**
      * Order constructor.
@@ -89,7 +92,8 @@ class Order extends AdminOrder implements HttpPostActionInterface
         GridDetail $shipperGridDetailResourceModel,
         HistoryFactory $orderHistoryFactory,
         ExtOrder $extOrder,
-        QueueFactory  $queueFactory
+        QueueFactory  $queueFactory,
+        Json $json
     ) {
         parent::__construct(
             $context,
@@ -109,6 +113,7 @@ class Order extends AdminOrder implements HttpPostActionInterface
         $this->orderHistoryFactory = $orderHistoryFactory;
         $this->extOrder = $extOrder;
         $this->queueFactory = $queueFactory;
+        $this->jsonEncoder = $json;
     }
 
     /**
@@ -158,7 +163,7 @@ class Order extends AdminOrder implements HttpPostActionInterface
                     
                     $this->shipperDetailResourceModel->getConnection()->update(
                         $this->shipperDetailResourceModel->getMainTable(),
-                        ['carrier_group_detail' => json_encode($carrierGroupDetail)],
+                        ['carrier_group_detail' => $this->jsonEncoder->serialize($carrierGroupDetail)],
                         'order_id = ' . $order->getEntityId()
                     );
                     
