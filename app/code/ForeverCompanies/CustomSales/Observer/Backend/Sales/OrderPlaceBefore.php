@@ -28,7 +28,6 @@ class OrderPlaceBefore implements ObserverInterface
     
     protected $session;
 
-
     /**
      * OrderPlaceBefore constructor.
      * @param Session $authSession

@@ -21,8 +21,8 @@ class AutoInvoiceOrder implements ObserverInterface
     protected $invoiceRepository;
 
     /**
-    * @var \Magento\Sales\Model\Service\InvoiceService
-    */
+     * @var \Magento\Sales\Model\Service\InvoiceService
+     */
     protected $invoiceService;
 
     /**
@@ -31,22 +31,22 @@ class AutoInvoiceOrder implements ObserverInterface
     protected $transactionFactory;
 
     /**
-    * @var \Magento\Sales\Api\OrderRepositoryInterface
-    */
+     * @var \Magento\Sales\Api\OrderRepositoryInterface
+     */
     protected $orderRepository;
 
     /**
-    * @param \Magento\Sales\Model\ResourceModel\Order\Invoice\CollectionFactory $invoiceCollectionFactory
-    * @param \Magento\Sales\Model\Service\InvoiceService $invoiceService
-    * @param \Magento\Framework\DB\TransactionFactory $transactionFactory
-    * @param \Magento\Sales\Api\InvoiceRepositoryInterface $invoiceRepository
-    */
+     * @param \Magento\Sales\Model\ResourceModel\Order\Invoice\CollectionFactory $invoiceCollectionFactory
+     * @param \Magento\Sales\Model\Service\InvoiceService $invoiceService
+     * @param \Magento\Framework\DB\TransactionFactory $transactionFactory
+     * @param \Magento\Sales\Api\InvoiceRepositoryInterface $invoiceRepository
+     */
     public function __construct(
         \Magento\Sales\Model\ResourceModel\Order\Invoice\CollectionFactory $invoiceCollectionFactory,
         \Magento\Sales\Model\Service\InvoiceService $invoiceService,
         \Magento\Framework\DB\TransactionFactory $transactionFactory,
         \Magento\Sales\Api\InvoiceRepositoryInterface $invoiceRepository
-        ) {
+    ) {
           $this->invoiceCollectionFactory = $invoiceCollectionFactory;
           $this->invoiceService = $invoiceService;
           $this->transactionFactory = $transactionFactory;
@@ -54,7 +54,7 @@ class AutoInvoiceOrder implements ObserverInterface
     }
 
     public function execute(\Magento\Framework\Event\Observer $observer)
-    {   
+    {
         /** @var Order $order */
         $order = $observer->getEvent()->getOrder();
 
@@ -64,29 +64,27 @@ class AutoInvoiceOrder implements ObserverInterface
         }
 
         // only invoice if the order has been paid in full or has no payment required.
-        if($order->getTotalPaid() == $order->getGrandTotal() || $order->getGrandTotal() == 0) {
-            $this->createInvoice($order);      
+        if ($order->getTotalPaid() == $order->getGrandTotal() || $order->getGrandTotal() == 0) {
+            $this->createInvoice($order);
         }
-
     }
 
     protected function createInvoice($order)
     {
-        try 
-        {
+        try {
             if ($order) {
                 $invoices = $this->invoiceCollectionFactory->create()
-                  ->addAttributeToFilter('order_id', array('eq' => $order->getId()));
+                  ->addAttributeToFilter('order_id', ['eq' => $order->getId()]);
 
                 $invoices->getSelect()->limit(1);
 
                 if ((int)$invoices->count() !== 0) {
-                  $invoices = $invoices->getFirstItem();
-                  $invoice = $this->invoiceRepository->get($invoices->getId());
-                  return $invoice;
+                    $invoices = $invoices->getFirstItem();
+                    $invoice = $this->invoiceRepository->get($invoices->getId());
+                    return $invoice;
                 }
 
-                if(!$order->canInvoice()) {
+                if (!$order->canInvoice()) {
                     return null;
                 }
 
@@ -95,7 +93,11 @@ class AutoInvoiceOrder implements ObserverInterface
                 $invoice->register();
                 $invoice->getOrder()->setCustomerNoteNotify(false);
                 $invoice->getOrder()->setIsInProcess(true);
-                $transactionSave = $this->transactionFactory->create()->addObject($invoice)->addObject($invoice->getOrder());
+                $transactionSave = $this->transactionFactory->create()->addObject(
+                    $invoice
+                )->addObject(
+                    $invoice->getOrder()
+                );
                 $transactionSave->save();
 
                 return $invoice;

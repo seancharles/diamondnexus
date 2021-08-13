@@ -219,10 +219,10 @@ class Shipdate extends AbstractHelper
         $i = 0;
         $businessDays = 0;
         
-        while($businessDays < $days) {
+        while ($businessDays < $days) {
             $newTimestamp = $this->adjustTimestampDays($time, $i);
             
-            if($this->isBusinessDay($newTimestamp) === true) {
+            if ($this->isBusinessDay($newTimestamp) === true) {
                 $businessDays++;
             }
             
@@ -246,7 +246,7 @@ class Shipdate extends AbstractHelper
         return $time + ($days * 86400);
     }
     
-    public function getDateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
+    public function getDateDifference($date_1, $date_2, $differenceFormat = '%a')
     {
         $datetime1 = date_create($date_1);
         $datetime2 = date_create($date_2);
@@ -272,11 +272,11 @@ class Shipdate extends AbstractHelper
         // pull the existing order delivery dates
         $data = $connection->fetchRow($select);
         
-        if(isset($deliveryDates['dispatch_date']) === true) {
+        if (isset($deliveryDates['dispatch_date']) === true) {
             $deliveryDates[''] = $data['dispatch_date'];
         }
         
-        if(isset($deliveryDates['delivery_date']) === true) {
+        if (isset($deliveryDates['delivery_date']) === true) {
             $deliveryDates = $data['delivery_date'];
         }
         
@@ -286,7 +286,7 @@ class Shipdate extends AbstractHelper
     public function updateDeliveryDates($order)
     {
         // New orders don't need updated delivery dates
-        if(!$order->getEntityId()) {
+        if (!$order->getEntityId()) {
             return;
         }
         
@@ -300,9 +300,11 @@ class Shipdate extends AbstractHelper
         $data = $connection->fetchRow($select);
         
         // get the number of days since the order was created
-        $daysAfterCreate = $this->getDateDifference( $order->getCreatedAt(), date('Y-m-d') );
+        $daysAfterCreate = $this->getDateDifference($order->getCreatedAt(), date('Y-m-d'));
         
-        if($daysAfterCreate == 0 || isset($data['dispatch_date']) === false || isset($data['delivery_date']) === false) {
+        if ($daysAfterCreate == 0 ||
+            isset($data['dispatch_date']) === false ||
+            isset($data['delivery_date']) === false) {
             return;
         }
         
@@ -359,7 +361,7 @@ class Shipdate extends AbstractHelper
         ];
 
         foreach ($tracksCollection->getItems() as $track) {
-            switch($track->getTitle()) {
+            switch ($track->getTitle()) {
                 case "Federal Express":
                     $trackingPath = "https://www.fedex.com/Tracking?tracknumbers=";
                     break;
@@ -371,7 +373,7 @@ class Shipdate extends AbstractHelper
                     break;
             }
             
-            if($trackingPath) {
+            if ($trackingPath) {
                 $result['tracking_provider'] = $track->getTitle();
                 $result['tracking_number'] = $track->getTrackNumber();
                 $result['tracking_url'] = $trackingPath . $track->getTrackNumber();
@@ -384,34 +386,35 @@ class Shipdate extends AbstractHelper
         return $result;
     }
     
-    protected function addUpdateComment($order, $changes) {
-       $comment = "Delivery dates updated: ";
+    protected function addUpdateComment($order, $changes)
+    {
+        $comment = "Delivery dates updated: ";
        
-       if (isset($changes['dispatch_date']) === true) {
-           $comment .= " shipping " . date("F j, Y", strtotime($changes['dispatch_date'])) . " ";
-       }
+        if (isset($changes['dispatch_date']) === true) {
+            $comment .= " shipping " . date("F j, Y", strtotime($changes['dispatch_date'])) . " ";
+        }
        
-       if (isset($changes['delivery_date']) === true) {
-           $comment .= " estimated delivery on " . date("F j, Y", strtotime($changes['delivery_date']));
-       }
+        if (isset($changes['delivery_date']) === true) {
+            $comment .= " estimated delivery on " . date("F j, Y", strtotime($changes['delivery_date']));
+        }
        
-       try {
-           if ($order->canComment()) {
-               $history = $this->orderHistoryFactory->create()
+        try {
+            if ($order->canComment()) {
+                $history = $this->orderHistoryFactory->create()
                    ->setEntityName(\Magento\Sales\Model\Order::ENTITY)
                    ->setComment(
                        __('%1.', $comment)
                    );
 
-               $history->setIsCustomerNotified(false)
+                $history->setIsCustomerNotified(false)
                        ->setIsVisibleOnFront(false);
 
-               $order->addStatusHistory($history);
-               $this->orderRepository->save($order);
-           }
-       } catch (NoSuchEntityException $exception) {
-           $this->logger->error($exception->getMessage());
-       }
+                $order->addStatusHistory($history);
+                $this->orderRepository->save($order);
+            }
+        } catch (NoSuchEntityException $exception) {
+            $this->logger->error($exception->getMessage());
+        }
     }
 
     /**

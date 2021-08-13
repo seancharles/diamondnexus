@@ -37,11 +37,11 @@ class AddOrderVars implements ObserverInterface
         
         $deliveryDates = $this->shipdateHelper->getDeliveryDates($order);
         
-        if(isset($deliveryDates['dispatch_date']) === true) {
+        if (isset($deliveryDates['dispatch_date']) === true) {
             $transport['dispatch_date'] = $deliveryDates['dispatch_date'];
         }
         
-        if(isset($deliveryDates['delivery_date']) === true) {
+        if (isset($deliveryDates['delivery_date']) === true) {
             $transport['delivery_date'] = $deliveryDates['delivery_date'];
         }
     }
