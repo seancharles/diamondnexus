@@ -39,5 +39,7 @@ class OrderPlaceAfter implements ObserverInterface
         }
         $this->session->unsStatus();
         $this->session->unsIsExchange();
+        $this->session->unsSalesPersonId();
+        $this->session->unsOrderId();
     }
 }

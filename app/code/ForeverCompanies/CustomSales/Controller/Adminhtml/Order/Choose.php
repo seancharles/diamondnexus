@@ -3,24 +3,22 @@
 namespace ForeverCompanies\CustomSales\Controller\Adminhtml\Order;
 
 use Magento\Backend\App\Action;
+use Magento\Backend\Model\Session as AdminSession;
 
 class Choose extends Action
 {
-    /**
-     * @inheritDoc
-     */
+    protected $session;
+    
+    public function __construct(AdminSession $adminS)
+    {
+        $this->session = $adminS;
+    }
+    
     public function execute()
     {
-        $refererUrl = $this->_redirect->getRefererUrl();
-        $salesPersonString = stristr($refererUrl, 'status/');
-        $salesPersonString = str_replace('status/', '', $salesPersonString);
-        $position = strpos($salesPersonString, "/");
-        $status = substr($salesPersonString, 0, $position);
-        $resultRedirect = $this->resultRedirectFactory->create();
-        $resultRedirect->setPath('sales/order_create/index', [
-            'sales_person_id' => $this->getRequest()->getParam('id'),
-            'status' => $status
-        ]);
+        $this->session->setSalesPersonId($this->getRequest()->getParam('id'));
+        $this->session->setStatus($this->getRequest()->getParam('status'));
+        $resultRedirect->setPath('sales/order_create/index');
         return $resultRedirect;
     }
 }
