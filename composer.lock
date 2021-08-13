@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f316afdd39141fea5bbadf1b76912859",
+    "content-hash": "ad78f928849d42cd49c6e6076e80f0a4",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -1856,6 +1856,7 @@
                 }
             ],
             "description": "Guzzle6 transport for Vault PHP client",
+            "abandoned": true,
             "time": "2019-03-10T06:17:37+00:00"
         },
         {
@@ -8811,6 +8812,11 @@
                 "magento/module-theme": "101.1.*"
             },
             "type": "magento2-module",
+            "extra": {
+                "patches_applied": {
+                    "Disable Modules Output": "app/code/ForeverCompanies/CustomAdmin/Setup/Patch/moduleBackendDisable.patch"
+                }
+            },
             "autoload": {
                 "files": [
                     "registration.php"
@@ -25514,11 +25520,6 @@
         {
             "name": "shipperhq/module-shipper",
             "version": "20.43.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/shipperhq/module-shipper.git",
-                "reference": "c9c47129ddeabfba33e891740fbe07f710475346"
-            },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/shipperhq/module-shipper/zipball/c9c47129ddeabfba33e891740fbe07f710475346",
@@ -27487,6 +27488,39 @@
                 }
             ],
             "time": "2021-06-06T09:51:56+00:00"
+        },
+        {
+            "name": "taxjar/module-taxjar",
+            "version": "1.6.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/taxjar/taxjar-magento2-extension.git",
+                "reference": "e4dcd997af14287a92429e590c79e43860796100"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/taxjar/taxjar-magento2-extension/zipball/e4dcd997af14287a92429e590c79e43860796100",
+                "reference": "e4dcd997af14287a92429e590c79e43860796100",
+                "shasum": ""
+            },
+            "require": {
+                "magento/framework": "^100.1.0|^101.0.0|^102.0.0|^103.0.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Taxjar\\SalesTax\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "TaxJar Sales Tax Module for Magento 2",
+            "time": "2021-07-08T19:06:53+00:00"
         },
         {
             "name": "tedivm/jshrink",

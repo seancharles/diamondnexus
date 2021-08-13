@@ -434,8 +434,10 @@ return [
         'ForeverCompanies_LooseStonesGrid' => 1,
         'ForeverCompanies_LooseStonesQuery' => 1,
         'ForeverCompanies_Migration' => 1,
+        'ForeverCompanies_PhoneValidation' => 1,
         'ForeverCompanies_ProductUrlPrefix' => 1,
         'ForeverCompanies_Profile' => 1,
+        'ForeverCompanies_ReturnAndWarrantyWarnings' => 1,
         'ForeverCompanies_Salesforce' => 1,
         'Mageplaza_Core' => 1,
         'ForeverCompanies_StoneEmail' => 1,
@@ -462,6 +464,7 @@ return [
         'ShipperHQ_Logger' => 1,
         'ForeverCompanies_CustomApi' => 1,
         'Signifyd_Connect' => 1,
+        'Taxjar_SalesTax' => 1,
         'Tealium_Tags' => 1,
         'Temando_ShippingRemover' => 1,
         'Vertex_Tax' => 0,
@@ -742,24 +745,24 @@ return [
             'base' => [
                 'design' => [
                     'head' => [
-                        'includes' => '',
-                    ],
-                ],
+                        'includes' => ''
+                    ]
+                ]
             ],
             'www_fa' => [
                 'design' => [
                     'head' => [
-                        'includes' => '',
-                    ],
-                ],
+                        'includes' => ''
+                    ]
+                ]
             ],
             'www_1215' => [
                 'design' => [
                     'head' => [
-                        'includes' => '',
-                    ],
-                ],
-            ],
+                        'includes' => ''
+                    ]
+                ]
+            ]
         ],
         'website' => [
 
