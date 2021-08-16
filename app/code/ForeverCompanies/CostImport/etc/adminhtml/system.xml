@@ -7,7 +7,7 @@
                  showInWebsite="1" showInStore="1">
             <label>Loose Stone Cost/Price Import</label>
             <tab>forevercompanies</tab>
-             <resource>ForeverCompanies_Gifts::config</resource>
+             <resource>ForeverCompanies_CostImport::config</resource>
              
             <group id="cost_import" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1"
                    showInStore="1">

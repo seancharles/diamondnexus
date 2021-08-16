@@ -2,6 +2,6 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
         <add id="ForeverCompanies_LooseStonesGrid::home" title="Loose Diamonds" module="ForeverCompanies_LooseStonesGrid" 
-        	sortOrder="1000" parent="Magento_Catalog::catalog_products" resource="Magento_Catalog::products" action="stones"/>
+        	sortOrder="1000" parent="Magento_Catalog::catalog_products" resource="ForeverCompanies_LooseStonesGrid::home" action="stones"/>
     </menu>
 </config>
