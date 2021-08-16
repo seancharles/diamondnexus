@@ -15,6 +15,13 @@
             <resource ref="ForeverCompanies_CustomApi::extsalesorderupdate"/>
         </resources>
     </route>
+    <route method="PUT" url="/V1/forevercompanies-customapi/extsalesorderupdate">
+        <service class="ForeverCompanies\CustomApi\Api\ExtSalesOrderUpdateManagementInterface"
+                 method="putExtSalesOrderUpdate"/>
+        <resources>
+            <resource ref="ForeverCompanies_CustomApi::extsalesorderupdate"/>
+        </resources>
+    </route>
     <route method="POST" url="/V1/forevercompanies-customapi/reindexproducts">
         <service class="ForeverCompanies\CustomApi\Api\ReindexInterface"
                  method="reindexProducts"/>
