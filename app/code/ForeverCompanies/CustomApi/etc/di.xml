@@ -26,10 +26,12 @@
         <plugin name="ForeverCompanies_CustomApi_Plugin_Adminhtml_Order_View" sortOrder="10"
                 type="ForeverCompanies\CustomApi\Plugin\Adminhtml\Order\View"/>
     </type>
+	<!--  
     <type name="Magento\Catalog\Ui\DataProvider\Product\Modifier\Attributes">
         <plugin name="ForeverCompanies_CustomApi_Plugin_Ui_DataProvider_Product_Modifier_Attributes" sortOrder="10"
                 type="ForeverCompanies\CustomApi\Plugin\Ui\DataProvider\Product\Modifier\Attributes"/>
     </type>
+    -->
     <type name="Magento\CatalogGraphQl\Model\Resolver\Products\DataProvider\ProductSearch">
         <plugin name="ForeverCompanies_CustomApi_Plugin_Model_Resolver_Products_DataProvider_ProductSearch" sortOrder="10"
                 type="ForeverCompanies\CustomApi\Plugin\Model\Resolver\Products\DataProvider\ProductSearch"/>
