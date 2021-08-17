@@ -78,9 +78,7 @@ class AdjiconAdditionalImages extends Command
                 FROM
                     m1_adjicon_image i
                 INNER JOIN
-                    catalog_product_entity e ON i.product_id = e.entity_id
-                AND
-                    e.entity_id NOT IN(56053, 56057, 56065);"
+                    catalog_product_entity e ON i.product_id = e.entity_id;"
             );
 
             foreach ($adjiconImageList as $imageDetail) {
