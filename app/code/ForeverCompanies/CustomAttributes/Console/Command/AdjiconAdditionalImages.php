@@ -10,6 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Filesystem\DirectoryList;
+use Magento\Eav\Model\Config;
 
 class AdjiconAdditionalImages extends Command
 {
@@ -42,6 +43,7 @@ class AdjiconAdditionalImages extends Command
     protected $productRepository;
     protected $fileSystem;
     protected $connection;
+    protected $eavConfig;
 
     /**
      * TagMatchingImages constructor.
@@ -54,14 +56,15 @@ class AdjiconAdditionalImages extends Command
         State $state,
         ResourceConnection $resourceConnection,
         ProductRepositoryInterface $productRepository,
-        DirectoryList $fileSystem
+        DirectoryList $fileSystem,
+        Config $eavConfig
     ) {
         $this->state = $state;
         $this->resourceConnection = $resourceConnection;
         $this->productRepository = $productRepository;
         $this->fileSystem = $fileSystem;
-
         $this->connection = $this->resourceConnection->getConnection();
+        $this->eavConfig = $eavConfig;
 
         parent::__construct($this->name);
     }
@@ -76,7 +79,16 @@ class AdjiconAdditionalImages extends Command
             $output->writeln("Running additional images command...");
 
             $basePath = $this->fileSystem->getRoot();
+
             $productList = [];
+            $metalOptionMap = [];
+
+            $metalTypeAttribute = $this->eavConfig->getAttribute('catalog_product', 'metal_type');
+            $metalTypeOptions = $metalTypeAttribute->getSource()->getAllOptions();
+
+            foreach($metalTypeOptions as $metalOption) {
+                $metalOptionMap[$metalOption['value']] = $metalOption['label'];
+            }
 
             // join on catalog product entity to prevent from loading products that do not exist.
             $adjiconImageList = $this->connection->fetchAll(
@@ -92,11 +104,9 @@ class AdjiconAdditionalImages extends Command
 
             foreach ($adjiconImageList as $imageDetail) {
                 $productId = $imageDetail['product_id'];
+                $file = $imageDetail['file'];
 
-                $productList[$productId][] = [
-                    'file' => $imageDetail['file'],
-                    'option_id' => $imageDetail['option_id']
-                ];
+                $productList[$productId][$file] = $imageDetail['option_id'];
             }
 
             foreach($productList as $productId => $imagesList) {
@@ -107,36 +117,11 @@ class AdjiconAdditionalImages extends Command
 
                 $galleryEntries = $product->getMediaGalleryEntries();
 
-                foreach($imagesList as $imageDetail) {
-                    $path = $basePath . "/pub/media/upload/" . $imageDetail['file'];
+                foreach($imagesList as $imageFile => $imageOptionId) {
+                    $path = $basePath . "/pub/media/adjconfigurable/" . $imageFile;
 
-                    $imageExists = false;
-
-                    // get the current images name
-                    $currentFilename = basename($imageDetail['file'], ".jpg");
-                    $currentFileMatchName = explode("_", $currentFilename);
-
-                    if (isset($currentFileMatchName[0]) === true && isset($currentFileMatchName[1]) === true) {
-                        foreach ($galleryEntries as $key => $image) {
-                            $matchFilename = basename($image->getFile(), ".jpg");
-                            $matchFileParts = explode("_", $matchFilename);
-
-                            if (isset($matchFileParts[0]) === true && isset($matchFileParts[1]) === true) {
-                                if ($currentFileMatchName[0] == $matchFileParts[0] && $currentFileMatchName[1] == $matchFileParts[1]) {
-                                    $imageExists = true;
-                                }
-                            }
-
-                            if (file_exists($path) === true) {
-                                if ($imageExists !== true) {
-                                    $product->addImageToMediaGallery($path, array('image'), false, false);
-                                } else {
-                                    $output->writeln("File already exists: " . $path);
-                                }
-                            } else {
-                                $output->writeln("File not found: " . $path);
-                            }
-                        }
+                    if (file_exists($path) === true) {
+                        $product->addImageToMediaGallery($path, array('image'), false, false);
                     }
                 }
 
@@ -144,12 +129,11 @@ class AdjiconAdditionalImages extends Command
                 $galleryEntries = $product->getMediaGalleryEntries();
 
                 foreach ($galleryEntries as $key => $image) {
-                    $params = [];
+                    $matchFilename = basename($image->getFile());
 
-                    $filename = basename($image->getFile(), ".jpg");
-                    $fileParts = explode("_", $filename);
-
-                    //$image->setLabel('test');
+                    if (isset($productList[$productId][$matchFilename]) === true) {
+                        $image->setLabel($metalOptionMap[$imageOptionId]);
+                    }
                 }
 
                 if (count($galleryEntries) > 0) {
