@@ -141,7 +141,6 @@ class AdjiconAdditionalImages extends Command
                 }
 
                 $product->save();
-                exit;
             }
 
         } catch (\Exception $e) {
