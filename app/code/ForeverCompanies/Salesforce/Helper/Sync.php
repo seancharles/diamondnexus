@@ -381,7 +381,7 @@ class Sync extends AbstractHelper
                         if (isset($postData->firstname) == true) {
                             $leadData['LastName'] = $postData->lastname;
                         } else {
-                            $leadData['FirstName'] = $leadModel->getEmail();
+                            $leadData['LastName'] = $leadModel->getEmail();
                         }
 
                         // get text representation of form identifier
