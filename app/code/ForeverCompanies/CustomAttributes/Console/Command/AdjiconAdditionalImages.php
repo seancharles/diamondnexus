@@ -61,6 +61,7 @@ class AdjiconAdditionalImages extends Command
 
             $basePath = $this->fileSystem->getRoot();
 
+            $imageGalleryList = [];
             $productList = [];
             $metalOptionMap = [];
 
@@ -96,11 +97,25 @@ class AdjiconAdditionalImages extends Command
 
                 $galleryEntries = $product->getMediaGalleryEntries();
 
+                // convert image gallery entries to array
+                if(count($galleryEntries) > 0) {
+                    foreach($galleryEntries as $image) {
+                        $imageGalleryList[basename($image->getFile())] = 1;
+                    }
+                }
+
                 foreach($imagesList as $imageFile => $imageOptionId) {
                     $path = $basePath . "/pub/media/adjconfigurable/" . $imageFile;
 
-                    if (file_exists($path) === true) {
-                        $product->addImageToMediaGallery($path, array('image'), false, false);
+                    // only add the image if it's not in the gallery list
+                    if(isset($imageGalleryList[$imageFile]) === false) {
+                        if (file_exists($path) === true) {
+                            $product->addImageToMediaGallery($path, array('image'), false, false);
+                        } else {
+                            $output->writeln("Image doesn't exist: " . $path);
+                        }
+                    } else {
+                        $output->writeln("Image already exists, skipping" . $path);
                     }
                 }
 
