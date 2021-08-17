@@ -14,25 +14,6 @@ use Magento\Eav\Model\Config;
 
 class AdjiconAdditionalImages extends Command
 {
-    protected array $metalTypes = [
-        '18K White Gold',
-        '18K Yellow Gold',
-        '14K White Gold',
-        '14K Yellow Gold',
-        '14K Rose Gold'
-    ];
-
-    protected array $uiRoles = [
-        'Default',
-        'Hover',
-        'Base',
-        'Small',
-        'Swatch',
-        'Thumbnail',
-        'Matching-Hover',
-        'Matching-Default'
-    ];
-
     /**
      * @var string
      */
@@ -132,7 +113,8 @@ class AdjiconAdditionalImages extends Command
                     $matchFilename = basename($image->getFile());
 
                     if (isset($productList[$productId][$matchFilename]) === true) {
-                        $image->setLabel($metalOptionMap[$imageOptionId]);
+                        $optionId = $productList[$productId][$matchFilename];
+                        $image->setLabel($metalOptionMap[$optionId]);
                     }
                 }
 
