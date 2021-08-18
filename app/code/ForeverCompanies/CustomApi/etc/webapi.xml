@@ -1,9 +1,16 @@
 <?xml version="1.0" ?>
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
-    <route method="GET" url="/V1/forevercompanies-customapi/extsalesorderupdate">
+    <route method="GET" url="/V1/forevercompanies-customapi/extsalesorderlist">
         <service class="ForeverCompanies\CustomApi\Api\ExtSalesOrderUpdateManagementInterface"
-                 method="getExtSalesOrderUpdate"/>
+                 method="getExtSalesOrderList"/>
+        <resources>
+            <resource ref="ForeverCompanies_CustomApi::extsalesorderupdate"/>
+        </resources>
+    </route>
+    <route method="POST" url="/V1/forevercompanies-customapi/extsalesordercreate">
+        <service class="ForeverCompanies\CustomApi\Api\ExtSalesOrderUpdateManagementInterface"
+                 method="postExtSalesOrderCreate"/>
         <resources>
             <resource ref="ForeverCompanies_CustomApi::extsalesorderupdate"/>
         </resources>
@@ -11,13 +18,6 @@
     <route method="POST" url="/V1/forevercompanies-customapi/extsalesorderupdate">
         <service class="ForeverCompanies\CustomApi\Api\ExtSalesOrderUpdateManagementInterface"
                  method="postExtSalesOrderUpdate"/>
-        <resources>
-            <resource ref="ForeverCompanies_CustomApi::extsalesorderupdate"/>
-        </resources>
-    </route>
-    <route method="PUT" url="/V1/forevercompanies-customapi/extsalesorderupdate">
-        <service class="ForeverCompanies\CustomApi\Api\ExtSalesOrderUpdateManagementInterface"
-                 method="putExtSalesOrderUpdate"/>
         <resources>
             <resource ref="ForeverCompanies_CustomApi::extsalesorderupdate"/>
         </resources>
@@ -32,13 +32,6 @@
     <route method="POST" url="/V1/forevercompanies-customapi/reindexcategories">
         <service class="ForeverCompanies\CustomApi\Api\ReindexInterface"
                  method="reindexCategories"/>
-        <resources>
-            <resource ref="ForeverCompanies_CustomApi::extsalesorderupdate"/>
-        </resources>
-    </route>
-    <route method="PUT" url="/V1/forevercompanies-customapi/extsalesorderupdate/:entityId">
-        <service class="ForeverCompanies\CustomApi\Api\ExtSalesOrderUpdateManagementInterface"
-                 method="putExtSalesOrderUpdate"/>
         <resources>
             <resource ref="ForeverCompanies_CustomApi::extsalesorderupdate"/>
         </resources>
