@@ -254,7 +254,7 @@ class StoneImport
                 "Weight",
                 "Color",
                 "Clarity",
-                "Vendor Cut Grade",
+                "Cut Grade",
                 "Length",
                 "Width"
             );
@@ -581,6 +581,8 @@ class StoneImport
                         'qty' => 1
                     )
                 );
+                
+                $product->setTaxClassId(2);
              
                 $success = $this->_applyCsvRowToProduct($product, $csvArr);
                 
@@ -589,7 +591,6 @@ class StoneImport
                     // 1215 storefront visibility.
                     $product->setStoreId(12)->setVisibility(4)->save();
                 }
-                
                 
                 unset($imageFileName);
                 unset($imageResult);
@@ -610,7 +611,7 @@ class StoneImport
         // These have been checked as required fields.
         $product->setColor($this->colorMap[$csvArr['Color']]);
         $product->setClarity($this->clarityMap[$csvArr['Clarity']]);
-        $product->setCutGrade($this->cutGradeMap[strtolower($csvArr['Vendor Cut Grade'])]);
+        $product->setCutGrade($this->cutGradeMap[strtolower($csvArr['Cut Grade'])]);
         $product->setShape($this->shapeMap[$csvArr['Shape Name']]);
         $product->setSupplier($this->supplierMap[$csvArr['Supplier']]);
         
@@ -630,8 +631,8 @@ class StoneImport
         if (isset($this->colorSortMap[$csvArr['Color']])) {
             $product->setColorSort($this->colorSortMap[$csvArr['Color']]);
         }
-        if (isset($this->cutGradeSortMap[strtolower($csvArr['Vendor Cut Grade'])])) {
-            $product->setCutGradeSort($this->cutGradeSortMap[strtolower($csvArr['Vendor Cut Grade'])]);
+        if (isset($this->cutGradeSortMap[strtolower($csvArr['Cut Grade'])])) {
+            $product->setCutGradeSort($this->cutGradeSortMap[strtolower($csvArr['Cut Grade'])]);
         }
         if (isset($this->shapePopMap[$csvArr['Shape Name']])) {
             $product->setShapePopSort($this->shapePopMap[$csvArr['Shape Name']]);
