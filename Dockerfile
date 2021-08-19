@@ -1,6 +1,9 @@
 FROM php:7.4.13-fpm
 LABEL maintainer="Forever Companies"
 
+RUN ln -snf /usr/share/zoneinfo/America/Chicago /etc/localtime
+RUN echo America/Chicago > /etc/timezone
+
 RUN apt-get update && apt-get install sudo
 RUN groupadd -g 1000 admin
 RUN echo "%admin	ALL=(ALL:ALL)	NOPASSWD: ALL" >> /etc/sudoers
