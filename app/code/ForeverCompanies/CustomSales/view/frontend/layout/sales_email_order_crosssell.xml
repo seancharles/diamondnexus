@@ -9,7 +9,7 @@
     <update handle="sales_email_order_renderers"/>
     <update handle="sales_email_item_price"/>
     <body>
-        <block class="Magento\Sales\Block\Order\Email\Items" name="items" template="ForeverCompanies_CustomSales::email/cross.phtml" cacheable="false">
+        <block class="ForeverCompanies\CustomSales\Block\Order\Email\Items" name="items" template="ForeverCompanies_CustomSales::email/cross.phtml" cacheable="false">
             <block class="Magento\Framework\View\Element\RendererList" name="sales.email.order.renderers" as="renderer.list"/>
             <block class="Magento\Sales\Block\Order\Totals" name="order_totals" template="Magento_Sales::order/totals.phtml">
                 <arguments>
