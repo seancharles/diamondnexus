@@ -253,7 +253,7 @@ class StoneImport
                 "Weight",
                 "Color",
                 "Clarity",
-                "Cut Grade",
+                "Vendor Cut Grade",
                 "Length",
                 "Width"
             );
@@ -272,19 +272,18 @@ class StoneImport
             );
             
             $this->cutGradeMap = array(
-                "Excellent" => "2876",
-                "Ex" => "2876",
-                "Not Specified" => "3076",
-                "Ideal" => "2877",
-                "Very Good" => "2878",
-                "Very good" => "2878",
-                "Good" => "2879",
+                "excellent" => "2876",
+                "ex" => "2876",
+                "not specified" => "3076",
+                "ideal" => "2877",
+                "very good" => "2878",
+                "good" => "2879",
                 // TODO: Create this attribute option and place its value here.
-                "Fair" => "",
+                "fair" => "",
                 // TODO: Remove. Adding to get through import.
-                "G" => "",
+                "g" => "",
                 "-" => "",
-                "None" => ""
+                "none" => ""
             );
             
             $this->colorMap = array(
@@ -610,7 +609,7 @@ class StoneImport
         // These have been checked as required fields.
         $product->setColor($this->colorMap[$csvArr['Color']]);
         $product->setClarity($this->clarityMap[$csvArr['Clarity']]);
-        $product->setCutGrade($this->cutGradeMap[$csvArr['Cut Grade']]);
+        $product->setCutGrade($this->cutGradeMap[strtolower($csvArr['Vendor Cut Grade'])]);
         $product->setShape($this->shapeMap[$csvArr['Shape Name']]);
         $product->setSupplier($this->supplierMap[$csvArr['Supplier']]);
         
@@ -630,8 +629,8 @@ class StoneImport
         if (isset($this->colorSortMap[$csvArr['Color']])) {
             $product->setColorSort($this->colorSortMap[$csvArr['Color']]);
         }
-        if (isset($this->cutGradeSortMap[$csvArr['Cut Grade']])) {
-            $product->setCutGradeSort($this->cutGradeSortMap[$csvArr['Cut Grade']]);
+        if (isset($this->cutGradeSortMap[strtolower($csvArr['Vendor Cut Grade'])])) {
+            $product->setCutGradeSort($this->cutGradeSortMap[strtolower($csvArr['Vendor Cut Grade'])]);
         }
         if (isset($this->shapePopMap[$csvArr['Shape Name']])) {
             $product->setShapePopSort($this->shapePopMap[$csvArr['Shape Name']]);
