@@ -1,0 +1,89 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// phpcs:disable Magento2.Templates.ThisInTemplate
+
+/** @var $block \Magento\Sales\Block\Order\Email\Items */
+
+$_order = $block->getOrder();
+
+$_buffer = null;
+$_product = null;
+$_orderHasBand = false;
+
+if ($_order) {
+
+    $itemList = $_order->getAllItems();
+
+    // look for a matching band or wedding band
+    foreach($itemList as $item)
+    {
+        if( $item->getAttributeSetId() == 27 || substr($item->getSku(), 0, 4) == "LRWB" )
+        {
+            // do not include cross-sells if they purchased a band
+            $_orderHasBand = true;
+            break;
+        }
+    }
+
+    foreach($itemList as $item)
+    {
+        if( substr($item->getSku(), 0, 4) == "LREN" ) {
+            $_product = $item;
+            break;
+        }
+    }
+    
+    if( $_product && $_product->getId() > 0 && $_orderHasBand == false )
+    {
+        $_buffer .= "show cross sells for " . $_product->getName() . ", sku: " . $_product->getSku();
+        
+        $crossProducts = $this->getCrossSellProducts($_product->getProduct());
+        
+        //$_buffer .= "class: " . get_class($crossProducts);
+        
+        // do not send emails with no matching bands
+        if( isset($crossProducts) === true && count($crossProducts) > 0 ) {
+            foreach($crossProducts as $bandEnhancer) {
+                $_buffer .= "name: ". $bandEnhancer->getName();
+            }
+        }
+        
+        /*
+            $metalType = $productModel->getAttributeText('metal_type');
+            
+            // do not send emails with no matching bands
+            if( count($crossProducts) > 0 )
+            {
+                switch(count($crossProducts))
+                {
+                    case 1:
+                        $_bandHTML = $this->formatHeadlineHTML("Make it a set!");
+                        $_bandHTML .= $this->formatBandHTML($crossProducts[0]['entity_id'], $configurableId, $metalType);
+                        break;
+                    
+                    case 2:
+                        $_bandHTML = $this->formatHeadlineHTML("Make it a set!");
+                        $_bandHTML .= $this->formatBandHTML($crossProducts[0]['entity_id'], $configurableId, $metalType);
+                        $_bandHTML .= $this->formatBandHTML($crossProducts[1]['entity_id'], $configurableId, $metalType);
+                        break;
+                    
+                    case 3:
+                        $_bandHTML = $this->formatHeadlineHTML("Make it a set!");
+                        $_bandHTML .= $this->formatBandHTML($crossProducts[0]['entity_id'], $configurableId, $metalType);
+                        $_bandHTML .= $this->formatBandHTML($crossProducts[1]['entity_id'], $configurableId, $metalType);
+                        $_bandHTML .= $this->formatBandHTML($crossProducts[2]['entity_id'], $configurableId, $metalType);
+                }
+                
+                echo $_bandHTML;
+            }
+        */
+    }
+    
+    echo $_buffer;
+}
+
+?>
