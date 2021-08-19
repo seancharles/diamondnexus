@@ -10,17 +10,24 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Framework\App\State;
 use ForeverCompanies\LinkProduct\Model\Accessory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Catalog\Model\Product\Attribute\Repository;
+use Magento\Framework\Url;
 
 class Items extends \Magento\Sales\Block\Order\Email\Items
 {
     protected $state;
     protected $accessory;
     protected $productRepository;
+    protected $attributeRepository;
+    protected $urlInterface;
 
     /**
      * @param Context $context
-     * @param array $data
      * @param OrderRepositoryInterface|null $orderRepository
+     * @param State $state
+     * @param Accessory $accessory
+     * @param ProductRepositoryInterface $productRepository
+     * @param array $data
      */
     public function __construct(
         Context $context,
@@ -28,6 +35,8 @@ class Items extends \Magento\Sales\Block\Order\Email\Items
         State $state,
         Accessory $accessory,
         ProductRepositoryInterface $productRepository,
+        Repository $attributeRepository,
+        Url $url,
         array $data = []
     ) {
         parent::__construct($context, $data, $orderRepository);
@@ -35,31 +44,46 @@ class Items extends \Magento\Sales\Block\Order\Email\Items
         $this->state = $state;
         $this->accessory = $accessory;
         $this->productRepository = $productRepository;
+        $this->attributeRepository = $attributeRepository;
+        $this->urlInterface = $url;
     }
     
-    public function getCrossSellProducts($product) {
+    public function getCrossSellProducts ($product, $metalOpionId)
+    {
         $result = [];
+        $metalMap = [];
+        $metalType = "14k White Gold";
+
+        if ($metalOpionId > 0) {
+            $metalOptions = $this->attributeRepository->get('metal_type')->getOptions();
+
+            foreach($metalOptions as $metalOption) {
+                $metalMap[$metalOption->getValue()] = strtolower($metalOption->getLabel());
+            }
+
+            if (isset($metalMap[$metalOpionId]) === true) {
+                $metalType = $metalMap[$metalOpionId];
+            }
+        }
 
         $crossSellProductList = $this->accessory->getAccessoryProductIds($product);
 
-        foreach($crossSellProductList as $crossSellProductId) {
+        foreach ($crossSellProductList as $crossSellProductId) {
             $images = [];
             $product = $this->productRepository->getById($crossSellProductId);
-
-            $metalType = $product->getResource()->getAttribute('metal_type')->getStoreLabel();
-
-            if(!$metalType) {
-                $metalType = "14k White Gold";
-            }
-
+            $product->setStoreId(0);
             $imageGallery = $product->getMediaGalleryImages();
 
-            foreach($imageGallery as $image) {
+            foreach ($imageGallery as $image) {
                 $label = strtolower($image->getLabel());
 
                 if(strlen($label) > 0) {
-                    if(strpos($label,"default") !== false) {
-                        if(strpos($label, $metalType) !== false) {
+                    if (strpos($label, "default") !== false) {
+                        if ($metalOpionId > 0) {
+                            if (strpos($label, $metalMap[$metalOpionId]) !== false) {
+                                $images[] = $image->getUrl();
+                            }
+                        } else {
                             $images[] = $image->getUrl();
                         }
                     }
@@ -75,8 +99,9 @@ class Items extends \Magento\Sales\Block\Order\Email\Items
             $result[] = [
                 'id' => $product->getId(),
                 'name' => $product->getName(),
-                'url' => $product->getProductUrl(true),
-                'image' => $this->formatCloudinaryImagePath($images[0])
+                'url' => $this->urlInterface->getUrl('catalog/product/view', ['id' => $product->getId(), '_nosid' => true]),
+                'image' => $this->formatCloudinaryImagePath($images[0]),
+                'metal_type' => $metalOpionId
             ];
         }
 

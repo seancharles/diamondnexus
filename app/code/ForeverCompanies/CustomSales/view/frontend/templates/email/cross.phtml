@@ -5,7 +5,7 @@
 
     $_product = null;
     $_orderHasBand = false;
-    $_metalType = "14k White Gold";
+    $_metalOptionId = 0;
 ?>
 <?php if ($_order): ?>
 
@@ -27,6 +27,8 @@
         {
             if( substr($item->getSku(), 0, 4) == "LREN" ) {
                 $_product = $item;
+                $configOptions = $item->getBuyRequest()->getSuperAttribute();
+                $metalOpionId = $configOptions[145];
                 break;
             }
 
@@ -34,7 +36,7 @@
         ?>
     
     <?php if ($_product && $_product->getId() > 0 && $_orderHasBand == false ): ?>
-        <?php $crossProducts = $this->getCrossSellProducts($_product->getProduct()); ?>
+        <?php $crossProducts = $this->getCrossSellProducts($_product->getProduct(), $metalOpionId); ?>
         <table widht="100%">
             <tr>
             <?php if (count($crossProducts) > 0): ?>
