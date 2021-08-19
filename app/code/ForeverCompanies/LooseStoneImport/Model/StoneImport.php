@@ -159,6 +159,7 @@ class StoneImport
                 "Very Good" => "200",
                 "Excellent" => "300",
                 "Ideal" => "400",
+                "Super Ideal" => "500",
                 // TODO: Remove. Adding to get through import.
                 "G" => ""
             );
