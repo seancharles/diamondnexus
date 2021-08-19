@@ -1,6 +1,8 @@
 var config = {
-    // paths: {
-    //     DOMPurify: 'forevercompaniesjs/dompurify/dompurify.min.js',
-    // },
+    map: {
+        '*': {
+            'jquery/jquery.mobile.custom': 'js/jquery/jquery.mobile.custom',
+        },
+    },
     deps: ['js/script'],
 }

@@ -82,6 +82,12 @@
                 <item name="UpdateProductWeights" xsi:type="object">
                     ForeverCompanies\CustomAttributes\Console\Command\UpdateProductWeights
                 </item>
+                <item name="FixRingCustomizationType" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\FixRingCustomizationType
+                </item>
+                <item name="AdjiconAdditionalImages" xsi:type="object">
+                    ForeverCompanies\CustomAttributes\Console\Command\AdjiconAdditionalImages
+                </item>
             </argument>
         </arguments>
     </type>

@@ -57,7 +57,7 @@ class ExtSalesOrderUpdateManagement implements ExtSalesOrderUpdateManagementInte
     /**
      * {@inheritdoc}
      */
-    public function getExtSalesOrderUpdate($searchCriteria)
+    public function getExtSalesOrderList($searchCriteria)
     {
         $collection = $this->collectionFactory->create();
         $this->collectionProcessor->process($searchCriteria, $collection);
@@ -72,7 +72,7 @@ class ExtSalesOrderUpdateManagement implements ExtSalesOrderUpdateManagementInte
     /**
      * {@inheritdoc}
      */
-    public function postExtSalesOrderUpdate($orderId, $updatedFields, $flagFishbowlUpdate)
+    public function postExtSalesOrderCreate($orderId, $updatedFields, $flagFishbowlUpdate)
     {
         $this->helper->createNewExtSalesOrder($orderId, $updatedFields, $flagFishbowlUpdate);
         return 'Success';
@@ -81,7 +81,7 @@ class ExtSalesOrderUpdateManagement implements ExtSalesOrderUpdateManagementInte
     /**
      * {@inheritdoc}
      */
-    public function putExtSalesOrderUpdate(int $entityId, bool $flagFishbowlUpdate)
+    public function postExtSalesOrderUpdate(int $entityId, bool $flagFishbowlUpdate)
     {
         return $this->helper->updateExtSalesOrder($entityId, $flagFishbowlUpdate);
     }

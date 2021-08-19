@@ -1,6 +1,8 @@
 var config = {
-
-    deps: [
-        "js/script",
-    ]
-};
+    map: {
+        '*': {
+            'jquery/jquery.mobile.custom': 'js/jquery/jquery.mobile.custom',
+        },
+    },
+    deps: ['js/script'],
+}

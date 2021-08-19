@@ -401,12 +401,12 @@ class TealiumExtendData
 
         // make sure any product values are in an array
         $outputArray["site_section"] = 'checkout';
-        if (isset($pageUrlpaths[2])) {
+        if (isset($pageUrlpaths[2]) && trim($pageUrlpaths[2]) !== "") {
             $outputArray["page_type"] = 'cart';
         } else {
             $outputArray["page_type"] = 'checkout';
         }
-        
+
         $productIds =
         $simpleProductIds =
         $productBrands =

@@ -29,6 +29,7 @@ class StagingApplier
         $this->updateRepository = $updateRepository;
         $this->versionHistory = $versionHistory;
         $this->resourceConnection = $resourceConnection;
+        $this->scopeConfig = $scopeConfig;
     }
 
     /**

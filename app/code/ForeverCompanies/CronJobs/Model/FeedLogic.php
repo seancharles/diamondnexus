@@ -1138,7 +1138,15 @@ class FeedLogic
         $output = fopen($varPathExport. '/base_feed_store_'. $GLOBALS['argvStoreId'] .'.csv', 'w+');
         fputcsv($output, $this->fileheader(), '|', '"');
         foreach ($listing['list'] as $result) {
+            
             if (!empty($result)) {
+                
+               $result['Result'][0] = str_replace("Migration_", "", $result['Result'][0]);
+                
+               if ($result['Result'][0] == "Loose Diamonds") {
+                   continue;
+               }
+                
                 if ($result['Result'][22] != $result['Result'][23] && $result['Result'][21] > 0) {
                     $result['Result'][22] .= "/". $result['Result'][23];
                 } else {
@@ -1147,6 +1155,13 @@ class FeedLogic
                 unset($result['Result'][23]);
                 fputcsv($output, $result['Result'], '|', '"');
                 foreach ($result['Children'] as $childProduct) {
+                    
+                    $childProduct[0] = str_replace("Migration_", "", $childProduct[0]);
+                    
+                    if ($childProduct[0] == "Loose Diamonds") {
+                        continue;
+                    }
+                    
                     if ($childProduct[22] != $childProduct[23] && $childProduct[21] > 0) {
                         $childProduct[22] .= "/". $childProduct[23];
                     } else {

@@ -17,7 +17,7 @@ interface ExtSalesOrderUpdateManagementInterface
      * @param SearchCriteriaInterface $searchCriteria
      * @return \ForeverCompanies\CustomApi\Api\Data\ExtSearchResultsInterface
      */
-    public function getExtSalesOrderUpdate(SearchCriteriaInterface $searchCriteria);
+    public function getExtSalesOrderList(SearchCriteriaInterface $searchCriteria);
 
     /**
      * POST for ExtSalesOrderUpdate api
@@ -26,12 +26,12 @@ interface ExtSalesOrderUpdateManagementInterface
      * @param bool $flagFishbowlUpdate
      * @return string
      */
-    public function postExtSalesOrderUpdate(int $orderId, string $updatedFields, bool $flagFishbowlUpdate);
+    public function postExtSalesOrderCreate(int $orderId, string $updatedFields, bool $flagFishbowlUpdate);
 
     /**
      * @param int $entityId
      * @param bool $flagFishbowlUpdate
      * @return string
      */
-    public function putExtSalesOrderUpdate(int $entityId, bool $flagFishbowlUpdate);
+    public function postExtSalesOrderUpdate(int $entityId, bool $flagFishbowlUpdate);
 }
