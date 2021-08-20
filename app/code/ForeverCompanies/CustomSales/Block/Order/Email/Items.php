@@ -71,7 +71,7 @@ class Items extends \Magento\Sales\Block\Order\Email\Items
         foreach ($crossSellProductList as $crossSellProductId) {
             $images = [];
             $product = $this->productRepository->getById($crossSellProductId);
-            $product->setStoreId(0);
+            $product->setStoreId(1);
             $imageGallery = $product->getMediaGalleryImages();
 
             foreach ($imageGallery as $image) {
@@ -99,7 +99,7 @@ class Items extends \Magento\Sales\Block\Order\Email\Items
             $result[] = [
                 'id' => $product->getId(),
                 'name' => $product->getName(),
-                'url' => $this->urlInterface->getUrl('catalog/product/view', ['id' => $product->getId(), '_nosid' => true]),
+                'url' => $product->getProductUrl(),
                 'image' => $this->formatCloudinaryImagePath($images[0]),
                 'metal_type' => $metalOpionId
             ];
