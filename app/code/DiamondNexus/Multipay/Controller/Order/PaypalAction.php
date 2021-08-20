@@ -11,7 +11,7 @@ use Magento\Framework\Mail\EmailMessage as Message;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\CsrfAwareActionInterface;
-
+use DiamondNexus\Multipay\Helper\Data;
 use DiamondNexus\Multipay\Model\Constant;
 
 class PaypalAction extends Action implements CsrfAwareActionInterface
@@ -26,6 +26,7 @@ class PaypalAction extends Action implements CsrfAwareActionInterface
     protected $mailHelper;
     protected $jsonResult;
     protected $scopeConfig;
+    protected $helper;
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
@@ -36,7 +37,8 @@ class PaypalAction extends Action implements CsrfAwareActionInterface
         \DiamondNexus\Multipay\Model\ResourceModel\Transaction $transaction,
         \ForeverCompanies\Smtp\Helper\Mail $mailHelper,
         JsonFactory $jsonResult,
-        ScopeConfigInterface $scopeConfig
+        ScopeConfigInterface $scopeConfig,
+        Data $helper
     ) {
         $this->customerSession = $customerSession;
         $this->orderRepository = $orderRepository;
@@ -47,6 +49,7 @@ class PaypalAction extends Action implements CsrfAwareActionInterface
         $this->mailHelper = $mailHelper;
         $this->jsonResult = $jsonResult;
         $this->scopeConfig = $scopeConfig;
+        $this->helper = $helper;
 
         parent::__construct($context);
     }
@@ -61,7 +64,7 @@ class PaypalAction extends Action implements CsrfAwareActionInterface
         ];
 
         if ($this->customerSession->isLoggedIn() === true) {
-            $orderId = $this->getRequest()->getParam('order_id');
+            $orderId = (int) $this->getRequest()->getParam('order_id');
 
             if ($orderId > 0) {
                 try {
@@ -69,14 +72,20 @@ class PaypalAction extends Action implements CsrfAwareActionInterface
                     $order = $this->orderRepository->get($orderId);
                     $amountDue = $order->getGrandTotal() - $order->getTotalPaid();
                     $customerId = $this->customerSession->getCustomer()->getId();
+
+                    $params = [
+                        Constant::PAYMENT_METHOD_DATA => Constant::MULTIPAY_PAYPAL_OFFLINE_METHOD,
+                        Constant::OPTION_TOTAL_DATA => Constant::MULTIPAY_TOTAL_AMOUNT,
+                        Constant::AMOUNT_DUE_DATA => $amountDue,
+                        Constant::NEW_BALANCE_DATA => $amountDue
+                    ];
+
+                    $order->getPayment()->setAdditionalInformation($params);
+
                     // make sure the current customer owns the order
                     if ($order->getCustomerId() == $customerId) {
-                        $this->transaction->createNewTransaction($order, [
-                            Constant::PAYMENT_METHOD_DATA => Constant::MULTIPAY_PAYPAL_OFFLINE_METHOD,
-                            Constant::OPTION_TOTAL_DATA => Constant::MULTIPAY_TOTAL_AMOUNT,
-                            Constant::AMOUNT_DUE_DATA => $amountDue,
-                            CONSTANT::NEW_BALANCE_DATA => $amountDue
-                        ]);
+                        $this->transaction->createNewTransaction($order, $params);
+                        $this->helper->updateOrderStatus($params, $order);
                         // Send salesperson an email
                         $this->sendSalesPersonEmail($order, $amountDue);
                     } else {
