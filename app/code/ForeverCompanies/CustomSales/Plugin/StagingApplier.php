@@ -9,6 +9,7 @@ class StagingApplier
     protected $versionHistory;
     protected $resourceConnection;
     protected $scopeConfig;
+    protected $configWriter;
 
     const PRODUCER_CONNECTION_ENABLED = 'forevercompanies_producer/connection/enabled';
     const PRODUCER_CONNECTION_USE_SSL = 'forevercompanies_producer/connection/use_ssl';
@@ -17,19 +18,22 @@ class StagingApplier
     const PRODUCER_AUTH_ENABLED = 'forevercompanies_producer/basic_auth/enabled';
     const PRODUCER_AUTH_USER = 'forevercompanies_producer/basic_auth/user';
     const PRODUCER_AUTH_PASS = 'forevercompanies_producer/basic_auth/pass';
+    const PRODUCER_VERSION = 'forevercompanies_producer/staging_applier/version';
 
     public function __construct(
         \Psr\Log\LoggerInterface $logger,
         \Magento\Staging\Api\UpdateRepositoryInterface $updateRepository,
         \Magento\Staging\Model\VersionHistoryInterface $versionHistory,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter
     ) {
         $this->logger = $logger;
         $this->updateRepository = $updateRepository;
         $this->versionHistory = $versionHistory;
         $this->resourceConnection = $resourceConnection;
         $this->scopeConfig = $scopeConfig;
+        $this->configWriter = $configWriter;
     }
 
     /**
@@ -37,6 +41,8 @@ class StagingApplier
      */
     public function afterExecute($subject, $result)
     {
+        $connection = $this->resourceConnection->getConnection();
+
         $isProducerEnabled = $this->scopeConfig->getValue(self::PRODUCER_CONNECTION_ENABLED);
         $useSSL = $this->scopeConfig->getValue(self::PRODUCER_CONNECTION_USE_SSL);
         $producerHost = $this->scopeConfig->getValue(self::PRODUCER_CONNECTION_HOST);
@@ -44,6 +50,15 @@ class StagingApplier
         $useBasicAuth = $this->scopeConfig->getValue(self::PRODUCER_AUTH_ENABLED);
         $authUser = $this->scopeConfig->getValue(self::PRODUCER_AUTH_USER);
         $authPass = $this->scopeConfig->getValue(self::PRODUCER_AUTH_PASS);
+
+        $query = "SELECT
+                        value
+                    FROM
+                        core_config_data
+                    WHERE
+                        path = '" . self::PRODUCER_VERSION . "';";
+
+        $lastVersion = $connection->fetchAll($query);
         
         $siteCodes = [
             1 => 'dn',
@@ -56,13 +71,14 @@ class StagingApplier
 
         $this->logger->debug("staging applier: version = " . $versionId);
 
-        if ($versionId > 0) {
+        if ($versionId > 0 && $lastVersion != $versionId) {
+            // write the current version to the system
+            $this->configWriter->save(self::PRODUCER_VERSION, $versionId, ScopeConfigInterface::SCOPE_TYPE_DEFAULT);
+
             $version = $this->updateRepository->get($versionId);
 
             $versionTime = $version->getStartTime();
             $versionTitle = $version->getName();
-
-            $connection = $this->resourceConnection->getConnection();
 
             $query = "SELECT
                         crw.website_id
