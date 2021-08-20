@@ -9,50 +9,37 @@ namespace ForeverCompanies\CustomSales\Observer\Backend\Sales;
 
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use Magento\Store\App\Response\Redirect;
+use Magento\Backend\Model\Session as AdminSession;
 
 class OrderPlaceAfter implements ObserverInterface
 {
+    protected $session;
 
-    /**
-     * @var Redirect
-     */
-    protected $redirect;
-
-    /**
-     * OrderPlaceBefore constructor.
-     * @param Redirect $redirect
-     */
     public function __construct(
-        Redirect $redirect
+        AdminSession $adminS
     ) {
-        $this->redirect = $redirect;
+        $this->session = $adminS;
     }
 
-    /**
-     * Execute observer
-     *
-     * @param Observer $observer
-     * @return void
-     */
     public function execute(
         Observer $observer
     ) {
         $order = $observer->getData('order');
-        $refererUrl = $this->redirect->getRefererUrl();
-        $statusString = stristr($refererUrl, 'status/');
-        $statusString = str_replace('status/', '', $statusString);
-        $exchangeString = stristr($refererUrl, 'is_exchange/');
-        $exchangeString = str_replace('is_exchange/', '', $exchangeString);
+        
+        $statusString = $this->session->getStatus();
+        $exchangeString = $this->session->getIsExchange();
+        
         if ($statusString !== false) {
-            $position = (int) strpos($statusString, "/");
-            $order->setData('status', substr($statusString, 0, $position));
-            $order->setData('state', substr($statusString, 0, $position));
+            $order->setData('status', $statusString);
+            $order->setData('state', $statusString);
             $order->setData('quote_expiration_date', date('Y-m-d', strtotime('+30 day')));
         }
         if ($exchangeString !== false) {
-            $position = (int) strpos($exchangeString, "/");
-            $order->setData('is_exchange', substr($exchangeString, 0, $position));
+            $order->setData('is_exchange', $exchangeString);
         }
+        $this->session->unsStatus();
+        $this->session->unsIsExchange();
+        $this->session->unsSalesPersonId();
+        $this->session->unsOrderId();
     }
 }

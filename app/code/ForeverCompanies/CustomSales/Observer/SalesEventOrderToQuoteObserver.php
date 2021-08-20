@@ -35,7 +35,7 @@ class SalesEventOrderToQuoteObserver implements ObserverInterface
         
         /*
             1. IF the previous order has a sales rep set:
-                a. If that sales rep exists 	AND is enabled:
+                a. If that sales rep exists     AND is enabled:
                     i. Set the field to the sales rep from the previous order.
                 b. If that sales rep does NOT exist or is disabled:
                     i. Set it to the user making the reorder.

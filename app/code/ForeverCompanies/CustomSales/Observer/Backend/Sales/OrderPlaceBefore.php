@@ -10,9 +10,9 @@ namespace ForeverCompanies\CustomSales\Observer\Backend\Sales;
 use Magento\Backend\Model\Auth\Session;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use Magento\Store\App\Response\Redirect;
 use Magento\User\Model\ResourceModel\User;
 use Magento\User\Model\ResourceModel\User\Collection;
+use Magento\Backend\Model\Session as AdminSession;
 
 class OrderPlaceBefore implements ObserverInterface
 {
@@ -25,11 +25,8 @@ class OrderPlaceBefore implements ObserverInterface
      * @var Collection
      */
     protected $userResource;
-
-    /**
-     * @var Redirect
-     */
-    protected $redirect;
+    
+    protected $session;
 
     /**
      * OrderPlaceBefore constructor.
@@ -40,11 +37,11 @@ class OrderPlaceBefore implements ObserverInterface
     public function __construct(
         Session $authSession,
         Collection $userResource,
-        Redirect $redirect
+        AdminSession $adminS
     ) {
         $this->authSession = $authSession;
         $this->userResource = $userResource;
-        $this->redirect = $redirect;
+        $this->session = $adminS;
     }
 
     /**
@@ -58,19 +55,17 @@ class OrderPlaceBefore implements ObserverInterface
     ) {
         $order = $observer->getData('order');
         $user = $this->authSession->getUser();
+        
         if ($user !== null) {
             $order->setData('loggeduser', $user->getUserName());
         }
         $salesPersonId = $order->getData('sales_person_id');
-        $refererUrl = $this->redirect->getRefererUrl();
         if ($salesPersonId == null || $salesPersonId == 0) {
-            $salesPersonString = stristr($refererUrl, 'sales_person_id/');
-            $salesPersonString = str_replace('sales_person_id/', '', $salesPersonString);
+            $salesPersonString = $this->session->getSalesPersonId();
             if ($salesPersonString == false) {
                 $order->setData('sales_person_id', $user->getId());
             } else {
-                $position = strpos($salesPersonString, "/");
-                $order->setData('sales_person_id', substr($salesPersonString, 0, $position));
+                $order->setData('sales_person_id', $salesPersonString);
             }
         } else {
             $connection = $this->userResource->getConnection();

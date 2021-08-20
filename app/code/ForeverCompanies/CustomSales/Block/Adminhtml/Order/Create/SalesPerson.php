@@ -11,6 +11,7 @@ use Magento\Quote\Model\QuoteRepository;
 use Magento\Sales\Model\AdminOrder\Create;
 use Magento\User\Model\ResourceModel\User;
 use Magento\User\Model\UserFactory;
+use Magento\Backend\Model\Session as AdminSession;
 
 class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCreate
 {
@@ -28,6 +29,8 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCr
      * @var QuoteRepository
      */
     protected $quoteRepository;
+    
+    protected $session;
 
     /**
      * SalesPerson constructor.
@@ -48,12 +51,14 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCr
         PriceCurrencyInterface $priceCurrency,
         Session $authSession,
         \ForeverCompanies\CustomSales\Helper\SalesPerson $salesPersonHelper,
+        AdminSession $adminS,
         array $data = []
     ) {
         parent::__construct($context, $sessionQuote, $orderCreate, $priceCurrency, $data);
         $this->authSession = $authSession;
         $this->salesPersonHelper = $salesPersonHelper;
         $this->quoteRepository = $quoteRepository;
+        $this->session = $adminS;
     }
 
     /**
@@ -98,11 +103,7 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCr
      */
     public function getExchangeUrl()
     {
-        $params = [];
-        if ($this->getRequest()->getParam('is_exchange') !== null) {
-            $params['is_exchange'] = $this->getRequest()->getParam('is_exchange');
-        }
-        return $this->getUrl('forevercompanies_custom/exchange/start', $params);
+        return $this->getUrl('forevercompanies_custom/exchange/start');
     }
 
     /**
@@ -118,7 +119,7 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCr
      */
     public function getIsExchange()
     {
-        $isExchange = $this->getRequest()->getParam('is_exchange');
+        $isExchange = $this->session->getIsExchange();
         if ($isExchange === "1") {
             return true;
         }

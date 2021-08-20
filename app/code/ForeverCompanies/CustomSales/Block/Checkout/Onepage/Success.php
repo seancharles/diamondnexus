@@ -43,7 +43,7 @@ class Success extends \Magento\Checkout\Block\Onepage\Success
         
         $data = $connection->fetchRow($select);
         
-        if(isset($data['delivery_date']) === true) {
+        if (isset($data['delivery_date']) === true) {
             return $data['delivery_date'];
         }
         

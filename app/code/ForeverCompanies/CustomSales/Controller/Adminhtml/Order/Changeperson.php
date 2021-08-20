@@ -5,6 +5,7 @@ namespace ForeverCompanies\CustomSales\Controller\Adminhtml\Order;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Backend\Model\Session as AdminSession;
 
 class Changeperson extends Action
 {
@@ -12,6 +13,7 @@ class Changeperson extends Action
      * @var OrderRepositoryInterface
      */
     protected $orderRepository;
+    protected $session;
 
     /**
      * Changeperson constructor.
@@ -20,10 +22,12 @@ class Changeperson extends Action
      */
     public function __construct(
         Action\Context $context,
-        OrderRepositoryInterface $orderRepository
+        OrderRepositoryInterface $orderRepository,
+        AdminSession $adminS
     ) {
         parent::__construct($context);
         $this->orderRepository = $orderRepository;
+        $this->session = $adminS;
     }
 
     /**
@@ -32,19 +36,15 @@ class Changeperson extends Action
     public function execute()
     {
         $resultRedirect = $this->resultRedirectFactory->create();
-        $refererUrl = $this->_redirect->getRefererUrl();
-        $salesPersonString = stristr($refererUrl, 'order_id/');
-        $salesPersonString = str_replace('order_id/', '', $salesPersonString);
-        $position = strpos($salesPersonString, "/");
-        $orderId = substr($salesPersonString, 0, $position);
-        $order = $this->orderRepository->get($orderId);
+        
+        $order = $this->orderRepository->get($this->getRequest()->getParam('order_id'));
         $order->setData('sales_person_id', $this->getRequest()->getParam('id'));
         $extension = $order->getExtensionAttributes();
         $extension->setSalesPersonId($this->getRequest()->getParam('id'));
         $order->setExtensionAttributes($extension);
         $this->orderRepository->save($order);
         $resultRedirect->setPath('sales/order/view', [
-            'order_id' => $orderId
+            'order_id' => $this->getRequest()->getParam('order_id')
         ]);
         return $resultRedirect;
     }

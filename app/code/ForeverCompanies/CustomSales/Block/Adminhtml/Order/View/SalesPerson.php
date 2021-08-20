@@ -7,6 +7,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Registry;
 use Magento\Sales\Helper\Admin;
 use Magento\User\Model\UserFactory;
+use Magento\Backend\Model\Session as AdminSession;
 
 class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\AbstractOrder
 {
@@ -14,6 +15,7 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\AbstractOrder
      * @var UserFactory
      */
     protected $userFactory;
+    protected $session;
 
     /**
      * SalesPerson constructor.
@@ -28,10 +30,12 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\AbstractOrder
         Registry $registry,
         Admin $adminHelper,
         UserFactory $userFactory,
+        AdminSession $adminS,
         array $data = []
     ) {
-        parent::__construct($context, $registry, $adminHelper, $data);
         $this->userFactory = $userFactory;
+        $this->session = $adminS;
+        parent::__construct($context, $registry, $adminHelper, $data);
     }
 
     /**
@@ -78,10 +82,13 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\AbstractOrder
     public function getExchangeUrl()
     {
         $params = [];
-        if ($this->getRequest()->getParam('is_exchange') !== null) {
-            $params['is_exchange'] = $this->getRequest()->getParam('is_exchange');
-            $params['order_id'] = $this->getOrder()->getId();
+        
+        if ($this->session->getIsExchange() == 1) {
+            $this->session->setOrderId($this->getOrder()->getId());
+        } else {
+            $this->session->unsIsExchange();
+            $this->session->unsOrderId();
         }
-        return $this->getUrl('forevercompanies_custom/exchange/change', $params);
+        return $this->getUrl('forevercompanies_custom/exchange/change');
     }
 }
