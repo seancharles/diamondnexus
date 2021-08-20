@@ -58,8 +58,9 @@ class StagingApplier
                     WHERE
                         path = '" . self::PRODUCER_VERSION . "';";
 
-        $lastVersion = $connection->fetchAll($query);
-        
+        $row = $connection->fetchRow($query);
+        $lastVersion = $row['value'];
+
         $siteCodes = [
             1 => 'dn',
             2 => 'fa',
