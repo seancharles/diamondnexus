@@ -14,6 +14,7 @@ class Collection extends SearchResult
         $this->addFilterToMap('cut_grade', 'stonesgrid_cut_grade.value');
         $this->addFilterToMap('price', 'stonesgrid_price.value');
         $this->addFilterToMap('stone_carat', 'stonesgrid_stone_carat.value');
+        $this->addFilterToMap('supplier', 'stonesgrid_supplier.value');
         
         $this->addFieldToFilter("attribute_set_id", array("eq" => 31));
         
