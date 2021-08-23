@@ -277,6 +277,7 @@ class StoneImport
                 "ex" => "2876",
                 "not specified" => "3076",
                 "ideal" => "2877",
+                "super ideal" => "3602",
                 "very good" => "2878",
                 "good" => "2879",
                 // TODO: Create this attribute option and place its value here.
@@ -614,6 +615,11 @@ class StoneImport
         $product->setCutGrade($this->cutGradeMap[strtolower($csvArr['Cut Grade'])]);
         $product->setShape($this->shapeMap[$csvArr['Shape Name']]);
         $product->setSupplier($this->supplierMap[$csvArr['Supplier']]);
+        
+        if (isset($csvArr['Super Ideal'])) {
+            $product->setSuperIdeal($csvArr['Super Ideal']);
+        }
+        
         
         if (isset($this->supplierStatuses[$csvArr['Supplier']])) {
             $this->_handleStatus($csvArr['Supplier']);
