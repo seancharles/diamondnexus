@@ -28,19 +28,26 @@
                 </field>
             </group>
             <group id="basic_auth" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1">
-				<label>Basic Auth</label>
-				<field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1"
+                <label>Basic Auth</label>
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Enable Basic Auth</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-				<field id="user" translate="label" type="text" sortOrder="20" showInDefault="1"
+                <field id="user" translate="label" type="text" sortOrder="20" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>User</label>
                 </field>
-				<field id="pass" translate="label" type="obscure" sortOrder="30" showInDefault="1"
+                <field id="pass" translate="label" type="obscure" sortOrder="30" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Password</label>
+                </field>
+            </group>
+            <group id="staging_applier" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1">
+                <label>Staging Applier</label>
+                <field id="version" translate="label" type="text" sortOrder="10" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Version</label>
                 </field>
             </group>
         </section>
