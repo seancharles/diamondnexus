@@ -1,24 +1,12 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-
 	<preference for="Magento\Framework\Model\ActionValidator\RemoveAction" 
 		type="Magento\Framework\Model\ActionValidator\RemoveAction\Allowed" />
-		<type name="Magento\Framework\Console\CommandListInterface">
-			<arguments>
-	            <argument name="commands" xsi:type="array">
-	                <item name="run_stone_import" xsi:type="object">ForeverCompanies\LooseStoneImport\Console\Command\ManualImport</item>
-	            </argument>
-	        </arguments>
-        </type>
-        
-	<!--  
-	<type name="Magento\Framework\Console\CommandList">
-        <arguments>
+		
+	<type name="Magento\Framework\Console\CommandListInterface">
+		<arguments>
             <argument name="commands" xsi:type="array">
-                <item name="ManualLooseStoneImport" xsi:type="object">
-                    ForeverCompanies\LooseStoneImport\Console\Command\ManualImport
-                </item>
+                <item name="run_stone_import" xsi:type="object">ForeverCompanies\LooseStoneImport\Console\Command\ManualImport</item>
             </argument>
         </arguments>
-    </type>
-    -->
+	</type>
 </config>
