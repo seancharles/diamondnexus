@@ -31,10 +31,10 @@ $product = $objectManager->create('Magento\Catalog\Model\Product')->load($produc
     
         // pull set stone item from quote collection
         $collection = $block->getItemsCollection();
-		$collection->addFieldToFilter('quote_id', $_item->getQuoteId());
-        $collection->addFieldToFilter('set_id', $_item->getSetId());
-        
         if($collection) {
+            $collection->addFieldToFilter('quote_id', $_item->getQuoteId());
+            $collection->addFieldToFilter('set_id', $_item->getSetId());
+            
             if($_item->getItemId() != $collection->getLastItem()->getId()) {
                 $diamondItem = $collection->getLastItem();
             }
