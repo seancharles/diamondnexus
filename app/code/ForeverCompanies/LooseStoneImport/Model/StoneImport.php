@@ -159,6 +159,7 @@ class StoneImport
                 "Very Good" => "200",
                 "Excellent" => "300",
                 "Ideal" => "400",
+                "Super Ideal" => "500",
                 // TODO: Remove. Adding to get through import.
                 "G" => ""
             );
@@ -272,19 +273,19 @@ class StoneImport
             );
             
             $this->cutGradeMap = array(
-                "Excellent" => "2876",
-                "Ex" => "2876",
-                "Not Specified" => "3076",
-                "Ideal" => "2877",
-                "Very Good" => "2878",
-                "Very good" => "2878",
-                "Good" => "2879",
+                "excellent" => "2876",
+                "ex" => "2876",
+                "not specified" => "3076",
+                "ideal" => "2877",
+                "super ideal" => "3602",
+                "very good" => "2878",
+                "good" => "2879",
                 // TODO: Create this attribute option and place its value here.
-                "Fair" => "",
+                "fair" => "",
                 // TODO: Remove. Adding to get through import.
-                "G" => "",
+                "g" => "",
                 "-" => "",
-                "None" => ""
+                "none" => ""
             );
             
             $this->colorMap = array(
@@ -448,9 +449,11 @@ class StoneImport
             $this->statusDisabled = \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED;
             
             $supplierData = $this->connection->fetchAll("SELECT `enabled`, `code` FROM `stones_supplier`");
+            
+            
             $this->supplierStatuses = array();
             foreach ($supplierData as $supplierD) {
-                $this->supplierStatuses[$supplierD['code']] = $supplierD['enabled'];
+                $this->supplierStatuses[strtolower($supplierD['code'])] = $supplierD['enabled'];
                 
                 if ($supplierD['code'] == "diamondfoundry") {
                     $this->supplierStatuses["foundry"] = $supplierD['enabled'];;
@@ -581,6 +584,8 @@ class StoneImport
                         'qty' => 1
                     )
                 );
+                
+                $product->setTaxClassId(2);
              
                 $success = $this->_applyCsvRowToProduct($product, $csvArr);
                 
@@ -589,7 +594,6 @@ class StoneImport
                     // 1215 storefront visibility.
                     $product->setStoreId(12)->setVisibility(4)->save();
                 }
-                
                 
                 unset($imageFileName);
                 unset($imageResult);
@@ -610,14 +614,19 @@ class StoneImport
         // These have been checked as required fields.
         $product->setColor($this->colorMap[$csvArr['Color']]);
         $product->setClarity($this->clarityMap[$csvArr['Clarity']]);
-        $product->setCutGrade($this->cutGradeMap[$csvArr['Cut Grade']]);
+        $product->setCutGrade($this->cutGradeMap[strtolower($csvArr['Cut Grade'])]);
         $product->setShape($this->shapeMap[$csvArr['Shape Name']]);
-        $product->setSupplier($this->supplierMap[$csvArr['Supplier']]);
+        $product->setSupplier(strtolower($this->supplierMap[$csvArr['Supplier']]));
         
-        if (isset($this->supplierStatuses[$csvArr['Supplier']])) {
+        if (isset($csvArr['Super Ideal'])) {
+            $product->setSuperIdeal($csvArr['Super Ideal']);
+        }
+        
+        
+        if (isset($this->supplierStatuses[strtolower($csvArr['Supplier'])])) {
             $this->_handleStatus($csvArr['Supplier']);
         } else {
-            $this->_stoneLog($product, $csvArr, "error", "Supplier does not exist");
+            $this->_stoneLog($product, $csvArr, "error", "Supplier does not exist - " . $csvArr['Supplier']);
             unset($product);
             unset($csvArr);
             return false;
@@ -630,8 +639,8 @@ class StoneImport
         if (isset($this->colorSortMap[$csvArr['Color']])) {
             $product->setColorSort($this->colorSortMap[$csvArr['Color']]);
         }
-        if (isset($this->cutGradeSortMap[$csvArr['Cut Grade']])) {
-            $product->setCutGradeSort($this->cutGradeSortMap[$csvArr['Cut Grade']]);
+        if (isset($this->cutGradeSortMap[strtolower($csvArr['Cut Grade'])])) {
+            $product->setCutGradeSort($this->cutGradeSortMap[strtolower($csvArr['Cut Grade'])]);
         }
         if (isset($this->shapePopMap[$csvArr['Shape Name']])) {
             $product->setShapePopSort($this->shapePopMap[$csvArr['Shape Name']]);
