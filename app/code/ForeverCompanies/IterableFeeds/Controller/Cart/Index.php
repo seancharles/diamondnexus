@@ -29,7 +29,6 @@ class Index extends Action
         UrlInterface $urlInterface,
         ProductRepositoryInterface $productRepository,
         CartRepositoryInterface $quoteRepository,
-        ScopeConfigInterface $scopeConfig,
         Repository $attributeRepository,
         Image $helperImage
     ) {
