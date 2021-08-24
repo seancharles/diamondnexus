@@ -10,6 +10,7 @@ use Magento\Framework\UrlInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Catalog\Model\Product\Attribute\Repository;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Psr\Log\LoggerInterface;
 
 class Index extends Action
@@ -20,6 +21,7 @@ class Index extends Action
     protected $productRepository;
     protected $quoteRepository;
     protected $attributeRepository;
+    protected $scopeConfig;
 
     public function __construct(
         Context $context,
@@ -28,6 +30,7 @@ class Index extends Action
         UrlInterface $urlInterface,
         ProductRepositoryInterface $productRepository,
         CartRepositoryInterface $quoteRepository,
+        ScopeConfigInterface $scopeConfig,
         Repository $attributeRepository
     )
     {
@@ -39,6 +42,7 @@ class Index extends Action
         $this->productRepository = $productRepository;
         $this->quoteRepository = $quoteRepository;
         $this->attributeRepository = $attributeRepository;
+        $this->scopeConfig = $scopeConfig;
     }
 
     public function execute()
@@ -89,6 +93,12 @@ class Index extends Action
                     foreach($imageGallery as $image) {
                         $images[] = $image->getUrl();
                         break;
+                    }
+
+                    // handling for no images found in gallery
+                    if(count($images) ==0) {
+                        // TODO: place image path for default image from system config
+                        $images[] = $this->scopeConfig->getValue('catalog/placeholder/thumbnail_placeholder');
                     }
 
                     $productsArray[] = [
