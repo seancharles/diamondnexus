@@ -1,0 +1,123 @@
+<?php
+    /** @var $block \Magento\Sales\Block\Order\Email\Items */
+
+    $_order = $block->getOrder();
+
+    $_product = null;
+    $_orderHasBand = false;
+    $_metalOptionId = 0;
+?>
+<?php if ($_order): ?>
+
+    <?php
+        $itemList = $_order->getAllItems();
+
+        // look for a matching band or wedding band
+        foreach($itemList as $item)
+        {
+            if( $item->getAttributeSetId() == 27 || substr($item->getSku(), 0, 4) == "LRWB" )
+            {
+                // do not include cross-sells if they purchased a band
+                $_orderHasBand = true;
+                break;
+            }
+        }
+
+        foreach($itemList as $item)
+        {
+            if( substr($item->getSku(), 0, 4) == "LREN" ) {
+                $_product = $item;
+                $configOptions = $item->getBuyRequest()->getSuperAttribute();
+                $metalOpionId = $configOptions[145];
+                break;
+            }
+
+        }
+        ?>
+    
+    <?php if ($_product && $_product->getId() > 0 && $_orderHasBand == false ): ?>
+
+        <table class="responsive-with-padding" width="430" border="0" cellspacing="0" cellpadding="0" align="center" style="width: 430px;">
+            <tr>
+                <td valign="top" height="50">&nbsp;</td>
+            </tr>
+            <tr>
+                <td valign="top" style="color: #000001; font-size:24px; font-family: \'Montserrat\', Arial, \'Open Sans\', sans-serif; line-height: 36px; letter-spacing: 1.5px; font-weight: bold; text-align: center;" >Make it a set!</span></td>
+            </tr>
+            <tr>
+                <td style="color: #000001; font-size:14px; font-family: \'Montserrat\', Arial, \'Open Sans\', sans-serif; line-height: 24px; text-align: center; ">
+                    Complete your ring with a wedding band.
+                    <span class="nobreak">Shop your perfect match or create your own unique pairing.</span>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top" height="5">&nbsp;</td>
+            </tr>
+        </table>
+
+        <?php $crossProducts = $this->getCrossSellProducts($_product->getProduct(), $metalOpionId); ?>
+        <table widht="100%">
+            <?php if (count($crossProducts) > 0): ?>
+                <?php foreach($crossProducts as $crossProduct): ?>
+                    <tr>
+                        <td valign="top" height="15">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table align="center" width="100%" border="0" cellspacing="0" cellpadding="0" style="width:100%;">
+                                <tr>
+                                    <td width="85" class="side"  style="width:85px">&nbsp;</td>
+                                    <td class="middle" width="430" align="center" style="text-align: center; width: 430px;">
+                                        <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" style="width:100%; text-align: center;">
+                                            <tr>
+                                                <td style="color: #000001; font-size:14px; font-family: \'Montserrat\', Arial, \'Open Sans\', sans-serif; line-height: 24px; text-align: center; ">
+                                                    <a href="<?=$crossProduct['url']?>"><img src="<?=$crossProduct['image']?>" alt="<?=$crossProduct['name']?>" width="300" height="300"/></a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td valign="top" height="5">&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color: #000001; font-size:14px; font-family: \'Montserrat\', Arial, \'Open Sans\', sans-serif; line-height: 24px; text-align: center; ">
+                                                    <a href="<?=$crossProduct['url']?>" style="text-decoration: underline; color: #000001 !important;" class="blacklink"><font color="#000001" style="display:inline;"><?=$crossProduct['name']?></a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td width="85" class="side" style="width:85px;">&nbsp;</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table class="responsive-table" align="center" width="600" border="0" cellspacing="0" cellpadding="0" style="width: 600px; text-align: center;">
+                                <tr>
+                                    <td width="155" class="side"  style="width:155px;">&nbsp;</td>
+                                    <td width="290" class="middle" align="center" style="width: 290px; text-align: center;">
+                                        <table class="responsive-80" width="100%"  border="0" cellpadding="0" cellspacing="0" align="center" style="width: 100%; text-align: center; color: #ffffff;">
+                                            <tr>
+                                                <td valign="top" height="5">&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td height="50" align="center" bgcolor="#000000" style="color: #ffffff; font-size:17px; font-family: \'Montserrat\', Arial, \'Open Sans\', sans-serif; line-height: 24px; text-decoration: none; text-align: center; color: #000000; font-weight: bold; letter-spacing: 2px">
+                                                    <a href="<?=$crossProduct['url']?>" style="color: #ffffff !important; text-decoration: none; background-color:#000000; padding: 15px; display: block"  class="whitelink">
+                                                        <span class="whitelink" style="color:#ffffff">SHOP NOW</span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td valign="top" height="60">&nbsp;</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td width="155" class="side"  style="width:155px;">&nbsp;</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </table>
+    <?php endif; ?>
+<?php endif; ?>
