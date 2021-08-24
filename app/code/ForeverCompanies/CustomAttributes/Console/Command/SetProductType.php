@@ -62,7 +62,8 @@ class SetProductType extends Command
         OutputInterface $output
     ) {
         $output->writeln("Get products to set product type...");
-        $productCollection = $this->helper->getAllEnabledProducts();
+        //$productCollection = $this->helper->getAllEnabledProducts();
+        $productCollection = $this->helper->getAllProductsForProductType();
         $output->writeln('Number of products found: ' . $productCollection->count());
 
         $productTypeData = [];

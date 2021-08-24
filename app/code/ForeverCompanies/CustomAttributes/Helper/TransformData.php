@@ -346,6 +346,16 @@ class TransformData extends AbstractHelper
     /**
      * @return mixed
      */
+    public function getAllProductsForProductType()
+    {
+        $collection = $this->productCollectionFactory->create();
+        $collection->addAttributeToSelect('entity_id');
+        return $collection;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getAllEnabledProducts()
     {
         $collection = $this->productCollectionFactory->create();
