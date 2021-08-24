@@ -85,7 +85,7 @@
             }
             .featured-block {
                 border: 1px solid #ccc;
-                background-image: url('https://res.cloudinary.com/foco/images/v1607740505/diamond_nexus/blog/2016/june/1/trendy-ring-styles-for-summer-2016/hero/hero.jpg');
+                background-image: url('https://res.cloudinary.com/foco/images/v1629836654/new-arrivals-fj-desktop/new-arrivals-fj-desktop.jpeg');
                 background-size: cover;
                 background-position: center;
                 padding: 200px 20px 20px 20px;
@@ -185,6 +185,9 @@
                 width: 100%;
                 margin-top: 15px;
             }
+        }
+        .featured-block {
+            background-image: url('https://res.cloudinary.com/foco/images/v1629836933/new-arrivals-fj-mobile/new-arrivals-fj-mobile.jpeg') !important;
         }
     }
 }
