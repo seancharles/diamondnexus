@@ -13,6 +13,7 @@ use Magento\Catalog\Model\Product\Configuration\Item\ItemResolverInterface;
 use Magento\Quote\Model\ResourceModel\Quote\Item\CollectionFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product\Attribute\Repository;
+use Magento\Catalog\Helper\Image;
 
 class ConfigurableRenderer extends \Magento\ConfigurableProduct\Block\Cart\Item\Renderer\Configurable
 {
@@ -89,6 +90,7 @@ class ConfigurableRenderer extends \Magento\ConfigurableProduct\Block\Cart\Item\
     protected $itemCollection;
     protected $productRepository;
     protected $attributeRepository;
+    protected $helperImage;
 
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
@@ -105,7 +107,9 @@ class ConfigurableRenderer extends \Magento\ConfigurableProduct\Block\Cart\Item\
         PriceCurrencyInterface $priceHelper,
         CollectionFactory $itemCollection,
         ProductRepositoryInterface $productRepository,
-        Repository $attributeRepository
+        Repository $attributeRepository,
+        Image $helperImage
+
     ) {
         $this->priceCurrency = $priceCurrency;
         $this->imageBuilder = $imageBuilder;
@@ -125,6 +129,7 @@ class ConfigurableRenderer extends \Magento\ConfigurableProduct\Block\Cart\Item\
         $this->itemCollection = $itemCollection;
         $this->productRepository = $productRepository;
         $this->attributeRepository = $attributeRepository;
+        $this->helperImage = $helperImage;
     }
 
     public function getTaggedImage()
@@ -136,21 +141,21 @@ class ConfigurableRenderer extends \Magento\ConfigurableProduct\Block\Cart\Item\
         $product = $this->productRepository->getById($this->getItem()->getProductId());
         $imageGallery = $product->getMediaGalleryImages();
 
-        if(isset($configOptions[145]) === true) {
+        if (isset($configOptions[145]) === true) {
             $metalOptions = $this->attributeRepository->get('metal_type')->getOptions();
 
-            foreach($metalOptions as $metalOption) {
+            foreach ($metalOptions as $metalOption) {
                 $metalMap[$metalOption->getValue()] = strtolower($metalOption->getLabel());
             }
 
-            foreach($imageGallery as $image) {
+            foreach ($imageGallery as $image) {
                 $label = strtolower($image->getLabel());
 
-                if(strlen($label) > 0) {
-                    if(strpos($label,"default") !== false) {
+                if (strlen($label) > 0) {
+                    if (strpos($label, "default") !== false) {
                         $metalType = $metalMap[$configOptions[145]];
 
-                        if(strpos($label, $metalType) !== false) {
+                        if (strpos($label, $metalType) !== false) {
                             $images[] = $image->getUrl();
                         }
                     }
@@ -159,9 +164,14 @@ class ConfigurableRenderer extends \Magento\ConfigurableProduct\Block\Cart\Item\
         }
 
         // used as a default in case a tagged image isn't found
-        foreach($imageGallery as $image) {
+        foreach ($imageGallery as $image) {
             $images[] = $image->getUrl();
             break;
+        }
+
+        // handling for no images found in gallery
+        if (count($images) == 0) {
+            $images[] = $this->helperImage->getDefaultPlaceholderUrl();
         }
 
         return '<img
@@ -177,8 +187,8 @@ class ConfigurableRenderer extends \Magento\ConfigurableProduct\Block\Cart\Item\
     {
         $host = 'https://res-2.cloudinary.com/foco/image/upload/';
 
-        if(strpos($path, $host) !== false) {
-            $folderPosition = strpos($path,"/v1/media");
+        if (strpos($path, $host) !== false) {
+            $folderPosition = strpos($path, "/v1/media");
 
             // get the cloudinary parameters from uri
             $params = substr($path, strlen($host), $folderPosition - strlen($host));

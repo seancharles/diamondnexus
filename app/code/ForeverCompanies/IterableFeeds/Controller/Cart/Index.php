@@ -1,7 +1,6 @@
 <?php
 
 namespace ForeverCompanies\IterableFeeds\Controller\Cart;
-
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
@@ -10,7 +9,7 @@ use Magento\Framework\UrlInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Catalog\Model\Product\Attribute\Repository;
-use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Catalog\Helper\Image;
 use Psr\Log\LoggerInterface;
 
 class Index extends Action
@@ -21,7 +20,7 @@ class Index extends Action
     protected $productRepository;
     protected $quoteRepository;
     protected $attributeRepository;
-    protected $scopeConfig;
+    protected $helperImage;
 
     public function __construct(
         Context $context,
@@ -31,9 +30,9 @@ class Index extends Action
         ProductRepositoryInterface $productRepository,
         CartRepositoryInterface $quoteRepository,
         ScopeConfigInterface $scopeConfig,
-        Repository $attributeRepository
-    )
-    {
+        Repository $attributeRepository,
+        Image $helperImage
+    ) {
         parent::__construct($context);
 
         $this->logger = $logger;
@@ -42,10 +41,10 @@ class Index extends Action
         $this->productRepository = $productRepository;
         $this->quoteRepository = $quoteRepository;
         $this->attributeRepository = $attributeRepository;
-        $this->scopeConfig = $scopeConfig;
+        $this->helperImage = $helperImage;
     }
 
-    public function execute()
+    public function execute ()
     {
         $productsArray = [];
         $metalMap = [];
@@ -59,7 +58,7 @@ class Index extends Action
             try {
                 $metalOptions = $this->attributeRepository->get('metal_type')->getOptions();
 
-                foreach($metalOptions as $metalOption) {
+                foreach ($metalOptions as $metalOption) {
                     $metalMap[$metalOption->getValue()] = strtolower($metalOption->getLabel());
                 }
 
@@ -73,15 +72,15 @@ class Index extends Action
 
                     $configOptions = $item->getBuyRequest()->getSuperAttribute();
 
-                    if(isset($configOptions[145]) === true) {
-                        foreach($imageGallery as $image) {
+                    if (isset($configOptions[145]) === true) {
+                        foreach ($imageGallery as $image) {
                             $label = strtolower($image->getLabel());
 
-                            if(strlen($label) > 0) {
-                                if(strpos($label,"default") !== false) {
+                            if (strlen($label) > 0) {
+                                if (strpos($label, "default") !== false) {
                                     $metalType = $metalMap[$configOptions[145]];
 
-                                    if(strpos($label, $metalType) !== false) {
+                                    if (strpos($label, $metalType) !== false) {
                                         $images[] = $image->getUrl();
                                     }
                                 }
@@ -90,15 +89,14 @@ class Index extends Action
                     }
 
                     // used as a default in case a tagged image isn't found
-                    foreach($imageGallery as $image) {
+                    foreach ($imageGallery as $image) {
                         $images[] = $image->getUrl();
                         break;
                     }
 
                     // handling for no images found in gallery
-                    if(count($images) ==0) {
-                        // TODO: place image path for default image from system config
-                        $images[] = $this->scopeConfig->getValue('catalog/placeholder/thumbnail_placeholder');
+                    if (count($images) ==0) {
+                        $images[] = $this->helperImage->getDefaultPlaceholderUrl();
                     }
 
                     $productsArray[] = [
@@ -136,8 +134,8 @@ class Index extends Action
     {
         $host = 'https://res-2.cloudinary.com/foco/image/upload/';
 
-        if(strpos($path, $host) !== false) {
-            $folderPosition = strpos($path,"/v1/media");
+        if (strpos($path, $host) !== false) {
+            $folderPosition = strpos($path, "/v1/media");
 
             // get the cloudinary parameters from uri
             $params = substr($path, strlen($host), $folderPosition - strlen($host));
