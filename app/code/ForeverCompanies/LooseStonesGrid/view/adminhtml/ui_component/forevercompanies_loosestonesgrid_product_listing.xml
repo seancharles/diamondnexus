@@ -79,6 +79,138 @@
     <column name="supplier" class="ForeverCompanies\LooseStonesGrid\Ui\Component\Listing\Column\AttributeText" sortOrder="10">
       <settings>
          <label translate="true">Supplier</label>
+         <filter>select</filter>
+	    <dataType>select</dataType>
+	    <options>
+	    	<option name="Blumoon" xsi:type="array">
+	            <item name="value" xsi:type="number">1</item>
+	            <item name="label" xsi:type="string" translate="true">BluMoon</item>
+	        </option>
+	        <option name="Classic" xsi:type="array">
+	            <item name="value" xsi:type="number">2</item>
+	            <item name="label" xsi:type="string" translate="true">Classic</item>
+	        </option>
+	        <option name="Greenrocks" xsi:type="array">
+	            <item name="value" xsi:type="number">3</item>
+	            <item name="label" xsi:type="string" translate="true">Greenrocks</item>
+	        </option>
+	        <option name="Internal" xsi:type="array">
+	            <item name="value" xsi:type="number">4</item>
+	            <item name="label" xsi:type="string" translate="true">Internal</item>
+	        </option>
+	        <option name="Labrilliante" xsi:type="array">
+	            <item name="value" xsi:type="number">5</item>
+	            <item name="label" xsi:type="string" translate="true">Labrilliante</item>
+	        </option>
+	        <option name="Paradiam" xsi:type="array">
+	            <item name="value" xsi:type="number">6</item>
+	            <item name="label" xsi:type="string" translate="true">Paradiam</item>
+	        </option>
+	        <option name="Pdc" xsi:type="array">
+	            <item name="value" xsi:type="number">7</item>
+	            <item name="label" xsi:type="string" translate="true">Pdc</item>
+	        </option>
+	        <option name="Stuller" xsi:type="array">
+	            <item name="value" xsi:type="number">8</item>
+	            <item name="label" xsi:type="string" translate="true">Stuller</item>
+	        </option>
+	        <option name="Washington" xsi:type="array">
+	            <item name="value" xsi:type="number">9</item>
+	            <item name="label" xsi:type="string" translate="true">Washington</item>
+	        </option>
+	        <option name="DiamondFoundry" xsi:type="array">
+	            <item name="value" xsi:type="number">10</item>
+	            <item name="label" xsi:type="string" translate="true">DiamondFoundry</item>
+	        </option>
+	        <option name="Meylor" xsi:type="array">
+	            <item name="value" xsi:type="number">11</item>
+	            <item name="label" xsi:type="string" translate="true">Meylor</item>
+	        </option>
+	        <option name="Ethereal" xsi:type="array">
+	            <item name="value" xsi:type="number">12</item>
+	            <item name="label" xsi:type="string" translate="true">Ethereal</item>
+	        </option>
+	        <option name="SmilingRocks" xsi:type="array">
+	            <item name="value" xsi:type="number">13</item>
+	            <item name="label" xsi:type="string" translate="true">SmilingRocks</item>
+	        </option>
+	        <option name="Unique" xsi:type="array">
+	            <item name="value" xsi:type="number">14</item>
+	            <item name="label" xsi:type="string" translate="true">Unique</item>
+	        </option>
+	        <option name="QualityGold" xsi:type="array">
+	            <item name="value" xsi:type="number">15</item>
+	            <item name="label" xsi:type="string" translate="true">QualityGold</item>
+	        </option>
+	        <option name="FlawlessAllure" xsi:type="array">
+	            <item name="value" xsi:type="number">16</item>
+	            <item name="label" xsi:type="string" translate="true">FlawlessAllure</item>
+	        </option>
+	        <option name="Labs" xsi:type="array">
+	            <item name="value" xsi:type="number">17</item>
+	            <item name="label" xsi:type="string" translate="true">Labs</item>
+	        </option>
+	        <option name="Fenix" xsi:type="array">
+	            <item name="value" xsi:type="number">18</item>
+	            <item name="label" xsi:type="string" translate="true">Fenix</item>
+	        </option>
+	        <option name="BrilliantDiamonds" xsi:type="array">
+	            <item name="value" xsi:type="number">19</item>
+	            <item name="label" xsi:type="string" translate="true">BrilliantDiamonds</item>
+	        </option>
+	        <option name="GrownDiamondCorpUSA" xsi:type="array">
+	            <item name="value" xsi:type="number">20</item>
+	            <item name="label" xsi:type="string" translate="true">GrownDiamondCorpUSA</item>
+	        </option>
+	        <option name="InternationalDiamondJewelry" xsi:type="array">
+	            <item name="value" xsi:type="number">21</item>
+	            <item name="label" xsi:type="string" translate="true">InternationalDiamondJewelry</item>
+	        </option>
+	        <option name="EcoGrown" xsi:type="array">
+	            <item name="value" xsi:type="number">26</item>
+	            <item name="label" xsi:type="string" translate="true">EcoGrown</item>
+	        </option>
+	        <option name="PureStones" xsi:type="array">
+	            <item name="value" xsi:type="number">27</item>
+	            <item name="label" xsi:type="string" translate="true">PureStones</item>
+	        </option>
+	        <option name="ProudestLegendLimited" xsi:type="array">
+	            <item name="value" xsi:type="number">28</item>
+	            <item name="label" xsi:type="string" translate="true">ProudestLegendLimited</item>
+	        </option>
+	        <option name="DVJewelryCompany" xsi:type="array">
+	            <item name="value" xsi:type="number">29</item>
+	            <item name="label" xsi:type="string" translate="true">DVJewelryCompany</item>
+	        </option>
+	        <option name="IndianDiamonds" xsi:type="array">
+	            <item name="value" xsi:type="number">31</item>
+	            <item name="label" xsi:type="string" translate="true">IndianDiamonds</item>
+	        </option>
+	        <option name="GrownDiamondCorp" xsi:type="array">
+	            <item name="value" xsi:type="number">32</item>
+	            <item name="label" xsi:type="string" translate="true">GrownDiamondCorp</item>
+	        </option>
+	        <option name="LushDiamonds" xsi:type="array">
+	            <item name="value" xsi:type="number">33</item>
+	            <item name="label" xsi:type="string" translate="true">LushDiamonds</item>
+	        </option>
+	        <option name="ALTR" xsi:type="array">
+	            <item name="value" xsi:type="number">34</item>
+	            <item name="label" xsi:type="string" translate="true">ALTR</item>
+	        </option>
+	        <option name="ForeverGrown" xsi:type="array">
+	            <item name="value" xsi:type="number">35</item>
+	            <item name="label" xsi:type="string" translate="true">ForeverGrown</item>
+	        </option>
+	        <option name="InternalAltr" xsi:type="array">
+	            <item name="value" xsi:type="number">36</item>
+	            <item name="label" xsi:type="string" translate="true">InternalAltr</item>
+	        </option>
+	        <option name="BhaktiDiamond" xsi:type="array">
+	            <item name="value" xsi:type="number">37</item>
+	            <item name="label" xsi:type="string" translate="true">BhaktiDiamond</item>
+	        </option>
+	    </options>
       </settings>
     </column>
     
