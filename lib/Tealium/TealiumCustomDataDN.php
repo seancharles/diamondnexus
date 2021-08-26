@@ -543,6 +543,8 @@ class TealiumExtendData
         $productImgs =
         $productUrls = [];
 
+        $itemOriginalPrice = [];
+
         $order = false;
 
         // load order... using Magento\Sales\Model\Order->loadByIncrementId() doesn't work here, instead we must use
@@ -599,6 +601,9 @@ class TealiumExtendData
                     }
                 }
 
+                // push the item original price
+                $itemOriginalPrice[] = $item->getOriginalPrice();
+
                 // limit to one cat/subcat
                 if (!empty($tmpProductCats) && !empty($tmpProductCats[0])) {
                     $productCategories[] = $tmpProductCats[0];
@@ -646,6 +651,34 @@ class TealiumExtendData
         $outputArray["order_tax_amount"] = $order && $order->getTaxAmount() ? $order->getTaxAmount() : "";
         $outputArray["order_type"] = 'www';
         $outputArray["order_status"] = $order && $order->getStatus() ? $order->getStatus() : "";
+
+        // additional tealium data needed
+        $outputArray["customer_street_line1"] = $outputArray["customer_street_1"];
+        $outputArray["customer_street_line2"] = $outputArray["customer_street_2"];
+        $outputArray["order_created_date"] = $order && $order->getCreatedAt() ? $order->getCreatedAt() : "";
+        $shippingAddress = $order && $order->getShippingAddress() ? $order->getShippingAddress() : false;
+        $shippingAddressStreet = $shippingAddress && $shippingAddress->getStreet() ? $shippingAddress->getStreet() : [];
+        $shippingStreet1 = array_key_exists(0, $shippingAddressStreet) ? $shippingAddressStreet[0] : "";
+        $shippingStreet2 = array_key_exists(1, $shippingAddressStreet) ? $shippingAddressStreet[1] : "";
+        $shipCity = $shippingAddress && $shippingAddress->getCity() ? $shippingAddress->getCity() : "";
+        $shipState = $shippingAddress && $shippingAddress->getRegion() ? $shippingAddress->getRegion() : "";
+        $shipPostalCode = $shippingAddress && $shippingAddress->getPostcode() ? $shippingAddress->getPostcode() : "";
+        $shipCountryCode = $shippingAddress && $shippingAddress->getCountryId() ? $shippingAddress->getCountryId() : "";
+        $shipCountry = $shippingAddress && $shippingAddress->getCountryId() ? $shippingAddress->getCountryId() : "";
+        $customerId = $order && $order->getCustomerId() ? $order->getCustomerId() : "";
+        $orderDiscountAmount = $order && $order->getDiscountAmount() ? $order->getDiscountAmount() : "";
+        $orderCouponCode = $order && $order->getCouponCode() ? $order->getCouponCode() : "";
+
+        $outputArray["customer_street_line1_shipping"] = $shippingStreet1;
+        $outputArray["customer_street_line2_shipping"] = $shippingStreet2;
+        $outputArray["customer_city_shipping"] = $shipCity;
+        $outputArray["customer_state_shipping"] = $shipState;
+        $outputArray["customer_zip_shipping"] = $shipPostalCode;
+        $outputArray["customer_country_shipping"] = $shipCountry;
+        $outputArray["customer_id"] = $customerId;
+        $outputArray["order_discount_amount"] = $orderDiscountAmount;
+        $outputArray["order_promo_code"] = $orderCouponCode;
+        $outputArray["product_original_price"] = $itemOriginalPrice;
 
         return $outputArray;
     }
