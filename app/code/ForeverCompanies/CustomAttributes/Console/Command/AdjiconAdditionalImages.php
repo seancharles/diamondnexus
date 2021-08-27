@@ -119,9 +119,6 @@ class AdjiconAdditionalImages extends Command
                     }
                 }
 
-                print_r($imageGalleryList);
-                exit;
-
                 foreach($imagesList as $imageFile => $imageOptionId) {
                     $path = $basePath . "/pub/media/adjconfigurable/" . $imageFile;
 
