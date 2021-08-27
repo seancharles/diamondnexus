@@ -15,6 +15,7 @@ use Magento\Reports\Model\ResourceModel\Product\Sold\CollectionFactory as SoldPr
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
+
 class StoneImport
 {    
     protected $storeRepository;
@@ -548,8 +549,20 @@ class StoneImport
                 
                 $product = $this->productFactory->create();
                 
-                $imageFileName = $this->mediaTmpDir . DIRECTORY_SEPARATOR . baseName($csvArr['Image Link']);
+                $imageFileName = $this->mediaTmpDir . DIRECTORY_SEPARATOR . basename($csvArr['Image Link']);
+                
+                $imagePathInfo = pathinfo($imageFileName);
+                
+                if (!isset($imagePathInfo['extension'])) {
+                    if (isset($imagePathInfo['mime']) && $imagePathInfo['mime'] == 'image/jpeg') {
+                        $imageFileName .= ".jpg";
+                    } else {
+                        $imageFileName .= ".jpg";
+                    }
+                }
+                
                 $imageResult = $this->file->read($csvArr['Image Link'], $imageFileName);
+
                 if ($imageResult) {
                     $product->addImageToMediaGallery(
                         $imageFileName,
