@@ -13,7 +13,6 @@ use Magento\Framework\Filesystem\Io\File;
 use Magento\Reports\Model\ResourceModel\Product\Sold\CollectionFactory as SoldProductCollectionFactory;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-
 use Magento\Framework\Exception\Plugin\AuthenticationException as PluginAuthenticationException;
 use Magento\Framework\Exception\State\ExpiredException;
 use Magento\Framework\Exception\State\InitException;
