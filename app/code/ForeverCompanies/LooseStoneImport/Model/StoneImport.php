@@ -548,8 +548,20 @@ class StoneImport
                 
                 $product = $this->productFactory->create();
                 
-                $imageFileName = $this->mediaTmpDir . DIRECTORY_SEPARATOR . baseName($csvArr['Image Link']);
+                $imageFileName = $this->mediaTmpDir . DIRECTORY_SEPARATOR . basename($csvArr['Image Link']);
+                
+                $imagePathInfo = pathinfo($imageFileName);
+                
+                if (!isset($imagePathInfo['extension'])) {
+                    if (isset($imagePathInfo['mime']) && $imagePathInfo['mime'] == 'image/jpeg') {
+                        $imageFileName .= ".jpg";
+                    } else {
+                        $imageFileName .= ".jpg";
+                    }
+                }
+                
                 $imageResult = $this->file->read($csvArr['Image Link'], $imageFileName);
+                
                 if ($imageResult) {
                     $product->addImageToMediaGallery(
                         $imageFileName,

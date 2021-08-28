@@ -7,6 +7,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Magento\Framework\App\State;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use ForeverCompanies\LooseStoneImport\Model\StoneImport;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Filesystem\Io\File;
 
 class StoneImages extends Command
 {
@@ -14,10 +19,31 @@ class StoneImages extends Command
     
     private $state;
     
+    protected $scopeConfig;
+    protected $storeScope;
+    protected $stoneImportModel;
+    protected $productModel;
+    protected $mediaTmpDir;
+    protected $file;
+    
     public function __construct(
-        State $st
-        ) {
+        State $st,
+        ScopeConfigInterface $scopeC,
+        StoneImport $stoneI,
+        Product $prod,
+        DirectoryList $directoryList,
+        File $fil
+    ) {
             $this->state = $st;
+            
+            $this->scopeConfig = $scopeC;
+            $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+            $this->stoneImportModel = $stoneI;
+            $this->productModel = $prod;
+            $this->mediaTmpDir = $directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . 'tmp';
+            
+            $this->file = $fil;
+           
             parent::__construct('forevercompanies:loose-stone-image-import');
     }
     
@@ -33,10 +59,9 @@ class StoneImages extends Command
             null,
             InputOption::VALUE_REQUIRED,
             'Name'
-            );
+        );
         parent::configure();
     }
-    
     
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -46,7 +71,39 @@ class StoneImages extends Command
             $output->writeln('<info>Provided name is `' . $name . '`</info>');
         }
         
-        echo 'ok here we are';
-        return;
+        $this->stoneImportModel->updateCsv();
+        $csvArray = $this->stoneImportModel->buildArray();
+        
+        foreach ($csvArray as $csvArr) {
+            $productId = $this->productModel->getIdBySku($csvArr['Certificate #']);
+            if ($productId) {
+                
+                $product = $this->productModel->load($productId);
+                $imageFileName = $this->mediaTmpDir . DIRECTORY_SEPARATOR . basename($csvArr['Image Link']);
+                $imagePathInfo = pathinfo($imageFileName);
+                
+                if (!isset($imagePathInfo['extension'])) {
+                    if (isset($imagePathInfo['mime']) && $imagePathInfo['mime'] == 'image/jpeg') {
+                        $imageFileName .= ".jpg";
+                    } else {
+                        $imageFileName .= ".jpg";
+                    }
+                }
+                
+                $imageResult = $this->file->read($csvArr['Image Link'], $imageFileName);
+                
+                if ($imageResult) {
+                    $product->addImageToMediaGallery(
+                        $imageFileName,
+                        ['image', 'small_image', 'thumbnail'],
+                        false,
+                        false
+                    );
+                }
+                
+                echo 'done with ' . $product->getName() . '<br />';
+            }
+        }
+        echo 'done!';
     }
 }
