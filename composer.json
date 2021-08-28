@@ -100,6 +100,12 @@
             },
             "magento/module-asynchronous-operations": {
                 "Fix Bulk Action (patched in 2.4.2)": "./app/code/ForeverCompanies/CustomAdmin/Setup/Patch/moduleAsynchronousOperations.patch"
+            },
+            "magento/module-checkout": {
+                "Fix Paypal Checkout": "./app/code/ForeverCompanies/CustomAdmin/Setup/Patch/magentocheckout.patch"
+            },
+            "shipperhq/module-shipper": {
+                "Fix Paypal Checkout": "./app/code/ForeverCompanies/CustomAdmin/Setup/Patch/shipperhq.patch"
             }
         }
     }
