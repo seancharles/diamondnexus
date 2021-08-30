@@ -9,7 +9,6 @@ class StagingApplier
     protected $versionHistory;
     protected $resourceConnection;
     protected $scopeConfig;
-    protected $configWriter;
 
     const PRODUCER_CONNECTION_ENABLED = 'forevercompanies_producer/connection/enabled';
     const PRODUCER_CONNECTION_USE_SSL = 'forevercompanies_producer/connection/use_ssl';
@@ -25,15 +24,13 @@ class StagingApplier
         \Magento\Staging\Api\UpdateRepositoryInterface $updateRepository,
         \Magento\Staging\Model\VersionHistoryInterface $versionHistory,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     ) {
         $this->logger = $logger;
         $this->updateRepository = $updateRepository;
         $this->versionHistory = $versionHistory;
         $this->resourceConnection = $resourceConnection;
         $this->scopeConfig = $scopeConfig;
-        $this->configWriter = $configWriter;
     }
 
     /**
@@ -70,16 +67,23 @@ class StagingApplier
 
         $versionId = $this->versionHistory->getCurrentId();
 
-        $this->logger->debug("staging applier: version = " . $versionId);
+        $this->logger->debug("staging applier: version = " . $versionId . ", lastVersion=" . $lastVersion);
 
         if ($versionId > 0 && $lastVersion != $versionId) {
-            // write the current version to the system
-            $this->configWriter->save(self::PRODUCER_VERSION, $versionId, ScopeConfigInterface::SCOPE_TYPE_DEFAULT);
+                $version = $this->updateRepository->get($versionId);
 
-            $version = $this->updateRepository->get($versionId);
+                $versionTime = $version->getStartTime();
+                $versionTitle = $version->getName();
 
-            $versionTime = $version->getStartTime();
-            $versionTitle = $version->getName();
+            $this->logger->debug("staging applier: applying update " . $versionTitle);
+
+            $query = "UPDATE
+                            core_config_data
+                        SET
+                            value = '" . filter_var($versionId, FILTER_SANITIZE_SPECIAL_CHARS) . "'
+                        WHERE
+                            path = '" . self::PRODUCER_VERSION . "';";
+            $connection->query($query);
 
             $query = "SELECT
                         crw.website_id
@@ -100,39 +104,48 @@ class StagingApplier
                     $websiteCode = $siteCodes[$row['website_id']];
                     
                     $this->logger->debug("Running elder build for: " . $websiteCode);
-                    
-                    $params = new \Zend\Stdlib\Parameters([
-                        'task' => 'exportelder--' . $websiteCode,
-                        'source' => 'mag'
-                    ]);
-                    
-                    $httpHeaders = new \Zend\Http\Headers();
-                    $httpHeaders->addHeaders([
-                       'Accept' => 'text/html',
-                       'Content-Type' => 'text/html'
-                    ]);
-                    
-                    $request = new \Zend\Http\Request();
-                    $request->setHeaders($httpHeaders);
-                    $request->setUri((($useSSL == 1) ? 'https://' : 'http://') . $producerHost);
-                    $request->setMethod(\Zend\Http\Request::METHOD_GET);
-                    $request->setQuery($params);
 
-                    $client = new \Zend\Http\Client();
-                    $options = [
-                        'adapter' => 'Zend\Http\Client\Adapter\Curl',
-                        'curloptions' => [CURLOPT_FOLLOWLOCATION => true],
-                        'maxredirects' => 1,
-                        'timeout' => 30
-                    ];
-                    $client->setOptions($options);
+                    try {
+                        $params = new \Zend\Stdlib\Parameters([
+                            'task' => 'exportelder--' . $websiteCode,
+                            'source' => 'mag'
+                        ]);
 
-                    // conditionally use basic auth
-                    if ($useBasicAuth) {
-                        $client->setAuth($authUser, $authPass);
+                        $httpHeaders = new \Zend\Http\Headers();
+                        $httpHeaders->addHeaders([
+                            'Accept' => 'text/html',
+                            'Content-Type' => 'text/html'
+                        ]);
+
+                        $request = new \Zend\Http\Request();
+                        $request->setHeaders($httpHeaders);
+                        $request->setUri((($useSSL == 1) ? 'https://' : 'http://') . $producerHost);
+                        $request->setMethod(\Zend\Http\Request::METHOD_GET);
+                        $request->setQuery($params);
+
+                        $client = new \Zend\Http\Client();
+                        $options = [
+                            'adapter' => 'Zend\Http\Client\Adapter\Curl',
+                            'curloptions' => [CURLOPT_FOLLOWLOCATION => true],
+                            'maxredirects' => 1,
+                            'timeout' => 30
+                        ];
+                        $client->setOptions($options);
+                        // conditionally use basic auth
+                        if ($useBasicAuth) {
+                            $client->setAuth($authUser, $authPass);
+                        }
+                        $response = $client->send($request);
+
+                        if($response->getStatusCode() != 200) {
+                            $this->logger->debug("Staging applier failed: response code: " . $response->getStatusCode());
+                        } else {
+                            $this->logger->debug("Staging applier: applied sale: " . $versionTitle);
+                        }
+
+                    } catch (\Exception $e) {
+                        $this->logger->critical('Staging applier error:', ['exception' => $e]);
                     }
-
-                    $response = $client->send($request);
                 }
             }
 
