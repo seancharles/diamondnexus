@@ -128,6 +128,8 @@ class OrderItemCustomOptions
                     } else {
                         $customOption->setOptionValueTitle($value);
                     }
+                } else {
+                    $customOption->setOptionValueTitle($value);
                 }
             } else {
                 $customOption->setOptionValueTitle('');
