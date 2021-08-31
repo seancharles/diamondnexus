@@ -120,7 +120,7 @@ class OrderItemCustomOptions
             }
             if ($value !== '') {
                 $rowOption = $connection->fetchRow($option);
-                if($rowOption['type'] == 'dropdown' || $rowOption['type'] == 'radio') {
+                if($rowOption['type'] == 'drop_down' || $rowOption['type'] == 'radio') {
                     $val = $connection->select()->from($valueTable)->where('option_type_id = "' . $value . '"');
                     $rowVal = $connection->fetchRow($val);
                     if ($rowVal !== false) {
