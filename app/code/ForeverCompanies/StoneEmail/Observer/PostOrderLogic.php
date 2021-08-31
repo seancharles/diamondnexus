@@ -67,9 +67,10 @@ class PostOrderLogic implements ObserverInterface
                 $stockItem->setQty(0);
                 $stockItem->setIsInStock(false);
                 $this->stockRegistry->updateStockItemBySku($orderItem->getProduct()->getSku(), $stockItem);
-                $supplier = $this->_getSupplierName($product->getSupplier());
-                $query = $this->connection->select()->from('stones_supplier')->where('name=?', $supplier);
-                $supplierEmail = $this->connection->fetchAll($query)[0]['email'];
+                $query = $this->connection->select()->from('stones_supplier')->where('id=?', $product->getSupplier());
+                $result = $this->connection->fetchAll($query);
+                $supplierEmail = $result[0]['email'];
+                $supplier = $result[0]['name'];
                 $html = "Hello,<br/><br/>";
                 $html .= "This email confirms sale of your diamond, Stock # " . $product->getSku() . ", sold through "
                     . $storeName
@@ -79,7 +80,7 @@ class PostOrderLogic implements ObserverInterface
                     . " with further instructions.<br /><br />";
                 $html .= "Order Date: " . $this->date->gmtdate('F j Y h:i:s') . " GMT<br /><br />";
                 $html .= "SKU:     " . $product->getSku() . '<br />';
-                $html .= "Weight:  " . $product->getWeight() . '<br />';
+                $html .= "Weight:  " . $product->getCaratWeight() . '<br />';
                 $html .= "Shape:   "
                     . $product->getResource()->getAttribute('shape')->getFrontend()->getValue($product) . '<br />';
                 $html .= "Clarity: "
