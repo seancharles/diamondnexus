@@ -120,10 +120,10 @@ class OrderItemCustomOptions
             }
             if ($value !== '') {
                 $rowOption = $connection->fetchRow($option);
-                if($rowOption['type'] == 'drop_down' || $rowOption['type'] == 'radio') {
+                if(isset($rowOption['type']) === true && ($rowOption['type'] == 'drop_down' || $rowOption['type'] == 'radio')) {
                     $val = $connection->select()->from($valueTable)->where('option_type_id = "' . $value . '"');
                     $rowVal = $connection->fetchRow($val);
-                    if ($rowVal !== false) {
+                    if (isset($rowVal) === true && $rowVal !== false) {
                         $customOption->setOptionValueTitle($rowVal['title']);
                     } else {
                         $customOption->setOptionValueTitle($value);
