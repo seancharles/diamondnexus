@@ -1,0 +1,30 @@
+--- view/frontend/web/js/view/shipping-information/address-renderer/default.js	2021-08-27 19:00:59.009690045 -0500
++++ view/frontend/web/js/view/shipping-information/address-renderer/default.js	2021-08-27 19:00:59.009690045 -0500
+@@ -10,6 +10,7 @@
+ ], function (Component, _, customerData) {
+     'use strict';
+ 
++    customerData.reload(['directory-data'], false);
+     var countryData = customerData.get('directory-data');
+ 
+     return Component.extend({
+@@ -26,6 +27,19 @@
+         },
+ 
+         /**
++         * @param {*} stateId
++         * @param {*} countryId
++         * @return {String}
++         */
++        getStateName: function (stateId,countryId) {
++            if (_.isEmpty(countryData())) {
++                countryData(customerData.reload(['directory-data'], false));
++            }
++            var state_obj = countryData()[countryId].regions[stateId];
++            return state_obj.name;
++        },
++
++        /**
+          * Get customer attribute label
+          *
+          * @param {*} attribute
