@@ -115,19 +115,26 @@
     .cart.table-wrapper .cart thead tr th.col {
         font-weight: bold;
     }
+    a.action.continue {
+        font-weight: bold;
+    }
     a.affirm-modal-trigger,
     a.action.continue {
         font-size: 14px;
-        font-weight: bold;
         display: block;
+        color: #000 !important;
+    }
+    #affirmfinance {
+        font-size: 14px;
     }
     .item-info {
         .field.qty {
-            border: 1px solid #c2c2c2;
+            border: 1px solid #bcbcbc;
             font-size: 14px;
-            height: 36px;
+            height: 30px;
+            width: 40px;
             text-align: center;
-            padding-top: 7px;
+            padding-top: 3px;
             font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial,
                 sans-serif;
         }
@@ -135,6 +142,7 @@
             margin-top: 0 !important;
             height: auto !important;
             border: none;
+            width: 30px !important;
         }
     }
     .action-rebuild {
@@ -143,6 +151,12 @@
         right: 10px;
         font-weight: bold;
         font-size: 14px;
+    }
+    .stone-price-heading {
+        display: none;
+    }
+    #block-discount {
+        display: none;
     }
 }
 
@@ -180,12 +194,30 @@
     .cart .action.clear,
     .cart .action.update {
         margin: 5px !important;
+        width: auto !important;
     }
     .cart.main.actions {
         margin: 10px;
     }
     .action-continue.we-accept {
         padding: 15px;
+    }
+    .stone-price-heading {
+        display: inline-block !important;
+    }
+    .item-info {
+        .col.qty {
+            text-align: center !important;
+            .field {
+                margin: 0 auto;
+            }
+        }
+        .col.subtotal {
+            text-align: right !important;
+        }
+    }
+    .checkout-cart-index .product-item-name {
+        font-size: 16px !important;
     }
 }
 
