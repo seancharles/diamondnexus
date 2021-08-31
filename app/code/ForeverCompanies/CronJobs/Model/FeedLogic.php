@@ -377,7 +377,7 @@ class FeedLogic
         }
         $recom = 'True';
         $attributeSetModel = $this->attributeSetMod->get($product->getAttributeSetId());
-        $attributeSetName  = $attributeSetModel->getAttributeSetName();
+        $attributeSetName  = str_replace('Migration_', '', $attributeSetModel->getAttributeSetName());
         // Get Options? (Ring Size)
         $options_cus = $product->getOptions();
         
