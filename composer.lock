@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a5feb536313d7502dcfd5092055857c5",
+    "content-hash": "5653f78d69fcb6af4d9a86f457dada4a",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -8513,6 +8513,11 @@
                 "magento/module-cookie": "100.4.*"
             },
             "type": "magento2-module",
+            "extra": {
+                "patches_applied": {
+                    "Fix Paypal Checkout": "./app/code/ForeverCompanies/CustomAdmin/Setup/Patch/magentocheckout.patch"
+                }
+            },
             "autoload": {
                 "files": [
                     "registration.php"
@@ -21793,6 +21798,11 @@
                 "theseer/phpdox": "^0.10.1"
             },
             "type": "magento2-module",
+            "extra": {
+                "patches_applied": {
+                    "Fix Paypal Checkout": "./app/code/ForeverCompanies/CustomAdmin/Setup/Patch/shipperhq.patch"
+                }
+            },
             "autoload": {
                 "files": [
                     "src/registration.php"
@@ -21821,16 +21831,16 @@
         },
         {
             "name": "signifyd/module-connect",
-            "version": "4.1.1",
+            "version": "4.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/signifyd/magento2.git",
-                "reference": "779bd3cfb4e32ee3223637f37b71b62cd5543124"
+                "reference": "c5db7a0214b97c072d36c9913fb3989ddaf9dd55"
             },
             "require": {
                 "monolog/monolog": ">=1.16.0",
                 "php": ">=5.5.22",
-                "signifyd/signifyd-php": "3.0.1"
+                "signifyd/signifyd-php": "3.1.1"
             },
             "type": "magento2-module",
             "autoload": {
@@ -21842,20 +21852,20 @@
                 }
             },
             "description": "Signifyd integration for Magento",
-            "time": "2021-05-25T15:25:07+00:00"
+            "time": "2021-07-28T13:53:56+00:00"
         },
         {
             "name": "signifyd/signifyd-php",
-            "version": "3.0.1",
+            "version": "3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/signifyd/php.git",
-                "reference": "4aed24c0ae077b645a9aae526504e6dda5bffca5"
+                "reference": "f22b5a2ff0ca396075eafc368545c5e5ba56c47c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/signifyd/php/zipball/4aed24c0ae077b645a9aae526504e6dda5bffca5",
-                "reference": "4aed24c0ae077b645a9aae526504e6dda5bffca5",
+                "url": "https://api.github.com/repos/signifyd/php/zipball/f22b5a2ff0ca396075eafc368545c5e5ba56c47c",
+                "reference": "f22b5a2ff0ca396075eafc368545c5e5ba56c47c",
                 "shasum": ""
             },
             "require": {
@@ -21877,7 +21887,7 @@
                 "MIT"
             ],
             "description": "Signifyd client API plugin for PHP",
-            "time": "2021-03-05T20:58:11+00:00"
+            "time": "2021-06-24T19:46:06+00:00"
         },
         {
             "name": "spomky-labs/otphp",

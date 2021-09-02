@@ -434,6 +434,7 @@ return [
         'ForeverCompanies_LooseStonesGrid' => 1,
         'ForeverCompanies_LooseStonesQuery' => 1,
         'ForeverCompanies_Migration' => 1,
+        'ForeverCompanies_OrderIncrementId' => 1,
         'ForeverCompanies_PhoneValidation' => 1,
         'ForeverCompanies_ProductUrlPrefix' => 1,
         'ForeverCompanies_Profile' => 1,
