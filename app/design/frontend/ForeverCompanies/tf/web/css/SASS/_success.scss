@@ -6,11 +6,20 @@
     .page-title {
         text-align: center !important;
         letter-spacing: 3px !important;
-        font-size: 42px !important;
         margin-bottom: 10px !important;
+        font-size: 30px !important;
         .base {
             white-space: pre-line;
             text-align: center !important;
+        }
+    }
+    .columns {
+        max-width: 1020px;
+        margin: 0 auto;
+        padding: 0 15px;
+        h3 {
+            font-size: 18px !important;
+            line-height: 26px !important;
         }
     }
     .page-main > .page-title-wrapper .page-title + .action {

@@ -69,6 +69,13 @@
             background: #8e7171 !important;
         }
     }
+    .actions-toolbar .secondary .remind {
+        padding-top: 10px;
+        margin-left: 15px;
+        font-size: 12px;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
     input[type='radio'] {
         width: 18px !important;
         height: 18px !important;
@@ -76,7 +83,16 @@
         border: 1px solid #000 !important;
     }
     input[type='radio']:not([disabled]):checked {
-        background-color: #000 !important;
+        position: relative;
+        &:after {
+            content: '✔';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            color: #000;
+        }
     }
     .braintree-credit-card-selected {
         width: 32px;
@@ -110,6 +126,39 @@
     }
     .opc-block-summary .product-item .price {
         font-size: 16px !important;
+    }
+    .authentication-dropdown .action-close,
+    .opc-summary-wrapper .action-close,
+    .modal-popup .modal-inner-wrap .action-close {
+        background: transparent !important;
+        min-width: 20px !important;
+        &:before {
+            font-weight: bold !important;
+            color: #000;
+        }
+        &:hover:before {
+            color: #8e7171 !important;
+        }
+    }
+    .opc-summary-wrapper .action-close {
+        width: 50px !important;
+        padding: 15px !important;
+    }
+    .authentication-dropdown .primary {
+        float: none !important;
+        .action-login {
+            min-width: 100% !important;
+        }
+    }
+    .authentication-dropdown .action-remind {
+        font-size: 14px;
+    }
+    .modal-footer {
+        display: block !important;
+        padding: 20px !important;
+        button {
+            margin: 0 10px !important;
+        }
     }
 }
 

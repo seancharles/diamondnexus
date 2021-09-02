@@ -96,6 +96,21 @@
             background: #bfa374 !important;
         }
     }
+    .opc-wrapper .action-select-shipping-item,
+    .new-address-popup .action-show-popup {
+        float: none !important;
+        background: transparent !important;
+        color: #000 !important;
+        border: 2px solid #000 !important;
+        font-size: 12px !important;
+        min-width: 180px !important;
+        padding: 12px 15px !important;
+        margin-top: 30px !important;
+        &:hover {
+            background: #000 !important;
+            color: #fff !important;
+        }
+    }
     .payment-option-content {
         .form-discount {
             display: flex;
@@ -114,6 +129,10 @@
     .field.choice {
         display: flex;
     }
+    label,
+    .label {
+        font-weight: bold !important;
+    }
     input[type='radio'] {
         width: 18px;
         height: 18px;
@@ -121,12 +140,27 @@
         border: 1px solid #000;
     }
     input[type='radio']:not([disabled]):checked {
-        background-color: #000 !important;
+        position: relative;
+        &:after {
+            content: '✔';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            color: #000;
+        }
     }
     input[type='checkbox'] {
         height: 22px;
         width: 23px;
         margin-right: 10px;
+    }
+    .fieldset > .field.required > .label:after,
+    .fieldset > .fields > .field.required > .label:after,
+    .fieldset > .field._required > .label:after,
+    .fieldset > .fields > .field._required > .label:after {
+        font-size: 15px;
     }
     .braintree-credit-card-selected {
         width: 32px;
@@ -150,6 +184,86 @@
         padding: 0 !important;
         min-width: auto !important;
     }
+    .actions-toolbar .secondary .remind {
+        padding-top: 10px;
+        margin-left: 15px;
+        font-size: 12px;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+    .field .control._with-tooltip input {
+        width: 100% !important;
+    }
+    .field-tooltip {
+        right: -30px !important;
+    }
+    .action-auth-toggle {
+        background: transparent !important;
+        color: #000 !important;
+        border: 2px solid #000 !important;
+        font-size: 12px !important;
+        min-width: 180px !important;
+        padding: 12px 15px !important;
+        &:hover {
+            background: #000 !important;
+            color: #fff !important;
+        }
+    }
+    .authentication-dropdown .action-close,
+    .opc-summary-wrapper .action-close,
+    .modal-popup .modal-inner-wrap .action-close {
+        background: transparent !important;
+        min-width: 20px !important;
+        &:before {
+            font-weight: bold !important;
+            color: #000;
+        }
+        &:hover:before {
+            color: #bfa374 !important;
+        }
+    }
+    .opc-summary-wrapper .action-close {
+        width: 50px !important;
+        padding: 15px !important;
+    }
+    .authentication-dropdown .primary {
+        float: none !important;
+        .action-login {
+            min-width: 100% !important;
+        }
+    }
+    .authentication-dropdown .action-remind {
+        font-size: 14px;
+    }
+    .col-method {
+        font-size: 14px;
+    }
+    .shipping-address-item a {
+        position: absolute;
+        margin-top: -20px;
+    }
+    .opc-estimated-wrapper .minicart-wrapper {
+        display: block !important;
+        .showcart {
+            background: transparent !important;
+            min-width: 20px !important;
+            padding: 10px !important;
+            .counter {
+                background: #bfa374;
+                border-radius: 0;
+                .counter-number {
+                    text-shadow: none !important;
+                }
+            }
+        }
+    }
+    .modal-footer {
+        display: block !important;
+        padding: 20px !important;
+        button {
+            margin: 0 10px !important;
+        }
+    }
 }
 
 @media screen and (max-width: 1024px) {
@@ -165,6 +279,12 @@
         }
         .opc-block-summary .product-item .price {
             font-size: 14px !important;
+        }
+        .minicart-items .product > .product-image-container {
+            width: 20px !important;
+        }
+        .minicart-items .product-item-details {
+            padding-left: 25px !important;
         }
     }
     .payment-option-content .form-discount {
@@ -195,6 +315,22 @@
         .checkout-payment-method .payment-methods {
             margin: 0 !important;
         }
+        .actions-toolbar .secondary .remind {
+            margin-left: 0;
+        }
+        .form-login input,
+        .field .control._with-tooltip input {
+            width: 95% !important;
+        }
+        .field-tooltip {
+            right: -10px !important;
+        }
+        .minicart-items .product > .product-image-container {
+            width: 55px !important;
+        }
+        .minicart-items .product-item-details {
+            padding-left: 65px !important;
+        }
     }
 }
 @media screen and (max-width: 639px) {
@@ -205,5 +341,12 @@
     }
     .checkout-index-index #checkout {
         padding: 0;
+    }
+    .checkout-index-index .methods-shipping {
+        background: #fff !important;
+    }
+    .checkout-container .checkout-shipping-address div.new-address-popup,
+    .checkout-container .checkout-payment-method div.new-address-popup {
+        margin: 0 !important;
     }
 }
