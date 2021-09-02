@@ -13,6 +13,7 @@ use Magento\Framework\Filesystem\Io\File;
 use Magento\Reports\Model\ResourceModel\Product\Sold\CollectionFactory as SoldProductCollectionFactory;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use ForeverCompanies\CustomSales\Helper\Producer;
 
 use Magento\Framework\Exception\Plugin\AuthenticationException as PluginAuthenticationException;
 use Magento\Framework\Exception\State\ExpiredException;
@@ -62,6 +63,7 @@ class StoneImport
     protected $mediaTmpDir;
     protected $file;
     protected $connection;
+    protected $producerHelper;
     
     protected $booleanMap;
     protected $csvHeaderMap;
@@ -106,7 +108,8 @@ class StoneImport
         File $fil,
         SoldProductCollectionFactory $soldProductColl,
         ProductRepository $productR,
-        ScopeConfigInterface $scopeC
+        ScopeConfigInterface $scopeC,
+        Producer $produc
         ) {
             $this->productCollectionFactory = $collectionFactory;
             $this->productModel = $prod;
@@ -118,6 +121,7 @@ class StoneImport
             $this->file = $fil;
             $this->soldProductCollectionFactory = $soldProductColl;
             $this->productRepo = $productR;
+            $this->producerHelper = $produc;
             
             $this->mediaTmpDir = $directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . 'tmp';
             $this->file->checkAndCreateFolder($this->mediaTmpDir );
@@ -681,6 +685,7 @@ class StoneImport
         } // end foreach ($csvArray as $csvArr) {
         
         $this->_cleanLogs();
+        $this->producerHelper->flushElderCache();
     }
     
     protected function _applyCsvRowToProduct($product, $csvArr)
