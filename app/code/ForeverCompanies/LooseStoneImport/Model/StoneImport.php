@@ -573,7 +573,7 @@ class StoneImport
                         );
                     } catch(\Magento\Framework\Exception\LocalizedException $e) {
                         $this->_stoneLog($product, $csvArr, "error", "New Product " . $csvArr['Certificate #'] . " not created. Incorrect image extension");
-                        die;
+                        continue;
                     }
                     
                 } else {
