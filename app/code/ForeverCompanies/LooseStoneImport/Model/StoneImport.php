@@ -564,14 +564,20 @@ class StoneImport
                 $imageResult = $this->file->read($csvArr['Image Link'], $imageFileName);
 
                 if ($imageResult) {
-                    $product->addImageToMediaGallery(
-                        $imageFileName,
-                        ['image', 'small_image', 'thumbnail'],
-                        false,
-                        false
+                    try {
+                        $product->addImageToMediaGallery(
+                            $imageFileName,
+                            ['image', 'small_image', 'thumbnail'],
+                            false,
+                            false
                         );
+                    } catch(\Magento\Framework\Exception\LocalizedException $e) {
+                        $this->_stoneLog($product, $csvArr, "error", "New Product " . $csvArr['Certificate #'] . " not created. Incorrect image extension");
+                        die;
+                    }
+                    
                 } else {
-                    $this->_stoneLog($product, $csvArr, "add", "New Product " . $csvArr['Certificate #'] . " not created.");
+                    $this->_stoneLog($product, $csvArr, "error", "New Product " . $csvArr['Certificate #'] . " not created. No image.");
                     continue;
                 }
                 
