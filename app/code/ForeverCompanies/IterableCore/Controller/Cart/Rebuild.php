@@ -41,12 +41,9 @@ class Rebuild extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
-        $request = $this->getRequest()->getParams();
-
-        if (isset($request['qid']) == true) {
-
-            $quoteId = (int)$request['qid'];
-
+        $quoteId = (int) $this->getRequest()->getParam('id');
+        
+        if ($quoteId > 0) {
             // get the customers quote id
             $customerQuoteId = $this->_cart->getQuote()->getId();
 
