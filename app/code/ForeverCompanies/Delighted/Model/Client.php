@@ -1,5 +1,4 @@
 <?php
-
 namespace ForeverCompanies\Delighted\Model;
 
 use Exception;
@@ -10,7 +9,6 @@ require __DIR__ . '/Version.php';
 
 class Client
 {
-
     const DEFAULT_BASE_URL = 'https://api.delighted.com/v1/';
     protected $apiKey = null;
     protected $adapter = null;
@@ -63,7 +61,7 @@ class Client
         $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
 
-    public static function getInstance(array $options = null)
+    public function getInstance(array $options = null)
     {
         $options['apiKey'] = $this->scopeConfig->getValue('forevercompanies_delighted/api_keys/key', $this->storeScope);
         

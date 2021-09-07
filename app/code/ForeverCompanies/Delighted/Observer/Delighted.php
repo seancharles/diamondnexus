@@ -35,14 +35,6 @@ class Delighted implements ObserverInterface
             $order = $this->orderFactory->create()->load($orderId);
             $region = $this->regionFactory->create()->load( $order->getBillingAddress()->getRegionId() );
             
-            /*
-            $this->logger->debug("order id");
-            $this->logger->debug( $orderId );
-            
-            $this->logger->debug("order increment id");
-            $this->logger->debug( $order->getIncrementId() );
-            */
-            
             $result = $this->person->create([
     	       'email' => $order->getCustomerEmail(),
     	       'properties' => [
@@ -50,13 +42,6 @@ class Delighted implements ObserverInterface
     	           'State' => $region->getCode()
 	           ]
 	        ]);
-            
-            
-            /*
-            $this->logger->debug("result");
-            $this->logger->debug($result);
-            */
         }
-        
     }
 }

@@ -3,20 +3,25 @@
 namespace ForeverCompanies\Delighted\Model;
 
 use ForeverCompanies\Delighted\Model\Resource;
+use ForeverCompanies\Delighted\Model\Client;
 
 class Person extends Resource
 {
     protected static $path = 'people';
+    
+    protected $person;
+    protected $client;
+    
+    public function __construct(
+        Client $cli
+    ) {
+        $this->client = $cli;
+    }
 
-    public static function create($props = [], Client $client = null)
+    public function create($props = [], Client $client = null)
     {
-        if (is_null($client)) {
-            $client = Client::getInstance(array());
-        }
-
-        $response = $client->post(self::$path, $props);
-        
-        return new Person($response);
+        $response = $this->client->post(self::$path, $props);
+        return $response;
     }
 
     public static function delete($idAssoc = array(), Client $client = null) {
