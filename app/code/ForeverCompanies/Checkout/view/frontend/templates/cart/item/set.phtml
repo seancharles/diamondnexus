@@ -35,9 +35,10 @@ $product = $objectManager->create('Magento\Catalog\Model\Product')->load($produc
         if ($collection) {
             $collection->addFieldToFilter('quote_id', $_item->getQuoteId());
             $collection->addFieldToFilter('set_id', $_item->getSetId());
+            $collection->addFieldToFilter('product_type', 'simple');
 
             if ($_item->getItemId() != $collection->getLastItem()->getId()) {
-                $diamondItem = $collection->getLastItem();
+                $diamondItem = $collection->getFirstItem();
             }
         }
         ?>
