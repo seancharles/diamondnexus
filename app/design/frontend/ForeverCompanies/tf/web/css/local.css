@@ -131,6 +131,49 @@ footer {
   .copyright a {
     color: inherit !important; }
 
+.customer-account-login #maincontent {
+  position: relative; }
+
+.customer-account-login .page.messages {
+  padding-top: 105px; }
+  @media screen and (min-width: 768px) {
+    .customer-account-login .page.messages {
+      padding-top: 55px; } }
+
+.customer-account-login .password-reset-messaging {
+  position: absolute;
+  border: 1px solid #000;
+  padding: 3px;
+  top: 40px;
+  right: 20px;
+  left: 20px; }
+  @media screen and (min-width: 380px) {
+    .customer-account-login .password-reset-messaging {
+      top: 50px; } }
+  @media screen and (min-width: 768px) {
+    .customer-account-login .password-reset-messaging {
+      padding: 10px; } }
+  .customer-account-login .password-reset-messaging p {
+    font-size: 14px; }
+    @media screen and (min-width: 768px) {
+      .customer-account-login .password-reset-messaging p {
+        font-size: 16px; } }
+
+.customer-account-login .block-title {
+  padding-top: 0; }
+  @media screen and (min-width: 768px) {
+    .customer-account-login .block-title {
+      padding-top: 60px; } }
+  .customer-account-login .block-title #block-customer-login-heading {
+    display: block;
+    padding-top: 110px; }
+    @media screen and (min-width: 380px) {
+      .customer-account-login .block-title #block-customer-login-heading {
+        padding-top: 100px; } }
+    @media screen and (min-width: 768px) {
+      .customer-account-login .block-title #block-customer-login-heading {
+        padding-top: 0; } }
+
 .customer-account-login .actions-toolbar > .primary .action:last-child {
   cursor: pointer !important;
   font-family: var(--sans-serif) !important;
@@ -169,6 +212,9 @@ footer {
 .customer-account-login .login-container .block .block-title strong {
   font-weight: bold;
   font-size: 22px; }
+
+.customer-account-login .message.error {
+  font-size: 16px !important; }
 
 .account .nav a {
   color: #575757 !important; }

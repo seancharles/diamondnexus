@@ -141,14 +141,16 @@
     }
     input[type='radio']:not([disabled]):checked {
         position: relative;
-        &:after {
-            content: '✔';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 16px;
-            color: #000;
+        @media screen and (min-width: 768px) {
+            &:after {
+                content: '✔';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 16px;
+                color: #000;
+            }
         }
     }
     input[type='checkbox'] {
@@ -214,6 +216,7 @@
     .modal-popup .modal-inner-wrap .action-close {
         background: transparent !important;
         min-width: 20px !important;
+        text-align: right !important;
         &:before {
             font-weight: bold !important;
             color: #000;
@@ -238,10 +241,6 @@
     .col-method {
         font-size: 14px;
     }
-    .shipping-address-item a {
-        position: absolute;
-        margin-top: -20px;
-    }
     .opc-estimated-wrapper .minicart-wrapper {
         display: block !important;
         .showcart {
@@ -257,11 +256,21 @@
             }
         }
     }
+    .minicart-wrapper .action.showcart:before {
+        content: '' !important;
+        width: 25px;
+        height: 25px;
+        margin-top: 2px;
+        background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20class%3D%22nav__svg__icon--bag%20svelte-1w5mpo%22%20viewBox%3D%220%200%2016.5747%2021.9274%22%3E%3Cdefs%20class%3D%22svelte-1w5mpo%22%3E%3Cstyle%20class%3D%22svelte-1w5mpo%22%2F%3E%3C%2Fdefs%3E%3Cpath%20class%3D%223fb47baf-1371-4588-a2fa-d13b41ae7ebf%20svelte-1w5mpo%22%20d%3D%22M43.5156%2C31.6328a.8164.8164%2C0%2C0%2C0-.8154-.7744H40.1768V29.6665a4.2337%2C4.2337%2C0%2C0%2C0-8.4664.13v1.062H29.1851a.8172.8172%2C0%2C0%2C0-.8155.7763l-.7168%2C14.9737a.82.82%2C0%2C0%2C0%2C.8164.8193H43.4111l.0332-.001a.816.816%2C0%2C0%2C0%2C.7823-.8535ZM33.3423%2C29.7964a2.6%2C2.6%2C0%2C0%2C1%2C5.2%2C0v1.062h-5.2Zm-4.0137%2C16%2C.6333-13.3067H31.71v.45a.816.816%2C0%2C1%2C0%2C1.6319%2C0v-.4492h5.2v.4492a.8172.8172%2C0%2C0%2C0%2C.8164.816h.0029a.8146.8146%2C0%2C0%2C0%2C.8155-.816v-.4492h1.7451l.6328%2C13.3067Z%22%20transform%3D%22translate(-27.6528%20-25.5003)%22%2F%3E%3C%2Fsvg%3E');
+        background-repeat: no-repeat no-repeat;
+        background-position: center center;
+        background-size: contain;
+    }
     .modal-footer {
         display: block !important;
         padding: 20px !important;
         button {
-            margin: 0 10px !important;
+            margin: 5px 10px !important;
         }
     }
 }
@@ -348,5 +357,15 @@
     .checkout-container .checkout-shipping-address div.new-address-popup,
     .checkout-container .checkout-payment-method div.new-address-popup {
         margin: 0 !important;
+    }
+    .opc-wrapper .edit-address-link {
+        position: relative !important;
+        right: 0 !important;
+        &:before {
+            content: '' !important;
+        }
+        span {
+            position: relative !important;
+        }
     }
 }
