@@ -17,13 +17,16 @@ $isVisibleProduct = $product->isVisibleInSiteVisibility();
 $helper = $this->helper(Magento\Msrp\Helper\Data::class);
 $canApplyMsrp = $helper->isShowBeforeOrderConfirm($product) && $helper->isMinimalPriceLessMsrp($product);
 
+$priceHelper = $this->helper(Magento\Framework\Pricing\Helper\Data::class);
+
+
 // initialize object manager to load models
 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 $product = $objectManager->create('Magento\Catalog\Model\Product')->load($product->getId());
 ?>
 
 <?php if ($_item->getSetId() > 0) : ?>
-    <?php if ($product->getAttributeSetId() == 32 || $product->getAttributeSetId() == 18) : ?>
+    <?php if ($product->getAttributeSetId() == 32 || $produc ->getAttributeSetId() == 18) : ?>
         <?php
         $priceHelper = $block->getPriceHelper();
 
@@ -123,6 +126,13 @@ $product = $objectManager->create('Magento\Catalog\Model\Product')->load($produc
                     </td>
                 <?php else : ?>
                     <td class="col price" data-th="<?= $block->escapeHtml(__('Price')) ?>">
+                    	<?php if($_item->getProduct()->getSpecialPrice() != null): ?>
+                    		<span class="cart-price">
+                            	<span class="price" style="text-decoration: line-through;">
+                            		<?php echo $priceHelper->currency($_item->getProduct()->getPrice(), true, false);?>
+                           		</span> 
+                            </span>
+                		<?php endif;?>
                         <?= $block->getUnitPriceHtml($_item) ?>
                         <br />
                         <br />
@@ -175,6 +185,7 @@ $product = $objectManager->create('Magento\Catalog\Model\Product')->load($produc
 
     <?php endif; ?>
 <?php else : ?>
+
 
     <!-- default.phtml -->
     <tbody class="cart item">
@@ -259,6 +270,13 @@ $product = $objectManager->create('Magento\Catalog\Model\Product')->load($produc
                 </td>
             <?php else : ?>
                 <td class="col price" data-th="<?= $block->escapeHtml(__('Price')) ?>">
+                	<?php if($_item->getProduct()->getSpecialPrice() != null): ?>
+                		<span class="cart-price">
+                        	<span class="price" style="text-decoration: line-through;">
+                        		<?php echo $priceHelper->currency($_item->getProduct()->getPrice(), true, false);?>
+                       		</span> 
+                        </span>
+                	<?php endif;?>
                     <?= $block->getUnitPriceHtml($_item) ?>
                 </td>
             <?php endif; ?>
