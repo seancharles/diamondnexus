@@ -6,4 +6,7 @@
         <plugin name="get_order_item_loose_stone" type="ForeverCompanies\CustomApi\Plugin\OrderItemLooseStone"/>
         <plugin name="get_order_custom_options" type="ForeverCompanies\CustomApi\Plugin\OrderItemCustomOptions"/>
     </type>
+    <type name="Magento\Sales\Api\OrderItemRepositoryInterface">
+        <plugin name="get_order_item_sku" type="ForeverCompanies\CustomApi\Plugin\OrderItemSku"/>
+    </type>
 </config>
