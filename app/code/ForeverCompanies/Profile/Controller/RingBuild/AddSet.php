@@ -57,10 +57,12 @@ class AddSet extends \ForeverCompanies\Profile\Controller\ApiController
                     $stoneId = (int) $stoneParams['product'];
                         
                     $settingProduct = $this->productloader->create()->load($settingId);
-                        
-                    $this->profileHelper->addCartItem($settingId, $settingParams, $setId);
+
                     $this->profileHelper->addCartItem($stoneId, $stoneParams, $setId);
-                        
+                    $this->profileHelper->addCartItem($settingId, $settingParams, $setId);
+
+                    $this->profileHelper->cart->save();
+
                     $this->profileHelper->setProfileSessionKey('set_type', null);
                     $this->profileHelper->setProfileSessionKey('set_setting', null);
                     $this->profileHelper->setProfileSessionKey('set_setting_sku', null);

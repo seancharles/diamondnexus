@@ -9,13 +9,13 @@ class Profile
     
     public $request;
     public $formKeyValidator;
-    
+
     protected $customerSession;
     protected $checkoutSession;
     protected $cartRepository;
     protected $quoteItemCollectionFactory;
     protected $formKey;
-    protected $cart;
+    public $cart;
     protected $post;
     protected $postType;
     
@@ -78,7 +78,7 @@ class Profile
         }
     }
     
-    public function addCartItem($productId, $params, $setId = false)
+    public function addCartItem($productId, $params, $setId = false, $save = false)
     {
         // Specific for TF ring builder
         if ($setId != false) {
@@ -88,14 +88,12 @@ class Profile
         $storeId = $this->storeManager->getStore()->getId();
         
         $product = $this->productRepository->getById($productId, false, $storeId);
-        
-        // TBD if this is needed
-        if ($setId != false) {
-            $product->addCustomOption('ring_builder_identifier', $setId);
-        }
-        
+
         $this->cart->addProduct($product, $params);
-        $this->cart->save();
+
+        if ($save !== false) {
+            $this->cart->save();
+        }
         
         if ($setId != false) {
             $this->checkoutSession->setBundleIdentifier(null);
@@ -193,7 +191,7 @@ class Profile
     {
         $now = time();
         
-        $this->customerSession->setLastSync($now);
+        //$this->customerSession->setLastSync($now);
         
         $this->setProfileKey('lastsync', $now);
         
