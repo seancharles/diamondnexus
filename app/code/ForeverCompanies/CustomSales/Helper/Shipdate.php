@@ -286,13 +286,17 @@ class Shipdate extends AbstractHelper
     public function updateDeliveryDates($order)
     {
         // New orders don't need updated delivery dates
-        if (!$order->getEntityId()) {
+        $orderId = $order->getEntityId();
+
+        if (!$orderId) {
             return;
         }
+
+        $orderModel = $this->orderRepository->get($orderId);
         
         $connection = $this->shipperDetailResourceModel->getConnection();
         $select = $connection->select()->from($this->shipperDetailResourceModel->getMainTable())
-            ->where('order_id = ?', $order->getEntityId())
+            ->where('order_id = ?', $orderId)
             ->order('id desc')
             ->limit(1);
         
@@ -300,7 +304,7 @@ class Shipdate extends AbstractHelper
         $data = $connection->fetchRow($select);
         
         // get the number of days since the order was created
-        $daysAfterCreate = $this->getDateDifference($order->getCreatedAt(), date('Y-m-d'));
+        $daysAfterCreate = $this->getDateDifference($orderModel->getCreatedAt(), date('Y-m-d'));
         
         if ($daysAfterCreate == 0 ||
             isset($data['dispatch_date']) === false ||
@@ -331,21 +335,21 @@ class Shipdate extends AbstractHelper
         $this->shipperDetailResourceModel->getConnection()->update(
             $this->shipperDetailResourceModel->getMainTable(),
             ['carrier_group_detail' => json_encode($carrierGroupDetail)],
-            'order_id = ' . $order->getEntityId()
+            'order_id = ' . $orderId
         );
         
         // update detail record
         $this->shipperDetailResourceModel->getConnection()->update(
             $this->shipperDetailResourceModel->getMainTable(),
             $deliveryDates,
-            'order_id = ' . $order->getEntityId()
+            'order_id = ' . $orderId
         );
         
         // update grid record
         $this->shipperGridDetailResourceModel->getConnection()->update(
             $this->shipperGridDetailResourceModel->getMainTable(),
             $deliveryDates,
-            'order_id = ' . $order->getEntityId()
+            'order_id = ' . $orderId
         );
     }
     
