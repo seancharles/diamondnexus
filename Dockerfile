@@ -108,7 +108,7 @@ ENV PHP_MYSQL_CACHE_SIZE 2000
 RUN cat /etc/debian_version
 RUN echo "Env Set Installing Dependacies"
 RUN echo "deb http://ftp.ua.debian.org/debian/ stretch main" >> /etc/apt/sources.list \
-   && apt-get update && apt-get install locales -y \
+   && apt-get update --allow-releaseinfo-change && apt-get install locales -y \
    && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen && locale-gen \
    && apt-get install --allow-remove-essential -yf software-properties-common gnupg gnupg-agent wget \
    libzip-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev xml-core unzip libssl-dev libonig-dev \
@@ -122,7 +122,7 @@ RUN echo "deb http://ftp.ua.debian.org/debian/ stretch main" >> /etc/apt/sources
    && cd /tmp && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php /tmp/composer-setup.php --version=1.10.16 --install-dir=/usr/bin && php -r "unlink('composer-setup.php');" \
    && mv /usr/bin/composer.phar /usr/bin/composer
 
-RUN curl -L https://download.newrelic.com/php_agent/release/newrelic-php5-9.17.1.301-linux.tar.gz | tar -C /tmp -zx && \
+RUN curl -L https://download.newrelic.com/php_agent/release/newrelic-php5-9.18.1.303-linux.tar.gz | tar -C /tmp -zx && \
   export NR_INSTALL_USE_CP_NOT_LN=1 && \
   export NR_INSTALL_SILENT=1 && \
   /tmp/newrelic-php5-*/newrelic-install install && \
