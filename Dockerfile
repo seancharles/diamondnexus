@@ -108,7 +108,7 @@ ENV PHP_MYSQL_CACHE_SIZE 2000
 RUN cat /etc/debian_version
 RUN echo "Env Set Installing Dependacies"
 RUN echo "deb http://ftp.ua.debian.org/debian/ stretch main" >> /etc/apt/sources.list \
-   && apt-get update && apt-get install locales -y \
+   && apt-get update --allow-releaseinfo-change && apt-get update && apt-get install locales -y \
    && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen && locale-gen \
    && apt-get install --allow-remove-essential -yf software-properties-common gnupg gnupg-agent wget \
    libzip-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev xml-core unzip libssl-dev libonig-dev \
