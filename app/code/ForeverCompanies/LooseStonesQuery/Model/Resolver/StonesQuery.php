@@ -85,6 +85,7 @@ class StonesQuery implements ResolverInterface
         $this->productColl->addAttributeToFilter('carat_weight', array('lteq' =>  $caratWeightToFilter));
         $this->productColl->addAttributeToFilter('price', array('gteq' =>  $priceFromFilter));
         $this->productColl->addAttributeToFilter('price', array('lteq' =>  $priceToFilter));
+        $this->productColl->addAttributeToFilter('status', array('eq' =>  1));
         
         $this->totalCountColl->addAttributeToFilter('online', $onlineEqFilter);
         $this->totalCountColl->addAttributeToFilter('fc_product_type', $productTypeEqFilter);
@@ -98,6 +99,7 @@ class StonesQuery implements ResolverInterface
         $this->totalCountColl->addAttributeToFilter('carat_weight', array('lteq' =>  $caratWeightToFilter));
         $this->totalCountColl->addAttributeToFilter('price', array('gteq' =>  $priceFromFilter));
         $this->totalCountColl->addAttributeToFilter('price', array('lteq' =>  $priceToFilter));
+        $this->totalCountColl->addAttributeToFilter('status', array('eq' =>  1));
         $this->totalCountColl->load();
         
         $this->productColl->setPageSize($pageSize);
