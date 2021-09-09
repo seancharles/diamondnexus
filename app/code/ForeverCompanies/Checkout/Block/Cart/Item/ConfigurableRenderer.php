@@ -171,7 +171,7 @@ class ConfigurableRenderer extends \Magento\ConfigurableProduct\Block\Cart\Item\
 
         // handling for no images found in gallery
         if (count($images) == 0) {
-            $images[] = $this->helperImage->getDefaultPlaceholderUrl();
+            $images[] = $this->helperImage->getDefaultPlaceholderUrl('thumbnail');
         }
 
         return '<img

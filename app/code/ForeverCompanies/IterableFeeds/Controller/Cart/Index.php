@@ -95,7 +95,7 @@ class Index extends Action
 
                     // handling for no images found in gallery
                     if (count($images) ==0) {
-                        $images[] = $this->helperImage->getDefaultPlaceholderUrl();
+                        $images[] = $this->helperImage->getDefaultPlaceholderUrl('thumbnail');
                     }
 
                     $productsArray[] = [
