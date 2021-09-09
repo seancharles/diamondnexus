@@ -24,6 +24,16 @@ class Constant
         7 => 'Credit (offline)',
     ];
 
+    const MULTIPAY_FISHBOWL_METHOD_MAP = [
+        1 => 'credit',
+        2 => 'cash',
+        3 => 'quote',
+        4 => 'store_credit',
+        5 => 'affirm_offline',
+        6 => 'paypal_offline',
+        7 => 'credit_offline',
+    ];
+
     const MULTIPAY_SALE_ACTION = 1;
     const MULTIPAY_REFUND_ACTION = 2;
     const MULTIPAY_CANCEL_ACTION = 3;
