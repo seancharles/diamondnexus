@@ -53,9 +53,15 @@
         }
     }
     .we-accept-cards {
-        background-image: none;
+        background-image: url('https://res.cloudinary.com/foco/images/v1631046302/credit-card-icons/credit-card-icons.png');
+        background-repeat: no-repeat;
+        width: 450px;
+        height: 50px;
+        position: relative;
+        left: -10px;
+        top: 10px;
         img {
-            margin-left: -10px;
+            display: none;
         }
     }
     .coupon {
@@ -170,10 +176,17 @@
     .cart.main.actions {
         margin: 10px;
     }
+    .action-continue.we-accept {
+        padding: 20px 15px;
+    }
 }
 
 @media screen and (max-width: 639px) {
     .checkout-cart-index .cart-gift-item button {
         margin: 5px 0 !important;
+    }
+    .checkout-cart-index .we-accept-cards {
+        max-width: 300px;
+        background-size: contain;
     }
 }
