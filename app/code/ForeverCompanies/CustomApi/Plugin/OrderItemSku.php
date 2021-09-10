@@ -44,7 +44,7 @@ class OrderItemSku
         ) {
             $sku = substr($sku,0,28);
         } else {
-            $sku = substr($sku,0,32);
+            $sku = substr($sku,0,28);
         }
 
         $orderItem->setSku($sku);
@@ -87,7 +87,7 @@ class OrderItemSku
                 ( $prefix == 'LREN') ||
                 ( $line == 'RS')
             ) {
-                $sku = substr($sku,0,32);
+                $sku = substr($sku,0,28);
             } else {
                 $sku = substr($sku,0,28);
             }
