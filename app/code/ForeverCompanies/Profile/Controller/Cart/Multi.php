@@ -87,8 +87,7 @@ class Multi extends \ForeverCompanies\Profile\Controller\ApiController
 
                                     if ($validationResult == false) {
 
-                                        $this->profileHelper->addCartItem($productId, $params);
-                                            
+                                        $this->profileHelper->addCartItem($productId, $params, null, true);
                                         $message = __(
                                             'You added %1 to your shopping cart.',
                                             $productModel->getName()
