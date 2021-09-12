@@ -10,13 +10,12 @@ for x in `php bin/magento indexer:status | grep "Processing" | awk '{print $2}'`
 do 
   php bin/magento indexer:reset $x
 done
-if php -d memory_limit=-1 bin/magento cron:install
-then
-  echo "Cron Installed"
-else
-  echo "Cron Already Installed"
-fi
-crontab -l | sed 's/bin\/php/bin\/php -d memory_limit=-1/g' | crontab -
+echo "#!/bin/bash" > ~/cron.sh
+echo "/usr/local/bin/php -d memory_limit=-1 /var/www/magento/bin/magento cron:run 2>&1 >> /var/www/magento/var/log/magento.cron.log" >> ~/cron.sh
+sudo mv /tmp/dns.tmp /etc/hosts
+sudo cat /hoster.sh.template | sed "s/NGINX/$NGINX/g" | sed "s/MAG_NAME/$MAG_NAME/g" > /tmp/hoster.sh
+sudo mv /tmp/hoster.sh /hoster.sh
+echo '$(echo "*/5 * * * * sudo bash /hoster.sh" ; echo "* * * * * bash ~/cron.sh")' | crontab -
 sudo cron -f &
 php ./bin/magento queue:consumers:start async.operations.all & 
 sudo service ssh start
