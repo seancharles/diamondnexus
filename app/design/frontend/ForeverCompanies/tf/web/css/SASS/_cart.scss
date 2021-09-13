@@ -23,13 +23,13 @@
     }
     .form-cart button {
         background: transparent !important;
-        color: #000 !important;
-        border: 2px solid #000 !important;
+        color: #8e7171 !important;
+        border: 1px solid #8e7171 !important;
         font-size: 12px !important;
         min-width: 180px !important;
         padding: 12px 15px !important;
         &:hover {
-            background: #000 !important;
+            background: #8e7171 !important;
             color: #fff !important;
         }
     }
@@ -103,10 +103,15 @@
         }
     }
     .we-accept-cards {
-        background-image: none;
-        padding-top: 10px;
+        background-image: url('https://res.cloudinary.com/foco/images/v1631046302/credit-card-icons/credit-card-icons.png');
+        background-repeat: no-repeat;
+        width: 450px;
+        height: 50px;
+        position: relative;
+        left: -10px;
+        top: 10px;
         img {
-            margin-left: -10px;
+            display: none;
         }
     }
     .cart.table-wrapper .actions-toolbar {
@@ -122,7 +127,7 @@
     a.action.continue {
         font-size: 14px;
         display: block;
-        color: #000 !important;
+        color: #8e7171 !important;
     }
     #affirmfinance {
         font-size: 14px;
@@ -149,7 +154,6 @@
         position: absolute;
         top: 3px;
         right: 10px;
-        font-weight: bold;
         font-size: 14px;
     }
     .stone-price-heading {
@@ -240,5 +244,9 @@
                 }
             }
         }
+    }
+    .checkout-cart-index .we-accept-cards {
+        max-width: 300px;
+        background-size: contain;
     }
 }

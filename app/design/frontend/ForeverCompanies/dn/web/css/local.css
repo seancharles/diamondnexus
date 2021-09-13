@@ -1,4 +1,3 @@
-@charset "UTF-8";
 h1,
 h2 {
   font-family: var(--serif) !important;
@@ -150,6 +149,13 @@ a {
     color: #bfa374 !important;
     border-bottom: 2px solid #bfa374; }
 
+.fieldset:after {
+  font-size: 12px !important; }
+
+.message.error,
+.message.success {
+  font-size: 16px !important; }
+
 @media screen and (max-width: 768px) {
   .page-header {
     margin-bottom: 33px; } }
@@ -275,12 +281,6 @@ footer {
     font-size: 12px;
     text-transform: uppercase;
     font-weight: bold; }
-
-.customer-account-login .fieldset:after {
-  font-size: 12px !important; }
-
-.customer-account-login .message.error {
-  font-size: 16px !important; }
 
 .customer-account-create .account-additional-note {
   display: none; }
@@ -643,11 +643,6 @@ footer {
 .checkout-index-index .opc-block-shipping-information .shipping-information-title {
   font-family: var(--sans-serif); }
 
-.checkout-index-index .form.methods-shipping input[type='radio'] {
-  margin: 0 !important;
-  width: 18px !important;
-  height: 18px !important; }
-
 .checkout-index-index .checkout-step-shipping_method .actions-toolbar {
   padding-top: 20px; }
 
@@ -698,28 +693,35 @@ footer {
 .checkout-index-index .label {
   font-weight: bold !important; }
 
-.checkout-index-index input[type='radio'] {
-  width: 18px;
-  height: 18px;
-  margin-right: 5px;
-  border: 1px solid #000; }
-
-.checkout-index-index input[type='radio']:not([disabled]):checked {
-  position: relative; }
-  @media screen and (min-width: 768px) {
-    .checkout-index-index input[type='radio']:not([disabled]):checked:after {
-      content: '✔';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 16px;
-      color: #000; } }
-
 .checkout-index-index input[type='checkbox'] {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
   height: 22px;
   width: 23px;
   margin-right: 10px; }
+  .checkout-index-index input[type='checkbox']:before {
+    left: 50% !important;
+    top: 50%;
+    transform: translate(-50%, -50%); }
+
+.checkout-index-index input[type='radio'] {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  border-radius: 50%;
+  width: 20px !important;
+  height: 20px !important;
+  border: 1px solid #999;
+  margin: 0 !important;
+  position: relative; }
+  .checkout-index-index input[type='radio']:checked {
+    border: 5px solid black; }
+
+.checkout-index-index .payment-method > .field {
+  display: flex;
+  align-items: center;
+  gap: 10px; }
 
 .checkout-index-index .fieldset > .field.required > .label:after,
 .checkout-index-index .fieldset > .fields > .field.required > .label:after,

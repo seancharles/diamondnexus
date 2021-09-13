@@ -14,6 +14,10 @@
         <css src="/fccss/global_css.css?123"  src_type="url" rel="stylesheet" type="text/css"/>
         <css src="https://cloud.typography.com/6826894/7160612/css/fonts.css" src_type="url" rel="stylesheet" type="text/css" />
         <css src="https://cloud.typography.com/6826894/6960612/css/fonts.css" src_type="url" rel="stylesheet" type="text/css" />
+        <remove src="fonts/opensans/light/opensans-300.woff2" />
+        <remove src="fonts/opensans/regular/opensans-400.woff2" />
+        <remove src="fonts/opensans/semibold/opensans-600.woff2" />
+        <remove src="fonts/opensans/bold/opensans-700.woff2" />
     </head>
 
 </page>
