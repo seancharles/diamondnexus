@@ -148,8 +148,9 @@ COPY bin/php-fpm.pool.conf /usr/local/etc/php/php-fpm.pool.conf
 
 COPY bin/entrypoint.sh /
 COPY bin/entrypoint-sidecar.sh /
-RUN chmod 755 /entrypoint.sh /entrypoint-sidecar.sh
-RUN chown 1000:1000 /entrypoint.sh /entrypoint-sidecar.sh
+COPY bin/hoster.sh.template /
+RUN chmod 755 /entrypoint.sh /entrypoint-sidecar.sh /hoster.sh.template
+RUN chown 1000:1000 /entrypoint.sh /entrypoint-sidecar.sh /hoster.sh.template
 
 USER admin
 WORKDIR /var/www/magento
