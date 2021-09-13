@@ -15,7 +15,8 @@ echo "/usr/local/bin/php -d memory_limit=-1 /var/www/magento/bin/magento cron:ru
 sudo mv /tmp/dns.tmp /etc/hosts
 sudo cat /hoster.sh.template | sed "s/NGINX/$NGINX/g" | sed "s/MAG_NAME/$MAG_NAME/g" > /tmp/hoster.sh
 sudo mv /tmp/hoster.sh /hoster.sh
-echo '$(echo "*/5 * * * * sudo bash /hoster.sh" ; echo "* * * * * bash ~/cron.sh")' | crontab -
+echo "* * * * * bash ~/cron.sh" | crontab -
+crontab -l && echo "*/5 * * * * sudo bash /hoster.sh" | crontab -
 sudo cron -f &
 php ./bin/magento queue:consumers:start async.operations.all & 
 sudo service ssh start
