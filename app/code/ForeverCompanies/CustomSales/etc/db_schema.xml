@@ -21,7 +21,9 @@
     <table name="sales_shipment">
         <column comment="Final Shipping Cost" length="255" name="final_shipping_cost" nullable="true"
                 xsi:type="varchar"/>
-        <column comment="Actual Date of Delivery" name="delivery_date_actual" nullable="true" xsi:type="date"/>
+        <column comment="Actual Date of Delivery" name="delivery_date_actual" nullable="true" xsi:type="int"/>
+        <column comment="Flag fishbowl imported" name="flag_fishbowl_imported" nullable="true"
+                xsi:type="varchar"/>
     </table>
     <table name="sales_shipment_grid">
         <column comment="Final Shipping Cost" length="255" name="final_shipping_cost" nullable="true"
