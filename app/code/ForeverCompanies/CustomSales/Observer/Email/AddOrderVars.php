@@ -29,20 +29,14 @@ class AddOrderVars implements ObserverInterface
     {
         /** @var \Magento\Framework\App\Action\Action $controller */
         $transport = $observer->getEvent()->getTransport();
-        
         $order = $transport->getOrder();
         
-        $transport['dispatch_date'] = null;
-        $transport['delivery_date'] = null;
-        
-        $deliveryDates = $this->shipdateHelper->getDeliveryDates($order);
-        
-        if (isset($deliveryDates['dispatch_date']) === true) {
-            $transport['dispatch_date'] = $deliveryDates['dispatch_date'];
+        if (isset($deliveryDates['dispatchDate']) === true) {
+              $transport['dispatch_date'] = $deliveryDates['dispatchDate'];
         }
         
-        if (isset($deliveryDates['delivery_date']) === true) {
-            $transport['delivery_date'] = $deliveryDates['delivery_date'];
+        if (isset($transport['deliveryDate']) === true) {
+            $transport['delivery_date'] = date("D, M j", strtotime($transport['deliveryDate']));
         }
     }
 }
