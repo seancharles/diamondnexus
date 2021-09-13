@@ -63,26 +63,21 @@ class OrderItemSku
 
             $prefix = strtoupper(substr($sku,0,4));
             $metal = strtoupper(substr($sku,24,2));
-            $color = strtoupper(substr($sku,15,2));
             $line = strtoupper(substr($sku,4,2));
 
             if(
-                ( $prefix == 'MRTN' ) ||
+                ( $prefix == 'MRWB' ) ||
+                ( $prefix == 'MRFS' ) ||
+                ( $prefix == 'LREN' &&  $line == 'RS') ||
+                ( $prefix == 'LREB' ) ||
                 ( $prefix == 'MRTT' ) ||
                 ( $prefix == 'MRWB' ) ||
-                ( $prefix == 'LRRH' ) ||
-                ( $prefix == 'LRWB' ) ||
                 ( $metal == 'CO' ) ||
-                ( $metal == 'BZ' ) ||
-                ( $metal == 'DM' ) ||
                 ( $metal == 'TT' ) ||
-                ( $prefix == 'LRRH' && $color == 'TZ') ||
-                ( $prefix == 'LRRH' && $metal == 'LP') ||
-                ( $prefix == 'LREB') ||
-                ( $prefix == 'LREN') ||
-                ( $line == 'RS')
+                ( $prefix == 'MRTN') ||
+                ( $prefix == 'LRRH' && $metal == 'LP' )
             ) {
-                $sku = substr($sku,0,28);
+                $sku = substr($sku,0,32);
             } else {
                 $sku = substr($sku,0,28);
             }
