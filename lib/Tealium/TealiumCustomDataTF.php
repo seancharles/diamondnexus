@@ -218,7 +218,7 @@ class TealiumExtendData
     public function fcGetProduct(string $productId = '')
     {
         if (!empty($productId)) {
-            $product = $this->objectManager->get('Magento\Catalog\Model\Product')->load($productId);
+            $product = $this->objectManager->get('Magento\Catalog\Api\ProductRepositoryInterface')->getById($productId);
         } else {
             /**
              * @todo m2 registry is deprecated, look into other methods to achieve this
@@ -553,7 +553,6 @@ class TealiumExtendData
                     ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
 
             foreach ($order->getAllVisibleItems() as $item) {
-
                 // get primary product id
                 $tmpPrimaryProduct = $item->getProduct();
 
@@ -562,8 +561,12 @@ class TealiumExtendData
 
                 // if primary product is configurable, we need to get the associated simple product and assign as child
                 if ($tmpPrimaryProduct->getTypeId() == 'configurable') {
-                    if ($option = $item->getOptionByCode('simple_product')) {
-                        $tmpChildProduct = $option->getProduct();
+                    $tmpChildItems = $item->getChildrenItems();
+                    if (is_array($tmpChildItems) && sizeof($tmpChildItems) > 0) {
+                        foreach ($tmpChildItems as $tmpChildItem) {
+                            $tmpChildProduct = $tmpChildItem->getProduct();
+                            break;
+                        }
                     }
                 }
 
