@@ -72,11 +72,6 @@
     .opc-block-shipping-information .shipping-information-title {
         font-family: var(--sans-serif);
     }
-    .form.methods-shipping input[type='radio'] {
-        margin: 0 !important;
-        width: 18px !important;
-        height: 18px !important;
-    }
     .checkout-step-shipping_method .actions-toolbar {
         padding-top: 20px;
     }
@@ -133,30 +128,37 @@
     .label {
         font-weight: bold !important;
     }
-    input[type='radio'] {
-        width: 18px;
-        height: 18px;
-        margin-right: 5px;
-        border: 1px solid #000;
-    }
-    input[type='radio']:not([disabled]):checked {
-        position: relative;
-        @media screen and (min-width: 768px) {
-            &:after {
-                content: '✔';
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                font-size: 16px;
-                color: #000;
-            }
-        }
-    }
     input[type='checkbox'] {
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
         height: 22px;
         width: 23px;
         margin-right: 10px;
+        &:before {
+            left: 50% !important;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
+    input[type='radio'] {
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        border-radius: 50%;
+        width: 20px !important;
+        height: 20px !important;
+        border: 1px solid #999;
+        margin: 0 !important;
+        position: relative;
+        &:checked {
+            border: 5px solid black;
+        }
+    }
+    .payment-method > .field {
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
     .fieldset > .field.required > .label:after,
     .fieldset > .fields > .field.required > .label:after,

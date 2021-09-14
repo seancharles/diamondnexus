@@ -163,3 +163,13 @@ a {
         }
     }
 }
+
+.fieldset {
+    &:after {
+        font-size: 12px !important;
+    }
+}
+.message.error,
+.message.success {
+    font-size: 16px !important;
+}

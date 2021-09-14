@@ -47,9 +47,6 @@
         font-weight: bold;
         text-transform: uppercase;
     }
-    .form.methods-shipping input[type='radio'] {
-        margin: 0 !important;
-    }
     .checkout-step-shipping_method .actions-toolbar {
         padding-top: 20px;
     }
@@ -70,29 +67,43 @@
         }
     }
     .actions-toolbar .secondary .remind {
-        padding-top: 10px;
+        padding-top: 5px;
         margin-left: 15px;
-        font-size: 12px;
-        text-transform: uppercase;
-        font-weight: bold;
+    }
+    label {
+        font-size: 14px;
+    }
+    input {
+        font-size: 16px !important;
+    }
+    input[type='checkbox'] {
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        &:before {
+            left: 50% !important;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
     }
     input[type='radio'] {
-        width: 18px !important;
-        height: 18px !important;
-        margin-right: 5px !important;
-        border: 1px solid #000 !important;
-    }
-    input[type='radio']:not([disabled]):checked {
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        border-radius: 50%;
+        width: 20px !important;
+        height: 20px !important;
+        border: 1px solid #999;
+        margin: 0 !important;
         position: relative;
-        &:after {
-            content: '✔';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 16px;
-            color: #000;
+        &:checked {
+            border: 5px solid black;
         }
+    }
+    .payment-method > .field {
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
     .braintree-credit-card-selected {
         width: 32px;
@@ -160,6 +171,9 @@
             margin: 0 10px !important;
         }
     }
+    .form-shipping-address .field[name='shippingAddress.fax'] {
+        display: none;
+    }
 }
 
 @media screen and (max-width: 1024px) {
@@ -186,6 +200,10 @@
         }
         .checkout-payment-method .payment-methods {
             margin: 0 !important;
+        }
+        input[type='checkbox'] {
+            width: 25px !important;
+            height: 25px !important;
         }
     }
 }
