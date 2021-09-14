@@ -13,5 +13,34 @@
         "column": {
             "flag_loose_stone": true
         }
+    },
+    "sales_shipment": {
+        "column": {
+            "flag_fishbowl_import": true
+        }
+    },
+    "sales_order_grid": {
+        "column": {
+            "flag_fishbowl_import": true,
+            "sales_person_id": true
+        }
+    },
+    "ext_sales_order_updates": {
+        "column": {
+            "entity_id": true,
+            "order_id": true,
+            "updated_at": true,
+            "updated_fields": true,
+            "flag_fishbowl_update": true
+        },
+        "index": {
+            "EXT_SALES_ORDER_UPDATES_ENTITY_ID": true,
+            "EXT_SALES_ORDER_UPDATES_ORDER_ID": true,
+            "EXT_SALES_ORDER_UPDATES_UPDATED_AT": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "EXT_SALES_ORDER_UPDATES_ORDER_ID_SALES_ORDER_ENTITY_ID": true
+        }
     }
 }

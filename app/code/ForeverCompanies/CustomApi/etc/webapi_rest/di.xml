@@ -9,4 +9,7 @@
     <type name="Magento\Sales\Api\OrderItemRepositoryInterface">
         <plugin name="get_order_item_sku" type="ForeverCompanies\CustomApi\Plugin\OrderItemSku"/>
     </type>
+    <type name="Magento\Sales\Api\ShipmentRepositoryInterface">
+        <plugin name="get_order_shipment_fishbowl_import" type="ForeverCompanies\CustomApi\Plugin\ShipmentFishbowlImport"/>
+    </type>
 </config>
