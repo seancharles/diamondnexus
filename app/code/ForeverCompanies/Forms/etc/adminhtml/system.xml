@@ -6,7 +6,7 @@
         	showInWebsite="1" showInStore="1">
             <label>Forms</label>
             <tab>forevercompanies</tab>
-            <resource>ForeverCompanies_Gifts::config</resource>
+            <resource>ForeverCompanies_Forms::config</resource>
             <group id="iterable" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
                    showInStore="1">
                 <label>Iterable</label>
