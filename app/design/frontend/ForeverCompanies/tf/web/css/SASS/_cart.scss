@@ -162,6 +162,13 @@
     #block-discount {
         display: none;
     }
+
+    .price.strikethrough {
+        text-decoration: line-through;
+    }
+    .cart-price + .price-excluding-tax .cart-price {
+        color: Red;
+    }
 }
 
 @media screen and (max-width: 1024px) {
