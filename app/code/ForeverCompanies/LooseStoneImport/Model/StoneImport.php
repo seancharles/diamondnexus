@@ -1,5 +1,4 @@
 <?php
-
 namespace ForeverCompanies\LooseStoneImport\Model;
 
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
@@ -14,6 +13,42 @@ use Magento\Framework\Filesystem\Io\File;
 use Magento\Reports\Model\ResourceModel\Product\Sold\CollectionFactory as SoldProductCollectionFactory;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use ForeverCompanies\CustomSales\Helper\Producer;
+
+use Magento\Framework\Exception\Plugin\AuthenticationException as PluginAuthenticationException;
+use Magento\Framework\Exception\State\ExpiredException;
+use Magento\Framework\Exception\State\InitException;
+use Magento\Framework\Exception\State\InputMismatchException;
+use Magento\Framework\Exception\State\InvalidTransitionException;
+use Magento\Framework\Exception\State\UserLockedException;
+use Magento\Framework\Exception\TemporaryState\CouldNotSaveException as TemporaryStateCouldNotSaveException;
+use Magento\Framework\Exception\AbstractAggregateException;
+use Magento\Framework\Exception\AlreadyExistsException;
+use Magento\Framework\Exception\AuthenticationException;
+use Magento\Framework\Exception\AuthorizationException;
+use Magento\Framework\Exception\BulkException;
+use Magento\Framework\Exception\ConfigurationMismatchException;
+use Magento\Framework\Exception\CouldNotDeleteException;
+use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\CronException;
+use Magento\Framework\Exception\EmailNotConfirmedException;
+use Magento\Framework\Exception\FileSystemException;
+use Magento\Framework\Exception\InputException;
+use Magento\Framework\Exception\IntegrationException;
+use Magento\Framework\Exception\InvalidArgumentException;
+use Magento\Framework\Exception\InvalidEmailOrPasswordException;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\MailException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Exception\NotFoundException;
+use Magento\Framework\Exception\PaymentException;
+use Magento\Framework\Exception\RemoteServiceUnavailableException;
+use Magento\Framework\Exception\RuntimeException;
+use Magento\Framework\Exception\SecurityViolationException;
+use Magento\Framework\Exception\SerializationException;
+use Magento\Framework\Exception\SessionException;
+use Magento\Framework\Exception\StateException;
+use Magento\Framework\Exception\ValidatorException;
 
 class StoneImport
 {    
@@ -28,6 +63,7 @@ class StoneImport
     protected $mediaTmpDir;
     protected $file;
     protected $connection;
+    protected $producerHelper;
     
     protected $booleanMap;
     protected $csvHeaderMap;
@@ -72,7 +108,8 @@ class StoneImport
         File $fil,
         SoldProductCollectionFactory $soldProductColl,
         ProductRepository $productR,
-        ScopeConfigInterface $scopeC
+        ScopeConfigInterface $scopeC,
+        Producer $produc
         ) {
             $this->productCollectionFactory = $collectionFactory;
             $this->productModel = $prod;
@@ -84,6 +121,7 @@ class StoneImport
             $this->file = $fil;
             $this->soldProductCollectionFactory = $soldProductColl;
             $this->productRepo = $productR;
+            $this->producerHelper = $produc;
             
             $this->mediaTmpDir = $directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . 'tmp';
             $this->file->checkAndCreateFolder($this->mediaTmpDir );
@@ -455,6 +493,9 @@ class StoneImport
             foreach ($supplierData as $supplierD) {
                 $this->supplierStatuses[strtolower($supplierD['code'])] = $supplierD['enabled'];
                 
+                if ($supplierD['code'] == "bhaktidiamond") {
+                    $this->supplierStatuses["bhakti"] = $supplierD['enabled'];;
+                }
                 if ($supplierD['code'] == "diamondfoundry") {
                     $this->supplierStatuses["foundry"] = $supplierD['enabled'];;
                 }
@@ -508,7 +549,7 @@ class StoneImport
         
         $i = 0;
         foreach ($csvArray as $csvArr) {
-            
+            try {
             if (!$this->_checkForRequiredFields($csvArr)) {
                 
                 $product = new \Magento\Framework\DataObject();
@@ -561,16 +602,22 @@ class StoneImport
                 }
                 
                 $imageResult = $this->file->read($csvArr['Image Link'], $imageFileName);
-                
+
                 if ($imageResult) {
-                    $product->addImageToMediaGallery(
-                        $imageFileName,
-                        ['image', 'small_image', 'thumbnail'],
-                        false,
-                        false
+                    try {
+                        $product->addImageToMediaGallery(
+                            $imageFileName,
+                            ['image', 'small_image', 'thumbnail'],
+                            false,
+                            false
                         );
+                    } catch(\Magento\Framework\Exception\LocalizedException $e) {
+                        $this->_stoneLog($product, $csvArr, "error", "New Product " . $csvArr['Certificate #'] . " not created. Incorrect image extension");
+                        continue;
+                    }
+                    
                 } else {
-                    $this->_stoneLog($product, $csvArr, "add", "New Product " . $csvArr['Certificate #'] . " not created.");
+                    $this->_stoneLog($product, $csvArr, "error", "New Product " . $csvArr['Certificate #'] . " not created. No image.");
                     continue;
                 }
                 
@@ -614,9 +661,31 @@ class StoneImport
             unset($productId);
             unset($product);
             unset($csvArr);
-        }
+            
+            } catch(PluginAuthenticationException | ExpiredException | InitException | InputMismatchException | InvalidTransitionException | UserLockedException | TemporaryStateCouldNotSaveException
+                | AbstractAggregateException | AlreadyExistsException | AuthenticationException | AuthorizationException | BulkException | ConfigurationMismatchException | CouldNotDeleteException
+                | CouldNotSaveException | CronException | EmailNotConfirmedException | FileSystemException | InputException | IntegrationException | InvalidArgumentExceptionm | InvalidEmailOrPasswordException
+                | LocalizedException | MailException | NoSuchEntityException | NotFoundException | PaymentException | RemoteServiceUnavailableException | RuntimeException | SecurityViolationException
+                | SerializationException | SessionException | StateException | ValidatorException $e
+            ) {
+                $product = new \Magento\Framework\DataObject();
+                if (isset($csvArr['Certificate #'])) {
+                    $product->setSku($csvArr['Certificate #']);
+                }
+                $this->_stoneLog($product, $csvArr, "error", $csvArr['Certificate #'] . " not processed. " . $e->getMessage());
+            }
+            catch(Exception $e)
+            {
+                $product = new \Magento\Framework\DataObject();
+                if (isset($csvArr['Certificate #'])) {
+                    $product->setSku($csvArr['Certificate #']);
+                }
+                $this->_stoneLog($product, $csvArr, "error", $csvArr['Certificate #'] . " not processed. " . $e->getMessage());
+            }
+        } // end foreach ($csvArray as $csvArr) {
         
         $this->_cleanLogs();
+        $this->producerHelper->flushElderCache();
     }
     
     protected function _applyCsvRowToProduct($product, $csvArr)
