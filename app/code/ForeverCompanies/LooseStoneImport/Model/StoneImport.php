@@ -503,8 +503,8 @@ class StoneImport
     
     function run()
     {
-        $this->_updateCsv();
-        $csvArray = $this->_buildArray();
+        $this->updateCsv();
+        $csvArray = $this->buildArray();
         
         $i = 0;
         foreach ($csvArray as $csvArr) {
@@ -548,8 +548,20 @@ class StoneImport
                 
                 $product = $this->productFactory->create();
                 
-                $imageFileName = $this->mediaTmpDir . DIRECTORY_SEPARATOR . baseName($csvArr['Image Link']);
+                $imageFileName = $this->mediaTmpDir . DIRECTORY_SEPARATOR . basename($csvArr['Image Link']);
+                
+                $imagePathInfo = pathinfo($imageFileName);
+                
+                if (!isset($imagePathInfo['extension'])) {
+                    if (isset($imagePathInfo['mime']) && $imagePathInfo['mime'] == 'image/jpeg') {
+                        $imageFileName .= ".jpg";
+                    } else {
+                        $imageFileName .= ".jpg";
+                    }
+                }
+                
                 $imageResult = $this->file->read($csvArr['Image Link'], $imageFileName);
+                
                 if ($imageResult) {
                     $product->addImageToMediaGallery(
                         $imageFileName,
@@ -669,7 +681,7 @@ class StoneImport
         return true;
     }
     
-    protected function _buildArray()
+    public function buildArray()
     {
         $arr = array();
         $fields = array();
@@ -758,7 +770,7 @@ class StoneImport
         $this->connection->query($query);
     }
     
-    protected function _updateCsv()
+    public function updateCsv()
     {
         $ftp = ftp_connect(
             $this->scopeConfig->getValue('forevercompanies_stone_ftp/creds/host', $this->storeScope),
