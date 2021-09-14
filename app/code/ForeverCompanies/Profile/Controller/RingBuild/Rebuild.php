@@ -2,19 +2,26 @@
 
 namespace ForeverCompanies\Profile\Controller\RingBuild;
 
+use Magento\Framework\Controller\ResultFactory;
+
 class Rebuild extends \ForeverCompanies\Profile\Controller\ApiController
 {
+    protected $quoteItemCollectionFactory;
+    protected $resultFactory;
+    protected $cart;
     protected $profileHelper;
     protected $resultHelper;
     
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Quote\Model\ResourceModel\Quote\Item\CollectionFactory $quoteItemCollectionFactory,
+        \Magento\Framework\Controller\ResultFactory $resultFactory,
         \Magento\Checkout\Model\Cart $cart,
         \ForeverCompanies\Profile\Helper\Profile $profileHelper,
         \ForeverCompanies\Profile\Helper\Result $resultHelper
     ) {
         $this->quoteItemCollectionFactory = $quoteItemCollectionFactory;
+        $this->resultFactory = $resultFactory;
         $this->cart = $cart;
         $this->profileHelper = $profileHelper;
         $this->resultHelper = $resultHelper;
@@ -41,52 +48,50 @@ class Rebuild extends \ForeverCompanies\Profile\Controller\ApiController
                 $collection->addFieldToFilter('quote_id', $quoteId);
                 $collection->addFieldToFilter('set_id', $setId);
                 
-                if ($collection) {
-                    foreach ($collection as $item) {
-                        $option = $item->getOptionByCode('info_buyRequest');
-                        
-                        if ($option) {
-                            $optionArray = (array) json_decode($option->getValue());
-                            
-                            // check for the item type and set it to the ring builder session component
-                            if ($item->getProduct()->getAttributeSetId() == 18
-                                || $item->getProduct()->getAttributeSetId() == 32) {
-                                // values are stored in checkout session
-                                $this->profileHelper->setProfileSessionKey('set_type', 'ring');
-                                $this->profileHelper->setProfileSessionKey(
-                                    'set_setting',
-                                    $optionArray
-                                );
-                                $this->profileHelper->setProfileSessionKey(
-                                    'set_setting_sku',
-                                    $item->getProduct()->getSku()
-                                );
+                foreach ($collection as $item) {
+                    $option = $item->getOptionByCode('info_buyRequest');
 
-                                // update the current profile instance
-                                $this->profileHelper->setProfileBuilderKey('type', 'ring');
-                                $this->profileHelper->setProfileBuilderKey('setting', $optionArray);
-                                $this->profileHelper->setProfileBuilderKey(
-                                    'setting_sku',
-                                    $item->getProduct()->getSku()
-                                );
-                                
-                            } elseif ($item->getProduct()->getAttributeSetId() == 31) {
-                                // values are stored in checkout session
-                                $this->profileHelper->setProfileSessionKey(
-                                    'set_stone',
-                                    $optionArray
-                                );
-                                $this->profileHelper->setProfileSessionKey(
-                                    'set_stone_sku',
-                                    $item->getProduct()->getSku()
-                                );
+                    if ($option) {
+                        $optionArray = (array) json_decode($option->getValue());
 
-                                // update the current profile instance
-                                $this->profileHelper->setProfileBuilderKey('stone', $optionArray);
-                                $this->profileHelper->setProfileBuilderKey('stone_sku', $item->getProduct()->getSku());
-                            }
+                        // check for the item type and set it to the ring builder session component
+                        if ($item->getProduct()->getAttributeSetId() == 18
+                            || $item->getProduct()->getAttributeSetId() == 32) {
+                            // values are stored in checkout session
+                            $this->profileHelper->setProfileSessionKey('set_type', 'ring');
+                            $this->profileHelper->setProfileSessionKey(
+                                'set_setting',
+                                $optionArray
+                            );
+                            $this->profileHelper->setProfileSessionKey(
+                                'set_setting_sku',
+                                $item->getProduct()->getSku()
+                            );
+
+                            // update the current profile instance
+                            $this->profileHelper->setProfileBuilderKey('type', 'ring');
+                            $this->profileHelper->setProfileBuilderKey('setting', $optionArray);
+                            $this->profileHelper->setProfileBuilderKey(
+                                'setting_sku',
+                                $item->getProduct()->getSku()
+                            );
+
+                        } elseif ($item->getProduct()->getAttributeSetId() == 31) {
+                            // values are stored in checkout session
+                            $this->profileHelper->setProfileSessionKey(
+                                'set_stone',
+                                $optionArray
+                            );
+                            $this->profileHelper->setProfileSessionKey(
+                                'set_stone_sku',
+                                $item->getProduct()->getSku()
+                            );
+
+                            // update the current profile instance
+                            $this->profileHelper->setProfileBuilderKey('stone', $optionArray);
+                            $this->profileHelper->setProfileBuilderKey('stone_sku', $item->getProduct()->getSku());
                         }
-                        
+
                         // remove the item from cart
                         $this->cart->removeItem($item->getId());
                     }
@@ -112,9 +117,9 @@ class Rebuild extends \ForeverCompanies\Profile\Controller\ApiController
         $this->cart->getQuote()->setTotalsCollectedFlag(false);
         $this->cart->getQuote()->collectTotals();
         $this->cart->save();
-        
-        // TBD redirect to public ring builder URL or change response
-        $this->_redirect('checkout/cart/');
-    //    $this->resultHelper->getResult();
+
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+        $resultRedirect->setPath('collections/engagement-rings');
+        return $resultRedirect;
     }
 }

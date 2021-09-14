@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <forevercompanies_delighted>
+            <api_keys>
+                <key>tfZuI4Tl5SJcwGRclbq9CvH7ZqycjM5A</key>
+            </api_keys>
+        </forevercompanies_delighted>
+    </default>
+</config>

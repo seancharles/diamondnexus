@@ -7,30 +7,30 @@ use Magento\Framework\Event\ObserverInterface;
     
 class QuoteRemoveItem implements ObserverInterface
 {
-    protected $_checkoutSession;
+    protected $cart;
+    protected $logger;
 
     public function __construct(
         \Magento\Checkout\Model\Cart $cart,
-        \Magento\Quote\Model\ResourceModel\Quote\Item\CollectionFactory $quoteItemCollectionFactory
+        \Psr\Log\LoggerInterface $logger
     ) {
         $this->cart = $cart;
-        $this->quoteItemCollectionFactory = $quoteItemCollectionFactory;
     }
     
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
         $item = $observer->getEvent()->getData('quote_item');
+        $setId = $item->getSetId();
 
-        if($item->getSetId() > 0) {
-            $collection = $this->quoteItemCollectionFactory->create();
-            $collection->addFieldToFilter('quote_id', $this->cart->getQuote()->getId());
-            $collection->addFieldToFilter('set_id', $item->getSetId());
-            
-            if($collection) {
-                foreach($collection as $qoteItem) {
-                    $qoteItem->delete();
+        if($setId > 0) {
+            $quoteItemList = $this->cart->getQuote()->getAllItems();;
+            foreach ($quoteItemList as $quoteItem) {
+                if ($quoteItem->getSetId() == $setId) {
+                    $quoteItem->delete();
                 }
             }
+            // removing cart items means we need to notify magento to update the totals
+            $this->cart->getQuote()->setTotalsCollectedFlag(false);
         }
     }
 }

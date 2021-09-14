@@ -62,6 +62,7 @@ class AdjiconAdditionalImages extends Command
             $basePath = $this->fileSystem->getRoot();
 
             $imageGalleryList = [];
+            $tempProductList = [];
             $productList = [];
             $metalOptionMap = [];
 
@@ -85,8 +86,22 @@ class AdjiconAdditionalImages extends Command
             foreach ($adjiconImageList as $imageDetail) {
                 $productId = $imageDetail['product_id'];
                 $file = $imageDetail['file'];
+                $tempProductList[$productId][$file] = $imageDetail['option_id'];
+            }
 
-                $productList[$productId][$file] = $imageDetail['option_id'];
+            // remove first two images of each metal type (optionId)
+            foreach ($tempProductList as $productId => $product) {
+                $optionIdCount = [];
+                foreach($product as $file => $optionId) {
+                    if (isset($optionIdCount[$optionId]) === true) {
+                        $optionIdCount[$optionId] += 1;
+                    } else {
+                        $optionIdCount[$optionId] = 1;
+                    }
+                    if ($optionIdCount[$optionId] > 2) {
+                        $productList[$productId][$file] = $optionId;
+                    }
+                }
             }
 
             foreach($productList as $productId => $imagesList) {

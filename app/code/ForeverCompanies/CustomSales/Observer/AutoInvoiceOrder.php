@@ -63,8 +63,14 @@ class AutoInvoiceOrder implements ObserverInterface
             return $this;
         }
 
+        $totalPaid = $this->parseCurrency($order->getTotalPaid());
+        $grandTotal = $this->parseCurrency($order->getGrandTotal());
+        $amountAuthorized = $this->parseCurrency($order->getPayment()->getAmountAuthorized());
+
         // only invoice if the order has been paid in full or has no payment required.
-        if ($order->getTotalPaid() == $order->getGrandTotal() || $order->getGrandTotal() == 0) {
+        if ($amountAuthorized > 0) {
+            // Do nothing as this is for a braintree auth only transaction. Manual invoice will be required.
+        } elseif (($totalPaid == $grandTotal) || $grandTotal == 0) {
             $this->createInvoice($order);
         }
     }
@@ -106,6 +112,17 @@ class AutoInvoiceOrder implements ObserverInterface
             throw new \Magento\Framework\Exception\LocalizedException(
                 __($e->getMessage())
             );
+        }
+    }
+
+    public function parseCurrency($amount = 0)
+    {
+        $return = (double) filter_var($amount, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+
+        if (abs($return) > 0) {
+            return bcdiv($return, 1, 2);
+        } else {
+            return 0;
         }
     }
 }

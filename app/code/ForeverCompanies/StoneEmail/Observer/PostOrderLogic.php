@@ -1,6 +1,8 @@
 <?php
+
 namespace ForeverCompanies\StoneEmail\Observer;
 
+use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Catalog\Model\ProductFactory;
 use Magento\Framework\App\ResourceConnection;
@@ -16,16 +18,17 @@ use ForeverCompanies\Smtp\Helper\Mail as MailHelper;
 
 class PostOrderLogic implements ObserverInterface
 {
-    protected $productFactory;
-    protected $stockItemModel;
-    protected $orderFactory;
-    protected $stockRegistry;
-    protected $date;
-    protected $attributeModel;
-    protected $attributeOptionCollectionModel;
-    protected $scopeConfig;
-    protected $mailHelper;
-    
+    protected ProductFactory $productFactory;
+    protected StockItemRepository $stockItemModel;
+    protected OrderFactory $orderFactory;
+    protected StockRegistryInterface $stockRegistry;
+    protected DateTime $date;
+    protected Attribute $attributeModel;
+    protected AttributeOptionCollection $attributeOptionCollectionModel;
+    protected ScopeConfigInterface $scopeConfig;
+    protected MailHelper $mailHelper;
+    protected AdapterInterface $connection;
+
     public function __construct(
         ProductFactory $prodF,
         ResourceConnection $resource,
@@ -38,9 +41,9 @@ class PostOrderLogic implements ObserverInterface
         ScopeConfigInterface $scopeConfig,
         MailHelper $mailH
     ) {
-        $this->stockItemModel = $stockItemRepo;
         $this->productFactory = $prodF;
         $this->connection = $resource->getConnection();
+        $this->stockItemModel = $stockItemRepo;
         $this->orderFactory = $orderF;
         $this->stockRegistry = $stockReg;
         $this->date = $dateTime;
@@ -49,11 +52,18 @@ class PostOrderLogic implements ObserverInterface
         $this->scopeConfig = $scopeConfig;
         $this->mailHelper = $mailH;
     }
-    
+
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
+        // the "from" name and email for stones sale email
+        // this was hardcoded in M1; copying from M1 implementation
+        $sender = [
+            'name' => 'Forever Companies',
+            'email' => 'fulfillment@forevercompanies.com'
+        ];
+
         $order = $observer->getEvent()->getOrder();
-        
+
         foreach ($order->getAllItems() as $orderItem) {
             if ($orderItem->getProduct()->getTypeId() == "configurable") {
                 continue;
@@ -102,6 +112,10 @@ class PostOrderLogic implements ObserverInterface
                 if (strpos($supplierEmail, ',') !== false) {
                     $supplierEmail = explode(",", $supplierEmail);
                 }
+
+                /**
+                 * old setFrom method
+                 *
                 $this->mailHelper->setFrom([
                     'name' => $this->scopeConfig->getValue(
                         'trans_email/ident_support/name',
@@ -112,6 +126,10 @@ class PostOrderLogic implements ObserverInterface
                         ScopeInterface::SCOPE_STORE
                     )
                 ]);
+                 */
+
+                $this->mailHelper->setFrom($sender);
+
                 if (is_array($supplierEmail)) {
                     foreach ($supplierEmail as $suppEmail) {
                         $this->mailHelper->addTo($suppEmail, $supplier);
@@ -127,7 +145,7 @@ class PostOrderLogic implements ObserverInterface
             }
         }
     }
-    
+
     protected function _getSupplierName($supplierOptionId)
     {
         $attributeOptionAll = $this->attributeOptionCollectionModel

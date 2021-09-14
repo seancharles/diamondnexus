@@ -7,7 +7,7 @@
 			showInWebsite="1" showInStore="1">
             <label>Cron Controls</label>
             <tab>forevercompanies</tab>
-             <resource>ForeverCompanies_Gifts::config</resource>
+             <resource>ForeverCompanies_CronControls::config</resource>
              
             <group id="report" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
 	            <label>Report Cron Jobs</label>

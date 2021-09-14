@@ -131,6 +131,49 @@ footer {
   .copyright a {
     color: inherit !important; }
 
+.customer-account-login #maincontent {
+  position: relative; }
+
+.customer-account-login .page.messages {
+  padding-top: 105px; }
+  @media screen and (min-width: 768px) {
+    .customer-account-login .page.messages {
+      padding-top: 55px; } }
+
+.customer-account-login .password-reset-messaging {
+  position: absolute;
+  border: 1px solid #000;
+  padding: 3px;
+  top: 40px;
+  right: 20px;
+  left: 20px; }
+  @media screen and (min-width: 380px) {
+    .customer-account-login .password-reset-messaging {
+      top: 50px; } }
+  @media screen and (min-width: 768px) {
+    .customer-account-login .password-reset-messaging {
+      padding: 10px; } }
+  .customer-account-login .password-reset-messaging p {
+    font-size: 14px; }
+    @media screen and (min-width: 768px) {
+      .customer-account-login .password-reset-messaging p {
+        font-size: 16px; } }
+
+.customer-account-login .block-title {
+  padding-top: 0; }
+  @media screen and (min-width: 768px) {
+    .customer-account-login .block-title {
+      padding-top: 60px; } }
+  .customer-account-login .block-title #block-customer-login-heading {
+    display: block;
+    padding-top: 110px; }
+    @media screen and (min-width: 380px) {
+      .customer-account-login .block-title #block-customer-login-heading {
+        padding-top: 100px; } }
+    @media screen and (min-width: 768px) {
+      .customer-account-login .block-title #block-customer-login-heading {
+        padding-top: 0; } }
+
 .customer-account-login .actions-toolbar > .primary .action:last-child {
   cursor: pointer !important;
   font-family: var(--sans-serif) !important;
@@ -169,6 +212,9 @@ footer {
 .customer-account-login .login-container .block .block-title strong {
   font-weight: bold;
   font-size: 22px; }
+
+.customer-account-login .message.error {
+  font-size: 16px !important; }
 
 .account .nav a {
   color: #575757 !important; }
@@ -222,8 +268,25 @@ footer {
 .account .nav.items .nav.item:nth-of-type(14) {
   display: none !important; }
 
-body:not(.customer-account-index) .account-additional-note {
-  display: none; }
+.account .modal-inner-wrap .action-close {
+  background: transparent !important;
+  min-width: 20px !important;
+  text-align: right !important; }
+  .account .modal-inner-wrap .action-close:before {
+    font-weight: bold !important;
+    color: #000; }
+  .account .modal-inner-wrap .action-close:hover:before {
+    color: #8e7171 !important; }
+
+.account .modal-footer {
+  display: block !important;
+  padding: 20px !important; }
+  .account .modal-footer button {
+    margin: 5px !important; }
+
+@media screen and (max-width: 767px) {
+  .account .modal-footer button {
+    width: calc(100% - 10px) !important; } }
 
 .customer-account-create .form-create-account .fieldset.create.account:after {
   font-size: 12px !important; }
@@ -268,13 +331,13 @@ body:not(.customer-account-index) .account-additional-note {
 
 .checkout-cart-index .form-cart button {
   background: transparent !important;
-  color: #000 !important;
-  border: 2px solid #000 !important;
+  color: #8e7171 !important;
+  border: 1px solid #8e7171 !important;
   font-size: 12px !important;
   min-width: 180px !important;
   padding: 12px 15px !important; }
   .checkout-cart-index .form-cart button:hover {
-    background: #000 !important;
+    background: #8e7171 !important;
     color: #fff !important; }
 
 .checkout-cart-index .cart-gift-item .gift-item-block .title {
@@ -330,10 +393,15 @@ body:not(.customer-account-index) .account-additional-note {
   margin: 10px 0 !important; }
 
 .checkout-cart-index .we-accept-cards {
-  background-image: none;
-  padding-top: 10px; }
+  background-image: url("https://res.cloudinary.com/foco/images/v1631046302/credit-card-icons/credit-card-icons.png");
+  background-repeat: no-repeat;
+  width: 450px;
+  height: 50px;
+  position: relative;
+  left: -10px;
+  top: 10px; }
   .checkout-cart-index .we-accept-cards img {
-    margin-left: -10px; }
+    display: none; }
 
 .checkout-cart-index .cart.table-wrapper .actions-toolbar {
   min-height: 25px !important; }
@@ -348,7 +416,7 @@ body:not(.customer-account-index) .account-additional-note {
 .checkout-cart-index a.action.continue {
   font-size: 14px;
   display: block;
-  color: #000 !important; }
+  color: #8e7171 !important; }
 
 .checkout-cart-index #affirmfinance {
   font-size: 14px; }
@@ -372,7 +440,6 @@ body:not(.customer-account-index) .account-additional-note {
   position: absolute;
   top: 3px;
   right: 10px;
-  font-weight: bold;
   font-size: 14px; }
 
 .checkout-cart-index .stone-price-heading {
@@ -433,7 +500,10 @@ body:not(.customer-account-index) .account-additional-note {
       .checkout-cart-index .coupon .actions-toolbar .primary {
         width: 100%; }
         .checkout-cart-index .coupon .actions-toolbar .primary button {
-          width: 100%; } }
+          width: 100%; }
+  .checkout-cart-index .we-accept-cards {
+    max-width: 300px;
+    background-size: contain; } }
 
 .checkout-index-index .page-header:nth-of-type(2) {
   display: none; }
@@ -483,9 +553,6 @@ body:not(.customer-account-index) .account-additional-note {
   font-weight: bold;
   text-transform: uppercase; }
 
-.checkout-index-index .form.methods-shipping input[type='radio'] {
-  margin: 0 !important; }
-
 .checkout-index-index .checkout-step-shipping_method .actions-toolbar {
   padding-top: 20px; }
 
@@ -505,28 +572,41 @@ body:not(.customer-account-index) .account-additional-note {
     background: #8e7171 !important; }
 
 .checkout-index-index .actions-toolbar .secondary .remind {
-  padding-top: 10px;
-  margin-left: 15px;
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: bold; }
+  padding-top: 5px;
+  margin-left: 15px; }
+
+.checkout-index-index label {
+  font-size: 14px; }
+
+.checkout-index-index input {
+  font-size: 16px !important; }
+
+.checkout-index-index input[type='checkbox'] {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important; }
+  .checkout-index-index input[type='checkbox']:before {
+    left: 50% !important;
+    top: 50%;
+    transform: translate(-50%, -50%); }
 
 .checkout-index-index input[type='radio'] {
-  width: 18px !important;
-  height: 18px !important;
-  margin-right: 5px !important;
-  border: 1px solid #000 !important; }
-
-.checkout-index-index input[type='radio']:not([disabled]):checked {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  border-radius: 50%;
+  width: 20px !important;
+  height: 20px !important;
+  border: 1px solid #999;
+  margin: 0 !important;
   position: relative; }
-  .checkout-index-index input[type='radio']:not([disabled]):checked:after {
-    content: '✔';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 16px;
-    color: #000; }
+  .checkout-index-index input[type='radio']:checked {
+    border: 5px solid black; }
+
+.checkout-index-index .payment-method > .field {
+  display: flex;
+  align-items: center;
+  gap: 10px; }
 
 .checkout-index-index .braintree-credit-card-selected {
   width: 32px; }
@@ -592,6 +672,9 @@ body:not(.customer-account-index) .account-additional-note {
   .checkout-index-index .modal-footer button {
     margin: 0 10px !important; }
 
+.checkout-index-index .form-shipping-address .field[name='shippingAddress.fax'] {
+  display: none; }
+
 @media screen and (max-width: 1024px) {
   .checkout-index-index .minicart-items .product > .product-image-container {
     width: 40px !important; }
@@ -606,7 +689,10 @@ body:not(.customer-account-index) .account-additional-note {
   .checkout-index-index .checkout-payment-method .actions-toolbar .primary {
     float: none; }
   .checkout-index-index .checkout-payment-method .payment-methods {
-    margin: 0 !important; } }
+    margin: 0 !important; }
+  .checkout-index-index input[type='checkbox'] {
+    width: 25px !important;
+    height: 25px !important; } }
 
 @media screen and (max-width: 639px) {
   .checkout-index-index .authentication-wrapper {

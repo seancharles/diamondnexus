@@ -231,13 +231,13 @@ class StoneImport
                 "radiant" => "800",
                 "Marquise" => "900",
                 "marquise" => "900",
-                "Heart" => "1000",
-                "heart" => "1000"
+                "Heart" => "950",
+                "heart" => "950"
             );
             
             $this->shapeAlphaMap = array(
-                "Round" => "1000",
-                "round" => "1000",
+                "Round" => "950",
+                "round" => "950",
                 "Princess" => "800",
                 "princess" => "800",
                 "Cushion" => "200",
@@ -544,8 +544,8 @@ class StoneImport
     
     function run()
     {
-        $this->_updateCsv();
-        $csvArray = $this->_buildArray();
+        $this->updateCsv();
+        $csvArray = $this->buildArray();
         
         $i = 0;
         foreach ($csvArray as $csvArr) {
@@ -750,7 +750,7 @@ class StoneImport
         return true;
     }
     
-    protected function _buildArray()
+    public function buildArray()
     {
         $arr = array();
         $fields = array();
@@ -839,7 +839,7 @@ class StoneImport
         $this->connection->query($query);
     }
     
-    protected function _updateCsv()
+    public function updateCsv()
     {
         $ftp = ftp_connect(
             $this->scopeConfig->getValue('forevercompanies_stone_ftp/creds/host', $this->storeScope),

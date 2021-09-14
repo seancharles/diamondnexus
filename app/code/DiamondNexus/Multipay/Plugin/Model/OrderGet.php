@@ -63,8 +63,8 @@ class OrderGet
             //  0 in /var/www/magento/app/code/DiamondNexus/Multipay/Plugin/Model/OrderGet.php on line 61
             
             if (isset($transaction['payment_method']) &&
-                isset(Constant::MULTIPAY_METHOD_LABEL[$transaction['payment_method']])) {
-                $transaction['payment_method'] = Constant::MULTIPAY_METHOD_LABEL[$transaction['payment_method']];
+                isset(Constant::MULTIPAY_FISHBOWL_METHOD_MAP[$transaction['payment_method']])) {
+                $transaction['payment_method'] = Constant::MULTIPAY_FISHBOWL_METHOD_MAP[$transaction['payment_method']];
             }
         }
         if (count($allTransactionsByOrderId) > 0) {

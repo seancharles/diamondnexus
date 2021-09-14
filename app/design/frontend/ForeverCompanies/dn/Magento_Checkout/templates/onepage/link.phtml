@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
@@ -7,38 +8,24 @@
 /** @var $block \Magento\Checkout\Block\Onepage\Link */
 ?>
 
-<?php if ($block->isPossibleOnepageCheckout()) :?>
+<?php if ($block->isPossibleOnepageCheckout()) : ?>
 
-    <div id="affirmfinance"
-         class="affirm-as-low-as"
-         data-page-type="cart"
-         data-amount="128800">Starting at 0% APR. As low as
+    <div id="affirmfinance" class="affirm-as-low-as" data-page-type="cart" data-amount="128800">Starting at 0% APR. As low as
         <span class="affirm-ala-price">$78</span>/month with
         <span class="__affirm-logo __affirm-logo-blue __ligature__affirm_full_logo__ __processed">Affirm</span>.
-        <a class="affirm-modal-trigger"
-           aria-label="PREQUALIFY NOW (opens in modal)"
-           href="javascript:void(0)">Prequalify now</a>
+        <a class="affirm-modal-trigger" aria-label="PREQUALIFY NOW (opens in modal)" href="javascript:void(0)">Prequalify now</a>
     </div>
-    <button type="button"
-            data-role="proceed-to-checkout"
-            title="<?= $block->escapeHtmlAttr(__('Proceed to Checkout')) ?>"
-            data-mage-init='{
+    <button type="button" data-role="proceed-to-checkout" title="<?= $block->escapeHtmlAttr(__('Proceed to Checkout')) ?>" data-mage-init='{
                 "Magento_Checkout/js/proceed-to-checkout":{
                     "checkoutUrl":"<?= $block->escapeJs($block->escapeUrl($block->getCheckoutUrl())) ?>"
                 }
-            }'
-            class="action primary checkout<?= ($block->isDisabled()) ? ' disabled ' : '' ?>"
-            <?php if($block->isDisabled()) :?>
-            <?php endif; ?>>
-            <span><?= $block->escapeHtml(__('Proceed to Checkout')) ?></span>
+            }' class="action primary checkout<?= ($block->isDisabled()) ? ' disabled ' : '' ?>" <?php if ($block->isDisabled()) : ?> <?php endif; ?>>
+        <span><?= $block->escapeHtml(__('Proceed to Checkout')) ?></span>
     </button>
     <div class="action-continue">
-        <a class="action continue"
-           href="http://forevercompanies.docker.aitom.cz/"
-           title="Continue Shopping">
+        <a class="action continue" href="/" title="Continue Shopping">
             <span>Continue Shopping</span>
         </a>
     </div>
 
 <?php endif ?>
-

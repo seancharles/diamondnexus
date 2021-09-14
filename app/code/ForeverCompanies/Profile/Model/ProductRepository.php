@@ -4,6 +4,7 @@ namespace ForeverCompanies\Profile\Model;
 
 use Magento\Catalog\Model\ProductRepository as OrigProductRepository;
 use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 class ProductRepository extends OrigProductRepository implements ProductRepositoryInterface
 {

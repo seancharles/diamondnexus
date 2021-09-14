@@ -62,15 +62,11 @@ class Delete extends \Magento\Checkout\Controller\Cart implements HttpPostAction
                 $this->_objectManager->get(\Psr\Log\LoggerInterface::class)->critical($e);
             }
         }
-        
+
         $cartItems = $this->quoteRepository->get($this->sessionModel->getQuoteId())->getAllVisibleItems();
         if (count($cartItems) == 0) {
             $this->cart->truncate()->save();
         }
-        
-        $this->cart->getQuote()->setTotalsCollectedFlag(false);
-        $this->cart->getQuote()->collectTotals();
-        $this->cart->save();
         
         $defaultUrl = $this->_objectManager->create(\Magento\Framework\UrlInterface::class)->getUrl('*/*');
         return $this->resultRedirectFactory->create()->setUrl($this->_redirect->getRedirectUrl($defaultUrl));

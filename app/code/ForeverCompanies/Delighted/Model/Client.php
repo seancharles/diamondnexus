@@ -1,15 +1,14 @@
 <?php
-
 namespace ForeverCompanies\Delighted\Model;
 
 use Exception;
 use GuzzleHttp\Psr7\Request;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 require __DIR__ . '/Version.php';
 
 class Client
 {
-
     const DEFAULT_BASE_URL = 'https://api.delighted.com/v1/';
     protected $apiKey = null;
     protected $adapter = null;
@@ -19,9 +18,13 @@ class Client
 
     protected $optionsArr;
     
+    protected $scopeConfig;
+    protected $storeScope;
 
-    public function __construct(array $options = [])
-    {
+    public function __construct(
+        array $options = [],
+        ScopeConfigInterface $scopeC
+    ) {
         $options['apiKey'] = 'tfZuI4Tl5SJcwGRclbq9CvH7ZqycjM5A';
         if (! isset($options['apiKey'])) {
             throw new \InvalidArgumentException('No apiKey specified');
@@ -54,11 +57,13 @@ class Client
             $params['handler'] = $options['handler'];
         }
         $this->adapter = new \GuzzleHttp\Client($params);
+        $this->scopeConfig = $scopeC;
+        $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
 
-    public static function getInstance(array $options = null)
+    public function getInstance(array $options = null)
     {
-        $options['apiKey'] = 'tfZuI4Tl5SJcwGRclbq9CvH7ZqycjM5A';
+        $options['apiKey'] = $this->scopeConfig->getValue('forevercompanies_delighted/api_keys/key', $this->storeScope);
         
         if (is_null(self::$instance)) {
             if (! isset($options['apiKey']) && isset(self::$sharedApiKey)) {

@@ -100,12 +100,13 @@ class OrderItemCustomOptions
         if ($options == null || count($options) == 0) {
             return;
         }
+        $optionTable = 'catalog_product_option';
         $idTable = 'catalog_product_option_title';
         $valueTable = 'catalog_product_option_type_title';
         $connection = $this->db->getConnection();
         foreach ($options as $id => $value) {
+            $option = $connection->select()->from($optionTable)->where('option_id = "' . $id . '"');
             $name = $connection->select()->from($idTable)->where('option_id = "' . $id . '"');
-            $val = $connection->select()->from($valueTable)->where('option_type_id = "' . $value . '"');
             $customOption = $this->customOptionInterfaceFactory->create();
             $customOption->setOptionId($id);
             $customOption->setOptionValue($value);
@@ -118,9 +119,15 @@ class OrderItemCustomOptions
                 $customOption->setOptionTitle('option not found in catalog_product_option table');
             }
             if ($value !== '') {
-                $rowVal = $connection->fetchRow($val);
-                if ($rowVal !== false) {
-                    $customOption->setOptionValueTitle($rowVal['title']);
+                $rowOption = $connection->fetchRow($option);
+                if(isset($rowOption['type']) === true && ($rowOption['type'] == 'drop_down' || $rowOption['type'] == 'radio')) {
+                    $val = $connection->select()->from($valueTable)->where('option_type_id = "' . $value . '"');
+                    $rowVal = $connection->fetchRow($val);
+                    if (isset($rowVal) === true && $rowVal !== false) {
+                        $customOption->setOptionValueTitle($rowVal['title']);
+                    } else {
+                        $customOption->setOptionValueTitle($value);
+                    }
                 } else {
                     $customOption->setOptionValueTitle($value);
                 }
