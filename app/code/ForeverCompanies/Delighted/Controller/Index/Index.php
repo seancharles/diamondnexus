@@ -35,13 +35,12 @@ class Index extends Action
 	public function execute()
 	{
 	    echo 'fff';die;
-	    
 	    $order = $this->orderFactory->create()->load(557895);
 	    
 	    
 	    $region = $this->regionFactory->create()->load( $order->getBillingAddress()->getRegionId() );
 	    
-	 //   die;
+	 
 	    
 	    $result = $this->person->create([
 	        'email' => $order->getCustomerEmail(),
