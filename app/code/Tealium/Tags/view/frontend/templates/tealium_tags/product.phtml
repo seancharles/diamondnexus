@@ -44,9 +44,8 @@ if ($this->getRegestry()->registry('current_product')->getTypeId() == 'configura
                         var oldUDO = utag_data;
                         if (oldUDO.product_price[0] != newPrice){
                             oldUDO.product_price = [newPrice];
-                            
+
                             utag.view(oldUDO);
-                            debugger;
                         }
                     }
                 })
