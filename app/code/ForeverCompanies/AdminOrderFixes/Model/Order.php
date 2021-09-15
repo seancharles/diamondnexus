@@ -11,6 +11,43 @@ class Order extends OrigOrder
         return true;
     }
     
+    public function canCreditmemo()
+    {
+        if ($this->hasForcedCanCreditmemo()) {
+            return $this->getForcedCanCreditmemo();
+        }
+        
+        if ($this->canUnhold() || $this->isPaymentReview() ||
+            $this->getState() === self::STATE_CLOSED) {
+                return false;
+            }
+            
+            /**
+             * We can have problem with float in php (on some server $a=762.73;$b=762.73; $a-$b!=0)
+             * for this we have additional diapason for 0
+             * TotalPaid - contains amount, that were not rounded.
+             */
+            $totalRefunded = $this->priceCurrency->round($this->getTotalPaid()) - $this->getTotalRefunded();
+            if (abs($this->getGrandTotal()) < .0001) {
+                return $this->canCreditmemoForZeroTotal($totalRefunded);
+            }
+            
+            return $this->canCreditmemoForZeroTotalRefunded($totalRefunded);
+    }
+    
+    private function canCreditmemoForZeroTotalRefunded($totalRefunded)
+    {
+        $isRefundZero = abs($totalRefunded) < .0001;
+        // Case when Adjustment Fee (adjustment_negative) has been used for first creditmemo
+        $hasAdjustmentFee = abs($totalRefunded - $this->getAdjustmentNegative()) < .0001;
+        $hasActionFlag = $this->getActionFlag(self::ACTION_FLAG_EDIT) === false;
+        if ($isRefundZero || $hasAdjustmentFee || $hasActionFlag) {
+            return false;
+        }
+        
+        return true;
+    }
+    
     public function registerCancellation($comment = '', $graceful = true)
     {
         $state = self::STATE_CANCELED;
@@ -38,7 +75,7 @@ class Order extends OrigOrder
         if (!empty($comment)) {
             $this->addStatusHistoryComment($comment, false);
         }
-       
+        
         return $this;
     }
 }
