@@ -1,0 +1,33 @@
+--- Model/SourceDeductionService.php	2020-07-20 01:52:40.000000000 -0500
++++ Model/SourceDeductionService.php	2020-07-20 01:52:40.000000000 -0500
+@@ -13,6 +13,7 @@
+ use Magento\InventoryConfigurationApi\Api\Data\StockItemConfigurationInterface;
+ use Magento\InventoryConfigurationApi\Api\GetStockItemConfigurationInterface;
+ use Magento\InventorySalesApi\Api\GetStockBySalesChannelInterface;
++use Magento\CatalogInventory\Api\StockConfigurationInterface;
+ 
+ /**
+  * @inheritdoc
+@@ -54,11 +55,13 @@
+         SourceItemsSaveInterface $sourceItemsSave,
+         GetSourceItemBySourceCodeAndSku $getSourceItemBySourceCodeAndSku,
+         GetStockItemConfigurationInterface $getStockItemConfiguration,
++        StockConfigurationInterface $getStockConfiguration,
+         GetStockBySalesChannelInterface $getStockBySalesChannel
+     ) {
+         $this->sourceItemsSave = $sourceItemsSave;
+         $this->getSourceItemBySourceCodeAndSku = $getSourceItemBySourceCodeAndSku;
+         $this->getStockItemConfiguration = $getStockItemConfiguration;
++        $this->getStockConfiguration = $getStockConfiguration;
+         $this->getStockBySalesChannel = $getStockBySalesChannel;
+     }
+ 
+@@ -80,7 +83,7 @@
+                 $stockId
+             );
+ 
+-            if (!$stockItemConfiguration->isManageStock()) {
++            if (!$stockItemConfiguration->isManageStock() || $this->getStockConfiguration->canSubtractQty()) {
+                 //We don't need to Manage Stock
+                 continue;
+             }
