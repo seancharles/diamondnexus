@@ -528,6 +528,12 @@ footer {
     background: #000 !important;
     color: #fff !important; }
 
+.checkout-cart-index .price.strikethrough {
+  text-decoration: line-through; }
+
+.checkout-cart-index .cart-price + .price-excluding-tax .cart-price {
+  color: Red; }
+
 .checkout-cart-index .cart-price span {
   font-size: 14px;
   font-weight: normal !important; }

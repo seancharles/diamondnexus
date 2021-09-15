@@ -129,6 +129,12 @@
             color: #fff !important;
         }
     }
+    .price.strikethrough {
+        text-decoration: line-through;
+    }
+    .cart-price + .price-excluding-tax .cart-price {
+        color: Red;
+    }
     .cart-price span {
         font-size: 14px;
         font-weight: normal !important;

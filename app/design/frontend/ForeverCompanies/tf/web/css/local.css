@@ -448,6 +448,12 @@ footer {
 .checkout-cart-index #block-discount {
   display: none; }
 
+.checkout-cart-index .price.strikethrough {
+  text-decoration: line-through; }
+
+.checkout-cart-index .cart-price + .price-excluding-tax .cart-price {
+  color: Red; }
+
 @media screen and (max-width: 1024px) {
   .checkout-cart-index .cart-container {
     display: flex;
