@@ -24,7 +24,7 @@ class SubmissionSaveAfter implements ObserverInterface
         /** @var Customer $customer */
         $submission = $observer->getEvent()->getDataObject();
 
-        $formList = [1, 2, 3, 4, 7];
+        $formList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 
         // form ids to sync to salesforce, this should be maintained
         if(in_array($submission->getFormId(), $formList) === true) {
