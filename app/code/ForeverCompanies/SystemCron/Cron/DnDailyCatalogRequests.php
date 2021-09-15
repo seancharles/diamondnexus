@@ -4,6 +4,7 @@ namespace ForeverCompanies\SystemCron\Cron;
 use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\ResourceConnection;
+use ForeverCompanies\Smtp\Helper\Mail as MailHelper;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class DnDailyCatalogRequests
@@ -12,15 +13,18 @@ class DnDailyCatalogRequests
     protected $connection;
     protected $scopeConfig;
     protected $storeScope;
+    protected $mailHelper;
     
     public function __construct(
         Filesystem $fileS,
         ResourceConnection $resource,
-        ScopeConfigInterface $scopeC
+        ScopeConfigInterface $scopeConfigI,
+        MailHelper $mailH
     ) {
         $this->directory = $fileS->getDirectoryWrite(DirectoryList::VAR_DIR);
         $this->connection = $resourceC->getConnection();
-        $this->scopeConfig = $scopeC;
+        $this->mailHelper = $mailH;
+        $this->scopeConfig = $scopeConfigI;
         $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
     
@@ -102,35 +106,33 @@ class DnDailyCatalogRequests
             );
         }
         
-        $mail = new \Zend_Mail();
-        $mail->setBodyHtml(
-            "Daily Catalog Request Report - " . $date .
+        $this->mailHelper->setFrom([
+            'name' => $this->scopeConfig->getValue('forevercompanies_cron_schedules/dn_daily_catalog_requests/from_name',
+                $this->storeScope),
+            'email' => $this->scopeConfig->getValue('forevercompanies_cron_schedules/dn_daily_catalog_requests/from_email',
+                $this->storeScope)
+        ]);
+        
+        $this->mailHelper->addTo(
+            $this->scopeConfig->getValue('forevercompanies_cron_schedules/dn_daily_catalog_requests/to_email',
+                $this->storeScope),$this->scopeConfig->getValue('forevercompanies_cron_schedules/dn_daily_catalog_requests/to_name',
+                    $this->storeScope)
+            );
+        
+        // TODO Add attachment capability to Mail Helper
+        
+        $content = file_get_contents($filename);
+        
+        $this->mailHelper->setSubject('Daily Catalog Request Report - ' . $date . ( (count($leadsResult) == 0) ? ': No Leads Submitted' : '' ));
+        $this->mailHelper->setIsHtml(true);
+        $this->mailHelper->setBody("Daily Catalog Request Report - " . $date .
             "<br />" .
             "<br />" .
             "<span style='font-size:10px;'>" .
             "Sent From <strong>@mag4:" . $_SERVER['PWD'] . "/" . $_SERVER['SCRIPT_FILENAME'] . "</strong>" .
-            "</span>"
-        )
-        ->setFrom('reports@forevercompanies.com', 'Forever Companies Reports')
-        ->setReplyTo('paul.baum@forevercompanies.com', 'Paul Baum')
-        ->addTo('mike.yarbrough@diamondnexus.com')
-        ->addTo('tyler.kaminski@diamondnexus.com')
-        ->addTo('jessica.nelson@diamondnexus.com')
-        ->addTo('paul.baum@forevercompanies.com')
-        ->setSubject('Daily Catalog Request Report - ' . $date . ( (count($leadsResult) == 0) ? ': No Leads Submitted' : '' ) );
+            "</span>");
+        $this->mailHelper->send(array("name" => $filename, "content" => $content));
         
-        $content = file_get_contents($filename);
-        $attachment = new \Zend_Mime_Part($content);
-        $attachment->type = mime_content_type($filename);
-        $attachment->disposition = \Zend_Mime::DISPOSITION_ATTACHMENT;
-        $attachment->encoding = \Zend_Mime::ENCODING_BASE64;
-        $attachment->filename = 'cr-' . $date . '.csv';
-        
-        if( count($leadsResult) > 0 ) {
-            $mail->addAttachment($attachment);
-        }
-        
-        $mail->send();
         echo "Email sent!\n";
     }
 }

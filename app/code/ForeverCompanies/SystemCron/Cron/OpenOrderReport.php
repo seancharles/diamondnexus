@@ -6,6 +6,7 @@ use Magento\User\Model\UserFactory;
 use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use ForeverCompanies\Smtp\Helper\Mail as MailHelper;
 
 class OpenOrderReport
 {
@@ -15,18 +16,21 @@ class OpenOrderReport
     protected $transactionFactory;
     protected $scopeConfig;
     protected $storeScope;
+    protected $maiHelper;
     
     public function __construct(
         OrderCollectionFactory $orderCollectionF,
         UserFactory $userF,
         Filesystem $fileS,
-        ScopeConfigInterface $scopeC
+        ScopeConfigInterface $scopeC,
+        MailHelper $mailH
     ) {
         $this->orderCollectionFactory = $orderCollectionF;
         $this->userFactory = $userF;
         $this->directory = $fileS->getDirectoryWrite(DirectoryList::VAR_DIR);
         $this->scopeConfig = $scopeC;
         $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+        $this->mailHelper = $mailH;
     }
     
     public function execute()
@@ -85,23 +89,26 @@ class OpenOrderReport
             );
         }
         
-        $mail = new \Zend_Mail();
-        $mail->setBodyHtml("All Open Orders Report - " . $date. " \r\n")
-        ->setFrom('it@diamondnexus.com', 'Diamond Nexus Reports')
-        ->setReplyTo('epasek@forevercompanies.com', 'Edie Pasek')
-        ->addTo('epasek@forevercompanies.com')
-        ->addTo('ken.licau@forevercompanies.com')
-        ->setSubject('Open Orders Report - ' . $date);
+        
+        $this->mailHelper->setFrom([
+            'name' => $this->scopeConfig->getValue('forevercompanies_cron_schedules/open_order_report/from_name',
+                $this->storeScope),
+            'email' => $this->scopeConfig->getValue('forevercompanies_cron_schedules/open_order_report/from_email',
+                $this->storeScope)
+        ]);
+        
+        $this->mailHelper->addTo(
+            $this->scopeConfig->getValue('forevercompanies_cron_schedules/open_order_report/to_email',
+            $this->storeScope),$this->scopeConfig->getValue('forevercompanies_cron_schedules/open_order_report/to_name',
+                $this->storeScope)
+        );
+        
         
         $content = file_get_contents($filename);
-        $attachment = new \Zend_Mime_Part($content);
-        $attachment->type = mime_content_type($filename);
-        $attachment->disposition = \Zend_Mime::DISPOSITION_ATTACHMENT;
-        $attachment->encoding = \Zend_Mime::ENCODING_BASE64;
-        $attachment->filename = 'open_orders_' . $date . '.csv';
         
-        $mail->addAttachment($attachment);
-        
-        $mail->send();
+        $this->mailHelper->setSubject('Open Orders Report - ' . $date);
+        $this->mailHelper->setIsHtml(true);
+        $this->mailHelper->setBody("All Open Orders Report - " . $date. " \r\n");
+        $this->mailHelper->send(array("name" => $filename, "content" => $content));
     }
 }

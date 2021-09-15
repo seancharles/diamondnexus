@@ -10,6 +10,7 @@ use Magento\Sales\Model\OrderFactory;
 use Magento\Catalog\Model\ProductFactory;
 use Magento\Store\Api\WebsiteRepositoryInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use ForeverCompanies\Smtp\Helper\Mail as MailHelper;
 
 class SalePromoDiscReport
 {
@@ -22,6 +23,7 @@ class SalePromoDiscReport
     protected $websiteRepository;
     protected $scopeConfig;
     protected $storeScope;
+    protected $mailHelper;
     
     public function __construct(
         Filesystem $fileS,
@@ -31,7 +33,8 @@ class SalePromoDiscReport
         OrderFactory $orderF,
         ProductFactory $productF,
         WebsiteRepositoryInterface $websiteRepositoryI,
-        ScopeConfigInterface $scopeC
+        ScopeConfigInterface $scopeC,
+        MailHelper $mailH
     ) {
         $this->directory = $fileS->getDirectoryWrite(DirectoryList::VAR_DIR);
         $this->orderCollectionFactory = $orderCollectionF;
@@ -42,6 +45,7 @@ class SalePromoDiscReport
         $this->websiteRepository = $websiteRepositoryI;
         $this->scopeConfig = $scopeC;
         $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+        $this->mailHelper = $mailH;
     }
     
     public function execute()
@@ -135,26 +139,26 @@ class SalePromoDiscReport
         }
         
         
-        $mail = new \Zend_Mail();
-        $mail->setBodyHtml("All Sale/Promo/Custom Disc Report - " . $date. " \r\n")
-        ->setFrom('it@diamondnexus.com', 'Diamond Nexus Reports')
-        ->setReplyTo('epasek@forevercompanies.com', 'Edie Pasek')
-        ->addTo('epasek@forevercompanies.com')
-        ->addTo('bill.tait@forevercompanies.com')
-        ->addTo('jessica.nelson@diamondnexus.com')
-        ->addTo('ken.licau@forevercompanies.com')
-        ->addTo('andrew.roberts@forevercompanies.com')
-        ->setSubject('Sale/Promo/Custom Disc Report - ' . $date);
+        $this->mailHelper->setFrom([
+            'name' => $this->scopeConfig->getValue('forevercompanies_cron_schedules/sale_promo_discount_report/from_name',
+                $this->storeScope),
+            'email' => $this->scopeConfig->getValue('forevercompanies_cron_schedules/sale_promo_discount_report/from_email',
+                $this->storeScope)
+        ]);
         
+        $this->mailHelper->addTo(
+            $this->scopeConfig->getValue('forevercompanies_cron_schedules/sale_promo_discount_report/to_email',
+                $this->storeScope),$this->scopeConfig->getValue('forevercompanies_cron_schedules/sale_promo_discount_report/to_name',
+                    $this->storeScope)
+            );
+        
+       
+       
         $content = file_get_contents($filename);
-        $attachment = new \Zend_Mime_Part($content);
-        $attachment->type = mime_content_type($filename);
-        $attachment->disposition = \Zend_Mime::DISPOSITION_ATTACHMENT;
-        $attachment->encoding = \Zend_Mime::ENCODING_BASE64;
-        $attachment->filename = 'sale-promo-disc_' . $date . '.csv';
         
-        $mail->addAttachment($attachment);
-        $mail->send();
-        
+        $this->mailHelper->setSubject('Sale/Promo/Custom Disc Report - ' . $date);
+        $this->mailHelper->setIsHtml(true);
+        $this->mailHelper->setBody("All Sale/Promo/Custom Disc Report - " . $date. " \r\n");
+        $this->mailHelper->send(array("name" => $filename, "content" => $content));
     }
 }

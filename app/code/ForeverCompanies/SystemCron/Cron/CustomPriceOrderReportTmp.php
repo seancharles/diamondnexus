@@ -4,6 +4,7 @@ namespace ForeverCompanies\SystemCron\Cron;
 use Magento\Sales\Model\OrderFactory;
 use Magento\User\Model\ResourceModel\User\CollectionFactory as UserCollectionFactory;
 use Magento\Sales\Model\ResourceModel\Order\Shipment\Collection as OrderShipmentCollection;
+use ForeverCompanies\Smtp\Helper\Mail as MailHelper;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class CustomPriceOrderReportTmp
@@ -11,6 +12,7 @@ class CustomPriceOrderReportTmp
 	protected $orderFactory;
 	protected $userCollectionFactory;
 	protected $orderShipmentCollection;
+	protected $mailHelper;
 	protected $scopeConfig;
 	protected $storeScope;
 
@@ -18,12 +20,14 @@ class CustomPriceOrderReportTmp
 	    OrderFactory $orderF,
 	    UserCollectionFactory $userCollectionF,
 	    OrderShipmentCollection $orderShipmentC,
-	    ScopeConfigInterface $scopeC
+	    MailHelper $mailH,
+	    ScopeConfigInterface $scopeConfigI
 	) {
 		$this->orderFactory = $orderF;
 		$this->userCollectionFactory = $userCollectionF;
 		$this->orderShipmentCollection = $orderShipmentC;
-		$this->scopeConfig = $scopeC;
+		$this->mailHelper = $mailH;
+		$this->scopeConfig = $scopeConfigI;
 		$this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
 	}
 	
@@ -154,8 +158,23 @@ class CustomPriceOrderReportTmp
         <?php
         	$content = ob_get_clean();
         	
-        	# sends to email forwarder group
-        	mail('CustomPriceOrderReportList@diamondnexus.com','Accounting Price Report',$content,'Content-type: text/html');
+        	$this->mailHelper->setFrom([
+        	    'name' => $this->scopeConfig->getValue('forevercompanies_cron_schedules/custom_price_order_report_tmp/from_name',
+        	        $this->storeScope),
+        	    'email' => $this->scopeConfig->getValue('forevercompanies_cron_schedules/custom_price_order_report_tmp/from_email',
+        	        $this->storeScope)
+        	]);
+        	
+        	$this->mailHelper->addTo(
+        	    $this->scopeConfig->getValue('forevercompanies_cron_schedules/custom_price_order_report_tmp/to_email',
+        	        $this->storeScope),$this->scopeConfig->getValue('forevercompanies_cron_schedules/custom_price_order_report_tmp/to_name',
+        	            $this->storeScope)
+        	    );
+        	
+        	$this->mailHelper->setSubject('Accounting Price Report');
+        	$this->mailHelper->setIsHtml(true);
+        	$this->mailHelper->setBody($content);
+        	$this->mailHelper->send();
         	
         	echo "Complete\n";
 	}
