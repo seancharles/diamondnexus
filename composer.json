@@ -105,6 +105,9 @@
             "magento/module-checkout": {
                 "Fix Paypal Checkout": "./app/code/ForeverCompanies/CustomAdmin/Setup/Patch/magentocheckout.patch"
             },
+            "magento/module-inventory-source-deduction-api": {
+                "Fix Magento Shipment API": "./app/code/ForeverCompanies/CustomAdmin/Setup/Patch/magentoshipmentapi.patch"
+            },
             "shipperhq/module-shipper": {
                 "Fix Paypal Checkout": "./app/code/ForeverCompanies/CustomAdmin/Setup/Patch/shipperhq.patch"
             }
