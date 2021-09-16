@@ -1,0 +1,45 @@
+<?php 
+
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$orderInterface = $objectManager->create('Magento\Sales\Api\Data\OrderInterface');
+$order = $orderInterface->loadByIncrementId($block->getOrderId());
+
+$shipments = $order->getShipmentsCollection();
+
+foreach ($shipments as $shipment) {
+    $tracksCollection = $shipment->getTracksCollection();
+    foreach ($tracksCollection->getItems() as $track) {
+        
+        if ($track->getCarrierCode() === 'fedex'){
+            $trackUrl = 'https://www.fedex.com/apps/fedextrack/?action=track&trackingnumber=' . $track->getNumber();
+        } elseif ($track->getCarrierCode() === 'usps') {
+            $trackUrl = 'https://tools.usps.com/go/TrackConfirmAction_input?qtc_tLabels1=' . $track->getNumber();
+        } elseif ($track->getCarrierCode() === 'ups') {
+            $trackUrl = 'https://wwwapps.ups.com/WebTracking/returnToDetails?tracknum=' . $track->getNumber();
+        }
+    }
+}
+
+?>
+
+<tr>
+	<td>
+		<a href="<?php echo $trackUrl ?>">
+		   <table class="m_-1327060581002481025responsive-table" align="center" width="600" border="0" cellspacing="0" cellpadding="0" style="width:600px;min-width:600px;text-align:center">
+				<tbody><tr>
+				  <td width="145" class="m_-1327060581002481025side" style="width:145px">&nbsp;</td>
+				  <td width="310" class="m_-1327060581002481025middle" align="center" style="width:310px;text-align:center">
+							<table class="m_-1327060581002481025responsive-with-padding" width="100%" height="60" border="0" cellpadding="0" cellspacing="0" align="center" style="width:100%;text-align:center;color:#ffffff;height:60px;min-height:60px">
+								<tbody><tr>
+									<td class="m_-1327060581002481025buttonblack m_-1327060581002481025fontsize15ontiny" align="center" bgcolor="#000001" height="50" style="border:2px solid #000001;font-size:17px;letter-spacing:2px;font-family:'Montserrat',Arial,'Open Sans',sans-serif;height:50px;text-decoration:none;text-align:center;color:#fffffe;font-weight:bold;letter-spacing:2px;vertical-align:middle">
+									<span class="m_-1327060581002481025whitelink" style="color:#fffffe;padding:15px">TRACK YOUR PACKAGE
+</span></td>
+								</tr>
+							</tbody></table>
+				  </td>
+				  <td width="145" class="m_-1327060581002481025side" style="width:145px">&nbsp;</td>
+				</tr>
+			</tbody></table>
+		</a>
+	</td>
+</tr>
