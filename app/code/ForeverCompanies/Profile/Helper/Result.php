@@ -191,7 +191,7 @@ class Result
     // validate add to cart params for simple and configurables
     public function validateProductOptions($product, $params)
     {
-        if ($product->hasOptions() == true) {
+        if ($product->hasOptions() == true && $product->getAttributeSetId() != 31) {
             // get custom options
             $productOptions = $product->getOptions();
 
