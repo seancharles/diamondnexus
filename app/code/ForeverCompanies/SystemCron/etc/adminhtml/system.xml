@@ -1,0 +1,203 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <system>
+        <section id="forevercompanies_cron_schedules" translate="label" type="text" sortOrder="190" showInDefault="1"
+                 showInWebsite="1" showInStore="1">
+            <label>Report Cron Email Addresses</label>
+            <tab>forevercompanies</tab>
+             <resource>ForeverCompanies_Gifts::config</resource>
+             
+            <group id="custom_price_order_report" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+	            <label>Custom Price Order Report</label>
+				<field id="to_email" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>To Email</label>
+                </field>
+                <field id="to_name" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>To Name</label>
+                </field>
+                <field id="from_email" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>From Email</label>
+                </field>
+                <field id="from_name" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>From Name</label>
+                </field>
+            </group>
+            
+            <group id="custom_price_order_report_tmp" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+	            <label>Custom Price Order Report Tmp</label>
+				<field id="to_email" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>To Email</label>
+                </field>
+                <field id="to_name" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>To Name</label>
+                </field>
+                <field id="from_email" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>From Email</label>
+                </field>
+                <field id="from_name" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>From Name</label>
+                </field>
+            </group>
+            
+            <group id="dn_daily_catalog_requests" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+	            <label>DN Daily Catalog Request Report</label>
+				<field id="to_email" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>To Email</label>
+                </field>
+                <field id="to_name" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>To Name</label>
+                </field>
+                <field id="from_email" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>From Email</label>
+                </field>
+                <field id="from_name" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>From Name</label>
+                </field>
+            </group>
+            
+            <group id="dn_daily_order_csr" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+	            <label>DN Daily Order CSR Report</label>
+				<field id="to_email" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>To Email</label>
+                </field>
+                <field id="to_name" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>To Name</label>
+                </field>
+                <field id="from_email" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>From Email</label>
+                </field>
+                <field id="from_name" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>From Name</label>
+                </field>
+            </group>
+            
+            <group id="fraud_report" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+	            <label>Fraud Report</label>
+				<field id="to_email" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>To Email</label>
+                </field>
+                <field id="to_name" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>To Name</label>
+                </field>
+                <field id="from_email" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>From Email</label>
+                </field>
+                <field id="from_name" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>From Name</label>
+                </field>
+            </group>
+            
+            <group id="open_order_report" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+	            <label>Open Order Report</label>
+				<field id="to_email" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>To Email</label>
+                </field>
+                <field id="to_name" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>To Name</label>
+                </field>
+                <field id="from_email" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>From Email</label>
+                </field>
+                <field id="from_name" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>From Name</label>
+                </field>
+            </group>
+            
+            <group id="progressive_leasing_delivery_report" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+	            <label>Progressive Leasing Delivery Report</label>
+				<field id="to_email" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>To Email</label>
+                </field>
+                <field id="to_name" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>To Name</label>
+                </field>
+                <field id="from_email" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>From Email</label>
+                </field>
+                <field id="from_name" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>From Name</label>
+                </field>
+            </group>
+            
+            <group id="sale_promo_discount_report" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+	            <label>Sale/Promo Discount Report</label>
+				<field id="to_email" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>To Email</label>
+                </field>
+                <field id="to_name" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>To Name</label>
+                </field>
+                <field id="from_email" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>From Email</label>
+                </field>
+                <field id="from_name" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>From Name</label>
+                </field>
+            </group>
+            
+            <group id="salesperson_report" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+	            <label>Salesperson Report</label>
+				<field id="to_email" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>To Email</label>
+                </field>
+                <field id="to_name" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>To Name</label>
+                </field>
+                <field id="from_email" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>From Email</label>
+                </field>
+                <field id="from_name" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>From Name</label>
+                </field>
+            </group>
+            
+		</section>
+	</system>
+</config>

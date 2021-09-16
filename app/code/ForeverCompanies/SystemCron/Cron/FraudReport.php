@@ -9,6 +9,7 @@ use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Sales\Api\Data\TransactionSearchResultInterfaceFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use ForeverCompanies\Smtp\Helper\Mail as MailHelper;
 
 class FraudReport
 {
@@ -20,6 +21,7 @@ class FraudReport
     protected $transactionFactory;
     protected $scopeConfig;
     protected $storeScope;
+    protected $mailHelper;
     
     public function __construct(
         OrderCollectionFactory $orderCollectionF,
@@ -28,7 +30,8 @@ class FraudReport
         Filesystem $fileS,
         TransactionSearchResultInterfaceFactory $transactions,
         OrderItemFactory $orderItemF,
-        ScopeConfigInterface $scopeC
+        ScopeConfigInterface $scopeC,
+        MailHelper $mailH
     ) {
         $this->orderCollectionFactory = $orderCollectionF;
         $this->customerCollectionFactory = $customerCollectionF;
@@ -38,6 +41,7 @@ class FraudReport
         $this->directory = $fileS->getDirectoryWrite(DirectoryList::VAR_DIR);
         $this->scopeConfig = $scopeC;
         $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+        $this->mailHelper = $mailHelper; 
     }
     
     public function execute()
@@ -357,25 +361,26 @@ class FraudReport
             }
         }
         
-        $mail = new \Zend_Mail();
-        $mail->setBodyHtml("All Fraud Report - " . $date. " \r\n")
-        ->setFrom('it@diamondnexus.com', 'Diamond Nexus Reports')
-        ->setReplyTo('epasek@forevercompanies.com', 'Edie Pasek')
-        ->addTo('accounting@forevercompanies.com')
-        ->addTo('paul.baum@forevercompanies.com')
-        ->addTo('epasek@forevercompanies.com')
-        ->addTo('jessica.nelson@diamondnexus.com')
-        ->setSubject('Fraud Report - ' . $date);
+        $this->mailHelper->setFrom([
+            'name' => $this->scopeConfig->getValue('forevercompanies_cron_schedules/fraud_report/from_name',
+                $this->storeScope),
+            'email' => $this->scopeConfig->getValue('forevercompanies_cron_schedules/fraud_report/from_email',
+                $this->storeScope)
+        ]);
+        
+        $this->mailHelper->addTo(
+            $this->scopeConfig->getValue('forevercompanies_cron_schedules/fraud_report/to_email',
+                $this->storeScope),$this->scopeConfig->getValue('forevercompanies_cron_schedules/fraud_report/to_name',
+                    $this->storeScope)
+        );
+        
         
         $content = file_get_contents($filename);
-        $attachment = new \Zend_Mime_Part($content);
-        $attachment->type = mime_content_type($filename);
-        $attachment->disposition = \Zend_Mime::DISPOSITION_ATTACHMENT;
-        $attachment->encoding = \Zend_Mime::ENCODING_BASE64;
-        $attachment->filename = 'fraud_' . $date . '.csv';
         
-        $mail->addAttachment($attachment);
-        $mail->send();
+        $this->mailHelper->setSubject('Fraud Report - ' . $date);
+        $this->mailHelper->setIsHtml(true);
+        $this->mailHelper->setBody("All Fraud Report - " . $date. " \r\n");
+        $this->mailHelper->send(array("name" => $filename, "content" => $content));
     }
     
 }

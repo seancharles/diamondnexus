@@ -6,6 +6,7 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use ForeverCompanies\Smtp\Helper\Mail as MailHelper;
 
 class ProgressiveLeasingDeliveryReport
 {
@@ -14,18 +15,21 @@ class ProgressiveLeasingDeliveryReport
     protected $storeManager;
     protected $scopeConfig;
     protected $storeScope;
+    protected $mailHelper;
     
     public function __construct(
         Filesystem $fileS,
         ResourceConnection $resourceC,
         StoreManagerInterface $storeManagerI,
-        ScopeConfigInterface $scopeC
+        ScopeConfigInterface $scopeC,
+        MailHelper $mailH
     ) {
         $this->directory = $fileS->getDirectoryWrite(DirectoryList::VAR_DIR);
         $this->connection = $resourceC->getConnection();
         $this->storeManager = $storeManagerI;
         $this->scopeConfig = $scopeC;
         $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+        $this->mailHelper = $mailH;
     }
     
     public function execute()
@@ -120,6 +124,8 @@ class ProgressiveLeasingDeliveryReport
         
         $bodyHTML .= '</table>';
         
+        
+        
         $mail = new \Zend_Mail();
         $mail->setBodyHtml(
             "Daily Progressive Leasing Delivery Report - " . $date .
@@ -141,18 +147,38 @@ class ProgressiveLeasingDeliveryReport
             ->addTo('jessica.nelson@diamondnexus.com')
             ->setSubject('Daily Progressive Leasing Delivery Report - ' . $date . ((count($orderResult) == 0) ? ': No Orders Found' : '' ));
             
+            
+            $this->mailHelper->setFrom([
+                'name' => $this->scopeConfig->getValue('forevercompanies_cron_schedules/progressive_leasing_delivery_report/from_name',
+                    $this->storeScope),
+                'email' => $this->scopeConfig->getValue('forevercompanies_cron_schedules/progressive_leasing_delivery_report/from_email',
+                    $this->storeScope)
+            ]);
+            
+            $this->mailHelper->addTo(
+                $this->scopeConfig->getValue('forevercompanies_cron_schedules/progressive_leasing_delivery_report/to_email',
+                    $this->storeScope),$this->scopeConfig->getValue('forevercompanies_cron_schedules/progressive_leasing_delivery_report/to_name',
+                        $this->storeScope)
+                );
+            
             $content = file_get_contents($filename);
-            $attachment = new \Zend_Mime_Part($content);
-            $attachment->type = mime_content_type($filename);
-            $attachment->disposition = \Zend_Mime::DISPOSITION_ATTACHMENT;
-            $attachment->encoding = \Zend_Mime::ENCODING_BASE64;
-            $attachment->filename = 'progressive-leasing-delivery-' . $date . '.csv';
             
-            if( count($orderResult) > 0 ) {
-                $mail->addAttachment($attachment);
-            }
+            $this->mailHelper->setSubject('Daily Progressive Leasing Delivery Report - ' . $date . ((count($orderResult) == 0) ? ': No Orders Found' : '' ));
+            $this->mailHelper->setIsHtml(true);
+            $this->mailHelper->setBody(
+                "Daily Progressive Leasing Delivery Report - " . $date .
+                "<br />" .
+                "<br />" .
+                $bodyHTML .
+                "<br />" .
+                "Forward spreadsheet with Lease Id column populated to readytofund@progleasing.com" .
+                "<br />" .
+                "<br />" .
+                "<span style='font-size:10px;'>" .
+                "Sent From <strong>@mag4:" . $_SERVER['PWD'] . "/" . $_SERVER['SCRIPT_FILENAME'] . "</strong>" .
+                "</span>");
+                $this->mailHelper->send(array("name" => $filename, "content" => $content));
             
-            $mail->send();
             echo "Email sent!\n";
     }
 }

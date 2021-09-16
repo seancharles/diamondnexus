@@ -3,6 +3,7 @@ namespace ForeverCompanies\SystemCron\Cron;
 
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 use Magento\User\Model\UserFactory;
+use ForeverCompanies\Smtp\Helper\Mail as MailHelper;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class CustomPriceOrderReport
@@ -11,15 +12,18 @@ class CustomPriceOrderReport
 	protected $userFactory;
 	protected $scopeConfig;
 	protected $storeScope;
-
+	protected $mailHelper;
+	
 	public function __construct(
 	    OrderCollectionFactory $orderCollectionF,
 	    UserFactory $userF,
-	    ScopeConfigInterface $scopeC
+	    ScopeConfigInterface $scopeC,
+	    MailHelper $mailH
 	) {
 		$this->orderCollectionFactory = $orderCollectionF;
 		$this->userFactory = $userF;
 		$this->scopeConfig = $scopeC;
+		$this->mailHelper = $mailH;
 		$this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
 	}
 	
@@ -126,9 +130,23 @@ class CustomPriceOrderReport
     	<?php
     	$content = ob_get_clean();
     	
+    	$this->mailHelper->setFrom([
+    	    'name' => $this->scopeConfig->getValue('forevercompanies_cron_schedules/custom_price_order_report/from_name',
+    	        $this->storeScope),
+    	    'email' => $this->scopeConfig->getValue('forevercompanies_cron_schedules/custom_price_order_report/from_email',
+    	        $this->storeScope)
+    	]);
     	
-    	# sends to email forwarder group
-        mail('CustomPriceOrderReportList@diamondnexus.com','Custom Price Report',$content,'Content-type: text/html');
+    	$this->mailHelper->addTo(
+    	    $this->scopeConfig->getValue('forevercompanies_cron_schedules/custom_price_order_report/to_email',
+    	        $this->storeScope),$this->scopeConfig->getValue('forevercompanies_cron_schedules/custom_price_order_report/to_name',
+    	            $this->storeScope)
+    	    );
+    	
+    	$this->mailHelper->setSubject('Custom Price Report');
+    	$this->mailHelper->setIsHtml(true);
+    	$this->mailHelper->setBody($content);
+    	$this->mailHelper->send();
     	
     	echo "Complete\n";
 	}

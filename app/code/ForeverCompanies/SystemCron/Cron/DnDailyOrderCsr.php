@@ -4,6 +4,7 @@ namespace ForeverCompanies\SystemCron\Cron;
 use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\ResourceConnection;
+use ForeverCompanies\Smtp\Helper\Mail as MailHelper;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class DnDailyOrderCsr
@@ -12,15 +13,18 @@ class DnDailyOrderCsr
     protected $connection;
     protected $scopeConfig;
     protected $storeScope;
+    protected $mailHelper;
     
     public function __construct(
         Filesystem $fileS,
         ResourceConnection $resourceC,
-        ScopeConfigInterface $scopeC
+        ScopeConfigInterface $scopeC,
+        MailHelper $mailH
     ) {
         $this->directory = $fileS->getDirectoryWrite(DirectoryList::VAR_DIR);
         $this->connection = $resourceC->getConnection();
         $this->scopeConfig = $scopeC;
+        $this->mailHelper = $mailH;
         $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
     
@@ -101,33 +105,32 @@ class DnDailyOrderCsr
             );
         }
         
-        $mail = new \Zend_Mail();
-        $mail->setBodyHtml(
+        $this->mailHelper->setFrom([
+            'name' => $this->scopeConfig->getValue('forevercompanies_cron_schedules/dn_daily_order_csr/from_name',
+                $this->storeScope),
+            'email' => $this->scopeConfig->getValue('forevercompanies_cron_schedules/dn_daily_order_csr/from_email',
+                $this->storeScope)
+        ]);
+        
+        $this->mailHelper->addTo(
+            $this->scopeConfig->getValue('forevercompanies_cron_schedules/dn_daily_order_csr/to_email',
+                $this->storeScope),$this->scopeConfig->getValue('dn_daily_order_csr/dn_daily_order_csr/to_name',
+                    $this->storeScope)
+        );
+         
+        $content = file_get_contents($filename);
+            
+        $this->mailHelper->setSubject('Daily CSR Report - ' . $date . ( (count($orderResult) == 0) ? ': No Orders Found' : '' ));
+        $this->mailHelper->setIsHtml(true);
+        $this->mailHelper->setBody(
             "Daily CSR Report - " . $date .
             "<br />" .
             "<br />" .
             "<span style='font-size:10px;'>" .
             "Sent From <strong>@mag4:" . $_SERVER['PWD'] . "/" . $_SERVER['SCRIPT_FILENAME'] . "</strong>" .
-            "</span>"
-            )
-            ->setFrom('reports@forevercompanies.com', 'Forever Companies Reports')
-            ->setReplyTo('paul.baum@forevercompanies.com', 'Paul Baum')
-            ->addTo('jessica.nelson@diamondnexus.com')
-            ->addTo('paul.baum@forevercompanies.com')
-            ->setSubject('Daily CSR Report - ' . $date . ( (count($orderResult) == 0) ? ': No Orders Found' : '' ));
-            
-        $content = file_get_contents($filename);
-        $attachment = new \Zend_Mime_Part($content);
-        $attachment->type = mime_content_type($filename);
-        $attachment->disposition = \Zend_Mime::DISPOSITION_ATTACHMENT;
-        $attachment->encoding = \Zend_Mime::ENCODING_BASE64;
-        $attachment->filename = 'cr-' . $date . '.csv';
+            "</span>");
+        $this->mailHelper->send(array("name" => $filename, "content" => $content));
         
-        if( count($orderResult) > 0 ) {
-            $mail->addAttachment($attachment);
-        }
-        
-        $mail->send();
         echo "Email sent!\n";
     }
     
