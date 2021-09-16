@@ -72,9 +72,9 @@ class Order extends OrigOrder
         
         $this->setState($state)
         ->setStatus($this->getConfig()->getStateDefaultStatus($state));
-        if (!empty($comment)) {
-            $this->addStatusHistoryComment($comment, false);
-        }
+        
+       
+        $this->addStatusHistoryComment("", false);
         
         return $this;
     }

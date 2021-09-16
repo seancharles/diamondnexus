@@ -6,8 +6,18 @@ use Magento\Sales\Block\Adminhtml\Order\View as OrigView;
 
 class View extends OrigView
 {
+    protected $allowedStatusArray;
+    
     protected function _construct()
     {
+        $this->allowedStatusArray = array(
+            "pending_payment",
+            "pending",
+            "Payment Pending",
+            "processing",
+            "quote"
+        );
+        
         $this->_objectId = 'order_id';
         $this->_controller = 'adminhtml_order';
         $this->_mode = 'view';
@@ -22,7 +32,7 @@ class View extends OrigView
             return;
         }
         
-        if (!$order->isCanceled()) {
+        if (!$order->isCanceled() && in_array($order->getStatus(), $this->allowedStatusArray)) {
             $this->addButton(
                 'order_cancel',
                 [
