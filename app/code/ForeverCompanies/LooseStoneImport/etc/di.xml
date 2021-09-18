@@ -15,4 +15,11 @@
             </argument>
         </arguments>
 	</type>
+	<type name="Magento\Framework\Console\CommandListInterface">
+		<arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="disable_stones" xsi:type="object">ForeverCompanies\LooseStoneImport\Console\Command\DisableStones</item>
+            </argument>
+        </arguments>
+	</type>
 </config>
