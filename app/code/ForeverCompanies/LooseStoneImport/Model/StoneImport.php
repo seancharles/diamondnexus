@@ -545,7 +545,7 @@ class StoneImport
     function run($fullImport = false)
     {
         if ($fullImport) {
-            $this->fileName = $this->fileName = $_SERVER['HOME'] . 'magento/var/import/full_diamond_import.csv';
+            $this->fileName = $_SERVER['HOME'] . 'magento/var/import/full_diamond_import.csv';
         } else {
             $this->updateCsv();
         }
