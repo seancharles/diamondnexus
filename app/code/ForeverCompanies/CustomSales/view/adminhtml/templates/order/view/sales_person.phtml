@@ -6,7 +6,41 @@ use Magento\Framework\Escaper;
 
 /** @var SalesPerson $block */
 /** @var $escaper Escaper */
+
+$legacyDispatchDate = $block->getLegacyDispatchDate();
+$legacyDeliveryDate = $block->getLegacyDeliveryDate();
+
 ?>
+
+<?php if (strlen($legacyDispatchDate) > 0): ?>
+    <table class="admin__table-secondary order-account-information-table">
+        <tbody>
+        <tr>
+            <th>Ship Date (legacy)</th>
+            <td><?php try {
+                    echo $escaper->escapeHtml($legacyDispatchDate);
+                } catch (LocalizedException $e) {
+                    echo '';
+                } ?></td>
+        </tr>
+        </tbody>
+    </table>
+<?php endif; ?>
+
+<?php if (strlen($legacyDispatchDate) > 0): ?>
+<table class="admin__table-secondary order-account-information-table">
+    <tbody>
+    <tr>
+        <th>Delivery Date (legacy)</th>
+        <td><?php try {
+                echo $escaper->escapeHtml($legacyDeliveryDate);
+            } catch (LocalizedException $e) {
+                echo '';
+            } ?></td>
+    </tr>
+    </tbody>
+</table>
+<?php endif; ?>
 
 <table class="admin__table-secondary order-account-information-table">
     <tbody>
