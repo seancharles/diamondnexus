@@ -22,4 +22,11 @@
             </argument>
         </arguments>
 	</type>
+	<type name="Magento\Framework\Console\CommandListInterface">
+		<arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="full_stone_import" xsi:type="object">ForeverCompanies\LooseStoneImport\Console\Command\FullImport</item>
+            </argument>
+        </arguments>
+	</type>
 </config>
