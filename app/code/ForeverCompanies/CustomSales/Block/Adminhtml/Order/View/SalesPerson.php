@@ -8,6 +8,7 @@ use Magento\Framework\Registry;
 use Magento\Sales\Helper\Admin;
 use Magento\User\Model\UserFactory;
 use Magento\Backend\Model\Session as AdminSession;
+use Magento\Framework\App\ResourceConnection;
 
 class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\AbstractOrder
 {
@@ -16,6 +17,7 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\AbstractOrder
      */
     protected $userFactory;
     protected $session;
+    protected $resourceConnection;
 
     /**
      * SalesPerson constructor.
@@ -23,6 +25,7 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\AbstractOrder
      * @param Registry $registry
      * @param Admin $adminHelper
      * @param UserFactory $userFactory
+     * @param AdminSession $adminS
      * @param array $data
      */
     public function __construct(
@@ -31,10 +34,12 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\AbstractOrder
         Admin $adminHelper,
         UserFactory $userFactory,
         AdminSession $adminS,
+        ResourceConnection $resourceConnection,
         array $data = []
     ) {
         $this->userFactory = $userFactory;
         $this->session = $adminS;
+        $this->resourceConnection = $resourceConnection;
         parent::__construct($context, $registry, $adminHelper, $data);
     }
 
@@ -58,6 +63,38 @@ class SalesPerson extends \Magento\Sales\Block\Adminhtml\Order\AbstractOrder
         }
 
         return $user;
+    }
+
+    public function getLegacyDispatchDate()
+    {
+        $connection = $this->resourceConnection->getConnection();
+
+        $orderId = (int) $this->getOrder()->getData('entity_id');
+        $legacyDeliveryDateTable = $connection->getTableName('fc_legacy_delivery_date');
+
+        $result = $connection->fetchOne("SELECT dispatch_date FROM $legacyDeliveryDateTable WHERE order_id = $orderId");
+
+        if (isset($result) === true) {
+            return date('F jS, Y', strtotime($result));
+        } else {
+            return false;
+        }
+    }
+
+    public function getLegacyDeliveryDate()
+    {
+        $connection = $this->resourceConnection->getConnection();
+
+        $orderId = (int) $this->getOrder()->getData('entity_id');
+        $legacyDeliveryDateTable = $connection->getTableName('fc_legacy_delivery_date');
+
+        $result = $connection->fetchOne("SELECT delivery_date FROM $legacyDeliveryDateTable WHERE order_id = $orderId");
+
+        if (isset($result) === true) {
+            return date('F jS, Y', strtotime($result));
+        } else {
+            return false;
+        }
     }
 
     /**

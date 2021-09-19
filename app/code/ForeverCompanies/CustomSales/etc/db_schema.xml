@@ -28,4 +28,18 @@
                 xsi:type="varchar"/>
         <column comment="Actual Date of Delivery" name="delivery_date_actual" nullable="true" xsi:type="date"/>
     </table>
+    <table name="fc_legacy_delivery_date" resource="default" engine="innodb" comment="Legacy Delivery Dates">
+        <column xsi:type="int" name="id" padding="10" unsigned="false" nullable="false" identity="true"
+                comment="Entity ID"/>
+        <column xsi:type="int" name="order_id" padding="10" unsigned="true" nullable="false" identity="false"
+                comment="Order ID"/>
+        <column comment="Dispatch Date" name="dispatch_date" nullable="true" xsi:type="date"/>
+        <column comment="Delivery Date" name="delivery_date" nullable="true" xsi:type="date"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+        <index referenceId="FC_LEGACY_DELIVERY_DATE_ID" indexType="btree">
+            <column name="id"/>
+        </index>
+    </table>
 </schema>
