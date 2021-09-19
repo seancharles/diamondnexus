@@ -35,6 +35,31 @@ class Order extends OrigOrder
             return $this->canCreditmemoForZeroTotalRefunded($totalRefunded);
     }
     
+    /**
+     * Retrieve credit memo for zero total availability.
+     *
+     * @param float $totalRefunded
+     * @return bool
+     */
+    private function canCreditmemoForZeroTotal($totalRefunded)
+    {
+        $totalPaid = $this->getTotalPaid();
+        //check if total paid is less than grandtotal
+        $checkAmtTotalPaid = $totalPaid <= $this->getGrandTotal();
+        //case when amount is due for invoice
+        $hasDueAmount = $this->canInvoice() && ($checkAmtTotalPaid);
+        //case when paid amount is refunded and order has creditmemo created
+        $creditmemos = ($this->getCreditmemosCollection() === false) ?
+        true : ($this->_memoCollectionFactory->create()->setOrderFilter($this)->getTotalCount() > 0);
+        $paidAmtIsRefunded = $this->getTotalRefunded() == $totalPaid && $creditmemos;
+        if (($hasDueAmount || $paidAmtIsRefunded) ||
+            (!$checkAmtTotalPaid &&
+                abs($totalRefunded - $this->getAdjustmentNegative()) < .0001)) {
+                    return false;
+                }
+                return true;
+    }
+    
     private function canCreditmemoForZeroTotalRefunded($totalRefunded)
     {
         $isRefundZero = abs($totalRefunded) < .0001;
