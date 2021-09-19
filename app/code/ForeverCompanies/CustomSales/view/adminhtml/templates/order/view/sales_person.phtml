@@ -12,7 +12,7 @@ $legacyDeliveryDate = $block->getLegacyDeliveryDate();
 
 ?>
 
-<?php if (strlen($legacyDispatchDate) > 0): ?>
+<?php if ( (int) strtotime($legacyDispatchDate) > 0 ): ?>
     <table class="admin__table-secondary order-account-information-table">
         <tbody>
         <tr>
@@ -27,7 +27,7 @@ $legacyDeliveryDate = $block->getLegacyDeliveryDate();
     </table>
 <?php endif; ?>
 
-<?php if (strlen($legacyDispatchDate) > 0): ?>
+<?php if ( (int) strtotime($legacyDeliveryDate) > 0 ): ?>
 <table class="admin__table-secondary order-account-information-table">
     <tbody>
     <tr>
