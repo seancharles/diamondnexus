@@ -369,16 +369,22 @@ class Sync extends AbstractHelper
                             case "1":
                                 // DN_Lead
                                 $recordTypeId = "0121J000001DeHDQA0";
+                                break;
                             case "2":
                                 // FA_Lead
                                 $recordTypeId = "0121J000001DeHNQA0";
+                                break;
                             case "3":
                                 // X12Fifteen_Lead
                                 $recordTypeId = "0121J000001DeHNQA0";
+                                break;
+                            default:
+                                $recordTypeId = '012o0000000y9txAAA';
+                                break;
                         }
 
                         $leadData = [
-                            'RecordTypeId' => '0121J000001DeHDQA0',
+                            'RecordTypeId' => $recordTypeId,
                             'Brand__c' => $this->mappingHelper->getStoreCode($leadModel->getWebsiteId()),
                             'LeadSource' => 'Website',
                             'Email' => $leadModel->getEmail()
