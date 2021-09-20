@@ -365,8 +365,20 @@ class Sync extends AbstractHelper
 
                         $postData = json_decode($leadModel->getData('form_post_json'));
 
+                        switch($leadModel->getWebsiteId()) {
+                            case "1":
+                                // DN_Lead
+                                $recordTypeId = "0121J000001DeHDQA0";
+                            case "2":
+                                // FA_Lead
+                                $recordTypeId = "0121J000001DeHNQA0";
+                            case "3":
+                                // X12Fifteen_Lead
+                                $recordTypeId = "0121J000001DeHNQA0";
+                        }
+
                         $leadData = [
-                            'RecordTypeId' => '0120v000000X2vcAAC',
+                            'RecordTypeId' => '0121J000001DeHDQA0',
                             'Brand__c' => $this->mappingHelper->getStoreCode($leadModel->getWebsiteId()),
                             'LeadSource' => 'Website',
                             'Email' => $leadModel->getEmail()
