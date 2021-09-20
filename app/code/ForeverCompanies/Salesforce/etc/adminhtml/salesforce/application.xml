@@ -39,6 +39,15 @@
             <config_path>salesforcecrm/salesforceconfig/is_connected</config_path>
             <frontend_model>ForeverCompanies\Salesforce\Block\System\Config\Form\Field\Connection</frontend_model>
         </field>
+        <field id="auth_url"
+               translate="label comment" type="text" sortOrder="8"
+               showInDefault="1" showInWebsite="0" showInStore="0">
+            <label>Salesforce Login URL</label>
+            <config_path>salesforcecrm/salesforceconfig/auth_url</config_path>
+            <tooltip>
+                <![CDATA[This specifies which URL is used to authenticate. Production vs Test]]></tooltip>
+            <comment>Production = https://login.salesforce.com, Sandbox = https://test.salesforce.com/services/oauth2/token</comment>
+        </field>
         <field id="host"
                translate="label comment" type="text" sortOrder="9"
                showInDefault="1" showInWebsite="0" showInStore="0">

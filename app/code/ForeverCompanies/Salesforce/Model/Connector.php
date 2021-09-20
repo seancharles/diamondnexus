@@ -25,6 +25,7 @@ class Connector
      * Constants
      */
     const XML_PATH_SALESFORCE_IS_CONNECTED = 'salesforcecrm/salesforceconfig/is_connected';
+    const XML_PATH_SALESFORCE_AUTH_URL = 'salesforcecrm/salesforceconfig/auth_url';
     const XML_PATH_SALESFORCE_CLIENT_HOST = 'salesforcecrm/salesforceconfig/host';
     const XML_PATH_SALESFORCE_CLIENT_ID = 'salesforcecrm/salesforceconfig/client_id';
     const XML_PATH_SALESFORCE_CLIENT_SECRET = 'salesforcecrm/salesforceconfig/client_secret';
@@ -120,8 +121,8 @@ class Connector
             }
 
             $url = parse_url($host);
-            
-            $apiUrl = 'https://' . $url['host'] . '/services/oauth2/token';
+
+            $auth_url = $this->_scopeConfig->getValue(self::XML_PATH_SALESFORCE_AUTH_URL);
             
             $params =[
                 'grant_type' => 'password',
@@ -130,7 +131,7 @@ class Connector
                 'username' => $username,
                 'password' => $password
             ];
-            $response = $this->makeRequest(\Zend_Http_Client::POST, $apiUrl, [], $params);
+            $response = $this->makeRequest(\Zend_Http_Client::POST, $auth_url, [], $params);
             
             $response = \GuzzleHttp\json_decode($response, true);
 
@@ -507,6 +508,9 @@ class Connector
             }
         }
         $response = $client->request($method)->getBody();
+
+        //print_r($response);
+
         $this->_requestLogFactory->create()->addRequest(RequestLog::REST_REQUEST_TYPE);
         return $response;
     }
