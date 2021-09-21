@@ -51,7 +51,7 @@ class AddAttributesToUiDataProvider
             "color",
             "clarity",
             "cut_grade",
-            "weight",
+            "carat_weight",
             "origin",
             "country_of_manufacture",
             "length_to_width",
