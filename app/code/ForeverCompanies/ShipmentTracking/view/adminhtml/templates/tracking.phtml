@@ -6,16 +6,22 @@ $order = $orderInterface->loadByIncrementId($block->getOrderId());
 
 $shipments = $order->getShipmentsCollection();
 
+// echo 'the order id is ' . $block->getOrderId() . '<br />';
+// echo 'the order entity id is ' . $order->getId();
+
+
 if ($shipments):
 foreach ($shipments as $shipment) {
     $tracksCollection = $shipment->getTracksCollection();
     foreach ($tracksCollection->getItems() as $track) {
         
-        if ($track->getCarrierCode() === 'fedex'){
+    //    echo 'the track carrier code is ' . $track->getCarrierCode();
+        
+        if ($track->getCarrierCode() == "fedex"){
             $trackUrl = 'https://www.fedex.com/apps/fedextrack/?action=track&trackingnumber=' . $track->getNumber();
-        } elseif ($track->getCarrierCode() === 'usps') {
+        } elseif ($track->getCarrierCode() == "usps") {
             $trackUrl = 'https://tools.usps.com/go/TrackConfirmAction_input?qtc_tLabels1=' . $track->getNumber();
-        } elseif ($track->getCarrierCode() === 'ups') {
+        } elseif ($track->getCarrierCode() == "ups") {
             $trackUrl = 'https://wwwapps.ups.com/WebTracking/returnToDetails?tracknum=' . $track->getNumber();
         }
     }
