@@ -6,6 +6,7 @@ $order = $orderInterface->loadByIncrementId($block->getOrderId());
 
 $shipments = $order->getShipmentsCollection();
 
+if ($shipments):
 foreach ($shipments as $shipment) {
     $tracksCollection = $shipment->getTracksCollection();
     foreach ($tracksCollection->getItems() as $track) {
@@ -43,3 +44,5 @@ foreach ($shipments as $shipment) {
 		</a>
 	</td>
 </tr>
+
+<?php endif; ?>
