@@ -1,0 +1,12 @@
+<?php 
+
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$orderInterface = $objectManager->create('Magento\Sales\Api\Data\OrderInterface');
+$order = $orderInterface->loadByIncrementId($block->getOrderId());
+$quote = $objectManager->create('Magento\Quote\Model\Quote')->load($order->getQuoteId());
+$foundRate = $quote->getShippingAddress()->getShippingRateByCode( $order->getShippingMethod());
+
+if ($foundRate) {
+    echo date("D, M j", strtotime($foundRate->getShqDeliveryDate()));
+}
+?>
