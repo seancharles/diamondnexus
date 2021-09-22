@@ -91,6 +91,8 @@ phases:
       - docker push $REPOURL/magento:latest
       - docker push $REPOURL/magento:$IMAGE_TAG
       - aws ecs update-service --force-new-deployment --service $REPO --cluster $cluster
+      - aws ecs update-service --force-new-deployment --service $REPO-api --cluster $cluster
+      - aws ecs update-service --force-new-deployment --service $REPO-admin --cluster $cluster
       - aws ecs update-service --service $REPO-cron --cluster $cluster --desired-count 1
       - aws ecs update-service --force-new-deployment --service $REPO-cron --cluster $cluster
   post_build:
