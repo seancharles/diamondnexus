@@ -34,10 +34,9 @@ class AbstractPayment extends Template
      */
     public function isMultipay()
     {
-        return true;
         /** @var Order $order */
         $order = $this->getData('order');
         $method = $order->getPayment()->getMethod();
-        return $method == 'multipay';// && $order->getTotalDue() != 0;
+        return $method == 'multipay' && $order->getTotalDue() != 0;
     }
 }
