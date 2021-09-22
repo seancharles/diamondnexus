@@ -232,7 +232,7 @@ class FeedLogic
         */
         $products->addStoreFilter($GLOBALS['argvStoreId']);
         $products->addFieldToFilter('visibility', array('4'));
-        //$products->addFieldToFilter('entity_id', 54222); // debug one product
+        //$products->addFieldToFilter('entity_id', 314861); // debug one product
         $products->addAttributeToFilter(
             'status',
             \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED
@@ -571,24 +571,39 @@ class FeedLogic
                         $GLOBALS['argvStoreId']
                     )->load($simpleModel->getId());
                     if ($_product->getStatus() == 1) {
-                        $SPrice = $_product->getPrice();
-                        $sale_start_uf = new \DateTime($_product->getSpecialFromDate());
-                        $ssale_start = $sale_start_uf->format(\DateTime::ATOM);
-                        $sale_end_uf = new \DateTime($_product->getSpecialToDate());
-                        $ssale_end = $sale_end_uf->format(\DateTime::ATOM);
-                        $today = date('Y-m-dT00:00:00+00:00');
+                        // get product prices
+                        $SPrice = $basePrice = $_product->getPrice();
+                        $specialPrice = $_product->getSpecialPrice();
+                        $finalPrice = $_product->getPriceInfo()->getPrice('final_price')->getAmount()->getValue();
 
-                        if (
-                            ($today >= $ssale_start)
-                            && ($today < $ssale_end)
-                            && ($_product->getPrice() != $_product->getFinalPrice())
-                        ) {
-                            $SSalePrice = $_product->getFinalPrice();
+                        if (!is_null($specialPrice) && $specialPrice > 0 && $specialPrice < $basePrice && $specialPrice === $finalPrice) {
+                            $specialPriceFromDate = new \DateTime($_product->getSpecialFromDate());
+                            $ssale_start = $specialPriceFromDate->format(\DateTime::ATOM);
+                            $specialPriceToDate = new \DateTime($_product->getSpecialToDate());
+                            $ssale_end = $specialPriceToDate->format(\DateTime::ATOM);
+                            $today = date('Y-m-dT00:00:00+00:00');
+
+                            if ($today >= $ssale_start && $today < $ssale_end) {
+                                $SSalePrice = $specialPrice;
+                                $onsale = "On Sale";
+                            } else {
+                                $SSalePrice = "";
+                                $onsale = "";
+                                $ssale_start = "";
+                                $ssale_end = "";
+                            }
+                        } elseif ($finalPrice < $basePrice) {
+                            $SSalePrice = $finalPrice;
                             $onsale = "On Sale";
+                            $ssale_start = "";
+                            $ssale_end = "";
                         } else {
                             $SSalePrice = "";
                             $onsale = "";
+                            $ssale_start = "";
+                            $ssale_end = "";
                         }
+
                         $SCut = ($_product->getAttributeText('cut_type') == '')
                             ? "None" : $_product->getAttributeText('cut_type');
                         $SColor = ($_product->getAttributeText('color') == '')
@@ -667,21 +682,33 @@ class FeedLogic
             case 'simple':
                 $itemGroupId = false;
                 $price = $product->getPrice();
-                $sale_start_uf = new \DateTime($product->getSpecialFromDate());
-                $ssale_start = $sale_start_uf->format(\DateTime::ATOM);
-                $sale_end_uf = new \DateTime($product->getSpecialToDate());
-                $ssale_end = $sale_end_uf->format(\DateTime::ATOM);
-                $today = date('Y-m-dT00:00:00+00:00');
-                if (
-                    ($today >= $ssale_start)
-                    && ($today < $ssale_end)
-                    && ($product->getPrice() != $product->getFinalPrice())
-                ) {
-                    $saleprice = $product->getFinalPrice();
+                $specialPrice = $product->getSpecialPrice();
+                $finalPrice = $product->getPriceInfo()->getPrice('final_price')->getAmount()->getValue();
+                if (!is_null($specialPrice) && $specialPrice > 0 && $specialPrice < $price && $specialPrice === $finalPrice) {
+                    $sale_start_uf = new \DateTime($product->getSpecialFromDate());
+                    $sale_start = $sale_start_uf->format(\DateTime::ATOM);
+                    $sale_end_uf = new \DateTime($product->getSpecialToDate());
+                    $sale_end = $sale_end_uf->format(\DateTime::ATOM);
+                    $today = date('Y-m-dT00:00:00+00:00');
+                    if ($today >= $sale_start && $today < $sale_end) {
+                        $saleprice = $specialPrice;
+                        $onsale = "On Sale";
+                    } else {
+                        $saleprice = "";
+                        $onsale = "";
+                        $sale_start = "";
+                        $sale_end = "";
+                    }
+                } elseif ($finalPrice <= $price) {
+                    $saleprice = $finalPrice;
                     $onsale = "On Sale";
+                    $sale_start = "";
+                    $sale_end = "";
                 } else {
                     $saleprice = "";
                     $onsale = "";
+                    $sale_start = "";
+                    $sale_end = "";
                 }
                 $Cuts[] = $product->getAttributeText('cut_type');
                 $Colors[] = $product->getAttributeText('color');
@@ -1225,7 +1252,7 @@ class FeedLogic
 
         foreach ($listing['list'] as $result) {
             if (!empty($result)) {
-            //    echo count($result['Children']) . '    ';
+            // echo count($result['Children']) . '    ';
 
                 if (count($result['Children']) > 0) {
                     foreach ($result['Children'] as $childProduct) {
@@ -1296,7 +1323,7 @@ class FeedLogic
         print "check - Check Mag Prod Db against Feed, add/remove missing.\n";
         print "clean - Delete feed products no long in magento.\n";
         print "update - Send recently updated products to feed.\n";
-        print "help - this menu.\n";
+        print "help - this menu. \n";
         exit;
     }
 }
