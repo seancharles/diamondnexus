@@ -44,7 +44,7 @@ class StoneDisable
         foreach ($skuArr as $sku) {
             $productId = $this->productModel->getIdBySku($sku);
             if ($productId) {
-                $productIds = $productId;
+                $productIds[] = $productId;
                 $count++;
             }
         }
