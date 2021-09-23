@@ -110,6 +110,9 @@
             },
             "shipperhq/module-shipper": {
                 "Fix Paypal Checkout": "./app/code/ForeverCompanies/CustomAdmin/Setup/Patch/shipperhq.patch"
+            },
+            "magento/module-inventory-shipping-admin-ui": {
+                "Fix Allocated Resouces Bug": "./app/code/ForeverCompanies/CustomAdmin/Setup/Patch/allocatedsources.patch"
             }
         }
     }

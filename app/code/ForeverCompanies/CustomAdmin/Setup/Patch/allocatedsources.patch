@@ -1,0 +1,24 @@
+From b85ecad9ebeb82d21f5b893ea9ff4ba35436ebd3 Mon Sep 17 00:00:00 2001
+From: Paul Baum <paul.baum@forevercompanies.com>
+Date: Wed, 22 Sep 2021 14:00:34 -0500
+Subject: [PATCH] Removing filter from sort
+
+---
+ .../view/adminhtml/ui_component/sales_order_grid.xml             | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/vendor/magento/module-inventory-shipping-admin-ui/view/adminhtml/ui_component/sales_order_grid.xml b/vendor/magento/module-inventory-shipping-admin-ui/view/adminhtml/ui_component/sales_order_grid.xml
+index c0f0d3929..980375719 100644
+--- a/vendor/magento/module-inventory-shipping-admin-ui/view/adminhtml/ui_component/sales_order_grid.xml
++++ b/vendor/magento/module-inventory-shipping-admin-ui/view/adminhtml/ui_component/sales_order_grid.xml
+@@ -13,6 +13,7 @@
+             <settings>
+                 <filter>false</filter>
+                 <label translate="true">Allocated sources</label>
++                <sortable>false</sortable>
+             </settings>
+         </column>
+     </columns>
+-- 
+2.20.1
+
