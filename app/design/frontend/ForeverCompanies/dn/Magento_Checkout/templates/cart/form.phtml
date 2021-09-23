@@ -31,7 +31,10 @@
                 <th class="col subtotal" scope="col"><span><?php /* @escapeNotVerified */ echo __('Subtotal') ?></span></th>
             </tr>
             </thead>
-            <?php foreach ($block->getItems() as $_item): ?>
+            <?php foreach ($block->getItems() as $_item): 
+                echo 'the item url key is ' . $_item->getProduct()->getUrlKey() . '<br />';
+            
+            ?>
                 <?php echo $block->getItemHtml($_item) ?>
             <?php endforeach ?>
         </table>
