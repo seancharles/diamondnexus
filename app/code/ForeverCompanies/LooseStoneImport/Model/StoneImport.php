@@ -612,6 +612,9 @@ class StoneImport
                 } else { // else new product
                     $product = $this->productFactory->create();
 
+                    // Because images are slowing down the product save, it was agreed to forgo loading images into
+                    // magento. Instead, we'll just use the image url stored in the attribute diamond_img_url.
+                    /**
                     $imageFileName = $this->mediaTmpDir . DIRECTORY_SEPARATOR . basename($csvArr['Image Link']);
 
                     $imagePathInfo = pathinfo($imageFileName);
@@ -652,7 +655,8 @@ class StoneImport
                         );
                         //continue;
                     }
-
+                    **/
+                    
                     $product->setName(reset($csvArr));
                     $product->setTypeId('simple');
                     $product->setAttributeSetId(31);
