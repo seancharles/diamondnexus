@@ -80,6 +80,7 @@ class StoneImport
     protected $colorMap;
     protected $shapeMap;
     protected $supplierMap;
+    protected $onlineMap;
 
     protected $shapePopMap;
     protected $shapeAlphaMap;
@@ -176,8 +177,7 @@ class StoneImport
             "Cost" => "cost",
             "Certificate URL" => "cert_url_key",
             "Image Link" => "diamond_img_url",
-            "Video" => "video_url",
-            "Online" => "online"
+            "Video" => "video_url"
         );
 
         $this->booleanMap = array(
@@ -304,7 +304,8 @@ class StoneImport
             "Clarity",
             "Cut Grade",
             "Length",
-            "Width"
+            "Width",
+            "Cost"
         );
 
         $this->clarityMap = array(
@@ -491,6 +492,11 @@ class StoneImport
             // "bhakti" => ""
         );
 
+        $this->onlineMap = [
+            'yes' => "3448",
+            'no' => "3447"
+        ];
+
         $this->fileName = $_SERVER['HOME'] . 'magento/var/import/diamond_importer.csv';
 
         $this->statusEnabled = Status::STATUS_ENABLED;
@@ -555,18 +561,24 @@ class StoneImport
 
     public function run($fullImport = false)
     {
+        // determine what csv file to be processed
         if ($fullImport) {
             $this->fileName = $_SERVER['HOME'] . 'magento/var/import/full_diamond_import.csv';
         } else {
             $this->updateCsv();
         }
 
+        // generate array of data to be processed from csv file
         $csvArray = $this->buildArray();
 
-        $i = 0;
+        // array to hold what id's we need to set visibility attribute on after processing
         $idsToSetVisibility = [];
+
+        // loop through each record of the csv
         foreach ($csvArray as $csvArr) {
             try {
+                // verify all required fields exist in this record, including Certificate #
+                // if they do not exist, log error and proceed to next record
                 if (!$this->_checkForRequiredFields($csvArr)) {
                     $product = new DataObject();
                     if (isset($csvArr['Certificate #'])) {
@@ -575,28 +587,25 @@ class StoneImport
                     $this->_stoneLog($product, $csvArr, "error", "Required field invalid.");
                     continue;
                 }
-                /*
-                echo 'the supplier is ' . $csvArr['Supplier'] . '<br />';
 
-                if ($i==25) {
-                    die;
-                }
-                $i++;
-                */
-
+                // see if we have an existing product with the current Certificate #
+                // if we do, then we know we are editing an existing product, else we're adding new product
                 $productId = $this->productModel->getIdBySku($csvArr['Certificate #']);
                 if ($productId) {
                     $product = $this->productModel->load($productId);
 
-                    // if product has been disabled assume it has been sold(or supplier was disabled, which will end up with product being deleted later)
+                    // if existing product has been disabled assume it has been sold
+                    // (or supplier was disabled, which will end up with product being deleted later)
                     if ($product->getStatus() == $this->statusDisabled) {
                         unset($productId);
                         unset($product);
                         continue;
                     }
 
+                    // apply all data from csv to this product and save it
                     $success = $this->_applyCsvRowToProduct($product, $csvArr);
 
+                    // if save was successful, enter an 'update' log entry
                     if ($success) {
                         $this->_stoneLog($product, $csvArr, "update");
                     }
@@ -632,7 +641,7 @@ class StoneImport
                                 "error",
                                 "New Product " . $csvArr['Certificate #'] . " not created. Incorrect image extension"
                             );
-                            continue;
+                            //continue;
                         }
                     } else {
                         $this->_stoneLog(
@@ -641,7 +650,7 @@ class StoneImport
                             "error",
                             "New Product " . $csvArr['Certificate #'] . " not created. No image."
                         );
-                        continue;
+                        //continue;
                     }
 
                     $product->setName(reset($csvArr));
@@ -741,6 +750,10 @@ class StoneImport
         $product->setCutGrade($this->cutGradeMap[strtolower($csvArr['Cut Grade'])]);
         $product->setShape($this->shapeMap[$csvArr['Shape Name']]);
         $product->setSupplier(strtolower($this->supplierMap[$csvArr['Supplier']]));
+
+        if (array_key_exists(strtolower($csvArr['Online']), $this->onlineMap)) {
+            $product->setOnline($this->onlineMap[strtolower($csvArr['Online'])]);
+        }
 
         if (isset($csvArr['Super Ideal'])) {
             $product->setSuperIdeal($csvArr['Super Ideal']);
