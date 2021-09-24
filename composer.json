@@ -24,7 +24,7 @@
         "shipperhq/module-address-autocomplete": "20.3.3",
         "shipperhq/module-common": "20.9.3",
         "shipperhq/module-logger": "20.5.0",
-        "shipperhq/module-shipper": "20.43.2",
+        "shipperhq/module-shipper": "20.45.5",
         "signifyd/module-connect": "^4.2",
         "signifyd/signifyd-php": "^3.1",
         "taxjar/module-taxjar": "^1.6"
