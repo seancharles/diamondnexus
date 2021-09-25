@@ -144,7 +144,7 @@ class StoneImport
             "Product Name" => "name",
             "Certificate #" => "sku",
             "Lab" => "lab",
-            "Weight" => "weight",
+            "Weight" => "carat_weight",
             "Length" => "length",
             "Width" => "width",
             "Depth (mm)" => "depth_mm",
@@ -268,6 +268,7 @@ class StoneImport
             "heart" => "400"
         );
 
+        // @todo this should map to shipperhq_shipping_group attribute
         $this->shippingStatusMap = array(
             "ZeroDay" => "0 Day",
             "Last Minute" => "0 Day",
@@ -326,7 +327,7 @@ class StoneImport
             "ex" => "2876",
             "not specified" => "3076",
             "ideal" => "2877",
-            "super ideal" => "3602",
+            "super ideal" => "2877", // @todo add "Super Ideal" to cut_grade as option
             "very good" => "2878",
             "good" => "2879",
             // TODO: Create this attribute option and place its value here.
@@ -656,7 +657,7 @@ class StoneImport
                         //continue;
                     }
                     **/
-                    
+
                     $product->setName(reset($csvArr));
                     $product->setTypeId('simple');
                     $product->setAttributeSetId(31);
@@ -748,6 +749,9 @@ class StoneImport
     {
         $product->setProductType('3569'); //diamond
 
+        // set weight to 1 for shipperhq purposes
+        $product->setWeight(1);
+
         // These have been checked as required fields.
         $product->setColor($this->colorMap[$csvArr['Color']]);
         $product->setClarity($this->clarityMap[$csvArr['Clarity']]);
@@ -759,10 +763,10 @@ class StoneImport
             $product->setOnline($this->onlineMap[strtolower($csvArr['Online'])]);
         }
 
+        // @todo there is no super_ideal product attribute?
         if (isset($csvArr['Super Ideal'])) {
             $product->setSuperIdeal($csvArr['Super Ideal']);
         }
-
 
         if (isset($this->supplierStatuses[strtolower($csvArr['Supplier'])])) {
             $this->_handleStatus($csvArr['Supplier']);
@@ -790,7 +794,7 @@ class StoneImport
             $product->setShapeAlphaSort($this->shapeAlphaMap[$csvArr['Shape Name']]);
         }
 
-        //Delivery Date
+        // Delivery Date - @todo this should map to shipperhq_shipping_group
         if (isset($csvArr['Delivery Date']) && trim($csvArr['Delivery Date']) != "") {
             $product->setShippingStatus($this->shippingStatusMap[$csvArr['Delivery Date']]);
         }
