@@ -80,6 +80,7 @@ class StoneImport
     protected $colorMap;
     protected $shapeMap;
     protected $supplierMap;
+    protected $onlineMap;
 
     protected $shapePopMap;
     protected $shapeAlphaMap;
@@ -143,7 +144,7 @@ class StoneImport
             "Product Name" => "name",
             "Certificate #" => "sku",
             "Lab" => "lab",
-            "Weight" => "weight",
+            "Weight" => "carat_weight",
             "Length" => "length",
             "Width" => "width",
             "Depth (mm)" => "depth_mm",
@@ -176,8 +177,7 @@ class StoneImport
             "Cost" => "cost",
             "Certificate URL" => "cert_url_key",
             "Image Link" => "diamond_img_url",
-            "Video" => "video_url",
-            "Online" => "online"
+            "Video" => "video_url"
         );
 
         $this->booleanMap = array(
@@ -268,6 +268,7 @@ class StoneImport
             "heart" => "400"
         );
 
+        // @todo this should map to shipperhq_shipping_group attribute
         $this->shippingStatusMap = array(
             "ZeroDay" => "0 Day",
             "Last Minute" => "0 Day",
@@ -304,7 +305,8 @@ class StoneImport
             "Clarity",
             "Cut Grade",
             "Length",
-            "Width"
+            "Width",
+            "Cost"
         );
 
         $this->clarityMap = array(
@@ -325,7 +327,7 @@ class StoneImport
             "ex" => "2876",
             "not specified" => "3076",
             "ideal" => "2877",
-            "super ideal" => "3602",
+            "super ideal" => "2877", // @todo add "Super Ideal" to cut_grade as option
             "very good" => "2878",
             "good" => "2879",
             // TODO: Create this attribute option and place its value here.
@@ -491,6 +493,11 @@ class StoneImport
             // "bhakti" => ""
         );
 
+        $this->onlineMap = [
+            'yes' => "3448",
+            'no' => "3447"
+        ];
+
         $this->fileName = $_SERVER['HOME'] . 'magento/var/import/diamond_importer.csv';
 
         $this->statusEnabled = Status::STATUS_ENABLED;
@@ -555,18 +562,24 @@ class StoneImport
 
     public function run($fullImport = false)
     {
+        // determine what csv file to be processed
         if ($fullImport) {
             $this->fileName = $_SERVER['HOME'] . 'magento/var/import/full_diamond_import.csv';
         } else {
             $this->updateCsv();
         }
 
+        // generate array of data to be processed from csv file
         $csvArray = $this->buildArray();
 
-        $i = 0;
+        // array to hold what id's we need to set visibility attribute on after processing
         $idsToSetVisibility = [];
+
+        // loop through each record of the csv
         foreach ($csvArray as $csvArr) {
             try {
+                // verify all required fields exist in this record, including Certificate #
+                // if they do not exist, log error and proceed to next record
                 if (!$this->_checkForRequiredFields($csvArr)) {
                     $product = new DataObject();
                     if (isset($csvArr['Certificate #'])) {
@@ -575,34 +588,34 @@ class StoneImport
                     $this->_stoneLog($product, $csvArr, "error", "Required field invalid.");
                     continue;
                 }
-                /*
-                echo 'the supplier is ' . $csvArr['Supplier'] . '<br />';
 
-                if ($i==25) {
-                    die;
-                }
-                $i++;
-                */
-
+                // see if we have an existing product with the current Certificate #
+                // if we do, then we know we are editing an existing product, else we're adding new product
                 $productId = $this->productModel->getIdBySku($csvArr['Certificate #']);
                 if ($productId) {
                     $product = $this->productModel->load($productId);
 
-                    // if product has been disabled assume it has been sold(or supplier was disabled, which will end up with product being deleted later)
+                    // if existing product has been disabled assume it has been sold
+                    // (or supplier was disabled, which will end up with product being deleted later)
                     if ($product->getStatus() == $this->statusDisabled) {
                         unset($productId);
                         unset($product);
                         continue;
                     }
 
+                    // apply all data from csv to this product and save it
                     $success = $this->_applyCsvRowToProduct($product, $csvArr);
 
+                    // if save was successful, enter an 'update' log entry
                     if ($success) {
                         $this->_stoneLog($product, $csvArr, "update");
                     }
                 } else { // else new product
                     $product = $this->productFactory->create();
 
+                    // Because images are slowing down the product save, it was agreed to forgo loading images into
+                    // magento. Instead, we'll just use the image url stored in the attribute diamond_img_url.
+                    /**
                     $imageFileName = $this->mediaTmpDir . DIRECTORY_SEPARATOR . basename($csvArr['Image Link']);
 
                     $imagePathInfo = pathinfo($imageFileName);
@@ -632,7 +645,7 @@ class StoneImport
                                 "error",
                                 "New Product " . $csvArr['Certificate #'] . " not created. Incorrect image extension"
                             );
-                            continue;
+                            //continue;
                         }
                     } else {
                         $this->_stoneLog(
@@ -641,8 +654,9 @@ class StoneImport
                             "error",
                             "New Product " . $csvArr['Certificate #'] . " not created. No image."
                         );
-                        continue;
+                        //continue;
                     }
+                    **/
 
                     $product->setName(reset($csvArr));
                     $product->setTypeId('simple');
@@ -735,6 +749,9 @@ class StoneImport
     {
         $product->setProductType('3569'); //diamond
 
+        // set weight to 1 for shipperhq purposes
+        $product->setWeight(1);
+
         // These have been checked as required fields.
         $product->setColor($this->colorMap[$csvArr['Color']]);
         $product->setClarity($this->clarityMap[$csvArr['Clarity']]);
@@ -742,10 +759,14 @@ class StoneImport
         $product->setShape($this->shapeMap[$csvArr['Shape Name']]);
         $product->setSupplier(strtolower($this->supplierMap[$csvArr['Supplier']]));
 
+        if (array_key_exists(strtolower($csvArr['Online']), $this->onlineMap)) {
+            $product->setOnline($this->onlineMap[strtolower($csvArr['Online'])]);
+        }
+
+        // @todo there is no super_ideal product attribute?
         if (isset($csvArr['Super Ideal'])) {
             $product->setSuperIdeal($csvArr['Super Ideal']);
         }
-
 
         if (isset($this->supplierStatuses[strtolower($csvArr['Supplier'])])) {
             $this->_handleStatus($csvArr['Supplier']);
@@ -773,7 +794,7 @@ class StoneImport
             $product->setShapeAlphaSort($this->shapeAlphaMap[$csvArr['Shape Name']]);
         }
 
-        //Delivery Date
+        // Delivery Date - @todo this should map to shipperhq_shipping_group
         if (isset($csvArr['Delivery Date']) && trim($csvArr['Delivery Date']) != "") {
             $product->setShippingStatus($this->shippingStatusMap[$csvArr['Delivery Date']]);
         }
