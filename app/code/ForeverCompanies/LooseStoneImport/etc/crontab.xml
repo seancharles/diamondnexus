@@ -42,6 +42,44 @@
         </job>
     </group>
     
+    <!--  -->
+    
+    <group id="default">
+        <job name="forever_loose_stone_disable_monday_early" instance="ForeverCompanies\LooseStoneImport\Cron\DisableStonesCron" method="execute">
+            <schedule>9 55 * * 1</schedule>
+        </job>
+    </group>
+    
+    <group id="default">
+        <job name="forever_loose_stone_disable_monday_mid" instance="ForeverCompanies\LooseStoneImport\Cron\DisableStonesCron" method="execute">
+            <schedule>11 55 * * 1</schedule>
+        </job>
+    </group>
+    
+    <group id="default">
+        <job name="forever_loose_stone_disable_monday_late" instance="ForeverCompanies\LooseStoneImport\Cron\DisableStonesCron" method="execute">
+            <schedule>15 55 * * 1</schedule>
+        </job>
+    </group>
+    
+    <group id="default">
+        <job name="forever_loose_stone_disable_early" instance="ForeverCompanies\LooseStoneImport\Cron\DisableStonesCron" method="execute">
+            <schedule>7 55 * * 2-6,0</schedule>
+        </job>
+    </group>
+    
+    <group id="default">
+        <job name="forever_loose_stone_disable_mid" instance="ForeverCompanies\LooseStoneImport\Cron\DisableStonesCron" method="execute">
+            <schedule>11 55 * * 2-6,0</schedule>
+        </job>
+    </group>
+    
+    <group id="default">
+        <job name="forever_loose_stone_disable_late" instance="ForeverCompanies\LooseStoneImport\Cron\DisableStonesCron" method="execute">
+            <schedule>17 55 * * 2-6,0</schedule>
+        </job>
+    </group>
+    
     <group id="default">
         <job name="forever_loose_stone_delete_unsold_diamonds" instance="ForeverCompanies\LooseStoneImport\Cron\UnsoldDiamondCleaning" method="execute">
             <schedule>0 0 * * *</schedule>

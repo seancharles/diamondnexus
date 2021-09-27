@@ -8,6 +8,7 @@ use Magento\Framework\File\Csv;
 use Magento\Catalog\Model\ResourceModel\Product\Action as ProductAction;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\Catalog\Model\Product;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class StoneDisable
 {
@@ -17,12 +18,15 @@ class StoneDisable
     protected Product $productModel;
     protected int $statusDisabled;
     protected string $fileName;
+    protected $scopeConfig;
+    protected $storeScope;
 
     public function __construct(
         Csv $cs,
         ProductAction $action,
         CollectionFactory $collection,
-        Product $prod
+        Product $prod,
+        ScopeConfigInterface $scopeC
     ) {
         $this->csv = $cs;
         $this->productAction = $action;
@@ -30,18 +34,19 @@ class StoneDisable
         $this->productModel = $prod;
         $this->statusDisabled = Status::STATUS_DISABLED;
         $this->fileName = '/var/www/magento/var/import/disable_stones.csv';
+        $this->scopeConfig = $scopeC;
+        $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
 
     public function run()
     {
+        $this->_updateDisableStonesCsv();
         $skuArr = $this->buildArray();
-
-        var_dump($skuArr);
-        echo 'the sku arr count is ' . count($skuArr) . '   ';
 
         $count = 0;
         $productIds = [];
         foreach ($skuArr as $sku) {
+            
             $productId = $this->productModel->getIdBySku($sku);
             if ($productId) {
                 $productIds[] = $productId;
@@ -81,4 +86,34 @@ class StoneDisable
         }
         return $arr;
     }
+    
+    protected function _updateDisableStonesCsv()
+    {
+        $ftp = ftp_connect(
+            $this->scopeConfig->getValue('forevercompanies_stone_ftp/creds/host', $this->storeScope),
+            $this->scopeConfig->getValue('forevercompanies_stone_ftp/creds/port', $this->storeScope)
+            );
+        
+        $login_result = ftp_login(
+            $ftp,
+            $this->scopeConfig->getValue('forevercompanies_stone_ftp/creds/user', $this->storeScope),
+            $this->scopeConfig->getValue('forevercompanies_stone_ftp/creds/pass', $this->storeScope)
+            );
+        ftp_pasv($ftp, true);
+        
+        $files = ftp_nlist(
+            $ftp,
+            ftp_pwd($ftp) . DS . $this->scopeConfig->getValue(
+                'forevercompanies_stone_ftp/creds/disable_pattern',
+                $this->storeScope
+                )
+            );
+        
+        foreach ($files as $file) {
+            ftp_get($ftp, '/var/www/magento/var/import/disable_stones.csv', $file);
+        }
+        
+        ftp_close($ftp);
+    }
+    
 }
