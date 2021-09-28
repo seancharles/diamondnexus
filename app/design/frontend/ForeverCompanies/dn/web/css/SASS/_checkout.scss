@@ -342,6 +342,9 @@
         .minicart-items .product-item-details {
             padding-left: 65px !important;
         }
+        .minicart-items-wrapper {
+            max-height: none !important;
+        }
     }
 }
 @media screen and (max-width: 639px) {

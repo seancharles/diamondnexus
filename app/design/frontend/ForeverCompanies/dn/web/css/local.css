@@ -149,7 +149,16 @@ a {
     color: #bfa374 !important;
     border-bottom: 2px solid #bfa374; }
 
+input[type='radio'],
+input[type='checkbox'] {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important; }
+
 .fieldset:after {
+  font-size: 12px !important; }
+
+.field-error {
   font-size: 12px !important; }
 
 .message.error,
@@ -397,6 +406,41 @@ footer {
 .account .order-date {
   margin-top: 10px !important; }
 
+.account .price {
+  font-size: 16px !important; }
+
+.account form .field.choice {
+  display: flex;
+  align-items: center;
+  gap: 10px; }
+  .account form .field.choice label {
+    position: relative;
+    top: 3px; }
+  .account form .field.choice .field-tooltip-action:before {
+    overflow: unset !important; }
+
+.account .modal-inner-wrap .modal-header {
+  padding-top: 15px !important; }
+
+.account .modal-inner-wrap .modal-content {
+  padding: 20px !important; }
+
+.account .modal-inner-wrap .action-close {
+  background: transparent !important;
+  min-width: 20px !important;
+  text-align: right !important; }
+  .account .modal-inner-wrap .action-close:before {
+    font-weight: bold !important;
+    color: #000; }
+  .account .modal-inner-wrap .action-close:hover:before {
+    color: #bfa374 !important; }
+
+.account .modal-popup .modal-footer {
+  display: block !important;
+  padding: 20px !important; }
+  .account .modal-popup .modal-footer button {
+    margin: 5px 0 !important; }
+
 @media screen and (max-width: 1024px) {
   .account .table-wrapper {
     font-size: 13px; }
@@ -421,9 +465,13 @@ footer {
 @media screen and (max-width: 767px) {
   .block-collapsible-nav-title strong {
     font-size: 14px !important; }
+  .block-collapsible-nav-content {
+    box-shadow: 0px 3px 5px #9a9a9a; }
   .nav .item a,
   .nav .item strong {
-    font-size: 14px; } }
+    font-size: 14px; }
+  .order-details-items .order-title strong {
+    font-size: 20px !important; } }
 
 @media screen and (max-width: 639px) {
   .order-status {
@@ -882,7 +930,9 @@ footer {
   .checkout-index-index .minicart-items .product > .product-image-container {
     width: 55px !important; }
   .checkout-index-index .minicart-items .product-item-details {
-    padding-left: 65px !important; } }
+    padding-left: 65px !important; }
+  .checkout-index-index .minicart-items-wrapper {
+    max-height: none !important; } }
 
 @media screen and (max-width: 639px) {
   .checkout-index-index .authentication-wrapper {
@@ -1045,6 +1095,4 @@ footer {
       width: 100%; }
     .checkout-onepage-success .success-page-features .additional-success-blocks {
       width: 100%;
-      margin-top: 15px; }
-  .checkout-onepage-success .featured-block {
-    background-image: url("https://res.cloudinary.com/foco/images/v1629836933/new-arrivals-fj-mobile/new-arrivals-fj-mobile.jpeg") !important; } }
+      margin-top: 15px; } }
