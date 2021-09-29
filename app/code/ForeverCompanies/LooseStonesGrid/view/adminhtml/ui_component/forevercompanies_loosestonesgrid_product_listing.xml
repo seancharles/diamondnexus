@@ -486,7 +486,7 @@
 </column>
 
 
-<column name="weight" sortOrder="200">
+<column name="carat_weight" sortOrder="200">
 	<settings>
     	<filter>textRange</filter>
         <bodyTmpl>ui/grid/cells/text</bodyTmpl>
