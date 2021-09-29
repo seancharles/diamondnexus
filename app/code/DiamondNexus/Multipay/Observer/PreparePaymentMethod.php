@@ -24,7 +24,8 @@ class PreparePaymentMethod implements ObserverInterface
     {
         $code = $observer->getData('method_instance')->getCode();
         $result = $observer->getData('result');
-        $result->setData('is_available', $code === Constant::MULTIPAY_METHOD);
+        // $result->setData('is_available', $code === Constant::MULTIPAY_METHOD);
+        $result->setData('is_available', true);
 
         return $this;
     }
