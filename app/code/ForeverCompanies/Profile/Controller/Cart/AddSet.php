@@ -1,22 +1,28 @@
 <?php
 
-    namespace ForeverCompanies\Profile\Controller\Cart;
+namespace ForeverCompanies\Profile\Controller\Cart;
+
+use Magento\Framework\Event\ManagerInterface as EventManager;
 
 class AddSet extends \ForeverCompanies\Profile\Controller\ApiController
 {
     protected $profileHelper;
     protected $resultHelper;
+    protected $eventManager;
         
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Catalog\Model\ProductFactory $productloader,
         \ForeverCompanies\Profile\Helper\Profile $profileHelper,
-        \ForeverCompanies\Profile\Helper\Result $resultHelper
-    ) {
-         parent::__construct($context);
+        \ForeverCompanies\Profile\Helper\Result $resultHelper,
+        EventManager $eventM
+    ) {  
          $this->productloader = $productloader;
-            $this->profileHelper = $profileHelper;
-            $this->resultHelper = $resultHelper;
+         $this->profileHelper = $profileHelper;
+         $this->resultHelper = $resultHelper;
+         $this->eventManager = $eventM;
+         
+         parent::__construct($context);
     }
 
     public function execute()
@@ -85,7 +91,8 @@ class AddSet extends \ForeverCompanies\Profile\Controller\ApiController
         } catch (\Exception $e) {
             $this->resultHelper->addExceptionError($e);
         }
-            
+         
+        $this->eventManager->dispatch('free_gift_add_logic');
         $this->resultHelper->getResult();
     }
 }

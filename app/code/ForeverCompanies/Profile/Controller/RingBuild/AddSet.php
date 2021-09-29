@@ -1,6 +1,8 @@
 <?php
 
-    namespace ForeverCompanies\Profile\Controller\RingBuild;
+namespace ForeverCompanies\Profile\Controller\RingBuild;
+
+use Magento\Framework\Event\ManagerInterface as EventManager;
 
     /**
      * Controller for processing add set to cart action.
@@ -11,6 +13,7 @@ class AddSet extends \ForeverCompanies\Profile\Controller\ApiController
 {
     protected $profileHelper;
     protected $resultHelper;
+    protected $eventManager;
         
    /**
     * @param \Magento\Framework\App\Action\Context $context
@@ -21,12 +24,16 @@ class AddSet extends \ForeverCompanies\Profile\Controller\ApiController
         \Magento\Framework\App\Action\Context $context,
         \Magento\Catalog\Model\ProductFactory $productloader,
         \ForeverCompanies\Profile\Helper\Profile $profileHelper,
-        \ForeverCompanies\Profile\Helper\Result $resultHelper
+        \ForeverCompanies\Profile\Helper\Result $resultHelper,
+        EventManager $eventM
     ) {
-         parent::__construct($context);
-         $this->productloader = $productloader;
-            $this->profileHelper = $profileHelper;
-            $this->resultHelper = $resultHelper;
+         
+        $this->productloader = $productloader;
+        $this->profileHelper = $profileHelper;
+        $this->resultHelper = $resultHelper;
+        $this->eventManager = $eventM;
+            
+        parent::__construct($context);
     }
 
     public function execute()
@@ -101,6 +108,7 @@ class AddSet extends \ForeverCompanies\Profile\Controller\ApiController
             $this->resultHelper->addExceptionError($e);
         }
             
+        $this->eventManager->dispatch('free_gift_add_logic');
         $this->resultHelper->getResult();
     }
 }

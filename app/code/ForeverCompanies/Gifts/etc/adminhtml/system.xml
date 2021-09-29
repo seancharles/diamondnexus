@@ -25,9 +25,9 @@
                 </field>
                 <field id="product_id" translate="label comment" type="text" sortOrder="20" showInDefault="1"
                        showInWebsite="1" showInStore="1">
-                    <label>Free gift product ID</label>
+                    <label>Free Gift Product SKU</label>
                     <comment>
-                        Example: 1234
+                        Example: free-chain
                     </comment>
                 </field>
                 <field id="link" translate="label comment" type="text" sortOrder="30" showInDefault="1"

@@ -107,7 +107,6 @@ class Add extends \ForeverCompanies\Profile\Controller\ApiController
         }
             
         $this->eventManager->dispatch('free_gift_add_logic');
-        
         $this->resultHelper->getResult();
     }
 }
