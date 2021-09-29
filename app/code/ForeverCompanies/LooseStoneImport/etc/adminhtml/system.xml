@@ -29,7 +29,11 @@
                 </field>
                 <field id="pattern" translate="label comment" type="text" sortOrder="50" showInDefault="1"
                        showInWebsite="1" showInStore="1">
-                    <label>File Pattern</label>
+                    <label>Import File Pattern</label>
+                </field>
+                <field id="disable_pattern" translate="label comment" type="text" sortOrder="50" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Disable File Pattern</label>
                 </field>
 			</group>
 		</section>

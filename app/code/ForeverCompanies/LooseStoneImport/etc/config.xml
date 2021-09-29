@@ -9,6 +9,7 @@
                 <user>forevercompanies</user>
                 <pass>wmmpU8ge</pass>
                 <pattern>diamond_importer_*.csv</pattern>
+                <disable_pattern>delete_stones_*.csv</disable_pattern>
             </creds>
         </forevercompanies_stone_ftp>
     </default>
