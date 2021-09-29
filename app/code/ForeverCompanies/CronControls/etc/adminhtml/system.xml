@@ -134,6 +134,12 @@
         			<comment>Enabled?</comment>
     			</field>
     			
+    			<field id="disable_stones" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        			<label>Disable Stone Script</label>
+        			<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        			<comment>Enabled?</comment>
+    			</field>
+    			
 	         </group>
 	         
 		</section>
