@@ -141,7 +141,7 @@ GQL;
 }
 
 if(count($result) > 0) {
-    echo json_encode($result);
+    echo json_encode(['products' => $result]);
 } else {
     echo "Sorry, there was a problem generating feed.";
 }
