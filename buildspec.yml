@@ -83,6 +83,8 @@ phases:
       - if [ $(aws cloudfront get-distribution-config --id E206DWJUE94NO9 | grep DomainName | awk 'NF{ print $NF }') = '"mag2-prod-cluster-LoadBalancer-88293620.us-east-1.elb.amazonaws.com",' ]; then CLUSTER=mag2-prod-cluster-standby; else CLUSTER=mag2-prod-cluster; fi
       - echo $CLUSTER
       - aws ecs update-service --force-new-deployment --service $REPO --cluster $CLUSTER
+      - aws ecs update-service --force-new-deployment --service $REPO-api --cluster $CLUSTER
+      - aws ecs update-service --force-new-deployment --service $REPO-admin --cluster $CLUSTER
   post_build:
     commands:
       - echo Build completed on `date`
