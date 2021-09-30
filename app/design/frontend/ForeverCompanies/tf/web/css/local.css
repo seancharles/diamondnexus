@@ -872,4 +872,4 @@ footer {
       width: 100%;
       margin-top: 15px; }
   .checkout-onepage-success .featured-block {
-    background-image: url("https://res.cloudinary.com/foco/image/upload/v1632867056/1215_diamonds/account/success-mobile.jpg"); } }
+    background-image: url("https://res.cloudinary.com/foco/image/upload/v1632867056/1215_diamonds/account/success-mobile.jpg") !important; } }
