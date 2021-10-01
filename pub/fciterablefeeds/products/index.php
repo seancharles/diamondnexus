@@ -125,6 +125,15 @@ GQL;
         //print_r($items);
 
         foreach ($graphItems as $product) {
+            # default image
+            $productImage = $product->media_gallery[0]->image_path;
+
+            foreach($product->media_gallery as $image) {
+                if($image->position == 1) {
+                    $productImage = $image->image_path;
+                }
+            }
+
             $result[] = [
                 'id' => $product->id,
                 'type_id' => $product->type_id,
@@ -134,7 +143,7 @@ GQL;
                 'special_price' => $product->price_range->minimum_price->final_price->value,
                 'attribute_set_id' => $product->attribute_set_id,
                 'url' => $hostConfig[$storeId]['host'] . 'products/' . $product->url_key,
-                'img' => $hostConfig[$storeId]['cdn'] . $product->media_gallery[0]->image_path
+                'img' => $hostConfig[$storeId]['cdn'] . $productImage
             ];
         }
     }
