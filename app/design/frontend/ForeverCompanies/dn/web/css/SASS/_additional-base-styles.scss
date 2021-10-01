@@ -164,10 +164,20 @@ a {
     }
 }
 
+input[type='radio'],
+input[type='checkbox'] {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+}
+
 .fieldset {
     &:after {
         font-size: 12px !important;
     }
+}
+.field-error {
+    font-size: 12px !important;
 }
 .message.error,
 .message.success {

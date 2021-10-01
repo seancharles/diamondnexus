@@ -681,6 +681,28 @@ footer {
 .checkout-index-index .form-shipping-address .field[name='shippingAddress.fax'] {
   display: none; }
 
+.checkout-index-index .opc-estimated-wrapper .minicart-wrapper {
+  display: block !important; }
+  .checkout-index-index .opc-estimated-wrapper .minicart-wrapper .showcart {
+    background: transparent !important;
+    min-width: 20px !important;
+    padding: 10px !important; }
+    .checkout-index-index .opc-estimated-wrapper .minicart-wrapper .showcart .counter {
+      background: #d50000;
+      border-radius: 0; }
+      .checkout-index-index .opc-estimated-wrapper .minicart-wrapper .showcart .counter .counter-number {
+        text-shadow: none !important; }
+
+.checkout-index-index .minicart-wrapper .action.showcart:before {
+  content: '' !important;
+  width: 25px;
+  height: 25px;
+  margin-top: 2px;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20class%3D%22nav__svg__icon--bag%20svelte-1w5mpo%22%20viewBox%3D%220%200%2016.5747%2021.9274%22%3E%3Cdefs%20class%3D%22svelte-1w5mpo%22%3E%3Cstyle%20class%3D%22svelte-1w5mpo%22%2F%3E%3C%2Fdefs%3E%3Cpath%20class%3D%223fb47baf-1371-4588-a2fa-d13b41ae7ebf%20svelte-1w5mpo%22%20d%3D%22M43.5156%2C31.6328a.8164.8164%2C0%2C0%2C0-.8154-.7744H40.1768V29.6665a4.2337%2C4.2337%2C0%2C0%2C0-8.4664.13v1.062H29.1851a.8172.8172%2C0%2C0%2C0-.8155.7763l-.7168%2C14.9737a.82.82%2C0%2C0%2C0%2C.8164.8193H43.4111l.0332-.001a.816.816%2C0%2C0%2C0%2C.7823-.8535ZM33.3423%2C29.7964a2.6%2C2.6%2C0%2C0%2C1%2C5.2%2C0v1.062h-5.2Zm-4.0137%2C16%2C.6333-13.3067H31.71v.45a.816.816%2C0%2C1%2C0%2C1.6319%2C0v-.4492h5.2v.4492a.8172.8172%2C0%2C0%2C0%2C.8164.816h.0029a.8146.8146%2C0%2C0%2C0%2C.8155-.816v-.4492h1.7451l.6328%2C13.3067Z%22%20transform%3D%22translate(-27.6528%20-25.5003)%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat no-repeat;
+  background-position: center center;
+  background-size: contain; }
+
 @media screen and (max-width: 1024px) {
   .checkout-index-index .minicart-items .product > .product-image-container {
     width: 40px !important; }
@@ -698,7 +720,9 @@ footer {
     margin: 0 !important; }
   .checkout-index-index input[type='checkbox'] {
     width: 25px !important;
-    height: 25px !important; } }
+    height: 25px !important; }
+  .checkout-index-index .minicart-items-wrapper {
+    max-height: none !important; } }
 
 @media screen and (max-width: 639px) {
   .checkout-index-index .authentication-wrapper {
@@ -780,10 +804,12 @@ footer {
         fill: #8e7171; }
     .checkout-onepage-success .success-page-features .additional-success-blocks .featured-block {
       border: 1px solid #ccc;
-      background-image: url("https://res.cloudinary.com/foco/images/v1607740505/diamond_nexus/blog/2016/june/1/trendy-ring-styles-for-summer-2016/hero/hero.jpg");
+      background-image: url("https://res.cloudinary.com/foco/image/upload/v1632867051/1215_diamonds/account/success-desktop.jpg");
       background-size: cover;
       background-position: center;
       padding: 200px 20px 20px 20px; }
+      .checkout-onepage-success .success-page-features .additional-success-blocks .featured-block a {
+        color: #000 !important; }
   .checkout-onepage-success .success-page-features .calendar {
     width: 50%;
     border: 1px solid #ccc;
@@ -844,4 +870,6 @@ footer {
       width: 100%; }
     .checkout-onepage-success .success-page-features .additional-success-blocks {
       width: 100%;
-      margin-top: 15px; } }
+      margin-top: 15px; }
+  .checkout-onepage-success .featured-block {
+    background-image: url("https://res.cloudinary.com/foco/image/upload/v1632867056/1215_diamonds/account/success-mobile.jpg"); } }

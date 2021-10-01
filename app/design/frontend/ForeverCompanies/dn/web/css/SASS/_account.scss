@@ -112,6 +112,55 @@
     .order-date {
         margin-top: 10px !important;
     }
+
+    .price {
+        font-size: 16px !important;
+    }
+
+    form {
+        .field.choice {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            label {
+                position: relative;
+                top: 3px;
+            }
+            .field-tooltip-action {
+                &:before {
+                    overflow: unset !important;
+                }
+            }
+        }
+    }
+
+    .modal-inner-wrap {
+        .modal-header {
+            padding-top: 15px !important;
+        }
+        .modal-content {
+            padding: 20px !important;
+        }
+        .action-close {
+            background: transparent !important;
+            min-width: 20px !important;
+            text-align: right !important;
+            &:before {
+                font-weight: bold !important;
+                color: #000;
+            }
+            &:hover:before {
+                color: #bfa374 !important;
+            }
+        }
+    }
+    .modal-popup .modal-footer {
+        display: block !important;
+        padding: 20px !important;
+        button {
+            margin: 5px 0 !important;
+        }
+    }
 }
 
 @media screen and (max-width: 1024px) {
@@ -150,6 +199,9 @@
             font-size: 14px !important;
         }
     }
+    .block-collapsible-nav-content {
+        box-shadow: 0px 3px 5px #9a9a9a;
+    }
     .nav {
         .item {
             a,
@@ -157,6 +209,9 @@
                 font-size: 14px;
             }
         }
+    }
+    .order-details-items .order-title strong {
+        font-size: 20px !important;
     }
 }
 
