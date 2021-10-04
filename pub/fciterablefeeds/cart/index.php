@@ -145,6 +145,7 @@ class CartFeed {
         $itemsQuery = "SELECT
                                 p.entity_id,
                                 p.sku,
+                                p.type_id,
                                 c.product_id child_product_id,
                                 c.sku child_sku,
                                 o.value as buy_request
@@ -167,11 +168,17 @@ class CartFeed {
 
         foreach ($this->quoteItems as $item) {
             # get product info from graphql
-            $product = $this->getProductBySku($item->sku);
+            if ($item->type_id == 'configurable') {
+                $product = $this->getConfigurableProductBySku($item->sku);
+            } else {
+                $product = $this->getSimpleProductBySku($item->sku);
+            }
 
             $buyRequest = json_decode($item->buy_request);
 
-            $configOptions = (array)$buyRequest->super_attribute;
+            if (isset($buyRequest->super_attribute) === true) {
+                $configOptions = (array) $buyRequest->super_attribute;
+            }
 
             # get image gallery
             $imageGallery = $product->media_gallery;
@@ -180,7 +187,7 @@ class CartFeed {
             $regularPrice = 0;
             $finalPrice = 0;
 
-            if ($product->type_id == 'configurable') {
+            if ($item->type_id == 'configurable') {
                 # get price from variations
                 foreach ($product->variants as $variant) {
                     if ($item->child_product_id == $variant->product->id) {
@@ -241,7 +248,7 @@ class CartFeed {
         $this->quoteItems = $products;
     }
 
-    function getProductBySku($sku = null)
+    function getConfigurableProductBySku($sku = null)
     {
         $result = [];
 
@@ -251,25 +258,11 @@ class CartFeed {
                 items {
                     name
                     url_key
-                    type_id
                     media_gallery{
                         image_path
                         label
                         position
                     }
-                    price_range {
-                        minimum_price {
-                            regular_price {
-                            value
-                            currency
-                            }
-                            final_price {
-                            value
-                            currency
-                            }
-                        }
-                    }
-                    special_price
                     ... on ConfigurableProduct {
                         variants {
                             product {
@@ -306,6 +299,63 @@ class CartFeed {
                             }
                         }
                     }
+                }
+            }
+        }
+GQL;
+
+        $graphResponse = $this->guzzleClient->request('POST', $this->graphqlEndpoint, [
+            'headers' => [
+                // include any auth tokens here
+            ],
+            'json' => [
+                'query' => $query
+            ]
+        ]);
+
+        # check the post status code
+        if ($graphResponse->getStatusCode() == 200) {
+            $json = $graphResponse->getBody()->getContents();
+            $body = json_decode($json);
+            $graphResult = $body->data;
+            $graphItems = $graphResult->products->items;
+
+            if (count($graphItems) > 0) {
+                return $graphItems[0];
+            }
+        }
+
+        return $result;
+    }
+
+    function getSimpleProductBySku($sku = null)
+    {
+        $result = [];
+
+        $query = <<<GQL
+        {
+            products(filter: { sku: { in: ["$sku"] } }) {
+                items {
+                    name
+                    url_key
+                    media_gallery{
+                        image_path
+                        label
+                        position
+                    }
+                    price_range {
+                        minimum_price {
+                            regular_price {
+                            value
+                            currency
+                            }
+                            final_price {
+                            value
+                            currency
+                            }
+                        }
+                    }
+                    special_price
                 }
             }
         }
