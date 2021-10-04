@@ -30,12 +30,6 @@ class CartFeed {
         # get metal option configs from db
         $this->getMetalOptions();
 
-        # get base url for host
-        $baseUrl = $this->env['system']['default']['web']['secure']['base_url'];
-
-        # must have trailing slash or you will get 401 errors
-        $this->graphqlEndpoint = $baseUrl . "graphql/";
-
         $this->guzzleClient = new \GuzzleHttp\Client();
 
         return $this->getQuote($quoteId);
@@ -76,6 +70,9 @@ class CartFeed {
 
         // set store id
         $this->storeId = $this->quote['store_id'];
+
+        # must have trailing slash or you will get 401 errors
+        $this->graphqlEndpoint = $this->stores[$this->storeId]['host'] . "graphql/";
 
         $this->getQuoteItems();
     }
@@ -146,6 +143,7 @@ class CartFeed {
                                 p.entity_id,
                                 p.sku,
                                 p.type_id,
+                                p.attribute_set_id,
                                 c.product_id child_product_id,
                                 c.sku child_sku,
                                 o.value as buy_request
@@ -168,10 +166,15 @@ class CartFeed {
 
         foreach ($this->quoteItems as $item) {
             # get product info from graphql
-            if ($item->type_id == 'configurable') {
-                $product = $this->getConfigurableProductBySku($item->sku);
+            if ($item->attribute_set_id == 31) {
+                # tf stones use a different graph endpoint
+                $product = $this->getStoneProductBySku($item->sku);
             } else {
-                $product = $this->getSimpleProductBySku($item->sku);
+                if ($item->type_id == 'configurable') {
+                    $product = $this->getConfigurableProductBySku($item->sku);
+                } else {
+                    $product = $this->getSimpleProductBySku($item->sku);
+                }
             }
 
             $buyRequest = json_decode($item->buy_request);
@@ -329,6 +332,63 @@ GQL;
     }
 
     function getSimpleProductBySku($sku = null)
+    {
+        $result = [];
+
+        $query = <<<GQL
+        {
+            products(filter: { sku: { in: ["$sku"] } }) {
+                items {
+                    name
+                    url_key
+                    media_gallery{
+                        image_path
+                        label
+                        position
+                    }
+                    price_range {
+                        minimum_price {
+                            regular_price {
+                            value
+                            currency
+                            }
+                            final_price {
+                            value
+                            currency
+                            }
+                        }
+                    }
+                    special_price
+                }
+            }
+        }
+GQL;
+
+        $graphResponse = $this->guzzleClient->request('POST', $this->graphqlEndpoint, [
+            'headers' => [
+                // include any auth tokens here
+            ],
+            'json' => [
+                'query' => $query
+            ]
+        ]);
+
+        # check the post status code
+        if ($graphResponse->getStatusCode() == 200) {
+            $json = $graphResponse->getBody()->getContents();
+            $body = json_decode($json);
+            $graphResult = $body->data;
+            $graphItems = $graphResult->products->items;
+
+            if (count($graphItems) > 0) {
+                return $graphItems[0];
+            }
+        }
+
+        return $result;
+    }
+
+    function getStoneProductBySku($sku = null)
     {
         $result = [];
 

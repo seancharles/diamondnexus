@@ -40,12 +40,6 @@ $env  = include('../../../app/etc/env.php');
 # load magento classes from vendor
 require '/var/www/magento/app/bootstrap.php';
 
-# get base url for host
-$baseUrl = $env['system']['default']['web']['secure']['base_url'];
-
-# must have trailing slash or you will get 401 errors
-$graphqlEndpoint = $baseUrl . "graphql/";
-
 $client = new \GuzzleHttp\Client();
 
 // adding support for user friendly brand abbreviations vs store ids
@@ -62,6 +56,9 @@ $pidsAry = json_decode($pids);
 
 // get store configurations
 $hostConfig = getStoreConfig();
+
+# must have trailing slash or you will get 401 errors
+$graphqlEndpoint = $hostConfig[$storeId]['host'] . "graphql/";
 
 $db = getPdoConnection();
 $productQuery = "SELECT sku FROM catalog_product_entity WHERE entity_id IN(" . implode(",", $pidsAry) . ");" ;
@@ -100,6 +97,7 @@ foreach($productResult as $product) {
                     }
                 }
             }
+            special_price
         }
       }
     }
@@ -128,10 +126,20 @@ GQL;
             # default image
             $productImage = $product->media_gallery[0]->image_path;
 
+            $regularPrice = $product->price_range->minimum_price->regular_price->value;
+            $specialPrice = 0;
+
             foreach($product->media_gallery as $image) {
                 if($image->position == 1) {
                     $productImage = $image->image_path;
                 }
+            }
+
+            # special pricing overrides catalog price rules
+            if ($product->special_price != null) {
+                $specialPrice = $product->special_price;
+            } else {
+                $specialPrice = $product->price_range->minimum_price->final_price->value;
             }
 
             $result[] = [
@@ -139,8 +147,8 @@ GQL;
                 'type_id' => $product->type_id,
                 'name' => $product->name,
                 'shape' => $product->shape[0],
-                'price' => $product->price_range->minimum_price->regular_price->value,
-                'special_price' => $product->price_range->minimum_price->final_price->value,
+                'price' => $regularPrice,
+                'special_price' => $specialPrice,
                 'attribute_set_id' => $product->attribute_set_id,
                 'url' => $hostConfig[$storeId]['host'] . 'products/' . $product->url_key,
                 'img' => $hostConfig[$storeId]['cdn'] . $productImage
