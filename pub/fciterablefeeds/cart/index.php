@@ -117,11 +117,11 @@ class CartFeed {
 
         $result = $this->db->query($metalQuery)->fetchAll();
 
-        if( sizeof($result)  > 0 ) {
+        if (sizeof($result)  > 0) {
 
             $temp = array();
 
-            foreach($result as $metalType) {
+            foreach ($result as $metalType) {
                 $temp[$metalType['option_id']] = strtolower($metalType['value']);
             }
 
@@ -129,58 +129,83 @@ class CartFeed {
         }
     }
 
-    function getAttributeCodeMap() {
+    function getAttributeCodeMap()
+    {
         $attributeQuery = "SELECT attribute_id, attribute_code FROM eav_attribute;";
         $attributeList = $this->db->query($attributeQuery)->fetchAll(PDO::FETCH_OBJ);
-        foreach($attributeList as $attribute) {
+        foreach ($attributeList as $attribute) {
             $this->attributeCodeMap[$attribute->attribute_id] = $attribute->attribute_code;
         }
     }
 
-    function getQuoteItems() {
+    function getQuoteItems()
+    {
         $products = [];
 
         $itemsQuery = "SELECT
                                 p.entity_id,
                                 p.sku,
-                                i.name,
-                                i.price,
-                                i.price - i.discount_amount AS final_price,
-								o.value as buy_request
+                                c.product_id child_product_id,
+                                c.sku child_sku,
+                                o.value as buy_request
 							FROM
 								quote_item i
 							INNER JOIN
 								catalog_product_entity p ON i.product_id = p.entity_id
-							LEFT JOIN
-								quote_item_option o ON i.item_id = o.item_id AND o.code = 'info_buyRequest'
+                            LEFT JOIN
+                                quote_item c ON i.item_id = c.parent_item_id
+                            LEFT JOIN
+                                quote_item_option o ON i.item_id = o.item_id AND o.code = 'info_buyRequest'
 							WHERE
-							    parent_item_id IS NULL
+							    i.parent_item_id IS NULL
 						    AND
-								quote_id = {$this->quoteId};";
+								i.quote_id = {$this->quoteId}
+                            GROUP BY
+                                p.entity_id;";
 
         $this->quoteItems = $this->db->query($itemsQuery)->fetchAll(PDO::FETCH_OBJ);
 
-        foreach($this->quoteItems as $item) {
+        foreach ($this->quoteItems as $item) {
             # get product info from graphql
             $product = $this->getProductBySku($item->sku);
 
             $buyRequest = json_decode($item->buy_request);
 
-            $configOptions = (array) $buyRequest->super_attribute;
+            $configOptions = (array)$buyRequest->super_attribute;
 
             # get image gallery
             $imageGallery = $product->media_gallery;
 
             $images = [];
-            $params = [];
+            $regularPrice = 0;
+            $finalPrice = 0;
 
-            /*
-            foreach($configOptions as $attributeId => $optionId) {
-                $params[$this->attributeCodeMap[$attributeId]] = $optionId;
+            if ($product->type_id == 'configurable') {
+                # get price from variations
+                foreach ($product->variants as $variant) {
+                    if ($item->child_product_id == $variant->product->id) {
+                        $regularPrice = $variant->product->price_range->minimum_price->regular_price->value;
+
+                        # special pricing overrides catalog price rules
+                        if ($variant->product->special_price != null) {
+                            $finalPrice = $variant->product->special_price;
+                        } else {
+                            $finalPrice = $variant->product->price_range->minimum_price->final_price->value;
+                        }
+                        break;
+                    }
+                }
+            } else {
+                # pull price for simple
+                $regularPrice = $product->price_range->minimum_price->regular_price->value;
+
+                # special pricing overrides catalog price rules
+                if ($product->special_price != null) {
+                    $finalPrice = $product->special_price;
+                } else {
+                    $finalPrice = $product->price_range->minimum_price->final_price->value;
+                }
             }
-
-            $queryString =
-            */
 
             if (isset($configOptions[145]) === true) {
                 foreach ($imageGallery as $image) {
@@ -199,15 +224,15 @@ class CartFeed {
             }
 
             # default to the first image if no tags match
-            if(count($images) == 0) {
+            if (count($images) == 0) {
                 $images[] = $this->stores[$this->storeId]['cdn'] . $product->media_gallery[0]->image_path;
             }
 
             $products[] = [
               'id' => $item->entity_id,
-              'name' => $item->name,
-              'price' => $item->price, //$product->price_range->minimum_price->regular_price->value,
-              'special_price' => $item->final_price, //$product->price_range->minimum_price->final_price->value,
+              'name' => $product->name,
+              'price' => $regularPrice,
+              'special_price' => $finalPrice,
               'img' => $this->stores[$this->storeId]['cdn'] . $images[0],
               'url' => $this->stores[$this->storeId]['host'] . 'products/' . $product->url_key
             ];
@@ -216,21 +241,73 @@ class CartFeed {
         $this->quoteItems = $products;
     }
 
-    function getProductBySku($sku = null) {
+    function getProductBySku($sku = null)
+    {
         $result = [];
 
         $query = <<<GQL
         {
-          products(filter: { sku: { in: ["$sku"] } }) {
-            items {
-                url_key
-                media_gallery{
-                    image_path
-                    label
-                    position
+            products(filter: { sku: { in: ["$sku"] } }) {
+                items {
+                    name
+                    url_key
+                    type_id
+                    media_gallery{
+                        image_path
+                        label
+                        position
+                    }
+                    price_range {
+                        minimum_price {
+                            regular_price {
+                            value
+                            currency
+                            }
+                            final_price {
+                            value
+                            currency
+                            }
+                        }
+                    }
+                    special_price
+                    ... on ConfigurableProduct {
+                        variants {
+                            product {
+                                id
+                                sku
+                                name
+                                price_range {
+                                    minimum_price {
+                                        regular_price {
+                                            value
+                                        }
+                                        discount {
+                                        amount_off
+                                        percent_off
+                                        }
+                                        final_price {
+                                        value
+                                        }
+                                    }
+                                    maximum_price {
+                                        regular_price {
+                                            value
+                                        }
+                                        discount {
+                                            amount_off
+                                            percent_off
+                                        }
+                                        final_price {
+                                        value
+                                        }
+                                    }
+                                }
+                                special_price
+                            }
+                        }
+                    }
                 }
             }
-          }
         }
 GQL;
 
@@ -244,7 +321,7 @@ GQL;
         ]);
 
         # check the post status code
-        if($graphResponse->getStatusCode() == 200) {
+        if ($graphResponse->getStatusCode() == 200) {
             $json = $graphResponse->getBody()->getContents();
             $body = json_decode($json);
             $graphResult = $body->data;
@@ -258,7 +335,8 @@ GQL;
         return $result;
     }
 
-    function getFormattedResult() {
+    function getFormattedResult()
+    {
         return json_encode([
             'url' => $this->getHost() . 'checkout/cart/rebuild/id/' . $this->quoteId,
             'products' => $this->quoteItems
