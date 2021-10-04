@@ -174,6 +174,4 @@ RUN echo "Composer Install"
 RUN cp app/etc/env.php.bak app/etc/env.php
 RUN php -d memory_limit=-1 `which composer` install
 RUN php -d memory_limit=-1 bin/magento setup:upgrade
-RUN php -d memory_limit=-1 bin/magento setup:di:compile
-RUN php -d memory_limit=-1 bin/magento setup:static-content:deploy -f
-#RUN php -d memory_limit=-1 bin/magento deploy:mode:set production
+RUN php -d memory_limit=-1 bin/magento deploy:mode:set production
