@@ -251,10 +251,34 @@ class CartFeed {
         $this->quoteItems = $products;
     }
 
+    function getProductFromGraphQL($query = null)
+    {
+        $graphResponse = $this->guzzleClient->request('POST', $this->graphqlEndpoint, [
+            'headers' => [
+                // include any auth tokens here
+            ],
+            'json' => [
+                'query' => $query
+            ]
+        ]);
+
+        # check the post status code
+        if ($graphResponse->getStatusCode() == 200) {
+            $json = $graphResponse->getBody()->getContents();
+            $body = json_decode($json);
+            $graphResult = $body->data;
+            $graphItems = $graphResult->products->items;
+
+            if (count($graphItems) > 0) {
+                return $graphItems[0];
+            }
+        }
+
+        return [];
+    }
+
     function getConfigurableProductBySku($sku = null)
     {
-        $result = [];
-
         $query = <<<GQL
         {
             products(filter: { sku: { in: ["$sku"] } }) {
@@ -307,34 +331,11 @@ class CartFeed {
         }
 GQL;
 
-        $graphResponse = $this->guzzleClient->request('POST', $this->graphqlEndpoint, [
-            'headers' => [
-                // include any auth tokens here
-            ],
-            'json' => [
-                'query' => $query
-            ]
-        ]);
-
-        # check the post status code
-        if ($graphResponse->getStatusCode() == 200) {
-            $json = $graphResponse->getBody()->getContents();
-            $body = json_decode($json);
-            $graphResult = $body->data;
-            $graphItems = $graphResult->products->items;
-
-            if (count($graphItems) > 0) {
-                return $graphItems[0];
-            }
-        }
-
-        return $result;
+        return $this->getProductFromGraphQL($query);
     }
 
     function getSimpleProductBySku($sku = null)
     {
-        $result = [];
-
         $query = <<<GQL
         {
             products(filter: { sku: { in: ["$sku"] } }) {
@@ -364,85 +365,52 @@ GQL;
         }
 GQL;
 
-        $graphResponse = $this->guzzleClient->request('POST', $this->graphqlEndpoint, [
-            'headers' => [
-                // include any auth tokens here
-            ],
-            'json' => [
-                'query' => $query
-            ]
-        ]);
-
-        # check the post status code
-        if ($graphResponse->getStatusCode() == 200) {
-            $json = $graphResponse->getBody()->getContents();
-            $body = json_decode($json);
-            $graphResult = $body->data;
-            $graphItems = $graphResult->products->items;
-
-            if (count($graphItems) > 0) {
-                return $graphItems[0];
-            }
-        }
-
-        return $result;
+        return $this->getProductFromGraphQL($query);
     }
 
     function getStoneProductBySku($sku = null)
     {
-        $result = [];
+        $productQuery = "SELECT
+                            entity_id,
+                            sku,
+                            name.value name,
+                            price.value price,
+                            special_price.value special_price,
+                            image.value as img
+                        FROM
+                            catalog_product_entity e
+                        INNER JOIN
+                            catalog_product_entity_decimal price on e.entity_id = price.row_id and price.store_id = 0 and price.attribute_id = 64
+                        LEFT JOIN
+                            catalog_product_entity_decimal special_price on e.entity_id = special_price.row_id and special_price.store_id = 0 and special_price.attribute_id = 65
+                        LEFT JOIN
+                            catalog_product_entity_varchar image on e.entity_id = image.row_id and image.store_id = 0 and image.attribute_id = 75
+                        LEFT JOIN
+                            catalog_product_entity_varchar name on e.entity_id = name.row_id and name.store_id = 0 and name.attribute_id = 60
+                        WHERE
+                            e.sku = '" . $sku . "';";
 
-        $query = <<<GQL
-        {
-            products(filter: { sku: { in: ["$sku"] } }) {
-                items {
-                    name
-                    url_key
-                    media_gallery{
-                        image_path
-                        label
-                        position
-                    }
-                    price_range {
-                        minimum_price {
-                            regular_price {
-                            value
-                            currency
-                            }
-                            final_price {
-                            value
-                            currency
-                            }
-                        }
-                    }
-                    special_price
-                }
-            }
-        }
-GQL;
+        $products = $this->db->query($productQuery)->fetchAll(PDO::FETCH_OBJ);
 
-        $graphResponse = $this->guzzleClient->request('POST', $this->graphqlEndpoint, [
-            'headers' => [
-                // include any auth tokens here
+        return (object) [
+            'name' => $products[0]->price,
+            'url_key' => 'no_url',
+            'media_gallery' => [ (object) [
+                'image_path' => $products[0]->img,
+                'position' => 1
+            ]],
+            'price_range' => (object) [
+                'minimum_price' => (object) [
+                    'regular_price' => (object) [
+                        'value' => $products[0]->price
+                    ],
+                    'final_price' => (object) [
+                        'value' => $products[0]->price
+                    ]
+                ]
             ],
-            'json' => [
-                'query' => $query
-            ]
-        ]);
-
-        # check the post status code
-        if ($graphResponse->getStatusCode() == 200) {
-            $json = $graphResponse->getBody()->getContents();
-            $body = json_decode($json);
-            $graphResult = $body->data;
-            $graphItems = $graphResult->products->items;
-
-            if (count($graphItems) > 0) {
-                return $graphItems[0];
-            }
-        }
-
-        return $result;
+            'special_price' => null,
+        ];
     }
 
     function getFormattedResult()
