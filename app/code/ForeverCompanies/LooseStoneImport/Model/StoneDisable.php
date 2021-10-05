@@ -38,15 +38,18 @@ class StoneDisable
         $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
     }
 
+    /**
+     * Execute script - disable all stones listed in given file
+     * @throws Exception
+     */
     public function run()
     {
-        $this->_updateDisableStonesCsv();
+        $this->updateDisableStonesCsv();
         $skuArr = $this->buildArray();
 
         $count = 0;
         $productIds = [];
         foreach ($skuArr as $sku) {
-            
             $productId = $this->productModel->getIdBySku($sku);
             if ($productId) {
                 $productIds[] = $productId;
@@ -68,6 +71,11 @@ class StoneDisable
         echo 'complete. the product count is ' . $count . '   ';
     }
 
+    /**
+     * Build array of data to be processed, from the file defined at $this->fileName
+     * @return array
+     * @throws Exception
+     */
     public function buildArray(): array
     {
         $arr = array();
@@ -86,34 +94,36 @@ class StoneDisable
         }
         return $arr;
     }
-    
-    protected function _updateDisableStonesCsv()
+
+    /**
+     * Connect to FTP server and pull down latest disable stones sheet
+     */
+    protected function updateDisableStonesCsv()
     {
         $ftp = ftp_connect(
             $this->scopeConfig->getValue('forevercompanies_stone_ftp/creds/host', $this->storeScope),
             $this->scopeConfig->getValue('forevercompanies_stone_ftp/creds/port', $this->storeScope)
-            );
-        
+        );
+
         $login_result = ftp_login(
             $ftp,
             $this->scopeConfig->getValue('forevercompanies_stone_ftp/creds/user', $this->storeScope),
             $this->scopeConfig->getValue('forevercompanies_stone_ftp/creds/pass', $this->storeScope)
-            );
+        );
         ftp_pasv($ftp, true);
-        
+
         $files = ftp_nlist(
             $ftp,
             ftp_pwd($ftp) . DS . $this->scopeConfig->getValue(
                 'forevercompanies_stone_ftp/creds/disable_pattern',
                 $this->storeScope
-                )
-            );
-        
+            )
+        );
+
         foreach ($files as $file) {
             ftp_get($ftp, '/var/www/magento/var/import/disable_stones.csv', $file);
         }
-        
+
         ftp_close($ftp);
     }
-    
 }
