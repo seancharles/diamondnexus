@@ -5,8 +5,8 @@ ini_set("display_errors", true);
 # load magento classes from vendor
 require '/var/www/magento/app/bootstrap.php';
 
-class CartFeed {
-
+class CartFeed
+{
     private $db;
     private $stores;
     private $metalOptions;
@@ -17,6 +17,19 @@ class CartFeed {
     private $quoteItems;
     private $graphqlEndpoint;
     private $guzzleClient;
+
+    private $shapeMap = [
+        2842 => 'round',
+        2847 => 'oval',
+        2850 => 'pear',
+        2848 => 'emerald',
+        2845 => 'cushion',
+        2843 => 'princess',
+        2849 => 'radiant',
+        2844 => 'asscher',
+        2846 => 'heart',
+        2851 => 'marquise'
+    ];
 
     function __construct($quoteId) {
         # get env variables for host and elastic
@@ -395,7 +408,8 @@ GQL;
                             name.value name,
                             price.value price,
                             special_price.value special_price,
-                            image.value as img
+                            image.value as img,
+                            shape.value shape
                         FROM
                             catalog_product_entity e
                         INNER JOIN
@@ -406,6 +420,8 @@ GQL;
                             catalog_product_entity_varchar image on e.entity_id = image.row_id and image.store_id = 0 and image.attribute_id = 75
                         LEFT JOIN
                             catalog_product_entity_varchar name on e.entity_id = name.row_id and name.store_id = 0 and name.attribute_id = 60
+                        LEFT JOIN
+                            catalog_product_entity_int shape on e.entity_id = shape.row_id and shape.store_id = 0 and shape.attribute_id = 303
                         WHERE
                             e.sku = '" . $sku . "';";
 
@@ -414,7 +430,10 @@ GQL;
         if ($products[0]->img != "no_selection" && $products[0]->img != "null") {
             $imagePath = $products[0]->img;
         } else {
-            $imagePath = 'https://assets.1215diamonds.com/image/upload/w_300,c_scale/q_auto,f_auto/cut-round.png';
+            // get the shape of the stone and use that for image reference
+            $shape = $this->shapeMap[$products[0]->shape];
+
+            $imagePath = 'https://assets.1215diamonds.com/image/upload/w_300,c_scale/q_auto,f_auto/cut-' . $shape . '.png';
         }
 
         return (object) [
