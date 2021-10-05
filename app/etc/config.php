@@ -428,7 +428,7 @@ return [
         'ForeverCompanies_Gifts' => 1,
         'ForeverCompanies_Graphql' => 1,
         'ForeverCompanies_IterableCore' => 1,
-        'ForeverCompanies_IterableFeeds' => 1,
+        'ForeverCompanies_IterableFeeds' => 0,
         'ForeverCompanies_LinkProduct' => 1,
         'ForeverCompanies_StonesIntermediary' => 1,
         'ForeverCompanies_LooseStonesGrid' => 1,
