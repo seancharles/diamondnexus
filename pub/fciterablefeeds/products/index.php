@@ -1,6 +1,6 @@
 <?php
 
-ini_set("display_errors", true);
+ini_set("display_errors", false);
 
 function getStoreConfig() {
     return [
@@ -103,6 +103,8 @@ foreach($productResult as $product) {
     }
 GQL;
 
+    $headers = [];
+
     # tf graph queries need to supply a header
     if ($storeId == 12) {
         $headers['Store'] = 'www_1215diamonds_com';
@@ -123,7 +125,7 @@ GQL;
         $graphResult = $body->data;
         $graphItems = $graphResult->products->items;
 
-        //print_r($items);
+        print_r($json);
 
         foreach ($graphItems as $product) {
             # default image
