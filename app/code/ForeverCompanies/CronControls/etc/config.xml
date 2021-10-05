@@ -28,6 +28,7 @@ xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
             <loose_stone>
             	<loose_stone_import>1</loose_stone_import>
             	<unsold_diamond_cleaning>1</unsold_diamond_cleaning>
+            	<disable_stones>1</disable_stones>
             </loose_stone>
         </forevercompanies_cron_controls>
     </default>

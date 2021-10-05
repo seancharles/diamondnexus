@@ -22,6 +22,10 @@ class DisableStonesCron
 
     public function execute() 
     {
+        if (!$this->scopeConfig->getValue('forevercompanies_cron_controls/loose_stone/disable_stones', $this->storeScope)) {
+            return $this;
+        }
+        
         $this->stoneDisableModel->run();
         return;
     }
