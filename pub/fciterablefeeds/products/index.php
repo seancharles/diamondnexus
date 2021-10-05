@@ -125,7 +125,7 @@ GQL;
         $graphResult = $body->data;
         $graphItems = $graphResult->products->items;
 
-        print_r($json);
+        //print_r($json);
 
         foreach ($graphItems as $product) {
             # default image
