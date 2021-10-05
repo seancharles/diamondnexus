@@ -103,10 +103,13 @@ foreach($productResult as $product) {
     }
 GQL;
 
+    # tf graph queries need to supply a header
+    if ($storeId == 12) {
+        $headers['Store'] = 'www_1215diamonds_com';
+    }
+
     $graphResponse = $client->request('POST', $graphqlEndpoint, [
-        'headers' => [
-            // include any auth tokens here
-        ],
+        'headers' => $headers,
         'json' => [
             'query' => $query
         ]

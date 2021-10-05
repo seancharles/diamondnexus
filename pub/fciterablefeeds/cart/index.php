@@ -165,6 +165,7 @@ class CartFeed {
         $this->quoteItems = $this->db->query($itemsQuery)->fetchAll(PDO::FETCH_OBJ);
 
         foreach ($this->quoteItems as $item) {
+
             # get product info from graphql
             if ($item->attribute_set_id == 31) {
                 # tf stones use a different graph endpoint
@@ -233,19 +234,32 @@ class CartFeed {
                 }
             }
 
-            # default to the first image if no tags match
-            if (count($images) == 0) {
-                $images[] = $this->stores[$this->storeId]['cdn'] . $product->media_gallery[0]->image_path;
-            }
-
-            $products[] = [
+            $tempProduct = [
               'id' => $item->entity_id,
               'name' => $product->name,
               'price' => $regularPrice,
-              'special_price' => $finalPrice,
-              'img' => $this->stores[$this->storeId]['cdn'] . $images[0],
-              'url' => $this->stores[$this->storeId]['host'] . 'products/' . $product->url_key
+              'special_price' => $finalPrice
             ];
+
+            if ($item->attribute_set_id == 31) {
+
+                if (count($images) == 0) {
+                    $images[] = $product->media_gallery[0]->image_path;
+                }
+
+                $tempProduct['img'] = $images[0];
+                $tempProduct['url'] = $this->stores[$this->storeId]['host'] . $product->url_key;
+            } else {
+
+                if (count($images) == 0) {
+                    $images[] = $this->stores[$this->storeId]['cdn'] . $product->media_gallery[0]->image_path;
+                }
+
+                $tempProduct['img'] = $this->stores[$this->storeId]['cdn'] . $images[0];
+                $tempProduct['url'] = $this->stores[$this->storeId]['host'] . 'products/' . $product->url_key;
+            }
+
+            $products[] = $tempProduct;
         }
 
         $this->quoteItems = $products;
@@ -253,10 +267,15 @@ class CartFeed {
 
     function getProductFromGraphQL($query = null)
     {
+        $headers = [];
+
+        # tf graph queries need to supply a header
+        if ($this->storeId == 12) {
+            $headers['Store'] = 'www_1215diamonds_com';
+        }
+
         $graphResponse = $this->guzzleClient->request('POST', $this->graphqlEndpoint, [
-            'headers' => [
-                // include any auth tokens here
-            ],
+            'headers' => $headers,
             'json' => [
                 'query' => $query
             ]
@@ -392,11 +411,18 @@ GQL;
 
         $products = $this->db->query($productQuery)->fetchAll(PDO::FETCH_OBJ);
 
+        if ($products[0]->img != "no_selection" && $products[0]->img != "null") {
+            $imagePath = $products[0]->img;
+        } else {
+            $imagePath = 'https://assets.1215diamonds.com/image/upload/w_300,c_scale/q_auto,f_auto/cut-round.png';
+        }
+
         return (object) [
-            'name' => $products[0]->price,
-            'url_key' => 'no_url',
+            'name' => $products[0]->name,
+            'url_key' => 'stones?sku=' . $sku,
             'media_gallery' => [ (object) [
-                'image_path' => $products[0]->img,
+                'image_path' =>  $imagePath,
+                'label' => '',
                 'position' => 1
             ]],
             'price_range' => (object) [
