@@ -59,8 +59,11 @@ $pidsAry = json_decode($pids);
 // get store configurations
 $hostConfig = getStoreConfig();
 
-# must have trailing slash or you will get 401 errors
-$graphqlEndpoint = $hostConfig[$storeId]['host'] . "graphql/";
+# parse url parts
+$url = parse_url($hostConfig[$storeId]['host']);
+
+# www requests have to be over non ssl connection
+$graphqlEndpoint = "http://" . $url['host'] . "/graphql/";
 
 $db = getPdoConnection();
 $productQuery = "SELECT sku FROM catalog_product_entity WHERE entity_id IN(" . implode(",", $pidsAry) . ");" ;
