@@ -84,8 +84,11 @@ class CartFeed
         // set store id
         $this->storeId = $this->quote['store_id'];
 
-        # must have trailing slash or you will get 401 errors
-        $this->graphqlEndpoint = $this->stores[$this->storeId]['host'] . "graphql/";
+        # parse url parts
+        $url = parse_url($this->stores[$this->storeId]['host']);
+
+        # www requests have to be over non ssl connection
+        $this->graphqlEndpoint = "http://" . $url['host'] . "/graphql/";
 
         $this->getQuoteItems();
     }
