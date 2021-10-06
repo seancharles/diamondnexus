@@ -40,7 +40,9 @@ $env  = include('../../../app/etc/env.php');
 # load magento classes from vendor
 require '/var/www/magento/app/bootstrap.php';
 
-$client = new \GuzzleHttp\Client();
+$client = new \GuzzleHttp\Client([
+    'verify' => false
+]);
 
 // adding support for user friendly brand abbreviations vs store ids
 $brand = (!empty($_REQUEST['brand'])) ? $_REQUEST['brand'] : 'dn';
