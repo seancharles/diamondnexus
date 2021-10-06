@@ -33,8 +33,12 @@ phases:
       - apt-get install -y nfs-common
       - echo Cloning remote GIT repo
       - git log --name-status HEAD^..HEAD
-      - if [ $(aws cloudfront get-distribution-config --id E206DWJUE94NO9 | grep DomainName | awk 'NF{ print $NF }') = '"mag2-prod-cluster-LoadBalancer-88293620.us-east-1.elb.amazonaws.com",' ]; then RABBIT=$rabbithosttwo; else RABBIT=$rabbithost; fi
+      - RABBIT=$rabbithost
       - echo $RABBIT
+      - CLUSTER=mag2-prod-cluster
+      - echo $CLUSTER
+      - aws ecs update-service --service $REPO-cron --cluster $cluster --desired-count 0
+      - sleep 15
       - echo Building the Docker image...
       - docker pull $REPOURL/magento:latest
       - docker build -t magento --cache-from $REPOURL/magento:latest 
@@ -72,7 +76,7 @@ phases:
       - docker ps -a 
       - echo $CONTAINER
       - mkdir nfsmount
-      - if [ $(aws cloudfront get-distribution-config --id E206DWJUE94NO9 | grep DomainName | awk 'NF{ print $NF }') = '"mag2-prod-cluster-LoadBalancer-88293620.us-east-1.elb.amazonaws.com",' ]; then MOUNTTHIS=$MOUNTNFSSTANDBY; else MOUNTTHIS=$MOUNTNFS ; fi
+      - MOUNTTHIS=$MOUNTNFS
       - mount -t nfs -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport $MOUNTTHIS:/ ./nfsmount/
       - docker cp -a $CONTAINER:/var/www/magento/pub/static/ ./nfsmount/magento/pub/
       - chown 1000:1000 -R ./nfsmount/magento/pub/static/
@@ -80,11 +84,10 @@ phases:
       - echo Pushing the Docker images...
       - docker push $REPOURL/magento:latest
       - docker push $REPOURL/magento:$IMAGE_TAG
-      - if [ $(aws cloudfront get-distribution-config --id E206DWJUE94NO9 | grep DomainName | awk 'NF{ print $NF }') = '"mag2-prod-cluster-LoadBalancer-88293620.us-east-1.elb.amazonaws.com",' ]; then CLUSTER=mag2-prod-cluster-standby; else CLUSTER=mag2-prod-cluster; fi
-      - echo $CLUSTER
       - aws ecs update-service --force-new-deployment --service $REPO --cluster $CLUSTER
       - aws ecs update-service --force-new-deployment --service $REPO-api --cluster $CLUSTER
       - aws ecs update-service --force-new-deployment --service $REPO-admin --cluster $CLUSTER
+      - aws ecs update-service --service $REPO-cron --cluster $cluster --desired-count 1
   post_build:
     commands:
       - echo Build completed on `date`
