@@ -43,7 +43,7 @@ class CartFeed
         # get metal option configs from db
         $this->getMetalOptions();
 
-        $this->guzzleClient = new \GuzzleHttp\Client();
+        $this->guzzleClient = new \GuzzleHttp\Client(['verify' => false]);
 
         return $this->getQuote($quoteId);
     }
