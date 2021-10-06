@@ -87,7 +87,7 @@ phases:
       - aws ecs update-service --force-new-deployment --service $REPO --cluster $CLUSTER
       - aws ecs update-service --force-new-deployment --service $REPO-api --cluster $CLUSTER
       - aws ecs update-service --force-new-deployment --service $REPO-admin --cluster $CLUSTER
-      - aws ecs update-service --service $REPO-cron --cluster $cluster --desired-count 1
+      - aws ecs update-service --service $REPO-cron --cluster $CLUSTER --desired-count 1
   post_build:
     commands:
       - echo Build completed on `date`
