@@ -4,10 +4,15 @@ LABEL maintainer="Forever Companies"
 RUN ln -snf /usr/share/zoneinfo/America/Chicago /etc/localtime
 RUN echo America/Chicago > /etc/timezone
 
-RUN apt-get update && apt-get install sudo
+RUN apt-get update && apt-get install sudo curl unzip -y
+
 RUN groupadd -g 1000 admin
 RUN echo "%admin	ALL=(ALL:ALL)	NOPASSWD: ALL" >> /etc/sudoers
 RUN useradd -u 1000 -g 1000 -d /var/www/ admin
+
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+RUN unzip awscliv2.zip
+RUN ./aws/install
 
 ARG BUILD
 ENV BUILD $BUILD
