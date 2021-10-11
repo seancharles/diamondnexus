@@ -5,15 +5,15 @@ ini_set("display_errors", false);
 function getStoreConfig() {
     return [
         1 => [
-            'host' => 'https://www.diamondnexus.com/',
+            'host' => 'https://www-api.diamondnexus.com/',
             'cdn' => 'https://assets.diamondnexus.com/image/upload/w_300,c_scale/q_auto,f_auto/media/catalog/product'
         ],
         12 => [
-            'host' => 'https://www.1215diamonds.com/',
+            'host' => 'https://www-api.1215diamonds.com/',
             'cdn' => 'https://assets.1215diamonds.com/image/upload/w_300,c_scale/q_auto,f_auto/media/catalog/product'
         ],
         11 => [
-            'host' => 'https://www.foreverartisans.com/',
+            'host' => 'https://www-api.foreverartisans.com/',
             'cdn' => 'https://assets.foreverartisans.com/image/upload/w_300,c_scale/q_auto,f_auto/media/catalog/product'
         ]
     ];
