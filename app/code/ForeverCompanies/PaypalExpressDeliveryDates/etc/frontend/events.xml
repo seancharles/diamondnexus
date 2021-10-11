@@ -1,0 +1,3 @@
+<event name="checkout_onepage_controller_success_action">
+    <observer name="sales_order_place_after" instance="ForeverCompanies\PaypalExpressDeliveryDates\Observer\OrderCreate"/>
+</event>
