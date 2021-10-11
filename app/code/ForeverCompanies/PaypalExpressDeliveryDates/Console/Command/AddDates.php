@@ -91,7 +91,7 @@ class AddDates extends Command
             if ($deliveryDate !== false) {
                 $dateString = substr($deliveryDate, 10);
                 # orders that are placed in december may have a delivery date of january so we need to add the year
-                $dateString .= " " . (($currentMonth == "12") ? $currentYear + 1 : $currentYear);
+                $dateString .= " " . (($currentMonth == "12" && date("M", strtotime($dateString)) == "Jan") ? $currentYear + 1 : $currentYear);
                 # convert to int to be able to format for sql entries
                 $dateInt = strtotime($dateString);
 
