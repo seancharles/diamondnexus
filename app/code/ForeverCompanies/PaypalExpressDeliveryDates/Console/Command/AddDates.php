@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace ForeverCompanies\PaypalExpressDeliveryDates\Console\Command;
 
-use ForeverCompanies\CustomSales\Cron\ExpirationDate;
 use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\LocalizedException;
@@ -43,6 +42,7 @@ class AddDates extends Command
      * @param State $state
      * @param OrderRepositoryInterface $orderRepositoryInterface
      * @param ResourceConnection $resourceConnection
+     * @param Shipdate $shipdateHelper
      */
     public function __construct(
         State $state,
@@ -157,8 +157,8 @@ class AddDates extends Command
             SET
                 order_id = '" . (int) $this->orderId . "',
                 carrier_group = 'Forever Companies',
-                dispatch_date = '" . $this->dispatchTimestamp . "',
-                delivery_date = '" . $this->deliveryTimestamp . "';");
+                dispatch_date = '" . $this->getFormattedDate($this->dispatchTimestamp) . "',
+                delivery_date = '" . $this->getFormattedDate($this->deliveryTimestamp) . "';");
     }
 
     protected function updateOrderGridDetail()
@@ -167,8 +167,8 @@ class AddDates extends Command
                 {$this->orderGridDetailTable}
             SET
                 carrier_group = 'Forever Companies',
-                dispatch_date = '" . $this->dispatchTimestamp . "',
-                delivery_date = '" . $this->deliveryTimestamp . "'
+                dispatch_date = '" . $this->getFormattedDate($this->dispatchTimestamp) . "',
+                delivery_date = '" . $this->getFormattedDate($this->deliveryTimestamp) . "'
             WHERE
                 order_id = '" . (int) $this->orderId . "';");
     }
