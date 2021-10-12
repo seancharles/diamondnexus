@@ -487,6 +487,7 @@ class StoneImport
             "ALTR" => "34",
             "Forever Grown" => "35",
             "internalaltr" => "36",
+            "internalALTR" => "36",
             "bhaktidiamond" => "37",
             "bhakti" => "37"
             // TODO: Create these attribute options and place their values here.
