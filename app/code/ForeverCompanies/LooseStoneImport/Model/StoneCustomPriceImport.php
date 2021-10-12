@@ -4,6 +4,7 @@ namespace ForeverCompanies\LooseStoneImport\Model;
 
 use Exception;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\AbstractAggregateException;
 use Magento\Framework\Exception\AlreadyExistsException;
@@ -55,8 +56,14 @@ class StoneCustomPriceImport
     protected ScopeConfigInterface $scopeConfig;
     protected string $storeScope;
 
+    protected ResourceConnection $resourceConnection;
+    protected \Magento\Framework\DB\Adapter\AdapterInterface $connection;
+
     protected array $csvHeaderMap;
     protected array $requiredFieldsArr;
+
+    protected int $statusEnabled;
+    protected int $statusDisabled;
 
     protected string $logActionSuccess = 'price update';
     protected string $logActionError = 'price error';
@@ -66,7 +73,8 @@ class StoneCustomPriceImport
         ProductAction $action,
         CollectionFactory $productCollection,
         Product $productModel,
-        ScopeConfigInterface $scopeConfig
+        ScopeConfigInterface $scopeConfig,
+        ResourceConnection $resource
     ) {
         $this->csv = $csv;
         $this->productAction = $action;
@@ -75,6 +83,12 @@ class StoneCustomPriceImport
         $this->fileName = '/var/www/magento/var/import/stone_custom_prices.csv';
         $this->scopeConfig = $scopeConfig;
         $this->storeScope = ScopeInterface::SCOPE_STORE;
+
+        $this->resourceConnection = $resource;
+        $this->connection = $resource->getConnection();
+
+        $this->statusEnabled = Status::STATUS_ENABLED;
+        $this->statusDisabled = Status::STATUS_DISABLED;
 
         $this->csvHeaderMap = [
             "Certificate #" => "sku",
@@ -111,6 +125,7 @@ class StoneCustomPriceImport
                 // verify all required fields exist in this record, including Certificate #
                 // if they do not exist, log error and proceed to next record
                 if (!$this->checkForRequiredFields($csvRow)) {
+                    echo "err required\n";
                     $product = new DataObject();
                     if (isset($csvRow['Certificate #'])) {
                         $product->setSku($csvRow['Certificate #']);
@@ -243,15 +258,15 @@ class StoneCustomPriceImport
     protected function stoneLog($product, $csvArr, $action, $error = null)
     {
         if ($error) {
-            $query = 'INSERT INTO stone_log(sku, log_action, payload, payload_hash, errors)
+            $query = 'INSERT INTO stone_log(sku, log_action, payload, errors)
                 VALUES("' . $product->getSku() . '", "' . $action . '", "' . addslashes(
                     json_encode($csvArr)
-                ) . '", "' . $this->_getHash($csvArr) . '", "' . $error . '")';
+                ) . '", "' . $error . '")';
         } else {
-            $query = 'INSERT INTO stone_log(sku, log_action, payload, payload_hash)
+            $query = 'INSERT INTO stone_log(sku, log_action, payload)
                 VALUES("' . $product->getSku() . '", "' . $action . '", "' . addslashes(
                     json_encode($csvArr)
-                ) . '", "' . $this->_getHash($csvArr) . '")';
+                ) . '")';
         }
         $this->connection->query($query);
     }
