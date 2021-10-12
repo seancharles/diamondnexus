@@ -747,7 +747,7 @@ class StoneImport
 
     protected function _applyCsvRowToProduct($product, $csvArr)
     {
-        $product->setProductType('3569'); //diamond
+        $product->setFcProductType('3569'); //diamond
 
         // set weight to 1 for shipperhq purposes
         $product->setWeight(1);
