@@ -4,7 +4,6 @@ namespace ForeverCompanies\PaypalExpressDeliveryDates\Observer;
 
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Framework\App\ResourceConnection;
 use ForeverCompanies\CustomSales\Helper\Shipdate;
 
@@ -27,16 +26,13 @@ class OrderCreate implements ObserverInterface
 
     /**
      * AddDates constructor.
-     * @param OrderRepositoryInterface $orderRepositoryInterface
      * @param ResourceConnection $resourceConnection
      * @param Shipdate $shipdateHelper
      */
     public function __construct(
-        OrderRepositoryInterface $orderRepositoryInterface,
         ResourceConnection $resourceConnection,
         Shipdate $shipdateHelper
     ) {
-        $this->orderRepositoryInterface = $orderRepositoryInterface;
         $this->resourceConnection = $resourceConnection;
         $this->shipdateHelper = $shipdateHelper;
     }
@@ -53,22 +49,16 @@ class OrderCreate implements ObserverInterface
         $this->orderDetailTable = $this->connection->getTableName("shipperhq_order_detail");
         $this->orderGridDetailTable = $this->connection->getTableName("shipperhq_order_detail_grid");
 
-        # get month
-        $currentMonth = date("m", time());
-        $currentYear = date("Y", time());
-
         if ($order->getPayment()->getMethod() == 'braintree_paypal') {
             $this->shippingDescription = $order->getShippingDescription();
+            $this->setCarrierInfo($this->shippingDescription);
             $this->shippingPrice = $order->getShippingAmount();
-            $this->carrier = trim(substr($this->shippingDescription, 0, strpos($this->shippingDescription, "-")));
 
             # check for a delivery date in the text
             $deliveryDate = strrchr($this->shippingDescription, "Delivers: ");
 
             if ($deliveryDate !== false) {
                 $dateString = substr($deliveryDate, 10);
-                # orders that are placed in december may have a delivery date of january so we need to add the year
-                $dateString .= " " . (($currentMonth == "12" && date("M", strtotime($dateString)) == "Jan") ? $currentYear + 1 : $currentYear);
                 # convert to int to be able to format for sql entries
                 $dateInt = strtotime($dateString);
 
@@ -80,13 +70,17 @@ class OrderCreate implements ObserverInterface
                     $orderGridDetail = $this->getOrderGridDetail();
 
                     if (isset($orderDetail[0]) === true) {
-                        $this->updateOrderDetail();
+                        if ($orderDetail[0]['dispatch_date'] == null) {
+                            $this->updateOrderDetail();
+                        }
                     } else {
                         $this->insertOrderDetail();
                     }
 
                     if (isset($orderGridDetail[0]) === true) {
-                        $this->updateOrderGridDetail();
+                        if ($orderGridDetail[0]['dispatch_date'] == null) {
+                            $this->updateOrderGridDetail();
+                        }
                     } else {
                         $this->insertOrderGridDetail();
                     }
@@ -95,20 +89,41 @@ class OrderCreate implements ObserverInterface
         }
     }
 
+    protected function setCarrierInfo($shippingDescription = null) {
+        # determine the shipping service to back fill lead time
+        if (strpos($shippingDescription, "Standard Shipping") !== false) {
+            $this->leadTime = 2;
+            $this->carrier = 'Fedex';
+        } elseif (strpos($shippingDescription, "Standard Saturday") !== false) {
+            $this->leadTime = 2;
+            $this->carrier = 'Fedex';
+        } elseif (strpos($shippingDescription, "Express Shipping") !== false) {
+            $this->leadTime = 1;
+            $this->carrier = 'Fedex';
+        } elseif (strpos($shippingDescription, "Express Saturday") !== false) {
+            $this->leadTime = 1;
+            $this->carrier = 'Fedex';
+        } elseif (strpos($shippingDescription, "Ground") !== false) {
+            $this->leadTime = 3;
+            $this->carrier = 'Fedex';
+        } elseif (strpos($shippingDescription, "Express Worldwide") !== false) {
+            $this->leadTime = 3;
+            $this->carrier = 'Fedex';
+        } elseif (strpos($shippingDescription, "Expedited Worldwide") !== false) {
+            $this->leadTime = 3;
+            $this->carrier = 'Fedex';
+        } elseif (strpos($shippingDescription, "USPS PO Boxes") !== false) {
+            $this->leadTime = 3;
+            $this->carrier = 'Fedex';
+        } else {
+            # default to 3 day lead time
+            $this->carrier = 'flatrate';
+            $this->leadTime = 3;
+        }
+    }
+
     protected  function getDispatchDate($shippingDescription = null, $deliveryDateTimestamp = 0) {
         $businessDays = 1;
-
-        # determine the shipping service to back fill lead time
-        if (strpos($shippingDescription, "Standard")) {
-            $this->leadTime = 2;
-        } elseif (strpos($shippingDescription, "Express")) {
-            $this->leadTime = 1;
-        } elseif (strpos($shippingDescription, "PO")) {
-            $this->leadTime = 3;
-        } else {
-            # default to 4 day lead time
-            $this->leadTime = 4;
-        }
 
         for($i=1; $i<=10; $i++) {
             # go backward x days from the delivery date
@@ -150,7 +165,7 @@ class OrderCreate implements ObserverInterface
                 order_id = '" . (int) $this->orderId . "';");
     }
 
-    protected function getOrderDetail($orderId = 0): array
+    protected function getOrderDetail(): array
     {
         return $this->connection->fetchAll("SELECT id, dispatch_date, delivery_date FROM {$this->orderDetailTable} WHERE order_id = '" . (int) $this->orderId . "';");
     }

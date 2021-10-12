@@ -12,15 +12,16 @@ use Magento\Framework\App\State;
 use Magento\Framework\Exception\LocalizedException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
-use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Framework\App\ResourceConnection;
 use ForeverCompanies\CustomSales\Helper\Shipdate;
 
 class AddDates extends Command
 {
     protected $state;
-    protected $orderRepositoryInterface;
+    protected $orderInterface;
     protected $resourceConnection;
     protected $shipdateHelper;
     protected $connection;
@@ -40,22 +41,31 @@ class AddDates extends Command
     /**
      * AddDates constructor.
      * @param State $state
-     * @param OrderRepositoryInterface $orderRepositoryInterface
+     * @param OrderInterface $orderInterface
      * @param ResourceConnection $resourceConnection
      * @param Shipdate $shipdateHelper
      */
     public function __construct(
         State $state,
-        OrderRepositoryInterface $orderRepositoryInterface,
+        OrderInterface $orderInterface,
         ResourceConnection $resourceConnection,
         Shipdate $shipdateHelper
     ) {
         $this->state = $state;
-        $this->orderRepositoryInterface = $orderRepositoryInterface;
+        $this->orderInterface = $orderInterface;
         $this->resourceConnection = $resourceConnection;
         $this->shipdateHelper = $shipdateHelper;
 
         parent::__construct($this->name);
+    }
+
+    protected function configure()
+    {
+        $this->setName($this->name);
+        $this->setDescription('Add delivery dates to Paypal Order');
+        $this->addArgument('IncrementId', InputArgument::REQUIRED, __('Enter order number'));
+
+        parent::configure();
     }
 
     /**
@@ -68,30 +78,27 @@ class AddDates extends Command
     {
         $this->state->setAreaCode(Area::AREA_GLOBAL);
 
-        # TODO: add a CLI input per magento docs
-        $order = $this->orderRepositoryInterface->get(569997);
+        $incrementId = $input->getArgument('IncrementId');
+
+        $output->writeln("Updating delvivery dates on order " . $incrementId);
+
+        $order = $this->orderInterface->loadByIncrementId($incrementId);
 
         $this->orderId = $order->getId();
         $this->connection = $this->resourceConnection->getConnection();
         $this->orderDetailTable = $this->connection->getTableName("shipperhq_order_detail");
         $this->orderGridDetailTable = $this->connection->getTableName("shipperhq_order_detail_grid");
 
-        # get month
-        $currentMonth = date("m", time());
-        $currentYear = date("Y", time());
-
         if ($order->getPayment()->getMethod() == 'braintree_paypal') {
             $this->shippingDescription = $order->getShippingDescription();
+            $this->setCarrierInfo($this->shippingDescription);
             $this->shippingPrice = $order->getShippingAmount();
-            $this->carrier = trim(substr($this->shippingDescription, 0, strpos($this->shippingDescription, "-")));
 
             # check for a delivery date in the text
             $deliveryDate = strrchr($this->shippingDescription, "Delivers: ");
 
             if ($deliveryDate !== false) {
                 $dateString = substr($deliveryDate, 10);
-                # orders that are placed in december may have a delivery date of january so we need to add the year
-                $dateString .= " " . (($currentMonth == "12" && date("M", strtotime($dateString)) == "Jan") ? $currentYear + 1 : $currentYear);
                 # convert to int to be able to format for sql entries
                 $dateInt = strtotime($dateString);
 
@@ -103,13 +110,17 @@ class AddDates extends Command
                     $orderGridDetail = $this->getOrderGridDetail();
 
                     if (isset($orderDetail[0]) === true) {
-                        $this->updateOrderDetail();
+                        if ($orderDetail[0]['dispatch_date'] == null) {
+                            $this->updateOrderDetail();
+                        }
                     } else {
                         $this->insertOrderDetail();
                     }
 
                     if (isset($orderGridDetail[0]) === true) {
-                        $this->updateOrderGridDetail();
+                        if ($orderGridDetail[0]['dispatch_date'] == null) {
+                            $this->updateOrderGridDetail();
+                        }
                     } else {
                         $this->insertOrderGridDetail();
                     }
@@ -118,20 +129,41 @@ class AddDates extends Command
         }
     }
 
+    protected function setCarrierInfo($shippingDescription = null) {
+        # determine the shipping service to back fill lead time
+        if (strpos($shippingDescription, "Standard Shipping") !== false) {
+            $this->leadTime = 2;
+            $this->carrier = 'Fedex';
+        } elseif (strpos($shippingDescription, "Standard Saturday") !== false) {
+            $this->leadTime = 2;
+            $this->carrier = 'Fedex';
+        } elseif (strpos($shippingDescription, "Express Shipping") !== false) {
+            $this->leadTime = 1;
+            $this->carrier = 'Fedex';
+        } elseif (strpos($shippingDescription, "Express Saturday") !== false) {
+            $this->leadTime = 1;
+            $this->carrier = 'Fedex';
+        } elseif (strpos($shippingDescription, "Ground") !== false) {
+            $this->leadTime = 3;
+            $this->carrier = 'Fedex';
+        } elseif (strpos($shippingDescription, "Express Worldwide") !== false) {
+            $this->leadTime = 3;
+            $this->carrier = 'Fedex';
+        } elseif (strpos($shippingDescription, "Expedited Worldwide") !== false) {
+            $this->leadTime = 3;
+            $this->carrier = 'Fedex';
+        } elseif (strpos($shippingDescription, "USPS PO Boxes") !== false) {
+            $this->leadTime = 3;
+            $this->carrier = 'Fedex';
+        } else {
+            # default to 3 day lead time
+            $this->carrier = 'flatrate';
+            $this->leadTime = 3;
+        }
+    }
+
     protected  function getDispatchDate($shippingDescription = null, $deliveryDateTimestamp = 0) {
         $businessDays = 1;
-
-        # determine the shipping service to back fill lead time
-        if (strpos($shippingDescription, "Standard")) {
-            $this->leadTime = 2;
-        } elseif (strpos($shippingDescription, "Express")) {
-            $this->leadTime = 1;
-        } elseif (strpos($shippingDescription, "PO")) {
-            $this->leadTime = 3;
-        } else {
-            # default to 4 day lead time
-            $this->leadTime = 4;
-        }
 
         for($i=1; $i<=10; $i++) {
             # go backward x days from the delivery date
@@ -173,7 +205,7 @@ class AddDates extends Command
                 order_id = '" . (int) $this->orderId . "';");
     }
 
-    protected function getOrderDetail($orderId = 0): array
+    protected function getOrderDetail(): array
     {
         return $this->connection->fetchAll("SELECT id, dispatch_date, delivery_date FROM {$this->orderDetailTable} WHERE order_id = '" . (int) $this->orderId . "';");
     }
