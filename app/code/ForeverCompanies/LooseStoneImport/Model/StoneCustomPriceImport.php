@@ -125,7 +125,6 @@ class StoneCustomPriceImport
                 // verify all required fields exist in this record, including Certificate #
                 // if they do not exist, log error and proceed to next record
                 if (!$this->checkForRequiredFields($csvRow)) {
-                    echo "err required\n";
                     $product = new DataObject();
                     if (isset($csvRow['Certificate #'])) {
                         $product->setSku($csvRow['Certificate #']);
