@@ -22,7 +22,20 @@ $salePriceHelper = $this->helper(Magento\Framework\Pricing\Helper\Data::class);
 
 // initialize object manager to load models
 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-$product = $objectManager->create('Magento\Catalog\Model\Product')->load($product->getId());
+
+$shapeMap = [
+    2842 => 'round',
+    2847 => 'oval',
+    2850 => 'pear',
+    2848 => 'emerald',
+    2845 => 'cushion',
+    2843 => 'princess',
+    2849 => 'radiant',
+    2844 => 'asscher',
+    2846 => 'heart',
+    2851 => 'marquise'
+];
+
 ?>
 
 <?php if ($_item->getSetId() > 0) : ?>
@@ -213,7 +226,22 @@ $product = $objectManager->create('Magento\Catalog\Model\Product')->load($produc
                             <?php if ($product->getTypeId() == 'configurable'): ?>
                                 <?= $block->getTaggedImage($product->getId()) ?>
                             <?php else: ?>
-                                <?= $block->getImage($block->getProductForThumbnail(), 'cart_page_product_thumbnail')->toHtml() ?>
+                                <?php if ($product->getAttributeSetId() == 31): ?>
+                                    <?php
+                                        # get the shape of the stone and use that for image reference
+                                        $shape = $product->getShape();
+
+                                        $imagePath = 'https://res-2.cloudinary.com/foco/image/upload/w_300,c_scale/q_auto,f_auto/cut-' . $shapeMap[$shape] . '.png';
+                                    ?>
+                                    <img
+                                        class="product-image-photo cloudinary-lazyload-processed"
+                                        src="<?=$imagePath?>"
+                                        data-original="<?=$imagePath?>"
+                                        width="165" height="165" alt="<?=$product->getName()?>>"
+                                        style="display: block;" />
+                                <?php else: ?>
+                                    <?= $block->getImage($block->getProductForThumbnail(), 'cart_page_product_thumbnail')->toHtml() ?>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </span>
                     </span>
