@@ -231,6 +231,11 @@ $shapeMap = [
                                         # get the shape of the stone and use that for image reference
                                         $shape = $product->getShape();
 
+                                        # handle default shape value
+                                        if (isset($shapeMap[$shape]) === false) {
+                                            $shape = 2842;
+                                        }
+
                                         $imagePath = 'https://res-2.cloudinary.com/foco/image/upload/w_300,c_scale/q_auto,f_auto/cut-' . $shapeMap[$shape] . '.png';
                                     ?>
                                     <img
