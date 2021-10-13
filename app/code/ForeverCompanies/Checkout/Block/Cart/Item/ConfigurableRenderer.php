@@ -185,7 +185,7 @@ class ConfigurableRenderer extends \Magento\ConfigurableProduct\Block\Cart\Item\
 
     protected function formatCloudinaryImagePath($path = null, $width = 0, $quality = 90)
     {
-        $host = 'https://assets.diamondnexus.com/image/upload/w_300,c_scale/q_auto,f_auto/';
+        $host = 'https://res-2.cloudinary.com/foco/image/upload/w_300,c_scale/q_auto,f_auto/';
 
         // image/upload/media/catalog/product/t/i/tiffany-style-round-whiteview-1.jpg
         if (strpos($path, $host) === false) {
