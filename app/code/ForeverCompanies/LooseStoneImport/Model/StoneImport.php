@@ -486,6 +486,7 @@ class StoneImport
             "altr" => "34",
             "ALTR" => "34",
             "Forever Grown" => "35",
+            "forever grown" => "35",
             "internalaltr" => "36",
             "internalALTR" => "36",
             "bhaktidiamond" => "37",
@@ -758,7 +759,7 @@ class StoneImport
         $product->setClarity($this->clarityMap[$csvArr['Clarity']]);
         $product->setCutGrade($this->cutGradeMap[strtolower($csvArr['Cut Grade'])]);
         $product->setShape($this->shapeMap[$csvArr['Shape Name']]);
-        $product->setSupplier(strtolower($this->supplierMap[$csvArr['Supplier']]));
+        $product->setSupplier(strtolower($this->supplierMap[strtolower($csvArr['Supplier'])]));
 
         if (array_key_exists(strtolower($csvArr['Online']), $this->onlineMap)) {
             $product->setOnline($this->onlineMap[strtolower($csvArr['Online'])]);
@@ -886,7 +887,7 @@ class StoneImport
 
     protected function _handleStatus($supplier)
     {
-        if ($this->supplierStatuses[$supplier] == 0) {
+        if ($this->supplierStatuses[strtolower($supplier)] == 0) {
             return $this->statusDisabled;
         }
 
