@@ -51,15 +51,18 @@ class CartFeed
     function getStoreConfig() {
         return [
             1 => [
-                'host' => 'https://www-api.diamondnexus.com/',
+                'graph' => 'https://www-api.diamondnexus.com/',
+                'host' => 'https://www.diamondnexus.com/',
                 'cdn' => 'https://assets.diamondnexus.com/image/upload/w_300,c_scale/q_auto,f_auto/media/catalog/product'
             ],
             12 => [
-                'host' => 'https://www-api.1215diamonds.com/',
+                'graph' => 'https://www-api.1215diamonds.com/',
+                'host' => 'https://www.1215diamonds.com/',
                 'cdn' => 'https://assets.1215diamonds.com/image/upload/w_300,c_scale/q_auto,f_auto/media/catalog/product'
             ],
             11 => [
-                'host' => 'https://www-api.foreverartisans.com/',
+                'graph' => 'https://www-api.foreverartisans.com/',
+                'host' => 'https://www.foreverartisans.com/',
                 'cdn' => 'https://assets.foreverartisans.com/image/upload/w_300,c_scale/q_auto,f_auto/media/catalog/product'
             ]
         ];
@@ -84,11 +87,8 @@ class CartFeed
         // set store id
         $this->storeId = $this->quote['store_id'];
 
-        # parse url parts
-        $url = parse_url($this->stores[$this->storeId]['host']);
-
         # www requests have to be over non ssl connection
-        $this->graphqlEndpoint = "http://" . $url['host'] . "/graphql/";
+        $this->graphqlEndpoint =  $this->stores[$this->storeId]['graph'] . "graphql/";
 
         $this->getQuoteItems();
     }
