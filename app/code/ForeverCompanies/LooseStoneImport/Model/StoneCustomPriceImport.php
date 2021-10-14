@@ -92,13 +92,13 @@ class StoneCustomPriceImport
 
         $this->csvHeaderMap = [
             "Certificate #" => "sku",
-            "Price" => "price",
+            "New Price" => "price",
             "Cost" => "cost",
         ];
 
         $this->requiredFieldsArr = [
             "Certificate #",
-            "Price",
+            "New Price",
             "Cost"
         ];
     }
