@@ -10,6 +10,7 @@
                 <pass>wmmpU8ge</pass>
                 <pattern>diamond_importer_*.csv</pattern>
                 <disable_pattern>delete_stones_*.csv</disable_pattern>
+                <custom_price_pattern>samwise_*.csv</custom_price_pattern>
             </creds>
         </forevercompanies_stone_ftp>
     </default>

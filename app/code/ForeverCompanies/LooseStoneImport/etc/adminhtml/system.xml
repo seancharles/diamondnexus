@@ -31,9 +31,13 @@
                        showInWebsite="1" showInStore="1">
                     <label>Import File Pattern</label>
                 </field>
-                <field id="disable_pattern" translate="label comment" type="text" sortOrder="50" showInDefault="1"
+                <field id="disable_pattern" translate="label comment" type="text" sortOrder="60" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Disable File Pattern</label>
+                </field>
+                <field id="custom_price_pattern" translate="label comment" type="text" sortOrder="70" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Custom Price File Pattern</label>
                 </field>
 			</group>
 		</section>
