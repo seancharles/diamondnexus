@@ -85,4 +85,10 @@
             <schedule>0 0 * * *</schedule>
         </job>
    	</group>
+
+    <group id="default">
+        <job name="forever_loose_stone_custom_price_import" instance="ForeverCompanies\LooseStoneImport\Cron\CustomPriceImportCron" method="execute">
+            <schedule>30 2 * * *</schedule>
+        </job>
+    </group>
 </config>
