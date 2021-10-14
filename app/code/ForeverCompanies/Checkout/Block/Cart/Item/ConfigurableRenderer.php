@@ -185,20 +185,16 @@ class ConfigurableRenderer extends \Magento\ConfigurableProduct\Block\Cart\Item\
 
     protected function formatCloudinaryImagePath($path = null, $width = 0, $quality = 90)
     {
-        $host = 'https://res-2.cloudinary.com/foco/image/upload/';
+        $host = 'https://res-2.cloudinary.com/foco/image/upload/w_300,c_scale/q_auto,f_auto/';
 
-        if (strpos($path, $host) !== false) {
-            $folderPosition = strpos($path, "/v1/media");
-
-            // get the cloudinary parameters from uri
-            $params = substr($path, strlen($host), $folderPosition - strlen($host));
+        // image/upload/media/catalog/product/t/i/tiffany-style-round-whiteview-1.jpg
+        if (strpos($path, $host) === false) {
+            $folderPosition = strpos($path, "media/catalog/product");
 
             // get the actual path to the file from uri
             $file = substr($path, $folderPosition);
 
-            // return uri with modified params
-            //return $host . $params . ",w_165" . $file;
-            return $path;
+            return $host . $file;
         } else {
             return $path;
         }

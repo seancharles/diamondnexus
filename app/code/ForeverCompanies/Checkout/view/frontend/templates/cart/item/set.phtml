@@ -22,11 +22,24 @@ $salePriceHelper = $this->helper(Magento\Framework\Pricing\Helper\Data::class);
 
 // initialize object manager to load models
 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-$product = $objectManager->create('Magento\Catalog\Model\Product')->load($product->getId());
+
+$shapeMap = [
+    2842 => 'round',
+    2847 => 'oval',
+    2850 => 'pear',
+    2848 => 'emerald',
+    2845 => 'cushion',
+    2843 => 'princess',
+    2849 => 'radiant',
+    2844 => 'asscher',
+    2846 => 'heart',
+    2851 => 'marquise'
+];
+
 ?>
 
 <?php if ($_item->getSetId() > 0) : ?>
-	
+
     <?php if ($product->getAttributeSetId() == 32 || $product->getAttributeSetId() == 18) : ?>
         <?php
         $priceHelper = $block->getPriceHelper();
@@ -52,11 +65,19 @@ $product = $objectManager->create('Magento\Catalog\Model\Product')->load($produc
                 <td data-th="<?= $block->escapeHtml(__('Item')) ?>" class="col item">
                     <?php if ($block->hasProductUrl()) : ?>
                         <a href="<?= $block->escapeUrl($block->getProductUrl()) ?>" title="<?= $block->escapeHtml($block->getProductName()) ?>" tabindex="-1" class="product-item-photo">
-                        <?php else : ?>
-                            <span class="product-item-photo">
+                    <?php else : ?>
+                        <span class="product-item-photo">
+                    <?php endif; ?>
+                    <span class="product-image-container product-image-container-<?= $_item->getId() ?>" style="width: 165px;">
+                        <span class="product-image-wrapper" style="padding-bottom: 100%;">
+                            <?php if ($product->getTypeId() == 'configurable'): ?>
+                                <?= $block->getTaggedImage($product->getId()) ?>
+                            <?php else: ?>
+                                <?= $block->getImage($block->getProductForThumbnail(), 'cart_page_product_thumbnail')->toHtml() ?>
                             <?php endif; ?>
-                            <?= $block->getImage($block->getProductForThumbnail(), 'cart_page_product_thumbnail')->toHtml() ?>
-                            <?php if ($block->hasProductUrl()) : ?>
+                        </span>
+                    </span>
+                    <?php if ($block->hasProductUrl()) : ?>
                         </a>
                     <?php else : ?>
                         </span>
@@ -132,7 +153,7 @@ $product = $objectManager->create('Magento\Catalog\Model\Product')->load($produc
                     		<span class="cart-price">
                             	<span class="price strikethrough">
                             		<?php echo $salePriceHelper->currency($_item->getProduct()->getPrice(), true, false);?>
-                           		</span> 
+                           		</span>
                             </span>
                 		<?php endif;?>
                         <?= $block->getUnitPriceHtml($_item) ?>
@@ -196,15 +217,40 @@ $product = $objectManager->create('Magento\Catalog\Model\Product')->load($produc
             <td data-th="<?= $block->escapeHtml(__('Item')) ?>" class="col item">
                 <?php if ($block->hasProductUrl()) : ?>
                     <a href="<?= $block->escapeUrl($block->getProductUrl()) ?>" title="<?= $block->escapeHtml($block->getProductName()) ?>" tabindex="-1" class="product-item-photo">
-                    <?php else : ?>
-                        <span class="product-item-photo">
-                        <?php endif; ?>
-                        <?php //$block->getImage($block->getProductForThumbnail(), 'cart_page_product_thumbnail')->toHtml() 
-                        ?>
-                        <span class="product-image-container product-image-container-<?= $_item->getId() ?>" style="width: 165px;">
-                            <span class="product-image-wrapper" style="padding-bottom: 100%;"><?= $block->getTaggedImage($product->getId()) ?></span>
+                <?php else : ?>
+                    <span class="product-item-photo">
+                <?php endif; ?>
+                <?php //$block->getImage($block->getProductForThumbnail(), 'cart_page_product_thumbnail')->toHtml() ?>
+                    <span class="product-image-container product-image-container-<?= $_item->getId() ?>" style="width: 165px;">
+                        <span class="product-image-wrapper" style="padding-bottom: 100%;">
+                            <?php if ($product->getTypeId() == 'configurable'): ?>
+                                <?= $block->getTaggedImage($product->getId()) ?>
+                            <?php else: ?>
+                                <?php if ($product->getAttributeSetId() == 31): ?>
+                                    <?php
+                                        # get the shape of the stone and use that for image reference
+                                        $shape = $product->getShape();
+
+                                        # handle default shape value
+                                        if (isset($shapeMap[$shape]) === false) {
+                                            $shape = 2842;
+                                        }
+
+                                        $imagePath = 'https://res-2.cloudinary.com/foco/image/upload/w_300,c_scale/q_auto,f_auto/cut-' . $shapeMap[$shape] . '.png';
+                                    ?>
+                                    <img
+                                        class="product-image-photo cloudinary-lazyload-processed"
+                                        src="<?=$imagePath?>"
+                                        data-original="<?=$imagePath?>"
+                                        width="165" height="165" alt="<?=$product->getName()?>>"
+                                        style="display: block;" />
+                                <?php else: ?>
+                                    <?= $block->getImage($block->getProductForThumbnail(), 'cart_page_product_thumbnail')->toHtml() ?>
+                                <?php endif; ?>
+                            <?php endif; ?>
                         </span>
-                        <?php if ($block->hasProductUrl()) : ?>
+                    </span>
+                <?php if ($block->hasProductUrl()) : ?>
                     </a>
                 <?php else : ?>
                     </span>
@@ -277,7 +323,7 @@ $product = $objectManager->create('Magento\Catalog\Model\Product')->load($produc
                 		<span class="cart-price">
                         	<span class="price strikethrough">
                         		<?php echo $salePriceHelper->currency($_item->getProduct()->getPrice(), true, false);?>
-                       		</span> 
+                       		</span>
                         </span>
                 	<?php endif;?>
                     <?= $block->getUnitPriceHtml($_item) ?>
