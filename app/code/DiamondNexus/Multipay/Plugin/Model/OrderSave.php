@@ -75,7 +75,7 @@ class OrderSave
      * @var Invoice
      */
     protected $resourceInvoice;
-    
+
     /**
      * @var Shipdate
      */
@@ -174,17 +174,17 @@ class OrderSave
         if ($order->getStatus() == Order::STATE_CANCELED) {
             return;
         }
-        
+
         $payment = $order->getPayment();
         $methodInstance = $payment->getMethod();
         $info = $payment->getAdditionalInformation();
-        
+
         if (!isset($info[Constant::PAYMENT_METHOD_DATA])) {
             return;
         }
-        
+
         $multipayMethod = $info[Constant::PAYMENT_METHOD_DATA];
-        
+
         if ($methodInstance === Constant::MULTIPAY_METHOD) {
             if ($multipayMethod != Constant::MULTIPAY_QUOTE_METHOD) {
                 if (!isset($info[Constant::OPTION_TOTAL_DATA]) || $info[Constant::OPTION_TOTAL_DATA] == null) {
@@ -202,16 +202,18 @@ class OrderSave
                     */
                 }
             } elseif ($multipayMethod == Constant::MULTIPAY_QUOTE_METHOD) {
-                $order->setState('quote')->setStatus('quote');
+                $order->setState(Order::STATE_NEW)->setStatus('quote');
             }
 
             if ($multipayMethod != Constant::MULTIPAY_QUOTE_METHOD) {
                 // added to prevent order from updating multiple times on
                 // save when other statuses are set like exchange/returned/closed
-                if (isset($info[Constant::ORDER_UPDATES_FLAG]) === false
+                if (
+                    isset($info[Constant::ORDER_UPDATES_FLAG]) === false
                     || (isset($info[Constant::ORDER_UPDATES_FLAG]) === true && $info[Constant::ORDER_CREATE] == 0)
                 ) {
-                    if ((isset($info[Constant::OPTION_TOTAL_DATA]) == true &&
+                    if (
+                        (isset($info[Constant::OPTION_TOTAL_DATA]) == true &&
                             $info[Constant::OPTION_TOTAL_DATA] == Constant::MULTIPAY_TOTAL_AMOUNT)
                             ||
                             $order->getGrandTotal() == $order->getTotalPaid()
@@ -220,14 +222,14 @@ class OrderSave
                     ) {
                         // upon PIF prevent further auto updates to delivery dates and order status
                         $info[Constant::ORDER_UPDATES_FLAG] = 1;
-                        
+
                         $order->setAdditionalInformation($info);
-                        
+
                         $order->setState(Order::STATE_PROCESSING)->setStatus(Order::STATE_PROCESSING);
-                        
+
                         $this->shipdateHelper->updateDeliveryDates($order);
                     } else {
-                        $order->setState('pending')->setStatus('pending');
+                        $order->setState(Order::STATE_NEW)->setStatus('pending');
                     }
                 }
             }
@@ -280,8 +282,10 @@ class OrderSave
             }
 
             if ($order->canInvoice()) {
-                if ((int)$order->getGrandTotal() == 0 ||
-                    round($order->getTotalPaid(), 2) == round($order->getGrandTotal(), 2)) {
+                if (
+                    (int)$order->getGrandTotal() == 0 ||
+                    round($order->getTotalPaid(), 2) == round($order->getGrandTotal(), 2)
+                ) {
                     $invoice = $this->invoiceService->prepareInvoice($order);
                     $invoice->register();
                     $invoice->save();
