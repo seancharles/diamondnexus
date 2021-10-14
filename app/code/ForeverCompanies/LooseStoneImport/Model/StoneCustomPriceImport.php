@@ -158,12 +158,18 @@ class StoneCustomPriceImport
                         }
                     }
                     $product->save();
+
+                    echo "price = " . $product->getPrice() . " ... ";
                     echo "PRODUCT SAVED\n";
 
                     $count++;
 
                     // log success entry
                     $this->stoneLog($product, $csvRow, $this->logActionSuccess);
+
+                    unset($product);
+
+
                 } else { // else new product, throw error
                     echo " ERR NEW PRODUCT\n";
                     $product = new DataObject();
