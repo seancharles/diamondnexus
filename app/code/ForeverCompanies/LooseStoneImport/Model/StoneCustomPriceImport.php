@@ -122,6 +122,7 @@ class StoneCustomPriceImport
         foreach ($csvArray as $csvRow) {
             $totalCount++;
             try {
+                echo $csvRow['Certificate #'] . " ... ";
                 // verify all required fields exist in this record, including Certificate #
                 // if they do not exist, log error and proceed to next record
                 if (!$this->checkForRequiredFields($csvRow)) {
@@ -129,6 +130,7 @@ class StoneCustomPriceImport
                     if (isset($csvRow['Certificate #'])) {
                         $product->setSku($csvRow['Certificate #']);
                     }
+                    echo " ERR REQ FIELDS\n";
                     $this->stoneLog($product, $csvRow, $this->logActionError, "Required field invalid.");
                     continue;
                 }
@@ -142,6 +144,7 @@ class StoneCustomPriceImport
                     // if existing product has been disabled assume it has been sold
                     // (or supplier was disabled, which will end up with product being deleted later)
                     if ($product->getStatus() == $this->statusDisabled) {
+                        echo " ERR DISABLED\n";
                         unset($productId);
                         unset($product);
                         continue;
@@ -151,15 +154,18 @@ class StoneCustomPriceImport
                     foreach ($csvRow as $csvKey => $csvVal) {
                         if (isset($this->csvHeaderMap[$csvKey]) && trim($this->csvHeaderMap[$csvKey]) != "") {
                             $product->setData($this->csvHeaderMap[$csvKey], $csvVal);
+                            echo $this->csvHeaderMap[$csvKey] . "=" . $csvVal . " ... ";
                         }
                     }
                     $product->save();
+                    echo "PRODUCT SAVED\n";
 
                     $count++;
 
                     // log success entry
                     $this->stoneLog($product, $csvRow, $this->logActionSuccess);
                 } else { // else new product, throw error
+                    echo " ERR NEW PRODUCT\n";
                     $product = new DataObject();
                     if (isset($csvRow['Certificate #'])) {
                         $product->setSku($csvRow['Certificate #']);
@@ -178,6 +184,7 @@ class StoneCustomPriceImport
                 | RemoteServiceUnavailableException | RuntimeException | SecurityViolationException
                 | SerializationException | SessionException | StateException | ValidatorException $e
             ) {
+                echo " ERR FIRST CATCH\n";
                 $product = new DataObject();
                 if (isset($csvRow['Certificate #'])) {
                     $product->setSku($csvRow['Certificate #']);
@@ -189,6 +196,7 @@ class StoneCustomPriceImport
                     $csvRow['Certificate #'] . " not processed. " . $e->getMessage()
                 );
             } catch (Exception $e) {
+                echo " ERR SECOND CATCH\n";
                 $product = new DataObject();
                 if (isset($csvRow['Certificate #'])) {
                     $product->setSku($csvRow['Certificate #']);
