@@ -15,7 +15,7 @@ zone=`aws route53 list-hosted-zones|jq '.[] | .[] | .Id' | sed 's!/hostedzone/!!
 
 for x in `aws route53 list-resource-record-sets --hosted-zone-id $zone --query  "ResourceRecordSets[?Name == 'NGINX.'][ResourceRecords][][].Value" --output text`
 do
-  echo "$x MAG_NAME.diamondnexus.com MAG_NAME-api.diamondnexus.com" >> /etc/hosts
-  echo "$x MAG_NAME.1215diamonds.com MAG_NAME-api.1215diamonds.com" >> /etc/hosts
-  echo "$x MAG_NAME.foreverartisans.com MAG_NAME-api.foreverartisans.com" >> /etc/hosts
+  echo "$x MAG_NAME.diamondnexus.com" >> /etc/hosts
+  echo "$x MAG_NAME.1215diamonds.com" >> /etc/hosts
+  echo "$x MAG_NAME.foreverartisans.com" >> /etc/hosts
 done
