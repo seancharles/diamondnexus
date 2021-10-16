@@ -81,6 +81,11 @@ class OrderFishbowlImport
                 : '';
             $extensionAttributes->setSalesPersonUsername($salesPerson);
         }
+
+        # adding ring with band coupon code handler
+        if ($order->getDiscountDescription() == 'RING WITH BAND') {
+            $order->setCouponCode('RINGWITHBAND');
+        }
         $order->setExtensionAttributes($extensionAttributes);
 
         return $order;
