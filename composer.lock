@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6211768e544b8ac3f50767e68a0af45a",
+    "content-hash": "2590554940e749616e89ecf200845044",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -4867,6 +4867,57 @@
                 "library"
             ],
             "time": "2020-01-29T07:08:12+00:00"
+        },
+        {
+            "name": "magefan/module-community",
+            "version": "2.1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magefan/module-community.git",
+                "reference": "2a35a3884fd38c755a69aaaab085f68157fa27ad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magefan/module-community/zipball/2a35a3884fd38c755a69aaaab085f68157fa27ad",
+                "reference": "2a35a3884fd38c755a69aaaab085f68157fa27ad",
+                "shasum": ""
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Magefan\\Community\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "time": "2021-10-12T11:13:29+00:00"
+        },
+        {
+            "name": "magefan/module-zero-downtime-deploy",
+            "version": "2.0.6",
+            "dist": {
+                "type": "zip",
+                "url": "https://qayqka54N3UsNEmmpjvTrZgbf5Ee7gLM:46eslKj7oNA6vyFkFCK8KaL2vi6CPukY@magefan.com/repo/packages/download/package/magefan-module-zero-downtime-deploy/version/2.0.6/"
+            },
+            "require": {
+                "magefan/module-community": ">=2.1.4"
+            },
+            "type": "magento2-module",
+            "extra": {
+                "patches_applied": {
+                    "Fix Zero Downtime": "./app/code/ForeverCompanies/CustomAdmin/Setup/Patch/zero-down-time.patch"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Magefan\\ZeroDowntimeDeploy\\": ""
+                },
+                "files": [
+                    "registration.php"
+                ]
+            }
         },
         {
             "name": "magento/adobe-ims",
@@ -28691,6 +28742,7 @@
                     "type": "github"
                 }
             ],
+            "abandoned": true,
             "time": "2020-09-28T06:45:17+00:00"
         },
         {
