@@ -15,8 +15,9 @@ $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 $carrierGroupHelper = $objectManager->create('ShipperHQ\Shipper\Helper\CarrierGroup');
 
 $shippingDetail = $carrierGroupHelper->getOrderCarrierGroupInfo($block->getOrderId());
+
 ?>
 
-<?php if (isset($shippingDetail['delivery_date']) === true): ?>
-    <?=date("D, M j", strtotime($shippingDetail['delivery_date']))?>
+<?php if (isset($shippingDetail[0]['delivery_date']) === true): ?>
+    <?=date("D, M j", strtotime($shippingDetail[0]['delivery_date']))?>
 <?php endif; ?>
