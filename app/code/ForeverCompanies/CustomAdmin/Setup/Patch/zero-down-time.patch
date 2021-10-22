@@ -1,0 +1,11 @@
+--- Model/Deploy.php	2021-08-27 19:00:59.009690045 -0500
++++ Model/Deploy.php	2021-08-27 19:00:59.009690045 -0500
+@@ -434,7 +434,7 @@ class Deploy
+             unset($envContent['cache']);
+             $changed = true;
+         }
+-        if (isset($envContent['session']) && $envContent['session']['save'] != 'files') {
++        if (isset($envContent['session']) && isset($envContent['session']['save']) && $envContent['session']['save'] != 'files') {
+             $envContent['session']['save'] = 'files';
+             $changed = true;
+         }

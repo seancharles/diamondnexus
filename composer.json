@@ -13,6 +13,8 @@
         "cweagans/composer-patches": "^1.7",
         "fooman/printorderpdf-m2": "^3.3",
         "lcobucci/jwt": "~3.4.2",
+        "magefan/module-community": "^2.1",
+        "magefan/module-zero-downtime-deploy": "^2.0.6",
         "magento/composer-root-update-plugin": "~1.0",
         "magento/data-migration-tool": "2.3.4",
         "magento/product-enterprise-edition": "2.4.1",
@@ -87,6 +89,10 @@
         "signifydmage2": {
             "type": "git",
             "url": "https://github.com/signifyd/magento2.git"
+        },
+        "magefan-zdd-m2": {
+            "type": "composer",
+            "url": "https://qayqka54N3UsNEmmpjvTrZgbf5Ee7gLM:46eslKj7oNA6vyFkFCK8KaL2vi6CPukY@magefan.com/repo/"
         }
     },
     "extra": {
@@ -110,6 +116,9 @@
             },
             "shipperhq/module-shipper": {
                 "Fix Paypal Checkout": "./app/code/ForeverCompanies/CustomAdmin/Setup/Patch/shipperhq.patch"
+            },
+            "magefan/module-zero-downtime-deploy": {
+                "Fix Zero Downtime": "./app/code/ForeverCompanies/CustomAdmin/Setup/Patch/zero-down-time.patch"
             },
             "magento/module-inventory-shipping-admin-ui": {
                 "Fix Allocated Resouces Bug": "./app/code/ForeverCompanies/CustomAdmin/Setup/Patch/allocatedsources.patch"
