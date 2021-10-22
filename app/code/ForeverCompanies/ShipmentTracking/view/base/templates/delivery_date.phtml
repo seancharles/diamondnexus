@@ -1,12 +1,23 @@
-<?php 
+<?php
+/**
+ * Delivery date template
+ *
+ * Template is used to include a delivery date in order/shipment emails. The template pulls the order from the related
+ * order/shipments and then uses the shipperHQ carrier group helper to pull the delivery date. The template doesn't
+ * print a delivery date if none is found.
+ *
+ * To include in email use the following:
+ * {{block class="Magento\Framework\View\Element\Template" template="ForeverCompanies_ShipmentTracking::delivery_date.phtml" order_id=$order.entity_id}}
+ *
+ */
 
 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-$orderInterface = $objectManager->create('Magento\Sales\Api\Data\OrderInterface');
-$order = $orderInterface->loadByIncrementId($block->getOrderId());
-$quote = $objectManager->create('Magento\Quote\Model\Quote')->load($order->getQuoteId());
-$foundRate = $quote->getShippingAddress()->getShippingRateByCode( $order->getShippingMethod());
+$carrierGroupHelper = $objectManager->create('ShipperHQ\Shipper\Helper\CarrierGroup');
 
-if ($foundRate) {
-    echo date("D, M j", strtotime($foundRate->getShqDeliveryDate()));
-}
+$shippingDetail = $carrierGroupHelper->getOrderCarrierGroupInfo($block->getOrderId());
+
 ?>
+
+<?php if (isset($shippingDetail[0]['delivery_date']) === true): ?>
+    <?=date("D, M j", strtotime($shippingDetail[0]['delivery_date']))?>
+<?php endif; ?>
