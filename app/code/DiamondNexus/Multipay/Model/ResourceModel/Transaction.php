@@ -16,6 +16,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\Model\ResourceModel\Db\Context;
 use Magento\Sales\Model\Order;
+use Magento\Store\Model\StoreManagerInterface;
 
 class Transaction extends AbstractDb
 {
@@ -50,6 +51,7 @@ class Transaction extends AbstractDb
     protected $customerBalanceFactory;
     protected $customerBalanceHistoryFactory;
     protected $extOrderHelper;
+    protected $storeManager;
 
     public function __construct(
         Context $context,
@@ -59,6 +61,7 @@ class Transaction extends AbstractDb
         ExtOrder $extOrderHelper,
         BalanceFactory $customerBalanceFactory,
         HistoryFactory $customerBalanceHistoryFactory,
+        StoreManagerInterface $storeManager,
         $connectionName = null
     ) {
         parent::__construct($context, $connectionName);
@@ -68,6 +71,7 @@ class Transaction extends AbstractDb
         $this->extOrderHelper = $extOrderHelper;
         $this->customerBalanceFactory = $customerBalanceFactory;
         $this->customerBalanceHistoryFactory = $customerBalanceHistoryFactory;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -154,9 +158,13 @@ class Transaction extends AbstractDb
                 $order->setGrandTotal($newGrandTotal);
                 $order->setTotalDue($newTotalDue);
                 $order->setCustomerBalanceAmount($newCustomerBalanceAmount);
-                
+
+                $storeId = $order->getStoreId();
+                $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
+
                 $customerBalance = $this->customerBalanceFactory->create();
                 $customerBalance
+                    ->setWebsiteId($websiteId)
                     ->setCustomerId($order->getCustomerId())->loadByCustomer()
                     ->setAmountDelta(-$amount)
                     ->setOrder($order)

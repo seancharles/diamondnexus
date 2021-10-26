@@ -5,10 +5,12 @@ namespace DiamondNexus\Multipay\Block\Adminhtml\Order;
 use DiamondNexus\Multipay\Model\ResourceModel\Transaction;
 use Magento\Backend\Block\Template\Context;
 use Magento\CustomerBalance\Model\BalanceFactory;
+use Magento\Store\Model\StoreManagerInterface;
 
 class AddPaymentModalBox extends AbstractPayment
 {
     protected $balanceFactory;
+    protected $storeManager;
 
     /**
      * AddPaymentModalBox constructor.
@@ -20,11 +22,13 @@ class AddPaymentModalBox extends AbstractPayment
         Context $context,
         Transaction $transactionResource,
         BalanceFactory $balanceFactory,
+        StoreManagerInterface $storeManager,
         array $data = []
     ) {
         parent::__construct($context, $transactionResource, $data);
         
         $this->balanceFactory = $balanceFactory;
+        $this->storeManager = $storeManager;
     }
     
         /**
@@ -40,8 +44,13 @@ class AddPaymentModalBox extends AbstractPayment
         $customerId = $this->getData('order')->getCustomerId();
         $totalDue = round($this->getData('order')->getTotalDue(), 2);
         if ($customerId > 0) {
+            $storeId = $this->getData('order')->getStoreId();
+            $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
             $balanceModel = $this->balanceFactory->create();
+            $balanceModel->setWebsiteId($websiteId);
             $balanceModel->setCustomerId($customerId)->loadByCustomer();
+
+            return $balanceModel->getAmount();
 
             if (round($totalDue, 2) < round($balanceModel->getAmount(), 2)) {
                 return $totalDue;
