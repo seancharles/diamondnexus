@@ -336,7 +336,7 @@ class FeedLogic
 		    where
 		        mg.value_id = mgv.value_id
 		    and
-		        mg.value_id = ' . $pid . '
+		        mgv.row_id = ' . $pid . '
 		    and
 		        mgv.store_id IN (0,1)
 		    and
