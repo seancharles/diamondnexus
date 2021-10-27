@@ -9,6 +9,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
 class Paynow extends AbstractPay
 {
@@ -19,11 +20,13 @@ class Paynow extends AbstractPay
         OrderRepositoryInterface $orderRepository,
         Transaction $transaction,
         ManagerInterface $messageManager,
-        BalanceFactory $balanceFactory
+        BalanceFactory $balanceFactory,
+        StoreManagerInterface $storeManager
     ) {
         parent::__construct($context, $orderRepository, $transaction, $messageManager);
 
         $this->balanceFactory = $balanceFactory;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -58,6 +61,7 @@ class Paynow extends AbstractPay
         $totalDue = $this->getData('order')->getTotalDue();
         if ($customerId > 0) {
             $balanceModel = $this->balanceFactory->create();
+            $balanceModel->setWebsiteId($this->storeManager->getStore()->getWebsiteId());
             $balanceModel->setCustomerId($customerId)->loadByCustomer();
 
             if (round($totalDue, 2) < round($balanceModel->getAmount(), 2)) {
