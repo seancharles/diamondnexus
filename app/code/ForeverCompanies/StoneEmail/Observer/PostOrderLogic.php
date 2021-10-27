@@ -132,12 +132,13 @@ class PostOrderLogic implements ObserverInterface
 
                 if (is_array($supplierEmail)) {
                     foreach ($supplierEmail as $suppEmail) {
-                        $this->mailHelper->addTo($suppEmail, $supplier);
+                        $this->mailHelper->addTo(trim($suppEmail));
                     }
                 } else {
-                    $this->mailHelper->addTo($supplierEmail, $supplier);
+                    $this->mailHelper->addTo(trim($supplierEmail));
                 }
                 $this->mailHelper->setSubject("Notice of Diamond Sale. Stock # " . $product->getSku());
+                $this->mailHelper->addCc('fulfillment@forevercompanies.com');
                 $this->mailHelper->setIsHtml(true);
                 $this->mailHelper->setBody($html);
                 $this->mailHelper->send();
