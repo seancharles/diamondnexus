@@ -31,32 +31,25 @@ use ShipperHQ\Shipper\Model\ResourceModel\Order\GridDetail;
 
 class Order extends AdminOrder implements HttpPostActionInterface
 {
-    /**
-     * Changes ACL Resource Id
-     */
     const ADMIN_RESOURCE = 'Magento_Sales::hold';
-
-    /**
-     * @var GridDetail
-     */
     protected $shipperResourceModel;
-
-    /**
-     * @var HistoryFactory
-     */
     protected $orderHistoryFactory;
-
-    /**
-     * @var ExtOrder
-     */
     protected $extOrder;
-
-    /**
-     * @var QueueFactory
-     */
     protected $queueFactory;
-    
     protected $jsonEncoder;
+    protected $shipperDetailResourceModel;
+    protected $shipperGridDetailResourceModel;
+    protected $connection;
+    protected $orderDetailTable;
+    protected $orderGridDetailTable;
+    protected $dispatchTimestamp;
+    protected $deliveryTimestamp;
+    protected $shippingPrice;
+    protected $shippingMethod;
+    protected $carrierGroupDetail = null;
+    protected $shippingCarrierCode;
+    protected $shippingMethodCode;
+    protected $orderId;
 
     /**
      * Order constructor.
@@ -122,6 +115,8 @@ class Order extends AdminOrder implements HttpPostActionInterface
      */
     public function execute()
     {
+        $changes = [];
+
         $resultRedirect = $this->resultRedirectFactory->create();
 
         $order = $this->_initOrder();
@@ -129,57 +124,60 @@ class Order extends AdminOrder implements HttpPostActionInterface
             /** @var Http $http */
             $http = $this->getRequest();
             $post = $http->getPostValue();
-            $dispatchDate = $post['dispatch_date'];
-            $deliveryDate = $post['delivery_date'];
-            if ((strtotime($dispatchDate) > strtotime($deliveryDate))) {
+            $dispatchDate = filter_var($post['dispatch_date'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $deliveryDate = filter_var($post['delivery_date'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $this->dispatchTimestamp = strtotime($dispatchDate);
+            $this->deliveryTimestamp = strtotime($deliveryDate);
+            if (strtotime($dispatchDate) > strtotime($deliveryDate)) {
                 $this->messageManager->addErrorMessage('Dispatch date must be before Delivery date!');
+            } elseif (strtotime($dispatchDate) == 0 && strtotime($deliveryDate) == 0) {
+                $this->messageManager->addErrorMessage('Delivery dates must be specified!');
             } else {
-                $connection = $this->shipperDetailResourceModel->getConnection();
-                $select = $connection->select()->from($this->shipperDetailResourceModel->getMainTable())
-                    ->where('order_id = ?', $order->getEntityId())
-                    ->order('id desc')
-                    ->limit(1);
-                $data = $connection->fetchRow($select);
-                
-                $changes = [];
-                
-                if ($data != false) {
-                    if ($data['dispatch_date'] != $dispatchDate) {
+                $this->connection = $this->shipperDetailResourceModel->getConnection();
+                $this->orderDetailTable = $this->connection->getTableName("shipperhq_order_detail");
+                $this->orderGridDetailTable = $this->connection->getTableName("shipperhq_order_detail_grid");
+                $this->orderId = $order->getId();
+                $this->shippingPrice = $order->getShippingAmount();
+                $this->shippingMethod = $order->getShippingMethod();
+                $aMethodData = explode("_", $this->shippingMethod);
+
+                $this->shippingCarrierCode = $aMethodData[0];
+                $this->shippingMethodCode = $aMethodData[1];
+
+                $orderDetail = $this->getOrderDetail();
+                $orderGridDetail = $this->getOrderGridDetail();
+
+                if (isset($orderDetail[0]) === true) {
+                    if (isset($orderDetail[0]['carrier_group_detail']) === true) {
+                        $this->carrierGroupDetail = $this->jsonEncoder->unserialize($orderDetail[0]['carrier_group_detail']);
+                    }
+                    if ($orderDetail[0]['dispatch_date'] != $dispatchDate) {
                         $changes['dispatch_date'] = $dispatchDate;
                     }
-                    if ($data['delivery_date'] != $deliveryDate) {
+                    if ($orderDetail[0]['delivery_date'] != $deliveryDate) {
                         $changes['delivery_date'] = $deliveryDate;
                     }
+                } else {
+                    $changes['dispatch_date'] = $dispatchDate;
+                    $changes['delivery_date'] = $deliveryDate;
                 }
-                
-                if(count($changes) > 0) {
+
+                if (count($changes) > 0) {
+
                     $this->messageManager->addSuccess('Delivery dates have been updated!');
 
-                    // update the carrier block on the order detail
-                    $carrierGroupDetail = json_decode($data['carrier_group_detail']);
-                    
-                    $carrierGroupDetail[0]->delivery_date = date('D, M d', strtotime($deliveryDate));
-                    $carrierGroupDetail[0]->dispatch_date = date('D, M d', strtotime($dispatchDate));
-                    
-                    $this->shipperDetailResourceModel->getConnection()->update(
-                        $this->shipperDetailResourceModel->getMainTable(),
-                        ['carrier_group_detail' => $this->jsonEncoder->serialize($carrierGroupDetail)],
-                        'order_id = ' . $order->getEntityId()
-                    );
-                    
-                    // update detail record
-                    $this->shipperDetailResourceModel->getConnection()->update(
-                        $this->shipperDetailResourceModel->getMainTable(),
-                        $changes,
-                        'order_id = ' . $order->getEntityId()
-                    );
-                    
-                    // update grid record
-                    $this->shipperGridDetailResourceModel->getConnection()->update(
-                        $this->shipperGridDetailResourceModel->getMainTable(),
-                        $changes,
-                        'order_id = ' . $order->getEntityId()
-                    );
+                    if (isset($orderDetail[0]) === true) {
+                        $this->updateOrderDetail();
+                    } else {
+                        $this->insertOrderDetail();
+                    }
+
+                    if (isset($orderGridDetail[0]) === true) {
+                        $this->updateOrderGridDetail();
+                    } else {
+                        $this->insertOrderGridDetail();
+                    }
+
                     $this->extOrder->createNewExtSalesOrder($order->getEntityId(), array_keys($changes));
 
                     // insert entry to queue
@@ -201,33 +199,134 @@ class Order extends AdminOrder implements HttpPostActionInterface
         return $resultRedirect;
     }
     
-    protected function addUpdateComment($order, $changes) {
-       $comment = "Delivery dates updated: ";
+    protected function addUpdateComment($order, $changes)
+    {
+        $comment = "Delivery dates updated: ";
        
-       if (isset($changes['dispatch_date']) === true) {
-           $comment .= " shipping " . date("F j, Y", strtotime($changes['dispatch_date'])) . " ";
-       }
+        if (isset($changes['dispatch_date']) === true) {
+            $comment .= " shipping " . date("F j, Y", strtotime($changes['dispatch_date'])) . " ";
+        }
        
-       if (isset($changes['delivery_date']) === true) {
-           $comment .= " estimated delivery on " . date("F j, Y", strtotime($changes['delivery_date']));
-       }
-       
-       try {
-           if ($order->canComment()) {
-               $history = $this->orderHistoryFactory->create()
+        if (isset($changes['delivery_date']) === true) {
+            $comment .= " estimated delivery on " . date("F j, Y", strtotime($changes['delivery_date']));
+        }
+
+        try {
+            if ($order->canComment()) {
+                $history = $this->orderHistoryFactory->create()
                    ->setEntityName(\Magento\Sales\Model\Order::ENTITY)
                    ->setComment(
                        __('%1.', $comment)
                    );
 
-               $history->setIsCustomerNotified(false)
+                $history->setIsCustomerNotified(false)
                        ->setIsVisibleOnFront(false);
+                $order->addStatusHistory($history);
+                $this->orderRepository->save($order);
+            }
+        } catch (NoSuchEntityException $exception) {
+            $this->logger->error($exception->getMessage());
+        }
+    }
 
-               $order->addStatusHistory($history);
-               $this->orderRepository->save($order);
-           }
-       } catch (NoSuchEntityException $exception) {
-           $this->logger->error($exception->getMessage());
-       }
+    protected function getOrderGridDetail(): array
+    {
+        return $this->connection->fetchAll("SELECT id, dispatch_date, delivery_date FROM {$this->orderGridDetailTable} WHERE order_id = '" . (int) $this->orderId . "';");
+    }
+
+    protected function insertOrderGridDetail()
+    {
+        $this->connection->query("INSERT INTO
+                {$this->orderGridDetailTable}
+            SET
+                order_id = '" . (int) $this->orderId . "',
+                carrier_group = 'Forever Companies',
+                dispatch_date = '" . $this->getFormattedDate($this->dispatchTimestamp) . "',
+                delivery_date = '" . $this->getFormattedDate($this->deliveryTimestamp) . "';");
+    }
+
+    protected function updateOrderGridDetail()
+    {
+        $this->connection->query("UPDATE
+                {$this->orderGridDetailTable}
+            SET
+                carrier_group = 'Forever Companies',
+                dispatch_date = '" . $this->getFormattedDate($this->dispatchTimestamp) . "',
+                delivery_date = '" . $this->getFormattedDate($this->deliveryTimestamp) . "'
+            WHERE
+                order_id = '" . (int) $this->orderId . "';");
+    }
+
+    protected function getOrderDetail(): array
+    {
+        return $this->connection->fetchAll("SELECT id, dispatch_date, delivery_date, carrier_group_detail FROM {$this->orderDetailTable} WHERE order_id = '" . (int) $this->orderId . "';");
+    }
+
+    protected function getCarrierGroupData($field = null, $default = null)
+    {
+        if (isset($this->carrierGroupDetail[$field]) === true) {
+            return $this->carrierGroupDetail[$field];
+        } else {
+            return $default;
+        }
+    }
+
+    protected function insertOrderDetail()
+    {
+        $this->connection->query("INSERT INTO
+                {$this->orderDetailTable}
+            SET
+                order_id = '" . (int) $this->orderId . "',
+                dispatch_date = '" . $this->getFormattedDate($this->dispatchTimestamp) . "',
+                delivery_date = '" . $this->getFormattedDate($this->deliveryTimestamp) . "',
+                carrier_group_detail = '" . '[{
+                    "checkoutDescription":"Forever Companies",
+                    "name":"Forever Companies",
+                    "locale":"en-US",
+                    "timezone":"America/Chicago",
+                    "carrierTitle":"' . $this->getCarrierGroupData('carrierTitle', $this->shippingCarrierCode) . '",
+                    "carrierName":"' . $this->getCarrierGroupData('carrierName', $this->shippingCarrierCode) . '",
+                    "methodTitle":"' . $this->getCarrierGroupData('methodTitle',$this->shippingMethodCode) . '",
+                    "price":"' . $this->shippingPrice . '",
+                    "hideNotifications":false,
+                    "code":"' . $this->getCarrierGroupData('code', $this->shippingMethod) . '",
+                    "delivery_date":"' . $this->getTextFormattedDate($this->deliveryTimestamp) . '",
+                    "dispatch_date":"' . $this->getTextFormattedDate($this->dispatchTimestamp) . '"
+                }]' . "';");
+    }
+
+    protected function updateOrderDetail()
+    {
+        $this->connection->query("UPDATE
+                {$this->orderDetailTable}
+            SET
+                dispatch_date = '" . $this->getFormattedDate($this->dispatchTimestamp) . "',
+                delivery_date = '" . $this->getFormattedDate($this->deliveryTimestamp) . "',
+                carrier_group_detail = '" . '[{
+                    "checkoutDescription":"Forever Companies",
+                    "name":"Forever Companies",
+                    "locale":"en-US",
+                    "timezone":"America/Chicago",
+                    "carrierTitle":"' . $this->getCarrierGroupData('carrierTitle', 'flatrate') . '",
+                    "carrierName":"' . $this->getCarrierGroupData('carrierName', 'flatrate') . '",
+                    "methodTitle":"' . $this->getCarrierGroupData('methodTitle','flatrate') . '",
+                    "price":"' . $this->shippingPrice . '",
+                    "hideNotifications":false,
+                    "code":"' . $this->getCarrierGroupData('code', 'flatrate_flatrate') . '",
+                    "delivery_date":"' . $this->getTextFormattedDate($this->deliveryTimestamp) . '",
+                    "dispatch_date":"' . $this->getTextFormattedDate($this->dispatchTimestamp) . '"
+                }]' . "'
+            WHERE
+                order_id = '" . (int) $this->orderId . "';");
+    }
+
+    protected function getFormattedDate($time = 0)
+    {
+        return date("Y-m-d", $time);
+    }
+
+    protected function getTextFormattedDate($time = 0)
+    {
+        return date("D, M d", $time);
     }
 }
