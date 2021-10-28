@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Mageplaza
  *
@@ -23,11 +24,13 @@ namespace Forevercompanies\Smtp\Plugin;
 
 use Closure;
 use Exception;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\MailException;
 use Magento\Framework\Mail\EmailMessage;
 use Magento\Framework\Mail\TransportInterface;
 use Magento\Framework\Phrase;
 use Magento\Framework\Registry;
+use Magento\Store\Model\ScopeInterface;
 use Mageplaza\Smtp\Helper\Data;
 use Mageplaza\Smtp\Mail\Rse\Mail;
 use Mageplaza\Smtp\Model\Log;
@@ -47,38 +50,32 @@ class Transport
      * @var int Store Id
      */
     protected $_storeId;
-
     /**
      * @var Mail
      */
     protected $resourceMail;
-
     /**
      * @var LogFactory
      */
     protected $logFactory;
-
     /**
      * @var Registry $registry
      */
     protected $registry;
-
     /**
      * @var Data
      */
     protected $helper;
-
     /**
      * @var LoggerInterface
      */
     protected $logger;
-	
+
     /**
      * @var ScopeConfigInterface
      */
     protected $scopeConfig;
-
-	const XML_PATH_EMAIL_RECIPIENT = 'smtp/developer/developer_mode_email';
+    public const XML_PATH_EMAIL_RECIPIENT = 'smtp/developer/developer_mode_email';
 
     /**
      * Transport constructor.
@@ -88,21 +85,16 @@ class Transport
      * @param Registry $registry
      * @param Data $helper
      * @param LoggerInterface $logger
+     * @param ScopeConfigInterface $scopeConfig
      */
-    public function __construct(
-        Mail $resourceMail,
-        LogFactory $logFactory,
-        Registry $registry,
-        Data $helper,
-        LoggerInterface $logger,
-		\Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-    ) {
+    public function __construct(Mail $resourceMail, LogFactory $logFactory, Registry $registry, Data $helper, LoggerInterface $logger, ScopeConfigInterface $scopeConfig)
+    {
         $this->resourceMail = $resourceMail;
         $this->logFactory   = $logFactory;
         $this->registry     = $registry;
         $this->helper       = $helper;
         $this->logger       = $logger;
-		$this->scopeConfig  = $scopeConfig;
+        $this->scopeConfig  = $scopeConfig;
     }
 
     /**
@@ -112,13 +104,10 @@ class Transport
      * @throws MailException
      * @throws Zend_Exception
      */
-    public function aroundSendMessage(
-        TransportInterface $subject,
-        Closure $proceed
-    ) {
+    public function aroundSendMessage(TransportInterface $subject, Closure $proceed)
+    {
         $this->_storeId = $this->registry->registry('mp_smtp_store_id');
         $message        = $this->getMessage($subject);
-
         if ($this->resourceMail->isModuleEnable($this->_storeId) && $message) {
             if ($this->helper->versionCompare('2.2.8')) {
                 $message = Message::fromString($message->getRawMessage())->setEncoding('utf-8');
@@ -134,17 +123,19 @@ class Transport
                         }
                         $transport->send($message);
                     } else {
-						// get email address from system config
-						$toEmail = $this->scopeConfig->getValue(
-							self::XML_PATH_EMAIL_RECIPIENT,
-							\Magento\Store\Model\ScopeInterface::SCOPE_STORE
-						);
-						
-						if(strlen($toEmail) > 0) {
-							$message->setTo($toEmail,"magento-dev");
-							$transport->send($message);
-						}
-					}
+                        // get email address from system config
+                        $toEmail = $this->scopeConfig->getValue(self::XML_PATH_EMAIL_RECIPIENT, ScopeInterface::SCOPE_STORE);
+
+                        if (strlen($toEmail) > 0) {
+                            $message->setTo($toEmail, "magento-dev");
+                            // remove the cc and bcc headers when we are in debug mode
+                            $headers = $message->getHeaders();
+                            $headers->removeHeader('cc');
+                            $headers->removeHeader('bcc');
+                            $message->setHeaders($headers);
+                            $transport->send($message);
+                        }
+                    }
                     if ($this->helper->versionCompare('2.2.8')) {
                         $messageTmp = $this->getMessage($subject);
                         if ($messageTmp && is_object($messageTmp)) {
@@ -185,7 +176,6 @@ class Transport
         }
 
         $message->setAccessible(true);
-
         return $message->getValue($transport);
     }
 
@@ -194,7 +184,7 @@ class Transport
      *
      * @return bool
      */
-    public function validateBlacklist($message)
+    public function validateBlacklist($message): bool
     {
         $result = false;
         if ($this->helper->isTestEmail()) {
@@ -230,7 +220,6 @@ class Transport
     protected function emailLog($message, $status = true)
     {
         if ($this->resourceMail->isEnableEmailLog($this->_storeId)) {
-            /** @var Log $log */
             $log = $this->logFactory->create();
             try {
                 $log->saveLog($message, $status);
@@ -250,7 +239,6 @@ class Transport
     {
         try {
             $quote = $this->registry->registry('smtp_abandoned_cart');
-
             if ($quote) {
                 $ids = $quote->getMpSmtpAceLogIds() ?
                     $quote->getMpSmtpAceLogIds() . ',' . $log->getId() : $log->getId();
