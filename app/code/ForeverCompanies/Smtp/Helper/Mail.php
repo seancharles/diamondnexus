@@ -54,9 +54,9 @@ class Mail extends AbstractHelper
 
     protected $subject;
     protected $body;
-    protected array $to;
-    protected array $cc;
-    protected array $from;
+    protected array $to = [];
+    protected array $cc = [];
+    protected array $from = [];
     protected $store;
 
 
