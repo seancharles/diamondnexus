@@ -106,8 +106,8 @@ class PostOrderLogic implements ObserverInterface
                     . $product->getCertUrlKey() . '</a><br /><br />';
                 $html .= "Thank You!<br /><br />";
                 $html .= $storeName . " Fulfillment Team<br /><br />";
-                $html .= '<a href="mailto:loosestones@forevercompanies.com">
-                    loosestones@forevercompanies.com</a><br /><br />';
+                $html .= '<a href="mailto:fulfillment@forevercompanies.com">
+                    fulfillment@forevercompanies.com</a><br /><br />';
                 $html .= $storeName . " is a subsidiary of Lautrec Corporation, doing business as Forever Companies.";
                 if (strpos($supplierEmail, ',') !== false) {
                     $supplierEmail = explode(",", $supplierEmail);
