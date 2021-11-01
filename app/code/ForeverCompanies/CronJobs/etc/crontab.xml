@@ -3,25 +3,25 @@
 	
     <group id="default">
         <job name="forever_build_feeds_early" instance="ForeverCompanies\CronJobs\Cron\BuildFeedsEarly" method="execute">
-            <schedule>00 9 * * *</schedule>
+            <schedule>0 9 * * *</schedule>
         </job>
     </group>
     
     <group id="default">
         <job name="forever_build_feeds_late" instance="ForeverCompanies\CronJobs\Cron\BuildFeedsLate" method="execute">
-            <schedule>00 18 * * *</schedule>
+            <schedule>0 18 * * *</schedule>
         </job>
     </group>
     
     <group id="default">
         <job name="forever_update_reviews" instance="ForeverCompanies\CronJobs\Cron\UpdateReviews" method="execute">
-            <schedule>00 2 * * *</schedule>
+            <schedule>0 2 * * *</schedule>
         </job>
     </group>
     
     <group id="default">
         <job name="forever_create_reviews" instance="ForeverCompanies\CronJobs\Cron\CreateReviews" method="execute">
-            <schedule>00 2 * * 0</schedule>
+            <schedule>0 2 * * 0</schedule>
         </job>
     </group>
     

@@ -1,14 +1,16 @@
 <?php
+
 namespace ForeverCompanies\CronJobs\Cron;
 
 use ForeverCompanies\CronJobs\Model\FeedLogic;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 
-class BuildFeedsarly
+class BuildFeedsEarly
 {
-    protected $feedModel;
-    protected $scopeConfig;
-    protected $storeScope;
+    protected FeedLogic $feedModel;
+    protected ScopeConfigInterface $scopeConfig;
+    protected string $storeScope;
 
     public function __construct(
         FeedLogic $feed,
@@ -16,7 +18,7 @@ class BuildFeedsarly
     ) {
         $this->feedModel = $feed;
         $this->scopeConfig = $scopeC;
-        $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+        $this->storeScope = ScopeInterface::SCOPE_STORE;
     }
 
     public function execute()
@@ -24,7 +26,7 @@ class BuildFeedsarly
         if (!$this->scopeConfig->getValue('forevercompanies_cron_controls/feed/build_feeds_early', $this->storeScope)) {
             return $this;
         }
-        
+
         // TODO Schedules are currently hard-coded but can be moved into config at a later date.
         $this->feedModel->BuildCsvs(1);
         $this->feedModel->BuildCsvs(12);

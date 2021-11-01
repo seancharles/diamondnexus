@@ -4,12 +4,13 @@ namespace ForeverCompanies\CronJobs\Cron;
 
 use ForeverCompanies\CronJobs\Model\FeedLogic;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 
 class CreateReviews
 {
-    protected $feedModel;
-    protected $scopeConfig;
-    protected $storeScope;
+    protected FeedLogic $feedModel;
+    protected ScopeConfigInterface $scopeConfig;
+    protected string $storeScope;
 
     public function __construct(
         FeedLogic $feed,
@@ -17,7 +18,7 @@ class CreateReviews
     ) {
         $this->feedModel = $feed;
         $this->scopeConfig = $scopeC;
-        $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+        $this->storeScope = ScopeInterface::SCOPE_STORE;
     }
 
     public function execute()
@@ -25,7 +26,7 @@ class CreateReviews
         if (!$this->scopeConfig->getValue('forevercompanies_cron_controls/feed/create_reviews', $this->storeScope)) {
             return $this;
         }
-        
+
         $this->feedModel->updateReviews(1);
     }
 }
