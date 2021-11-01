@@ -4,12 +4,13 @@ namespace ForeverCompanies\CronJobs\Cron;
 
 use ForeverCompanies\CronJobs\Model\FeedLogic;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 
 class UpdateReviews
 {
-    protected $feedModel;
-    protected $scopeConfig;
-    protected $storeScope;
+    protected FeedLogic $feedModel;
+    protected ScopeConfigInterface $scopeConfig;
+    protected string $storeScope;
 
     public function __construct(
         FeedLogic $feed,
@@ -17,7 +18,7 @@ class UpdateReviews
     ) {
         $this->feedModel = $feed;
         $this->scopeConfig = $scopeC;
-        $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+        $this->storeScope = ScopeInterface::SCOPE_STORE;
     }
 
     public function execute()
