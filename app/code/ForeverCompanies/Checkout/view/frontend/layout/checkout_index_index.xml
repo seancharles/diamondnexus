@@ -14,7 +14,7 @@
                                             <item name="children" xsi:type="array">
                                                 <item name="payment" xsi:type="array">
                                                     <item name="children" xsi:type="array">
-                                                        <item name="beforeMethods" xsi:type="array">
+                                                        <item name="afterMethods" xsi:type="array">
                                                             <item name="children" xsi:type="array">
                                                                 <item name="storeCredit" xsi:type="array">
                                                                     <item name="config" xsi:type="array">
