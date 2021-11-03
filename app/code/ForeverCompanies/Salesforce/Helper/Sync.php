@@ -368,15 +368,15 @@ class Sync extends AbstractHelper
                         switch($leadModel->getWebsiteId()) {
                             case "1":
                                 // DN_Lead
-                                $recordTypeId = "0120v000000X2vXAAS";
+                                $recordTypeId = "0121J000001DeHDQA0";
                                 break;
                             case "2":
                                 // FA_Lead
-                                $recordTypeId = "0120v000000X2vcAAC";
+                                $recordTypeId = "0121J000001DeHNQA0";
                                 break;
                             case "3":
                                 // X12Fifteen_Lead
-                                $recordTypeId = "0120v000000X2vSAAS";
+                                $recordTypeId = "0121J000001DeHNQA0";
                                 break;
                             default:
                                 $recordTypeId = '012o0000000y9txAAA';
