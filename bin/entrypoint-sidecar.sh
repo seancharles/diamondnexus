@@ -20,7 +20,7 @@ done
 echo "#!/bin/bash" > ~/cron.sh
 echo "/usr/local/bin/php -d memory_limit=-1 /var/www/magento/bin/magento cron:run 2>&1 >> /var/www/magento/var/log/magento.cron.log" >> ~/cron.sh
 sudo mv /tmp/dns.tmp /etc/hosts
-sudo cat /hoster.sh.template | sed "s/NGINX/$NGINX/g" | sed "s/MAG_NAME/$MAG_NAME/g" | sed "s/CLUSTER_NAME/$MAG_NAME-cluster/g" | sed "s/SERVICE_NAME/$SERVICE_NAME/g" > /tmp/hoster.sh
+sudo cat /hoster.sh.template | sed "s/NGINX/$NGINX/g" | sed "s/MAG_NAME/$MAG_NAME/g" | sed "s/CLUSTER_NAME/$NAMESPACE-cluster/g" | sed "s/SERVICE_NAME/$SERVICE_NAME/g" > /tmp/hoster.sh
 sudo mv /tmp/hoster.sh /hoster.sh
 (crontab -l ; echo "* * * * * bash ~/cron.sh") | sort - | uniq - | crontab -
 (crontab -l ; echo "*/5 * * * * sudo bash /hoster.sh") | sort - | uniq - | crontab -
