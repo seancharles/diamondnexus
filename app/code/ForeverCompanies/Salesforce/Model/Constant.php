@@ -12,7 +12,7 @@ class Constant
     const FORM_MAPPING = [
         8 => 'fa-short',
         9 => 'fa-long',
-        10 => 'fa-long-j',
+        10 => 'fa-long',
         14 => 'tf-short'
     ];
 

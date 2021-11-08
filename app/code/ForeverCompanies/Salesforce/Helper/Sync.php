@@ -376,7 +376,7 @@ class Sync extends AbstractHelper
                                 break;
                             case "3":
                                 // X12Fifteen_Lead
-                                $recordTypeId = "0121J000001DeHNQA0";
+                                $recordTypeId = "0121J000001DeHIQA0";
                                 break;
                             default:
                                 $recordTypeId = '012o0000000y9txAAA';
