@@ -2,18 +2,18 @@
 
 namespace ForeverCompanies\LooseStoneImport\Model;
 
+use Magento\Catalog\Api\Data\ProductAttributeInterface;
 use Magento\Catalog\Model\Product\Action as ProductAction;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ProductFactory;
-use Magento\Eav\Model\Entity\Attribute;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\Collection;
-use Magento\Framework\App\ObjectManager;
+use Magento\Eav\Api\AttributeRepositoryInterface;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Eav\Api\AttributeSetRepositoryInterface;
 use Magento\CatalogInventory\Model\Stock\StockItemRepository;
 use Magento\Framework\DataObject;
+use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\File\Csv;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Io\File;
@@ -41,7 +41,6 @@ use Magento\Framework\Exception\EmailNotConfirmedException;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\IntegrationException;
-use Magento\Framework\Exception\InvalidArgumentException;
 use Magento\Framework\Exception\InvalidEmailOrPasswordException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\MailException;
@@ -55,105 +54,119 @@ use Magento\Framework\Exception\SerializationException;
 use Magento\Framework\Exception\SessionException;
 use Magento\Framework\Exception\StateException;
 use Magento\Framework\Exception\ValidatorException;
+use Magento\Store\Model\ScopeInterface;
+use Zend_Db_Select_Exception;
 
 class StoneImport
 {
+    protected CollectionFactory $productCollectionFactory;
+    protected ProductFactory $productFactory;
+    protected Product $productModel;
+    protected ResourceConnection $resourceConnection;
+    protected AttributeSetRepositoryInterface $attributeSetMod;
+    protected StockItemRepository $stockItemModel;
+    protected string $mediaTmpDir;
+    protected File $file;
+    protected AdapterInterface $connection;
+    protected Producer $producerHelper;
+    protected ProductAction $productAction;
+    protected AttributeRepositoryInterface $eavAttributeRepository;
 
-    protected $storeRepository;
-    protected $storeManager;
-    protected $productCollectionFactory;
-    protected $productFactory;
-    protected $productModel;
-    protected $resourceConnection;
-    protected $attributeSetMod;
-    protected $stockItemModel;
-    protected $mediaTmpDir;
-    protected $file;
-    protected $connection;
-    protected $producerHelper;
-    protected $productAction;
+    protected array $booleanMap;
+    protected array $csvHeaderMap;
+    protected array $clarityMap;
+    protected array $cutGradeMap;
+    protected array $colorMap;
+    protected array $shapeMap;
+    protected array $supplierMap;
+    protected array $onlineMap;
 
-    protected $booleanMap;
-    protected $csvHeaderMap;
-    protected $clarityMap;
-    protected $cutGradeMap;
-    protected $colorMap;
-    protected $shapeMap;
-    protected $supplierMap;
-    protected $onlineMap;
+    protected array $labReportMap;
+    protected array $polishGradeMap;
+    protected array $symmetryGradeMap;
 
-    protected $shapePopMap;
-    protected $shapeAlphaMap;
-    protected $shippingStatusMap;
+    protected array $attributesWithOptions = [
+        'lab_report' => 'labReportMap',
+        'polish_grade' => 'polishGradeMap',
+        'symmetry_grade' => 'symmetryGradeMap'
+    ];
 
-    protected $claritySortMap;
-    protected $cutGradeSortMap;
-    protected $colorSortMap;
+    protected array $shapePopMap;
+    protected array $shapeAlphaMap;
+    protected array $shippingStatusMap;
 
-    protected $csv;
+    protected array $claritySortMap;
+    protected array $cutGradeSortMap;
+    protected array $colorSortMap;
 
-    protected $fileName;
-    protected $requiredFieldsArr;
-    protected $soldProductCollectionFactory;
-    protected $productRepo;
+    protected Csv $csv;
 
-    protected $statusEnabled;
-    protected $statusDisabled;
+    protected string $fileName;
+    protected array $requiredFieldsArr;
+    protected SoldProductCollectionFactory $soldProductCollectionFactory;
+    protected ProductRepository $productRepo;
 
-    protected $supplierStatuses;
+    protected int $statusEnabled;
+    protected int $statusDisabled;
 
-    protected $scopeConfig;
-    protected $storeScope;
+    protected array $supplierStatuses;
 
+    protected ScopeConfigInterface $scopeConfig;
+    protected string $storeScope;
+
+    /**
+     * @throws LocalizedException
+     * @throws FileSystemException
+     */
     public function __construct(
         CollectionFactory $collectionFactory,
-        Product $prod,
-        ProductFactory $prodF,
+        Product $productModel,
+        ProductFactory $productFactory,
         ResourceConnection $resource,
-        AttributeSetRepositoryInterface $attributeSetRepo,
-        StockItemRepository $stockItemRepo,
-        Csv $cs,
+        AttributeSetRepositoryInterface $attributeSetRepositoryInterface,
+        StockItemRepository $stockItemRepository,
+        Csv $csv,
         DirectoryList $directoryList,
-        File $fil,
-        SoldProductCollectionFactory $soldProductColl,
-        ProductRepository $productR,
-        ScopeConfigInterface $scopeC,
-        Producer $produc,
-        ProductAction $productAction
+        File $file,
+        SoldProductCollectionFactory $soldProductCollection,
+        ProductRepository $productRepository,
+        ScopeConfigInterface $scopeConfigInterface,
+        Producer $producer,
+        ProductAction $productAction,
+        AttributeRepositoryInterface $eavAttributeRepository
     ) {
         $this->productCollectionFactory = $collectionFactory;
-        $this->productModel = $prod;
+        $this->productModel = $productModel;
+        $this->productFactory = $productFactory;
         $this->resourceConnection = $resource;
-        $this->attributeSetMod = $attributeSetRepo;
-        $this->stockItemModel = $stockItemRepo;
-        $this->csv = $cs;
-        $this->productFactory = $prodF;
-        $this->file = $fil;
-        $this->soldProductCollectionFactory = $soldProductColl;
-        $this->productRepo = $productR;
-        $this->producerHelper = $produc;
-        $this->productAction = $productAction;
-
+        $this->attributeSetMod = $attributeSetRepositoryInterface;
+        $this->stockItemModel = $stockItemRepository;
+        $this->csv = $csv;
         $this->mediaTmpDir = $directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . 'tmp';
+        $this->file = $file;
+        $this->soldProductCollectionFactory = $soldProductCollection;
+        $this->productRepo = $productRepository;
+        $this->scopeConfig = $scopeConfigInterface;
+        $this->producerHelper = $producer;
+        $this->productAction = $productAction;
+        $this->eavAttributeRepository = $eavAttributeRepository;
+
         $this->file->checkAndCreateFolder($this->mediaTmpDir);
         $this->connection = $resource->getConnection();
-        $this->scopeConfig = $scopeC;
-        $this->storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+
+        $this->storeScope = ScopeInterface::SCOPE_STORE;
 
         $this->csvHeaderMap = array(
             "Product Name" => "name",
             "Certificate #" => "sku",
-            "Lab" => "lab",
             "Weight" => "carat_weight",
             "Length" => "length",
             "Width" => "width",
             "Depth (mm)" => "depth_mm",
-            "Length to Width" => "length_to_width",
-            "Depth %" => "depth_pct",
+            "Length to Width" => "length_width_ratio",
+            "Depth %" => "depth_percent",
             "Measurements" => "measurements",
-            "Table %" => "table_pct",
-            "Polish" => "polish",
-            "Symmetry" => "symmetry",
+            "Table %" => "table_percent",
             "Girdle" => "girdle",
             "Culet" => "culet",
             "Fluorescence" => "fluor",
@@ -207,9 +220,7 @@ class StoneImport
             "Very Good" => "200",
             "Excellent" => "300",
             "Ideal" => "400",
-            "Super Ideal" => "500",
-            // TODO: Remove. Adding to get through import.
-            "G" => ""
+            "Super Ideal" => "500"
         );
 
         $this->colorSortMap = array(
@@ -491,8 +502,6 @@ class StoneImport
             "internalALTR" => "36",
             "bhaktidiamond" => "37",
             "bhakti" => "37"
-            // TODO: Create these attribute options and place their values here.
-            // "bhakti" => ""
         );
 
         $this->onlineMap = [
@@ -506,36 +515,54 @@ class StoneImport
         $this->statusDisabled = Status::STATUS_DISABLED;
 
         $supplierData = $this->connection->fetchAll("SELECT `enabled`, `code` FROM `stones_supplier`");
-
-
         $this->supplierStatuses = array();
         foreach ($supplierData as $supplierD) {
             $this->supplierStatuses[strtolower($supplierD['code'])] = $supplierD['enabled'];
-
             if ($supplierD['code'] == "bhaktidiamond") {
                 $this->supplierStatuses["bhakti"] = $supplierD['enabled'];
-                ;
-            }
-            if ($supplierD['code'] == "diamondfoundry") {
+            } elseif ($supplierD['code'] == "diamondfoundry") {
                 $this->supplierStatuses["foundry"] = $supplierD['enabled'];
-                ;
             } elseif ($supplierD['code'] == "labs") {
                 $this->supplierStatuses["labsdiamond"] = $supplierD['enabled'];
-                ;
             } elseif ($supplierD['code'] == "Fenix") {
                 $this->supplierStatuses["fenix"] = $supplierD['enabled'];
-                ;
             } elseif ($supplierD['code'] == "proudestlegendlimited") {
                 $this->supplierStatuses["proudest"] = $supplierD['enabled'];
-                ;
             } elseif ($supplierD['code'] == "lushdiamonds") {
                 $this->supplierStatuses["lush"] = $supplierD['enabled'];
-                ;
             }
         }
     }
 
-    public function deleteUnsoldDiamonds()
+    private function setAttributeOptionsMap($attributeCode, $mapVar)
+    {
+        // load the attribute
+        $attribute = $this->eavAttributeRepository->get(
+            ProductAttributeInterface::ENTITY_TYPE_CODE,
+            $attributeCode
+        );
+
+        // get the option labels and values
+        $options = [];
+        $attributeOptions = $attribute->getSource()->getAllOptions(false);
+        foreach ($attributeOptions as $option) {
+            $options[strtolower(trim($option['label']))] = $option['value'];
+        }
+
+        // set the class map variable
+        $this->${$mapVar} = $options;
+
+        unset($attribute);
+        unset($options);
+        unset($attributeOptions);
+    }
+
+    /**
+     * @throws NoSuchEntityException
+     * @throws Zend_Db_Select_Exception
+     * @throws StateException
+     */
+    public function deleteUnsoldDiamonds(): StoneImport
     {
         $soldColl = $this->soldProductCollectionFactory->create()
             ->addAttributeToSelect('sku')
@@ -571,6 +598,11 @@ class StoneImport
             $this->updateCsv();
         }
 
+        // get the options for our variables
+        foreach ($this->attributesWithOptions as $attributeCode => $mapVar) {
+            $this->setAttributeOptionsMap($attributeCode, $mapVar);
+        }
+
         // generate array of data to be processed from csv file
         $csvArray = $this->buildArray();
 
@@ -582,12 +614,12 @@ class StoneImport
             try {
                 // verify all required fields exist in this record, including Certificate #
                 // if they do not exist, log error and proceed to next record
-                if (!$this->_checkForRequiredFields($csvArr)) {
+                if (!$this->checkForRequiredFields($csvArr)) {
                     $product = new DataObject();
                     if (isset($csvArr['Certificate #'])) {
                         $product->setSku($csvArr['Certificate #']);
                     }
-                    $this->_stoneLog($product, $csvArr, "error", "Required field invalid.");
+                    $this->stoneLog($product, $csvArr, "error", "Required field invalid.");
                     continue;
                 }
 
@@ -606,11 +638,11 @@ class StoneImport
                     }
 
                     // apply all data from csv to this product and save it
-                    $success = $this->_applyCsvRowToProduct($product, $csvArr);
+                    $success = $this->applyCsvRowToProduct($product, $csvArr);
 
                     // if save was successful, enter an 'update' log entry
                     if ($success) {
-                        $this->_stoneLog($product, $csvArr, "update");
+                        $this->stoneLog($product, $csvArr, "update");
                     }
                 } else { // else new product
                     $product = $this->productFactory->create();
@@ -641,7 +673,7 @@ class StoneImport
                     false
                     );
                     } catch (\Magento\Framework\Exception\LocalizedException $e) {
-                    $this->_stoneLog(
+                    $this->stoneLog(
                     $product,
                     $csvArr,
                     "error",
@@ -650,7 +682,7 @@ class StoneImport
                     //continue;
                     }
                     } else {
-                    $this->_stoneLog(
+                    $this->stoneLog(
                     $product,
                     $csvArr,
                     "error",
@@ -665,13 +697,11 @@ class StoneImport
                     $product->setAttributeSetId(31);
                     $product->setSku($csvArr['Certificate #']);
                     $product->setStatus($this->statusEnabled);
-
                     $product->setVisibility(1);
 
-                    // From the admin, the reps can use a diamond on a 1215 or FA order.  On the frontend we do not display diamonds on FA.
-                    // need to assign visibility for each store somehow.
+                    // From the admin, the reps can use a diamond on a 1215 or FA order. On the frontend we do not
+                    // display diamonds on FA. Need to assign visibility for each store somehow.
                     $product->setWebsiteIds(array(2, 3));
-
                     $product->setStockData(
                         array(
                             'use_config_manage_stock' => 0,
@@ -685,10 +715,10 @@ class StoneImport
 
                     $product->setTaxClassId(2);
 
-                    $success = $this->_applyCsvRowToProduct($product, $csvArr);
+                    $success = $this->applyCsvRowToProduct($product, $csvArr);
 
                     if ($success) {
-                        $this->_stoneLog($product, $csvArr, "add");
+                        $this->stoneLog($product, $csvArr, "add");
                         // 1215 storefront visibility.
                         // The original code below was calling a second ->save() function which is taking 3+ minutes
                         // to run. To save time, instead of calling another save, we are logging the id's in an array
@@ -718,7 +748,7 @@ class StoneImport
                 if (isset($csvArr['Certificate #'])) {
                     $product->setSku($csvArr['Certificate #']);
                 }
-                $this->_stoneLog(
+                $this->stoneLog(
                     $product,
                     $csvArr,
                     "error",
@@ -729,25 +759,25 @@ class StoneImport
                 if (isset($csvArr['Certificate #'])) {
                     $product->setSku($csvArr['Certificate #']);
                 }
-                $this->_stoneLog(
+                $this->stoneLog(
                     $product,
                     $csvArr,
                     "error",
                     $csvArr['Certificate #'] . " not processed. " . $e->getMessage()
                 );
             }
-        } // end foreach ($csvArray as $csvArr) {
+        } // end foreach ($csvArray as $csvArr)
 
         // set tf visibility
         if (!empty($idsToSetVisibility)) {
             $this->productAction->updateAttributes($idsToSetVisibility, array('visibility' => 4), 12);
         }
 
-        $this->_cleanLogs();
+        $this->cleanLogs();
         $this->producerHelper->flushElderCache();
     }
 
-    protected function _applyCsvRowToProduct($product, $csvArr)
+    protected function applyCsvRowToProduct($product, $csvArr): bool
     {
         $product->setFcProductType('3569'); //diamond
 
@@ -761,6 +791,18 @@ class StoneImport
         $product->setShape($this->shapeMap[$csvArr['Shape Name']]);
         $product->setSupplier(strtolower($this->supplierMap[strtolower($csvArr['Supplier'])]));
 
+        if (array_key_exists(strtolower(trim($csvArr['Lab'])), $this->labReportMap)) {
+            $product->setLabReport($this->labReportMap[strtolower(trim($csvArr['Lab']))]);
+        }
+
+        if (array_key_exists(strtolower(trim($csvArr['Polish'])), $this->polishGradeMap)) {
+            $product->setPolishGrade($this->polishGradeMap[strtolower(trim($csvArr['Polish']))]);
+        }
+
+        if (array_key_exists(strtolower(trim($csvArr['Symmetry'])), $this->symmetryGradeMap)) {
+            $product->setSymmetryGrade($this->symmetryGradeMap[strtolower(trim($csvArr['Symmetry']))]);
+        }
+
         if (array_key_exists(strtolower($csvArr['Online']), $this->onlineMap)) {
             $product->setOnline($this->onlineMap[strtolower($csvArr['Online'])]);
         }
@@ -771,9 +813,9 @@ class StoneImport
         }
 
         if (isset($this->supplierStatuses[strtolower($csvArr['Supplier'])])) {
-            $this->_handleStatus($csvArr['Supplier']);
+            $this->handleStatus($csvArr['Supplier']);
         } else {
-            $this->_stoneLog($product, $csvArr, "error", "Supplier does not exist - " . $csvArr['Supplier']);
+            $this->stoneLog($product, $csvArr, "error", "Supplier does not exist - " . $csvArr['Supplier']);
             unset($product);
             unset($csvArr);
             return false;
@@ -817,7 +859,7 @@ class StoneImport
         return true;
     }
 
-    public function buildArray()
+    public function buildArray(): array
     {
         $arr = array();
         $fields = array();
@@ -839,7 +881,7 @@ class StoneImport
         return $arr;
     }
 
-    protected function _checkForRequiredFields($arr)
+    protected function checkForRequiredFields($arr)
     {
         foreach ($this->requiredFieldsArr as $req) {
             if (!isset($arr[$req]) || trim($arr[$req]) == "" || $arr[$req] == "Nan") {
@@ -849,7 +891,7 @@ class StoneImport
         return true;
     }
 
-    protected function _cleanLogs()
+    protected function cleanLogs()
     {
         $query = "DELETE FROM stone_log
         WHERE log_date < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 90 DAY))";
@@ -857,35 +899,12 @@ class StoneImport
         $this->connection->query($query);
     }
 
-    protected function _getHash($csvArr)
+    protected function getHash($csvArr)
     {
         return hash('sha1', json_encode($csvArr));
     }
 
-    protected function _getMapForAttributevfdsfvsdsfdsdfsdsfwADS()
-    {
-        $attributeCode = 'supplier';
-        $entityType = 'catalog_product';
-
-        $objectManager = ObjectManager::getInstance();
-
-        $attributeInfo = $objectManager->get(Attribute::class)
-            ->loadByCode($entityType, $attributeCode);
-
-        $attributeId = $attributeInfo->getAttributeId();
-        $attributeOptionAll = $objectManager->get(Collection::class)
-            ->setPositionOrder('asc')
-            ->setAttributeFilter($attributeId)
-            ->setStoreFilter()
-            ->load();
-
-        foreach ($attributeOptionAll->getData() as $attributeOption) {
-            echo '"' . $attributeOption['default_value'] . '" => "' . $attributeOption['option_id'] . '",<br />';
-        }
-        die;
-    }
-
-    protected function _handleStatus($supplier)
+    protected function handleStatus($supplier)
     {
         if ($this->supplierStatuses[strtolower($supplier)] == 0) {
             return $this->statusDisabled;
@@ -894,18 +913,18 @@ class StoneImport
         return $this->statusEnabled;
     }
 
-    protected function _stoneLog($product, $csvArr, $action, $error = null)
+    protected function stoneLog($product, $csvArr, $action, $error = null)
     {
         if ($error) {
             $query = 'INSERT INTO stone_log(sku, log_action, payload, payload_hash, errors)
                 VALUES("' . $product->getSku() . '", "' . $action . '", "' . addslashes(
                     json_encode($csvArr)
-                ) . '", "' . $this->_getHash($csvArr) . '", "' . $error . '")';
+                ) . '", "' . $this->getHash($csvArr) . '", "' . $error . '")';
         } else {
             $query = 'INSERT INTO stone_log(sku, log_action, payload, payload_hash)
                 VALUES("' . $product->getSku() . '", "' . $action . '", "' . addslashes(
                     json_encode($csvArr)
-                ) . '", "' . $this->_getHash($csvArr) . '")';
+                ) . '", "' . $this->getHash($csvArr) . '")';
         }
         $this->connection->query($query);
     }
