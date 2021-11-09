@@ -19,7 +19,7 @@ class Constant
     const WEBSITE_MAPPING = [
         1 => 'DN',
         2 => 'FA',
-        3 => 'TF'
+        3 => '1215'
     ];
 
     const LEAD_FIELD_MAPPING = [
