@@ -8,6 +8,7 @@ use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ProductFactory;
+use Magento\Eav\Api\AttributeRepositoryInterface;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Eav\Api\AttributeSetRepositoryInterface;
 use Magento\CatalogInventory\Model\Stock\StockItemRepository;
@@ -69,6 +70,7 @@ class StoneImport
     protected AdapterInterface $connection;
     protected Producer $producerHelper;
     protected ProductAction $productAction;
+    protected AttributeRepositoryInterface $eavAttributeRepository;
 
     protected array $booleanMap;
     protected array $csvHeaderMap;
@@ -130,7 +132,8 @@ class StoneImport
         ProductRepository $productRepository,
         ScopeConfigInterface $scopeConfigInterface,
         Producer $producer,
-        ProductAction $productAction
+        ProductAction $productAction,
+        AttributeRepositoryInterface $eavAttributeRepository
     ) {
         $this->productCollectionFactory = $collectionFactory;
         $this->productModel = $productModel;
@@ -146,6 +149,7 @@ class StoneImport
         $this->scopeConfig = $scopeConfigInterface;
         $this->producerHelper = $producer;
         $this->productAction = $productAction;
+        $this->eavAttributeRepository = $eavAttributeRepository;
 
         $this->file->checkAndCreateFolder($this->mediaTmpDir);
         $this->connection = $resource->getConnection();
