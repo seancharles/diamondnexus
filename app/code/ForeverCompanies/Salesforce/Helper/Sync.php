@@ -466,7 +466,20 @@ class Sync extends AbstractHelper
 
     protected function getObjectKey($object, $key)
     {
-        return (isset($date->{$object}) == true) ? $object->{$key} : '';
+        $result = null;
+
+        // parse extra fields
+        $extraFields = json_decode($object->form_post_json);
+
+        if (isset($object->{$key}) === true) {
+            $result = $object->{$key};
+        } elseif (isset($extraFields->{$key}) === true) {
+            $result = $extraFields->{$key};
+        } else {
+            $result = '';
+        }
+
+        return $result;
     }
 
     /*
