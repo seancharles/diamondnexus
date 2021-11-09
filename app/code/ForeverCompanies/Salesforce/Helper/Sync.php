@@ -391,13 +391,13 @@ class Sync extends AbstractHelper
                         ];
 
                         if (isset($postData->firstname) == true) {
-                            $leadData['FirstName'] = $postData->firstname;
+                            $leadData['FirstName'] = $this->getObjectKey($postData, 'firstname');
                         } else {
                             $leadData['FirstName'] = $leadModel->getEmail();
                         }
 
                         if (isset($postData->firstname) == true) {
-                            $leadData['LastName'] = $postData->lastname;
+                            $leadData['LastName'] = $this->getObjectKey($postData, 'lastname');
                         } else {
                             $leadData['LastName'] = $leadModel->getEmail();
                         }
@@ -418,9 +418,16 @@ class Sync extends AbstractHelper
                                 $leadData['DateNeeded__c'] = $this->getObjectKey($postData, 'selectNeedBy');
                                 $leadData['PreferredMetalType__c'] = $this->getObjectKey($postData, 'selectMetalType');
 
-                                $leadData['InspirationLink__c'] = $this->getObjectKey($postData, 'imageUploadOne');
-                                $leadData['Inspiration_Link_2__c'] = $this->getObjectKey($postData, 'imageUploadTwo');
-                                $leadData['Inspiration_Link_3__c'] = $this->getObjectKey($postData, 'imageUploadThree');
+                                $imageString = (string) $this->getObjectKey($postData, 'imageUpload');
+
+                                // parse out images that are separated by commas
+                                $images = explode(",", $imageString);
+
+                                if(count($images) > 0) {
+                                    $leadData['InspirationLink__c'] = (isset($images[0]) === true && $images[0] != '') ? $images[0] : '';
+                                    $leadData['Inspiration_Link_2__c'] = (isset($images[1]) === true && $images[1] != '') ? $images[1] : '';
+                                    $leadData['Inspiration_Link_3__c'] = (isset($images[2]) === true && $images[2] != '') ? $images[2] : '';
+                                }
 
                                 $leadData['Comments__c'] = $this->getObjectKey($postData, 'txtComments');
                                 $leadData['JewelryType__c'] = $this->getObjectKey($postData, 'selectJewelryType');
