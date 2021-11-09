@@ -1081,6 +1081,8 @@ footer {
       font-weight: bold; }
     .checkout-onepage-success #create_account_form .form-fields button {
       margin-top: 20px !important; }
+  .checkout-onepage-success #create_account_form .submit-success {
+    padding-top: 30px; }
 
 @media screen and (max-width: 767px) {
   .checkout-onepage-success .page-title {

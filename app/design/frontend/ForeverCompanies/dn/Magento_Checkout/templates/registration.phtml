@@ -28,7 +28,8 @@
                     cache: false,
                     success: function(response) {
                         if (response.success == true) {
-                            alert("Account was created!");
+                            jQuery('.submit-success').show();
+                            jQuery('#create_account_form .form-fields').hide();
                         } else {
                             alert(response.message);
                         }
@@ -47,5 +48,8 @@
         <label>Password (8 characters minimum)</label>
         <input type="text" name="password" pattern=".{8,}" required />
         <button type="submit">Create Account</button>
+    </div>
+    <div class="submit-success" style="display:none">
+        <p>Thank you for creating an account!</p>
     </div>
 </form>
