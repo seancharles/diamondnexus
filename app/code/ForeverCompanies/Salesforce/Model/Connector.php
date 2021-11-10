@@ -211,9 +211,6 @@ class Connector
             "Authorization" => "Bearer "  .$access_token,
             "Content-Type" => "application/json",
         ];
-
-        print_r($parameter);
-
         $url = $instance_url . $path;
         $response = $this->makeRequest($method, $url, $headers, $parameter);
         $response = json_decode($response, true);
@@ -221,8 +218,6 @@ class Connector
         if (isset($response[0]['errorCode']) && $response[0]['errorCode'] == 'INVALID_SESSION_ID') {
             $response = $this->sendRequest($method, $path, $parameter, true);
         }
-
-        print_r($response);
 
         return $response;
     }

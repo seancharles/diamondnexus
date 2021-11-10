@@ -390,17 +390,11 @@ class Sync extends AbstractHelper
                             'Email' => $leadModel->getEmail()
                         ];
 
-                        if (isset($postData->firstname) == true) {
-                            $leadData['FirstName'] = $this->getObjectKey($postData, 'firstname');
-                        } else {
-                            $leadData['FirstName'] = $leadModel->getEmail();
-                        }
+                        $firstname = $this->getObjectKey($postData, 'firstname');
+                        $lastname = $this->getObjectKey($postData, 'lastname');
 
-                        if (isset($postData->firstname) == true) {
-                            $leadData['LastName'] = $this->getObjectKey($postData, 'lastname');
-                        } else {
-                            $leadData['LastName'] = $leadModel->getEmail();
-                        }
+                        $leadData['FirstName'] = ($firstname != '') ? $firstname : $leadModel->getEmail();
+                        $leadData['LastName'] = ($firstname != '') ? $lastname : $leadModel->getEmail();
 
                         // get text representation of form identifier
                         $formCode = $this->mappingHelper->getFormCode($leadModel->getFormId());
