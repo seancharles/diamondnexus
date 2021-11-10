@@ -393,15 +393,14 @@ class Sync extends AbstractHelper
                         $firstname = $this->getObjectKey($postData, 'firstname');
                         $lastname = $this->getObjectKey($postData, 'lastname');
 
-                        $leadData['FirstName'] = ($firstname != '') ? $firstname : $leadModel->getEmail();
-                        $leadData['LastName'] = ($firstname != '') ? $lastname : $leadModel->getEmail();
-
                         // get text representation of form identifier
                         $formCode = $this->mappingHelper->getFormCode($leadModel->getFormId());
 
                         switch ($formCode) {
                             case "fa-short":
                                 // $leadData['Lead_Key__c'] = $lead->getLeadKey(); (removed since we change to unique emails)
+                                $leadData['FirstName'] = ($firstname != '') ? $firstname : $leadModel->getEmail();
+                                $leadData['LastName'] = ($firstname != '') ? $lastname : $leadModel->getEmail();
                                 $leadData['Phone'] = $this->getObjectKey($postData, 'telephone');
                                 $leadData['SEM_campaign__c'] = $this->getObjectKey($postData, 'utms');
                                 $leadData['lea13'] = 'Initial Inquiry';
@@ -429,6 +428,8 @@ class Sync extends AbstractHelper
                                 break;
 
                             case "tf-short":
+                                $leadData['FirstName'] = ($firstname != '') ? $firstname : $leadModel->getEmail();
+                                $leadData['LastName'] = ($firstname != '') ? $lastname : $leadModel->getEmail();
                                 $leadData['Phone'] = $this->getObjectKey($postData, 'telephone');
                                 break;
                         }
