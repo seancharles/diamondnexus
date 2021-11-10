@@ -550,7 +550,7 @@ class StoneImport
         }
 
         // set the class map variable
-        $this->${$mapVar} = $options;
+        $this->{$mapVar} = $options;
 
         unset($attribute);
         unset($options);
