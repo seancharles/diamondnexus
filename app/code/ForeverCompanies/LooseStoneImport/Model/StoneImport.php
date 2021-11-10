@@ -867,58 +867,58 @@ class StoneImport
         if (
             isset($csvArr['Blockchain Verified'])
             && trim($csvArr['Blockchain Verified']) != ""
-            && array_key_exists(strtolower($csvArr['Blockchain Verified']), $this->booleanMap)
+            && array_key_exists(strtolower(trim($csvArr['Blockchain Verified'])), $this->booleanMap)
         ) {
-            $product->setBlockchainVerified($this->booleanMap[strtolower($csvArr['Blockchain Verified'])]);
+            $product->setBlockchainVerified($this->booleanMap[strtolower(trim($csvArr['Blockchain Verified']))]);
         }
         if (
-            isset($csvArr['Grown in the USA'])
-            && trim($csvArr['Grown in the USA']) != ""
-            && array_key_exists(strtolower($csvArr['Grown in the USA']), $this->booleanMap)
+            isset($csvArr['Grown in USA'])
+            && trim($csvArr['Grown in USA']) != ""
+            && array_key_exists(strtolower(trim($csvArr['Grown in USA'])), $this->booleanMap)
         ) {
-            $product->setGrownInUsa($this->booleanMap[strtolower($csvArr['Grown in the USA'])]);
+            $product->setGrownInUsa($this->booleanMap[strtolower(trim($csvArr['Grown in USA']))]);
         }
         if (
-            isset($csvArr['Made in the USA'])
-            && trim($csvArr['Made in the USA']) != ""
-            && array_key_exists(strtolower($csvArr['Made in the USA']), $this->booleanMap)
+            isset($csvArr['Made in USA'])
+            && trim($csvArr['Made in USA']) != ""
+            && array_key_exists(strtolower(trim($csvArr['Made in USA'])), $this->booleanMap)
         ) {
-            $product->setMadeInUsa($this->booleanMap[strtolower($csvArr['Made in the USA'])]);
+            $product->setMadeInUsa($this->booleanMap[strtolower(trim($csvArr['Made in USA']))]);
         }
         if (
-            isset($csvArr['As Grown/Treated'])
-            && trim($csvArr['As Grown/Treated']) != ""
-            && array_key_exists(strtolower($csvArr['As Grown/Treated']), $this->booleanMap)
+            isset($csvArr['As Grown'])
+            && trim($csvArr['As Grown']) != ""
+            && array_key_exists(strtolower(trim($csvArr['As Grown'])), $this->booleanMap)
         ) {
-            $product->setAsGrown($this->booleanMap[strtolower($csvArr['As Grown/Treated'])]);
+            $product->setAsGrown($this->booleanMap[strtolower(trim($csvArr['As Grown']))]);
         }
         if (
             isset($csvArr['Carbon Neutral'])
             && trim($csvArr['Carbon Neutral']) != ""
-            && array_key_exists(strtolower($csvArr['Carbon Neutral']), $this->booleanMap)
+            && array_key_exists(strtolower(trim($csvArr['Carbon Neutral'])), $this->booleanMap)
         ) {
-            $product->setCarbonNeutral($this->booleanMap[strtolower($csvArr['Carbon Neutral'])]);
+            $product->setCarbonNeutral($this->booleanMap[strtolower(trim($csvArr['Carbon Neutral']))]);
         }
         if (
             isset($csvArr['Certified Sustainable'])
             && trim($csvArr['Certified Sustainable']) != ""
-            && array_key_exists(strtolower($csvArr['Certified Sustainable']), $this->booleanMap)
+            && array_key_exists(strtolower(trim($csvArr['Certified Sustainable'])), $this->booleanMap)
         ) {
-            $product->setCertifiedSustainable($this->booleanMap[strtolower($csvArr['Certified Sustainable'])]);
+            $product->setCertifiedSustainable($this->booleanMap[strtolower(trim($csvArr['Certified Sustainable']))]);
         }
         if (
             isset($csvArr['Hearts & Arrows'])
             && trim($csvArr['Hearts & Arrows']) != ""
-            && array_key_exists(strtolower($csvArr['Hearts & Arrows']), $this->booleanMap)
+            && array_key_exists(strtolower(trim($csvArr['Hearts & Arrows'])), $this->booleanMap)
         ) {
-            $product->setHeartsAndArrows($this->booleanMap[strtolower($csvArr['Hearts & Arrows'])]);
+            $product->setHeartsAndArrows($this->booleanMap[strtolower(trim($csvArr['Hearts & Arrows']))]);
         }
         if (
             isset($csvArr['Next Day Ship'])
             && trim($csvArr['Next Day Ship']) != ""
-            && array_key_exists(strtolower($csvArr['Next Day Ship']), $this->booleanMap)
+            && array_key_exists(strtolower(trim($csvArr['Next Day Ship'])), $this->booleanMap)
         ) {
-            $product->setHeartsAndArrows($this->booleanMap[strtolower($csvArr['Next Day Ship'])]);
+            $product->setNextDayShip($this->booleanMap[strtolower(trim($csvArr['Next Day Ship']))]);
         }
 
         // Mapped
