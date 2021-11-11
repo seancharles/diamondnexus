@@ -10,19 +10,16 @@ namespace ForeverCompanies\Salesforce\Model;
 class Constant
 {
     const FORM_MAPPING = [
-        1 => 'fa-short',
-        2 => 'fa-long',
-        3 => 'dn-catalog-request',
-        4 => 'dn-modal',
-        5 => 'fa-modal',
-        6 => 'tf-modal',
-		7 => 'tf-short'
+        8 => 'fa-short',
+        9 => 'fa-long',
+        10 => 'fa-long',
+        14 => 'tf-short'
     ];
 
     const WEBSITE_MAPPING = [
         1 => 'DN',
         2 => 'FA',
-        3 => 'TF'
+        3 => '1215'
     ];
 
     const LEAD_FIELD_MAPPING = [
