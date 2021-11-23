@@ -48,10 +48,18 @@ class Rebuild extends \Magento\Framework\App\Action\Action
             $customerQuoteId = $this->_cart->getQuote()->getId();
 
             // only add items when the quote isn't the users logged in cart
+
+            $writer = new \Zend\Log\Write\Stream(BP . 'var/log/rebuilt_cart.log');
+            $logger = new \Zend\Log\Logger();
+            $logger->addWriter($writer);
+            $logger->info('Quote Id: ' . $quoteId);
+            $logger->info('Customer Quote Id: ' . $quoteId);
             if ($quoteId != $customerQuoteId) {
                 try {
                     $quote = $this->_quoteRepository->get($quoteId);
-
+                    if(empty($quote)) {
+                        $logger->info('Quote is empty');
+                    }
                     $storeId = $quote->getStoreId();
                     $quoteItems = $quote->getAllVisibleItems();
 
@@ -101,6 +109,10 @@ class Rebuild extends \Magento\Framework\App\Action\Action
                         'Quote does not exist',
                         [$exception->getMessage()]
                     );
+
+                    $redirect = $this->_redirectFactory->create();
+                    $redirect->setPath('checkout/cart');
+                    return $redirect;
                 } catch (LocalizedException $exception) {
                     $this->_messageManager->addError(__("Could not add item to cart"));
 
@@ -108,6 +120,10 @@ class Rebuild extends \Magento\Framework\App\Action\Action
                         'Could not add item to cart',
                         [$exception->getMessage()]
                     );
+
+                    $redirect = $this->_redirectFactory->create();
+                    $redirect->setPath('checkout/cart');
+                    return $redirect;
                 }
             }
         }
